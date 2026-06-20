@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Http\Services;
 
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService as Response;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;

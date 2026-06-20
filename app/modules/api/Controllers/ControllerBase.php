@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers;
 
 use Exception;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use League\Fractal\Manager;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -59,7 +59,7 @@ abstract class ControllerBase
 
     public function __construct(
         Application                     $application,
-        protected readonly Klein        $router,
+        protected readonly Router        $router,
         protected readonly ApiService   $apiService,
         protected readonly AclInterface $acl
     ) {

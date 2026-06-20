@@ -26,7 +26,7 @@ namespace SP\Modules\Api\Controllers\Config;
 
 
 use Exception;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
@@ -56,7 +56,7 @@ final class ExportController extends ControllerBase
      */
     public function __construct(
         Application                       $application,
-        Klein                             $router,
+        Router                             $router,
         ApiService                        $apiService,
         AclInterface                      $acl,
         private readonly XmlExportService $xmlExportService,

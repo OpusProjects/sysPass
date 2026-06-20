@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\Task;
 
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Domain\Common\Services\ServiceException;
 
 /**
@@ -35,9 +35,9 @@ use SP\Domain\Common\Services\ServiceException;
 final class TrackStatusController
 {
     private \SP\Domain\Task\Ports\TaskServiceInterface $taskService;
-    private Response                                   $response;
+    private ResponseService                                   $response;
 
-    public function __construct(Response $response, \SP\Domain\Task\Ports\TaskServiceInterface $taskService)
+    public function __construct(ResponseService $response, \SP\Domain\Task\Ports\TaskServiceInterface $taskService)
     {
         $this->response = $response;
         $this->taskService = $taskService;

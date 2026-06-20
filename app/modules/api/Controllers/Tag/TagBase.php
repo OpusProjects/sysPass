@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Tag;
 
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -46,7 +46,7 @@ abstract class TagBase extends ControllerBase
      */
     public function __construct(
         Application  $application,
-        Klein        $router,
+        Router        $router,
         ApiService   $apiService,
         AclInterface $acl,
         TagService $tagService

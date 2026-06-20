@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Http\Services;
 
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
@@ -41,11 +41,11 @@ final readonly class JsonResponse implements JsonResponseService
     /**
      * Json constructor.
      */
-    public function __construct(private Response $response)
+    public function __construct(private ResponseService $response)
     {
     }
 
-    public static function factory(Response $response): JsonResponseService
+    public static function factory(ResponseService $response): JsonResponseService
     {
         return new self($response);
     }

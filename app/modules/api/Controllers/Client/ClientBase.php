@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Client;
 
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Client\Ports\ClientAdapter;
@@ -48,7 +48,7 @@ abstract class ClientBase extends ControllerBase
      */
     public function __construct(
         Application            $application,
-        Klein                  $router,
+        Router                  $router,
         ApiService    $apiService,
         AclInterface  $acl,
         ClientService $clientService,

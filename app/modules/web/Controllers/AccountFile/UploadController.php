@@ -78,7 +78,7 @@ final class UploadController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function uploadAction(int $accountId): ActionResponse
     {
-        $file = $this->router->request()->files()->get('inFile');
+        $file = $this->request->getFile('inFile');
 
         if ($accountId === 0 || null === $file) {
             throw new SPException(__u('INVALID QUERY'), SPException::ERROR);

@@ -25,11 +25,11 @@ declare(strict_types=1);
 
 namespace SP\Domain\Html\Services;
 
-use Klein\Request;
-use Klein\Response;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Html\Ports\MinifyService;
 use SP\Domain\Http\Header;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Infrastructure\File\FileException;
 use SplObjectStorage;
 
@@ -47,8 +47,8 @@ abstract class Minify implements MinifyService
     private SplObjectStorage $files;
 
     public function __construct(
-        private readonly Response $response,
-        private readonly Request $request
+        private readonly ResponseService $response,
+        private readonly RequestService $request
     ) {
         $this->files = new SplObjectStorage();
     }
@@ -93,15 +93,14 @@ abstract class Minify implements MinifyService
     private function checkEtag(): ?string
     {
         $etag = $this->getEtag();
-        $headers = $this->request->headers();
 
         // Devolver código 304 si la versión es la misma y no se solicita refrescar
-        if ($etag === $headers->get(Header::IF_NONE_MATCH->value)
-            && !($headers->get(Header::CACHE_CONTROL->value) === 'no-cache'
-                 || $headers->get(Header::CACHE_CONTROL->value) === 'max-age=0'
-                 || $headers->get(Header::PRAGMA->value) === 'no-cache')
+        if ($etag === $this->request->getHeader(Header::IF_NONE_MATCH->value)
+            && !($this->request->getHeader(Header::CACHE_CONTROL->value) === 'no-cache'
+                 || $this->request->getHeader(Header::CACHE_CONTROL->value) === 'max-age=0'
+                 || $this->request->getHeader(Header::PRAGMA->value) === 'no-cache')
         ) {
-            $this->response->header($this->request->server()->get('SERVER_PROTOCOL'), '304 Not Modified');
+            $this->response->header($this->request->getServer('SERVER_PROTOCOL'), '304 Not Modified');
             $this->response->send();
 
             return null;

@@ -42,8 +42,8 @@ enum Header: string
     case ACCEPT                 = 'Accept';
     case ACCEPT_JSON            = 'application/json';
     case X_REQUESTED_WITH       = 'X-Requested-With';
-    case HTTP_FORWARDED         = 'Http-Forwarded';
-    case HTTP_X_FORWARDED_HOST  = 'Http-Forwarded-Host';
-    case HTTP_X_FORWARDED_PROTO = 'Http-Forwarded-Proto';
-    case HTTP_X_FORWARDED_FOR   = 'Http-Forwarded-For';
+    case HTTP_FORWARDED         = 'Forwarded';
+    case HTTP_X_FORWARDED_HOST  = 'X-Forwarded-Host';
+    case HTTP_X_FORWARDED_PROTO = 'X-Forwarded-Proto';
+    case HTTP_X_FORWARDED_FOR   = 'X-Forwarded-For';
 }

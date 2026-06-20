@@ -36,7 +36,6 @@
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^3.0",
-    "klein/klein": "^2.1",
     "php-di/php-di": "^7.0",
     "guzzlehttp/guzzle": "^7.0",
     "monolog/monolog": "^3.0",
@@ -55,7 +54,9 @@
     "symfony/lock": "^v5.0",
     "aura/sqlquery": "~3.0",
     "laminas/laminas-ldap": "^2.17",
-    "symfony/yaml": "@stable"
+    "symfony/yaml": "@stable",
+    "symfony/http-foundation": "^5.4",
+    "symfony/routing": "^5.4"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",

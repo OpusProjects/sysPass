@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Mvc\Controller;
 
 use Closure;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
@@ -43,7 +43,7 @@ use function SP\processException;
  */
 trait ControllerTrait
 {
-    protected Klein $router;
+    protected Router $router;
 
     /**
      * Logout from current session

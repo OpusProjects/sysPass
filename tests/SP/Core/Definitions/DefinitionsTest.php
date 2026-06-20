@@ -28,7 +28,7 @@ namespace SP\Tests\Core\Definitions;
 
 use DI\ContainerBuilder;
 use Exception;
-use Klein\Request;
+use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;

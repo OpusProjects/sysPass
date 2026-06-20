@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Mvc\Controller;
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
@@ -42,7 +42,7 @@ final readonly class SimpleControllerHelper
 
     public function __construct(
         private ThemeInterface      $theme,
-        private Klein               $router,
+        private Router               $router,
         private AclInterface        $acl,
         private RequestService      $request,
         private PhpExtensionChecker $extensionChecker,
@@ -56,7 +56,7 @@ final readonly class SimpleControllerHelper
         return $this->theme;
     }
 
-    public function getRouter(): Klein
+    public function getRouter(): Router
     {
         return $this->router;
     }
