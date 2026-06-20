@@ -418,6 +418,13 @@ abstract class IntegrationTestCase extends TestCase
     {
         parent::setUp();
 
+        // Reset the process-global locale per test so a language-switching test in this
+        // suite doesn't leak into later tests (e.g. responses in the wrong language).
+        putenv('LANG=en_US.UTF-8');
+        putenv('LANGUAGE=en_US.UTF-8');
+        setlocale(LC_ALL, 'en_US.UTF-8');
+        setlocale(LC_MESSAGES, 'en_US.UTF-8');
+
         $this->passwordSalt = self::$faker->sha1();
     }
 }

@@ -116,6 +116,10 @@ abstract class UnitaryTestCase extends TestCase
     {
         parent::setUp();
 
+        // Reset the process-global locale/gettext state per test; otherwise a
+        // language-switching test leaks into later tests in the run.
+        self::setLocales();
+
         $this->application = $this->buildApplication();
 
         $this->getPathsContext();
