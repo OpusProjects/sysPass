@@ -180,7 +180,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      *
      * @throws FileException
      */
-    public function readChunked(callable $chunker = null, ?float $rate = null): void
+    public function readChunked(?callable $chunker = null, ?float $rate = null): void
     {
         $maxRate = Util::getMaxDownloadChunk() / self::CHUNK_FACTOR;
 

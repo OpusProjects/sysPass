@@ -60,7 +60,7 @@ return [
         JsController::class
     )->constructorParameter('minify', autowire(MinifyJs::class)),
     Context::class => factory(
-        static function (ConfigDataInterface $configData, SessionHandlerInterface $sessionHandler = null) {
+        static function (ConfigDataInterface $configData, ?SessionHandlerInterface $sessionHandler = null) {
             return new Session($sessionHandler);
         }
     ),

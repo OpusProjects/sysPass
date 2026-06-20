@@ -75,7 +75,7 @@ final class Upgrade extends Service implements UpgradeService
      */
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {
-        $class = get_class();
+        $class = $this::class;
 
         $this->eventDispatcher->notify(
             sprintf('upgrade.%s.start', $class),
