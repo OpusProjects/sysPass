@@ -26,12 +26,11 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core\Crypt;
 
-use phpseclib\Crypt\RSA;
+use phpseclib3\Crypt\RSA;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\CryptPKI;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
@@ -45,7 +44,6 @@ use function PHPUnit\Framework\once;
 class CryptPKITest extends UnitaryTestCase
 {
     private CryptPKI                        $cryptPki;
-    private RSA|MockObject                  $rsa;
     private FileHandlerInterface|MockObject $privateKey;
     private FileHandlerInterface|MockObject $publicKey;
 
@@ -54,18 +52,30 @@ class CryptPKITest extends UnitaryTestCase
      */
     public function testDecryptRSA()
     {
-        $data = self::$faker->sha1;
-        $privateKey = self::$faker->sha1;
+        // Round-trip with a real key pair: encrypt with the public key the way the
+        // browser (JSEncrypt, PKCS#1 v1.5) would, then decrypt through CryptPKI.
+        $keyPair = RSA::createKey(CryptPKI::KEY_SIZE);
+        $encrypted = $keyPair->getPublicKey()
+                             ->withPadding(RSA::ENCRYPTION_PKCS1)
+                             ->encrypt('test');
 
         $this->privateKey->expects(once())->method('checkFileExists')->willReturnSelf();
-        $this->privateKey->expects(once())->method('readToString')->willReturn($privateKey);
-        $this->rsa->expects(once())->method('setEncryptionMode')->with(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->expects(once())->method('loadKey')->with($privateKey, RSA::PRIVATE_FORMAT_PKCS1);
-        $this->rsa->expects(once())->method('decrypt')->with('test')->willReturn($data);
+        $this->privateKey->expects(once())->method('readToString')->willReturn((string)$keyPair);
 
-        $out = $this->cryptPki->decryptRSA('test');
+        $this->assertSame('test', $this->cryptPki->decryptRSA($encrypted));
+    }
 
-        $this->assertEquals($data, $out);
+    /**
+     * @throws FileException
+     */
+    public function testDecryptRSAWithInvalidDataReturnsNull()
+    {
+        $keyPair = RSA::createKey(CryptPKI::KEY_SIZE);
+
+        $this->privateKey->expects(once())->method('checkFileExists')->willReturnSelf();
+        $this->privateKey->expects(once())->method('readToString')->willReturn((string)$keyPair);
+
+        $this->assertNull($this->cryptPki->decryptRSA('not a valid ciphertext'));
     }
 
     /**
@@ -76,43 +86,26 @@ class CryptPKITest extends UnitaryTestCase
         $this->publicKey->expects(once())->method('checkFileExists')->willReturnSelf();
         $this->publicKey->expects(once())->method('readToString')->willReturn('test');
 
-        $out = $this->cryptPki->getPublicKey();
-
-        $this->assertEquals('test', $out);
+        $this->assertEquals('test', $this->cryptPki->getPublicKey());
     }
 
     /**
-     * @throws SPException
+     * @throws Exception
      */
     public function testCreateKeys()
     {
-        $this->publicKey->expects(once())
-                        ->method('getFileSize')
-                        ->willReturn(0);
+        // Fresh handlers so the constructor's existence check triggers createKeys().
+        $publicKey = $this->createMock(FileHandlerInterface::class);
+        $privateKey = $this->createMock(FileHandlerInterface::class);
 
-        $this->privateKey->expects(once())
-            ->method('getFileSize')
-            ->willThrowException(new FileException('test'));
+        $publicKey->method('getFileSize')->willReturn(0);
+        $privateKey->method('getFileSize')->willThrowException(new FileException('test'));
 
-        $keys = ['publickey' => self::$faker->sha1, 'privatekey' => self::$faker->sha1];
+        $publicKey->expects(once())->method('save')->with($this->stringContains('PUBLIC KEY'));
+        $privateKey->expects(once())->method('save')->with($this->stringContains('PRIVATE KEY'))->willReturnSelf();
+        $privateKey->expects(once())->method('chmod')->with(0600);
 
-        $this->rsa->expects(once())
-                  ->method('createKey')
-                  ->with(CryptPKI::KEY_SIZE)
-                  ->willReturn($keys);
-
-        $this->privateKey->expects(once())
-                         ->method('save')
-                         ->with($keys['privatekey'])
-                         ->willReturnSelf();
-        $this->privateKey->expects(once())
-                         ->method('chmod')
-                         ->with(0600);
-        $this->publicKey->expects(once())
-                        ->method('save')
-                        ->with($keys['publickey']);
-
-        new CryptPKI($this->rsa, $this->publicKey, $this->privateKey);
+        new CryptPKI($publicKey, $privateKey);
     }
 
     public function testGetMaxDataSize()
@@ -121,18 +114,13 @@ class CryptPKITest extends UnitaryTestCase
     }
 
     /**
-     * Sets up the fixture, for example, open a network connection.
-     * This method is called before a test is executed.
-     *
-     * @throws SPException
      * @throws Exception
      */
     protected function setUp(): void
     {
-        $this->rsa = $this->createMock(RSA::class);
         $this->privateKey = $this->createMock(FileHandlerInterface::class);
         $this->publicKey = $this->createMock(FileHandlerInterface::class);
 
-        $this->cryptPki = new CryptPKI($this->rsa, $this->publicKey, $this->privateKey);
+        $this->cryptPki = new CryptPKI($this->publicKey, $this->privateKey);
     }
 }

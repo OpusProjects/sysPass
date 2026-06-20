@@ -26,11 +26,12 @@ declare(strict_types=1);
 
 namespace SP\Core\Crypt;
 
-use phpseclib\Crypt\RSA;
+use phpseclib3\Crypt\RSA;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
+use Throwable;
 
 use function SP\processException;
 
@@ -47,7 +48,6 @@ final class CryptPKI implements CryptPKIHandler
      * @throws SPException
      */
     public function __construct(
-        private readonly RSA                  $rsa,
         private readonly FileHandlerInterface $publicKeyFile,
         private readonly FileHandlerInterface $privateKeyFile
     ) {
@@ -78,10 +78,10 @@ final class CryptPKI implements CryptPKIHandler
      */
     public function createKeys(): void
     {
-        $keys = $this->rsa->createKey(self::KEY_SIZE);
+        $privateKey = RSA::createKey(self::KEY_SIZE);
 
-        $this->publicKeyFile->save($keys['publickey']);
-        $this->privateKeyFile->save($keys['privatekey'])->chmod(0600);
+        $this->publicKeyFile->save((string)$privateKey->getPublicKey());
+        $this->privateKeyFile->save((string)$privateKey)->chmod(0600);
     }
 
     public static function getMaxDataSize(): int
@@ -106,10 +106,17 @@ final class CryptPKI implements CryptPKIHandler
      */
     public function decryptRSA(string $data): ?string
     {
-        $this->rsa->setEncryptionMode(RSA::ENCRYPTION_PKCS1);
-        $this->rsa->loadKey($this->getPrivateKey(), RSA::PRIVATE_FORMAT_PKCS1);
+        $privateKeyPem = $this->getPrivateKey();
 
-        return @$this->rsa->decrypt($data) ?: null;
+        try {
+            // The browser encrypts with PKCS#1 v1.5 padding (JSEncrypt).
+            $privateKey = RSA::loadPrivateKey($privateKeyPem)
+                ->withPadding(RSA::ENCRYPTION_PKCS1);
+
+            return $privateKey->decrypt($data) ?: null;
+        } catch (Throwable) {
+            return null;
+        }
     }
 
     /**

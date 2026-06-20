@@ -32,7 +32,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
 use Monolog\Logger;
-use phpseclib\Crypt\RSA;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use SessionHandlerInterface;
@@ -335,7 +334,6 @@ final class CoreDefinitions
                 );
 
                 return new CryptPKI(
-                    new RSA(),
                     new FileHandler($publicKeyPath, 'w'),
                     new FileHandler($privateKeyPath, 'w')
                 );
