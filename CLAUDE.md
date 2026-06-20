@@ -108,11 +108,20 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
 - `index.php` uses autoloaded `SP\` classes before loading the autoloader → the image sets
   `auto_prepend_file = vendor/autoload.php`.
 - `lib/Base.php` loads a mandatory `.env` (`Dotenv::createImmutable()->load()`); the entrypoint writes one.
-- **Open bug:** php-di can't resolve `BootstrapInterface → ConfigFileService → XmlFileStorageService`
-  (autowire fallback to an unbound interface). The explicit `create()` definition in
-  `CoreDefinitions` isn't applied; suspected cause is `ConfigFile`'s optional 4th constructor arg
-  (`?ConfigDataInterface`) being autowired into a circular `ConfigDataInterface` factory. Tests pass
-  because they mock `ConfigFileService`. The browser installer flow is blocked on this.
+- **Fixed (DI definition ordering):** php-di couldn't resolve `BootstrapInterface → ConfigFileService
+  → XmlFileStorageService` because `lib/Base.php` added `CoreDefinitions` *before* `DomainDefinitions`.
+  `DomainDefinitions` auto-wires every `SP\Domain\*\Ports\*Service` via a `*` wildcard, and php-di
+  gives **later** definition sources precedence — so the generic wildcard (`autowire(ConfigFile)`,
+  which reads the unbound `XmlFileStorageService` interface) shadowed Core's explicit
+  `ConfigFileService` definition. Fix: register `DomainDefinitions` **first**, then `CoreDefinitions`
+  (specific overrides generic), matching the order `tests/SP/IntegrationTestCase.php` already builds
+  the container with (which is why the suites passed).
+- **Still WIP (fresh-install file open):** `FileHandler extends SplFileObject` and opens its file in
+  the constructor, so building `ConfigFileService` when `app/config/config.xml` does not yet exist
+  throws a raw `RuntimeException` before `ConfigFile::initialize()` can fall through
+  `loadFromCache() ?? loadFromFile() ?? generateNewConfig()`. The fresh-install path (no config.xml)
+  is still blocked on this — it needs lazy file opening (or tolerating a missing file) so
+  `generateNewConfig()` runs. An already-installed instance (config.xml present) is unaffected.
 
 ## Dependency status (PHP 8.2 codebase)
 
