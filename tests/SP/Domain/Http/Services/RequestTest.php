@@ -589,6 +589,9 @@ class RequestTest extends UnitaryTestCase
      */
     public function testVerifySignature()
     {
+        // A valid signature must verify without throwing; the method returns void.
+        self::expectNotToPerformAssertions();
+
         $params = [
             'a' => 1,
             'b' => 2,
@@ -614,6 +617,9 @@ class RequestTest extends UnitaryTestCase
      */
     public function testVerifySignatureWithParam()
     {
+        // A valid signature must verify without throwing; the method returns void.
+        self::expectNotToPerformAssertions();
+
         $signature = Hash::signMessage('a_value', 'a_key');
 
         $this->ensureGet();
