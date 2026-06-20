@@ -33,7 +33,7 @@
   "require": {
     "php": "~8.4 || ~8.5",
     "defuse/php-encryption": "^2.1",
-    "phpmailer/phpmailer": "^6.0",
+    "phpmailer/phpmailer": "^7.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^3.0",
     "php-di/php-di": "^7.1",
