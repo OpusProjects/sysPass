@@ -84,6 +84,9 @@ use function DI\factory;
  */
 abstract class IntegrationTestCase extends TestCase
 {
+    /** Fixed faker seed for reproducible, isolation-independent test data. */
+    protected const FAKER_SEED = 1;
+
     protected static Generator $faker;
     private static array      $definitionsCache;
     private static string     $moduleFile;
@@ -420,6 +423,11 @@ abstract class IntegrationTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Deterministic test data: re-seed faker per test (see UnitaryTestCase) so a
+        // test produces the same values in isolation and in the full suite; the unseeded
+        // generator made data-dependent assertions fail intermittently across runs.
+        self::$faker->seed(self::FAKER_SEED);
 
         // Reset the process-global locale per test so a language-switching test in this
         // suite doesn't leak into later tests (e.g. responses in the wrong language).
