@@ -291,7 +291,7 @@ final class IndexController extends ControllerBase
 
         $template->assign(
             'ldapIsAvailable',
-            $this->extensionChecker->checkLdap('ldap')
+            $this->extensionChecker->checkLdap()
         );
         $template->assign(
             'userGroups',
@@ -360,7 +360,7 @@ final class IndexController extends ControllerBase
             SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
         );
 
-        $mailEvents = $this->configData->getMailEvents();
+        $mailEvents = $this->configData->getMailEvents() ?? [];
 
         $events = array_merge(MailEvent::EVENTS, $mailEvents);
 
