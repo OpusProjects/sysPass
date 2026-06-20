@@ -1,11 +1,7 @@
 # Installation
 
-Full installation instructions and a Frequently Asked Questions guide are hosted in the
-upstream documentation:
-
-### 👉 https://doc.syspass.org
-
-The original project links the same guide in several languages:
+Full installation instructions and a Frequently Asked Questions guide were hosted in the
+upstream documentation. The original project linked the same guide in several languages:
 
 - 🇬🇧 **English** — Installation and Frequently Asked Questions — <https://doc.syspass.org>
 - 🇪🇸 **Español** — Instalación y preguntas frecuentes — <https://doc.syspass.org>
