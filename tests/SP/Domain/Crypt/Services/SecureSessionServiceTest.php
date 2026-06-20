@@ -65,7 +65,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     public function testGetKey()
     {
         $securedKey = Key::createNewRandomKey();
-        $key = self::$faker->password;
+        $key = self::$faker->password();
         $vault = Vault::factory($this->crypt)->saveData($securedKey->saveToAsciiSafeString(), $key);
 
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
@@ -82,7 +82,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(true);
         $this->fileCache->expects(self::once())->method('save');
-        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password);
+        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password());
 
         $this->assertInstanceOf(Key::class, $this->secureSessionService->getKey());
     }
@@ -94,7 +94,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willThrowException(new FileException('test'));
         $this->fileCache->expects(self::once())->method('save');
-        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password);
+        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password());
 
         $this->assertInstanceOf(Key::class, $this->secureSessionService->getKey());
     }
@@ -107,7 +107,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
         $this->fileCache->expects(self::once())->method('loadWith')->willThrowException(new FileException('test'));
         $this->fileCache->expects(self::once())->method('save');
-        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password);
+        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password());
 
         $this->assertInstanceOf(Key::class, $this->secureSessionService->getKey());
     }
@@ -119,7 +119,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     {
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(true);
         $this->fileCache->expects(self::once())->method('save')->willThrowException(new FileException('test'));
-        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password);
+        $this->requestBasedPassword->expects(self::once())->method('build')->willReturn(self::$faker->password());
 
         $this->assertFalse($this->secureSessionService->getKey());
     }
@@ -131,7 +131,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
     public function testGetKeyBuildPasswordException()
     {
         $securedKey = Key::createNewRandomKey();
-        $key = self::$faker->password;
+        $key = self::$faker->password();
         $vault = Vault::factory($this->crypt)->saveData($securedKey->saveToAsciiSafeString(), $key);
 
         $this->fileCache->expects(self::once())->method('isExpired')->willReturn(false);
@@ -155,7 +155,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
                    ->willReturn(uniqid('', true));
 
         $this->assertNotEmpty(
-            SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE])
+            SecureSession::getFileNameFrom($uuidCookie, self::$faker->password(), $this->pathsContext[Path::CACHE])
         );
     }
 
@@ -172,7 +172,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE]);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password(), $this->pathsContext[Path::CACHE]);
     }
 
     /**
@@ -188,7 +188,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Unable to get UUID for filename');
 
-        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password, $this->pathsContext[Path::CACHE]);
+        SecureSession::getFileNameFrom($uuidCookie, self::$faker->password(), $this->pathsContext[Path::CACHE]);
     }
 
     /**

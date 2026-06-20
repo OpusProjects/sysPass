@@ -148,10 +148,10 @@ class LdapConnectionTest extends UnitaryTestCase
         parent::setUp();
 
         $this->ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
             'cn=test,dc=example,dc=com',
-            self::$faker->password
+            self::$faker->password()
         );
         $this->ldapParams->setPort(10389);
         $this->ldapParams->setGroup('cn=Test Group,ou=Groups,dc=example,dc=con');

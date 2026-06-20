@@ -75,7 +75,7 @@ class AccountToFavoriteTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
         $userId = self::$faker->randomNumber();
-        $out = self::$faker->boolean;
+        $out = self::$faker->boolean();
 
         $this->accountToFavoriteRepository->expects(self::once())
                                           ->method('delete')

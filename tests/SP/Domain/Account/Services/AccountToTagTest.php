@@ -58,7 +58,7 @@ class AccountToTagTest extends UnitaryTestCase
         $accountId = self::$faker->randomNumber();
 
         $result =
-            new QueryResult([new Simple(['id' => self::$faker->randomNumber(), 'name' => self::$faker->colorName])]);
+            new QueryResult([new Simple(['id' => self::$faker->randomNumber(), 'name' => self::$faker->colorName()])]);
 
         $this->accountToTagRepository
             ->expects(self::once())

@@ -71,8 +71,8 @@ class LdapStdTest extends UnitaryTestCase
      */
     public function testConnect()
     {
-        $user = self::$faker->userName;
-        $password = self::$faker->password;
+        $user = self::$faker->userName();
+        $password = self::$faker->password();
 
         $this->ldapConnection->expects(self::once())->method('connect')->with($this->ldapParams, $user, $password);
 
@@ -98,7 +98,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->ldapParams->setGroup($group);
 
         $userDn = 'cn=TestUser,dc=syspass,dc=org';
-        $userLogin = self::$faker->userName;
+        $userLogin = self::$faker->userName();
         $groupsDn = [
             'cn=TestGroup,dc=groups,dc=syspass,dc=org'
         ];
@@ -121,7 +121,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->ldapParams->setGroup('TestGroup');
 
         $userDn = 'cn=TestUser,dc=syspass,dc=org';
-        $userLogin = self::$faker->userName;
+        $userLogin = self::$faker->userName();
         $groupsDn = [
             'cn=TestGroup,dc=groups,dc=syspass,dc=org'
         ];
@@ -149,7 +149,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->ldapParams->setGroup('TestGroup');
 
         $userDn = 'cn=TestUser,dc=syspass,dc=org';
-        $userLogin = self::$faker->userName;
+        $userLogin = self::$faker->userName();
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
 
         $this->ldapActions->expects(self::exactly(1))
@@ -183,7 +183,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->ldapParams->setGroup('TestGroup');
 
         $userDn = 'cn=TestUser,dc=syspass,dc=org';
-        $userLogin = self::$faker->userName;
+        $userLogin = self::$faker->userName();
         $groupDn = 'cn=TestGroup,dc=groups,dc=syspass,dc=org';
 
         $this->ldapActions->expects(self::exactly(1))
@@ -274,7 +274,7 @@ class LdapStdTest extends UnitaryTestCase
 
     public function testGetUserDnFilter()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $out = $this->ldap->getUserDnFilter($user);
 
@@ -290,7 +290,7 @@ class LdapStdTest extends UnitaryTestCase
     public function testGetUserDnFilterWithAttributes()
     {
         $this->ldapParams->setFilterUserAttributes(['memberOf']);
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $out = $this->ldap->getUserDnFilter($user);
 
@@ -379,10 +379,10 @@ class LdapStdTest extends UnitaryTestCase
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::ADS,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
 
         $this->ldap = new LdapStd(

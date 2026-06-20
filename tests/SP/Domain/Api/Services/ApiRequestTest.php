@@ -61,8 +61,8 @@ class ApiRequestTest extends UnitaryTestCase
     {
         return [
             'jsonrpc' => '2.0',
-            'method'  => self::$faker->colorName,
-            'params'  => ['authToken' => self::$faker->password],
+            'method'  => self::$faker->colorName(),
+            'params'  => ['authToken' => self::$faker->password()],
             'id'      => 1,
         ];
     }

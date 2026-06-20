@@ -40,8 +40,8 @@ class ApiResponseTest extends UnitaryTestCase
     public function testMakeSuccess()
     {
         $args = [
-            self::$faker->name,
-            self::$faker->text,
+            self::$faker->name(),
+            self::$faker->text(),
             self::$faker->randomNumber(),
         ];
 
@@ -63,8 +63,8 @@ class ApiResponseTest extends UnitaryTestCase
     public function testMakeError()
     {
         $args = [
-            self::$faker->name,
-            self::$faker->text,
+            self::$faker->name(),
+            self::$faker->text(),
         ];
 
         $out = ApiResponse::makeError(...$args)->getResponse();

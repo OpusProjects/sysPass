@@ -58,7 +58,7 @@ class AccountCacheTest extends UnitaryTestCase
     public function testGetCacheForAccount()
     {
         $accountId = self::$faker->randomNumber();
-        $dateEdit = self::$faker->unixTime;
+        $dateEdit = self::$faker->unixTime();
 
         $accountCacheDto = new AccountCacheDto($accountId, [1, 2, 3], [1, 2, 3]);
 

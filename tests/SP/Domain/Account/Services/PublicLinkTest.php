@@ -69,7 +69,7 @@ class PublicLinkTest extends UnitaryTestCase
      */
     public function testAddLinkView()
     {
-        $publicLink = new PublicLinkModel(['hash' => self::$faker->sha1]);
+        $publicLink = new PublicLinkModel(['hash' => self::$faker->sha1()]);
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -111,15 +111,15 @@ class PublicLinkTest extends UnitaryTestCase
             'useInfo' => serialize(
                 [
                     [
-                        'who' => self::$faker->ipv4,
+                        'who' => self::$faker->ipv4(),
                         'time' => time(),
-                        'hash' => self::$faker->sha1,
-                        'agent' => self::$faker->userAgent,
-                        'https' => self::$faker->boolean,
+                        'hash' => self::$faker->sha1(),
+                        'agent' => self::$faker->userAgent(),
+                        'https' => self::$faker->boolean(),
                     ],
                 ]
             ),
-            'hash' => self::$faker->sha1
+            'hash' => self::$faker->sha1()
         ];
         $publicLink = new PublicLinkModel($properties);
 
@@ -142,7 +142,7 @@ class PublicLinkTest extends UnitaryTestCase
      */
     public function testGetByHash()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $publicLink = PublicLinkDataGenerator::factory()->buildPublicLink();
         $result = new QueryResult([$publicLink]);
 
@@ -162,7 +162,7 @@ class PublicLinkTest extends UnitaryTestCase
      */
     public function testGetByHashNotFound()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -257,7 +257,7 @@ class PublicLinkTest extends UnitaryTestCase
 
     public function testSearch()
     {
-        $itemSearchData = new ItemSearchDto(self::$faker->colorName);
+        $itemSearchData = new ItemSearchDto(self::$faker->colorName());
 
         $this->publicLinkRepository
             ->expects(self::once())
@@ -343,7 +343,7 @@ class PublicLinkTest extends UnitaryTestCase
             )
             ->willReturn(true);
 
-        $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
+        $passData = ['pass' => self::$faker->password(), 'key' => self::$faker->sha1()];
 
         $this->accountService
             ->expects(self::once())
@@ -359,7 +359,7 @@ class PublicLinkTest extends UnitaryTestCase
                 $passData['key'],
                 $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY)
             )
-            ->willReturn(self::$faker->password);
+            ->willReturn(self::$faker->password());
 
         $actual = $this->publicLink->refresh($id);
 
@@ -397,7 +397,7 @@ class PublicLinkTest extends UnitaryTestCase
      */
     public function testGetPublicLinkKey()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
 
         $actual = $this->publicLink->getPublicLinkKey($hash);
 
@@ -472,9 +472,9 @@ class PublicLinkTest extends UnitaryTestCase
 
     public function testGetUseInfo()
     {
-        $hash = self::$faker->sha1;
-        $who = self::$faker->ipv4;
-        $userAgent = self::$faker->userAgent;
+        $hash = self::$faker->sha1();
+        $who = self::$faker->ipv4();
+        $userAgent = self::$faker->userAgent();
 
         $request = $this->createMock(RequestService::class);
 
@@ -533,7 +533,7 @@ class PublicLinkTest extends UnitaryTestCase
             )
             ->willReturn($result);
 
-        $passData = ['pass' => self::$faker->password, 'key' => self::$faker->sha1];
+        $passData = ['pass' => self::$faker->password(), 'key' => self::$faker->sha1()];
 
         $this->accountService
             ->expects(self::once())
@@ -549,7 +549,7 @@ class PublicLinkTest extends UnitaryTestCase
                 $passData['key'],
                 $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY)
             )
-            ->willReturn(self::$faker->password);
+            ->willReturn(self::$faker->password());
 
         $actual = $this->publicLink->create($publicLinkData);
 
@@ -570,16 +570,16 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLinkRepository = $this->createMock(PublicLinkRepository::class);
         $request = $this->createMock(RequestService::class);
         $request->method('getClientAddress')
-                ->willReturn(self::$faker->ipv4);
+                ->willReturn(self::$faker->ipv4());
         $request->method('getHeader')
-                ->willReturn(self::$faker->userAgent);
+                ->willReturn(self::$faker->userAgent());
         $request->method('isHttps')
-                ->willReturn(self::$faker->boolean);
+                ->willReturn(self::$faker->boolean());
 
         $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password);
+        $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password());
 
         $this->publicLink =
             new PublicLink(

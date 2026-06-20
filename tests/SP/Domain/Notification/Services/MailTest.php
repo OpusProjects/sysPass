@@ -56,8 +56,8 @@ class MailTest extends UnitaryTestCase
     public function testSend()
     {
         $message = new MailMessage();
-        $message->setTitle(self::$faker->colorName);
-        $message->setDescription([self::$faker->text]);
+        $message->setTitle(self::$faker->colorName());
+        $message->setDescription([self::$faker->text()]);
 
         $to = self::$faker->email();
 
@@ -95,8 +95,8 @@ class MailTest extends UnitaryTestCase
     public function testSendWithAddresses()
     {
         $message = new MailMessage();
-        $message->setTitle(self::$faker->colorName);
-        $message->setDescription([self::$faker->text]);
+        $message->setTitle(self::$faker->colorName());
+        $message->setDescription([self::$faker->text()]);
 
         $to = array_map(static fn() => self::$faker->email(), range(0, 4));
 
@@ -244,8 +244,8 @@ class MailTest extends UnitaryTestCase
     public function testSendWithException()
     {
         $message = new MailMessage();
-        $message->setTitle(self::$faker->colorName);
-        $message->setDescription([self::$faker->text]);
+        $message->setTitle(self::$faker->colorName());
+        $message->setDescription([self::$faker->text()]);
 
         $to = self::$faker->email();
 

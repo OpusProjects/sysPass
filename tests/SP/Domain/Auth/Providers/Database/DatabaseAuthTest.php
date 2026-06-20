@@ -50,8 +50,8 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticate()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
         $hashedPass = Hash::hashKey($pass);
 
         $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => $user, 'pass' => $hashedPass]);
@@ -71,8 +71,8 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithWrongLogin()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $this->userService
             ->expects(self::once())
@@ -89,8 +89,8 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithWrongPass()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => $user]);
 
@@ -109,8 +109,8 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithMigrationBySHA1()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $userData = UserDataGenerator::factory()
                                      ->buildUserData()
@@ -142,9 +142,9 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithMigrationByMD5()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
-        $salt = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
+        $salt = self::$faker->password();
 
         $userData = UserDataGenerator::factory()
                                      ->buildUserData()
@@ -177,9 +177,9 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithMigrationByCrypt()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
-        $salt = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
+        $salt = self::$faker->password();
 
         $userData = UserDataGenerator::factory()
                                      ->buildUserData()
@@ -212,8 +212,8 @@ class DatabaseAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithMigrationByHash()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
         $hashedPass = Hash::hashKey($pass);
 
         $userData = UserDataGenerator::factory()

@@ -76,7 +76,7 @@ class EventlogTest extends UnitaryTestCase
         $eventlog = new EventlogModel(
             [
                 'date' => time(),
-                'login' => self::$faker->userName,
+                'login' => self::$faker->userName(),
                 'userId' => self::$faker->randomNumber(3),
                 'ipAddress' => self::$faker->ipv4(),
                 'action' => self::$faker->colorName(),

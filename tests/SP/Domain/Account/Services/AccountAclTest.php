@@ -356,7 +356,7 @@ class AccountAclTest extends UnitaryTestCase
             self::$accounts[$accountId]['users'],
             self::$accounts[$accountId]['userGroupId'],
             self::$accounts[$accountId]['groups'],
-            self::$faker->unixTime
+            self::$faker->unixTime()
         );
     }
 
@@ -688,7 +688,7 @@ class AccountAclTest extends UnitaryTestCase
             [],
             self::$faker->randomNumber(),
             [],
-            self::$faker->unixTime
+            self::$faker->unixTime()
         );
 
         $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
@@ -738,7 +738,7 @@ class AccountAclTest extends UnitaryTestCase
             [],
             self::$faker->randomNumber(),
             [],
-            self::$faker->unixTime
+            self::$faker->unixTime()
         );
 
         $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
@@ -786,7 +786,7 @@ class AccountAclTest extends UnitaryTestCase
             [],
             self::$faker->randomNumber(),
             [],
-            self::$faker->unixTime
+            self::$faker->unixTime()
         );
 
         $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
@@ -823,7 +823,7 @@ class AccountAclTest extends UnitaryTestCase
             [],
             self::$faker->randomNumber(),
             [],
-            self::$faker->unixTime
+            self::$faker->unixTime()
         );
 
         $userToUserGroupService = $this->createMock(UserToUserGroupService::class);

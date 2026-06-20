@@ -24,21 +24,52 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Core\Context;
+namespace SP\Core\Context {
 
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
-use SP\Core\Context\SessionLifecycleHandler;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Tests\UnitaryTestCase;
+    /**
+     * Toggle that lets the test below force the shadowed headers_sent() override
+     * (declared right after this class) to report that headers have already been sent.
+     */
+    final class HeadersSentState
+    {
+        public static bool $override = false;
+    }
 
-/**
- * Class SessionUtilTest
- */
-#[Group('unitary')]
-#[RunClassInSeparateProcess]
-class SessionLifecycleHandlerTest extends UnitaryTestCase
-{
+    /**
+     * Shadows the global headers_sent() for code running in the SP\Core\Context
+     * namespace (i.e. SessionLifecycleHandler). PHP resolves unqualified function calls
+     * to the current namespace first, so SessionLifecycleHandler::start() picks this up.
+     * When the override flag is off it delegates to the real global function.
+     */
+    function headers_sent(&$filename = null, &$line = null): bool
+    {
+        if (HeadersSentState::$override) {
+            $filename = __FILE__;
+            $line = __LINE__;
+
+            return true;
+        }
+
+        return \headers_sent($filename, $line);
+    }
+}
+
+namespace SP\Tests\Core\Context {
+
+    use PHPUnit\Framework\Attributes\Group;
+    use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
+    use SP\Core\Context\HeadersSentState;
+    use SP\Core\Context\SessionLifecycleHandler;
+    use SP\Domain\Core\Exceptions\SPException;
+    use SP\Tests\UnitaryTestCase;
+
+    /**
+     * Class SessionUtilTest
+     */
+    #[Group('unitary')]
+    #[RunClassInSeparateProcess]
+    class SessionLifecycleHandlerTest extends UnitaryTestCase
+    {
 
     /**
      * @throws SPException
@@ -47,7 +78,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     {
         session_start();
 
-        $_SESSION['test'] = self::$faker->colorName;
+        $_SESSION['test'] = self::$faker->colorName();
 
         SessionLifecycleHandler::clean();
 
@@ -74,8 +105,13 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     {
         $this->assertEquals(PHP_SESSION_NONE, session_status());
 
-        echo "Test";
-        ob_flush();
+        // PHPUnit 13 wraps every test in an output buffer, so output never reaches the
+        // SAPI and the global headers_sent() stays false (a plain echo/ob_flush() no
+        // longer works). Instead we shadow headers_sent() in the production namespace
+        // (see the SP\Core\Context block at the top of this file) and force it to report
+        // that headers have already been sent, which is exactly the condition start()
+        // must guard against.
+        HeadersSentState::$override = true;
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('Session cannot be initialized');
@@ -141,7 +177,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
 
         session_start();
 
-        $_SESSION['test'] = self::$faker->colorName;
+        $_SESSION['test'] = self::$faker->colorName();
 
         SessionLifecycleHandler::restart();
 
@@ -158,7 +194,7 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
 
         session_start();
 
-        $_SESSION['test'] = self::$faker->colorName;
+        $_SESSION['test'] = self::$faker->colorName();
 
         SessionLifecycleHandler::clean();
 
@@ -180,8 +216,11 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     {
         parent::tearDown();
 
+        HeadersSentState::$override = false;
+
         if (session_status() === PHP_SESSION_ACTIVE) {
             session_destroy();
         }
+    }
     }
 }

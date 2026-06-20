@@ -43,7 +43,7 @@ class CryptTest extends UnitaryTestCase
      */
     public function testMakeSecuredKey()
     {
-        (new Crypt())->makeSecuredKey(self::$faker->password);
+        (new Crypt())->makeSecuredKey(self::$faker->password());
 
         $this->assertTrue(true);
     }
@@ -55,7 +55,7 @@ class CryptTest extends UnitaryTestCase
      */
     public function testMakeSecuredKeyNoAscii()
     {
-        (new Crypt())->makeSecuredKey(self::$faker->password, false);
+        (new Crypt())->makeSecuredKey(self::$faker->password(), false);
 
         $this->assertTrue(true);
     }
@@ -69,11 +69,11 @@ class CryptTest extends UnitaryTestCase
     {
         $crypt = new Crypt();
 
-        $password = self::$faker->password;
+        $password = self::$faker->password();
 
         $key = $crypt->makeSecuredKey($password);
 
-        $data = self::$faker->text;
+        $data = self::$faker->text();
 
         $out = $crypt->encrypt($data, $key, $password);
 
@@ -89,7 +89,7 @@ class CryptTest extends UnitaryTestCase
     {
         $crypt = new Crypt();
 
-        $password = self::$faker->password;
+        $password = self::$faker->password();
 
         $key = $crypt->makeSecuredKey($password);
 

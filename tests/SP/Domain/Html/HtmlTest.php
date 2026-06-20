@@ -52,7 +52,7 @@ class HtmlTest extends UnitaryTestCase
 
     public function testGetSafeUrlOk()
     {
-        $url = self::$faker->url;
+        $url = self::$faker->url();
 
         $this->assertEquals($url, Html::getSafeUrl($url));
     }

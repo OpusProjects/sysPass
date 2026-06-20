@@ -61,9 +61,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     {
         $request =
             new UpdateMasterPassRequest(
-                self::$faker->password,
-                self::$faker->password,
-                self::$faker->sha1
+                self::$faker->password(),
+                self::$faker->password(),
+                self::$faker->sha1()
             );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
@@ -87,9 +87,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     {
         $request =
             new UpdateMasterPassRequest(
-                self::$faker->password,
-                self::$faker->password,
-                self::$faker->sha1
+                self::$faker->password(),
+                self::$faker->password(),
+                self::$faker->sha1()
             );
 
         $this->account->expects(self::once())
@@ -112,7 +112,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      */
     public function testUpdateMasterPasswordDoesNotThrowException(): void
     {
-        $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->account->expects(self::once())
@@ -130,7 +130,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      */
     public function testUpdateMasterPasswordThrowException(): void
     {
-        $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
 
         $this->account->expects(self::once())
                       ->method('getAccountsPassData')
@@ -149,9 +149,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     public function testUpdateHistoryMasterPassword(): void
     {
         $request = new UpdateMasterPassRequest(
-            self::$faker->password,
-            self::$faker->password,
-            self::$faker->sha1
+            self::$faker->password(),
+            self::$faker->password(),
+            self::$faker->sha1()
         );
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
@@ -174,9 +174,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     {
         $request =
             new UpdateMasterPassRequest(
-                self::$faker->password,
-                self::$faker->password,
-                self::$faker->sha1
+                self::$faker->password(),
+                self::$faker->password(),
+                self::$faker->sha1()
             );
 
         $this->accountHistory->expects(self::once())
@@ -199,7 +199,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      */
     public function testUpdateHistoryMasterPasswordThrowException(): void
     {
-        $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
 
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')
@@ -216,7 +216,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
      */
     public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
     {
-        $request = new UpdateMasterPassRequest(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->accountHistory->expects(self::once())

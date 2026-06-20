@@ -63,8 +63,8 @@ class LdapActionsTest extends UnitaryTestCase
         $filter = 'test';
         $iterator = new ArrayIterator(range(0, 9));
 
-        $attributes = array_map(fn() => self::$faker->colorName, range(0, 9));
-        $searchBase = self::$faker->colorName;
+        $attributes = array_map(fn() => self::$faker->colorName(), range(0, 9));
+        $searchBase = self::$faker->colorName();
 
         $this->ldap->expects(self::once())
                    ->method('search')
@@ -191,7 +191,7 @@ class LdapActionsTest extends UnitaryTestCase
         $expected = [
             [],
             [
-                'dn' => self::$faker->name,
+                'dn' => self::$faker->name(),
             ],
         ];
         $filter = 'test';
@@ -260,7 +260,7 @@ class LdapActionsTest extends UnitaryTestCase
         $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $ldapParams =
-            new LdapParams(self::$faker->domainName, LdapTypeEnum::STD, self::$faker->userName, self::$faker->password);
+            new LdapParams(self::$faker->domainName(), LdapTypeEnum::STD, self::$faker->userName(), self::$faker->password());
 
         $this->ldapActions = new LdapActions($this->ldap, $this->eventDispatcher);
     }

@@ -229,7 +229,7 @@ class ConfigFileTest extends UnitaryTestCase
         $this->fileStorageService
             ->expects(self::once())
             ->method('save')
-            ->with(self::isType('array'), 'config');
+            ->with(self::isArray(), 'config');
 
         $this->fileCacheService
             ->expects(self::once())
@@ -391,7 +391,7 @@ class ConfigFileTest extends UnitaryTestCase
         $this->fileStorageService
             ->expects(self::exactly(2))
             ->method('save')
-            ->with(self::isType('array'), 'config');
+            ->with(self::isArray(), 'config');
 
         $this->fileCacheService
             ->expects(self::exactly(2))
@@ -441,7 +441,7 @@ class ConfigFileTest extends UnitaryTestCase
         $this->fileStorageService
             ->expects(self::exactly(1))
             ->method('save')
-            ->with(self::isType('array'), 'config');
+            ->with(self::isArray(), 'config');
 
         $this->fileCacheService
             ->expects(self::exactly(1))
@@ -489,7 +489,7 @@ class ConfigFileTest extends UnitaryTestCase
         $this->fileStorageService
             ->expects(self::exactly(2))
             ->method('save')
-            ->with(self::isType('array'), 'config');
+            ->with(self::isArray(), 'config');
 
         $this->fileCacheService
             ->expects(self::exactly(2))

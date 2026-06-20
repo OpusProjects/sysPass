@@ -73,7 +73,7 @@ class ThemeTest extends UnitaryTestCase
                 ->method('getUserData');
 
         $configData = $this->config->getConfigData();
-        $configData->setSiteTheme(self::$faker->colorName);
+        $configData->setSiteTheme(self::$faker->colorName());
 
         $current = Theme::getThemeName($this->config->getConfigData(), $context);
 
@@ -98,7 +98,7 @@ class ThemeTest extends UnitaryTestCase
             ->willReturn($userDto);
 
         $configData = $this->config->getConfigData();
-        $configData->setSiteTheme(self::$faker->colorName);
+        $configData->setSiteTheme(self::$faker->colorName());
 
         $current = Theme::getThemeName($this->config->getConfigData(), $context);
 

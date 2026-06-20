@@ -57,7 +57,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
      */
     public function testUpdateMasterPassword()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
 
@@ -92,7 +92,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
      */
     public function testUpdateMasterPasswordWithNoData()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
 
         $this->customFieldService
@@ -117,7 +117,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
      */
     public function testUpdateMasterPasswordWithTask()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
 
@@ -152,7 +152,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
      */
     public function testUpdateMasterPasswordWithCryptError()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
         $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
 
@@ -175,7 +175,7 @@ class CustomFieldCryptTest extends UnitaryTestCase
 
     public function testUpdateMasterPasswordWithError()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
 
         $this->customFieldService

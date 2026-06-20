@@ -100,7 +100,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -138,7 +138,7 @@ class AccountTest extends UnitaryTestCase
         $this->context->getUserProfile()->setAccPermission(false);
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -176,7 +176,7 @@ class AccountTest extends UnitaryTestCase
         $this->context->getUserProfile()->setAccPermission(false);
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -214,7 +214,7 @@ class AccountTest extends UnitaryTestCase
         $this->context->getUserProfile()->setAccPermission(true);
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -242,7 +242,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
-                                         'type' => self::$faker->colorName,
+                                         'type' => self::$faker->colorName(),
                                          'userId' => self::$faker->randomNumber(),
                                          'userGroupId' => self::$faker->randomNumber(),
                                          'userProfileId' => self::$faker->randomNumber(),
@@ -267,7 +267,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -320,7 +320,7 @@ class AccountTest extends UnitaryTestCase
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
-                                         'type' => self::$faker->colorName,
+                                         'type' => self::$faker->colorName(),
                                          'userId' => self::$faker->randomNumber(),
                                          'userGroupId' => self::$faker->randomNumber(),
                                          'userProfileId' => self::$faker->randomNumber(),
@@ -345,7 +345,7 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->configService->expects(self::once())->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountHistoryService->expects(self::once())->method('create');
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
@@ -461,7 +461,7 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $result = new QueryResult(null, 1);
 
@@ -481,7 +481,7 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $this->accountRepository->expects(self::once())->method('updatePassword')
                                 ->with($id, $encryptedPassword)
@@ -592,7 +592,7 @@ class AccountTest extends UnitaryTestCase
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))
                                   ->method('updateItems')
                                   ->with(
@@ -634,7 +634,7 @@ class AccountTest extends UnitaryTestCase
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
                                   ->with(
                                       ...
@@ -680,7 +680,7 @@ class AccountTest extends UnitaryTestCase
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
                                   ->with(
                                       ...
@@ -726,7 +726,7 @@ class AccountTest extends UnitaryTestCase
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
-                            ->with('masterPwd')->willReturn(self::$faker->password);
+                            ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
                                   ->with(
                                       ...self::withConsecutive(
@@ -763,7 +763,7 @@ class AccountTest extends UnitaryTestCase
     public function testDelete()
     {
         $id = self::$faker->randomNumber();
-        $password = self::$faker->password;
+        $password = self::$faker->password();
         $account = AccountDataGenerator::factory()->buildAccount();
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, false, true, $password);
 
@@ -793,7 +793,7 @@ class AccountTest extends UnitaryTestCase
     public function testDeleteNotFound()
     {
         $id = self::$faker->randomNumber();
-        $password = self::$faker->password;
+        $password = self::$faker->password();
         $account = AccountDataGenerator::factory()->buildAccount();
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, false, true, $password);
 
@@ -948,7 +948,7 @@ class AccountTest extends UnitaryTestCase
         $account = AccountDataGenerator::factory()->buildAccount();
         $accountUpdateDto = AccountUpdateDto::fromModel($account);
 
-        $password = self::$faker->password;
+        $password = self::$faker->password();
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn($password);
@@ -978,7 +978,7 @@ class AccountTest extends UnitaryTestCase
      */
     public function testRestoreModified()
     {
-        $password = self::$faker->password;
+        $password = self::$faker->password();
 
         $this->configService->expects(self::once())
                             ->method('getByParam')
@@ -1015,7 +1015,7 @@ class AccountTest extends UnitaryTestCase
      */
     public function testRestoreModifiedError()
     {
-        $password = self::$faker->password;
+        $password = self::$faker->password();
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn($password);
@@ -1102,7 +1102,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
             ->with($accountCreateDto->pass)
@@ -1152,7 +1152,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
             ->with($accountCreateDto->pass)
@@ -1185,7 +1185,7 @@ class AccountTest extends UnitaryTestCase
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
-                                         'type' => self::$faker->colorName,
+                                         'type' => self::$faker->colorName(),
                                          'userId' => self::$faker->randomNumber(),
                                          'userGroupId' => self::$faker->randomNumber(),
                                          'userProfileId' => self::$faker->randomNumber(),
@@ -1210,7 +1210,7 @@ class AccountTest extends UnitaryTestCase
         );
 
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
             ->with($accountCreateDto->pass)
@@ -1253,7 +1253,7 @@ class AccountTest extends UnitaryTestCase
         $accountCreateDto = $accountDataGenerator->buildAccountCreateDto();
         $itemPreset = new ItemPreset([
                                          'id' => self::$faker->randomNumber(),
-                                         'type' => self::$faker->colorName,
+                                         'type' => self::$faker->colorName(),
                                          'userId' => self::$faker->randomNumber(),
                                          'userGroupId' => self::$faker->randomNumber(),
                                          'userProfileId' => self::$faker->randomNumber(),
@@ -1276,7 +1276,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
             ->with($accountCreateDto->pass)

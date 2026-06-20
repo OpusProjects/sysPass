@@ -81,8 +81,8 @@ class CsrfTest extends UnitaryTestCase
 
     private function checkGetKey(): string
     {
-        $salt = self::$faker->sha1;
-        $userAgent = self::$faker->userAgent;
+        $salt = self::$faker->sha1();
+        $userAgent = self::$faker->userAgent();
 
         $this->requestInterface
             ->expects(self::once())
@@ -90,7 +90,7 @@ class CsrfTest extends UnitaryTestCase
             ->with('User-Agent')
             ->willReturn($userAgent);
 
-        $ipv4 = self::$faker->ipv4;
+        $ipv4 = self::$faker->ipv4();
 
         $this->requestInterface
             ->expects(self::once())
@@ -111,9 +111,9 @@ class CsrfTest extends UnitaryTestCase
     #[DataProvider('httpMethodDataProvider')]
     public function testCheckWithValidToken(Method $method, string $header)
     {
-        $salt = self::$faker->sha1;
-        $userAgent = self::$faker->userAgent;
-        $ipv4 = self::$faker->ipv4;
+        $salt = self::$faker->sha1();
+        $userAgent = self::$faker->userAgent();
+        $ipv4 = self::$faker->ipv4();
         $key = Hash::signMessage(sha1($userAgent . $ipv4), $salt);
 
         $this->requestInterface
@@ -145,7 +145,7 @@ class CsrfTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getCSRF')
-            ->willReturn(self::$faker->sha1);
+            ->willReturn(self::$faker->sha1());
 
         self::assertTrue($this->csrf->check());
     }
@@ -166,17 +166,17 @@ class CsrfTest extends UnitaryTestCase
             ->expects(self::exactly(3))
             ->method('getHeader')
             ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF'], ['User-Agent']))
-            ->willReturn($header, self::$faker->sha1, self::$faker->userAgent);
+            ->willReturn($header, self::$faker->sha1(), self::$faker->userAgent());
 
         $this->requestInterface
             ->expects(self::once())
             ->method('getClientAddress')
-            ->willReturn(self::$faker->ipv4);
+            ->willReturn(self::$faker->ipv4());
 
         $this->configData
             ->expects(self::once())
             ->method('getPasswordSalt')
-            ->willReturn(self::$faker->sha1);
+            ->willReturn(self::$faker->sha1());
 
         $this->sessionContext
             ->expects(self::once())
@@ -186,7 +186,7 @@ class CsrfTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getCSRF')
-            ->willReturn(self::$faker->sha1);
+            ->willReturn(self::$faker->sha1());
 
         self::assertFalse($this->csrf->check());
     }
@@ -216,7 +216,7 @@ class CsrfTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getCSRF')
-            ->willReturn(self::$faker->sha1);
+            ->willReturn(self::$faker->sha1());
 
         self::assertFalse($this->csrf->check());
     }

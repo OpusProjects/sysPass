@@ -57,8 +57,6 @@ use SP\Tests\Generators\UserProfileDataGenerator;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
 
-use function PHPUnit\Framework\onConsecutiveCalls;
-
 /**
  * Class ApiServiceTest
  *
@@ -85,7 +83,7 @@ class ApiTest extends UnitaryTestCase
             [$number, $number, true, true],
             [$number, $number, true, false],
             [(string)$number, $number, false, true],
-            [$faker->colorName, null, false, true],
+            [$faker->colorName(), null, false, true],
             [null, $faker->randomNumber(), false, true],
         ];
     }
@@ -93,7 +91,7 @@ class ApiTest extends UnitaryTestCase
     public static function getParamStringDataProvider(): array
     {
         $faker = Factory::create();
-        $string = $faker->colorName;
+        $string = $faker->colorName();
 
         // mixed $value, mixed $expected, bool $required, bool $present
         return [
@@ -101,14 +99,14 @@ class ApiTest extends UnitaryTestCase
             [$string, $string, true, true],
             [$string, $string, true, false],
             [null, null, false, true],
-            [null, $faker->colorName, false, true],
+            [null, $faker->colorName(), false, true],
         ];
     }
 
     public static function getParamDataProvider(): array
     {
         $faker = Factory::create();
-        $string = $faker->colorName;
+        $string = $faker->colorName();
 
         // mixed $value, mixed $expected, bool $required, bool $present
         return [
@@ -123,7 +121,7 @@ class ApiTest extends UnitaryTestCase
     {
         $faker = Factory::create();
         $numbers = array_map(fn() => $faker->randomNumber(), range(0, 4));
-        $strings = array_map(fn() => $faker->colorName, range(0, 4));
+        $strings = array_map(fn() => $faker->colorName(), range(0, 4));
 
         // mixed $value, mixed $expected, bool $required, bool $present
         return [
@@ -142,7 +140,7 @@ class ApiTest extends UnitaryTestCase
     public static function getParamRawDataProvider(): array
     {
         $faker = Factory::create();
-        $password = $faker->password;
+        $password = $faker->password();
 
         // mixed $value, mixed $expected, bool $required, bool $present
         return [
@@ -173,7 +171,7 @@ class ApiTest extends UnitaryTestCase
         bool  $required,
         bool  $present
     ): void {
-        $param = self::$faker->colorName;
+        $param = self::$faker->colorName();
 
         if ($required) {
             $this->apiRequest->expects(self::once())->method('exists')->with($param)->willReturn($present);
@@ -216,7 +214,7 @@ class ApiTest extends UnitaryTestCase
         $apiService->setHelpClass(AccountHelp::class);
 
         try {
-            $apiService->getParam(self::$faker->colorName, true);
+            $apiService->getParam(self::$faker->colorName(), true);
         } catch (ServiceException $e) {
             $this->assertNotEmpty($e->getHint());
         }
@@ -267,7 +265,7 @@ class ApiTest extends UnitaryTestCase
             ->with($this->trackRequest)
             ->willReturn(false);
 
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
 
         $this->apiRequest->expects(self::once())->method('get')->with('authToken')->willReturn($authToken);
 
@@ -309,7 +307,7 @@ class ApiTest extends UnitaryTestCase
 
         $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());
         $this->trackService->method('buildTrackRequest')->willReturn($this->trackRequest);
-        $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName);
+        $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName());
 
         $this->apiService = new Api(
             $this->application,
@@ -405,7 +403,7 @@ class ApiTest extends UnitaryTestCase
             ->with($this->trackRequest)
             ->willReturn(false);
 
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
 
         $this->apiRequest->expects(self::once())->method('get')->with('authToken')->willReturn($authToken);
 
@@ -441,16 +439,16 @@ class ApiTest extends UnitaryTestCase
             ->with($this->trackRequest)
             ->willReturn(false);
 
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 
         $this->apiRequest->expects(self::exactly(3))
                          ->method('get')
-                         ->will(onConsecutiveCalls($authToken, $authToken, $authToken));
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
 
         $vaultKey = sha1($authToken . $authToken);
 
-        $vault = Vault::factory(new Crypt())->saveData(self::$faker->password, $vaultKey);
+        $vault = Vault::factory(new Crypt())->saveData(self::$faker->password(), $vaultKey);
 
         $userId = self::$faker->randomNumber();
 
@@ -494,14 +492,14 @@ class ApiTest extends UnitaryTestCase
             ->with($this->trackRequest)
             ->willReturn(false);
 
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 
         $this->apiRequest->expects(self::exactly(3))
                          ->method('get')
-                         ->will(onConsecutiveCalls($authToken, $authToken, $authToken));
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
 
-        $vault = Vault::factory(new Crypt())->saveData(self::$faker->password, sha1(self::$faker->password));
+        $vault = Vault::factory(new Crypt())->saveData(self::$faker->password(), sha1(self::$faker->password()));
 
         $userId = self::$faker->randomNumber();
 
@@ -564,7 +562,7 @@ class ApiTest extends UnitaryTestCase
     public function testRequireMasterPass()
     {
         $actionId = self::$faker->randomNumber(4);
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 
         $this->apiRequest->expects(self::exactly(3))
@@ -573,7 +571,7 @@ class ApiTest extends UnitaryTestCase
 
         $vaultKey = sha1($authToken . $authToken);
 
-        $masterPass = self::$faker->password;
+        $masterPass = self::$faker->password();
 
         $vault = Vault::factory(new Crypt())->saveData($masterPass, $vaultKey);
 
@@ -627,7 +625,7 @@ class ApiTest extends UnitaryTestCase
     public function testGetMasterPass()
     {
         $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
-        $authToken = self::$faker->password;
+        $authToken = self::$faker->password();
         $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
 
         $this->apiRequest->expects(self::exactly(3))
@@ -636,7 +634,7 @@ class ApiTest extends UnitaryTestCase
 
         $vaultKey = sha1($authToken . $authToken);
 
-        $masterPass = self::$faker->password;
+        $masterPass = self::$faker->password();
 
         $vault = Vault::factory(new Crypt())->saveData($masterPass, $vaultKey);
 

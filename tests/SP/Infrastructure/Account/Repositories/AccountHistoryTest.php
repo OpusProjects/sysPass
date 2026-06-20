@@ -140,7 +140,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testUpdatePassword(): void
     {
         $id = self::$faker->randomNumber();
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id, $encryptedPassword) {
@@ -164,7 +164,7 @@ class AccountHistoryTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -283,7 +283,7 @@ class AccountHistoryTest extends UnitaryTestCase
             AccountDataGenerator::factory()->buildAccount(),
             self::$faker->boolean(),
             self::$faker->boolean(),
-            self::$faker->sha1,
+            self::$faker->sha1(),
         );
     }
 

@@ -99,7 +99,7 @@ class MimeTypesTest extends UnitaryTestCase
         $mimeTypes = array_map(
             static fn() => [
                 'type' => self::$faker->mimeType(),
-                'description' => self::$faker->text,
+                'description' => self::$faker->text(),
                 'extension' => self::$faker->fileExtension()
             ],
             range(0, 9)
@@ -254,7 +254,7 @@ class MimeTypesTest extends UnitaryTestCase
         parent::setUp();
 
         $mimeTypes = array_map(
-            static fn() => new MimeType(self::$faker->mimeType(), self::$faker->text, self::$faker->fileExtension()),
+            static fn() => new MimeType(self::$faker->mimeType(), self::$faker->text(), self::$faker->fileExtension()),
             range(0, 9)
         );
         $this->fileCache = $this->createMock(FileCacheService::class);
