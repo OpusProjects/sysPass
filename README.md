@@ -1,6 +1,6 @@
 # 🔐 sysPass — Systems Password Manager
 
-> 🛠️ **This is a maintenance fork.** This repository is a continuation of the original
+> 🛠️ **This is a fork.** This repository is a continuation of the original
 > [sysPass](https://github.com/nuxsmin/sysPass) by **Rubén Domínguez ([@nuxsmin](https://github.com/nuxsmin))**,
 > picked up by [OpusProjects](https://github.com/OpusProjects) after the
 > original project was discontinued by its author. All original work, copyright, and the
@@ -23,7 +23,7 @@ PHP web-based password manager for business and personal use.
 
 ## 📜 Original project status
 
-The original sysPass was created in 2010 and maintained by **Rubén Domínguez (@nuxsmin)**.
+The original sysPass was created in 2010 and maintained by **Rubén Domínguez ([@nuxsmin](https://github.com/nuxsmin))**.
 
 Its last release, **[3.2.11](https://github.com/nuxsmin/sysPass/releases/tag/3.2.11)**, shipped on **2 July 2022**, then went dormant.
 
@@ -35,18 +35,18 @@ In his own words ([nuxsmin/sysPass#1954, 2026-05-05](https://github.com/nuxsmin/
 > its development or look for another one. I know it could be disappointing, but the reality is
 > that I don't have the time to continue evolving it with the required quality standards."_
 
-This fork exists to keep sysPass alive. It started **20 June 2026** from the last upstream release
+This fork exists to keep sysPass alive. It started on **20 June 2026** from the last upstream release
 (**3.2.11**) as a baseline.
 
 ---
 
 ## 📜 Current project status
 
-This fork carries [@nuxsmin](https://github.com/nuxsmin)'s planned [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring) forward to keep evolving the project.
+This fork carries **[@nuxsmin](https://github.com/nuxsmin)**'s planned [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring) forward to keep evolving the project.
 
 Current stack:
 
-- **PHP 8.4–8.5** — language runtime
+- **PHP 8.4 – 8.5** — language runtime
 - **Symfony 8** — HTTP, routing & console components
 - **Hexagonal architecture** — ports & adapters
 - **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
