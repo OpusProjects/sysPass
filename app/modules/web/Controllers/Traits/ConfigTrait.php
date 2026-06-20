@@ -48,7 +48,7 @@ trait ConfigTrait
     protected function saveConfig(
         ConfigDataInterface $configData,
         ConfigFileService $config,
-        callable          $onSuccess = null
+        ?callable          $onSuccess = null
     ): ActionResponse {
         try {
             if ($configData->isDemoEnabled()) {
