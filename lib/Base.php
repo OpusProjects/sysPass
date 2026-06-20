@@ -64,8 +64,12 @@ try {
 
     return $containerBuilder
         ->addDefinitions(
-            CoreDefinitions::getDefinitions(APP_ROOT, APP_MODULE),
+            // Generic Domain Ports->Services wildcard auto-wiring must come first so the
+            // explicit, specially-constructed entries in CoreDefinitions (e.g. ConfigFileService)
+            // override the wildcard fallback. php-di gives later definition sources precedence,
+            // so Core after Domain. This mirrors the ordering the integration suite builds with.
             DomainDefinitions::getDefinitions(),
+            CoreDefinitions::getDefinitions(APP_ROOT, APP_MODULE),
             $moduleDefinitions
         )
         ->build();
