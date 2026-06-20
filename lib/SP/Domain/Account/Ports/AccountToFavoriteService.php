@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 interface AccountToFavoriteService
 {
     /**
-     * Obtener un array con los Ids de cuentas favoritas
+     * Get an array with the IDs of favorite accounts
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -44,7 +44,7 @@ interface AccountToFavoriteService
     public function getForUserId(int $id): array;
 
     /**
-     * Añadir una cuenta a la lista de favoritos
+     * Add an account to the list of favorites
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -52,7 +52,7 @@ interface AccountToFavoriteService
     public function add(int $accountId, int $userId): int;
 
     /**
-     * Eliminar una cuenta de la lista de favoritos
+     * Remove an account from the list of favorites
      *
      * @throws ConstraintException
      * @throws QueryException

@@ -34,7 +34,7 @@ use SP\Domain\Http\Ports\RequestService;
 final class Http
 {
     /**
-     * Comprobar y forzar (si es necesario) la conexión HTTPS
+     * Check and force (if necessary) the HTTPS connection
      */
     public static function checkHttps(ConfigDataInterface $configData, RequestService $request): void
     {

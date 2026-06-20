@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountSearchRepository extends Repository
 {
     /**
-     * Obtener las cuentas de una búsqueda.
+     * Get the accounts matching a search.
      *
      * @template T of AccountSearchViewModel
      * @param AccountSearchFilterDto $accountSearchFilter

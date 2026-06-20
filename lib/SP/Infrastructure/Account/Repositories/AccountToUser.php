@@ -45,9 +45,9 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
     use RepositoryItemTrait;
 
     /**
-     * Eliminar la asociación de grupos con cuentas.
+     * Remove the association between groups and accounts.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      * @param bool $isEdit
      *
      * @return void
@@ -72,7 +72,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
     }
 
     /**
-     * Crear asociación de usuarios con cuentas.
+     * Create the association between users and accounts.
      *
      * @param int $accountId
      * @param array $items
@@ -103,9 +103,9 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
     }
 
     /**
-     * Eliminar la asociación de grupos con cuentas.
+     * Remove the association between groups and accounts.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      *
      * @return bool
      * @throws ConstraintException
@@ -127,9 +127,9 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
     }
 
     /**
-     * Obtiene el listado de usuarios de una cuenta.
+     * Get the list of users for an account.
      *
-     * @param int $id con el id de la cuenta
+     * @param int $id the account ID
      *
      * @return QueryResult
      * @throws ConstraintException

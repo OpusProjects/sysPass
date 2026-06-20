@@ -39,7 +39,7 @@ defined('APP_ROOT') || die();
 /**
  * Class AuthProvider
  *
- * Esta clase es la encargada de realizar la autentificación de usuarios de sysPass.
+ * This class is responsible for performing sysPass user authentication.
  */
 final class AuthProvider extends Provider implements AuthProviderService
 {

@@ -42,7 +42,7 @@ final class ConfigUtil
 {
 
     /**
-     * Adaptador para convertir una cadena de direcciones de email a un array
+     * Adapter to convert a string of email addresses into an array
      */
     public static function mailAddressesAdapter(string $mailAddresses): array
     {
@@ -57,7 +57,7 @@ final class ConfigUtil
     }
 
     /**
-     * Adaptador para convertir una cadena de eventos a un array
+     * Adapter to convert a string of events into an array
      */
     public static function eventsAdapter(array $events): array
     {
@@ -68,8 +68,8 @@ final class ConfigUtil
     }
 
     /**
-     * Comprobar el archivo de configuración.
-     * Esta función comprueba que el archivo de configuración exista y los permisos sean correctos.
+     * Check the configuration file.
+     * This function checks that the configuration file exists and that the permissions are correct.
      *
      * @throws ConfigException
      */

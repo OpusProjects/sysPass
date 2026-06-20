@@ -35,16 +35,16 @@ use SP\Domain\Core\Crypt\VaultInterface;
 interface SessionContext extends Context
 {
     /**
-     * Devuelve el tema visual utilizado en sysPass
+     * Return the visual theme used in sysPass
      *
      * @return string
      */
     public function getTheme(): string;
 
     /**
-     * Establece el tema visual utilizado en sysPass
+     * Set the visual theme used in sysPass
      *
-     * @param $theme string El tema visual a utilizar
+     * @param $theme string The visual theme to use
      */
     public function setTheme(string $theme);
 
@@ -61,80 +61,80 @@ interface SessionContext extends Context
     public function resetAccountAcl();
 
     /**
-     * Establecer si el usuario está completamente autorizado
+     * Set whether the user is fully authorized
      */
     public function setAuthCompleted(bool $bool): void;
 
     /**
-     * Devolver si el usuario está completamente logeado
+     * Return whether the user is fully logged in
      */
     public function getAuthCompleted();
 
     /**
-     * Devolver la clave maestra temporal
+     * Return the temporary master password
      *
      * @return ?string
      */
     public function getTemporaryMasterPass(): ?string;
 
     /**
-     * Devolver la clave pública
+     * Return the public key
      *
      * @return string|null
      */
     public function getPublicKey(): ?string;
 
     /**
-     * Establecer la clave pública
+     * Set the public key
      */
     public function setPublicKey(string $key): void;
 
     /**
-     * Devuelve el timeout de la sesión
+     * Return the session timeout
      *
-     * @return int|null El valor en segundos
+     * @return int|null The value in seconds
      */
     public function getSessionTimeout(): ?int;
 
     /**
-     * Establecer el timeout de la sesión
+     * Set the session timeout
      *
-     * @param int $timeout El valor en segundos
+     * @param int $timeout The value in seconds
      *
      * @return int
      */
     public function setSessionTimeout(int $timeout): int;
 
     /**
-     * Devuelve la hora de la última actividad
+     * Return the time of the last activity
      *
      * @return int
      */
     public function getLastActivity(): int;
 
     /**
-     * Establece la hora de la última actividad
+     * Set the time of the last activity
      *
-     * @param $time int La marca de hora
+     * @param $time int The timestamp
      */
     public function setLastActivity(int $time): void;
 
     /**
-     * Devuelve la hora de inicio de actividad.
+     * Return the activity start time.
      *
      * @return int
      */
     public function getStartActivity(): int;
 
     /**
-     * Devolver el color asociado a una cuenta
+     * Return the color associated with an account
      *
      * @return string
      */
     public function getAccountColor(): string;
 
     /**
-     * Establece el color asociado a una cuenta
+     * Set the color associated with an account
      *
      * @param array $color
      */
@@ -155,39 +155,39 @@ interface SessionContext extends Context
     public function setCSRF(string $csrf): void;
 
     /**
-     * Devuelve la clave maestra encriptada
+     * Return the encrypted master password
      *
      * @return VaultInterface|null
      */
     public function getVault(): ?VaultInterface;
 
     /**
-     * Establecer la clave maestra encriptada
+     * Set the encrypted master password
      *
      * @param VaultInterface $vault
      */
     public function setVault(VaultInterface $vault): void;
 
     /**
-     * Devuelve la hora en la que el SID de sesión fue creado
+     * Return the time at which the session SID was created
      *
      * @return int
      */
     public function getSidStartTime(): int;
 
     /**
-     * Establece la hora de creación del SID
+     * Set the SID creation time
      *
-     * @param $time int La marca de hora
+     * @param $time int The timestamp
      *
      * @return int
      */
     public function setSidStartTime(int $time): int;
 
     /**
-     * Establece la hora de inicio de actividad
+     * Set the activity start time
      *
-     * @param $time int La marca de hora
+     * @param $time int The timestamp
      *
      * @return int
      */

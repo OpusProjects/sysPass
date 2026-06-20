@@ -74,11 +74,11 @@ final class AccountHistory extends Service implements AccountHistoryService
     }
 
     /**
-     * Obtiene el listado del histórico de una cuenta.
+     * Returns the history list for an account.
      *
      * @param int $id
      *
-     * @return array Con los registros con id como clave y fecha - usuario como valor
+     * @return array With the records keyed by id and date - user as the value
      */
     public function getHistoryForAccount(int $id): array
     {
@@ -96,7 +96,7 @@ final class AccountHistory extends Service implements AccountHistoryService
     }
 
     /**
-     * Crea una nueva cuenta en la BBDD
+     * Creates a new account in the database
      *
      * @param AccountHistoryCreateDto $dto
      *
@@ -117,7 +117,7 @@ final class AccountHistory extends Service implements AccountHistoryService
     }
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes an account's data from the database.
      *
      * @param int $id
      *

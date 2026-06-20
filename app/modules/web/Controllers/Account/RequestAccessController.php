@@ -58,7 +58,7 @@ final class RequestAccessController extends ControllerBase
     }
 
     /**
-     * Obtener los datos para mostrar el interface de solicitud de cambios en una cuenta
+     * Get the data needed to display the interface for requesting changes to an account
      *
      * @param int $id Account's ID
      * @return ActionResponse

@@ -50,7 +50,7 @@ final class Import extends Service implements ImportService
 
 
     /**
-     * Iniciar la importación de cuentas.
+     * Start the import of accounts.
      *
      * @param ImportParamsDto $importParams
      * @return ItemsImportService

@@ -31,13 +31,13 @@ namespace SP\Domain\Html;
 final class Html
 {
     /**
-     * Truncar un texto a una determinada longitud.
+     * Truncate a text to a given length.
      *
-     * @param string $text la cadena a truncar
-     * @param int $limit la longitud máxima de la cadena
+     * @param string $text the string to truncate
+     * @param int $limit the maximum length of the string
      * @param string $ellipsis
      *
-     * @return string con el texto truncado
+     * @return string with the truncated text
      *
      * @link http://www.pjgalbraith.com/truncating-text-html-with-php/
      */
@@ -54,12 +54,12 @@ final class Html
     }
 
     /**
-     * Devolver un link HTML.
+     * Return an HTML link.
      *
-     * @param string $text con la cadena de texto
-     * @param string|null $link con el destino del enlace
-     * @param string|null $title con el título del enlace
-     * @param string $attribs con atributos del enlace
+     * @param string $text with the text string
+     * @param string|null $link with the link destination
+     * @param string|null $title with the link title
+     * @param string $attribs with the link attributes
      *
      * @return string
      */

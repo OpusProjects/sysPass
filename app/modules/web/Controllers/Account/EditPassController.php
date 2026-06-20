@@ -48,7 +48,7 @@ use function SP\__;
 final class EditPassController extends AccountViewBase
 {
     /**
-     * Obtener los datos para mostrar el interface para modificar la clave de cuenta
+     * Get the data needed to display the interface for changing an account's password
      *
      * @param int $id Account's ID
      * @return ActionResponse

@@ -63,7 +63,7 @@ abstract class GridBase extends HelperBase implements GridInterface
 
 
     /**
-     * Actualizar los datos del paginador
+     * Update the pager data
      *
      * @param DataGridInterface $dataGrid
      * @param ItemSearchDto $itemSearchData
@@ -85,7 +85,7 @@ abstract class GridBase extends HelperBase implements GridInterface
     }
 
     /**
-     * Devolver el paginador por defecto
+     * Return the default pager
      *
      * @param DataGridActionSearch $sourceAction
      *

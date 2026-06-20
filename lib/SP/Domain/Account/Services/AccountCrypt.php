@@ -49,7 +49,7 @@ final class AccountCrypt extends Service implements AccountCryptService
     }
 
     /**
-     * Devolver los datos de la clave encriptados
+     * Returns the encrypted password data
      *
      * @throws ServiceException
      */

@@ -59,7 +59,7 @@ interface UserPassRecoverService
     public function add(int $userId, string $hash): void;
 
     /**
-     * Comprobar el hash de recuperación de clave.
+     * Check the password recovery hash.
      *
      * @throws ServiceException
      * @throws ConstraintException

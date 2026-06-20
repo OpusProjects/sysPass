@@ -74,7 +74,7 @@ interface UserPassRecoverRepository
     public function toggleUsedByHash(string $hash, int $time): int;
 
     /**
-     * Comprobar el hash de recuperación de clave.
+     * Check the password recovery hash.
      *
      * @param string $hash
      * @param int $time

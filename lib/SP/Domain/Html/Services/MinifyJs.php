@@ -58,9 +58,9 @@ final class MinifyJs extends Minify
     }
 
     /**
-     * Comprimir código javascript.
+     * Compress javascript code.
      *
-     * @param string $buffer código a comprimir
+     * @param string $buffer code to compress
      *
      * @return string
      */

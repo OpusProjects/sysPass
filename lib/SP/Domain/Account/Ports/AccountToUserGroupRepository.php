@@ -38,9 +38,9 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountToUserGroupRepository extends Repository
 {
     /**
-     * Obtiene el listado con el nombre de los grupos de una cuenta.
+     * Get the list with the names of the groups of an account.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -49,7 +49,7 @@ interface AccountToUserGroupRepository extends Repository
     public function getUserGroupsByAccountId(int $id): QueryResult;
 
     /**
-     * Obtiene el listado con el nombre de los grupos de una cuenta.
+     * Get the list with the names of the groups of an account.
      *
      * @param int $id
      *

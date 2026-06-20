@@ -70,7 +70,7 @@ final class AccountAcl extends Service implements AccountAclService
     }
 
     /**
-     * Obtener la ACL de una cuenta
+     * Get the ACL for an account
      *
      * @param int $actionId
      * @param AccountAclDto $accountAclDto
@@ -178,7 +178,7 @@ final class AccountAcl extends Service implements AccountAclService
     }
 
     /**
-     * Crear la ACL de una cuenta
+     * Create the ACL for an account
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -281,7 +281,7 @@ final class AccountAcl extends Service implements AccountAclService
     }
 
     /**
-     * Comprobar si los grupos del usuario está vinculado desde el grupo principal de la cuenta
+     * Check whether the user's groups are linked through the account's main group
      *
      * @param array $userGroups
      *
@@ -289,13 +289,13 @@ final class AccountAcl extends Service implements AccountAclService
      */
     private function getUserGroupsInMainGroup(array $userGroups): bool
     {
-        // Comprobar si el usuario está vinculado desde el grupo principal de la cuenta
+        // Check whether the user is linked through the account's main group
         return in_array($this->accountAclDto->getUserGroupId(), $userGroups, true);
     }
 
     /**
-     * Comprobar si el usuario o el grupo del usuario se encuentran los grupos asociados a la
-     * cuenta.
+     * Check whether the user or the user's group is among the groups associated with the
+     * account.
      *
      * @param array $userGroups
      * @param int $userGroupId
@@ -306,15 +306,15 @@ final class AccountAcl extends Service implements AccountAclService
     {
         $isAccountFullGroupAccess = $this->config->getConfigData()->isAccountFullGroupAccess();
 
-        // Comprobar si el grupo del usuario está vinculado desde los grupos secundarios de la cuenta
+        // Check whether the user's group is linked through the account's secondary groups
         return array_values(
             array_filter(
                 $this->accountAclDto->getUserGroupsId(),
                 static function ($value) use ($userGroupId, $isAccountFullGroupAccess, $userGroups) {
                     return (int)$value->getId() === $userGroupId
-                           // o... permitir los grupos que no sean el principal del usuario?
+                           // or... allow groups other than the user's main group?
                            || ($isAccountFullGroupAccess
-                               // Comprobar si el usuario está vinculado desde los grupos secundarios de la cuenta
+                               // Check whether the user is linked through the account's secondary groups
                                && in_array((int)$value->getId(), $userGroups, true));
                 }
             )
@@ -326,36 +326,36 @@ final class AccountAcl extends Service implements AccountAclService
      */
     private function compileShowAccess(): void
     {
-        // Mostrar historial
+        // Show history
         $this->accountPermission->setShowHistory(
             $this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_HISTORY_VIEW)
         );
 
-        // Mostrar lista archivos
+        // Show file list
         $this->accountPermission->setShowFiles($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE));
 
-        // Mostrar acción de ver clave
+        // Show the view-password action
         $this->accountPermission->setShowViewPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW_PASS));
 
-        // Mostrar acción de editar
+        // Show the edit action
         $this->accountPermission->setShowEdit($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
 
-        // Mostrar acción de editar clave
+        // Show the edit-password action
         $this->accountPermission->setShowEditPass($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT_PASS));
 
-        // Mostrar acción de eliminar
+        // Show the delete action
         $this->accountPermission->setShowDelete($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_DELETE));
 
-        // Mostrar acción de restaurar
+        // Show the restore action
         $this->accountPermission->setShowRestore($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_EDIT));
 
-        // Mostrar acción de enlace público
+        // Show the public link action
         $this->accountPermission->setShowLink($this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE));
 
-        // Mostrar acción de ver cuenta
+        // Show the view-account action
         $this->accountPermission->setShowView($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW));
 
-        // Mostrar acción de copiar cuenta
+        // Show the copy-account action
         $this->accountPermission->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
     }
 

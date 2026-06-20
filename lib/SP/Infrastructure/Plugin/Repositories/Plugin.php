@@ -94,7 +94,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Devolver los plugins activados
+     * Returns the enabled plugins
      *
      * @return QueryResult<T>
      * @throws ConstraintException
@@ -259,7 +259,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @param string $name
      *
@@ -282,7 +282,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Changes the plugin's status
      *
      * @param int $id
      * @param bool $enabled
@@ -306,7 +306,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Changes the plugin's status
      *
      * @param string $name
      * @param bool $enabled
@@ -330,7 +330,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Changes the plugin's status
      *
      * @param int $id
      * @param bool $available
@@ -354,7 +354,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Changes the plugin's status
      *
      * @param string $name
      * @param bool $available
@@ -378,9 +378,9 @@ final class Plugin extends BaseRepository implements PluginRepository
     }
 
     /**
-     * Restablecer los datos de un plugin
+     * Resets a plugin's data
      *
-     * @param int $id Id del plugin
+     * @param int $id The plugin id
      *
      * @return int
      * @throws ConstraintException

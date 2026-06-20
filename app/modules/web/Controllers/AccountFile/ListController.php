@@ -42,7 +42,7 @@ use function SP\__;
 final class ListController extends AccountFileBase
 {
     /**
-     * Obtener los datos para la vista de archivos de una cuenta
+     * Get the data for the account files view
      *
      * @param int $accountId Account's ID
      * @return ActionResponse

@@ -33,7 +33,7 @@ use SP\Domain\Account\Dtos\AccountCacheDto;
 interface AccountCacheService
 {
     /**
-     * Devolver los accesos desde la caché
+     * Return the accesses from the cache
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto;
 }

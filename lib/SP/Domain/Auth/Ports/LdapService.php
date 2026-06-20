@@ -34,7 +34,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapException;
 interface LdapService
 {
     /**
-     * Obtener el filtro para buscar el usuario
+     * Get the filter to search for the user
      *
      * @param string $userLogin
      *
@@ -59,7 +59,7 @@ interface LdapService
     public function getGroupMembershipDirectFilter(?string $userDn = null): string;
 
     /**
-     * Buscar al usuario en un grupo.
+     * Search for the user in a group.
      *
      * @param string $userDn
      * @param string $userLogin
@@ -70,7 +70,7 @@ interface LdapService
     public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool;
 
     /**
-     * Devolver el filtro para objetos del tipo grupo
+     * Return the filter for objects of the group type
      *
      * @return string
      */

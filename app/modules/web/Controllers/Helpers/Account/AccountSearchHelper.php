@@ -63,7 +63,7 @@ use function SP\getElapsedTime;
 final class AccountSearchHelper extends HelperBase
 {
     /**
-     * @var bool Indica si el filtrado de cuentas está activo
+     * @var bool Indicates whether account filtering is active
      */
     private bool $filterOn = false;
     private bool $isAjax   = false;
@@ -93,7 +93,7 @@ final class AccountSearchHelper extends HelperBase
     }
 
     /**
-     * Establecer las variables necesarias para las plantillas
+     * Set the variables required by the templates
      */
     private function setVars(): void
     {
@@ -158,7 +158,7 @@ final class AccountSearchHelper extends HelperBase
     }
 
     /**
-     * Obtener los datos para la caja de búsqueda
+     * Get the data for the search box
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -187,7 +187,7 @@ final class AccountSearchHelper extends HelperBase
     }
 
     /**
-     * Obtener los resultados de una búsqueda
+     * Get the results of a search
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -244,14 +244,14 @@ final class AccountSearchHelper extends HelperBase
         $dataGrid->updatePager();
         $dataGrid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
 
-        // Establecer el filtro de búsqueda en la sesión como un objeto
+        // Store the search filter in the session as an object
         $this->context->setSearchFilters($this->accountSearchFilter);
 
         $this->view->assign('data', $dataGrid);
     }
 
     /**
-     * Devuelve la matriz a utilizar en la vista
+     * Returns the array to be used in the view
      *
      * @return DataGrid
      */
@@ -324,7 +324,7 @@ final class AccountSearchHelper extends HelperBase
     }
 
     /**
-     * Devolver la cabecera con los campos de ordenación
+     * Return the header with the sorting fields
      *
      * @return DataGridHeaderSort
      */

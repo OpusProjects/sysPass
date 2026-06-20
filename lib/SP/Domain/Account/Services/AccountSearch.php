@@ -57,7 +57,7 @@ final class AccountSearch extends Service implements AccountSearchService
     }
 
     /**
-     * Procesar los resultados de la búsqueda
+     * Process the search results
      *
      * @template T of AccountSearchViewModel
      * @param AccountSearchFilterDto $accountSearchFilter

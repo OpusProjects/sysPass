@@ -34,7 +34,7 @@ final class Environment
     private const MAX_PHP_VERSION = 80500;
 
     /**
-     * Comprobar si sysPass se ejecuta en W$indows.
+     * Check whether sysPass is running on Windows.
      */
     public static function checkIsWindows(): bool
     {
@@ -42,7 +42,7 @@ final class Environment
     }
 
     /**
-     * Comprobar la versión de PHP.
+     * Check the PHP version.
      */
     public static function checkPhpVersion(): bool
     {

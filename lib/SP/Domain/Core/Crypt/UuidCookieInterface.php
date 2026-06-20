@@ -31,12 +31,12 @@ namespace SP\Domain\Core\Crypt;
 interface UuidCookieInterface
 {
     /**
-     * Firmar la cookie para autentificación
+     * Sign the cookie for authentication
      */
     public function sign(string $data, string $cypher): string;
 
     /**
-     * Comprobar la firma de la cookie y devolver los datos
+     * Check the cookie's signature and return the data
      *
      * @param string $data
      * @param string $cypher

@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 interface CryptInterface
 {
     /**
-     * Securiza una clave de seguridad
+     * Secure a security key
      *
      * @param  string  $password
      * @param  bool  $useAscii
@@ -46,7 +46,7 @@ interface CryptInterface
     public function makeSecuredKey(string $password, bool $useAscii = true): KeyProtectedByPassword|string;
 
     /**
-     * Encriptar datos con una clave segura
+     * Encrypt data with a secure key
      *
      * @param  string  $data
      * @param  string|Key  $securedKey
@@ -58,7 +58,7 @@ interface CryptInterface
     public function encrypt(string $data, Key|string $securedKey, ?string $password = null): string;
 
     /**
-     * Desencriptar datos con una clave segura
+     * Decrypt data with a secure key
      *
      * @param  string  $data
      * @param  string|Key|KeyProtectedByPassword  $securedKey

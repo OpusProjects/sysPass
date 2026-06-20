@@ -59,14 +59,14 @@ interface TrackRepository
     /**
      * Clears tracks
      *
-     * @return bool con el resultado
+     * @return bool with the result
      * @throws QueryException
      * @throws ConstraintException
      */
     public function clear(): bool;
 
     /**
-     * Devuelve los tracks de un cliente desde un tiempo y origen determinados
+     * Returns the tracks of a client from a given time and source
      *
      * @param TrackModel $track
      *

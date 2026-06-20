@@ -31,10 +31,10 @@ namespace SP\Infrastructure\Common\Repositories;
 trait RepositoryItemTrait
 {
     /**
-     * Crear un hash con el nombre del elemento.
+     * Create a hash from the item's name.
      *
-     * Esta función crear un hash para detectar nombres de elementos duplicados mediante
-     * la eliminación de carácteres especiales y capitalización
+     * This function creates a hash to detect duplicate item names by
+     * stripping special characters and normalizing capitalization
      */
     protected function makeItemHash(string $name): string
     {
@@ -48,10 +48,10 @@ trait RepositoryItemTrait
     }
 
     /**
-     * Devuelve una cadena con los parámetros para una consulta SQL desde un array
+     * Return a string of parameters for a SQL query built from an array
      *
      * @param array $items
-     * @param string $placeholder Cadena a utilizar para los parámetros
+     * @param string $placeholder The string to use for the parameters
      *
      * @return string
      */

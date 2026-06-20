@@ -182,7 +182,7 @@ final class AuthToken extends Service implements AuthTokenService
     }
 
     /**
-     * Generar la llave segura del token
+     * Generate the secure key for the token
      *
      * @throws ServiceException
      * @throws CryptException
@@ -213,7 +213,7 @@ final class AuthToken extends Service implements AuthTokenService
     }
 
     /**
-     * Generar un token de acceso
+     * Generate an access token
      *
      * @throws EnvironmentIsBrokenException
      */
@@ -277,7 +277,7 @@ final class AuthToken extends Service implements AuthTokenService
     }
 
     /**
-     * Devolver los datos de un token
+     * Return the data of a token
      *
      * @param int $actionId
      * @param string $token

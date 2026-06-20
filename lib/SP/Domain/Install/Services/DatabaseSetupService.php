@@ -31,18 +31,18 @@ namespace SP\Domain\Install\Services;
 interface DatabaseSetupService
 {
     /**
-     * Conectar con la BBDD
+     * Connect to the database
      *
-     * Comprobar si la conexión con la base de datos para sysPass es posible con
-     * los datos facilitados.
+     * Check whether the connection to the sysPass database is possible with
+     * the provided details.
      */
     public function connectDatabase();
 
     public function setupDbUser(): array;
 
     /**
-     * Crear el usuario para conectar con la base de datos.
-     * Esta función crea el usuario para conectar con la base de datos.
+     * Create the user to connect to the database.
+     * This function creates the user used to connect to the database.
      *
      * @param  string  $user
      * @param  string  $pass
@@ -50,7 +50,7 @@ interface DatabaseSetupService
     public function createDBUser(string $user, string $pass);
 
     /**
-     * Crear la base de datos
+     * Create the database
      */
     public function createDatabase(?string $dbUser = null);
 
@@ -60,19 +60,19 @@ interface DatabaseSetupService
     public function checkDatabaseExists(): mixed;
 
     /**
-     * Deshacer la instalación en caso de fallo.
-     * Esta función elimina la base de datos y el usuario de sysPass
+     * Roll back the installation in case of failure.
+     * This function removes the sysPass database and user.
      */
     public function rollback(?string $dbUser = null);
 
     /**
-     * Crear la estructura de la base de datos.
-     * Esta función crea la estructura de la base de datos a partir del archivo dbsctructure.sql.
+     * Create the database structure.
+     * This function creates the database structure from the dbsctructure.sql file.
      */
     public function createDBStructure();
 
     /**
-     * Comprobar la conexión a la BBDD
+     * Check the connection to the database
      */
     public function checkConnection();
 }

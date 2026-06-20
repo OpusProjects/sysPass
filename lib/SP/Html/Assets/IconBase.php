@@ -28,12 +28,12 @@ namespace SP\Html\Assets;
 use function SP\__;
 
 /**
- * Class DataGridIconBase para crear los iconos de la matriz
+ * Class DataGridIconBase for creating the data grid icons
  */
 abstract class IconBase implements IconInterface
 {
     /**
-     * Clases CSS del icono
+     * Icon CSS classes
      */
     protected ?array $class = null;
 

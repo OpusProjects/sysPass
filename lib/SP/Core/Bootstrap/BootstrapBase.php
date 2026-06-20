@@ -185,19 +185,19 @@ abstract class BootstrapBase implements BootstrapInterface
     }
 
     /**
-     * Establecer variables de autentificación
+     * Set the authentication variables
      */
     private function initAuthVariables(): void
     {
         $server = $this->router->request()->server;
 
-        // Copiar la cabecera http de autentificación para apache+php-fcgid
+        // Copy the HTTP authentication header for apache+php-fcgid
         if ($server->get('HTTP_XAUTHORIZATION') !== null && $server->get('HTTP_AUTHORIZATION') === null) {
             $server->set('HTTP_AUTHORIZATION', $server->get('HTTP_XAUTHORIZATION'));
         }
 
-        // Establecer las cabeceras de autentificación para que apache+php-cgi funcione si la variable
-        // es renombrada por apache
+        // Set the authentication headers so that apache+php-cgi works if the variable
+        // is renamed by apache
         $authorization = $server->get('HTTP_AUTHORIZATION') ?? $server->get('REDIRECT_HTTP_AUTHORIZATION', '');
 
         if (preg_match('/Basic\s+(.*)$/i', $authorization, $matches)) {
@@ -209,7 +209,7 @@ abstract class BootstrapBase implements BootstrapInterface
     }
 
     /**
-     * Establecer el nivel de logging
+     * Set the logging level
      */
     private function initPHPVars(): void
     {
@@ -244,7 +244,7 @@ abstract class BootstrapBase implements BootstrapInterface
     }
 
     /**
-     * Cargar la configuración
+     * Load the configuration
      *
      * @throws ConfigException
      */

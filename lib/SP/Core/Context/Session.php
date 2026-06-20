@@ -67,7 +67,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve el tema visual utilizado en sysPass
+     * Returns the visual theme used in sysPass
      */
     public function getTheme(): string
     {
@@ -89,7 +89,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece el tema visual utilizado en sysPass
+     * Sets the visual theme used in sysPass
      */
     public function setTheme(string $theme): void
     {
@@ -120,7 +120,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer la hora de carga de la configuración
+     * Sets the configuration load time
      */
     public function setConfigTime(int $time): void
     {
@@ -128,7 +128,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devolver la hora de carga de la configuración
+     * Returns the configuration load time
      */
     public function getConfigTime(): int
     {
@@ -136,7 +136,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece los datos del usuario en la sesión.
+     * Sets the user data in the session.
      */
     public function setUserData(?UserDto $userDto = null): void
     {
@@ -144,7 +144,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Obtiene el objeto de perfil de usuario de la sesión.
+     * Gets the user profile object from the session.
      */
     public function getUserProfile(): ?ProfileData
     {
@@ -152,7 +152,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece el objeto de perfil de usuario en la sesión.
+     * Sets the user profile object in the session.
      */
     public function setUserProfile(ProfileData $profileData): void
     {
@@ -183,7 +183,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve los datos del usuario en la sesión.
+     * Returns the user data in the session.
      */
     public function getUserData(): UserDto
     {
@@ -191,7 +191,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer si el usuario está completamente autorizado
+     * Sets whether the user is fully authorized
      */
     public function setAuthCompleted(bool $bool): void
     {
@@ -199,7 +199,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devolver si el usuario está completamente logeado
+     * Returns whether the user is fully logged in
      */
     public function getAuthCompleted(): bool
     {
@@ -207,7 +207,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devolver la clave maestra temporal
+     * Returns the temporary master password
      */
     public function getTemporaryMasterPass(): ?string
     {
@@ -223,7 +223,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devolver la clave pública
+     * Returns the public key
      */
     public function getPublicKey(): ?string
     {
@@ -231,7 +231,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer la clave pública
+     * Sets the public key
      */
     public function setPublicKey(string $key): void
     {
@@ -239,7 +239,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve el timeout de la sesión
+     * Returns the session timeout
      */
     public function getSessionTimeout(): ?int
     {
@@ -247,7 +247,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer el timeout de la sesión
+     * Sets the session timeout
      */
     public function setSessionTimeout(int $timeout): int
     {
@@ -257,7 +257,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve la hora de la última actividad
+     * Returns the time of the last activity
      */
     public function getLastActivity(): int
     {
@@ -265,7 +265,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece la hora de la última actividad
+     * Sets the time of the last activity
      */
     public function setLastActivity(int $time): void
     {
@@ -273,7 +273,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve la hora de inicio de actividad.
+     * Returns the activity start time.
      */
     public function getStartActivity(): int
     {
@@ -281,7 +281,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer el lenguaje de la sesión
+     * Sets the session language
      */
     public function setLocale(string $locale): void
     {
@@ -289,7 +289,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve el lenguaje de la sesión
+     * Returns the session language
      */
     public function getLocale(): ?string
     {
@@ -297,7 +297,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devolver el color asociado a una cuenta
+     * Returns the color associated with an account
      */
     public function getAccountColor(): string
     {
@@ -305,7 +305,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece el color asociado a una cuenta
+     * Sets the color associated with an account
      */
     public function setAccountColor(array $color): void
     {
@@ -313,7 +313,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve el estado de la aplicación
+     * Returns the application status
      */
     public function getAppStatus(): ?string
     {
@@ -321,7 +321,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer el estado de la aplicación
+     * Sets the application status
      */
     public function setAppStatus(string $status): void
     {
@@ -345,7 +345,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Reset del estado de la aplicación
+     * Resets the application status
      */
     public function resetAppStatus(): ?bool
     {
@@ -353,7 +353,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve la clave maestra encriptada
+     * Returns the encrypted master key
      */
     public function getVault(): ?VaultInterface
     {
@@ -361,7 +361,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establecer la clave maestra encriptada
+     * Sets the encrypted master key
      */
     public function setVault(VaultInterface $vault): void
     {
@@ -369,7 +369,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece la cache de cuentas
+     * Sets the accounts cache
      */
     public function setAccountsCache(array $accountsCache): void
     {
@@ -377,7 +377,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve la cache de cuentas
+     * Returns the accounts cache
      *
      * @return AccountCacheDto[]|null
      */
@@ -409,7 +409,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Devuelve la hora en la que el SID de sesión fue creado
+     * Returns the time when the session SID was created
      */
     public function getSidStartTime(): int
     {
@@ -417,7 +417,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece la hora de creación del SID
+     * Sets the SID creation time
      */
     public function setSidStartTime(int $time): int
     {
@@ -427,7 +427,7 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Establece la hora de inicio de actividad
+     * Sets the activity start time
      */
     public function setStartActivity(int $time): int
     {

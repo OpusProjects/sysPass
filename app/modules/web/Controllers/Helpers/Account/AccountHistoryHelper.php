@@ -166,7 +166,7 @@ final class AccountHistoryHelper extends AccountHelperBase
     public static function mapHistoryForDateSelect(array $history): array
     {
         $values = array_map(static function ($item) {
-            // Comprobamos si la entrada en el historial es la primera (no tiene editor ni fecha de edición)
+            // Check whether the history entry is the first one (it has no editor or edit date)
             if (empty($item->dateEdit) || $item->dateEdit === '0000-00-00 00:00:00') {
                 return sprintf('%s - %s', $item->dateAdd, $item->userAdd);
             }

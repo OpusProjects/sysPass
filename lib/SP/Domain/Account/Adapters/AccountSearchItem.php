@@ -220,7 +220,7 @@ final class AccountSearchItem
     }
 
     /**
-     * Develve si la clave ha caducado
+     * Returns whether the password has expired
      */
     public function isPasswordExpired(): bool
     {

@@ -326,7 +326,7 @@ class AccountPermission
     }
 
     /**
-     * Comprueba los permisos de acceso a una cuenta.
+     * Checks the access permissions for an account.
      */
     public function checkAccountAccess(int $actionId): bool
     {

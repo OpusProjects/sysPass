@@ -52,9 +52,9 @@ interface AccountHistoryService
     public function getById(int $id): AccountHistoryDto;
 
     /**
-     * Obtiene el listado del histórico de una cuenta.
+     * Gets the history listing for an account.
      *
-     * @return array Con los registros con id como clave y fecha - usuario como valor
+     * @return array With the records keyed by id and date - user as the value
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -67,7 +67,7 @@ interface AccountHistoryService
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
-     * Crea una nueva cuenta en la BBDD
+     * Creates a new account in the database
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -81,7 +81,7 @@ interface AccountHistoryService
     public function getAccountsPassData(): array;
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes an account's data from the database.
      *
      * @throws QueryException
      * @throws ServiceException

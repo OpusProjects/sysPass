@@ -40,9 +40,9 @@ use function SP\__u;
 final class AccountToFavorite extends BaseRepository implements AccountToFavoriteRepository
 {
     /**
-     * Obtener un array con los Ids de cuentas favoritas
+     * Get an array with the IDs of favorite accounts
      *
-     * @param $id int El Id de usuario
+     * @param $id int The user ID
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -64,10 +64,10 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
     }
 
     /**
-     * Añadir una cuenta a la lista de favoritos
+     * Add an account to the favorites list
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
+     * @param $accountId int The account ID
+     * @param $userId    int The user ID
      *
      * @return int
      * @throws ConstraintException
@@ -89,10 +89,10 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
     }
 
     /**
-     * Eliminar una cuenta de la lista de favoritos
+     * Remove an account from the favorites list
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
+     * @param $accountId int The account ID
+     * @param $userId    int The user ID
      *
      * @return bool
      * @throws ConstraintException

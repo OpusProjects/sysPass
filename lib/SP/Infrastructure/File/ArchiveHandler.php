@@ -52,7 +52,7 @@ class ArchiveHandler implements ArchiveHandlerInterface
     }
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Create a backup of the application and compress it.
      *
      * @throws FileException
      */
@@ -68,7 +68,7 @@ class ArchiveHandler implements ArchiveHandlerInterface
     }
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Create a backup of the application and compress it.
      *
      * @throws FileException
      */

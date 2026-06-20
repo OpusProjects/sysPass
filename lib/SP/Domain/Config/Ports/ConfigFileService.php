@@ -29,12 +29,12 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Infrastructure\File\FileException;
 
 /**
- * Esta clase es responsable de leer y escribir la configuración del archivo config.php
+ * This class is responsible for reading and writing the configuration of the config.php file
  */
 interface ConfigFileService
 {
     /**
-     * Guardar la configuración
+     * Save the configuration
      *
      * @param ConfigDataInterface $configData
      * @param bool|null $commit Whether to save the configuration into the file

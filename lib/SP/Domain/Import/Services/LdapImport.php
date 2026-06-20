@@ -66,7 +66,7 @@ final class LdapImport extends Service implements LdapImportService
     }
 
     /**
-     * Sincronizar usuarios de LDAP
+     * Synchronize users from LDAP
      *
      * @throws LdapException
      */

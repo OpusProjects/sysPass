@@ -36,7 +36,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface DataGridDataInterface
 {
     /**
-     * Establecer los orígenes de datos de la consulta
+     * Set the query data sources
      */
     public function addDataRowSource(
         string   $source,
@@ -46,32 +46,32 @@ interface DataGridDataInterface
     ): void;
 
     /**
-     * Devolver los orígenes de datos de la consulta
+     * Return the query data sources
      */
     public function getDataRowSources(): array;
 
     /**
-     * Establecer el origen de datos utilizado como Id de los elementos
+     * Set the data source used as the elements' Id
      */
     public function setDataRowSourceId(string $id): void;
 
     /**
-     * Devolver el origen de datos utilizado como Id de los elementos
+     * Return the data source used as the elements' Id
      */
     public function getDataRowSourceId(): string;
 
     /**
-     * Establecer los datos de la consulta
+     * Set the query data
      */
     public function setData(QueryResult $queryResult): void;
 
     /**
-     * Devolver los datos de la consulta
+     * Return the query data
      */
     public function getData(): array;
 
     /**
-     * Establecer los orígenes de datos que se muestran con iconos
+     * Set the data sources that are shown with icons
      */
     public function addDataRowSourceWithIcon(
         string        $source,
@@ -80,12 +80,12 @@ interface DataGridDataInterface
     ): void;
 
     /**
-     * Devolver los orígenes de datos que se muestran con iconos
+     * Return the data sources that are shown with icons
      */
     public function getDataRowSourcesWithIcon(): array;
 
     /**
-     * Devolver el número de elementos obtenidos
+     * Return the number of elements retrieved
      */
     public function getDataCount(): int;
 }

@@ -36,7 +36,7 @@ use Throwable;
 use function SP\processException;
 
 /**
- * Class CryptPKI para el manejo de las funciones para PKI
+ * Class CryptPKI for handling PKI functions
  */
 final class CryptPKI implements CryptPKIHandler
 {
@@ -72,7 +72,7 @@ final class CryptPKI implements CryptPKIHandler
     }
 
     /**
-     * Crea el par de claves pública y privada
+     * Creates the public and private key pair
      *
      * @throws FileException
      */
@@ -90,7 +90,7 @@ final class CryptPKI implements CryptPKIHandler
     }
 
     /**
-     * Devuelve la clave pública desde el archivo
+     * Returns the public key from the file
      *
      * @throws FileException
      */
@@ -100,7 +100,7 @@ final class CryptPKI implements CryptPKIHandler
     }
 
     /**
-     * Desencriptar datos cifrados con la clave pública
+     * Decrypt data encrypted with the public key
      *
      * @throws FileException
      */

@@ -38,7 +38,7 @@ use SP\Domain\Import\Dtos\LdapImportResultsDto;
 interface LdapImportService
 {
     /**
-     * Sincronizar usuarios de LDAP
+     * Synchronize users from LDAP
      *
      * @throws LdapException
      */

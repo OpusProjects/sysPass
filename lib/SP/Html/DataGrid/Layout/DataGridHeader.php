@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid\Layout;
 
 /**
- * Class DataGridHeader para establecer las cabeceras de la matriz
+ * Class DataGridHeader for setting the headers of the data array
  *
  * @package SP\Html\DataGrid
  */

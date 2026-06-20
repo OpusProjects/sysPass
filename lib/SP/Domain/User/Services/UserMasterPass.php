@@ -110,7 +110,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
 
             $userMasterPass = $this->crypt->decrypt($userDataDto->mPass, $userDataDto->mKey, $key);
 
-            // Comprobamos el hash de la clave del usuario con la guardada
+            // Check the user's password hash against the stored one
             if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
                 $this->setMasterKeyInContext($userMasterPass);
 
@@ -133,9 +133,9 @@ final class UserMasterPass extends Service implements UserMasterPassService
     }
 
     /**
-     * Obtener una clave de cifrado basada en la clave del usuario y un salt.
+     * Get an encryption key based on the user's password and a salt.
      *
-     * @return string con la clave de cifrado
+     * @return string the encryption key
      */
     private function makeKeyForUser(string $userLogin, string $userPass): string
     {

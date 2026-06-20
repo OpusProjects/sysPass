@@ -112,7 +112,7 @@ interface PublicLinkService
     public function getAll(): array;
 
     /**
-     * Incrementar el contador de visitas de un enlace
+     * Increments the visit counter of a link
      *
      * @throws NoSuchItemException
      * @throws ConstraintException
@@ -126,7 +126,7 @@ interface PublicLinkService
     public function getByHash(string $hash): PublicLink;
 
     /**
-     * Devolver el hash asociado a un elemento
+     * Returns the hash associated with an item
      *
      * @throws ConstraintException
      * @throws QueryException

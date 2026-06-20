@@ -33,7 +33,7 @@ use SP\Domain\Account\Ports\AccountSearchConstants;
 final class AccountSearchFilterDto
 {
     /**
-     * @var int|null El número de registros de la última consulta
+     * @var int|null The number of records from the last query
      */
     public static ?int $queryNumRows;
     private bool       $globalSearch = false;

@@ -34,7 +34,7 @@ use SP\Html\DataGrid\DataGridTab;
 final class TabsGridHelper extends HelperBase
 {
     /**
-     * Máximo numero de acciones antes de agrupar
+     * Maximum number of actions before grouping
      */
     private const MAX_NUM_ACTIONS = 3;
     /**
@@ -43,7 +43,7 @@ final class TabsGridHelper extends HelperBase
     protected array $tabs = [];
 
     /**
-     * Inicializar las plantillas para las pestañas
+     * Initialize the templates for the tabs
      *
      * @param string $route
      * @param int    $activeTab

@@ -246,7 +246,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     }
 
     /**
-     * Incrementar el contador de visitas de un enlace
+     * Increment the view counter for a link
      *
      * @param PublicLinkModel $publicLinkData
      *
@@ -422,7 +422,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     }
 
     /**
-     * Devolver el hash asociado a un elemento
+     * Return the hash associated with an item
      *
      * @param int $itemId
      *

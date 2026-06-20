@@ -72,7 +72,7 @@ final readonly class XmlFile implements XmlFileService
     }
 
     /**
-     * Leer el archivo a un objeto XML.
+     * Read the file into an XML object.
      *
      * @throws ImportException
      */
@@ -90,7 +90,7 @@ final readonly class XmlFile implements XmlFileService
     }
 
     /**
-     * Detectar la aplicación que generó el XML.
+     * Detect the application that generated the XML.
      *
      * @throws ImportException
      */

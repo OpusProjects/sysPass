@@ -33,7 +33,7 @@ use SP\Infrastructure\File\FileException;
 interface AppLockHandler
 {
     /**
-     * Comprueba si la aplicación está bloqueada
+     * Checks whether the application is locked
      *
      * @throws SPException
      */

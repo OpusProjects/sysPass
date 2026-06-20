@@ -56,7 +56,7 @@ use function SP\processException;
 final class SyspassImport extends XmlImportBase implements ItemsImportService
 {
     /**
-     * Iniciar la importación desde sysPass.
+     * Start the import from sysPass.
      *
      * @param ImportParamsDto $importParams
      * @return ItemsImportService
@@ -95,7 +95,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Obtener la versión del XML
+     * Get the XML version
      */
     private function getXmlVersion(): int
     {
@@ -105,7 +105,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Verificar si existen datos encriptados
+     * Check whether encrypted data exists
      */
     private function detectEncrypted(): bool
     {
@@ -113,7 +113,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Procesar los datos encriptados y añadirlos al árbol DOM desencriptados
+     * Process the encrypted data and add it to the DOM tree decrypted
      *
      * @throws ImportException
      */
@@ -164,7 +164,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 );
         }
 
-        // Eliminar los datos encriptados tras desencriptar los mismos
+        // Remove the encrypted data after decrypting it
         if ($this->document->getElementsByTagName('Data')->length > 0) {
             $nodeData = $this->document
                 ->getElementsByTagName('Encrypted')
@@ -203,7 +203,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Obtener las categorías y añadirlas a sysPass.
+     * Get the categories and add them to sysPass.
      * @throws ImportException
      */
     private function processCategories(): void
@@ -392,7 +392,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Procesar las etiquetas de la cuenta
+     * Process the account tags
      */
     private function processAccountTags(DOMNodeList $nodes): array
     {

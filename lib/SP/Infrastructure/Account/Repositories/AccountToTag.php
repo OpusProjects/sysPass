@@ -43,7 +43,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
     use RepositoryItemTrait;
 
     /**
-     * Devolver las etiquetas de una cuenta
+     * Return the tags for an account
      *
      * @param int $id
      *
@@ -69,7 +69,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
     }
 
     /**
-     * Eliminar las etiquetas de una cuenta
+     * Remove the tags from an account
      *
      * @param int $id
      *
@@ -93,7 +93,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
     }
 
     /**
-     * Actualizar las etiquetas de una cuenta
+     * Update the tags for an account
      *
      * @param int $accountId
      * @param array $tags

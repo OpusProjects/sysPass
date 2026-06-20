@@ -40,7 +40,7 @@ final class UserForm extends FormBase implements FormInterface
     protected int   $isLdap   = 0;
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param  int  $action
      * @param  int|null  $id
@@ -77,7 +77,7 @@ final class UserForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return void
      */

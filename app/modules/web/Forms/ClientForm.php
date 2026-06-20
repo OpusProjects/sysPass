@@ -40,7 +40,7 @@ final class ClientForm extends FormBase implements FormInterface
     protected ?Client $clientData = null;
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param int $action
      * @param int|null $id
@@ -66,7 +66,7 @@ final class ClientForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return void
      */

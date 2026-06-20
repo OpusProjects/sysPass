@@ -46,7 +46,7 @@ interface AccountHistoryRepository extends Repository
     public function create(AccountHistoryCreateDto $dto): int;
 
     /**
-     * Obtiene el listado del histórico de una cuenta.
+     * Gets the history listing for an account.
      *
      * @param int $id
      *
@@ -64,14 +64,14 @@ interface AccountHistoryRepository extends Repository
     public function deleteByAccountIdBatch(array $ids): int;
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Get the password-related data for all accounts.
      *
      * @return QueryResult
      */
     public function getAccountsPassData(): QueryResult;
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates an account's password in the database.
      *
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
@@ -81,7 +81,7 @@ interface AccountHistoryRepository extends Repository
     public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): bool;
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes an account's data from the database.
      *
      * @param int $id
      *

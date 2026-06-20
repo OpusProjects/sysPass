@@ -174,7 +174,7 @@ interface UserService
     public function getAll(): array;
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Get the email addresses of the users in a group
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -182,7 +182,7 @@ interface UserService
     public function getUserEmailForGroup(int $groupId): array;
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Get the email addresses of the users in a group
      *
      * @throws ConstraintException
      * @throws QueryException

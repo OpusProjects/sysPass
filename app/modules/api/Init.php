@@ -112,8 +112,8 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * Comprueba que la aplicación esté instalada
-     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     * Checks that the application is installed
+     * This method checks whether the application is installed. If it is not, it redirects to the installer.
      *
      * @throws InitializationException
      */

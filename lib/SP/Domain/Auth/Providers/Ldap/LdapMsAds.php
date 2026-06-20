@@ -116,8 +116,8 @@ final class LdapMsAds extends LdapBase
      */
     public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool
     {
-        // Comprobar si está establecido el filtro de grupo o el grupo coincide con
-        // los grupos del usuario
+        // Check whether the group filter is set or the group matches
+        // the user's groups
         if (empty($this->ldapParams->getGroup())
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)

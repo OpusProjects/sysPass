@@ -33,7 +33,7 @@ final class Filter
     private const UNSAFE_CHARS = ['/', '[', '\\', ']', '%', '{', '}', '*', '$'];
 
     /**
-     * Limpiar una cadena de búsqueda de carácteres utilizados en expresiones regulares
+     * Strip out characters used in regular expressions from a search string
      */
     public static function safeSearchString(string $string): string
     {

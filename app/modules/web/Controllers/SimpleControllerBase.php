@@ -82,7 +82,7 @@ abstract class SimpleControllerBase
     }
 
     /**
-     * Comprobaciones
+     * Checks
      *
      * @throws SPException
      * @throws SessionTimeout
@@ -98,7 +98,7 @@ abstract class SimpleControllerBase
     }
 
     /**
-     * Comprobar si está permitido el acceso al módulo/página.
+     * Check whether access to the module/page is allowed.
      *
      * @throws UnauthorizedPageException
      */

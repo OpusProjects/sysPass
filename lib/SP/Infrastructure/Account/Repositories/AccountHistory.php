@@ -49,7 +49,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     use RepositoryItemTrait;
 
     /**
-     * Obtiene el listado del histórico de una cuenta.
+     * Gets the history list of an account.
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -76,7 +76,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     }
 
     /**
-     * Crea una nueva cuenta en la BBDD
+     * Creates a new account in the database
      *
      * @param AccountHistoryCreateDto $dto
      *
@@ -126,7 +126,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     }
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes the data of an account in the database.
      *
      * @param int $id
      *
@@ -365,7 +365,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     }
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Get the password-related data of all accounts.
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -392,7 +392,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     }
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates the password of an account in the database.
      *
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword

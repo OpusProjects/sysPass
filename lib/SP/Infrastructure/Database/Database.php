@@ -128,9 +128,9 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Asociar los parámetros de la consulta utilizando el tipo adecuado
+     * Bind the query parameters using the appropriate type
      *
-     * @param QueryInterface $query Los datos de la consulta
+     * @param QueryInterface $query The query data
      * @param array $options
      *
      * @return PDOStatement
@@ -182,10 +182,10 @@ final class Database implements DatabaseInterface
     }
 
     /**
-     * Obtener el número de filas de una consulta realizada
+     * Get the number of rows from a performed query
      *
      * @param QueryDataInterface $queryData
-     * @return int Número de filas de la consulta
+     * @return int Number of rows in the query
      * @throws ConstraintException
      * @throws QueryException
      */

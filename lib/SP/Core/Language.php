@@ -34,28 +34,28 @@ use SP\Domain\Http\Ports\RequestService;
 use function SP\logger;
 
 /**
- * Class Language para el manejo del lenguaje utilizado por la aplicación
+ * Class Language for handling the language used by the application
  *
  * @package SP
  */
 final class Language implements LanguageInterface
 {
     /**
-     * Lenguaje del usuario
+     * User language
      */
     public static string $userLang = '';
     /**
-     * Lenguaje global de la Aplicación
+     * Global application language
      */
     public static string $globalLang = '';
     /**
-     * Estado de la localización. false si no existe
+     * Locale status. false if it does not exist
      *
      * @var string|false
      */
     public static string|false $localeStatus;
     /**
-     * Si se ha establecido a las de la App
+     * Whether it has been set to the application's locales
      */
     protected static bool $appSet = false;
     /**
@@ -88,7 +88,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Devolver los lenguajes disponibles
+     * Return the available languages
      */
     public static function getAvailableLanguages(): array
     {
@@ -96,9 +96,9 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Establecer el lenguaje a utilizar
+     * Set the language to use
      *
-     * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
+     * @param bool $force Force language detection on login
      */
     public function setLanguage(bool $force = false): void
     {
@@ -117,7 +117,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Devuelve el lenguaje del usuario
+     * Returns the user's language
      */
     private function getUserLang(): string
     {
@@ -129,8 +129,8 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Establece el lenguaje de la aplicación.
-     * Esta función establece el lenguaje según esté definido en la configuración o en el navegador.
+     * Sets the application language.
+     * This function sets the language according to what is defined in the configuration or in the browser.
      */
     private function getGlobalLang(): string
     {
@@ -138,7 +138,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Devolver el lenguaje que acepta el navegador
+     * Return the language accepted by the browser
      */
     private function getBrowserLang(): string
     {
@@ -150,7 +150,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Establecer las locales de gettext
+     * Set the gettext locales
      */
     public function setLocales(string $lang): void
     {
@@ -176,7 +176,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Establecer el lenguaje global para las traducciones
+     * Set the global language for translations
      */
     public function setAppLocales(): void
     {
@@ -192,7 +192,7 @@ final class Language implements LanguageInterface
     }
 
     /**
-     * Restablecer el lenguaje global para las traducciones
+     * Reset the global language for translations
      */
     public function unsetAppLocales(): void
     {

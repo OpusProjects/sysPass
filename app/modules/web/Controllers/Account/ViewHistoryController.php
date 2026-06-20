@@ -64,7 +64,7 @@ final class ViewHistoryController extends AccountControllerBase
     }
 
     /**
-     * Obtener los datos para mostrar el interface para ver cuenta en fecha concreta
+     * Get the data needed to display the interface for viewing an account at a specific date
      *
      * @param int $id Account's ID
      * @throws AccountPermissionException

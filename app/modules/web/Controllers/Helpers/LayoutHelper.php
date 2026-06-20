@@ -103,7 +103,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Establecer la variable de página de la vista
+     * Set the view's page variable
      */
     public function setPage(string $page): void
     {
@@ -111,7 +111,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Inicializar las variables para la vista principal de la aplicación
+     * Initialize the variables for the application's main view
      */
     public function initBody(): void
     {
@@ -146,7 +146,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Obtener los datos para la cabcera de la página
+     * Get the data for the page header
      */
     protected function getResourcesLinks(): void
     {
@@ -218,7 +218,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Establecer las cabeceras HTTP
+     * Set the HTTP headers
      */
     private function setResponseHeaders(): void
     {
@@ -231,7 +231,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Obtener los datos para la mostrar la barra de sesión
+     * Get the data for displaying the session bar
      */
     public function getSessionBar(): void
     {
@@ -254,7 +254,7 @@ final class LayoutHelper extends HelperBase
     }
 
     /**
-     * Obtener los datos para mostrar el menú de acciones
+     * Get the data for displaying the actions menu
      *
      * @param AclInterface $acl
      */

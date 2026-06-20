@@ -31,7 +31,7 @@ use RuntimeException;
 use SP\Html\Assets\IconInterface;
 
 /**
- * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
+ * Class DataGridAction for creating an action for each item in the data grid
  */
 abstract class DataGridActionBase implements DataGridActionInterface
 {
@@ -104,7 +104,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Devolver el método reflexivo que determina si se muestra la acción
+     * Return the reflective method that determines whether the action is displayed
      */
     public function getRuntimeFilter(): ?callable
     {
@@ -112,7 +112,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Establecer el método reflexivo que determina si se muestra la acción
+     * Set the reflective method that determines whether the action is displayed
      *
      * @throws RuntimeException
      */
@@ -241,7 +241,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Filtro para mostrar la acción
+     * Filter for displaying the action
      *
      * @return $this
      */
@@ -281,7 +281,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Añadir nuevo atributo de datos
+     * Add a new data attribute
      */
     public function addData(string $name, mixed $data): DataGridActionBase
     {
@@ -300,7 +300,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Establecer atributos
+     * Set attributes
      */
     public function setAttributes(array $attributes): DataGridActionInterface
     {
@@ -310,7 +310,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
     }
 
     /**
-     * Añadir nuevo atributo
+     * Add a new attribute
      */
     public function addAttribute(string $name, mixed $value): DataGridActionBase
     {

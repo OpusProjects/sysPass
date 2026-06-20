@@ -43,7 +43,7 @@ abstract class Cookie
     }
 
     /**
-     * Firmar la cookie para autentificación
+     * Sign the cookie for authentication
      */
     final public function sign(string $data, string $cypher): string
     {
@@ -53,7 +53,7 @@ abstract class Cookie
     }
 
     /**
-     * Comprobar la firma de la cookie y devolver los datos
+     * Check the cookie signature and return the data
      *
      * @param string $data
      * @param string $cypher

@@ -86,7 +86,7 @@ final class LdapActions implements LdapActionsService
     }
 
     /**
-     * Obtener el RDN del grupo.
+     * Get the group's RDN.
      *
      * @param string $groupFilter
      *

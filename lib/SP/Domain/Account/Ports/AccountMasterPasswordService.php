@@ -33,7 +33,7 @@ use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 interface AccountMasterPasswordService
 {
     /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
+     * Updates the passwords of all accounts with the new master password.
      *
      * @param UpdateMasterPassRequest $updateMasterPassRequest
      * @throws ServiceException
@@ -41,7 +41,7 @@ interface AccountMasterPasswordService
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void;
 
     /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
+     * Updates the passwords of all accounts with the new master password.
      *
      * @throws ServiceException
      */

@@ -124,9 +124,9 @@ final class Password
     }
 
     /**
-     * Generar una cadena aleatoria usuando criptografía.
+     * Generate a random string using cryptography.
      *
-     * @param int $length opcional, con la longitud de la cadena
+     * @param int $length optional, the length of the string
      *
      * @throws EnvironmentIsBrokenException
      */

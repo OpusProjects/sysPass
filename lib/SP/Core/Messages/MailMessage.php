@@ -44,7 +44,7 @@ final class MailMessage extends MessageBase
     }
 
     /**
-     * Componer un mensaje en formato HTML
+     * Composes a message in HTML format
      */
     public function composeHtml(): string
     {
@@ -68,7 +68,7 @@ final class MailMessage extends MessageBase
     }
 
     /**
-     * Componer un mensaje en formato texto
+     * Composes a message in text format
      */
     public function composeText(string $delimiter = PHP_EOL): string
     {

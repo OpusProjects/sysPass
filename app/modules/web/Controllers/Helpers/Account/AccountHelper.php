@@ -267,7 +267,7 @@ final class AccountHelper extends AccountHelperBase
     }
 
     /**
-     * Comprobar si el usuario dispone de acceso al módulo
+     * Check whether the user has access to the module
      *
      * @param AccountEnrichedDto $accountEnrichedDto
      *

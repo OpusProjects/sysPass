@@ -62,7 +62,7 @@ final class CheckImportController extends SimpleControllerBase
     {
         $ldapParams = LdapParams::fromRequest($this->request);
 
-        // Valores para la configuración de LDAP
+        // Values for the LDAP configuration
         if (!($ldapParams->getServer()
               || $ldapParams->getSearchBase()
               || $ldapParams->getBindDn())

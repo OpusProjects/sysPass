@@ -85,7 +85,7 @@ abstract class UserPassResetSaveBase extends ControllerBase
     }
 
     /**
-     * Añadir un seguimiento
+     * Add a tracking entry
      */
     final protected function addTracking(): void
     {

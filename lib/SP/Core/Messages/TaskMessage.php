@@ -107,7 +107,7 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     }
 
     /**
-     * Componer un mensaje en formato HTML
+     * Compose a message in HTML format
      */
     public function composeHtml(): string
     {
@@ -115,7 +115,7 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     }
 
     /**
-     * Componer un mensaje en formato texto
+     * Compose a message in text format
      */
     public function composeText(string $delimiter = ';'): string
     {
@@ -130,7 +130,7 @@ final class TaskMessage implements MessageInterface, JsonSerializable
     }
 
     /**
-     * Componer un mensaje en formato JSON
+     * Compose a message in JSON format
      *
      * @throws SPException
      */

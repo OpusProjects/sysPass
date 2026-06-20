@@ -120,7 +120,7 @@ interface PluginDataRepository
     public function deleteByNameBatch(array $names): QueryResult;
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @param string $name
      * @param int $itemId

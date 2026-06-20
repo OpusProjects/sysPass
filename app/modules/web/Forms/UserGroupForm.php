@@ -39,7 +39,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     protected ?UserGroup $groupData = null;
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param  int  $action
      * @param  int|null  $id
@@ -65,7 +65,7 @@ final class UserGroupForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return void
      */

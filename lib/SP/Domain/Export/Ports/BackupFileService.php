@@ -29,12 +29,12 @@ namespace SP\Domain\Export\Ports;
 use SP\Domain\Common\Services\ServiceException;
 
 /**
- * Esta clase es la encargada de realizar la copia de sysPass.
+ * This class is responsible for performing the sysPass backup.
  */
 interface BackupFileService
 {
     /**
-     * Realizar backup de la BBDD y aplicación.
+     * Perform a backup of the database and the application.
      *
      * @throws ServiceException
      */

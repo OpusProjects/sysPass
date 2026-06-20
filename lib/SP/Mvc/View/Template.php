@@ -108,10 +108,10 @@ final class Template implements TemplateInterface
     }
 
     /**
-     * Añadir una nueva plantilla al array de plantillas de la clase
+     * Add a new template to the class's template array
      *
-     * @param string $name Con el nombre del archivo de plantilla
-     * @param string|null $base Directorio base para la plantilla
+     * @param string $name The template file name
+     * @param string|null $base Base directory for the template
      *
      * @throws FileNotFoundException
      */

@@ -35,7 +35,7 @@ use SP\Domain\Auth\Providers\AuthService;
 interface DatabaseAuthService extends AuthService
 {
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Indicates whether it is required to access the application
      *
      * @return bool
      */

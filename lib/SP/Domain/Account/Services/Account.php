@@ -613,7 +613,7 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * Devolver el número total de cuentas
+     * Return the total number of accounts
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -627,7 +627,7 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * Obtener los datos de una cuenta.
+     * Get the data for an account.
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -646,7 +646,7 @@ final class Account extends Service implements AccountService
     }
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Get the password-related data for all accounts.
      *
      * @return Simple[]
      * @throws ConstraintException

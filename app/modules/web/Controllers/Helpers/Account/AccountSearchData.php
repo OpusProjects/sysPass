@@ -150,7 +150,7 @@ final class AccountSearchData
                     strtotime($accountSearchView->getDateEdit())
                 );
 
-                // Obtener la ACL de la cuenta
+                // Get the account's ACL
                 $accountAcl = $this->accountAclService->getAcl(
                     AclActionsInterface::ACCOUNT_SEARCH,
                     AccountAclDto::makeFromAccountSearch(
@@ -190,7 +190,7 @@ final class AccountSearchData
             return $this->accountColor[$id];
         }
 
-        // Se asigna el color de forma aleatoria a cada id
+        // Assign a random color to each id
         $this->accountColor[$id] = '#' . self::COLORS[array_rand(self::COLORS)];
 
         try {

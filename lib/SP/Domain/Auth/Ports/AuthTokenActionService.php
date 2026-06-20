@@ -31,7 +31,7 @@ namespace SP\Domain\Auth\Ports;
 interface AuthTokenActionService
 {
     /**
-     * Devuelver un array de acciones posibles para los tokens
+     * Return an array of possible actions for tokens
      *
      * @return array
      */

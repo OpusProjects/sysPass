@@ -39,7 +39,7 @@ use SP\Domain\Core\Messages\MessageInterface;
 class EventMessage implements MessageInterface
 {
     /**
-     * @var array Detalles de la acción en formato "detalle : descripción"
+     * @var array Action details in the format "detail : description"
      */
     private array $details            = [];
     private int   $descriptionCounter = 0;
@@ -63,7 +63,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Establece la descripción de la acción realizada
+     * Sets the description of the performed action
      */
     public function addDescription(string $description = ''): EventMessage
     {
@@ -75,7 +75,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Formatear una cadena para guardarla en el registro
+     * Formats a string for storing in the log
      */
     private function formatString(string $string): string
     {
@@ -83,7 +83,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Establece los detalles de la acción realizada
+     * Sets the details of the performed action
      */
     public function addDetail(string $key, string|int|null $value): EventMessage
     {
@@ -99,7 +99,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Componer un mensaje en formato texto
+     * Composes a message in text format
      */
     public function composeText(string $delimiter = PHP_EOL): string
     {
@@ -119,7 +119,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Devuelve la descripción de la acción realizada
+     * Returns the description of the performed action
      */
     public function getDescription(
         FormatterInterface $formatter,
@@ -133,7 +133,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Devuelve los detalles de la acción realizada
+     * Returns the details of the performed action
      */
     public function getDetails(
         FormatterInterface $formatter,
@@ -147,7 +147,7 @@ class EventMessage implements MessageInterface
     }
 
     /**
-     * Componer un mensaje en formato HTML
+     * Composes a message in HTML format
      */
     public function composeHtml(): string
     {

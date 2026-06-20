@@ -26,12 +26,12 @@ declare(strict_types=1);
 namespace SP\Html\Assets;
 
 /**
- * Class FontIcon para crear los iconos de la matriz
+ * Class FontIcon for creating the data grid icons
  */
 final class FontIcon extends IconBase
 {
     /**
-     * Devolver la clase del icono adaptada para un botón
+     * Return the icon class adapted for a button
      */
     public function getClassButton(): string
     {

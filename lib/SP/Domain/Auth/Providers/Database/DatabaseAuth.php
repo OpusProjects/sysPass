@@ -98,7 +98,7 @@ final readonly class DatabaseAuth implements DatabaseAuthService
     }
 
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Indicates whether it is required to access the application
      *
      * @return bool
      */

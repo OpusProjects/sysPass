@@ -48,11 +48,11 @@ interface ApiService
     public function setup(int $actionId): void;
 
     /**
-     * Devolver el valor de un parámetro
+     * Return the value of a parameter
      *
      * @param  string  $param
-     * @param  bool  $required  Si es requerido
-     * @param  mixed|null  $default  Valor por defecto
+     * @param  bool  $required  Whether it is required
+     * @param  mixed|null  $default  Default value
      *
      * @return mixed
      * @throws ServiceException

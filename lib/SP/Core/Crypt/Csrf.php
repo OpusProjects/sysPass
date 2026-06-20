@@ -77,7 +77,7 @@ final readonly class Csrf implements CsrfHandler
     }
 
     /**
-     * Devolver la llave de cifrado para los datos de la cookie
+     * Returns the encryption key for the cookie data
      */
     private function getKey(): string
     {

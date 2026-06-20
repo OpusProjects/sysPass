@@ -54,9 +54,9 @@ abstract class Minify implements MinifyService
     }
 
     /**
-     * Devolver al navegador archivos CSS y JS comprimidos
-     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
-     * devuelve el código HTTP/304
+     * Return compressed CSS and JS files to the browser
+     * Method that returns a compressed CSS or JS resource. If the ETAG matches,
+     * the HTTP/304 code is returned
      */
     public function getMinified(): void
     {
@@ -94,7 +94,7 @@ abstract class Minify implements MinifyService
     {
         $etag = $this->getEtag();
 
-        // Devolver código 304 si la versión es la misma y no se solicita refrescar
+        // Return code 304 if the version is the same and no refresh is requested
         if ($etag === $this->request->getHeader(Header::IF_NONE_MATCH->value)
             && !($this->request->getHeader(Header::CACHE_CONTROL->value) === 'no-cache'
                  || $this->request->getHeader(Header::CACHE_CONTROL->value) === 'max-age=0'
@@ -110,9 +110,9 @@ abstract class Minify implements MinifyService
     }
 
     /**
-     * Calcular el hash de varios archivos.
+     * Calculate the hash of several files.
      *
-     * @return string Con el hash
+     * @return string With the hash
      */
     private function getEtag(): string
     {
@@ -143,10 +143,10 @@ abstract class Minify implements MinifyService
     }
 
     /**
-     * Añadir un archivo
+     * Add a file
      *
      * @param FileHandlerInterface $fileHandler
-     * @param bool $minify Si es necesario reducir
+     * @param bool $minify Whether minification is needed
      *
      * @return MinifyService
      * @throws FileException

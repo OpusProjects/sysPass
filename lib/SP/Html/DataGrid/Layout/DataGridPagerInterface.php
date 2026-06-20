@@ -29,28 +29,28 @@ use SP\Html\Assets\IconInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 
 /**
- * Interface DataGridPagerInterface para la definición del paginador
+ * Interface DataGridPagerInterface for the paginator definition
  *
  * @package SP\Html\DataGrid
  */
 interface DataGridPagerInterface
 {
     /**
-     * Establecer el campo de la búsqueda
+     * Set the search field
      *
      * @param int $sortKey
      */
     public function setSortKey(int $sortKey);
 
     /**
-     * Devolver el campo de la búsqueda
+     * Return the search field
      *
      * @return int
      */
     public function getSortKey(): int;
 
     /**
-     * Establecer el registro de inicio de la página
+     * Set the start record of the page
      *
      * @param int $limitStart
      *
@@ -59,14 +59,14 @@ interface DataGridPagerInterface
     public function setLimitStart(int $limitStart): DataGridPagerInterface;
 
     /**
-     * Devolver el registro de inicio de la página
+     * Return the start record of the page
      *
      * @return int
      */
     public function getLimitStart(): int;
 
     /**
-     * Establecer el número de registros en una página
+     * Set the number of records on a page
      *
      * @param int $limitCount
      *
@@ -75,28 +75,28 @@ interface DataGridPagerInterface
     public function setLimitCount(int $limitCount): DataGridPagerInterface;
 
     /**
-     * Devolver el número de registros en una página
+     * Return the number of records on a page
      *
      * @return mixed
      */
     public function getLimitCount();
 
     /**
-     * Establecer el número total de registros obtenidos
+     * Set the total number of records retrieved
      *
      * @param int $totalRows
      */
     public function setTotalRows(int $totalRows);
 
     /**
-     * Devolver el número total de registros obtenidos
+     * Return the total number of records retrieved
      *
      * @return int
      */
     public function getTotalRows(): int;
 
     /**
-     * Establecer si está activado el filtro
+     * Set whether the filter is enabled
      *
      * @param bool $filterOn
      *
@@ -105,56 +105,56 @@ interface DataGridPagerInterface
     public function setFilterOn(bool $filterOn): DataGridPagerInterface;
 
     /**
-     * Devolver si está activado el filtro
+     * Return whether the filter is enabled
      *
      * @return bool
      */
     public function getFilterOn(): bool;
 
     /**
-     * Establecer la función javascript para paginar
+     * Set the javascript function used for pagination
      *
      * @param string $function
      */
     public function setOnClickFunction(string $function);
 
     /**
-     * Devolver la función javascript para paginar
+     * Return the javascript function used for pagination
      *
      * @return string
      */
     public function getOnClick(): string;
 
     /**
-     * Establecer los argumentos de la función OnClick
+     * Set the arguments for the OnClick function
      *
      * @param string $args
      */
     public function setOnClickArgs(string $args);
 
     /**
-     * Devolver la funcion para ir a la primera página
+     * Return the function to go to the first page
      *
      * @return string
      */
     public function getOnClickFirst(): string;
 
     /**
-     * Devolver la funcion para ir a la última página
+     * Return the function to go to the last page
      *
      * @return string
      */
     public function getOnClickLast(): string;
 
     /**
-     * Devolver la funcion para ir a la siguiente página
+     * Return the function to go to the next page
      *
      * @return string
      */
     public function getOnClickNext(): string;
 
     /**
-     * Devolver la funcion para ir a la página anterior
+     * Return the function to go to the previous page
      *
      * @return string
      */

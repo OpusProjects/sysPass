@@ -83,7 +83,7 @@ final readonly class LdapCheck implements LdapCheckService
     }
 
     /**
-     * Obtener los datos de una búsqueda de LDAP de un atributo
+     * Get the data from an LDAP search for an attribute
      *
      * @param array $data
      * @param string[] $attributes

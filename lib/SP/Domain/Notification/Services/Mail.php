@@ -101,7 +101,7 @@ final class Mail extends Service implements MailService
     }
 
     /**
-     * Devolver el pie del email con la firma de la aplicación
+     * Returns the email footer with the application signature
      */
     private function getEmailFooter(): array
     {

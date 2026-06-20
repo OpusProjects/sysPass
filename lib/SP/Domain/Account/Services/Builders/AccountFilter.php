@@ -51,7 +51,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
     }
 
     /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     * Returns the filter for the SQL query of accounts a user can access
      */
     public function buildFilterHistory(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface
     {
@@ -71,7 +71,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
-                // Filtro de grupos secundarios en grupos que incluyen al usuario
+                // Filter for secondary groups in groups that include the user
                 $where[] =
                     'AccountHistory.accountId = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = AccountHistory.accountId AND uug.userId = :userId LIMIT 1)';
             }
@@ -112,7 +112,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
     }
 
     /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     * Returns the filter for the SQL query of accounts a user can access
      */
     public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface
     {
@@ -132,7 +132,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
             ];
 
             if ($this->configData->isAccountFullGroupAccess()) {
-                // Filtro de grupos secundarios en grupos que incluyen al usuario
+                // Filter for secondary groups in groups that include the user
                 $where[] =
                     'Account.id = (SELECT accountId FROM AccountToUserGroup aug INNER JOIN UserToUserGroup uug ON uug.userGroupId = aug.userGroupId WHERE aug.accountId = Account.id AND uug.userId = :userId LIMIT 1)';
             }

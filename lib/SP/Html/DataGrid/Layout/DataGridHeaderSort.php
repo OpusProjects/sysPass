@@ -29,7 +29,7 @@ use SP\Html\DataGrid\DataGridSortInterface;
 use SplObjectStorage;
 
 /**
- * Class DataGridHeaderActions para añadir cabeceras para ordenar resultados
+ * Class DataGridHeaderActions for adding headers to sort results
  *
  * @package SP\Html\DataGrid
  */

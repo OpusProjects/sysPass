@@ -245,7 +245,7 @@ interface AccountService
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
-     * Devolver el número total de cuentas
+     * Return the total number of accounts
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -253,7 +253,7 @@ interface AccountService
     public function getTotalNumAccounts(): int;
 
     /**
-     * Obtener los datos de una cuenta.
+     * Get the data for an account.
      *
      * @param int $id The account ID
      *
@@ -265,7 +265,7 @@ interface AccountService
     public function getDataForLink(int $id): Simple;
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Get the password-related data for all accounts.
      *
      * @throws QueryException
      * @throws ConstraintException

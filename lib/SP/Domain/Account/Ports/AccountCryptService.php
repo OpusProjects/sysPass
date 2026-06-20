@@ -35,7 +35,7 @@ use SP\Domain\Common\Services\ServiceException;
 interface AccountCryptService
 {
     /**
-     * Devolver los datos de la clave encriptados
+     * Return the encrypted password data
      *
      * @throws ServiceException
      */

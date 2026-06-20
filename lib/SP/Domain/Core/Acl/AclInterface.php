@@ -32,13 +32,13 @@ namespace SP\Domain\Core\Acl;
 interface AclInterface
 {
     /**
-     * Obtener el nombre de la acción indicada
+     * Get the name of the given action
      *
-     * @param int $actionId El id de la acción
+     * @param int $actionId The action id
      * @param bool $translate
      *
      * @return string
-     * @internal param bool $translate Si se devuelve el nombre corto de la acción
+     * @internal param bool $translate Whether to return the action's short name
      */
     public function getInfoFor(int $actionId, bool $translate = true): string;
 
@@ -48,7 +48,7 @@ interface AclInterface
     public function getRouteFor(int $actionId): string;
 
     /**
-     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
+     * Check the user's access permissions to the application's modules.
      */
     public function checkUserAccess(int $actionId, int $userId = 0): bool;
 }

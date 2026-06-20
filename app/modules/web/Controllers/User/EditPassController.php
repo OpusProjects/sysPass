@@ -51,7 +51,7 @@ final class EditPassController extends UserViewBase
     public function editPassAction(int $id): bool
     {
         try {
-            // Comprobar si el usuario a modificar es distinto al de la sesión
+            // Check whether the user to modify is different from the session user
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
                 return $this->returnJsonResponse(
                     JsonMessage::JSON_ERROR,

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid;
 
 /**
- * Class DataGridData para establecer el origen de datos de la matriz
+ * Class DataGridData for setting the matrix data source
  *
  * @package SP\Html\DataGrid
  */

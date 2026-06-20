@@ -586,7 +586,7 @@ class ProfileData extends Model
      */
     public function __wakeup()
     {
-        // Para realizar la conversión de nombre de propiedades que empiezan por _
+        // To perform the renaming of properties whose names start with _
         foreach (get_object_vars($this) as $name => $value) {
             if ($name[0] === '_') {
                 $this->{substr($name, 1)} = $value;

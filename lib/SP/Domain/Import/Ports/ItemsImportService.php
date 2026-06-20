@@ -31,7 +31,7 @@ namespace SP\Domain\Import\Ports;
 interface ItemsImportService extends ImportService
 {
     /**
-     * Devolver el contador de objetos importados
+     * Return the counter of imported objects
      *
      * @return int
      */

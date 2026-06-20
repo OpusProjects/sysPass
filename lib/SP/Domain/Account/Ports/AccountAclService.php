@@ -50,7 +50,7 @@ interface AccountAclService
     public static function getShowPermission(UserDto $userData, ProfileData $profileData): bool;
 
     /**
-     * Obtener la ACL de una cuenta
+     * Retrieves the ACL of an account
      *
      * @param int $actionId
      * @param AccountAclDto $accountAclDto

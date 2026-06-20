@@ -78,7 +78,7 @@ final class Notification extends Service implements NotificationService
     }
 
     /**
-     * Devolver los elementos con los ids especificados
+     * Returns the items with the given ids
      *
      * @param int[] $ids
      *
@@ -194,7 +194,7 @@ final class Notification extends Service implements NotificationService
     }
 
     /**
-     * Marcar una notificación como leída
+     * Marks a notification as read
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -208,7 +208,7 @@ final class Notification extends Service implements NotificationService
     }
 
     /**
-     * Devolver las notificaciones de un usuario para una fecha y componente determinados
+     * Returns the notifications for a user matching a given date and component
      *
      * @param string $component
      * @param int $id

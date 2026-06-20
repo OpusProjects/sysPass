@@ -42,14 +42,14 @@ interface RequestService
     public function getForwardedFor(): ?array;
 
     /**
-     * Comprobar si se realiza una recarga de la página
+     * Check whether the page is being reloaded
      */
     public function checkReload(): bool;
 
     public function analyzeEmail(string $param, ?string $default = null): ?string;
 
     /**
-     * Analizar un valor encriptado y devolverlo desencriptado
+     * Analyze an encrypted value and return it decrypted
      */
     public function analyzeEncrypted(string $param): ?string;
 
@@ -67,12 +67,12 @@ interface RequestService
     public function analyzeArray(string $param, ?callable $mapper = null, mixed $default = null): ?array;
 
     /**
-     * Comprobar si la petición es en formato JSON
+     * Check whether the request is in JSON format
      */
     public function isJson(): bool;
 
     /**
-     * Comprobar si la petición es Ajax
+     * Check whether the request is an Ajax request
      */
     public function isAjax(): bool;
 
@@ -98,7 +98,7 @@ interface RequestService
     public function getHttpHost(): string;
 
     /**
-     * Devolver datos de forward RFC 7239
+     * Return forward data per RFC 7239
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
      */
@@ -107,7 +107,7 @@ interface RequestService
     public function getHeader(string $header): string;
 
     /**
-     * Devolver datos de x-forward
+     * Return x-forward data
      */
     public function getXForwardedData(): ?array;
 

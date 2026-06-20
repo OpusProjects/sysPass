@@ -41,7 +41,7 @@ use function SP\processException;
 trait ConfigTrait
 {
     /**
-     * Guardar la configuración
+     * Save the configuration
      *
      * @throws SPException
      */

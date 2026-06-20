@@ -35,16 +35,16 @@ use function SP\logger;
 final class Hash
 {
     /**
-     * Longitud máxima aceptada para hashing
+     * Maximum length accepted for hashing
      */
     public const  MAX_KEY_LENGTH = 72;
     private const HASH_ALGO      = 'sha256';
 
     /**
-     * Comprobar el hash de una clave.
+     * Check the hash of a key.
      *
-     * @param  string  $key  con la clave a comprobar
-     * @param  string  $hash  con el hash a comprobar
+     * @param  string  $key  the key to check
+     * @param  string  $hash  the hash to check against
      */
     public static function checkHashKey(string $key, string $hash): bool
     {
@@ -52,10 +52,10 @@ final class Hash
     }
 
     /**
-     * Devolver la clave preparada. Se crea un hash si supera la longitud máxima.
+     * Returns the prepared key. A hash is created if it exceeds the maximum length.
      *
      * @param  string  $key
-     * @param  bool  $isCheck  Indica si la operación es de comprobación o no
+     * @param  bool  $isCheck  Indicates whether the operation is a check or not
      *
      * @return string
      */
@@ -73,11 +73,11 @@ final class Hash
     }
 
     /**
-     * Generar un hash de una clave criptográficamente segura
+     * Generate a cryptographically secure hash of a key
      *
-     * @param  string  $key  con la clave a 'hashear'
+     * @param  string  $key  the key to hash
      *
-     * @return string con el hash de la clave
+     * @return string the hash of the key
      */
     public static function hashKey(string $key): string
     {

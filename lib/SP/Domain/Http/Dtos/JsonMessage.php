@@ -105,7 +105,7 @@ final class JsonMessage implements JsonSerializable
     }
 
     /**
-     * Devolver un array con las propiedades del objeto
+     * Return an array with the object's properties
      */
     public function getJsonArray(): array
     {

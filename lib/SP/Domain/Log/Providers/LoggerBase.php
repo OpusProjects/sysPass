@@ -67,10 +67,10 @@ abstract class LoggerBase extends Provider implements EventReceiver
     }
 
     /**
-     * Evento de actualización
+     * Update event
      *
-     * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param string $eventType Event name
+     * @param Event $event Event object
      *
      * @throws InvalidClassException
      */
