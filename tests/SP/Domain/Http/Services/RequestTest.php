@@ -36,9 +36,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Services\Request;
 use SP\Tests\UnitaryTestCase;
+use Symfony\Component\HttpFoundation\FileBag;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;
-use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ServerBag;
 
@@ -57,7 +57,7 @@ class RequestTest extends UnitaryTestCase
     private HeaderBag|MockObject       $headers;
     private InputBag                   $paramsGet;
     private ServerBag                  $server;
-    private ParameterBag               $files;
+    private FileBag                    $files;
 
     /**
      * @throws Exception
@@ -950,7 +950,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->paramsGet = new InputBag();
         $this->server = new ServerBag();
-        $this->files = new ParameterBag();
+        $this->files = new FileBag();
 
         // Symfony Request exposes its bags as public properties; wire the mock's
         // bags directly (mirrors the previous router's headers()/paramsGet()/... accessors).
