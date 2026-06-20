@@ -66,3 +66,5 @@ composer.phar
 .env
 
 !.blank
+# PHPUnit result cache
+tests/.phpunit.cache/

@@ -60,7 +60,7 @@ final class Config extends Service implements ConfigService
      * @throws SPException
      * @throws ServiceException
      */
-    public function getByParam(string $param, $default = null): ?string
+    public function getByParam(string $param, $default = null): mixed
     {
         try {
             $result = $this->configRepository->getByParam($param);

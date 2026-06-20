@@ -92,7 +92,8 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     private function autoDetectEOL(): void
     {
-        ini_set('auto_detect_line_endings', true);
+        // PHP >= 8.1 reads all line-ending styles natively; the auto_detect_line_endings
+        // ini flag this used to toggle is deprecated (removed in PHP 9) and a no-op.
     }
 
     /**

@@ -41,7 +41,7 @@ interface ConfigService
      * @throws NoSuchItemException
      * @throws ServiceException
      */
-    public function getByParam(string $param, $default = null): ?string;
+    public function getByParam(string $param, $default = null): mixed;
 
     /**
      * @throws ConstraintException

@@ -37,6 +37,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Infrastructure\Database\QueryData;
@@ -51,6 +52,8 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class PluginTest extends UnitaryTestCase
 {
+    private DatabaseInterface|MockObject $database;
+
 
     private Plugin $plugin;
 

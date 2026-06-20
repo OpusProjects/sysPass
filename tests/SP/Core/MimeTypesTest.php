@@ -108,7 +108,7 @@ class MimeTypesTest extends UnitaryTestCase
         $this->yamlFileStorage
             ->expects(self::once())
             ->method('load')
-            ->willReturn($mimeTypes);
+            ->willReturn(['mimetypes' => $mimeTypes]);
 
         $this->fileCache
             ->expects(self::once())

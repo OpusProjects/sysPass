@@ -100,7 +100,7 @@ class ImageTest extends TestCase
 
         $this->imageUtil = new Image(
             $phpExtensionCheckerService,
-            '/usr/share/fonts/freefont/FreeSans.otf',
+            REAL_APP_ROOT . '/public/vendor/fonts/NotoSans-Regular-webfont.ttf',
             $this->pathsContext[Path::TMP]
         );
     }

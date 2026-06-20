@@ -104,7 +104,7 @@ final class MimeTypes implements MimeTypesService
     {
         $this->mimeTypes = array_map(
             static fn($item) => new MimeType($item['type'], $item['description'], $item['extension']),
-            $this->yamlFileStorageService->load()
+            $this->yamlFileStorageService->load()['mimetypes']
         );
     }
 
