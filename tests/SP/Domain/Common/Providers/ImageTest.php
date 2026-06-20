@@ -30,7 +30,6 @@ use GdImage;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Exceptions\InvalidImageException;
@@ -101,7 +100,10 @@ class ImageTest extends TestCase
         $this->imageUtil = new Image(
             $phpExtensionCheckerService,
             REAL_APP_ROOT . '/public/vendor/fonts/NotoSans-Regular-webfont.ttf',
-            $this->pathsContext[Path::TMP]
+            // A real filesystem dir: Image::createPngImage() uses tempnam(), which
+            // can't write to the vfsStream-backed Path::TMP and would otherwise fall
+            // back to the system temp dir (emitting a PHP notice).
+            sys_get_temp_dir()
         );
     }
 }
