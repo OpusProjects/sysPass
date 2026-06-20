@@ -93,8 +93,12 @@ Both pass: **1978 unit** + **93 integration**. Test-environment gotchas (the ima
   it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.
 - **Locales `en_US.UTF-8` + `es_ES.UTF-8`** — `LanguageTest` asserts against them (7 failures without).
 - **Bundled font** `public/vendor/fonts/NotoSans-Regular-webfont.ttf` — `ImageTest` uses it.
-- **Flaky locale leak** — `setlocale`/gettext is process-global and isn't reset between tests, so a
-  test that switches language can bleed into a later one (e.g. a Danish response). Order-dependent.
+- **Response language is fixed to English in tests** — the app picks the response language from the
+  logged-in user's preference, so `UserDataGenerator` pins `lang` to `en` (it used a random
+  `faker->languageCode()`, which made integration tests assert English strings fail intermittently
+  with da/is/fo/… responses).
+- Known separate flaky: `AccountPresetTest::testAddPresetPermissions` (a faker-data / consecutive-mock
+  matcher issue, not language).
 
 ## Web bootstrap is WIP
 
