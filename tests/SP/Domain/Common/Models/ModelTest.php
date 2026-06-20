@@ -97,36 +97,66 @@ class ModelTest extends TestCase
 
     public function testGetColsWithPreffix()
     {
-        self::markTestIncomplete();
+        self::assertSame(['acc.id', 'acc.name'], ModelStub::getColsWithPreffix('acc'));
+        self::assertSame(['acc.name'], ModelStub::getColsWithPreffix('acc', ['id']));
     }
 
     public function testGetCols()
     {
-        self::markTestIncomplete();
+        self::assertSame(['id', 'name'], ModelStub::getCols());
+        self::assertSame(['name'], ModelStub::getCols(['id']));
     }
 
+    /**
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
     public function testToJson()
     {
-        self::markTestIncomplete();
+        $model = new ModelStub(['id' => 1, 'name' => 'red']);
+
+        self::assertSame(json_encode($model->toArray()), $model->toJson());
     }
 
     public function testBuildFromSimpleModel()
     {
-        self::markTestIncomplete();
+        $source = new ModelStub(['id' => 7, 'name' => 'blue', 'extra' => 'outer']);
+
+        $built = ModelStub::buildFromSimpleModel($source);
+
+        self::assertInstanceOf(ModelStub::class, $built);
+        self::assertSame(7, $built->getId());
+        self::assertSame('blue', $built->getName());
+        // buildFromSimpleModel includes outer (non-class) properties.
+        self::assertSame('outer', $built['extra']);
     }
 
     public function testToArray()
     {
-        self::markTestIncomplete();
+        $model = new ModelStub(['id' => 5, 'name' => 'green', 'extra' => 'outer']);
+
+        self::assertSame(['id' => 5, 'name' => 'green'], $model->toArray());
+        self::assertSame(['id' => 5, 'name' => 'green', 'extra' => 'outer'], $model->toArray(null, null, true));
+        self::assertSame(['id' => 5], $model->toArray(['id']));
+        self::assertSame(['name' => 'green'], $model->toArray(null, ['id']));
     }
 
     public function testMutate()
     {
-        self::markTestIncomplete();
+        $model = new ModelStub(['id' => 1, 'name' => 'red']);
+
+        $mutated = $model->mutate(['name' => 'blue']);
+
+        self::assertNotSame($model, $mutated);
+        self::assertSame(1, $mutated->getId());
+        self::assertSame('blue', $mutated->getName());
+        // The original model is unchanged.
+        self::assertSame('red', $model->getName());
     }
 
     public function testJsonSerialize()
     {
-        self::markTestIncomplete();
+        $model = new ModelStub(['id' => 1, 'name' => 'red', 'extra' => 'outer']);
+
+        self::assertSame($model->toArray(), $model->jsonSerialize());
     }
 }
