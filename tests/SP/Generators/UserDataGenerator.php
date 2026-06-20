@@ -79,7 +79,10 @@ final class UserDataGenerator extends DataGenerator
     private function getUserPreferencesProperties(): array
     {
         return [
-            'lang' => $this->faker->languageCode(),
+            // Fixed (not faker->languageCode()): the app sets the response language from
+            // the logged-in user's preference, so a random language made integration tests
+            // that assert English response strings intermittently fail (responses in da/is/fo/…).
+            'lang' => 'en',
             'theme' => $this->faker->colorName(),
             'resultsPerPage' => $this->faker->randomNumber(3),
             'accountLink' => $this->faker->boolean(),
