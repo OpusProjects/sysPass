@@ -36,6 +36,7 @@ use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\ArchiveHandler;
 
@@ -78,6 +79,9 @@ class DefinitionsTest extends TestCase
 
         $mockedDefinitions = [
             ConfigDataInterface::class => $configData,
+            // ConfigFileService eagerly opens the real config.xml (absent in unit tests),
+            // so stub it like the other infrastructure-bound services below.
+            ConfigFileService::class => $this->createStub(ConfigFileService::class),
             RequestService::class => $requestService,
             LdapConnectionHandler::class => $this->createStub(LdapConnectionHandler::class),
             'backup.dbArchiveHandler' => $this->createStub(ArchiveHandler::class),

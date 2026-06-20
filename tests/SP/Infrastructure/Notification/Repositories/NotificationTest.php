@@ -36,6 +36,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Database\QueryData;
@@ -51,6 +52,8 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class NotificationTest extends UnitaryTestCase
 {
+    private DatabaseInterface|MockObject $database;
+
 
     private Notification $notification;
 

@@ -35,6 +35,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Config\Repositories\Config;
 use SP\Infrastructure\Database\QueryData;
@@ -49,6 +50,8 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class ConfigTest extends UnitaryTestCase
 {
+    private DatabaseInterface|MockObject $database;
+
     private Config $configRepository;
 
     public function testGetByParam()

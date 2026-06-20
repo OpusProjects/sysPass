@@ -37,6 +37,7 @@ use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\CustomField\Repositories\CustomFieldData;
 use SP\Infrastructure\Database\QueryData;
@@ -51,6 +52,8 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class CustomFieldDataTest extends UnitaryTestCase
 {
+    private DatabaseInterface|MockObject $database;
+
 
     private CustomFieldData $customFieldData;
 

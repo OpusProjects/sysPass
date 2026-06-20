@@ -66,6 +66,7 @@ use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\DataTab;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Util\Util;
+use RuntimeException;
 
 use function SP\__;
 
@@ -440,19 +441,11 @@ final class IndexController extends ControllerBase
 
         $backupFiles = $this->backupFiles->withHash($this->configData->getBackupHash() ?? '');
 
-        $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
-        $backupDbFile = new FileHandler((string)$backupFiles->getDbBackupFile());
-
-        $exportFile = new FileHandler(
-            (string)new BackupFileDto(
-                BackupType::export,
-                $this->configData->getExportHash() ?: '',
-                $this->pathsContext[Path::BACKUP],
-                'gz'
-            )
-        );
-
+        // FileHandler extends SplFileObject and opens the file on construction, so a
+        // missing backup/export file throws a RuntimeException — build inside the try.
         try {
+            $backupAppFile = new FileHandler((string)$backupFiles->getAppBackupFile());
+            $backupDbFile = new FileHandler((string)$backupFiles->getDbBackupFile());
             $backupAppFile->checkFileExists();
             $backupDbFile->checkFileExists();
 
@@ -461,7 +454,7 @@ final class IndexController extends ControllerBase
                 'lastBackupTime',
                 date('r', $backupAppFile->getFileTime())
             );
-        } catch (FileException) {
+        } catch (FileException | RuntimeException) {
             $template->assign('hasBackup', false);
             $template->assign(
                 'lastBackupTime',
@@ -470,6 +463,14 @@ final class IndexController extends ControllerBase
         }
 
         try {
+            $exportFile = new FileHandler(
+                (string)new BackupFileDto(
+                    BackupType::export,
+                    $this->configData->getExportHash() ?: '',
+                    $this->pathsContext[Path::BACKUP],
+                    'gz'
+                )
+            );
             $exportFile->checkFileExists();
 
             $template->assign('hasExport', true);
@@ -477,7 +478,7 @@ final class IndexController extends ControllerBase
                 'lastExportTime',
                 date('r', $exportFile->getFileTime())
             );
-        } catch (FileException) {
+        } catch (FileException | RuntimeException) {
             $template->assign('hasExport', false);
             $template->assign(
                 'lastExportTime',

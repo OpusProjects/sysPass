@@ -83,9 +83,9 @@ class UtilTest extends UnitaryTestCase
 
     public function testGetMaxUpload()
     {
-        $upload = ini_get('upload_max_filesize',);
-        $post = ini_get('post_max_size');
-        $memory = ini_get('memory_limit');
+        $upload = Util::convertShortUnit(ini_get('upload_max_filesize'));
+        $post = Util::convertShortUnit(ini_get('post_max_size'));
+        $memory = Util::convertShortUnit(ini_get('memory_limit'));
 
         $this->assertEquals(min($upload, $post, $memory), Util::getMaxUpload());
     }

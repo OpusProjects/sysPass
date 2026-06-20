@@ -35,6 +35,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Infrastructure\Database\QueryData;
@@ -49,6 +50,8 @@ use SP\Tests\UnitaryTestCase;
 #[Group('unitary')]
 class PluginDataTest extends UnitaryTestCase
 {
+    private DatabaseInterface|MockObject $database;
+
 
     private PluginData $pluginData;
 
