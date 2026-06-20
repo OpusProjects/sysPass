@@ -112,8 +112,8 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
 
 ## Dependency status (PHP 8.2 codebase)
 
-- **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; removed unused `doctrine/common`.
-- **Still old (bump candidates):** `phpseclib/phpseclib` 2 → 3 (API-breaking).
+- **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; `phpseclib/phpseclib` 2 → 3
+  (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`.
 - **Abandoned, no clean upgrade:** `klein/klein` (router) at v2.1.2 — triggers PHP 8.1
   return-type deprecations; fixing them means updating/replacing the dependency, not suppressing.
 - The old 3.2.x line was gridlocked by `roave/security-advisories` + `fabpot/goutte`'s guzzle-6 pin —
