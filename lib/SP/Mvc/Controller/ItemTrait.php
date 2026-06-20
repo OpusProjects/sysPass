@@ -41,7 +41,7 @@ use SP\Domain\Http\Ports\RequestService;
 trait ItemTrait
 {
     /**
-     * Obtener la lista de campos personalizados y sus valores
+     * Get the list of custom fields and their values
      *
      * @throws SPException
      * @throws ServiceException
@@ -82,9 +82,9 @@ trait ItemTrait
     }
 
     /**
-     * Formatear el valor del campo
+     * Format the field value
      *
-     * @param $value string El valor del campo
+     * @param $value string The field value
      *
      * @return string
      */
@@ -106,7 +106,7 @@ trait ItemTrait
     }
 
     /**
-     * Añadir los campos personalizados del elemento
+     * Add the item's custom fields
      *
      * @param int $moduleId
      * @param int|int[] $itemId
@@ -156,7 +156,7 @@ trait ItemTrait
     }
 
     /**
-     * Eliminar los campos personalizados del elemento
+     * Delete the item's custom fields
      *
      * @param int $moduleId
      * @param int|int[] $itemId
@@ -177,7 +177,7 @@ trait ItemTrait
     }
 
     /**
-     * Actualizar los campos personalizados del elemento
+     * Update the item's custom fields
      *
      * @param int $moduleId
      * @param int|int[] $itemId

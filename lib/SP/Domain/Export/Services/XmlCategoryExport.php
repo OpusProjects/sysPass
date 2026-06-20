@@ -50,7 +50,7 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
     }
 
     /**
-     * Crear el nodo con los datos
+     * Build the node with the data
      *
      * @throws ServiceException
      */

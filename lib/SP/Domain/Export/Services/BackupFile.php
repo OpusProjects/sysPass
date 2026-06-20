@@ -71,7 +71,7 @@ final class BackupFile extends Service implements BackupFileService
     }
 
     /**
-     * Realizar backup de la BBDD y aplicación.
+     * Perform a backup of the database and the application.
      *
      * @throws ServiceException
      */
@@ -106,7 +106,7 @@ final class BackupFile extends Service implements BackupFileService
     }
 
     /**
-     * Eliminar las copias de seguridad anteriores
+     * Delete the previous backups
      */
     private function deleteOldBackups(string $backupPath): void
     {
@@ -256,7 +256,7 @@ final class BackupFile extends Service implements BackupFileService
     }
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Perform a backup of the application and compress it.
      *
      * @param string $directory
      * @throws FileException

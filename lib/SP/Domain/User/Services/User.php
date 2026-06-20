@@ -317,7 +317,7 @@ final class User extends Service implements UserService
     }
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Get the email addresses of the users in a group
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -328,7 +328,7 @@ final class User extends Service implements UserService
     }
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Get the email addresses of the users in a group
      *
      * @return array<UserModel>
      */

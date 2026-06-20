@@ -64,78 +64,78 @@ interface DataGridInterface
     public function setOnCloseAction(int $action);
 
     /**
-     * Establecer la plantilla utilizada para la cabecera
+     * Set the template used for the header
      */
     public function setDataHeaderTemplate(string $template);
 
     /**
-     * Devolver la plantilla utilizada para la cabecera
+     * Return the template used for the header
      */
     public function getDataHeaderTemplate(): string;
 
     /**
-     * Establecer la plantilla utilizada para las acciones
+     * Set the template used for the actions
      */
     public function setDataActionsTemplate(string $template);
 
     /**
-     * Devolver la plantilla utilizada para las acciones
+     * Return the template used for the actions
      */
     public function getDataActionsTemplate(): ?string;
 
     /**
-     * Establecer la plantilla utilizada para el paginador
+     * Set the template used for the paginator
      */
     public function setDataPagerTemplate(string $template);
 
     /**
-     * Devolver la plantilla utilizada para el paginador
+     * Return the template used for the paginator
      */
     public function getDataPagerTemplate(): ?string;
 
     /**
-     * Establcer la plantilla utilizada para los datos de la consulta
+     * Set the template used for the query data
      */
     public function setDataRowTemplate(string $template);
 
     /**
-     * Devolver la plantilla utilizada para los datos de la consulta
+     * Return the template used for the query data
      */
     public function getDataRowTemplate(): ?string;
 
     /**
-     * Devuelve el tiempo total de carga del DataGrid
+     * Returns the total load time of the DataGrid
      */
     public function getTime(): int;
 
     /**
-     * Establece el tiempo total de carga del DataGrid
+     * Sets the total load time of the DataGrid
      */
     public function setTime(int|float $time);
 
     /**
-     * Devolver las acciones que se muestran en un menu
+     * Return the actions that are shown in a menu
      *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenu(): array;
 
     /**
-     * Devolver las acciones filtradas
+     * Return the filtered actions
      *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsFiltered(mixed $filter): array;
 
     /**
-     * Devolver las acciones de menu filtradas
+     * Return the filtered menu actions
      *
      * @return DataGridActionInterface[]
      */
     public function getDataActionsMenuFiltered(mixed $filter): array;
 
     /**
-     * Actualizar los datos del paginador
+     * Update the paginator data
      */
     public function updatePager(): DataGridInterface;
 }

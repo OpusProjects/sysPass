@@ -33,12 +33,12 @@ use Aura\SqlQuery\Common\SelectInterface;
 interface AccountFilterBuilder
 {
     /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     * Returns the filter for the SQL query of accounts a user can access
      */
     public function buildFilterHistory(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
 
     /**
-     * Devuelve el filtro para la consulta SQL de cuentas que un usuario puede acceder
+     * Returns the filter for the SQL query of accounts a user can access
      */
     public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
 }

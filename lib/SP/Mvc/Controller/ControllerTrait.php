@@ -94,7 +94,7 @@ trait ControllerTrait
     }
 
     /**
-     * Realiza el proceso de logout.
+     * Performs the logout process.
      */
     private static function logout(): never
     {
@@ -102,7 +102,7 @@ trait ControllerTrait
     }
 
     /**
-     * Acción no disponible
+     * Action not available
      *
      * @throws SPException
      */

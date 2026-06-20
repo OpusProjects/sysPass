@@ -40,7 +40,7 @@ use ValueError;
 final class Util
 {
     /**
-     * Obtener el tamaño máximo de subida de PHP.
+     * Get PHP's maximum upload size.
      */
     public static function getMaxUpload(): int
     {
@@ -65,7 +65,7 @@ final class Util
     }
 
     /**
-     * Adaptador para convertir una cadena de IDs a un array
+     * Adapter to convert a string of IDs into an array
      */
     public static function itemsIdAdapter(string $itemsId, string $delimiter = ','): array
     {

@@ -89,7 +89,7 @@ final class Track extends BaseRepository implements TrackRepository
     /**
      * Clears tracks
      *
-     * @return bool con el resultado
+     * @return bool the result
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -105,7 +105,7 @@ final class Track extends BaseRepository implements TrackRepository
     }
 
     /**
-     * Devuelve los tracks de un cliente desde un tiempo y origen determinados
+     * Returns a client's tracks from a given time and source
      *
      * @param TrackModel $track
      *

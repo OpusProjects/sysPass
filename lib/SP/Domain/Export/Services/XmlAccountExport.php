@@ -53,7 +53,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
     }
 
     /**
-     * Crear el nodo con los datos
+     * Build the node with the data
      *
      * @throws ServiceException
      */
@@ -67,7 +67,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
 
             $accounts = $this->accountService->getAllBasic();
 
-            // Crear el nodo de cuentas
+            // Build the accounts node
             $nodeAccounts = $this->document->createElement('Accounts');
 
             if ($nodeAccounts === false) {
@@ -116,7 +116,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                     $tag->setAttribute('id', (string)$itemData->getId());
                 }
 
-                // Crear el nodo de cuenta
+                // Build the account node
                 $nodeAccount = $this->document->createElement('Account');
                 $nodeAccount->setAttribute('id', (string)$account->getId());
                 $nodeAccount->appendChild($accountName);
@@ -129,7 +129,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 $nodeAccount->appendChild($accountIV);
                 $nodeAccount->appendChild($tags);
 
-                // Añadir cuenta al nodo de cuentas
+                // Add the account to the accounts node
                 $nodeAccounts->appendChild($nodeAccount);
             }
 

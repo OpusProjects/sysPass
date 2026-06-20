@@ -63,7 +63,7 @@ interface PluginRepository extends Repository
     public function update(PluginModel $plugin): int;
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @param string $name
      *
@@ -99,7 +99,7 @@ interface PluginRepository extends Repository
     public function getByIdBatch(array $pluginsId): QueryResult;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @param int $id
      * @param bool $enabled
@@ -111,7 +111,7 @@ interface PluginRepository extends Repository
     public function toggleEnabled(int $id, bool $enabled): int;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @param string $name
      * @param bool $enabled
@@ -123,7 +123,7 @@ interface PluginRepository extends Repository
     public function toggleEnabledByName(string $name, bool $enabled): int;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @param int $id
      * @param bool $available
@@ -135,7 +135,7 @@ interface PluginRepository extends Repository
     public function toggleAvailable(int $id, bool $available): int;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @param string $name
      * @param bool $available
@@ -147,9 +147,9 @@ interface PluginRepository extends Repository
     public function toggleAvailableByName(string $name, bool $available): int;
 
     /**
-     * Restablecer los datos de un plugin
+     * Reset a plugin's data
      *
-     * @param int $id Id del plugin
+     * @param int $id Plugin id
      *
      * @return int
      * @throws ConstraintException
@@ -158,7 +158,7 @@ interface PluginRepository extends Repository
     public function resetById(int $id): int;
 
     /**
-     * Devolver los plugins activados
+     * Return the enabled plugins
      *
      * @return QueryResult<T>
      * @throws ConstraintException

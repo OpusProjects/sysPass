@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core;
 
 /**
- * Interface ItemsTypeInterface para la definición de tipos de elementos
+ * Interface ItemsTypeInterface for defining item types
  *
  * @package SP\Core
  */

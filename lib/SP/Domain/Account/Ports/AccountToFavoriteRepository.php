@@ -38,9 +38,9 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountToFavoriteRepository extends Repository
 {
     /**
-     * Obtener un array con los Ids de cuentas favoritas
+     * Get an array with the Ids of favorite accounts
      *
-     * @param $id int El Id de usuario
+     * @param $id int The user Id
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -49,10 +49,10 @@ interface AccountToFavoriteRepository extends Repository
     public function getForUserId(int $id): QueryResult;
 
     /**
-     * Añadir una cuenta a la lista de favoritos
+     * Add an account to the favorites list
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
+     * @param $accountId int The account Id
+     * @param $userId    int The user Id
      *
      * @return int
      * @throws ConstraintException
@@ -61,10 +61,10 @@ interface AccountToFavoriteRepository extends Repository
     public function add(int $accountId, int $userId): int;
 
     /**
-     * Eliminar una cuenta de la lista de favoritos
+     * Remove an account from the favorites list
      *
-     * @param $accountId int El Id de la cuenta
-     * @param $userId    int El Id del usuario
+     * @param $accountId int The account Id
+     * @param $userId    int The user Id
      *
      * @return bool
      * @throws ConstraintException

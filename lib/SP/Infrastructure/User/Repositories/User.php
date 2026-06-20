@@ -393,9 +393,9 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
-     * Actualiza el último inicio de sesión del usuario en la BBDD.
+     * Updates the user's last login in the database.
      *
-     * @param $id int El id del usuario
+     * @param $id int The user id
      *
      * @return int
      * @throws QueryException
@@ -490,7 +490,7 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Returns the email addresses of the users in a group
      *
      * @param int $groupId
      *
@@ -529,7 +529,7 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
-     * Obtener el email de los usuarios
+     * Returns the email addresses of the users
      *
      * @return QueryResult<T>
      * @throws ConstraintException

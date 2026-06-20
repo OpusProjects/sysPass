@@ -157,7 +157,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @param string $name
      * @return PluginModel
@@ -178,7 +178,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -192,7 +192,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -206,7 +206,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -220,7 +220,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -234,7 +234,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Restablecer los datos de un plugin
+     * Reset a plugin's data
      *
      * @throws NoSuchItemException
      * @throws ConstraintException
@@ -248,7 +248,7 @@ final class PluginManager extends Service implements PluginManagerService
     }
 
     /**
-     * Devolver los plugins activados
+     * Return the enabled plugins
      *
      * @return array<T>
      * @throws ConstraintException

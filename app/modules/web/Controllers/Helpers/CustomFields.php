@@ -37,7 +37,7 @@ final class CustomFields
 {
 
     /**
-     * Devuelve los módulos disponibles para los campos personalizados
+     * Returns the modules available for custom fields
      */
     public static function getFieldModules(): array
     {

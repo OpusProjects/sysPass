@@ -97,7 +97,7 @@ final class Track extends Service implements TrackService
     }
 
     /**
-     * Comprobar los intentos de login
+     * Check the login attempts
      *
      * @return bool True if delay is performed, false otherwise
      * @throws Exception

@@ -70,7 +70,7 @@ abstract class LoginBase extends Service
     }
 
     /**
-     * Añadir un seguimiento
+     * Add a tracking entry
      *
      * @throws AuthException
      */

@@ -35,7 +35,7 @@ use SP\Domain\Http\Ports\RequestService;
 class UuidCookie extends Cookie implements UuidCookieInterface
 {
     /**
-     * Nombre de la cookie
+     * Cookie name
      */
     public const COOKIE_NAME = 'SYSPASS_UUID';
 

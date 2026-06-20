@@ -30,26 +30,26 @@ use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class DataGridDataBase para establecer el origen de datos de la matriz
+ * Class DataGridDataBase for setting the matrix data source
  *
  * @package SP\Html\DataGrid
  */
 abstract class DataGridDataBase implements DataGridDataInterface
 {
     /**
-     * Los datos de la matriz
+     * The matrix data
      */
     private array $data = [];
     /**
-     * Las columnas a mostrar de los datos obtenidos
+     * The columns to display from the retrieved data
      */
     private array $sources = [];
     /**
-     * La columna que identifica cada elemento de los datos de la matriz
+     * The column that identifies each element of the matrix data
      */
     private string $sourceId = '';
     /**
-     * Las columnas a mostrar de los datos obtenidos que son representadas con iconos
+     * The columns to display from the retrieved data that are represented with icons
      */
     private array $sourcesWithIcon = [];
     private int $dataCount = 0;

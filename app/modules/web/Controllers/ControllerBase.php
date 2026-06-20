@@ -52,7 +52,7 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Clase base para los controladores
+ * Base class for the controllers
  */
 abstract class ControllerBase
 {
@@ -133,7 +133,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Mostrar los datos de la plantilla
+     * Display the template data
      */
     protected function view(): void
     {
@@ -141,7 +141,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Renderizar los datos de la plantilla y devolverlos
+     * Render the template data and return it
      */
     protected function render(): string
     {
@@ -164,7 +164,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Comprobar si el usuario está logado.
+     * Check whether the user is logged in.
      *
      * @param bool $requireAuthCompleted
      *
@@ -178,7 +178,7 @@ abstract class ControllerBase
             throw new SessionTimeout();
         }
 
-        // Comprobar si se ha identificado mediante el servidor web y el usuario coincide
+        // Check whether authentication was done through the web server and the user matches
         if ($this->session->isLoggedIn()
             && $this->session->getAuthCompleted() === $requireAuthCompleted
             && $this->configData->isAuthBasicEnabled()
@@ -211,9 +211,9 @@ abstract class ControllerBase
     }
 
     /**
-     * Comprobar si está permitido el acceso al módulo/página.
+     * Check whether access to the module/page is allowed.
      *
-     * @param int $action La acción a comprobar
+     * @param int $action The action to check
      */
     protected function checkAccess(int $action): bool
     {

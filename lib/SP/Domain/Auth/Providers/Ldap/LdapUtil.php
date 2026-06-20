@@ -35,7 +35,7 @@ namespace SP\Domain\Auth\Providers\Ldap;
 final class LdapUtil
 {
     /**
-     * Obtener el nombre del grupo a partir del CN
+     * Get the group name from the CN
      *
      * @param string $group
      *

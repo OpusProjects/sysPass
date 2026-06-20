@@ -47,7 +47,7 @@ final class AccountToFavorite extends Service implements AccountToFavoriteServic
     }
 
     /**
-     * Obtener un array con los Ids de cuentas favoritas
+     * Get an array with the IDs of the favorite accounts
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -61,7 +61,7 @@ final class AccountToFavorite extends Service implements AccountToFavoriteServic
     }
 
     /**
-     * Añadir una cuenta a la lista de favoritos
+     * Add an account to the favorites list
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -72,7 +72,7 @@ final class AccountToFavorite extends Service implements AccountToFavoriteServic
     }
 
     /**
-     * Eliminar una cuenta de la lista de favoritos
+     * Remove an account from the favorites list
      *
      * @throws ConstraintException
      * @throws QueryException

@@ -37,7 +37,7 @@ use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 interface CustomFieldDataService
 {
     /**
-     * Desencriptar y formatear los datos del campo
+     * Decrypt and format the field data
      *
      * @throws ServiceException
      */
@@ -58,7 +58,7 @@ interface CustomFieldDataService
     public function updateOrCreate(CustomFieldData $customFieldData): void;
 
     /**
-     * Eliminar los datos de los campos personalizados del módulo
+     * Delete the custom field data for the module
      *
      * @throws ServiceException
      */

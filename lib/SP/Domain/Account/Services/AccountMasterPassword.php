@@ -62,7 +62,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     }
 
     /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
+     * Updates the passwords of all accounts with the new master password.
      *
      * @param UpdateMasterPassRequest $updateMasterPassRequest
      * @throws ServiceException
@@ -137,7 +137,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         $currentMasterPassHash = $updateMasterPassRequest->getCurrentHash();
 
         foreach ($accounts as $account) {
-            // No realizar cambios si está en modo demo
+            // Do not make changes if running in demo mode
             if ($configData->isDemoEnabled()) {
                 $accountsOk[] = $account->getId();
                 continue;
@@ -197,9 +197,9 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     }
 
     /**
-     * Devolver el tiempo aproximado en segundos de una operación
+     * Returns the approximate time in seconds for an operation
      *
-     * @return array Con el tiempo estimado y los elementos por segundo
+     * @return array With the estimated time and the number of items per second
      */
     public static function getETA(int $startTime, int $numItems, int $totalItems): array
     {
@@ -214,7 +214,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     }
 
     /**
-     * Actualiza las claves de todas las cuentas con la nueva clave maestra.
+     * Updates the passwords of all accounts with the new master password.
      *
      * @throws ServiceException
      */

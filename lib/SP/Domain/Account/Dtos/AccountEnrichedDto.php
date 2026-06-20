@@ -39,15 +39,15 @@ class AccountEnrichedDto extends Dto
 
     private readonly int $id;
     /**
-     * @var Item[] Los usuarios secundarios de la cuenta.
+     * @var Item[] The secondary users of the account.
      */
     private array $users = [];
     /**
-     * @var Item[] Los grupos secundarios de la cuenta.
+     * @var Item[] The secondary groups of the account.
      */
     private array $userGroups = [];
     /**
-     * @var Item[] Las etiquetas de la cuenta.
+     * @var Item[] The tags of the account.
      */
     private array $tags = [];
 

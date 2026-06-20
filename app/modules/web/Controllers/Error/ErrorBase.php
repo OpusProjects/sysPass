@@ -50,7 +50,7 @@ abstract class ErrorBase
     }
 
     /**
-     * Mostrar los datos de la plantilla
+     * Display the template data
      */
     final protected function view(): void
     {

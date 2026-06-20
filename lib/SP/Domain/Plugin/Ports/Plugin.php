@@ -33,35 +33,35 @@ use SP\Domain\Core\Events\EventReceiver;
 interface Plugin extends EventReceiver
 {
     /**
-     * Devuelve el directorio base del plugin
+     * Returns the plugin's base directory
      *
      * @return string|null
      */
     public function getBase(): ?string;
 
     /**
-     * Devuelve el directorio del tema usado
+     * Returns the directory of the theme in use
      *
      * @return string|null
      */
     public function getThemeDir(): ?string;
 
     /**
-     * Devuelve el autor del plugin
+     * Returns the plugin's author
      *
      * @return string|null
      */
     public function getAuthor(): ?string;
 
     /**
-     * Devuelve la versión del plugin
+     * Returns the plugin's version
      *
      * @return array|null
      */
     public function getVersion(): ?array;
 
     /**
-     * Devuelve la versión compatible de sysPass
+     * Returns the compatible sysPass version
      *
      * @return array|null
      */

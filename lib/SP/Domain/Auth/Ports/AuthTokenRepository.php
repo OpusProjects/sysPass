@@ -101,7 +101,7 @@ interface AuthTokenRepository extends Repository
     public function create(AuthTokenModel $authToken): QueryResult;
 
     /**
-     * Obtener el token de la API de un usuario
+     * Get a user's API token
      *
      * @param int $userId
      * @return QueryResult<T>
@@ -120,7 +120,7 @@ interface AuthTokenRepository extends Repository
     public function update(AuthTokenModel $authToken): bool;
 
     /**
-     * Regenerar el hash de los tokens de un usuario
+     * Regenerate the hash of a user's tokens
      *
      * @param int $userId
      * @param string $token
@@ -132,7 +132,7 @@ interface AuthTokenRepository extends Repository
     public function refreshTokenByUserId(int $userId, string $token): int;
 
     /**
-     * Regenerar el hash de los tokens de un usuario
+     * Regenerate the hash of a user's tokens
      *
      * @param int $userId
      * @param string $vault
@@ -145,10 +145,10 @@ interface AuthTokenRepository extends Repository
     public function refreshVaultByUserId(int $userId, string $vault, string $hash): int;
 
     /**
-     * Devolver los datos de un token
+     * Return a token's data
      *
-     * @param $actionId int El id de la accion
-     * @param $token    string El token de seguridad
+     * @param $actionId int The action id
+     * @param $token    string The security token
      *
      * @return QueryResult<T>
      */

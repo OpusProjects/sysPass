@@ -175,7 +175,7 @@ final class Init extends HttpModuleBase
 
         $isReload = $this->request->checkReload();
 
-        // Volver a cargar la configuración si se recarga la página
+        // Reload the configuration if the page is reloaded
         if ($isReload) {
             logger('Browser reload');
 
@@ -186,7 +186,7 @@ final class Init extends HttpModuleBase
         // Setup language
         $this->language->setLanguage($isReload);
 
-        // Comprobar si es necesario cambiar a HTTPS
+        // Check whether it is necessary to switch to HTTPS
         Http::checkHttps($this->configData, $this->request);
 
         $partialInit = in_array($controller, self::PARTIAL_INIT, true);
@@ -247,7 +247,7 @@ final class Init extends HttpModuleBase
             ) {
                 logger('Reload user profile');
 
-                // Recargar los permisos del perfil de usuario
+                // Reload the user profile permissions
                 $this->context->setUserProfile(
                     $this->userProfileService
                         ->getById($this->context->getUserData()->userProfileId)
@@ -270,8 +270,8 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * Comprueba que la aplicación esté instalada
-     * Esta función comprueba si la aplicación está instalada. Si no lo está, redirige al instalador.
+     * Checks that the application is installed
+     * This function checks whether the application is installed. If it is not, it redirects to the installer.
      */
     private function checkInstalled(): bool
     {
@@ -285,7 +285,7 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * Inicializar la sesión de usuario
+     * Initialize the user session
      *
      * @throws SPException
      */
@@ -327,9 +327,9 @@ final class Init extends HttpModuleBase
     }
 
     /**
-     * Obtener el timeout de sesión desde la configuración.
+     * Get the session timeout from the configuration.
      *
-     * @return int con el tiempo en segundos
+     * @return int the time in seconds
      */
     private function getSessionLifeTime(): int
     {

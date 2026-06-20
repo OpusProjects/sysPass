@@ -41,7 +41,7 @@ use function SP\__u;
 use function SP\processException;
 
 /**
- * Esta clase es la encargada de calcular las access lists de acceso a usuarios.
+ * This class is responsible for computing the access lists that govern user access.
  */
 final readonly class Acl implements AclActionsInterface, AclInterface
 {
@@ -53,13 +53,13 @@ final readonly class Acl implements AclActionsInterface, AclInterface
     }
 
     /**
-     * Obtener el nombre de la acción indicada
+     * Get the name of the given action
      *
-     * @param int $actionId El id de la acción
+     * @param int $actionId The action id
      * @param bool $translate
      *
      * @return string
-     * @internal param bool $translate Si se devuelve el nombre corto de la acción
+     * @internal param bool $translate Whether to return the action's short name
      */
     public function getInfoFor(int $actionId, bool $translate = true): string
     {
@@ -89,7 +89,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
     }
 
     /**
-     * Comprobar los permisos de acceso del usuario a los módulos de la aplicación.
+     * Check the user's access permissions for the application modules.
      */
     public function checkUserAccess(int $actionId, int $userId = 0): bool
     {
@@ -224,7 +224,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::TRACK_UNLOCK:
                 return $userProfile->isMgmUsers();
             case self::USER_EDIT_PASS:
-                // Comprobar si el usuario es distinto al de la sesión
+                // Check whether the user differs from the one in the session
                 return $userId === $userDto->id || $userProfile->isMgmUsers();
             case self::GROUP:
             case self::GROUP_SEARCH:

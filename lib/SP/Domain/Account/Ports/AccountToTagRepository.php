@@ -38,7 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountToTagRepository extends Repository
 {
     /**
-     * Devolver las etiquetas de una cuenta
+     * Return the tags of an account
      *
      * @param int $id
      *
@@ -49,7 +49,7 @@ interface AccountToTagRepository extends Repository
     public function getTagsByAccountId(int $id): QueryResult;
 
     /**
-     * Eliminar las etiquetas de una cuenta
+     * Delete the tags of an account
      *
      * @param int $id
      *
@@ -60,7 +60,7 @@ interface AccountToTagRepository extends Repository
     public function deleteByAccountId(int $id): bool;
 
     /**
-     * Actualizar las etiquetas de una cuenta
+     * Update the tags of an account
      *
      * @param int $accountId
      * @param array $tags

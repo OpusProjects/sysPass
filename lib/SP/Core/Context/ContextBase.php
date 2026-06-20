@@ -123,7 +123,7 @@ abstract class ContextBase implements Context
     }
 
     /**
-     * Devolver una variable de contexto
+     * Return a context variable
      *
      * @throws ContextException
      */

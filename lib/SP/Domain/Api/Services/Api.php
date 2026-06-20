@@ -136,7 +136,7 @@ final class Api extends Service implements ApiService
     }
 
     /**
-     * Añadir un seguimiento
+     * Add a tracking entry
      *
      * @throws ServiceException
      */
@@ -157,11 +157,11 @@ final class Api extends Service implements ApiService
     }
 
     /**
-     * Devolver el valor de un parámetro
+     * Return the value of a parameter
      *
      * @param string $param
-     * @param bool $required Si es requerido
-     * @param mixed|null $default Valor por defecto
+     * @param bool $required Whether it is required
+     * @param mixed|null $default Default value
      *
      * @return mixed
      * @throws ServiceException
@@ -181,7 +181,7 @@ final class Api extends Service implements ApiService
     }
 
     /**
-     * Devuelve la ayuda para una acción
+     * Return the help for an action
      *
      * @param string $action
      *
@@ -239,7 +239,7 @@ final class Api extends Service implements ApiService
     }
 
     /**
-     * Devolver la clave maestra
+     * Return the master password
      *
      * @throws ServiceException
      */

@@ -118,7 +118,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
     }
 
     /**
-     * Comprobar el hash de recuperación de clave.
+     * Checks the password recovery hash.
      *
      * @param string $hash
      * @param int $time

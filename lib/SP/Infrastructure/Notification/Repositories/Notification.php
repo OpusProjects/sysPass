@@ -314,7 +314,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     }
 
     /**
-     * Marcar una notificación como leída
+     * Marks a notification as read
      *
      * @param int $id
      *
@@ -337,7 +337,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     }
 
     /**
-     * Devolver las notificaciones de un usuario para una fecha y componente determinados
+     * Returns the notifications for a user for a given date and component
      *
      * @param string $component
      * @param int $userId

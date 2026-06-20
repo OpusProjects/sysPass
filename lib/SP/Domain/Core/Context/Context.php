@@ -45,27 +45,27 @@ interface Context
     public function isInitialized(): bool;
 
     /**
-     * Establecer la hora de carga de la configuración
+     * Set the configuration load time
      */
     public function setConfigTime(int $time);
 
     /**
-     * Devolver la hora de carga de la configuración
+     * Return the configuration load time
      */
     public function getConfigTime(): int;
 
     /**
-     * Establece los datos del usuario en la sesión.
+     * Set the user data in the session.
      */
     public function setUserData(?UserDto $userDataDto = null);
 
     /**
-     * Obtiene el objeto de perfil de usuario de la sesión.
+     * Get the user profile object from the session.
      */
     public function getUserProfile(): ?ProfileData;
 
     /**
-     * Establece el objeto de perfil de usuario en la sesión.
+     * Set the user profile object in the session.
      */
     public function setUserProfile(ProfileData $profileData);
 
@@ -75,32 +75,32 @@ interface Context
     public function isLoggedIn(): bool;
 
     /**
-     * Devuelve los datos del usuario en la sesión.
+     * Return the user data in the session.
      */
     public function getUserData(): UserDto;
 
     /**
-     * Establecer el lenguaje de la sesión
+     * Set the session language
      */
     public function setLocale(string $locale);
 
     /**
-     * Devuelve el lenguaje de la sesión
+     * Return the session language
      */
     public function getLocale(): ?string;
 
     /**
-     * Devuelve el estado de la aplicación
+     * Return the application status
      */
     public function getAppStatus(): ?string;
 
     /**
-     * Establecer el estado de la aplicación
+     * Set the application status
      */
     public function setAppStatus(string $status);
 
     /**
-     * Reset del estado de la aplicación
+     * Reset the application status
      */
     public function resetAppStatus(): ?bool;
 
@@ -110,7 +110,7 @@ interface Context
     public function getAccountsCache(): ?array;
 
     /**
-     * Establece la cache de cuentas
+     * Set the accounts cache
      *
      * @param array $accountsCache
      */

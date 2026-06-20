@@ -57,11 +57,11 @@ use function SP\processException;
 final class TemporaryMasterPass extends Service implements TemporaryMasterPassService
 {
     /**
-     * Número máximo de intentos
+     * Maximum number of attempts
      */
     public const MAX_ATTEMPTS = 50;
     /**
-     * Parámetros de configuración
+     * Configuration parameters
      */
     private const PARAM_PASS     = 'tempmaster_pass';
     private const PARAM_KEY      = 'tempmaster_passkey';
@@ -84,9 +84,9 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
 
     /**
-     * Crea una clave temporal para encriptar la clave maestra y guardarla.
+     * Creates a temporary key to encrypt the master password and store it.
      *
-     * @param int $maxTime El tiempo máximo de validez de la clave
+     * @param int $maxTime The maximum validity time of the key
      *
      * @return string
      * @throws ServiceException
@@ -96,7 +96,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         try {
             $this->maxTime = time() + $maxTime;
 
-            // Encriptar la clave maestra con hash aleatorio generado
+            // Encrypt the master password with a randomly generated hash
             $randomKey = Password::generateRandomBytes(32);
             $secureKey = $this->crypt->makeSecuredKey($randomKey);
 
@@ -113,7 +113,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
             $this->configService->saveBatch($configRequest);
 
-            // Guardar la clave temporal hasta que finalice la sesión
+            // Store the temporary key until the session ends
             $this->context->setTemporaryMasterPass($randomKey);
 
             $this->eventDispatcher->notify(
@@ -133,9 +133,9 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     }
 
     /**
-     * Comprueba si la clave temporal es válida
+     * Checks whether the temporary key is valid
      *
-     * @param string $key clave a comprobar
+     * @param string $key key to check
      *
      * @return bool
      * @throws ServiceException
@@ -145,7 +145,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
         try {
             $passMaxTime = (int)$this->configService->getByParam(self::PARAM_MAX_TIME);
 
-            // Comprobar si el tiempo de validez o los intentos se han superado
+            // Check whether the validity time or the number of attempts has been exceeded
             if ($passMaxTime === 0) {
                 $this->eventDispatcher->notify(
                     'check.tempMasterPassword',
@@ -270,11 +270,11 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
     }
 
     /**
-     * Devuelve la clave maestra que ha sido encriptada con la clave temporal
+     * Returns the master password that was encrypted with the temporary key
      *
-     * @param $key string con la clave utilizada para encriptar
+     * @param $key string with the key used to encrypt
      *
-     * @return string con la clave maestra desencriptada
+     * @return string with the decrypted master password
      * @throws NoSuchItemException
      * @throws ServiceException
      * @throws CryptException

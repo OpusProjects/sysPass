@@ -56,10 +56,10 @@ final readonly class MysqlSetup implements DatabaseSetupService
     }
 
     /**
-     * Conectar con la BBDD
+     * Connect to the database
      *
-     * Comprobar si la conexión con la base de datos para sysPass es posible con
-     * los datos facilitados.
+     * Check whether the connection to the sysPass database is possible with
+     * the provided details.
      *
      * @throws SPException
      */
@@ -90,7 +90,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         $pass = Password::randomPassword();
 
         try {
-            // Comprobar si el usuario proporcionado existe
+            // Check whether the provided user exists
             $sth = $this->dbStorage->getConnectionSimple()
                                    ->prepare(
                                        'SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)'
@@ -102,7 +102,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                               $this->installData->getDbAuthHostDns(),
                           ]);
 
-            // Si no existe el usuario, se intenta crear
+            // If the user does not exist, try to create it
             if ((int)$sth->fetchColumn() === 0) {
                 $this->createDBUser($user, $pass);
             }
@@ -122,8 +122,8 @@ final readonly class MysqlSetup implements DatabaseSetupService
     }
 
     /**
-     * Crear el usuario para conectar con la base de datos.
-     * Esta función crea el usuario para conectar con la base de datos.
+     * Create the user to connect to the database.
+     * This function creates the user used to connect to the database.
      *
      * @throws SPException
      */
@@ -177,7 +177,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
     }
 
     /**
-     * Crear la base de datos
+     * Create the database
      *
      * @throws SPException
      */
@@ -390,7 +390,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
     }
 
     /**
-     * Comprobar la conexión a la BBDD
+     * Check the connection to the database
      *
      * @throws SPException
      */

@@ -49,7 +49,7 @@ final class AccountCache extends Service implements AccountCacheService
     }
 
     /**
-     * Devolver los accesos desde la caché
+     * Return the access entries from the cache
      *
      * @param int $accountId The account's ID
      * @param int $dateEdit The account's date edit

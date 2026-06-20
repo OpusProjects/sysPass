@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 interface FormInterface
 {
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param  int  $action
      * @param  int|null  $id

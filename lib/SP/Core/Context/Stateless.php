@@ -47,7 +47,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Establece los datos del usuario en la sesión.
+     * Sets the user data in the session.
      */
     public function setUserData(?UserDto $userDto = null): void
     {
@@ -69,7 +69,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Obtiene el objeto de perfil de usuario de la sesión.
+     * Gets the user profile object from the session.
      */
     public function getUserProfile(): ?ProfileData
     {
@@ -91,7 +91,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Establece el objeto de perfil de usuario en la sesión.
+     * Sets the user profile object in the session.
      */
     public function setUserProfile(ProfileData $profileData): void
     {
@@ -107,7 +107,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Devuelve los datos del usuario en la sesión.
+     * Returns the user data in the session.
      */
     public function getUserData(): UserDto
     {
@@ -115,7 +115,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Establecer el lenguaje de la sesión
+     * Sets the session language
      */
     public function setLocale(string $locale): void
     {
@@ -123,7 +123,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Devuelve el lenguaje de la sesión
+     * Returns the session language
      */
     public function getLocale(): ?string
     {
@@ -131,7 +131,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Devuelve el estado de la aplicación
+     * Returns the application status
      */
     public function getAppStatus(): ?string
     {
@@ -139,7 +139,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Establecer el estado de la aplicación
+     * Sets the application status
      */
     public function setAppStatus(string $status): void
     {
@@ -147,7 +147,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Reset del estado de la aplicación
+     * Resets the application status
      *
      * @return bool|null
      */
@@ -161,7 +161,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Establecer la hora de carga de la configuración
+     * Sets the configuration load time
      */
     public function setConfigTime(int $time): void
     {
@@ -169,7 +169,7 @@ class Stateless extends ContextBase
     }
 
     /**
-     * Devolver la hora de carga de la configuración
+     * Returns the configuration load time
      */
     public function getConfigTime(): int
     {

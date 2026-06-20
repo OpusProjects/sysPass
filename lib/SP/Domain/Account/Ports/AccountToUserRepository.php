@@ -38,9 +38,9 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountToUserRepository extends Repository
 {
     /**
-     * Eliminar la asociación de grupos con cuentas.
+     * Delete the association of groups with accounts.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      * @param bool $isEdit
      *
      * @return void
@@ -50,7 +50,7 @@ interface AccountToUserRepository extends Repository
     public function deleteTypeByAccountId(int $id, bool $isEdit): void;
 
     /**
-     * Crear asociación de usuarios con cuentas.
+     * Create an association of users with accounts.
      *
      * @param int $accountId
      * @param array $items
@@ -63,9 +63,9 @@ interface AccountToUserRepository extends Repository
     public function addByType(int $accountId, array $items, bool $isEdit = false): void;
 
     /**
-     * Eliminar la asociación de grupos con cuentas.
+     * Delete the association of groups with accounts.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      *
      * @return bool
      * @throws ConstraintException
@@ -74,9 +74,9 @@ interface AccountToUserRepository extends Repository
     public function deleteByAccountId(int $id): bool;
 
     /**
-     * Obtiene el listado de usuarios de una cuenta.
+     * Get the list of users of an account.
      *
-     * @param int $id con el id de la cuenta
+     * @param int $id the account ID
      *
      * @return QueryResult
      * @throws ConstraintException

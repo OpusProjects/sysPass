@@ -91,7 +91,7 @@ abstract class ControllerBase
     }
 
     /**
-     * Devuelve una respuesta en formato JSON con el estado y el mensaje.
+     * Returns a response in JSON format with the status and the message.
      *
      * {"jsonrpc": "2.0", "result": 19, "id": 3}
      */

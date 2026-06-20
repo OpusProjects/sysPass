@@ -26,8 +26,8 @@ declare(strict_types=1);
 namespace SP\Domain\Import\Ports;
 
 /**
- * Clase XmlImport para usarla como envoltorio para llamar a la clase que corresponda
- * según el tipo de archivo XML detectado.
+ * XmlImport class used as a wrapper to call the appropriate class
+ * depending on the detected XML file type.
  *
  * @package SP
  */

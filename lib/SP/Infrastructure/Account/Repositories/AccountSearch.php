@@ -104,7 +104,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
-     * Obtener las cuentas de una búsqueda.
+     * Get the accounts matching a search.
      *
      * @param AccountSearchFilterDto $accountSearchFilter
      *
@@ -247,7 +247,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
-     * Devuelve la cadena de ordenación de la consulta
+     * Returns the ordering clause for the query
      */
     private function setOrder(AccountSearchFilterDto $filter): void
     {

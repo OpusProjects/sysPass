@@ -43,7 +43,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface AccountRepository extends Repository
 {
     /**
-     * Devolver el número total de cuentas
+     * Returns the total number of accounts
      *
      * @throws QueryException
      * @throws ConstraintException
@@ -69,7 +69,7 @@ interface AccountRepository extends Repository
     public function getPasswordHistoryForId(int $accountId): QueryResult;
 
     /**
-     * Incrementa el contador de vista de clave de una cuenta en la BBDD
+     * Increments the password-view counter of an account in the database
      *
      * @param int $accountId
      *
@@ -80,7 +80,7 @@ interface AccountRepository extends Repository
     public function incrementDecryptCounter(int $accountId): QueryResult;
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates the password of an account in the database.
      *
      * @param int $accountId
      * @param Account $account
@@ -92,7 +92,7 @@ interface AccountRepository extends Repository
     public function editPassword(int $accountId, Account $account): QueryResult;
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates the password of an account in the database.
      *
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
@@ -104,7 +104,7 @@ interface AccountRepository extends Repository
     public function updatePassword(int $accountId, EncryptedPassword $encryptedPassword): QueryResult;
 
     /**
-     * Restaurar una cuenta desde el histórico.
+     * Restores an account from the history.
      *
      * @param int $accountId
      * @param Account $account
@@ -129,7 +129,7 @@ interface AccountRepository extends Repository
     public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
 
     /**
-     * Incrementa el contador de visitas de una cuenta en la BBDD
+     * Increments the visit counter of an account in the database
      *
      * @param int $accountId
      *
@@ -140,7 +140,7 @@ interface AccountRepository extends Repository
     public function incrementViewCounter(int $accountId): QueryResult;
 
     /**
-     * Obtener los datos de una cuenta.
+     * Retrieves the data of an account.
      *
      * @param int $accountId
      *
@@ -169,7 +169,7 @@ interface AccountRepository extends Repository
     public function getLinked(int $accountId): QueryResult;
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Retrieves the password-related data of all accounts.
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -178,7 +178,7 @@ interface AccountRepository extends Repository
     public function getAccountsPassData(): QueryResult;
 
     /**
-     * Crea una nueva cuenta en la BBDD
+     * Creates a new account in the database
      *
      * @param Account $account
      *
@@ -189,7 +189,7 @@ interface AccountRepository extends Repository
     public function create(Account $account): QueryResult;
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes the data of an account in the database.
      *
      * @param int $accountId
      *

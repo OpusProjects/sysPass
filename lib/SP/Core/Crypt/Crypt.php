@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 class Crypt implements CryptInterface
 {
     /**
-     * Securiza una clave de seguridad
+     * Secures a security key
      *
      * @param string $password
      * @param bool $useAscii
@@ -64,7 +64,7 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * Encriptar datos con una clave segura
+     * Encrypt data with a secured key
      *
      * @param string $data
      * @param string|Key $securedKey
@@ -114,7 +114,7 @@ class Crypt implements CryptInterface
     }
 
     /**
-     * Desencriptar datos con una clave segura
+     * Decrypt data with a secured key
      *
      * @param string $data
      * @param string|Key|KeyProtectedByPassword $securedKey

@@ -48,7 +48,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
     /**
      * Clears the event log
      *
-     * @return bool con el resultado
+     * @return bool the result
      * @throws QueryException
      * @throws ConstraintException
      */

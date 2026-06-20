@@ -33,14 +33,14 @@ namespace SP\Domain\Core\UI;
 interface ThemeInterface
 {
     /**
-     * Obtener los temas disponibles desde el directorio de temas
+     * Get the available themes from the themes directory
      *
-     * @return array Con la información del tema
+     * @return array With the theme information
      */
     public function getAvailable(): array;
 
     /**
-     * Obtener la información del tema desde el archivo de información
+     * Get the theme information from the information file
      *
      * @return array (
      *          'name' => string

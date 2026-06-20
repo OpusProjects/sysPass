@@ -26,14 +26,14 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid;
 
 /**
- * Class DataGridTab para crear una matriz de datos a usar en pestañas
+ * Class DataGridTab to create a data matrix for use in tabs
  *
  * @package SP\Html\DataGrid
  */
 final class DataGridTab extends DataGridBase
 {
     /**
-     * Título de la pestaña
+     * Tab title
      */
     private string $title = '';
 

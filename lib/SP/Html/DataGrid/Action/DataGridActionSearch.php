@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid\Action;
 
 /**
- * Class DataGridActionSearch para definir una acción de búsqueda de datos
+ * Class DataGridActionSearch for defining a data search action
  *
  * @package SP\Html\DataGrid
  */
@@ -35,7 +35,7 @@ final class DataGridActionSearch extends DataGridActionBase
     private string $onSubmitFunction = '';
 
     /**
-     * Los argumentos de la función OnSubmit
+     * The arguments for the OnSubmit function
      */
     private array $onSubmitArgs = [];
 

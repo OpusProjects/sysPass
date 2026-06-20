@@ -27,18 +27,18 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid\Layout;
 
 /**
- * Class DataGridHeaderBase para establecer las cabeceras de la matriz
+ * Class DataGridHeaderBase for setting the headers of the data array
  *
  * @package SP\Html\DataGrid
  */
 abstract class DataGridHeaderBase implements DataGridHeaderInterface
 {
     /**
-     * Las cabeceras que identifican las columnas de datos
+     * The headers that identify the data columns
      */
     private array $headers = [];
     /**
-     * El ancho de las columnas
+     * The width of the columns
      */
     private int $width = 0;
 

@@ -47,8 +47,8 @@ abstract class HttpModuleBase extends ModuleBase
     }
 
     /**
-     * Comprobar si el modo mantenimiento está activado
-     * Esta función comprueba si el modo mantenimiento está activado.
+     * Check whether maintenance mode is enabled
+     * This function checks whether maintenance mode is enabled.
      *
      * @return bool
      * @throws SPException

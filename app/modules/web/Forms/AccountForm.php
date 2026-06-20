@@ -54,7 +54,7 @@ final class AccountForm extends FormBase implements FormInterface
     }
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param int $action
      * @param int|null $id
@@ -103,7 +103,7 @@ final class AccountForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return AccountCreateDto|AccountUpdateDto
      * @throws SPException

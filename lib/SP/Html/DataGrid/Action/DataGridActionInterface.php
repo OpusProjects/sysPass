@@ -88,7 +88,7 @@ interface DataGridActionInterface
     public function getRuntimeFilter(): ?callable;
 
     /**
-     * Establecer el método reflexivo que determina si se muestra la acción
+     * Set the reflective method that determines whether the action is displayed
      */
     public function setRuntimeFilter(string $class, string $method): DataGridActionInterface;
 

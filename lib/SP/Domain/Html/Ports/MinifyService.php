@@ -33,17 +33,17 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 interface MinifyService
 {
     /**
-     * Devolver al navegador archivos CSS y JS comprimidos
-     * Método que devuelve un recurso CSS o JS comprimido. Si coincide el ETAG se
-     * devuelve el código HTTP/304
+     * Return compressed CSS and JS files to the browser
+     * Method that returns a compressed CSS or JS resource. If the ETAG matches,
+     * the HTTP/304 code is returned
      */
     public function getMinified(): void;
 
     /**
-     * Añadir un archivo
+     * Add a file
      *
      * @param FileHandlerInterface $fileHandler
-     * @param bool $minify Si es necesario reducir
+     * @param bool $minify Whether minification is needed
      *
      * @return MinifyService
      */

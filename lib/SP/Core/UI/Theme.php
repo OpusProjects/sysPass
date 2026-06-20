@@ -62,7 +62,7 @@ final readonly class Theme implements ThemeInterface
     }
 
     /**
-     * Obtener los temas disponibles desde el directorio de temas
+     * Get the available themes from the themes directory
      */
     public function getAvailable(): array
     {
@@ -96,7 +96,7 @@ final readonly class Theme implements ThemeInterface
     }
 
     /**
-     * Obtener la información del tema desde el archivo de información
+     * Get the theme information from the info file
      *
      * @return array (
      *          'name' => string

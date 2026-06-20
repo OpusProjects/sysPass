@@ -50,7 +50,7 @@ use function SP\processException;
 class Request implements RequestService
 {
     /**
-     * @var array Directorios seguros para include
+     * @var array Directories that are safe to include
      */
     public const SECURE_DIRS = ['css', 'js'];
 
@@ -90,7 +90,7 @@ class Request implements RequestService
     }
 
     /**
-     * Devuelve un nombre de archivo seguro
+     * Return a safe file name
      */
     public static function getSecureAppFile(string $file, ?string $base = null): string
     {
@@ -98,7 +98,7 @@ class Request implements RequestService
     }
 
     /**
-     * Devolver una ruta segura para
+     * Return a safe path for
      */
     public static function getSecureAppPath(string $path, ?string $base = null): string
     {
@@ -172,7 +172,7 @@ class Request implements RequestService
     }
 
     /**
-     * Comprobar si se realiza una recarga de la página
+     * Check whether the page is being reloaded
      */
     public function checkReload(): bool
     {
@@ -189,7 +189,7 @@ class Request implements RequestService
     }
 
     /**
-     * Analizar un valor encriptado y devolverlo desencriptado
+     * Analyze an encrypted value and return it decrypted
      */
     public function analyzeEncrypted(string $param): ?string
     {
@@ -264,7 +264,7 @@ class Request implements RequestService
     }
 
     /**
-     * Comprobar si la petición es en formato JSON
+     * Check whether the request is in JSON format
      */
     public function isJson(): bool
     {
@@ -272,7 +272,7 @@ class Request implements RequestService
     }
 
     /**
-     * Comprobar si la petición es Ajax
+     * Check whether the request is an Ajax request
      */
     public function isAjax(): bool
     {
@@ -376,7 +376,7 @@ class Request implements RequestService
     }
 
     /**
-     * Devolver datos de forward RFC 7239
+     * Return forward data per RFC 7239
      *
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
      */
@@ -417,7 +417,7 @@ class Request implements RequestService
     }
 
     /**
-     * Devolver datos de x-forward
+     * Return x-forward data
      */
     public function getXForwardedData(): ?array
     {

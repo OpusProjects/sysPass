@@ -55,7 +55,7 @@ final class AccountsUserController extends SimpleControllerBase
     }
 
     /**
-     * Devolver las cuentas visibles por el usuario
+     * Return the accounts visible to the user
      *
      * @param  int|null  $accountId
      *

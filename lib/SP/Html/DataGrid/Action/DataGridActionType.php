@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid\Action;
 
 /**
- * Class DataGridActionType para definir los tipos de acciones
+ * Class DataGridActionType for defining the action types
  *
  * @package SP\Html\DataGrid
  */

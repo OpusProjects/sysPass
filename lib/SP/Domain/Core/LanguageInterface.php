@@ -28,36 +28,36 @@ namespace SP\Domain\Core;
 
 
 /**
- * Class Language para el manejo del lenguaje utilizado por la aplicación
+ * Class Language for handling the language used by the application
  *
  * @package SP
  */
 interface LanguageInterface
 {
     /**
-     * Devolver los lenguajes disponibles
+     * Return the available languages
      */
     public static function getAvailableLanguages(): array;
 
     /**
-     * Establecer el lenguaje a utilizar
+     * Set the language to use
      *
-     * @param bool $force Forzar la detección del lenguaje para los inicios de sesión
+     * @param bool $force Force language detection for session logins
      */
     public function setLanguage(bool $force = false): void;
 
     /**
-     * Establecer las locales de gettext
+     * Set the gettext locales
      */
     public function setLocales(string $lang): void;
 
     /**
-     * Establecer el lenguaje global para las traducciones
+     * Set the global language for translations
      */
     public function setAppLocales(): void;
 
     /**
-     * Restablecer el lenguaje global para las traducciones
+     * Reset the global language for translations
      */
     public function unsetAppLocales(): void;
 }

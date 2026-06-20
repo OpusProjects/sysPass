@@ -31,12 +31,12 @@ use SP\Domain\Database\Ports\DbStorageHandler;
 use function SP\processException;
 
 /**
- * Class DBUtil con utilidades de la BD
+ * Class DBUtil with database utilities
  */
 class DatabaseUtil
 {
     /**
-     * @var array Tablas de la BBDD
+     * @var array Database tables
      */
     public const TABLES = [
         'Client',
@@ -76,7 +76,7 @@ class DatabaseUtil
     }
 
     /**
-     * Comprobar que la base de datos existe.
+     * Check that the database exists.
      */
     public function checkDatabaseTables(string $dbName): bool
     {
@@ -128,7 +128,7 @@ class DatabaseUtil
     }
 
     /**
-     * Obtener la información del servidor de base de datos
+     * Get the database server information
      */
     public function getDBinfo(): array
     {
@@ -155,7 +155,7 @@ class DatabaseUtil
     }
 
     /**
-     * Escapar una cadena de texto con funciones de mysqli.
+     * Escape a text string using mysqli functions.
      */
     public function escape(string $str): string
     {

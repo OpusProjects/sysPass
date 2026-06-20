@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Html\DataGrid\Action;
 
 /**
- * Class DataGridAction para crear una acción para cada elemento de la matriz de datos
+ * Class DataGridAction for creating an action for each item in the data grid
  */
 final class DataGridAction extends DataGridActionBase
 {

@@ -35,7 +35,7 @@ use SP\Infrastructure\Database\DbStorageDriver;
 interface DbStorageHandler
 {
     /**
-     * Obtener una conexión PDO
+     * Get a PDO connection
      *
      * @return PDO
      * @throws DatabaseException
@@ -43,7 +43,7 @@ interface DbStorageHandler
     public function getConnection(): PDO;
 
     /**
-     * Obtener una conexión PDO sin seleccionar la BD
+     * Get a PDO connection without selecting the database
      *
      * @return PDO
      * @throws DatabaseException

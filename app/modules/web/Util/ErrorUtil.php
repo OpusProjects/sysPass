@@ -41,7 +41,7 @@ use function SP\processException;
 final class ErrorUtil
 {
     /**
-     * Constantes de errores
+     * Error constants
      */
     public const ERR_UNAVAILABLE             = 0;
     public const ERR_ACCOUNT_NO_PERMISSION   = 1;
@@ -51,7 +51,7 @@ final class ErrorUtil
     public const ERR_EXCEPTION               = 5;
 
     /**
-     * Establecer la plantilla de error con el código indicado.
+     * Set the error template with the given code.
      *
      * @param TemplateInterface $view
      * @param Exception $e
@@ -80,10 +80,10 @@ final class ErrorUtil
     }
 
     /**
-     * Establecer la plantilla de error con el código indicado.
+     * Set the error template with the given code.
      *
      * @param TemplateInterface $view
-     * @param int $type int con el tipo de error
+     * @param int $type int with the error type
      * @param bool $render
      * @param string|null $replace
      */

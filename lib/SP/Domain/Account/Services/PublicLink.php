@@ -60,7 +60,7 @@ use function SP\__u;
 final class PublicLink extends Service implements PublicLinkService
 {
     /**
-     * Tipos de enlaces
+     * Link types
      */
     public const TYPE_ACCOUNT = 1;
 
@@ -83,7 +83,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Generar el hash para el enlace
+     * Generate the hash for the link
      */
     public static function createLinkHash(): string
     {
@@ -174,7 +174,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Obtener los datos de una cuenta y encriptarlos para el enlace
+     * Get an account's data and encrypt it for the link
      *
      * @param int $itemId
      * @param PublicLinkKey $key
@@ -205,7 +205,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Devolver el tiempo de caducidad del enlace
+     * Return the link's expiration time
      */
     public static function calcDateExpire(ConfigFileService $config): int
     {
@@ -266,7 +266,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Incrementar el contador de visitas de un enlace
+     * Increment a link's view counter
      *
      * @param PublicLinkModel $publicLink
      *
@@ -296,7 +296,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Actualizar la información de uso
+     * Update the usage information
      */
     public static function getUseInfo(string $hash, RequestService $request): array
     {
@@ -324,7 +324,7 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
-     * Devolver el hash asociado a un elemento
+     * Return the hash associated with an item
      *
      * @param int $id
      *

@@ -114,7 +114,7 @@ interface PluginManagerService
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @throws NoSuchItemException
      * @throws ConstraintException
@@ -123,7 +123,7 @@ interface PluginManagerService
     public function getByName(string $name): Plugin;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -132,7 +132,7 @@ interface PluginManagerService
     public function toggleEnabled(int $id, bool $enabled): void;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -141,7 +141,7 @@ interface PluginManagerService
     public function toggleEnabledByName(string $name, bool $enabled): void;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -150,7 +150,7 @@ interface PluginManagerService
     public function toggleAvailable(int $id, bool $available): void;
 
     /**
-     * Cambiar el estado del plugin
+     * Toggle the plugin's status
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -159,7 +159,7 @@ interface PluginManagerService
     public function toggleAvailableByName(string $name, bool $available): void;
 
     /**
-     * Restablecer los datos de un plugin
+     * Reset a plugin's data
      *
      * @throws NoSuchItemException
      * @throws ConstraintException
@@ -168,7 +168,7 @@ interface PluginManagerService
     public function resetById(int $id): void;
 
     /**
-     * Devolver los plugins activados
+     * Return the enabled plugins
      *
      * @return Item[]
      * @throws ConstraintException

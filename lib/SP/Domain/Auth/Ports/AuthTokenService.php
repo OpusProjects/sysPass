@@ -107,7 +107,7 @@ interface AuthTokenService
     public function updateRaw(AuthTokenModel $authToken): void;
 
     /**
-     * Devolver los datos de un token
+     * Return a token's data
      *
      * @throws ConstraintException
      * @throws NoSuchItemException

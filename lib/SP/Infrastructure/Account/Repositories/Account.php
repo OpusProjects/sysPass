@@ -66,7 +66,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Devolver el número total de cuentas
+     * Return the total number of accounts
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -135,7 +135,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Incrementa el contador de vista de clave de una cuenta en la BBDD
+     * Increments the password view counter of an account in the database
      *
      * @param int $accountId
      *
@@ -156,7 +156,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Crea una nueva cuenta en la BBDD
+     * Creates a new account in the database
      *
      * @param AccountModel $account
      *
@@ -200,7 +200,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates the password of an account in the database.
      *
      * @param int $accountId
      * @param AccountModel $account
@@ -226,7 +226,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Actualiza la clave de una cuenta en la BBDD.
+     * Updates the password of an account in the database.
      *
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
@@ -250,7 +250,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Restaurar una cuenta desde el histórico.
+     * Restore an account from history.
      *
      * @param int $accountId
      * @param AccountModel $account
@@ -287,7 +287,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Elimina los datos de una cuenta en la BBDD.
+     * Deletes the data of an account in the database.
      *
      * @param int $accountId
      *
@@ -544,7 +544,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Incrementa el contador de visitas de una cuenta en la BBDD
+     * Increments the visit counter of an account in the database
      *
      * @param int $accountId
      *
@@ -565,7 +565,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Obtener los datos de una cuenta.
+     * Get the data of an account.
      *
      * @param int $accountId
      *
@@ -652,7 +652,7 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * Obtener los datos relativos a la clave de todas las cuentas.
+     * Get the password-related data of all accounts.
      *
      * @return QueryResult
      * @throws ConstraintException

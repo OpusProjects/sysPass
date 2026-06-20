@@ -149,7 +149,7 @@ interface NotificationRepository extends Repository
     public function searchForAdmin(ItemSearchDto $itemSearchData, int $userId): QueryResult;
 
     /**
-     * Marcar una notificación como leída
+     * Marks a notification as read
      *
      * @param int $id
      *
@@ -160,7 +160,7 @@ interface NotificationRepository extends Repository
     public function setCheckedById(int $id): int;
 
     /**
-     * Devolver las notificaciones de un usuario para una fecha y componente determinados
+     * Returns the notifications for a user matching a given date and component
      *
      * @param string $component
      * @param int $userId

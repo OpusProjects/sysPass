@@ -165,7 +165,7 @@ class ConfigFile implements ConfigFileService
     }
 
     /**
-     * Guardar la configuración
+     * Save the configuration
      *
      * @param ConfigDataInterface $configData
      * @param bool|null $commit
@@ -213,7 +213,7 @@ class ConfigFile implements ConfigFileService
     }
 
     /**
-     * Cargar la configuración desde el contexto
+     * Load the configuration from the context
      *
      * @throws ConfigException
      */

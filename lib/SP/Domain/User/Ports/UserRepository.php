@@ -97,9 +97,9 @@ interface UserRepository extends Repository
     public function updateMasterPassById(int $id, string $pass, string $key): int;
 
     /**
-     * Actualiza el último inicio de sesión del usuario en la BBDD.
+     * Updates the user's last login in the database.
      *
-     * @param $id int El id del usuario
+     * @param $id int The user's id
      *
      * @return int
      * @throws QueryException
@@ -139,7 +139,7 @@ interface UserRepository extends Repository
     public function updatePreferencesById(int $id, UserPreferences $userPreferences): int;
 
     /**
-     * Obtener el email de los usuarios de un grupo
+     * Get the email addresses of the users in a group
      *
      * @param int $groupId
      *
@@ -151,7 +151,7 @@ interface UserRepository extends Repository
     public function getUserEmailForGroup(int $groupId): QueryResult;
 
     /**
-     * Obtener el email de los usuarios
+     * Get the email addresses of the users
      *
      * @return QueryResult<T>
      */

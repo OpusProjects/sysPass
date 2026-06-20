@@ -48,11 +48,11 @@ use function SP\__u;
 final class UserPassRecover extends Service implements UserPassRecoverService
 {
     /**
-     * Tiempo máximo para recuperar la clave
+     * Maximum time allowed to recover the password
      */
     private const MAX_PASS_RECOVER_TIME = 3600;
     /**
-     * Número de intentos máximos para recuperar la clave
+     * Maximum number of attempts allowed to recover the password
      */
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
@@ -113,7 +113,7 @@ final class UserPassRecover extends Service implements UserPassRecoverService
     }
 
     /**
-     * Comprobar el límite de recuperaciones de clave.
+     * Check the password recovery limit.
      *
      * @throws ConstraintException
      * @throws QueryException
@@ -135,7 +135,7 @@ final class UserPassRecover extends Service implements UserPassRecoverService
     }
 
     /**
-     * Comprobar el hash de recuperación de clave.
+     * Check the password recovery hash.
      *
      * @param string $hash
      * @return int

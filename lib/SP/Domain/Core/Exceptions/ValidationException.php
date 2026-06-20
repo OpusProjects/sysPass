@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class ValidationException para excepciones en validación de formularios
+ * Class ValidationException for form validation exceptions
  *
  * @package SP\Domain\Core\Exceptions
  */

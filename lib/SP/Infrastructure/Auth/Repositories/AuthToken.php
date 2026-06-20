@@ -231,7 +231,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     }
 
     /**
-     * Obtener el token de la API de un usuario
+     * Get a user's API token
      *
      * @param int $userId
      * @return QueryResult<T>
@@ -312,7 +312,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     }
 
     /**
-     * Regenerar el hash de los tokens de un usuario
+     * Regenerate the hash of a user's tokens
      *
      * @param int $userId
      * @param string $token
@@ -336,7 +336,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     }
 
     /**
-     * Regenerar el hash de los tokens de un usuario
+     * Regenerate the hash of a user's tokens
      *
      * @param int $userId
      * @param string $vault
@@ -365,10 +365,10 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     }
 
     /**
-     * Devolver los datos de un token
+     * Return the data for a token
      *
-     * @param $actionId int El id de la accion
-     * @param $token    string El token de seguridad
+     * @param $actionId int The action ID
+     * @param $token    string The security token
      *
      * @return QueryResult<T>
      * @throws ConstraintException

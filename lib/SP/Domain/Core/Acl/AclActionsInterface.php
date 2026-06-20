@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core\Acl;
 
 /**
- * Interface ActionsInterface para la definición de constantes de acciones disponibles.
+ * Interface ActionsInterface for the definition of available action constants.
  *
  * @package SP\Core\Acl
  */

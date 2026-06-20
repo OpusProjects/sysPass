@@ -117,7 +117,7 @@ final class XmlVerify extends Service implements XmlVerifyService
     }
 
     /**
-     * Obtener la versión del XML
+     * Get the XML version
      */
     private function getXmlVersion(): string
     {
@@ -140,7 +140,7 @@ final class XmlVerify extends Service implements XmlVerifyService
     }
 
     /**
-     * Obtener la versión del XML
+     * Get the XML version
      */
     public static function checkXmlHash(DOMDocument $document, string $key): bool
     {
@@ -214,7 +214,7 @@ final class XmlVerify extends Service implements XmlVerifyService
     }
 
     /**
-     * Verificar si existen datos encriptados
+     * Check whether encrypted data exists
      */
     private function detectEncrypted(): bool
     {

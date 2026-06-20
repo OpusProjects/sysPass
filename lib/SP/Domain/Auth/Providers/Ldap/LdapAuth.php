@@ -75,7 +75,7 @@ final readonly class LdapAuth implements LdapAuthService
 
             $this->getAttributes($userLoginDto->getLoginUser(), $ldapAuthData);
 
-            // Comprobamos si la cuenta está bloqueada o expirada
+            // Check whether the account is locked or expired
             if ($ldapAuthData->getExpire() > 0) {
                 $ldapAuthData->setStatusCode(LdapAuthService::ACCOUNT_EXPIRED);
 
@@ -99,7 +99,7 @@ final readonly class LdapAuth implements LdapAuthService
     }
 
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Indicates whether it is required to access the application
      *
      * @return bool
      */
@@ -109,11 +109,11 @@ final readonly class LdapAuth implements LdapAuthService
     }
 
     /**
-     * Obtener los atributos del usuario.
+     * Get the user's attributes.
      *
      * @param string $userLogin
      * @param LdapAuthData $ldapAuthData
-     * @return void con los atributos disponibles y sus valores
+     * @return void with the available attributes and their values
      * @throws LdapException
      */
     private function getAttributes(string $userLogin, LdapAuthData $ldapAuthData): void

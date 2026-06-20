@@ -232,7 +232,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
     }
 
     /**
-     * Devuelve los datos de un plugin por su nombre
+     * Returns a plugin's data by its name
      *
      * @param string $name
      * @param int $itemId

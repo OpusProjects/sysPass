@@ -33,7 +33,7 @@ use SP\Domain\Install\Services\Installer;
 final class Version
 {
     /**
-     * Devolver versión normalizada en cadena
+     * Return the normalized version as a string
      */
     public static function getVersionStringNormalized(): string
     {
@@ -124,11 +124,11 @@ final class Version
     }
 
     /**
-     * Devuelve la versión de sysPass.
+     * Returns the sysPass version.
      *
-     * @param bool $retBuild devolver el número de compilación
+     * @param bool $retBuild whether to return the build number
      *
-     * @return array con el número de versión
+     * @return array with the version number
      */
     public static function getVersionArray(bool $retBuild = false): array
     {

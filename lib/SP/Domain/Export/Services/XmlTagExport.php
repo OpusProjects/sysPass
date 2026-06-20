@@ -50,7 +50,7 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
     }
 
     /**
-     * Crear el nodo con los datos
+     * Build the node with the data
      *
      * @throws ServiceException
      */

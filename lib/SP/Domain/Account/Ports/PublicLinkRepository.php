@@ -93,7 +93,7 @@ interface PublicLinkRepository extends Repository
     public function create(PublicLink $publicLinkData): QueryResult;
 
     /**
-     * Incrementar el contador de visitas de un enlace
+     * Increments the visit counter of a link
      *
      * @param PublicLink $publicLinkData
      *
@@ -143,7 +143,7 @@ interface PublicLinkRepository extends Repository
     public function getByHash(string $hash): QueryResult;
 
     /**
-     * Devolver el hash asociado a un elemento
+     * Returns the hash associated with an item
      *
      * @param int $itemId
      *

@@ -41,7 +41,7 @@ use function SP\logger;
 class Session
 {
     /**
-     * Devolver la clave maestra de la sesión
+     * Returns the session master key
      *
      * @throws CryptException
      */
@@ -61,7 +61,7 @@ class Session
     }
 
     /**
-     * Guardar la clave maestra en la sesión
+     * Save the master key in the session
      *
      * @throws CryptException
      */
@@ -71,7 +71,7 @@ class Session
     }
 
     /**
-     * Regenerar la clave de sesión
+     * Regenerate the session key
      *
      * @throws CryptException
      * @throws SPException

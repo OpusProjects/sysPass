@@ -50,7 +50,7 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
     }
 
     /**
-     * Crear el nodo con los datos
+     * Build the node with the data
      *
      * @throws ServiceException
      * @throws ServiceException

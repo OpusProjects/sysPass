@@ -37,65 +37,65 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class DataGridBase para crear una matriz de datos
+ * Class DataGridBase for creating a data matrix
  *
  * @package SP\Html\DataGrid
  */
 abstract class DataGridBase implements DataGridInterface
 {
     /**
-     * Tiempo de ejecución
+     * Execution time
      */
     protected int $time = 0;
     /**
-     * El id de la matriz
+     * The matrix id
      */
     protected string $id = '';
     /**
-     * La cabecera de la matriz
+     * The matrix header
      */
     protected ?DataGridHeaderInterface $header = null;
     /**
-     * Los datos de la matriz
+     * The matrix data
      */
     protected ?DataGridData $data = null;
     protected ?DataGridPagerBase $pager = null;
     /**
-     * Las acciones asociadas a los elementos de la matriz
+     * The actions associated with the matrix elements
      *
      * @var DataGridActionInterface[]
      */
     protected array $actions      = [];
     protected int   $actionsCount = 0;
     /**
-     * Las acciones asociadas a los elementos de la matriz que se muestran en un menú
+     * The actions associated with the matrix elements that are shown in a menu
      *
      * @var DataGridActionInterface[]
      */
     protected array $actionsMenu      = [];
     protected int   $actionsMenuCount = 0;
     /**
-     * La acción a realizar al cerrar la matriz
+     * The action to perform when closing the matrix
      */
     protected int $onCloseAction = 0;
     /**
-     * La plantilla a utilizar para presentar la cabecera
+     * The template to use for rendering the header
      */
     protected ?string $headerTemplate = null;
     /**
-     * La plantilla a utilizar para presentar las acciones
+     * The template to use for rendering the actions
      */
     protected ?string $actionsTemplate = null;
     /**
-     * La plantilla a utilizar para presentar el paginador
+     * The template to use for rendering the paginator
      */
     protected ?string $pagerTemplate = null;
     /**
-     * La plantilla a utilizar para presentar los datos
+     * The template to use for rendering the data
      */
     protected ?string $rowsTemplate = null;
     /**
-     * La plantilla a utilizar para presentar la tabla
+     * The template to use for rendering the table
      */
     protected ?string         $tableTemplate = null;
     protected ?ThemeInterface $theme         = null;
@@ -191,7 +191,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Establecer la plantilla utilizada para la cabecera
+     * Set the template used for the header
      */
     public function setDataHeaderTemplate(string $template): DataGridBase
     {
@@ -205,7 +205,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Comprobar si existe una plantilla y devolver la ruta completa
+     * Check whether a template exists and return its full path
      *
      * @throws FileNotFoundException
      */
@@ -225,7 +225,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver la plantilla utilizada para la cabecera
+     * Return the template used for the header
      */
     public function getDataHeaderTemplate(): string
     {
@@ -233,7 +233,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Establecer la plantilla utilizada para las acciones
+     * Set the template used for the actions
      */
     public function setDataActionsTemplate(string $template): DataGridBase
     {
@@ -247,7 +247,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver la plantilla utilizada para las acciones
+     * Return the template used for the actions
      */
     public function getDataActionsTemplate(): ?string
     {
@@ -255,7 +255,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Establecer la plantilla utilizada para el paginador
+     * Set the template used for the paginator
      */
     public function setDataPagerTemplate(string $template, ?string $base = null): DataGridBase
     {
@@ -269,7 +269,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver la plantilla utilizada para el paginador
+     * Return the template used for the paginator
      */
     public function getDataPagerTemplate(): ?string
     {
@@ -293,7 +293,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver el paginador
+     * Return the paginator
      */
     public function getPager(): ?DataGridPagerInterface
     {
@@ -301,7 +301,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Establecer el paginador
+     * Set the paginator
      */
     public function setPager(DataGridPagerInterface $pager): DataGridBase
     {
@@ -311,7 +311,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Actualizar los datos del paginador
+     * Update the paginator data
      */
     public function updatePager(): DataGridInterface
     {
@@ -335,7 +335,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver las acciones que se muestran en un menu
+     * Return the actions that are shown in a menu
      *
      * @return DataGridActionInterface[]
      */
@@ -345,7 +345,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver las acciones filtradas
+     * Return the filtered actions
      *
      * @return DataGridActionInterface[]
      */
@@ -363,7 +363,7 @@ abstract class DataGridBase implements DataGridInterface
     }
 
     /**
-     * Devolver las acciones de menu filtradas
+     * Return the filtered menu actions
      *
      * @return DataGridActionInterface[]
      */

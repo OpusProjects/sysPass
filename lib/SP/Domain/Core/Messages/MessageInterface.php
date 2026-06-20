@@ -31,7 +31,7 @@ namespace SP\Domain\Core\Messages;
 interface MessageInterface
 {
     /**
-     * Componer un mensaje en formato texto
+     * Compose a message in text format
      *
      * @param string $delimiter
      *
@@ -40,7 +40,7 @@ interface MessageInterface
     public function composeText(string $delimiter = PHP_EOL): string;
 
     /**
-     * Componer un mensaje en formato HTML
+     * Compose a message in HTML format
      *
      * @return string
      */

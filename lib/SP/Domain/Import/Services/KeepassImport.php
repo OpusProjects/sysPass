@@ -55,7 +55,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     private array $entries = [];
 
     /**
-     * Iniciar la importación desde KeePass
+     * Start the import from KeePass
      *
      * @param ImportParamsDto $importParams
      * @return ItemsImportService
@@ -74,7 +74,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * Obtener los grupos y procesar lan entradas de KeePass.
+     * Get the groups and process the KeePass entries.
      *
      * @throws SPException
      */

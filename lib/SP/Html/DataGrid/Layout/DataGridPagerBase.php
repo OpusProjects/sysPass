@@ -30,7 +30,7 @@ use SP\Html\Assets\IconInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 
 /**
- * Class DataGridPagerBase para implementar los métodos del paginador
+ * Class DataGridPagerBase for implementing the paginator methods
  *
  * @package SP\Html\DataGrid
  */
@@ -117,7 +117,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el campo de la búsqueda
+     * Set the search field
      */
     public function setSortKey(int $sortKey): DataGridPagerBase
     {
@@ -127,7 +127,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver el registro de inicio de la página
+     * Return the start record of the page
      */
     public function getLimitStart(): int
     {
@@ -135,7 +135,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el registro de inicio de la página
+     * Set the start record of the page
      */
     public function setLimitStart(int $limitStart): DataGridPagerBase
     {
@@ -145,7 +145,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver el número de registros en una página
+     * Return the number of records on a page
      */
     public function getLimitCount(): int
     {
@@ -153,7 +153,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el número de registros en una página
+     * Set the number of records on a page
      */
     public function setLimitCount(int $limitCount): DataGridPagerBase
     {
@@ -163,7 +163,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver el número de página inicial
+     * Return the first page number
      */
     public function getFirstPage(): int
     {
@@ -171,7 +171,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver el número de página final
+     * Return the last page number
      */
     public function getLastPage(): int
     {
@@ -179,7 +179,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver el número total de registros obtenidos
+     * Return the total number of records retrieved
      */
     public function getTotalRows(): int
     {
@@ -187,7 +187,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer el número total de registros obtenidos
+     * Set the total number of records retrieved
      */
     public function setTotalRows(int $totalRows): DataGridPagerBase
     {
@@ -197,7 +197,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver si está activado el filtro
+     * Return whether the filter is enabled
      */
     public function getFilterOn(): bool
     {
@@ -205,7 +205,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer si está activado el filtro
+     * Set whether the filter is enabled
      */
     public function setFilterOn(bool $filterOn): DataGridPagerBase
     {
@@ -215,7 +215,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer la función javascript para paginar
+     * Set the javascript function used for pagination
      */
     public function setOnClickFunction(string $function): DataGridPagerBase
     {
@@ -225,7 +225,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver la función javascript para paginar
+     * Return the javascript function used for pagination
      */
     public function getOnClick(): string
     {
@@ -250,7 +250,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Establecer los argumentos de la función OnClick
+     * Set the arguments for the OnClick function
      */
     public function setOnClickArgs(string $args): DataGridPagerBase
     {
@@ -260,7 +260,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver la funcion para ir a la primera página
+     * Return the function to go to the first page
      */
     public function getOnClickFirst(): string
     {
@@ -276,7 +276,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver la funcion para ir a la última página
+     * Return the function to go to the last page
      */
     public function getOnClickLast(): string
     {
@@ -294,7 +294,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver la funcion para ir a la siguiente página
+     * Return the function to go to the next page
      */
     public function getOnClickNext(): string
     {
@@ -310,7 +310,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     }
 
     /**
-     * Devolver la funcion para ir a la página anterior
+     * Return the function to go to the previous page
      */
     public function getOnClickPrev(): string
     {

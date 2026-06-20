@@ -33,21 +33,21 @@ use SP\Infrastructure\File\FileException;
 interface CryptPKIHandler
 {
     /**
-     * Crea el par de claves pública y privada
+     * Create the public and private key pair
      *
      * @throws FileException
      */
     public function createKeys(): void;
 
     /**
-     * Devuelve la clave pública desde el archivo
+     * Return the public key from the file
      *
      * @throws FileException
      */
     public function getPublicKey(): string;
 
     /**
-     * Desencriptar datos cifrados con la clave pública
+     * Decrypt data encrypted with the public key
      *
      * @throws FileException
      */

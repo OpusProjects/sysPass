@@ -38,7 +38,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
     protected ?CustomFieldDefinition $customFieldDefData;
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param  int  $action
      * @param  int|null  $id
@@ -64,7 +64,7 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return void
      */

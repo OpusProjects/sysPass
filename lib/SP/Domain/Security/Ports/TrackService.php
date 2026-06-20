@@ -61,7 +61,7 @@ interface TrackService
     public function clear(): bool;
 
     /**
-     * Comprobar los intentos de login
+     * Check the login attempts
      *
      * @return bool True if delay is performed, false otherwise
      * @throws Exception

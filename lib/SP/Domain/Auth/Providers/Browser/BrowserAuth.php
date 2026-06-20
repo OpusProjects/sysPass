@@ -33,7 +33,7 @@ use SP\Domain\Http\Ports\RequestService;
 /**
  * Class Browser
  *
- * Autentificación basada en credenciales del navegador
+ * Authentication based on browser credentials
  *
  * @implements AuthService<BrowserAuthData>
  */
@@ -87,7 +87,7 @@ final class BrowserAuth implements BrowserAuthService
     }
 
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Indicates whether it is required to access the application
      *
      * @return bool
      */
@@ -97,9 +97,9 @@ final class BrowserAuth implements BrowserAuthService
     }
 
     /**
-     * Comprobar si el usuario es autentificado por el servidor web
+     * Check whether the user is authenticated by the web server
      *
-     * @param $login string El login del usuario a comprobar
+     * @param $login string The login of the user to check
      *
      * @return bool|null
      */
@@ -120,7 +120,7 @@ final class BrowserAuth implements BrowserAuthService
     }
 
     /**
-     * Devolver el nombre del usuario autentificado por el servidor web
+     * Return the name of the user authenticated by the web server
      *
      * @return string|null
      */
@@ -142,7 +142,7 @@ final class BrowserAuth implements BrowserAuthService
     }
 
     /**
-     * Devolver la clave del usuario autentificado por el servidor web
+     * Return the password of the user authenticated by the web server
      *
      * @return string|null
      */

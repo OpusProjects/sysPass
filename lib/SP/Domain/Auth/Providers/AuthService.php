@@ -43,7 +43,7 @@ interface AuthService
     public function authenticate(UserLoginDto $userLoginDto): AuthDataBase;
 
     /**
-     * Indica si es requerida para acceder a la aplicación
+     * Indicates whether it is required to access the application
      *
      * @return bool
      */

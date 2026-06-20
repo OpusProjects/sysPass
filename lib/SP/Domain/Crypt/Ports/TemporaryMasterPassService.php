@@ -40,9 +40,9 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 interface TemporaryMasterPassService
 {
     /**
-     * Crea una clave temporal para encriptar la clave maestra y guardarla.
+     * Creates a temporary key to encrypt the master password and store it.
      *
-     * @param int $maxTime El tiempo máximo de validez de la clave
+     * @param int $maxTime The maximum validity time of the key
      *
      * @return string
      * @throws ServiceException
@@ -50,9 +50,9 @@ interface TemporaryMasterPassService
     public function create(int $maxTime = 14400): string;
 
     /**
-     * Comprueba si la clave temporal es válida
+     * Checks whether the temporary key is valid
      *
-     * @param string $key clave a comprobar
+     * @param string $key key to check
      *
      * @return bool
      * @throws ServiceException
@@ -76,11 +76,11 @@ interface TemporaryMasterPassService
     public function sendByEmailForAllUsers(string $key): void;
 
     /**
-     * Devuelve la clave maestra que ha sido encriptada con la clave temporal
+     * Returns the master password that was encrypted with the temporary key
      *
-     * @param $key string con la clave utilizada para encriptar
+     * @param $key string with the key used to encrypt
      *
-     * @return string con la clave maestra desencriptada
+     * @return string with the decrypted master password
      * @throws NoSuchItemException
      * @throws ServiceException
      * @throws CryptException

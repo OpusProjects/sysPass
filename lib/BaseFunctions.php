@@ -185,7 +185,7 @@ function processException(Exception $exception): void
  * Alias gettext function
  *
  * @param string $message
- * @param bool $translate Si es necesario traducir
+ * @param bool $translate Whether translation is needed
  *
  * @return string
  */
@@ -208,7 +208,7 @@ function __u(string $message): string
 }
 
 /**
- * Alias para obtener las locales de un dominio
+ * Alias to obtain the locales for a domain
  */
 function _t(string $domain, string $message, bool $translate = true): string
 {
@@ -220,7 +220,7 @@ function _t(string $domain, string $message, bool $translate = true): string
 }
 
 /**
- * Capitalización de cadenas multi byte
+ * Capitalize multi-byte strings
  */
 function mb_ucfirst($string): string
 {
@@ -228,10 +228,10 @@ function mb_ucfirst($string): string
 }
 
 /**
- * Devuelve el tiempo actual en coma flotante.
- * Esta función se utiliza para calcular el tiempo de renderizado con coma flotante
+ * Returns the current time as a float.
+ * This function is used to calculate the rendering time using floating point
  *
- * @returns float con el tiempo actual
+ * @returns float with the current time
  */
 function getElapsedTime(float $from): float
 {
@@ -243,7 +243,7 @@ function getElapsedTime(float $from): float
 }
 
 /**
- * Inicializar módulo
+ * Initialize module
  *
  * @throws SPException
  */

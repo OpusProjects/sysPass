@@ -42,7 +42,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
     protected bool       $refresh       = false;
 
     /**
-     * Validar el formulario
+     * Validate the form
      *
      * @param int $action
      * @param int|null $id
@@ -68,7 +68,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
     }
 
     /**
-     * Analizar los datos de la petición HTTP
+     * Analyze the HTTP request data
      *
      * @return void
      */

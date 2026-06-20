@@ -45,9 +45,9 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
     use RepositoryItemTrait;
 
     /**
-     * Obtiene el listado con el nombre de los grupos de una cuenta.
+     * Get the list of group names for an account.
      *
-     * @param int $id con el Id de la cuenta
+     * @param int $id the account ID
      *
      * @return QueryResult
      * @throws ConstraintException
@@ -72,7 +72,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
     }
 
     /**
-     * Obtiene el listado con el nombre de los grupos de una cuenta.
+     * Get the list of group names for an account.
      *
      * @param int $id
      *

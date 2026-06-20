@@ -77,7 +77,7 @@ final class MailEvent extends Service implements EventReceiver
     }
 
     /**
-     * Devuelve los eventos que implementa el observador en formato cadena
+     * Returns the events implemented by the observer as a string
      *
      * @return string
      */
@@ -87,10 +87,10 @@ final class MailEvent extends Service implements EventReceiver
     }
 
     /**
-     * Evento de actualización
+     * Update event
      *
-     * @param string $eventType Nombre del evento
-     * @param Event $event Objeto del evento
+     * @param string $eventType Event name
+     * @param Event $event Event object
      */
     public function update(string $eventType, Event $event): void
     {

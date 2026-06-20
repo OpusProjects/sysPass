@@ -33,14 +33,14 @@ use SP\Infrastructure\File\FileException;
 interface ArchiveHandlerInterface
 {
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Create a backup of the application and compress it.
      *
      * @throws FileException
      */
     public function compressDirectory(string $directory, ?string $regex = null): string;
 
     /**
-     * Realizar un backup de la aplicación y comprimirlo.
+     * Create a backup of the application and compress it.
      *
      * @return string The path to the file
      * @throws FileException

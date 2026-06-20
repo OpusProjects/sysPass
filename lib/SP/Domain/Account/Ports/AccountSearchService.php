@@ -32,13 +32,13 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
- * Class AccountSearchService para la gestión de búsquedas de cuentas
+ * Class AccountSearchService for managing account searches
  */
 interface AccountSearchService
 {
     /**
-     * Procesar los resultados de la búsqueda y crear la variable que contiene los datos de cada cuenta
-     * a mostrar.
+     * Processes the search results and builds the variable that holds the data of each account
+     * to be displayed.
      *
      * @throws ConstraintException
      * @throws QueryException

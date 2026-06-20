@@ -29,7 +29,7 @@ use Exception;
 use Throwable;
 
 /**
- * Extender la clase Exception para mostrar ayuda en los mensajes
+ * Extends the Exception class to provide hints within messages
  */
 class SPException extends Exception
 {

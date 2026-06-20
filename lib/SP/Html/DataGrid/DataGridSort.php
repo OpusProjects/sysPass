@@ -28,7 +28,7 @@ namespace SP\Html\DataGrid;
 use SP\Html\Assets\IconInterface;
 
 /**
- * Class DataGridSort para la definición de campos de ordenación
+ * Class DataGridSort for defining sort fields
  *
  * @package SP\Html\DataGrid
  */
