@@ -385,7 +385,7 @@ final class CoreDefinitions
                 ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
                 ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
             RouteContextData::class => factory(static function (SymfonyRequest $request) {
-                return RouteContext::getRouteContextData(Filter::getString($request->get('r', 'index/index')));
+                return RouteContext::getRouteContextData(Filter::getString($request->query->get('r', 'index/index')));
             }),
             SecureSessionService::class => autowire(SecureSession::class)
                 ->constructorParameter(
