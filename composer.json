@@ -50,24 +50,24 @@
     "ext-libxml": "*",
     "ext-mbstring": "*",
     "league/fractal": "^0.20",
-    "symfony/console": "^v5.1",
-    "symfony/lock": "^v5.0",
+    "symfony/console": "^6.4",
+    "symfony/lock": "^6.4",
     "aura/sqlquery": "~3.0",
     "laminas/laminas-ldap": "^2.17",
-    "symfony/yaml": "@stable",
-    "symfony/http-foundation": "^5.4",
-    "symfony/routing": "^5.4"
+    "symfony/yaml": "^6.4",
+    "symfony/http-foundation": "^6.4",
+    "symfony/routing": "^6.4"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "symfony/error-handler": "@stable",
+    "symfony/error-handler": "^6.4",
     "phpunit/phpunit": "^11",
     "fakerphp/faker": "^v1.23",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^3",
     "phpstan/phpstan": "^1.9",
     "mikey179/vfsstream": "@stable",
-    "symfony/dom-crawler": "@stable"
+    "symfony/dom-crawler": "^6.4"
   },
   "scripts": {
     "phpcs": "phpcs --standard=PSR2 lib",
