@@ -119,7 +119,7 @@ class LoginBaseTest extends UnitaryTestCase
                 )
             );
 
-        $this->request = $this->createMock(RequestService::class);
+        $this->request = $this->createStub(RequestService::class);
 
         $this->loginBase = new class($this->application, $this->trackService, $this->request) extends LoginBase {
             public function check(): void

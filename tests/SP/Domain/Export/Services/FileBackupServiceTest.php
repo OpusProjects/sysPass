@@ -185,7 +185,7 @@ class FileBackupServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->backupFiles = $this->createMock(BackupFileHelperService::class);
+        $this->backupFiles = $this->createStub(BackupFileHelperService::class);
         $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
         $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);

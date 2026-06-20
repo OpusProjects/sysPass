@@ -147,7 +147,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFrom()
     {
-        $uuidCookie = $this->createMock(UuidCookie::class);
+        $uuidCookie = $this->createStub(UuidCookie::class);
 
         $uuidCookie->method('load')
                    ->willReturn(uniqid('', true));
@@ -165,7 +165,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFromErrorLoadingCookie()
     {
-        $uuidCookie = $this->createMock(UuidCookie::class);
+        $uuidCookie = $this->createStub(UuidCookie::class);
 
         $uuidCookie->method('load')->willReturn(false);
 
@@ -181,7 +181,7 @@ class SecureSessionServiceTest extends UnitaryTestCase
      */
     public function testGetFileNameFromErrorCreatingCookie()
     {
-        $uuidCookie = $this->createMock(UuidCookie::class);
+        $uuidCookie = $this->createStub(UuidCookie::class);
 
         $uuidCookie->method('create')->willReturn(false);
 

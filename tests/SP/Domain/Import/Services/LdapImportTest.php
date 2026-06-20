@@ -507,7 +507,7 @@ class LdapImportTest extends UnitaryTestCase
             $this->userService,
             $this->userGroupService,
             $this->ldapActionsService,
-            $this->createMock(LdapConnectionHandler::class)
+            $this->createStub(LdapConnectionHandler::class)
         );
     }
 }

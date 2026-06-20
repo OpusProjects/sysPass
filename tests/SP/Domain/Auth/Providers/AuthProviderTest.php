@@ -54,7 +54,7 @@ class AuthProviderTest extends UnitaryTestCase
      */
     public function testRegisterAuthFail()
     {
-        $auth1 = $this->createMock(AuthService::class);
+        $auth1 = $this->createStub(AuthService::class);
 
         $this->authProvider->registerAuth($auth1, AuthType::Ldap);
 

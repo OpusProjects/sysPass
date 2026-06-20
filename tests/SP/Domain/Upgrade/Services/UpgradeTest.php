@@ -33,12 +33,14 @@ use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Infrastructure\File\FileException;
+use SP\Tests\Generators\ConfigDataGenerator;
 use SP\Tests\Stubs\UpgradeHandlerStub;
 use SP\Tests\UnitaryTestCase;
 use stdClass;
@@ -60,7 +62,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testRegisterUpgradeHandler()
     {
-        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler = $this->createStub(UpgradeHandlerService::class);
 
         $this->upgrade->registerUpgradeHandler($handler::class);
 
@@ -86,7 +88,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testRegisterUpgradeHandlerWithDuplicate()
     {
-        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler = $this->createStub(UpgradeHandlerService::class);
 
         $this->upgrade->registerUpgradeHandler($handler::class);
 
@@ -104,7 +106,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testUpgrade()
     {
-        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData = $this->createStub(ConfigDataInterface::class);
         $this->config->expects($this->never())
                      ->method('save');
 
@@ -120,7 +122,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testUpgradeWithHandler()
     {
-        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData = $this->createStub(ConfigDataInterface::class);
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->exactly(2))
                 ->method('apply')
@@ -150,7 +152,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testUpgradeWithHandlerWithFailedApply()
     {
-        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData = $this->createStub(ConfigDataInterface::class);
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->once())
                 ->method('apply')
@@ -183,7 +185,7 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testUpgradeWithException()
     {
-        $configData = $this->createMock(ConfigDataInterface::class);
+        $configData = $this->createStub(ConfigDataInterface::class);
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->never())
                 ->method('apply');
@@ -209,9 +211,23 @@ class UpgradeTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $fileHandlerProvider = $this->createMock(FileHandlerProvider::class);
+        $fileHandlerProvider = $this->createStub(FileHandlerProvider::class);
         $this->container = $this->createMock(ContainerInterface::class);
 
         $this->upgrade = new Upgrade($this->application, $fileHandlerProvider, $this->container);
+    }
+
+    /**
+     * This test verifies interactions on the config (->expects() on save()), so it needs
+     * a mock rather than the base class's default stub.
+     *
+     * @throws Exception
+     */
+    protected function buildConfig(): ConfigFileService
+    {
+        $config = $this->createMock(ConfigFileService::class);
+        $config->method('getConfigData')->willReturn(ConfigDataGenerator::factory()->buildConfigData());
+
+        return $config;
     }
 }

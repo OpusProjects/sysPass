@@ -197,7 +197,7 @@ abstract class IntegrationTestCase extends TestCase
         $database->method('endTransaction')->willReturn(true);
         $database->method('rollbackTransaction')->willReturn(true);
 
-        $acl = $this->createMock(AclInterface::class);
+        $acl = $this->createStub(AclInterface::class);
         $acl->method('checkUserAccess')->willReturn(true);
         $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
 

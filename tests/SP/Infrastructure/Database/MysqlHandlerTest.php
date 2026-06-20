@@ -171,7 +171,7 @@ class MysqlHandlerTest extends UnitaryTestCase
 
         $connectionData = $this->createStub(DatabaseConnectionData::class);
         $pdoWrapper = $this->createMock(PDOWrapper::class);
-        $pdo = $this->createMock(PDO::class);
+        $pdo = $this->createStub(PDO::class);
 
         $connectionData->method('getDbHost')
                        ->willReturn('localhost');
@@ -242,7 +242,7 @@ class MysqlHandlerTest extends UnitaryTestCase
     public function testGetDriver()
     {
         $connectionData = $this->createStub(DatabaseConnectionData::class);
-        $pdoWrapper = $this->createMock(PDOWrapper::class);
+        $pdoWrapper = $this->createStub(PDOWrapper::class);
         $mysqlHandler = new MysqlHandler($connectionData, $pdoWrapper);
 
         $this->assertEquals(DbStorageDriver::mysql, $mysqlHandler->getDriver());

@@ -63,7 +63,7 @@ class ImportTest extends UnitaryTestCase
                                  return true;
                              })
                          )
-                         ->willReturn($this->createMock(ItemsImportService::class));
+                         ->willReturn($this->createStub(ItemsImportService::class));
 
         $itemsImportService = $this->createMock(ItemsImportService::class);
         $itemsImportService->expects(self::once())
@@ -107,7 +107,7 @@ class ImportTest extends UnitaryTestCase
         $this->importStrategyService = $this->createMock(ImportStrategyService::class);
 
         $this->importParamsDto = new ImportParamsDto(
-            $this->createMock(FileHandlerInterface::class),
+            $this->createStub(FileHandlerInterface::class),
             self::$faker->randomNumber(3),
             self::$faker->randomNumber(3),
             self::$faker->password(),

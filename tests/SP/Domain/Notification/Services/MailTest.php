@@ -326,7 +326,7 @@ class MailTest extends UnitaryTestCase
         parent::setUp();
 
         $this->mailer = $this->createMock(MailerInterface::class);
-        $uriContext = $this->createMock(UriContextInterface::class);
+        $uriContext = $this->createStub(UriContextInterface::class);
         $this->mail = new Mail($this->application, $this->mailer, $uriContext);
     }
 }

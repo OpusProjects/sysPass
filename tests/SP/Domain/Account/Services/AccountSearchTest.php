@@ -215,7 +215,7 @@ class AccountSearchTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $userService = $this->createMock(UserService::class);
+        $userService = $this->createStub(UserService::class);
         $userService
             ->method('getByLogin')
             ->willReturn(
@@ -225,7 +225,7 @@ class AccountSearchTest extends UnitaryTestCase
                          ])
             );
 
-        $userGroupService = $this->createMock(UserGroupService::class);
+        $userGroupService = $this->createStub(UserGroupService::class);
         $userGroupService
             ->method('getByName')
             ->willReturn(

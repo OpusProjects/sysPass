@@ -519,7 +519,7 @@ class XmlExportTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->phpExtensionCheckerService = $this->createMock(PhpExtensionCheckerService::class);
+        $this->phpExtensionCheckerService = $this->createStub(PhpExtensionCheckerService::class);
         $this->xmlClientExportService = $this->createMock(XmlClientExportService::class);
         $this->xmlAccountExportService = $this->createMock(XmlAccountExportService::class);
         $this->xmlCategoryExportService = $this->createMock(XmlCategoryExportService::class);
