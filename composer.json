@@ -38,7 +38,6 @@
     "phpseclib/phpseclib": "^2.0",
     "klein/klein": "^2.1",
     "php-di/php-di": "^7.0",
-    "doctrine/common": "^v2.7",
     "guzzlehttp/guzzle": "^7.0",
     "monolog/monolog": "^1.23",
     "vlucas/phpdotenv": "^v4.1",
