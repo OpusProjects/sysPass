@@ -36,7 +36,7 @@
     "phpmailer/phpmailer": "^6.0",
     "ademarre/binary-to-text-php": "dev-master",
     "phpseclib/phpseclib": "^3.0",
-    "php-di/php-di": "^7.0",
+    "php-di/php-di": "^7.1",
     "guzzlehttp/guzzle": "^7.0",
     "monolog/monolog": "^3.0",
     "vlucas/phpdotenv": "^v4.1",
