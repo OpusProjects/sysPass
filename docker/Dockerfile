@@ -1,7 +1,5 @@
-# sysPass development image — PHP 7.4 baseline (matches the 3.2.x release line).
-# This is intentionally the legacy runtime so we have a known-good baseline to
-# upgrade against, one dependency at a time.
-FROM php:7.4-apache
+# sysPass development image — PHP 8.2 (matches the rewrite's `~8.2 || ~8.3` requirement).
+FROM php:8.2-apache
 
 # System libraries needed to build the PHP extensions sysPass requires.
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -14,10 +12,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libfreetype6-dev \
         libzip-dev \
         libxml2-dev \
+        libicu-dev \
+        libonig-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# PHP extensions required by composer.json (gd, ldap, gettext, pdo_mysql, zip).
-# dom, json, libxml, mbstring, fileinfo, zlib, curl ship enabled in the base image.
+# PHP extensions required by composer.json (gd, ldap, gettext, pdo_mysql, zip, intl, mbstring).
+# dom, json, libxml, fileinfo, zlib, curl ship enabled in the base image.
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
     && docker-php-ext-install -j"$(nproc)" \
@@ -25,7 +25,9 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
         gd \
         ldap \
         gettext \
-        zip
+        zip \
+        intl \
+        mbstring
 
 RUN a2enmod rewrite headers
 

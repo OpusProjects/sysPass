@@ -12,6 +12,13 @@ if [ ! -f vendor/autoload.php ]; then
     composer install --no-interaction --no-progress --prefer-dist --no-dev
 fi
 
+# lib/Base.php loads a .env via Dotenv::createImmutable()->load(), which throws if the
+# file is absent. The .env.example keys are all optional (commented), so a dev .env with
+# DEBUG enabled is enough.
+if [ ! -f .env ]; then
+    echo "DEBUG=true" > .env
+fi
+
 # sysPass needs these writable at runtime (config.xml, caches, proxies, backups).
 for dir in app/config app/cache app/temp app/backup; do
     mkdir -p "$dir"
