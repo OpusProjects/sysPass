@@ -32,7 +32,7 @@
   },
   "description": "PHP web based Password Manager for business and personal use.",
   "homepage": "https://github.com/OpusProjects/sysPass",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "minimum-stability": "stable",
   "name": "syspass/syspass",
   "require": {
