@@ -52,8 +52,8 @@ gh pr create --repo OpusProjects/sysPass --base main --head <type>/<short-name> 
 Shipped via a PR (not on `main`). Once merged / checked out:
 
 ```bash
-docker compose up --build -d      # PHP 7.4 + Apache app + MariaDB
-# Web UI: http://localhost:8090    (first run -> installer at ?r=install/index)
+docker compose up --build -d      # PHP 8.2 + Apache app + MariaDB
+# App on http://localhost:8090     (web UI installer flow is still being completed)
 ```
 
 - Host **port 8090** (8080 is taken by another container on this machine).
@@ -91,6 +91,5 @@ The 3.2.x line is gridlocked by `roave/security-advisories: dev-latest` (forbids
 
 ## Conventions
 
-- No AI/assistant attribution anywhere (commits, PRs, comments).
 - One logical change per PR; clear title (`old → new` + why) and body.
 - `app/config/config.xml` holds DB creds + crypto keys — never commit it.
