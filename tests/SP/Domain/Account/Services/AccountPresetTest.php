@@ -189,13 +189,24 @@ class AccountPresetTest extends UnitaryTestCase
                                 ->willReturn($itemPreset);
 
         if ($fixed === 1) {
+            // The service excludes the current user/group from the preset lists
+            // (array_diff against the logged-in user's id/userGroupId), so the
+            // expectations must apply the same exclusion. Reading the raw preset
+            // lists made the test flaky: it failed whenever the faker-generated
+            // user id/userGroupId happened to collide with a value in the list.
+            $userData = $this->context->getUserData();
+            $usersView = array_diff($accountPermission->getUsersView(), [$userData->id]);
+            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->id]);
+            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
+            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
+
             $this->accountToUserRepository
                 ->expects($this->exactly(2))
                 ->method('addByType')
                 ->with(
                     ...self::withConsecutive(
-                    [100, $accountPermission->getUsersView(), false],
-                    [100, $accountPermission->getUsersEdit(), true]
+                    [100, $usersView, false],
+                    [100, $usersEdit, true]
                 )
                 );
 
@@ -204,8 +215,8 @@ class AccountPresetTest extends UnitaryTestCase
                 ->method('addByType')
                 ->with(
                     ...self::withConsecutive(
-                    [100, $accountPermission->getUserGroupsView(), false],
-                    [100, $accountPermission->getUserGroupsEdit(), true]
+                    [100, $userGroupsView, false],
+                    [100, $userGroupsEdit, true]
                 )
                 );
         } else {
