@@ -53,7 +53,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      */
     final public function has(EventReceiver $receiver): bool
     {
-        return $this->receivers->contains($receiver);
+        return $this->receivers->offsetExists($receiver);
     }
 
     /**
@@ -66,7 +66,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     {
         logger('Attach: ' . $receiver::class);
 
-        $this->receivers->attach($receiver);
+        $this->receivers->offsetSet($receiver);
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
     {
         logger('Detach: ' . $receiver::class);
 
-        $this->receivers->detach($receiver);
+        $this->receivers->offsetUnset($receiver);
     }
 
     /**

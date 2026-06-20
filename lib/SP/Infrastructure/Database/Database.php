@@ -213,7 +213,7 @@ final class Database implements DatabaseInterface
         ?bool              $buffered = true
     ): iterable {
         if ($this->dbStorageHandler->getDriver() === DbStorageDriver::mysql) {
-            $options += [PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered];
+            $options += [\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY => $buffered];
         }
 
         $stmt = $this->prepareAndRunQuery($queryData->getQuery(), $options);

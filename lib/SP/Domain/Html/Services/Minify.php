@@ -155,7 +155,7 @@ abstract class Minify implements MinifyService
     {
         $fileHandler->checkFileExists();
 
-        $this->files->attach(new MinifyFile($fileHandler, $minify));
+        $this->files->offsetSet(new MinifyFile($fileHandler, $minify));
 
         return $this;
     }
