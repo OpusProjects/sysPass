@@ -276,7 +276,7 @@ final class Init extends HttpModuleBase
     private function checkInstalled(): bool
     {
         return $this->configData->isInstalled()
-               && $this->router->request()->get('r') !== 'install/index';
+               && $this->router->request()->query->get('r') !== 'install/index';
     }
 
     private function getUriFor(string $route): string

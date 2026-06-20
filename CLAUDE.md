@@ -123,21 +123,19 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
   is still blocked on this — it needs lazy file opening (or tolerating a missing file) so
   `generateNewConfig()` runs. An already-installed instance (config.xml present) is unaffected.
 
-## Dependency status (PHP 8.2 codebase)
+## Dependency status (PHP 8.4 codebase, Symfony 8)
 
 - **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; `phpseclib/phpseclib` 2 → 3
   (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`; **replaced the abandoned
   `klein/klein` router with `symfony/http-foundation` + `symfony/routing`** (the HTTP layer now goes
-  through `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`; this also cleared the
-  klein `DataCollection` PHP 8.1 return-type deprecations).
-- **Planned — Symfony 5.4 → 8.0, one PR per major bump** (whole `symfony/*` suite moves together each
-  step; the sanctioned exception to one-package-per-PR):
-  1. `5.4 → 6.4` (needs PHP 8.1+ — satisfied).
-  2. `6.4 → 7.4 LTS` (needs PHP 8.2+ — satisfied).
-  3. **PHP `8.2/8.3 → 8.4`** — prerequisite gate for Symfony 8 (Dockerfile + composer `php` constraint
-     + full-suite pass on 8.4).
-  4. `7.4 → 8.0` (requires PHP 8.4).
-  Fix deprecations within each step (`phpunit --display-deprecations`) so the next major lands clean.
+  through `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
+- **Symfony 5.4 → 8.0 — done, staged one PR per major** (whole `symfony/*` suite moved together each
+  step; the sanctioned exception to one-package-per-PR): `5.4 → 6.4` (#19), `6.4 → 7.4 LTS` (#20),
+  PHP `8.2/8.3 → 8.4` prerequisite (#21), `7.4 → 8.0` (#22). Dev image and `config.platform` are on
+  **PHP 8.4** (constraint `~8.2 || ~8.3 || ~8.4`). Notable major-version breaks fixed along the way:
+  console `$defaultName` → `#[AsCommand]` (7.0); strictly-typed / `final` Request bags in tests
+  (`FileBag`/`InputBag`) (7.0); default bcrypt cost 10 → 12 (PHP 8.4); `Request::get()` removed →
+  `$request->query->get()` (8.0); `Environment::MAX_PHP_VERSION` raised to allow 8.4.
 - The old 3.2.x line was gridlocked by `roave/security-advisories` + `fabpot/goutte`'s guzzle-6 pin —
   the reason we adopted the rewrite (which uses `symfony/dom-crawler`, not goutte).
 
