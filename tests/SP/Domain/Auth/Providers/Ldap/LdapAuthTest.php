@@ -294,7 +294,7 @@ class LdapAuthTest extends UnitaryTestCase
         parent::setUp();
 
         $this->ldap = $this->createMock(LdapService::class);
-        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $this->eventDispatcher = $this->createStub(EventDispatcherInterface::class);
         $this->configData = $this->createMock(ConfigDataInterface::class);
 
         $this->ldapAuth = new LdapAuth($this->ldap, $this->eventDispatcher, $this->configData);

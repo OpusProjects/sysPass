@@ -198,7 +198,7 @@ class ApiTest extends UnitaryTestCase
      */
     public function testGetParamWithHelp()
     {
-        $apiRequest = $this->createMock(ApiRequestService::class);
+        $apiRequest = $this->createStub(ApiRequestService::class);
         $apiRequest->method('exists')->willReturn(false);
         $apiRequest->method('getMethod')->willReturn('account/view');
 

@@ -51,7 +51,6 @@ namespace SP\Tests;
 use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Core\Application;
 use SP\Core\Bootstrap\PathsContext;
@@ -78,7 +77,7 @@ abstract class UnitaryTestCase extends TestCase
 
     protected static Generator $faker;
 
-    protected readonly ConfigFileService|MockObject $config;
+    protected readonly ConfigFileService $config;
     protected readonly Application                  $application;
     protected readonly Context                      $context;
     protected readonly PathsContext $pathsContext;
@@ -193,7 +192,10 @@ abstract class UnitaryTestCase extends TestCase
     {
         $configData = ConfigDataGenerator::factory()->buildConfigData();
 
-        $config = $this->createMock(ConfigFileService::class);
+        // A stub by default (no interaction verification needed): keeps the shared
+        // config double from emitting PHPUnit "mock without expectations" notices in
+        // every test. A test that needs to verify config calls overrides buildConfig().
+        $config = $this->createStub(ConfigFileService::class);
         $config->method('getConfigData')->willReturn($configData);
 
         return $config;

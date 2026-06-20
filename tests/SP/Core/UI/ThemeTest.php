@@ -199,7 +199,7 @@ class ThemeTest extends UnitaryTestCase
         parent::setUp();
 
         $this->themeContext = $this->createMock(ThemeContextInterface::class);
-        $this->themeIcons = $this->createMock(ThemeIconsInterface::class);
+        $this->themeIcons = $this->createStub(ThemeIconsInterface::class);
 
         $this->theme = new Theme($this->themeContext, $this->themeIcons);
     }

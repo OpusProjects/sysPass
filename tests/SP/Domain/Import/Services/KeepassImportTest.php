@@ -158,11 +158,11 @@ class KeepassImportTest extends UnitaryTestCase
             $this->accountService,
             $this->categoryService,
             $this->clientService,
-            $this->createMock(TagService::class),
-            $this->createMock(ConfigService::class)
+            $this->createStub(TagService::class),
+            $this->createStub(ConfigService::class)
         );
 
-        $crypt = $this->createMock(CryptInterface::class);
+        $crypt = $this->createStub(CryptInterface::class);
 
         $document = new DOMDocument();
         $document->load(self::KEEPASS_FILE, LIBXML_NOBLANKS);

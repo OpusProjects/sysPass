@@ -188,7 +188,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
         $this->configData = ConfigDataGenerator::factory()->buildConfigData();
         $this->configData->setLogEvents(['test_a.', 'test_b.']);
 
-        $config = $this->createMock(ConfigFileService::class);
+        $config = $this->createStub(ConfigFileService::class);
         $config->method('getConfigData')->willReturn($this->configData);
 
         return $config;

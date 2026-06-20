@@ -152,6 +152,6 @@ class UuidCookieTest extends UnitaryTestCase
         parent::setUp();
 
         $this->requestInterface = $this->createMock(RequestService::class);
-        $this->uriContext = $this->createMock(UriContextInterface::class);
+        $this->uriContext = $this->createStub(UriContextInterface::class);
     }
 }
