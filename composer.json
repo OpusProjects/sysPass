@@ -49,7 +49,7 @@
     "ext-zlib": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
-    "league/fractal": "^0.20",
+    "league/fractal": "^0.21",
     "symfony/console": "^8.1",
     "symfony/lock": "^8.1",
     "aura/sqlquery": "~3.0",
