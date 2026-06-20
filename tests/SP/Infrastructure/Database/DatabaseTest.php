@@ -402,7 +402,7 @@ class DatabaseTest extends UnitaryTestCase
             QueryInterface::class,
             false,
             1,
-            [PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => $buffered]
+            [\Pdo\Mysql::ATTR_USE_BUFFERED_QUERY => $buffered]
         );
 
         $queryData = $this->createMock(QueryDataInterface::class);
