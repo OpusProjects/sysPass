@@ -73,6 +73,9 @@ abstract class UnitaryTestCase extends TestCase
 {
     use PHPUnitHelper;
 
+    /** Fixed faker seed for reproducible, isolation-independent test data. */
+    protected const FAKER_SEED = 1;
+
     protected static Generator $faker;
 
     protected readonly ConfigFileService|MockObject $config;
@@ -115,6 +118,13 @@ abstract class UnitaryTestCase extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Deterministic test data: re-seed faker per test so a test generates the
+        // same values whether it runs in isolation or as part of the full suite.
+        // The generator was unseeded, so faker's state depended on how many tests
+        // ran before it, which made data-dependent assertions fail intermittently
+        // (random ids hitting 0 or colliding).
+        self::$faker->seed(self::FAKER_SEED);
 
         // Reset the process-global locale/gettext state per test; otherwise a
         // language-switching test leaks into later tests in the run.
