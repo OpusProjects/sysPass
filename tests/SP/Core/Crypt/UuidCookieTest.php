@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core\Crypt;
 
-use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -57,8 +56,7 @@ class UuidCookieTest extends UnitaryTestCase
         $message = base64_encode('test');
         $data = sprintf('%s;%s', Hash::signMessage($message, $key), $message);
 
-        $request = $this->createMock(Request::class);
-        $request->cookies = new InputBag(['SYSPASS_UUID' => $data]);
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
 
         $this->requestInterface
             ->expects(self::once())
@@ -77,8 +75,7 @@ class UuidCookieTest extends UnitaryTestCase
     {
         $key = self::$faker->sha1;
 
-        $request = $this->createMock(Request::class);
-        $request->cookies = new InputBag([]);
+        $request = new Request();
 
         $this->requestInterface
             ->expects(self::once())
@@ -98,8 +95,7 @@ class UuidCookieTest extends UnitaryTestCase
         $key = self::$faker->sha1;
         $data = self::$faker->text;
 
-        $request = $this->createMock(Request::class);
-        $request->cookies = new InputBag(['SYSPASS_UUID' => $data]);
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
 
         $this->requestInterface
             ->expects(self::once())
@@ -119,8 +115,7 @@ class UuidCookieTest extends UnitaryTestCase
         $key = self::$faker->sha1;
         $data = sprintf('%s;%s', Hash::signMessage(base64_encode('invalid'), $key), base64_encode('test'));
 
-        $request = $this->createMock(Request::class);
-        $request->cookies = new InputBag(['SYSPASS_UUID' => $data]);
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
 
         $this->requestInterface
             ->expects(self::once())

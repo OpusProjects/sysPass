@@ -42,8 +42,6 @@ use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\ServerBag;
 
-use function PHPUnit\Framework\exactly;
-
 /**
  * Class RequestTest
  *
@@ -52,9 +50,9 @@ use function PHPUnit\Framework\exactly;
 class RequestTest extends UnitaryTestCase
 {
 
-    private SymfonyRequest|MockObject  $symfonyRequest;
+    private SymfonyRequest              $symfonyRequest;
     private CryptPKIHandler|MockObject $cryptPKI;
-    private HeaderBag|MockObject       $headers;
+    private HeaderBag                   $headers;
     private InputBag                   $paramsGet;
     private ServerBag                  $server;
     private FileBag                    $files;
@@ -64,10 +62,7 @@ class RequestTest extends UnitaryTestCase
      */
     public function testIsJson()
     {
-        $this->headers->expects(self::once())
-                      ->method('get')
-                      ->with('Accept')
-                      ->willReturn('application/json');
+        $this->headers->set('Accept', 'application/json');
 
         $this->ensureGet();
 
@@ -78,10 +73,7 @@ class RequestTest extends UnitaryTestCase
 
     private function ensureGet(): void
     {
-        $this->symfonyRequest
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn('GET');
+        // A real Symfony Request defaults to GET; nothing to set.
     }
 
     /**
@@ -89,10 +81,7 @@ class RequestTest extends UnitaryTestCase
      */
     public function testIsJsonFalse()
     {
-        $this->headers->expects(self::once())
-                      ->method('get')
-                      ->with('Accept')
-                      ->willReturn('test');
+        $this->headers->set('Accept', 'test');
 
         $this->ensureGet();
 
@@ -172,16 +161,8 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(4))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['X-Forwarded-Host'],
-                                                ['X-Forwarded-Proto'],
-                                                ['Forwarded'],
-                                                ['X-Forwarded-For'])
-                      )
-                      ->willReturn($host, $proto, null, null);
+        $this->headers->set('X-Forwarded-Host', $host);
+        $this->headers->set('X-Forwarded-Proto', $proto);
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
         $expected = [
@@ -197,14 +178,8 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['X-Forwarded-Host'],
-                                                ['X-Forwarded-Proto'])
-                      )
-                      ->willReturn('', '');
+        $this->headers->set('X-Forwarded-Host', '');
+        $this->headers->set('X-Forwarded-Proto', '');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -254,10 +229,7 @@ class RequestTest extends UnitaryTestCase
 
     private function ensurePost(): void
     {
-        $this->symfonyRequest
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn('POST');
+        $this->server->set('REQUEST_METHOD', 'POST');
     }
 
     public function testGetClientAddressFromServer()
@@ -267,14 +239,6 @@ class RequestTest extends UnitaryTestCase
         $this->server->set('REMOTE_ADDR', $address);
 
         $this->ensureGet();
-
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['Forwarded'], ['X-Forwarded-For'])
-                      )
-                      ->willReturn(null, null);
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
         $this->assertEquals($address, $request->getClientAddress());
@@ -289,10 +253,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(1))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('for=%s;host=%s;proto=https', $address, $domain));
+        $this->headers->set('Forwarded', sprintf('for=%s;host=%s;proto=https', $address, $domain));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -307,13 +268,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['Forwarded'], ['X-Forwarded-For'])
-                      )
-                      ->willReturn(null, sprintf('%s,', $address));
+        $this->headers->set('X-Forwarded-For', sprintf('%s,', $address));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -326,13 +281,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['Forwarded'], ['X-Forwarded-For'])
-                      )
-                      ->willReturn(null, $addresses);
+        $this->headers->set('X-Forwarded-For', $addresses);
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -406,10 +355,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('for=%s;host=%s;proto=https', $address, $domain));
+        $this->headers->set('Forwarded', sprintf('for=%s;host=%s;proto=https', $address, $domain));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -428,10 +374,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('for=%s;proto=https', self::$faker->ipv4));
+        $this->headers->set('Forwarded', sprintf('for=%s;proto=https', self::$faker->ipv4));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -444,10 +387,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(self::exactly(2))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('host=%s;for=192.168.0.1', self::$faker->domainName));
+        $this->headers->set('Forwarded', sprintf('host=%s;for=192.168.0.1', self::$faker->domainName));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -458,10 +398,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers->expects(self::once())
-                      ->method('get')
-                      ->with('Cache-Control')
-                      ->willReturn('max-age=0');
+        $this->headers->set('Cache-Control', 'max-age=0');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -472,10 +409,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers->expects(self::once())
-                      ->method('get')
-                      ->with('Cache-Control')
-                      ->willReturn('test');
+        $this->headers->set('Cache-Control', 'test');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -548,11 +482,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers
-            ->expects(self::once())
-            ->method('get')
-            ->with('X-Requested-With')
-            ->willReturn('XMLHttpRequest');
+        $this->headers->set('X-Requested-With', 'XMLHttpRequest');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -563,11 +493,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers
-            ->expects(self::once())
-            ->method('get')
-            ->with('X-Requested-With')
-            ->willReturn('test');
+        $this->headers->set('X-Requested-With', 'test');
 
         $this->paramsGet->set('isAjax', 1);
 
@@ -580,11 +506,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers
-            ->expects(self::once())
-            ->method('get')
-            ->with('X-Requested-With')
-            ->willReturn('test');
+        $this->headers->set('X-Requested-With', 'test');
 
         $this->paramsGet->set('isAjax', 0);
 
@@ -728,10 +650,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(1))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('for=%s,for=%s', $addresses[0], $addresses[1]));
+        $this->headers->set('Forwarded', sprintf('for=%s,for=%s', $addresses[0], $addresses[1]));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -747,13 +666,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['Forwarded'], ['X-Forwarded-For'])
-                      )
-                      ->willReturn(null, sprintf('%s,%s', $addresses[0], $addresses[1]));
+        $this->headers->set('X-Forwarded-For', sprintf('%s,%s', $addresses[0], $addresses[1]));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -763,14 +676,6 @@ class RequestTest extends UnitaryTestCase
     public function testGetForwardedForFail()
     {
         $this->ensureGet();
-
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(['Forwarded'], ['X-Forwarded-For'])
-                      )
-                      ->willReturn(null, null);
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -835,10 +740,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(2))
-                      ->method('get')
-                      ->with('Forwarded')
-                      ->willReturn(sprintf('for=%s;host=%s;proto=https', $address, $domain));
+        $this->headers->set('Forwarded', sprintf('for=%s;host=%s;proto=https', $address, $domain));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -851,18 +753,10 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(4))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(
-                              ['Forwarded'],
-                              ['X-Forwarded-Host'],
-                              ['X-Forwarded-Proto'],
-                              ['Forwarded']
-                          )
-                      )
-                      ->willReturn('', $domain, 'https', 'for=10.10.10.10');
+        // No (empty) RFC-7239 Forwarded header, so getHttpHost falls back to the
+        // de-facto X-Forwarded-* headers for proto + host.
+        $this->headers->set('X-Forwarded-Host', $domain);
+        $this->headers->set('X-Forwarded-Proto', 'https');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -877,18 +771,6 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->expects(exactly(3))
-                      ->method('get')
-                      ->with(
-                          ...
-                          self::withConsecutive(
-                              ['Forwarded'],
-                              ['X-Forwarded-Host'],
-                              ['X-Forwarded-Proto']
-                          )
-                      )
-                      ->willReturn('', '', '');
-
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
         /** @noinspection HttpUrlsUsage */
@@ -899,11 +781,7 @@ class RequestTest extends UnitaryTestCase
     {
         $this->ensureGet();
 
-        $this->headers
-            ->expects(self::once())
-            ->method('get')
-            ->with('test')
-            ->willReturn('a_value');
+        $this->headers->set('test', 'a_value');
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
         $out = $request->getHeader('test');
@@ -944,20 +822,15 @@ class RequestTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->symfonyRequest = $this->createMock(SymfonyRequest::class);
+        // Symfony 8.1 made Request's bag properties hooked typed properties that
+        // can no longer be set on a mock; use a real Request and expose its real,
+        // mutable bags to the tests.
+        $this->symfonyRequest = new SymfonyRequest();
         $this->cryptPKI = $this->createMock(CryptPKIHandler::class);
-        $this->headers = $this->createMock(HeaderBag::class);
 
-        $this->paramsGet = new InputBag();
-        $this->server = new ServerBag();
-        $this->files = new FileBag();
-
-        // Symfony Request exposes its bags as public properties; wire the mock's
-        // bags directly (mirrors the previous router's headers()/paramsGet()/... accessors).
-        $this->symfonyRequest->headers = $this->headers;
-        $this->symfonyRequest->query = $this->paramsGet;
-        $this->symfonyRequest->request = new InputBag();
-        $this->symfonyRequest->server = $this->server;
-        $this->symfonyRequest->files = $this->files;
+        $this->headers = $this->symfonyRequest->headers;
+        $this->paramsGet = $this->symfonyRequest->query;
+        $this->server = $this->symfonyRequest->server;
+        $this->files = $this->symfonyRequest->files;
     }
 }
