@@ -155,7 +155,8 @@ class XmlExportTest extends UnitaryTestCase
 
         $encrypted = $xml->documentElement->getElementsByTagName('Encrypted')->item(0);
 
-        $this->assertStringStartsWith('$2y$10$', $encrypted->attributes->getNamedItem('hash')->nodeValue);
+        // bcrypt prefix only — the default cost is PHP-version dependent ($2y$10$ on <= 8.3, $2y$12$ on >= 8.4).
+        $this->assertStringStartsWith('$2y$', $encrypted->attributes->getNamedItem('hash')->nodeValue);
 
         $this->assertEquals(4, $encrypted->childNodes->count());
 
