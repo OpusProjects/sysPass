@@ -48,7 +48,8 @@ final class SessionLifecycleHandler
         'cookie_samesite' => 'Strict',
         'use_trans_sid' => '0',
         'cache_limiter' => 'nocache',
-        'sid_bits_per_character' => '6'
+        // session.sid_bits_per_character is deprecated as of PHP 8.5 (the session ID
+        // format is being standardised), so it is no longer configured here.
     ];
     private const NEW_ID_KEY         = 'new_session_id';
     private const DESTROY_TIMEOUT    = 300;
