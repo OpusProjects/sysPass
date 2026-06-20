@@ -1,0 +1,44 @@
+# Local development stack for sysPass (legacy 3.2.x / PHP 7.4 baseline).
+#
+#   docker compose up --build
+#   -> web UI at http://localhost:8090  (first run shows the installer)
+#
+# Installer DB settings to use:
+#   DB host: db   user: root   pass: syspass   database: syspass
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    image: opusprojects/syspass:dev
+    ports:
+      - "8090:80"
+    volumes:
+      # Live-mount the source for development. Named volumes keep composer's
+      # vendor tree and sysPass runtime state from being clobbered by the mount.
+      - .:/var/www/html
+      - vendor:/var/www/html/vendor
+      - config:/var/www/html/app/config
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.11
+    environment:
+      MARIADB_ROOT_PASSWORD: syspass
+      MARIADB_DATABASE: syspass
+    volumes:
+      - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  db:
+  vendor:
+  config:

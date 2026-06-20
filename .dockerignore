@@ -1,0 +1,8 @@
+.git
+vendor
+app/config/config.xml
+app/cache/*
+app/temp/*
+app/backup/*
+tests/_output/*
+node_modules
