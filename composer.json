@@ -1,9 +1,14 @@
 {
   "authors": [
     {
+      "name": "OpusProjects",
+      "role": "Maintainer",
+      "homepage": "https://github.com/OpusProjects"
+    },
+    {
       "name": "Rubén Domínguez",
       "email": "nuxsmin@syspass.org",
-      "role": "Author/Developer",
+      "role": "Original author",
       "homepage": "https://syspass.org/"
     }
   ],
@@ -26,7 +31,7 @@
     }
   },
   "description": "PHP web based Password Manager for business and personal use.",
-  "homepage": "https://syspass.org",
+  "homepage": "https://github.com/OpusProjects/sysPass",
   "license": "GPL-3.0",
   "minimum-stability": "stable",
   "name": "syspass/syspass",
@@ -81,8 +86,8 @@
     "ext-xdebug": "*"
   },
   "support": {
-    "issues": "https://github.com/nuxsmin/sysPass/issues",
-    "source": "https://github.com/nuxsmin/sysPass",
+    "issues": "https://github.com/OpusProjects/sysPass/issues",
+    "source": "https://github.com/OpusProjects/sysPass",
     "docs": "https://doc.syspass.org"
   }
 }

@@ -35,8 +35,26 @@ In his own words ([nuxsmin/sysPass#1954, 2026-05-05](https://github.com/nuxsmin/
 > its development or look for another one. I know it could be disappointing, but the reality is
 > that I don't have the time to continue evolving it with the required quality standards."_
 
-This fork exists to keep sysPass alive. It started from the last upstream release
+This fork exists to keep sysPass alive. It started **20 June 2026** from the last upstream release
 (**3.2.11**) as a baseline.
+
+---
+
+## 📜 Current project status
+
+This fork carries [@nuxsmin](https://github.com/nuxsmin)'s planned [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring) forward to keep evolving the project.
+
+Current stack:
+
+- **PHP 8.4–8.5** — language runtime
+- **Symfony 8** — HTTP, routing & console components
+- **Hexagonal architecture** — ports & adapters
+- **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
+- **PHP-DI** — dependency-injection container
+- **Composer** — dependency management
+- **Docker** — containerised dev stack
+- **MariaDB / MySQL** — database
+- **PHPUnit 13** — test suite
 
 ---
 
