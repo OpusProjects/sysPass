@@ -65,7 +65,7 @@
     "fakerphp/faker": "^1.24",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^3",
-    "phpstan/phpstan": "^1.9",
+    "phpstan/phpstan": "^2.2",
     "mikey179/vfsstream": "^1.6.12",
     "symfony/dom-crawler": "^8.1"
   },
