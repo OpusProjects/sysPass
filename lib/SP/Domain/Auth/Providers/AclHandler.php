@@ -126,7 +126,7 @@ final class AclHandler extends Provider implements EventReceiver
 
             if ($extra) {
                 foreach ($this->userProfileService->getUsersForProfile($extra[0]) as $user) {
-                    $this->clearAcl($user->id);
+                    $this->clearAcl($user->id ?? null);
                 }
             }
         } catch (Exception $e) {
@@ -197,7 +197,7 @@ final class AclHandler extends Provider implements EventReceiver
 
             if ($extra) {
                 foreach ($this->userGroupService->getUsageByUsers($extra[0]) as $user) {
-                    $this->clearAcl($user->id);
+                    $this->clearAcl($user->id ?? null);
                 }
             }
         } catch (Exception $e) {

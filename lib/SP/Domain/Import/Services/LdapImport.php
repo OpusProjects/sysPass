@@ -86,7 +86,7 @@ final class LdapImport extends Service implements LdapImportService
         while ($iterator->valid()) {
             $entry = $iterator->current();
             $userGroup = [
-                'name' => $this->flattenEntry($entry[$ldapImportParams->getUserGroupNameAttribute()]) ?? null,
+                'name' => $this->flattenEntry($entry[$ldapImportParams->getUserGroupNameAttribute()] ?? null) ?? null,
                 'description' => __('Imported from LDAP')
             ];
 
@@ -182,9 +182,9 @@ final class LdapImport extends Service implements LdapImportService
             $entry = $iterator->current();
 
             $user = [
-                'name' => $this->flattenEntry($entry[$ldapImportParams->getUserNameAttribute()]) ?? null,
-                'login' => $this->flattenEntry($entry[$ldapImportParams->getLoginAttribute()]) ?? null,
-                'email' => $this->flattenEntry($entry['mail']) ?? null,
+                'name' => $this->flattenEntry($entry[$ldapImportParams->getUserNameAttribute()] ?? null) ?? null,
+                'login' => $this->flattenEntry($entry[$ldapImportParams->getLoginAttribute()] ?? null) ?? null,
+                'email' => $this->flattenEntry($entry['mail'] ?? null) ?? null,
                 'notes' => __('Imported from LDAP'),
                 'userGroupId' => $ldapImportParams->getDefaultUserGroup(),
                 'userProfileId' => $ldapImportParams->getDefaultUserProfile(),

@@ -130,7 +130,7 @@ final class LdapActions implements LdapActionsService
                 array_map(
                     static function ($value) {
                         if (is_array($value)) {
-                            return $value['dn'];
+                            return $value['dn'] ?? null;
                         }
 
                         return null;

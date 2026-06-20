@@ -133,7 +133,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->properties[$offset];
+        return $this->properties[$offset] ?? null;
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
@@ -180,7 +180,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     public function __get(string $name)
     {
-        return $this->{$name};
+        return $this->{$name} ?? null;
     }
 
     /**

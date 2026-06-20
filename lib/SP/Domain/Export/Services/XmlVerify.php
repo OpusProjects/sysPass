@@ -99,9 +99,15 @@ final class XmlVerify extends Service implements XmlVerifyService
      */
     private function setup(string $file): void
     {
-        if (!$this->document->load($file, LIBXML_NOBLANKS)) {
-            $error = libxml_get_last_error();
-            throw ServiceException::error('Unable to load XML file', $error->message);
+        $previous = libxml_use_internal_errors(true);
+
+        try {
+            if (!$this->document->load($file, LIBXML_NOBLANKS)) {
+                $error = libxml_get_last_error();
+                throw ServiceException::error('Unable to load XML file', $error->message);
+            }
+        } finally {
+            libxml_use_internal_errors($previous);
         }
     }
 
@@ -110,9 +116,15 @@ final class XmlVerify extends Service implements XmlVerifyService
      */
     private function validateSchema(): void
     {
-        if (!$this->document->schemaValidate($this->schema)) {
-            $error = libxml_get_last_error();
-            throw ServiceException::error('Invalid XML schema', $error->message);
+        $previous = libxml_use_internal_errors(true);
+
+        try {
+            if (!$this->document->schemaValidate($this->schema)) {
+                $error = libxml_get_last_error();
+                throw ServiceException::error('Invalid XML schema', $error->message);
+            }
+        } finally {
+            libxml_use_internal_errors($previous);
         }
     }
 
