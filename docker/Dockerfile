@@ -1,5 +1,5 @@
-# sysPass development image — PHP 8.4 (matches the rewrite's `~8.2 || ~8.3 || ~8.4` requirement).
-FROM php:8.4-apache
+# sysPass development image — PHP 8.5 (matches the rewrite's `~8.2 || ~8.3 || ~8.4 || ~8.5` requirement).
+FROM php:8.5-apache
 
 # System libraries to build the PHP extensions, plus test-suite needs:
 #  - iproute2: the test bootstrap's getRealIpAddress() runs `ip a s eth0`.

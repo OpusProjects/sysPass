@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core\UI;
 
-use Directory;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -143,22 +142,41 @@ class ThemeTest extends UnitaryTestCase
      */
     public function testGetAvailable()
     {
-        $dir = $this->createMock(Directory::class);
-        $dir->expects(self::exactly(2))
-            ->method('read')
-            ->willReturn('/tmp', false);
+        $viewsPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('syspass_theme_', true);
+        $themeName = 'material-blue';
+        $themePath = $viewsPath . DIRECTORY_SEPARATOR . $themeName;
 
-        $this->themeContext
-            ->expects(self::once())
-            ->method('getViewsDirectory')
-            ->willReturn($dir);
+        mkdir($themePath, 0777, true);
+        file_put_contents(
+            $themePath . DIRECTORY_SEPARATOR . 'index.php',
+            "<?php return ['name' => 'Material Blue'];"
+        );
 
-        $this->themeContext
-            ->expects(self::once())
-            ->method('getViewsPath')
-            ->willReturn('/tmp/themes');
+        // The production code calls is_dir() on the bare entry name returned by
+        // Directory::read(), so resolution depends on the current working dir.
+        $previousCwd = getcwd();
+        chdir($viewsPath);
 
-        $this->theme->getAvailable();
+        try {
+            $this->themeContext
+                ->expects(self::once())
+                ->method('getViewsDirectory')
+                ->willReturn(dir($viewsPath));
+
+            $this->themeContext
+                ->expects(self::once())
+                ->method('getViewsPath')
+                ->willReturn($viewsPath);
+
+            $available = $this->theme->getAvailable();
+        } finally {
+            chdir($previousCwd);
+            unlink($themePath . DIRECTORY_SEPARATOR . 'index.php');
+            rmdir($themePath);
+            rmdir($viewsPath);
+        }
+
+        $this->assertEquals([$themeName => 'Material Blue'], $available);
     }
 
     public function testGetPath()

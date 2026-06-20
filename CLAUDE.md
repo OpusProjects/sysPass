@@ -33,7 +33,7 @@ gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch   # we self
 This is a PHP project; dependencies live in **Composer** files at the repo root:
 
 - **`composer.json`** — declared deps. `require` (runtime) + `require-dev` (test/dev tools),
-  PSR-4 autoload, and the `~8.2 || ~8.3` PHP constraint. (≈ `package.json` / `requirements.txt`.)
+  PSR-4 autoload, and the `~8.4 || ~8.5` PHP constraint. (≈ `package.json` / `requirements.txt`.)
 - **`composer.lock`** — fully-resolved pinned versions of every package + transitive dep, what
   `composer install` reproduces. (≈ `package-lock.json`.)
 - **`vendor/`** — installed packages, **gitignored** (≈ `node_modules`).
@@ -43,7 +43,7 @@ This is a PHP project; dependencies live in **Composer** files at the repo root:
 A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock` (run
 `composer update <pkg> -W` in the container), plus any code changes, validated by both suites.
 
-## Layout (PHP 8.2 hexagonal)
+## Layout (PHP 8 hexagonal)
 
 | Area | Path |
 |---|---|
@@ -64,12 +64,12 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 ## Local dev environment (Docker)
 
 ```bash
-docker compose up --build -d      # PHP 8.2 + Apache app + MariaDB
+docker compose up --build -d      # PHP 8.5 + Apache app + MariaDB
 # App on http://localhost:8090 ; MariaDB as host `db` (root / syspass / db `syspass`)
 ```
 
 - Host **port 8090** (8080 is taken by another container on this machine).
-- The image installs the PHP 8.2 extensions + the test deps (see below), prepends the Composer
+- The image installs the PHP extensions + the test deps (see below), prepends the Composer
   autoloader, and the entrypoint runs `composer install` and writes a dev `.env`.
 
 ## Tests
@@ -123,7 +123,7 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
   is still blocked on this — it needs lazy file opening (or tolerating a missing file) so
   `generateNewConfig()` runs. An already-installed instance (config.xml present) is unaffected.
 
-## Dependency status (PHP 8.4 codebase, Symfony 8)
+## Dependency status (PHP 8.5 codebase, Symfony 8)
 
 - **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; `phpseclib/phpseclib` 2 → 3
   (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`; **replaced the abandoned
@@ -131,11 +131,17 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
   through `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
 - **Symfony 5.4 → 8.0 — done, staged one PR per major** (whole `symfony/*` suite moved together each
   step; the sanctioned exception to one-package-per-PR): `5.4 → 6.4` (#19), `6.4 → 7.4 LTS` (#20),
-  PHP `8.2/8.3 → 8.4` prerequisite (#21), `7.4 → 8.0` (#22). Dev image and `config.platform` are on
-  **PHP 8.4** (constraint `~8.2 || ~8.3 || ~8.4`). Notable major-version breaks fixed along the way:
-  console `$defaultName` → `#[AsCommand]` (7.0); strictly-typed / `final` Request bags in tests
-  (`FileBag`/`InputBag`) (7.0); default bcrypt cost 10 → 12 (PHP 8.4); `Request::get()` removed →
-  `$request->query->get()` (8.0); `Environment::MAX_PHP_VERSION` raised to allow 8.4.
+  PHP `8.2/8.3 → 8.4` prerequisite (#21), `7.4 → 8.0` (#22).
+- **PHP 8.4 → 8.5 — supported** (floor raised from 8.2: a modern-only range). Dev image and
+  `config.platform` are on **PHP 8.5**; constraint `~8.4 || ~8.5`; `Environment` allows `>= 8.4 < 8.6`.
+  Notable version breaks fixed along the way: console `$defaultName` → `#[AsCommand]` (7.0);
+  strictly-typed / `final` Request bags in tests (`FileBag`/`InputBag`) (7.0); default bcrypt cost
+  10 → 12 (PHP 8.4); `Request::get()` removed → `$request->query->get()` (8.0); implicit-nullable
+  params (`?Type`) and no-arg `get_class()` (8.4, removed in 8.5); `E_STRICT` removed and `Directory`
+  made `final` (8.5); `SplObjectStorage` `attach/contains/detach` → `offset*` and
+  `PDO::MYSQL_ATTR_*` → `\Pdo\Mysql::ATTR_*` (8.5). Remaining 8.5 deprecations are vendor
+  (faker/fractal — cleared by the dependency-upgrade phase) plus the `session.sid_bits_per_character`
+  ini (runtime, not our code).
 - The old 3.2.x line was gridlocked by `roave/security-advisories` + `fabpot/goutte`'s guzzle-6 pin —
   the reason we adopted the rewrite (which uses `symfony/dom-crawler`, not goutte).
 

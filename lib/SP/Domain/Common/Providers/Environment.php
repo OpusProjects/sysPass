@@ -30,8 +30,8 @@ namespace SP\Domain\Common\Providers;
  */
 final class Environment
 {
-    private const MIN_PHP_VERSION = 80200;
-    private const MAX_PHP_VERSION = 80500;
+    private const MIN_PHP_VERSION = 80400;
+    private const MAX_PHP_VERSION = 80600;
 
     /**
      * Check whether sysPass is running on Windows.

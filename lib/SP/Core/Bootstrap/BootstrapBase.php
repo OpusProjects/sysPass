@@ -175,7 +175,7 @@ abstract class BootstrapBase implements BootstrapInterface
 
         if (!self::$checkPhpVersion) {
             throw InitializationException::error(
-                sprintf(__('Required PHP version >= %s <= %s'), '8.2', '8.4'),
+                sprintf(__('Required PHP version >= %s <= %s'), '8.4', '8.5'),
                 __u('Please update the PHP version to run sysPass')
             );
         }
@@ -216,7 +216,8 @@ abstract class BootstrapBase implements BootstrapInterface
         if (DEBUG) {
             Debug::enable();
         } else {
-            error_reporting(E_ALL & ~(E_DEPRECATED | E_STRICT | E_NOTICE));
+            // E_STRICT was deprecated in 8.4 and removed in 8.5; it has been a no-op since 8.0.
+            error_reporting(E_ALL & ~(E_DEPRECATED | E_NOTICE));
 
             if (!headers_sent()) {
                 ini_set('display_errors', 0);

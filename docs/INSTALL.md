@@ -1,11 +1,11 @@
 # Installation
 
 The original online documentation (`doc.syspass.org`) is offline. This guide is maintained
-in-tree for this fork's **PHP 8.2** codebase.
+in-tree for this fork's **PHP 8.4–8.5** codebase.
 
 ## Requirements
 
-- **PHP 8.2 or 8.3** with extensions: `pdo_mysql`, `gd`, `gettext`, `mbstring`, `intl`,
+- **PHP 8.4 or 8.5** with extensions: `pdo_mysql`, `gd`, `gettext`, `mbstring`, `intl`,
   `dom` / `xml`, `json`, `curl`, `fileinfo`, `zlib`, and `ldap` (LDAP / Active Directory auth).
 - **MariaDB ≥ 10.1** (or MySQL).
 - A **web server** (Apache or Nginx); SSL strongly recommended.
@@ -13,7 +13,7 @@ in-tree for this fork's **PHP 8.2** codebase.
 
 ## Option A — Docker (recommended for development)
 
-This fork ships a one-command development stack (**PHP 8.2** + Apache + MariaDB). See the
+This fork ships a one-command development stack (**PHP 8.5** + Apache + MariaDB). See the
 [`docker/`](../docker) directory and [`docker-compose.yml`](../docker-compose.yml).
 
 ```bash
@@ -22,12 +22,12 @@ docker compose up --build -d
 
 - The app is served on <http://localhost:8090>; MariaDB is reachable as host `db`
   (user `root`, password `syspass`, database `syspass`).
-- The image installs the PHP 8.2 extensions, prepends the Composer autoloader
+- The image installs the PHP extensions, prepends the Composer autoloader
   (`auto_prepend_file`), and the entrypoint runs `composer install` and writes a dev `.env`.
 
 > **Note:** the web UI installer flow of the hexagonal rewrite is still being completed
 > (the web entry point was never exercised by upstream's CI). The stack builds, installs the
-> PHP 8.2 dependencies, and runs the full test suites; finishing the browser installer is
+> PHP dependencies, and runs the full test suites; finishing the browser installer is
 > tracked separately.
 
 ## Option B — Manual installation
@@ -35,7 +35,7 @@ docker compose up --build -d
 The procedure is the same on any Linux distribution; only the package names, the web-root path,
 and the web-server user differ.
 
-1. **Install the dependencies** — a web server, **PHP 8.2** with the extensions listed under
+1. **Install the dependencies** — a web server, **PHP 8.4–8.5** with the extensions listed under
    [Requirements](#requirements), MariaDB, and Composer:
 
    - **Debian / Ubuntu:**
@@ -86,4 +86,4 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both suites pass: **1978 unit tests** and **93 integration tests**.
+Both suites pass: **1979 unit tests** and **93 integration tests**.
