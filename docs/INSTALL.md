@@ -1,16 +1,10 @@
 # Installation
 
-Full installation instructions and a Frequently Asked Questions guide were hosted in the
-upstream documentation. The original project linked the same guide in several languages:
+The original upstream documentation site (`doc.syspass.org`) is offline, along with the rest of
+the original project's domains. It previously hosted the install guide and FAQ in several
+languages (English, Español, Deutsch, Magyar, Français).
 
-- 🇬🇧 **English** — Installation and Frequently Asked Questions — <https://doc.syspass.org>
-- 🇪🇸 **Español** — Instalación y preguntas frecuentes — <https://doc.syspass.org>
-- 🇩🇪 **Deutsch** — Installation und häufig gestellte Fragen — <https://doc.syspass.org>
-- 🇭🇺 **Magyar** — Telepítés és gyakran feltett kérdések — <https://doc.syspass.org>
-- 🇫🇷 **Français** — Installation et Foire aux questions — <https://doc.syspass.org>
+For a local development setup of this fork, use the Docker environment described in the project
+[`README`](../README.md) (see the [`docker/`](../docker) directory).
 
-> **Note**
-> The upstream documentation describes the **3.2.x** release. For a local development setup of
-> this fork, use the Docker environment described in the project [`README`](../README.md)
-> (see the [`docker/`](../docker) directory). Fork-specific install docs will be added here as
-> the modernization work lands.
+Fork-specific installation docs will be added here as the modernization work lands.
