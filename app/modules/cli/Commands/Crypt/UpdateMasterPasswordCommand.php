@@ -40,6 +40,7 @@ use SP\Infrastructure\Common\Repositories\NoSuchItemException;
 use SP\Modules\Cli\Commands\CommandBase;
 use SP\Modules\Cli\Commands\Validators;
 use SP\Util\Util;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -52,6 +53,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @package SP\Modules\Cli\Commands\Crypt
  */
+#[AsCommand(name: 'sp:crypt:update-master-password')]
 final class UpdateMasterPasswordCommand extends CommandBase
 {
     use LockableTrait;
@@ -64,10 +66,6 @@ final class UpdateMasterPasswordCommand extends CommandBase
         'masterPassword'        => 'MASTER_PASSWORD',
         'update'                => 'UPDATE',
     ];
-    /**
-     * @var string
-     */
-    protected static          $defaultName = 'sp:crypt:update-master-password';
     private MasterPassService $masterPassService;
     private Config            $configService;
     private Account $accountService;

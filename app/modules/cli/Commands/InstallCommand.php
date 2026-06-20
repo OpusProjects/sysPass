@@ -34,6 +34,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Domain\Install\Services\Installer;
 use SP\Util\Util;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -46,6 +47,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  *
  * @package SP\Modules\Cli\Commands
  */
+#[AsCommand(name: 'sp:install')]
 final class InstallCommand extends CommandBase
 {
     /**
@@ -64,10 +66,6 @@ final class InstallCommand extends CommandBase
         'forceInstall'     => 'FORCE_INSTALL',
         'install'          => 'INSTALL',
     ];
-    /**
-     * @var string
-     */
-    protected static  $defaultName = 'sp:install';
     private Installer $installer;
 
     public function __construct(
