@@ -71,24 +71,24 @@ class AuthProviderTest extends UnitaryTestCase
     public function testDoAuth()
     {
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
-        $userLoginData->setLoginPass(self::$faker->password);
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
 
         $browserAuthData = new BrowserAuthData(false);
-        $browserAuthData->setName(self::$faker->name);
-        $browserAuthData->setEmail(self::$faker->email);
+        $browserAuthData->setName(self::$faker->name());
+        $browserAuthData->setEmail(self::$faker->email());
         $browserAuthData->setStatusCode(0);
         $browserAuthData->success();
 
         $ldapAuthData = new LdapAuthData(true);
-        $ldapAuthData->setName(self::$faker->name);
-        $ldapAuthData->setEmail(self::$faker->email);
+        $ldapAuthData->setName(self::$faker->name());
+        $ldapAuthData->setEmail(self::$faker->email());
         $ldapAuthData->setStatusCode(1);
         $ldapAuthData->success();
 
         $databaseAuthData = new DatabaseAuthData(true);
-        $databaseAuthData->setName(self::$faker->name);
-        $databaseAuthData->setEmail(self::$faker->email);
+        $databaseAuthData->setName(self::$faker->name());
+        $databaseAuthData->setEmail(self::$faker->email());
         $databaseAuthData->setStatusCode(2);
         $databaseAuthData->success();
 

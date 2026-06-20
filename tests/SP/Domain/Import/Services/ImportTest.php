@@ -110,8 +110,8 @@ class ImportTest extends UnitaryTestCase
             $this->createMock(FileHandlerInterface::class),
             self::$faker->randomNumber(3),
             self::$faker->randomNumber(3),
-            self::$faker->password,
-            self::$faker->password
+            self::$faker->password(),
+            self::$faker->password()
         );
     }
 }

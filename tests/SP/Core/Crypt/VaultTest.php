@@ -44,8 +44,8 @@ class VaultTest extends UnitaryTestCase
      */
     public function testGetData()
     {
-        $data = self::$faker->text;
-        $key = self::$faker->password;
+        $data = self::$faker->text();
+        $key = self::$faker->password();
 
         $vault = Vault::factory(new Crypt())->saveData($data, $key);
         $this->assertEquals($data, $vault->getData($key));
@@ -56,7 +56,7 @@ class VaultTest extends UnitaryTestCase
      */
     public function testGetDataWithNoData()
     {
-        $key = self::$faker->password;
+        $key = self::$faker->password();
 
         $vault = Vault::factory(new Crypt());
 
@@ -71,7 +71,7 @@ class VaultTest extends UnitaryTestCase
      */
     public function testGetTimeSet()
     {
-        $vault = Vault::factory(new Crypt())->saveData(self::$faker->text, self::$faker->password);
+        $vault = Vault::factory(new Crypt())->saveData(self::$faker->text(), self::$faker->password());
         $this->assertTrue($vault->getTimeSet() !== 0);
     }
 
@@ -80,12 +80,12 @@ class VaultTest extends UnitaryTestCase
      */
     public function testReKey()
     {
-        $data = self::$faker->text;
-        $key = self::$faker->password;
+        $data = self::$faker->text();
+        $key = self::$faker->password();
 
         $vault = Vault::factory(new Crypt())->saveData($data, $key);
 
-        $newKey = self::$faker->password;
+        $newKey = self::$faker->password();
 
         $vaultRekey = $vault->reKey($newKey, $key);
 

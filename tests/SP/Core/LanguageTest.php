@@ -83,7 +83,7 @@ class LanguageTest extends UnitaryTestCase
         $this->configData
             ->expects(self::once())
             ->method('getSiteLang')
-            ->willReturn(self::$faker->locale);
+            ->willReturn(self::$faker->locale());
 
         $user = (new User(['id' => self::$faker->randomNumber(2)]))
             ->dehydrate(new UserPreferences(['lang' => $locale]));

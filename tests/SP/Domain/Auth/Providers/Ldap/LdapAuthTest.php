@@ -60,8 +60,8 @@ class LdapAuthTest extends UnitaryTestCase
     public function testAuthenticate()
     {
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
-        $userLoginData->setLoginPass(self::$faker->password);
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
 
         $ldapActions = $this->createMock(LdapActionsService::class);
 
@@ -122,17 +122,17 @@ class LdapAuthTest extends UnitaryTestCase
     private function buildAttributes(): AttributeCollection
     {
         return new AttributeCollection([
-                                           'dn' => self::$faker->userName,
+                                           'dn' => self::$faker->userName(),
                                            'group' => [
-                                               self::$faker->company,
-                                               self::$faker->company,
-                                               self::$faker->company,
+                                               self::$faker->company(),
+                                               self::$faker->company(),
+                                               self::$faker->company(),
                                            ],
-                                           'fullname' => self::$faker->name,
-                                           'name' => self::$faker->firstName,
-                                           'sn' => self::$faker->lastName,
-                                           'mail' => self::$faker->email,
-                                           'expire' => self::$faker->unixTime,
+                                           'fullname' => self::$faker->name(),
+                                           'name' => self::$faker->firstName(),
+                                           'sn' => self::$faker->lastName(),
+                                           'mail' => self::$faker->email(),
+                                           'expire' => self::$faker->unixTime(),
                                        ]);
     }
 
@@ -142,8 +142,8 @@ class LdapAuthTest extends UnitaryTestCase
     public function testAuthenticateWithExpireFail()
     {
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
-        $userLoginData->setLoginPass(self::$faker->password);
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
 
         $ldapActions = $this->createMock(LdapActionsService::class);
 
@@ -190,8 +190,8 @@ class LdapAuthTest extends UnitaryTestCase
     public function testAuthenticateWithGroupFail()
     {
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
-        $userLoginData->setLoginPass(self::$faker->password);
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
 
         $ldapActions = $this->createMock(LdapActionsService::class);
 
@@ -238,8 +238,8 @@ class LdapAuthTest extends UnitaryTestCase
     public function testAuthenticateFailConnect()
     {
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
-        $userLoginData->setLoginPass(self::$faker->password);
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
 
         $ldapActions = $this->createMock(LdapActionsService::class);
 

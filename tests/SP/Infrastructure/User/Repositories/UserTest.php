@@ -543,7 +543,7 @@ class UserTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -615,7 +615,7 @@ class UserTest extends UnitaryTestCase
             )
         );
 
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

@@ -178,7 +178,7 @@ class MySQLTest extends UnitaryTestCase
         );
         $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
 
-        $this->configData->setDbUser(self::$faker->userName);
+        $this->configData->setDbUser(self::$faker->userName());
 
         $execArguments = [
             [
@@ -273,8 +273,8 @@ class MySQLTest extends UnitaryTestCase
         );
         $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
 
-        $this->configData->setDbUser(self::$faker->userName);
-        $this->installData->setDbAuthHostDns(self::$faker->domainName);
+        $this->configData->setDbUser(self::$faker->userName());
+        $this->installData->setDbAuthHostDns(self::$faker->domainName());
 
         $execArguments = [
             [
@@ -370,7 +370,7 @@ class MySQLTest extends UnitaryTestCase
         );
         $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
 
-        $this->configData->setDbUser(self::$faker->userName);
+        $this->configData->setDbUser(self::$faker->userName());
 
         $execArguments = [
             [
@@ -457,8 +457,8 @@ class MySQLTest extends UnitaryTestCase
 
     public function testRollbackIsSuccessful(): void
     {
-        $this->configData->setDbUser(self::$faker->userName);
-        $this->installData->setDbAuthHostDns(self::$faker->domainName);
+        $this->configData->setDbUser(self::$faker->userName());
+        $this->installData->setDbAuthHostDns(self::$faker->domainName());
 
         $execArguments = [
             [
@@ -494,7 +494,7 @@ class MySQLTest extends UnitaryTestCase
 
     public function testRollbackIsSuccessfulWithSameDnsHost(): void
     {
-        $this->configData->setDbUser(self::$faker->userName);
+        $this->configData->setDbUser(self::$faker->userName());
         $this->installData->setDbAuthHost('localhost');
         $this->installData->setDbAuthHostDns('localhost');
 
@@ -710,8 +710,8 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDBUserIsSuccessful(): void
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $execArguments = [
             [
@@ -741,10 +741,10 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDBUserIsSuccessfulWithDns(): void
     {
-        $this->installData->setDbAuthHostDns(self::$faker->domainName);
+        $this->installData->setDbAuthHostDns(self::$faker->domainName());
 
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $execArguments = [
             [
@@ -784,8 +784,8 @@ class MySQLTest extends UnitaryTestCase
     {
         $this->installData->setHostingMode(true);
 
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $this->pdo->expects(self::exactly(0))->method('exec');
 
@@ -797,8 +797,8 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDBUserIsNotSuccessful(): void
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $this->pdo->expects(self::once())
                   ->method('exec')
@@ -842,15 +842,15 @@ class MySQLTest extends UnitaryTestCase
     private function getInstallData(): InstallData
     {
         $params = new InstallData();
-        $params->setDbAdminUser(self::$faker->userName);
-        $params->setDbAdminPass(self::$faker->password);
-        $params->setDbName(self::$faker->colorName);
-        $params->setDbHost(self::$faker->domainName);
-        $params->setAdminLogin(self::$faker->userName);
-        $params->setAdminPass(self::$faker->password);
+        $params->setDbAdminUser(self::$faker->userName());
+        $params->setDbAdminPass(self::$faker->password());
+        $params->setDbName(self::$faker->colorName());
+        $params->setDbHost(self::$faker->domainName());
+        $params->setAdminLogin(self::$faker->userName());
+        $params->setAdminPass(self::$faker->password());
         $params->setMasterPassword(self::$faker->password(11));
-        $params->setSiteLang(self::$faker->languageCode);
-        $params->setDbAuthHost(self::$faker->ipv4);
+        $params->setSiteLang(self::$faker->languageCode());
+        $params->setDbAuthHost(self::$faker->ipv4());
 
         return $params;
     }

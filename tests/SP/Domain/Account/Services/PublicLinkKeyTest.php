@@ -43,7 +43,7 @@ class PublicLinkKeyTest extends UnitaryTestCase
      */
     public function testGetKeyWithoutHash()
     {
-        $publicLinkKey = new PublicLinkKey(self::$faker->sha1);
+        $publicLinkKey = new PublicLinkKey(self::$faker->sha1());
 
         $this->assertNotEmpty($publicLinkKey->getKey());
         $this->assertNotEmpty($publicLinkKey->getHash());
@@ -54,9 +54,9 @@ class PublicLinkKeyTest extends UnitaryTestCase
      */
     public function testGetKeyWithHash()
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
 
-        $publicLinkKey = new PublicLinkKey(self::$faker->sha1, $hash);
+        $publicLinkKey = new PublicLinkKey(self::$faker->sha1(), $hash);
 
         $this->assertNotEmpty($publicLinkKey->getKey());
         $this->assertEquals($hash, $publicLinkKey->getHash());

@@ -48,7 +48,7 @@ class UriContextTest extends UnitaryTestCase
                 ->with(...$this->withConsecutive(['SCRIPT_FILENAME'], ['REQUEST_URI']))
                 ->willReturn('/some/path/to/test.php', '/syspass/test.php');
 
-        $domainName = self::$faker->domainName;
+        $domainName = self::$faker->domainName();
 
         $request->expects(self::once())
                 ->method('getHttpHost')
@@ -72,7 +72,7 @@ class UriContextTest extends UnitaryTestCase
                 ->with(...$this->withConsecutive(['SCRIPT_FILENAME'], ['REQUEST_URI']))
                 ->willReturn('/some/path/to/test.php', 'test.php');
 
-        $domainName = self::$faker->domainName;
+        $domainName = self::$faker->domainName();
 
         $request->expects(self::once())
                 ->method('getHttpHost')

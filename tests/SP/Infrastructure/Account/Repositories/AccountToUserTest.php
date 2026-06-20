@@ -145,7 +145,7 @@ class AccountToUserTest extends UnitaryTestCase
         $this->accountToUser->addByType(
             self::$faker->randomNumber(),
             $userGroups,
-            self::$faker->boolean
+            self::$faker->boolean()
         );
     }
 

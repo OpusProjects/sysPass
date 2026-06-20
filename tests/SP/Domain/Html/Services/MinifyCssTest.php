@@ -66,7 +66,7 @@ class MinifyCssTest extends UnitaryTestCase
      */
     private function buildCheckWithEtag(int $numFiles = 1): array
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $etag = sha1(
             array_reduce(
                 range(1, $numFiles),
@@ -144,7 +144,7 @@ class MinifyCssTest extends UnitaryTestCase
      */
     private function buildCheckWithoutEtag(int $numFiles = 1): array
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
         $etag = sha1(
             array_reduce(
                 range(1, $numFiles),
@@ -178,7 +178,7 @@ class MinifyCssTest extends UnitaryTestCase
         $this->request->expects(self::once())
                       ->method('getHeader')
                       ->with(Header::IF_NONE_MATCH->value)
-                      ->willReturn(self::$faker->sha1);
+                      ->willReturn(self::$faker->sha1());
 
         $this->response->expects(self::exactly(5))
                        ->method('header')

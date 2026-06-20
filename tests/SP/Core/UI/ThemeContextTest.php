@@ -42,7 +42,7 @@ class ThemeContextTest extends UnitaryTestCase
         $basePath = '/tmp';
         $baseUri = '/uri';
         $module = 'web';
-        $name = self::$faker->colorName;
+        $name = self::$faker->colorName();
 
         $themeContext = new ThemeContext($basePath, $baseUri, $module, $name);
         $this->assertEquals('/tmp/' . $name, $themeContext->getFullPath());

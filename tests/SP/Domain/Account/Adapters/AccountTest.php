@@ -61,9 +61,9 @@ class AccountTest extends UnitaryTestCase
                 ->willReturn(
                     new Action(
                         self::$faker->randomNumber(),
-                        self::$faker->colorName,
-                        self::$faker->sentence,
-                        self::$faker->colorName
+                        self::$faker->colorName(),
+                        self::$faker->sentence(),
+                        self::$faker->colorName()
                     )
                 );
 
@@ -145,9 +145,9 @@ class AccountTest extends UnitaryTestCase
                 ->willReturn(
                     new Action(
                         self::$faker->randomNumber(),
-                        self::$faker->colorName,
-                        self::$faker->sentence,
-                        self::$faker->colorName
+                        self::$faker->colorName(),
+                        self::$faker->sentence(),
+                        self::$faker->colorName()
                     )
                 );
 

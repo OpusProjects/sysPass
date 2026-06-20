@@ -118,10 +118,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportUsers()
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [
@@ -175,10 +175,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportUsersWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             $ldapTypeEnum,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group');
         $entry = [
@@ -235,10 +235,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportUsersWithEmptyNameOrLogin(array $entry)
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
 
@@ -261,10 +261,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportUsersWithException()
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [
@@ -321,10 +321,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportGroups()
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [
@@ -369,10 +369,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportGroupsWithFilterByType(LdapTypeEnum $ldapTypeEnum, string $filter)
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             $ldapTypeEnum,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group');
         $entry = [
@@ -416,10 +416,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportGroupsWithEmptyName()
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [
@@ -451,10 +451,10 @@ class LdapImportTest extends UnitaryTestCase
     public function testImportGroupsWithException()
     {
         $ldapParams = new LdapParams(
-            self::$faker->domainName,
+            self::$faker->domainName(),
             LdapTypeEnum::STD,
-            self::$faker->userName,
-            self::$faker->password
+            self::$faker->userName(),
+            self::$faker->password()
         );
         $ldapImportParams = new LdapImportParamsDto(100, 200, 'test_login', 'test_user', 'test_group', 'test_filter');
         $entry = [

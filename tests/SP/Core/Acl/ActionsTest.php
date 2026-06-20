@@ -132,14 +132,14 @@ class ActionsTest extends UnitaryTestCase
      */
     private function getActions(): array
     {
-        $actionsId = array_map(static fn() => self::$faker->unixTime, range(0, 10));
+        $actionsId = array_map(static fn() => self::$faker->unixTime(), range(0, 10));
 
         $actions = array_map(
             static fn(int $id) => [
                 'id' => $id,
-                'name' => self::$faker->colorName,
-                'text' => self::$faker->city,
-                'route' => self::$faker->url
+                'name' => self::$faker->colorName(),
+                'text' => self::$faker->city(),
+                'route' => self::$faker->url()
             ],
             $actionsId
         );

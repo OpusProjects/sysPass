@@ -61,7 +61,7 @@
   "require-dev": {
     "roave/security-advisories": "dev-latest",
     "symfony/error-handler": "^8.1",
-    "phpunit/phpunit": "^11",
+    "phpunit/phpunit": "^13.2",
     "fakerphp/faker": "^1.24",
     "nikic/php-parser": "^v5",
     "squizlabs/php_codesniffer": "^4.0",

@@ -76,7 +76,7 @@ class PublicLinkTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -172,13 +172,13 @@ class PublicLinkTest extends UnitaryTestCase
         $data = [
             'id' => self::$faker->randomNumber(),
             'itemId' => self::$faker->randomNumber(),
-            'hash' => self::$faker->sha1,
+            'hash' => self::$faker->sha1(),
             'userId' => self::$faker->randomNumber(),
             'typeId' => self::$faker->randomNumber(),
-            'notify' => self::$faker->boolean,
-            'dateAdd' => self::$faker->unixTime,
-            'dateUpdate' => self::$faker->unixTime,
-            'dateExpire' => self::$faker->unixTime,
+            'notify' => self::$faker->boolean(),
+            'dateAdd' => self::$faker->unixTime(),
+            'dateUpdate' => self::$faker->unixTime(),
+            'dateExpire' => self::$faker->unixTime(),
             'countViews' => self::$faker->randomNumber(),
             'totalCountViews' => self::$faker->randomNumber(),
             'maxCountViews' => self::$faker->randomNumber(),
@@ -351,7 +351,7 @@ class PublicLinkTest extends UnitaryTestCase
 
     public function testGetByHash(): void
     {
-        $hash = self::$faker->sha1;
+        $hash = self::$faker->sha1();
 
         $callback = new Callback(
             static function (QueryData $arg) use ($hash) {

@@ -237,7 +237,7 @@ class ClientTest extends UnitaryTestCase
      */
     public function testSearch()
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

@@ -62,8 +62,8 @@ class AccountToUserGroupTest extends UnitaryTestCase
                     new Item(
                         [
                             'id' => self::$faker->randomNumber(),
-                            'name' => self::$faker->colorName,
-                            'isEdit' => self::$faker->boolean,
+                            'name' => self::$faker->colorName(),
+                            'isEdit' => self::$faker->boolean(),
                         ]
                     ),
                 ]

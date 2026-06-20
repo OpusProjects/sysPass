@@ -156,7 +156,7 @@ class UserMasterPassTest extends UnitaryTestCase
      */
     public function testLoadWithNotSetAndEmptyPass()
     {
-        $userDto = UserDto::fromArray(['use' => self::$faker->userName]);
+        $userDto = UserDto::fromArray(['use' => self::$faker->userName()]);
         $userLoginDto = new UserLoginDto(self::$faker->userName());
 
         $this->configService
@@ -178,7 +178,7 @@ class UserMasterPassTest extends UnitaryTestCase
      */
     public function testLoadWithNotSetAndEmptyUser()
     {
-        $userDto = UserDto::fromArray(['pass' => self::$faker->password]);
+        $userDto = UserDto::fromArray(['pass' => self::$faker->password()]);
         $userLoginDto = new UserLoginDto();
 
         $this->configService

@@ -49,9 +49,9 @@ class AccountCryptTest extends UnitaryTestCase
      */
     public function testGetPasswordEncrypted(): void
     {
-        $pass = self::$faker->password;
-        $key = self::$faker->password;
-        $masterPass = self::$faker->password;
+        $pass = self::$faker->password();
+        $key = self::$faker->password();
+        $masterPass = self::$faker->password();
 
         $this->crypt->expects(self::once())
                     ->method('makeSecuredKey')
@@ -86,7 +86,7 @@ class AccountCryptTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Error while retrieving master password from context');
 
-        $this->accountCrypt->getPasswordEncrypted(self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password());
     }
 
     /**
@@ -103,7 +103,7 @@ class AccountCryptTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Master password not set');
 
-        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, '');
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password(), '');
     }
 
     /**
@@ -113,7 +113,7 @@ class AccountCryptTest extends UnitaryTestCase
     {
         $this->crypt->expects(self::once())
                     ->method('makeSecuredKey')
-                    ->willReturn(self::$faker->password);
+                    ->willReturn(self::$faker->password());
 
         $this->crypt->expects(self::once())
                     ->method('encrypt')
@@ -122,7 +122,7 @@ class AccountCryptTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password(), self::$faker->password());
     }
 
     /**
@@ -136,12 +136,12 @@ class AccountCryptTest extends UnitaryTestCase
 
         $this->crypt->expects(self::once())
                     ->method('encrypt')
-                    ->willReturn(self::$faker->password);
+                    ->willReturn(self::$faker->password());
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->accountCrypt->getPasswordEncrypted(self::$faker->password, self::$faker->password);
+        $this->accountCrypt->getPasswordEncrypted(self::$faker->password(), self::$faker->password());
     }
 
     protected function setUp(): void

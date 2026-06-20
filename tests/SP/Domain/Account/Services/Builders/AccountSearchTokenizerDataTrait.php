@@ -37,7 +37,7 @@ trait AccountSearchTokenizerDataTrait
     {
         $faker = Factory::create();
         $id = $faker->numberBetween(1);
-        $name = $faker->userName;
+        $name = $faker->userName();
         $file = sprintf('%s.%s', $faker->name(), $faker->fileExtension());
 
         $conditions = [
@@ -113,15 +113,15 @@ trait AccountSearchTokenizerDataTrait
         $faker = Factory::create();
 
         $conditions = [
-            $faker->address,
-            $faker->streetAddress,
-            $faker->name,
-            $faker->userName,
-            $faker->sentence,
-            $faker->ipv4,
-            $faker->iban,
-            $faker->companyEmail,
-            $faker->domainName,
+            $faker->address(),
+            $faker->streetAddress(),
+            $faker->name(),
+            $faker->userName(),
+            $faker->sentence(),
+            $faker->ipv4(),
+            $faker->iban(),
+            $faker->companyEmail(),
+            $faker->domainName(),
         ];
 
         return [

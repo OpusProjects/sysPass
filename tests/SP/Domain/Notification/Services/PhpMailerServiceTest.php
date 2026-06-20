@@ -113,7 +113,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
         $mailParams = new MailParams(
             self::$faker->ipv4(),
             self::$faker->randomNumber(2),
-            self::$faker->userName,
+            self::$faker->userName(),
             self::$faker->password(),
             self::$faker->colorName(),
             self::$faker->email(),
@@ -147,7 +147,7 @@ class PhpMailerServiceTest extends UnitaryTestCase
         $mailParams = new MailParams(
             self::$faker->ipv4(),
             self::$faker->randomNumber(2),
-            self::$faker->userName,
+            self::$faker->userName(),
             self::$faker->password(),
             self::$faker->colorName(),
             self::$faker->email(),

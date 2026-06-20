@@ -52,7 +52,7 @@ class UuidCookieTest extends UnitaryTestCase
      */
     public function testLoad()
     {
-        $key = self::$faker->sha1;
+        $key = self::$faker->sha1();
         $message = base64_encode('test');
         $data = sprintf('%s;%s', Hash::signMessage($message, $key), $message);
 
@@ -73,7 +73,7 @@ class UuidCookieTest extends UnitaryTestCase
      */
     public function testLoadWithNoData()
     {
-        $key = self::$faker->sha1;
+        $key = self::$faker->sha1();
 
         $request = new Request();
 
@@ -92,8 +92,8 @@ class UuidCookieTest extends UnitaryTestCase
      */
     public function testLoadWithInvalidData()
     {
-        $key = self::$faker->sha1;
-        $data = self::$faker->text;
+        $key = self::$faker->sha1();
+        $data = self::$faker->text();
 
         $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
 
@@ -112,7 +112,7 @@ class UuidCookieTest extends UnitaryTestCase
      */
     public function testLoadWithInvalidSignature()
     {
-        $key = self::$faker->sha1;
+        $key = self::$faker->sha1();
         $data = sprintf('%s;%s', Hash::signMessage(base64_encode('invalid'), $key), base64_encode('test'));
 
         $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
@@ -131,7 +131,7 @@ class UuidCookieTest extends UnitaryTestCase
     {
         $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
 
-        $key = self::$faker->sha1;
+        $key = self::$faker->sha1();
         $cookie = $uuidCookie->create($key);
 
         self::assertNotEmpty($cookie);
@@ -139,7 +139,7 @@ class UuidCookieTest extends UnitaryTestCase
 
     public function testSign()
     {
-        $key = self::$faker->sha1;
+        $key = self::$faker->sha1();
         $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
         $cookieData = $uuidCookie->sign('test', $key);
         $out = $uuidCookie->getCookieData($cookieData, $key);

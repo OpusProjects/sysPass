@@ -52,7 +52,7 @@ class LdapUtilTest extends UnitaryTestCase
     public function testGetAttributesForFilter()
     {
         $attributes = ['memberOf', 'uid', 'sn', 'cn'];
-        $value = self::$faker->name;
+        $value = self::$faker->name();
 
         $out = LdapUtil::getAttributesForFilter($attributes, $value);
 

@@ -52,7 +52,7 @@ class SessionTest extends UnitaryTestCase
      */
     public function testGetSessionKey()
     {
-        $sidStartTime = self::$faker->unixTime;
+        $sidStartTime = self::$faker->unixTime();
 
         $key = sha1(session_id() . $sidStartTime);
 
@@ -82,7 +82,7 @@ class SessionTest extends UnitaryTestCase
      */
     public function testReKey()
     {
-        $sidStartTime = self::$faker->unixTime;
+        $sidStartTime = self::$faker->unixTime();
 
         $key = sha1(session_id() . $sidStartTime);
 
@@ -121,13 +121,13 @@ class SessionTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getSidStartTime')
-            ->willReturn(self::$faker->unixTime);
+            ->willReturn(self::$faker->unixTime());
 
         $this->sessionContext
             ->expects(self::once())
             ->method('setVault');
 
-        Session::saveSessionKey(self::$faker->name, $this->sessionContext);
+        Session::saveSessionKey(self::$faker->name(), $this->sessionContext);
     }
 
     protected function setUp(): void

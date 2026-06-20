@@ -83,7 +83,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testRunIsSuccessful(): void
     {
-        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
 
         $this->databaseSetup->expects($this->once())->method('connectDatabase');
         $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
@@ -122,14 +122,14 @@ class InstallerTest extends UnitaryTestCase
     private function getInstallData(): InstallData
     {
         $params = new InstallData();
-        $params->setDbAdminUser(self::$faker->userName);
-        $params->setDbAdminPass(self::$faker->password);
-        $params->setDbName(self::$faker->colorName);
-        $params->setDbHost(self::$faker->domainName);
-        $params->setAdminLogin(self::$faker->userName);
-        $params->setAdminPass(self::$faker->password);
+        $params->setDbAdminUser(self::$faker->userName());
+        $params->setDbAdminPass(self::$faker->password());
+        $params->setDbName(self::$faker->colorName());
+        $params->setDbHost(self::$faker->domainName());
+        $params->setAdminLogin(self::$faker->userName());
+        $params->setAdminPass(self::$faker->password());
         $params->setMasterPassword(self::$faker->password(11));
-        $params->setSiteLang(self::$faker->languageCode);
+        $params->setSiteLang(self::$faker->languageCode());
 
         return $params;
     }
@@ -157,7 +157,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testSocketIsUsedForDBConnection(): void
     {
-        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
         $dbSocket = 'unix:/path/to/socket';
 
         $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
@@ -183,7 +183,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testLocalhostIsUsedForDBConnection(): void
     {
-        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
 
         $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
@@ -204,7 +204,7 @@ class InstallerTest extends UnitaryTestCase
      */
     public function testHostAndPortAreUsedForDBConnection(): void
     {
-        $expectedDbSetup = [self::$faker->userName, self::$faker->password];
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
 
         $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
         $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);

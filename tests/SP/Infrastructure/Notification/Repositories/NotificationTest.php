@@ -390,7 +390,7 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchForUserId()
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
@@ -418,7 +418,7 @@ class NotificationTest extends UnitaryTestCase
 
     public function testSearchForAdmin()
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

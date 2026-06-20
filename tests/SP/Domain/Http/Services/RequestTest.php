@@ -156,7 +156,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetXForwardedData()
     {
-        $host = self::$faker->domainName;
+        $host = self::$faker->domainName();
         $proto = 'http';
 
         $this->ensureGet();
@@ -234,7 +234,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetClientAddressFromServer()
     {
-        $address = self::$faker->ipv4;
+        $address = self::$faker->ipv4();
 
         $this->server->set('REMOTE_ADDR', $address);
 
@@ -246,8 +246,8 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetClientAddressWithForwarded()
     {
-        $address = self::$faker->ipv4;
-        $domain = self::$faker->domainName;
+        $address = self::$faker->ipv4();
+        $domain = self::$faker->domainName();
 
         $this->server->set('REMOTE_ADDR', 'test');
 
@@ -262,7 +262,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetClientAddressWithForwardedFor()
     {
-        $address = self::$faker->ipv4;
+        $address = self::$faker->ipv4();
 
         $this->server->set('REMOTE_ADDR', 'test');
 
@@ -277,7 +277,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetClientAddressWithForwardedForFull()
     {
-        $addresses = sprintf('%s,%s', self::$faker->ipv4, self::$faker->ipv6);
+        $addresses = sprintf('%s,%s', self::$faker->ipv4(), self::$faker->ipv6());
 
         $this->ensureGet();
 
@@ -348,8 +348,8 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetForwardedData()
     {
-        $address = self::$faker->ipv4;
-        $domain = self::$faker->domainName;
+        $address = self::$faker->ipv4();
+        $domain = self::$faker->domainName();
 
         $this->server->set('REMOTE_ADDR', 'test');
 
@@ -374,7 +374,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->set('Forwarded', sprintf('for=%s;proto=https', self::$faker->ipv4));
+        $this->headers->set('Forwarded', sprintf('for=%s;proto=https', self::$faker->ipv4()));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -387,7 +387,7 @@ class RequestTest extends UnitaryTestCase
 
         $this->ensureGet();
 
-        $this->headers->set('Forwarded', sprintf('host=%s;for=192.168.0.1', self::$faker->domainName));
+        $this->headers->set('Forwarded', sprintf('host=%s;for=192.168.0.1', self::$faker->domainName()));
 
         $request = new Request($this->symfonyRequest, $this->cryptPKI);
 
@@ -644,8 +644,8 @@ class RequestTest extends UnitaryTestCase
     public function testGetForwardedFor()
     {
         $addresses = [
-            self::$faker->ipv4,
-            self::$faker->ipv6
+            self::$faker->ipv4(),
+            self::$faker->ipv6()
         ];
 
         $this->ensureGet();
@@ -660,8 +660,8 @@ class RequestTest extends UnitaryTestCase
     public function testGetForwardedForWithXForwarded()
     {
         $addresses = [
-            self::$faker->ipv4,
-            self::$faker->ipv6
+            self::$faker->ipv4(),
+            self::$faker->ipv6()
         ];
 
         $this->ensureGet();
@@ -735,8 +735,8 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetHttpHost()
     {
-        $address = self::$faker->ipv4;
-        $domain = self::$faker->domainName;
+        $address = self::$faker->ipv4();
+        $domain = self::$faker->domainName();
 
         $this->ensureGet();
 
@@ -749,7 +749,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetHttpHostWithXForwarded()
     {
-        $domain = self::$faker->domainName;
+        $domain = self::$faker->domainName();
 
         $this->ensureGet();
 
@@ -765,7 +765,7 @@ class RequestTest extends UnitaryTestCase
 
     public function testGetHttpHostWithXForwardedWithServer()
     {
-        $domain = self::$faker->domainName;
+        $domain = self::$faker->domainName();
 
         $this->server->set('HTTP_HOST', $domain);
 

@@ -58,9 +58,9 @@ class AccountHistoryTest extends UnitaryTestCase
         $accountData = AccountDataGenerator::factory()->buildAccount();
         $dto = new AccountHistoryCreateDto(
             $accountData,
-            self::$faker->boolean,
-            self::$faker->boolean,
-            self::$faker->sha1
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            self::$faker->sha1()
         );
 
         $this->accountHistoryRepository->expects(self::once())->method('create')->with($dto);
@@ -211,7 +211,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testSearch()
     {
         $itemSearchData =
-            new ItemSearchDto(self::$faker->text, self::$faker->randomNumber(), self::$faker->randomNumber());
+            new ItemSearchDto(self::$faker->text(), self::$faker->randomNumber(), self::$faker->randomNumber());
 
         $this->accountHistoryRepository->expects(self::once())->method('search')->with($itemSearchData);
 
@@ -224,7 +224,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testUpdatePasswordMasterPass()
     {
         $id = self::$faker->randomNumber();
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
 
         $this->accountHistoryRepository->expects(self::once())
                                        ->method('updatePassword')
@@ -240,7 +240,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testUpdatePasswordMasterPassError()
     {
         $id = self::$faker->randomNumber();
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password, self::$faker->sha1);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
 
         $this->accountHistoryRepository->expects(self::once())
                                        ->method('updatePassword')

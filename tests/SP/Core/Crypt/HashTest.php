@@ -53,7 +53,7 @@ class HashTest extends UnitaryTestCase
         $faker = Factory::create();
 
         for ($i = 2; $i <= 128; $i *= 2) {
-            $text = $faker->text;
+            $text = $faker->text();
 
             $key = self::$faker->password(2, $i);
             $hash = Hash::signMessage($text, $key);

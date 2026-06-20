@@ -237,7 +237,7 @@ class AccountTest extends UnitaryTestCase
     public function testUpdatePassword(): void
     {
         $id = self::$faker->randomNumber();
-        $encryptedPassword = new EncryptedPassword(self::$faker->password, self::$faker->password);
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($id, $encryptedPassword) {
@@ -645,7 +645,7 @@ class AccountTest extends UnitaryTestCase
 
     public function testSearch(): void
     {
-        $item = new ItemSearchDto(self::$faker->name);
+        $item = new ItemSearchDto(self::$faker->name());
 
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {

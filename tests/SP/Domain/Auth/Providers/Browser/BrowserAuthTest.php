@@ -81,8 +81,8 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticate()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $userLoginData = new UserLoginDto();
         $userLoginData->setLoginUser($user);
@@ -112,8 +112,8 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithAuthBasic()
     {
-        $user = self::$faker->userName;
-        $pass = self::$faker->password;
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
 
         $this->configData
             ->expects(self::exactly(2))
@@ -134,7 +134,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithAuthBasicNoUser()
     {
-        $pass = self::$faker->password;
+        $pass = self::$faker->password();
 
         $this->configData
             ->expects(self::exactly(2))
@@ -155,7 +155,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithAuthBasicNoPassword()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::exactly(2))
@@ -176,7 +176,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithServerAuth()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::exactly(2))
@@ -200,7 +200,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testAuthenticateWithServerAuthFail()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::exactly(2))
@@ -214,7 +214,7 @@ class BrowserAuthTest extends UnitaryTestCase
             ->willReturn($user);
 
         $userLoginData = new UserLoginDto();
-        $userLoginData->setLoginUser(self::$faker->userName);
+        $userLoginData->setLoginUser(self::$faker->userName());
 
         $out = $this->browserAuth->authenticate($userLoginData);
 
@@ -244,7 +244,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testCheckServerAuthUserWithoutServerAuth()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::once())
@@ -262,7 +262,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testCheckServerAuthUserWithDomain()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::once())
@@ -280,7 +280,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testCheckServerAuthUserWithDomainAndNoUserDomain()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::once())
@@ -298,7 +298,7 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testCheckServerAuthUserWithoutDomain()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::once())
@@ -315,12 +315,12 @@ class BrowserAuthTest extends UnitaryTestCase
 
     public function testCheckServerAuthUserMismatchDomain()
     {
-        $user = self::$faker->userName;
+        $user = self::$faker->userName();
 
         $this->configData
             ->expects(self::once())
             ->method('getAuthBasicDomain')
-            ->willReturn(self::$faker->domainName);
+            ->willReturn(self::$faker->domainName());
 
         $this->request
             ->expects(self::once())

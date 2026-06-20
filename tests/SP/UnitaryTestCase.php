@@ -176,8 +176,8 @@ abstract class UnitaryTestCase extends TestCase
         return UserDto::fromModel(
             new User(
                 [
-                    'login' => self::$faker->userName,
-                    'name' => self::$faker->userName,
+                    'login' => self::$faker->userName(),
+                    'name' => self::$faker->userName(),
                     'id' => self::$faker->randomNumber(2),
                     'userGroupId' => self::$faker->randomNumber(2),
                     'userProfileId' => self::$faker->randomNumber(2)
