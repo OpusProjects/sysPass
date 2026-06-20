@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Category;
 
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Api\Ports\ApiService;
 use SP\Domain\Category\Ports\CategoryAdapter;
@@ -48,7 +48,7 @@ abstract class CategoryBase extends ControllerBase
      */
     public function __construct(
         Application     $application,
-        Klein           $router,
+        Router           $router,
         ApiService      $apiService,
         AclInterface    $acl,
         CategoryService $categoryService,

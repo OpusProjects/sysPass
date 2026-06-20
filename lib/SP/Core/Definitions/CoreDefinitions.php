@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
-use Klein\Request as KleinRequest;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -106,7 +106,10 @@ use SP\Domain\Export\Ports\BackupFileService;
 use SP\Domain\Export\Services\BackupFile;
 use SP\Domain\Http\Client;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Domain\Http\Services\Request;
+use SP\Domain\Http\Services\Response;
+use SP\Core\Bootstrap\Router;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
@@ -158,8 +161,10 @@ final class CoreDefinitions
 
                 return $pathsContext;
             }),
-            KleinRequest::class => factory([KleinRequest::class, 'createFromGlobals']),
+            SymfonyRequest::class => factory([SymfonyRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
+            ResponseService::class => create(Response::class),
+            Router::class => autowire(),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
             EventDispatcherInterface::class => create(EventDispatcher::class),
@@ -379,8 +384,8 @@ final class CoreDefinitions
                 )
                 ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
                 ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
-            RouteContextData::class => factory(static function (KleinRequest $request) {
-                return RouteContext::getRouteContextData(Filter::getString($request->param('r', 'index/index')));
+            RouteContextData::class => factory(static function (SymfonyRequest $request) {
+                return RouteContext::getRouteContextData(Filter::getString($request->get('r', 'index/index')));
             }),
             SecureSessionService::class => autowire(SecureSession::class)
                 ->constructorParameter(

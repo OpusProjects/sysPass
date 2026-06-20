@@ -25,7 +25,7 @@
 namespace SP\Modules\Web\Controllers\Traits;
 
 use Exception;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Services\JsonResponse;
@@ -33,7 +33,7 @@ use SP\Domain\Http\Services\JsonResponse;
 /**
  * Trait JsonTrait
  *
- * @property Klein $router
+ * @property Router $router
  */
 trait JsonTrait
 {

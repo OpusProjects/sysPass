@@ -26,8 +26,6 @@ namespace SP\Modules\Web;
 
 use Closure;
 use Exception;
-use Klein\Request;
-use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
@@ -45,6 +43,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Code;
 use SP\Domain\Http\Header;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Util\Util;
 
 use function SP\logger;
@@ -79,7 +78,7 @@ final class Bootstrap extends BootstrapBase
 
     private function manageWebRequest(): Closure
     {
-        return function (Request $request, Response $response) {
+        return function ($request, ResponseService $response) {
             logger('WEB route');
 
             $controllerClass = self::getClassFor(
@@ -175,7 +174,7 @@ final class Bootstrap extends BootstrapBase
     /**
      * @param ReflectionMethod $method
      * @param ActionResponse $actionResponse
-     * @param Response $response
+     * @param ResponseService $response
      * @return void
      * @throws SPException
      * @throws Exception
@@ -183,7 +182,7 @@ final class Bootstrap extends BootstrapBase
     protected function buildResponse(
         ReflectionMethod $method,
         ActionResponse   $actionResponse,
-        Response         $response
+        ResponseService  $response
     ): void {
         /** @var ReflectionAttribute<Action> $attribute */
         $attribute = array_reduce(

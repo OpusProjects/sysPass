@@ -30,8 +30,9 @@ use Closure;
 use DI\ContainerBuilder;
 use Faker\Factory;
 use Faker\Generator;
-use Klein\Request;
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService;
+use SP\Domain\Http\Services\Response;
+use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use PHPUnit\Framework\TestCase;
@@ -127,9 +128,10 @@ abstract class IntegrationTestCase extends TestCase
         return new Request(
             array_merge($_GET, $paramsGet),
             array_merge($_POST, $paramsPost),
+            [],
             $_COOKIE,
-            $server,
             array_merge($_FILES, $files),
+            $server,
             null
         );
     }
@@ -366,9 +368,10 @@ abstract class IntegrationTestCase extends TestCase
 
                                 return true;
                             })
-                        );
+                        )
+                        ->willReturnSelf();
 
-                    $definitions[Response::class] = $response;
+                    $definitions[ResponseService::class] = $response;
                 },
             InjectCrypt::class => function (ReflectionAttribute $attribute) use (&$definitions): void {
                 /** @var ReflectionAttribute<InjectCrypt> $attribute */

@@ -27,8 +27,6 @@ declare(strict_types=1);
 namespace SP\Domain\Http\Services;
 
 use Exception;
-use Klein\DataCollection\DataCollection;
-use Klein\DataCollection\HeaderDataCollection;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
@@ -38,6 +36,10 @@ use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
 use SP\Util\Util;
+use Symfony\Component\HttpFoundation\HeaderBag;
+use Symfony\Component\HttpFoundation\InputBag;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 use function SP\logger;
 use function SP\processException;
@@ -52,27 +54,27 @@ class Request implements RequestService
      */
     public const SECURE_DIRS = ['css', 'js'];
 
-    private HeaderDataCollection $headers;
-    private DataCollection       $params;
+    private HeaderBag $headers;
+    private InputBag  $params;
     private Method $method;
     private ?bool  $https = null;
 
     /**
      * Request constructor.
      */
-    public function __construct(private readonly \Klein\Request $request, private readonly CryptPKIHandler $cryptPKI)
+    public function __construct(private readonly SymfonyRequest $request, private readonly CryptPKIHandler $cryptPKI)
     {
-        $this->headers = $this->request->headers();
-        $this->method = Method::from($this->request->method());
+        $this->headers = $this->request->headers;
+        $this->method = Method::from($this->request->getMethod());
         $this->params = $this->getParamsForMethod();
         $this->detectHttps();
     }
 
-    private function getParamsForMethod(): DataCollection
+    private function getParamsForMethod(): InputBag
     {
         return match ($this->method) {
-            Method::GET => $this->request->paramsGet(),
-            Method::POST => $this->request->paramsPost()
+            Method::GET => $this->request->query,
+            Method::POST => $this->request->request
         };
     }
 
@@ -81,7 +83,7 @@ class Request implements RequestService
      */
     private function detectHttps(): void
     {
-        $server = $this->request->server();
+        $server = $this->request->server;
 
         $this->https = Util::boolval($server->get('HTTPS', 'off'))
                        || $server->get('SERVER_PORT', 0) === 443;
@@ -125,7 +127,7 @@ class Request implements RequestService
                 : $forwarded[0];
         }
 
-        return $this->request->server()->get('REMOTE_ADDR', '');
+        return (string)$this->request->server->get('REMOTE_ADDR', '');
     }
 
     /**
@@ -179,7 +181,7 @@ class Request implements RequestService
 
     public function analyzeEmail(string $param, ?string $default = null): ?string
     {
-        if (!$this->params->exists($param)) {
+        if (!$this->params->has($param)) {
             return $default;
         }
 
@@ -216,7 +218,7 @@ class Request implements RequestService
 
     public function analyzeString(string $param, ?string $default = null): ?string
     {
-        if (!$this->params->exists($param)) {
+        if (!$this->params->has($param)) {
             return $default;
         }
 
@@ -225,7 +227,7 @@ class Request implements RequestService
 
     public function analyzeUnsafeString(string $param, ?string $default = null): ?string
     {
-        if (!$this->params->exists($param)) {
+        if (!$this->params->has($param)) {
             return $default;
         }
 
@@ -244,7 +246,11 @@ class Request implements RequestService
         ?callable $mapper = null,
         mixed $default = null
     ): ?array {
-        $requestValue = $this->params->get($param);
+        if (!$this->params->has($param)) {
+            return $default;
+        }
+
+        $requestValue = $this->params->all()[$param] ?? null;
 
         if (is_array($requestValue)) {
             if ($mapper !== null) {
@@ -262,7 +268,7 @@ class Request implements RequestService
      */
     public function isJson(): bool
     {
-        return str_contains($this->headers->get(Header::ACCEPT->value), Header::ACCEPT_JSON->value);
+        return str_contains($this->headers->get(Header::ACCEPT->value, ''), Header::ACCEPT_JSON->value);
     }
 
     /**
@@ -276,7 +282,7 @@ class Request implements RequestService
 
     public function analyzeInt(string $param, ?int $default = null): ?int
     {
-        if (!$this->params->exists($param)) {
+        if (!$this->params->has($param)) {
             return $default;
         }
 
@@ -285,12 +291,24 @@ class Request implements RequestService
 
     public function getFile(string $file): ?array
     {
-        return $this->request->files()->get($file);
+        $uploaded = $this->request->files->get($file);
+
+        if ($uploaded instanceof UploadedFile) {
+            return [
+                'name' => $uploaded->getClientOriginalName(),
+                'type' => $uploaded->getClientMimeType(),
+                'tmp_name' => $uploaded->getPathname(),
+                'error' => $uploaded->getError(),
+                'size' => $uploaded->getSize(),
+            ];
+        }
+
+        return is_array($uploaded) ? $uploaded : null;
     }
 
     public function analyzeBool(string $param, ?bool $default = null): bool
     {
-        if (!$this->params->exists($param)) {
+        if (!$this->params->has($param)) {
             return (bool)$default;
         }
 
@@ -312,7 +330,9 @@ class Request implements RequestService
             // Strips out the hash param from the URI to get the
             // route which will be checked against the computed HMAC
             if ($param === null) {
-                $uri = implode('&', $this->request->params('h'));
+                $params = array_merge($this->request->query->all(), $this->request->request->all());
+                unset($params['h']);
+                $uri = implode('&', $params);
             } else {
                 $uri = $this->params->get($param, '');
             }
@@ -352,7 +372,7 @@ class Request implements RequestService
             $protocol = 'https://';
         }
 
-        return sprintf('%s%s', $protocol, $this->request->server()->get('HTTP_HOST'));
+        return sprintf('%s%s', $protocol, $this->request->server->get('HTTP_HOST'));
     }
 
     /**
@@ -430,16 +450,16 @@ class Request implements RequestService
 
     public function getServerPort(): int
     {
-        return (int)$this->request->server()->get('SERVER_PORT', 80);
+        return (int)$this->request->server->get('SERVER_PORT', 80);
     }
 
-    public function getRequest(): \Klein\Request
+    public function getRequest(): SymfonyRequest
     {
         return $this->request;
     }
 
     public function getServer(string $key): string
     {
-        return (string)$this->request->server()->get($key, '');
+        return (string)$this->request->server->get($key, '');
     }
 }

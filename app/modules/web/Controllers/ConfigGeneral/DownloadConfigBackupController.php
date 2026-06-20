@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\ConfigGeneral;
 
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService;
 use RuntimeException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -86,7 +86,7 @@ final class DownloadConfigBackupController extends SimpleControllerBase
 
         return new ActionResponse(
             ResponseStatus::OK,
-            function (Response $response) use ($data) {
+            function (ResponseService $response) use ($data) {
                 $response->header('Cache-Control', 'max-age=60, must-revalidate')
                          ->header('Content-length', strlen($data))
                          ->header('Content-type', 'application/json')

@@ -82,7 +82,7 @@ abstract class Cookie
     {
         return $this->request
             ->getRequest()
-            ->cookies()
+            ->cookies
             ->get($this->cookieName, false);
     }
 

@@ -26,9 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Core\Bootstrap;
 
-use Klein\Klein;
-use Klein\Request;
-use Klein\Response;
 use PHPMailer\PHPMailer\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
@@ -49,6 +46,7 @@ use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\ResponseService;
 use Symfony\Component\ErrorHandler\Debug;
 use Throwable;
 
@@ -73,12 +71,12 @@ abstract class BootstrapBase implements BootstrapInterface
 
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
-        protected readonly Klein               $router,
+        protected readonly Router              $router,
         protected readonly RequestService   $request,
         protected readonly PhpExtensionChecker $extensionChecker,
         protected readonly Context          $context,
         private readonly ContainerInterface    $container,
-        protected readonly Response            $response,
+        protected readonly ResponseService    $response,
         protected readonly RouteContextData $routeContextData,
         LanguageInterface                   $language,
         protected readonly PathsContext     $pathsContext,
@@ -94,7 +92,7 @@ abstract class BootstrapBase implements BootstrapInterface
     private function initRouter(): void
     {
         $this->router->onError(
-            static function (Klein $router, string $err_msg, string $type, Exception|Throwable $err): void {
+            static function (Router $router, string $err_msg, string $type, Exception|Throwable $err): void {
                 logger(sprintf('Routing error: %s', $err_msg));
                 logger(sprintf('Routing error: %s', $err->getTraceAsString()));
 
@@ -113,15 +111,13 @@ abstract class BootstrapBase implements BootstrapInterface
             'OPTIONS',
             null,
             function ($request, $response) {
-                /** @var Request $request */
-                /** @var Response $response */
-
+                /** @var ResponseService $response */
                 $this->setCors($response);
             }
         );
     }
 
-    final protected function setCors(Response $response): void
+    final protected function setCors(ResponseService $response): void
     {
         $response->header(
             'Access-Control-Allow-Origin',
@@ -193,7 +189,7 @@ abstract class BootstrapBase implements BootstrapInterface
      */
     private function initAuthVariables(): void
     {
-        $server = $this->router->request()->server();
+        $server = $this->router->request()->server;
 
         // Copiar la cabecera http de autentificación para apache+php-fcgid
         if ($server->get('HTTP_XAUTHORIZATION') !== null && $server->get('HTTP_AUTHORIZATION') === null) {

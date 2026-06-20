@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Web\Controllers\ConfigBackup;
 
-use Klein\Response;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
@@ -96,7 +96,7 @@ final class DownloadBackupDbController extends SimpleControllerBase
 
         return new ActionResponse(
             ResponseStatus::OK,
-            function (Response $response) use ($file) {
+            function (ResponseService $response) use ($file) {
                 $response->header('Cache-Control', 'max-age=60, must-revalidate')
                          ->header('Content-length', $file->getFileSize())
                          ->header('Content-type', $file->getFileType())

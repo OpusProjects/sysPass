@@ -25,7 +25,7 @@
 namespace SP\Modules\Web;
 
 use Exception;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Context\ContextBase;
 use SP\Core\Context\ContextException;
@@ -133,7 +133,7 @@ final class Init extends HttpModuleBase
         Application                          $application,
         ProvidersHelper                      $providersHelper,
         RequestService                       $request,
-        Klein                                $router,
+        Router                                $router,
         AppLockHandler $appLock,
         private readonly CsrfHandler         $csrf,
         private readonly LanguageInterface   $language,
@@ -276,7 +276,7 @@ final class Init extends HttpModuleBase
     private function checkInstalled(): bool
     {
         return $this->configData->isInstalled()
-               && $this->router->request()->param('r') !== 'install/index';
+               && $this->router->request()->get('r') !== 'install/index';
     }
 
     private function getUriFor(string $route): string

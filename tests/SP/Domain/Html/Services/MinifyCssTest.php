@@ -25,16 +25,14 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Html\Services;
 
-use Klein\DataCollection\HeaderDataCollection;
-use Klein\DataCollection\ServerDataCollection;
-use Klein\Request;
-use Klein\Response;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Http\Header;
+use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\ResponseService;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\UnitaryTestCase;
 use TypeError;
@@ -47,8 +45,8 @@ use TypeError;
 class MinifyCssTest extends UnitaryTestCase
 {
 
-    private Response|MockObject                $response;
-    private Request|MockObject                 $request;
+    private ResponseService|MockObject         $response;
+    private RequestService|MockObject          $request;
     private \SP\Domain\Html\Services\MinifyCss $minifyCss;
 
     /**
@@ -96,34 +94,21 @@ class MinifyCssTest extends UnitaryTestCase
             return $file;
         }, range(1, $numFiles));
 
-        $this->response->expects(self::once())
-                       ->method('header');
-
-        $headers = $this->createMock(HeaderDataCollection::class);
-        $headers->expects(self::exactly(4))
-                ->method('get')
-                ->with(
-                    new Callback(function (string $header) {
-                        return $header === Header::IF_NONE_MATCH->value
-                               || $header === \SP\Domain\Http\Header::CACHE_CONTROL->value
-                               || $header === Header::PRAGMA->value;
-                    })
-                )
-                ->willReturn($etag);
+        $this->request->expects(self::exactly(4))
+                      ->method('getHeader')
+                      ->with(
+                          new Callback(function (string $header) {
+                              return $header === Header::IF_NONE_MATCH->value
+                                     || $header === Header::CACHE_CONTROL->value
+                                     || $header === Header::PRAGMA->value;
+                          })
+                      )
+                      ->willReturn($etag);
 
         $this->request->expects(self::once())
-                      ->method('headers')
-                      ->willReturn($headers);
-
-        $server = $this->createMock(ServerDataCollection::class);
-        $server->expects(self::once())
-               ->method('get')
-               ->with('SERVER_PROTOCOL')
-               ->willReturn('http');
-
-        $this->request->expects(self::once())
-                      ->method('server')
-                      ->willReturn($server);
+                      ->method('getServer')
+                      ->with('SERVER_PROTOCOL')
+                      ->willReturn('http');
 
         $this->response->expects(self::once())
                        ->method('header')
@@ -190,15 +175,10 @@ class MinifyCssTest extends UnitaryTestCase
             return $file;
         }, range(1, $numFiles));
 
-        $headers = $this->createMock(HeaderDataCollection::class);
-        $headers->expects(self::once())
-                ->method('get')
-            ->with(\SP\Domain\Http\Header::IF_NONE_MATCH->value)
-                ->willReturn(self::$faker->sha1);
-
         $this->request->expects(self::once())
-                      ->method('headers')
-                      ->willReturn($headers);
+                      ->method('getHeader')
+                      ->with(Header::IF_NONE_MATCH->value)
+                      ->willReturn(self::$faker->sha1);
 
         $this->response->expects(self::exactly(5))
                        ->method('header')
@@ -290,8 +270,8 @@ class MinifyCssTest extends UnitaryTestCase
     {
         parent::setUp();
 
-        $this->response = $this->createMock(Response::class);
-        $this->request = $this->createMock(Request::class);
+        $this->response = $this->createMock(ResponseService::class);
+        $this->request = $this->createMock(RequestService::class);
 
         $this->minifyCss = new \SP\Domain\Html\Services\MinifyCss($this->response, $this->request);
     }

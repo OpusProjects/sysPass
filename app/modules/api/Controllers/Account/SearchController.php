@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Account;
 
 use Exception;
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
@@ -46,7 +46,7 @@ final class SearchController extends ControllerBase
 
     public function __construct(
         Application  $application,
-        Klein        $router,
+        Router        $router,
         ApiService   $apiService,
         AclInterface $acl,
         AccountSearchService $accountSearchService

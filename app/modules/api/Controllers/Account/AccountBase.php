@@ -25,7 +25,7 @@
 namespace SP\Modules\Api\Controllers\Account;
 
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Domain\Account\Ports\AccountPresetService;
@@ -52,7 +52,7 @@ abstract class AccountBase extends ControllerBase
      */
     public function __construct(
         Application             $application,
-        Klein                   $router,
+        Router                   $router,
         ApiService              $apiService,
         AclInterface            $acl,
         AccountPresetService    $accountPresetService,

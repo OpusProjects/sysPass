@@ -126,9 +126,18 @@ unit/integration suites, which mock the infrastructure). It still has gaps:
 ## Dependency status (PHP 8.2 codebase)
 
 - **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; `phpseclib/phpseclib` 2 → 3
-  (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`.
-- **Abandoned, no clean upgrade:** `klein/klein` (router) at v2.1.2 — triggers PHP 8.1
-  return-type deprecations; fixing them means updating/replacing the dependency, not suppressing.
+  (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`; **replaced the abandoned
+  `klein/klein` router with `symfony/http-foundation` + `symfony/routing`** (the HTTP layer now goes
+  through `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`; this also cleared the
+  klein `DataCollection` PHP 8.1 return-type deprecations).
+- **Planned — Symfony 5.4 → 8.0, one PR per major bump** (whole `symfony/*` suite moves together each
+  step; the sanctioned exception to one-package-per-PR):
+  1. `5.4 → 6.4` (needs PHP 8.1+ — satisfied).
+  2. `6.4 → 7.4 LTS` (needs PHP 8.2+ — satisfied).
+  3. **PHP `8.2/8.3 → 8.4`** — prerequisite gate for Symfony 8 (Dockerfile + composer `php` constraint
+     + full-suite pass on 8.4).
+  4. `7.4 → 8.0` (requires PHP 8.4).
+  Fix deprecations within each step (`phpunit --display-deprecations`) so the next major lands clean.
 - The old 3.2.x line was gridlocked by `roave/security-advisories` + `fabpot/goutte`'s guzzle-6 pin —
   the reason we adopted the rewrite (which uses `symfony/dom-crawler`, not goutte).
 

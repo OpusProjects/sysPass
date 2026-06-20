@@ -24,7 +24,7 @@
 
 namespace SP\Modules\Api;
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
 use SP\Core\HttpModuleBase;
@@ -51,7 +51,7 @@ final class Init extends HttpModuleBase
         Application     $application,
         ProvidersHelper $providersHelper,
         RequestService  $request,
-        Klein           $router,
+        Router           $router,
         LanguageInterface $language,
         DatabaseUtil    $databaseUtil
     ) {

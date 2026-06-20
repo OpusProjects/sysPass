@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Core;
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
@@ -40,7 +40,7 @@ abstract class HttpModuleBase extends ModuleBase
         Application                       $application,
         ProvidersHelper                   $providersHelper,
         protected readonly RequestService $request,
-        protected readonly Klein          $router,
+        protected readonly Router          $router,
         protected readonly AppLockHandler $appLock
     ) {
         parent::__construct($application, $providersHelper);

@@ -126,7 +126,7 @@ final class GetEnvironmentController extends SimpleControllerBase
      */
     private function getCookiesEnabled(): bool
     {
-        return $this->router->request()->cookies()->get(session_name()) !== null;
+        return $this->router->request()->cookies->get(session_name()) !== null;
     }
 
     /**

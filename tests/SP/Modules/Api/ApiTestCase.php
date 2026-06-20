@@ -32,9 +32,9 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use Exception;
 use JsonException;
-use Klein\Klein;
-use Klein\Request;
-use Klein\Response;
+use SP\Core\Bootstrap\Router;
+use SP\Domain\Http\Ports\ResponseService;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -103,15 +103,15 @@ abstract class ApiTestCase extends TestCase
      * @throws JsonException
      */
     protected static function processJsonResponse(
-        Response $response,
+        ResponseService $response,
         bool $exceptionOnError = true
     ): stdClass {
-        if ($exceptionOnError && $response->status()->getCode() !== 200) {
-            throw new RuntimeException($response->status()->getMessage());
+        if ($exceptionOnError && $response->getResponse()->getStatusCode() !== 200) {
+            throw new RuntimeException('HTTP ' . $response->getResponse()->getStatusCode());
         }
 
         return json_decode(
-            $response->body(),
+            $response->getBody(),
             false,
             512,
             JSON_THROW_ON_ERROR
@@ -188,7 +188,9 @@ abstract class ApiTestCase extends TestCase
 
         self::$configData = $dic->get(ConfigDataInterface::class);
 
-        $request = new Request(
+        new SymfonyRequest(
+            [],
+            [],
             [],
             [],
             [],
@@ -202,15 +204,14 @@ abstract class ApiTestCase extends TestCase
                 'REQUEST_METHOD'       => 'POST',
                 'HTTP_CONTENT_TYPE'    => 'application/json',
             ],
-            [],
             null
         );
 
-        $router = $dic->get(Klein::class);
+        $router = $dic->get(Router::class);
         $request = $dic->get(\SP\Domain\Http\Services\Request::class);
 
         $bs = new BootstrapApi(self::$configData, $router, $request);
-        $router->dispatch($request, null, false);
+        $router->dispatch($request->getRequest(), null, false);
 
         return $router->response();
     }

@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Mvc\Controller;
 
-use Klein\Klein;
+use SP\Core\Bootstrap\Router;
 use SP\Core\PhpExtensionChecker;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -57,7 +57,7 @@ final readonly class WebControllerHelper
         return $this->simpleControllerHelper->getTheme();
     }
 
-    public function getRouter(): Klein
+    public function getRouter(): Router
     {
         return $this->simpleControllerHelper->getRouter();
     }

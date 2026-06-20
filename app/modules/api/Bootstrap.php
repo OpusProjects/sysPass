@@ -26,8 +26,6 @@ namespace SP\Modules\Api;
 
 use Closure;
 use Exception;
-use Klein\Request;
-use Klein\Response;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
@@ -36,6 +34,7 @@ use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
+use SP\Domain\Http\Ports\ResponseService;
 
 use function SP\logger;
 use function SP\processException;
@@ -70,7 +69,7 @@ final class Bootstrap extends BootstrapBase
 
     private function manageApiRequest(): Closure
     {
-        return function (Request $request, Response $response) {
+        return function ($request, ResponseService $response) {
             try {
                 logger('API route');
 

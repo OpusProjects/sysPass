@@ -25,9 +25,9 @@ declare(strict_types=1);
 
 namespace SP\Domain\Http\Ports;
 
-use Klein\Request;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Method;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Interface RequestService
