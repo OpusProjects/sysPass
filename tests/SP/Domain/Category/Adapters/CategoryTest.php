@@ -114,7 +114,7 @@ class CategoryTest extends UnitaryTestCase
         );
         $this->assertEquals($customFieldData['help'], $data['customFields']['data'][0]['help']);
         $this->assertEquals($customFieldData['value'], $data['customFields']['data'][0]['value']);
-        $this->assertEquals($customFieldData['encrypted'], $data['customFields']['data'][0]['isEncrypted']);
+        $this->assertEquals($customFieldData['isEncrypted'], $data['customFields']['data'][0]['encrypted']);
         $this->assertEquals($customFieldData['required'], $data['customFields']['data'][0]['required']);
     }
 

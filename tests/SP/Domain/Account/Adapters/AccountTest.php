@@ -170,7 +170,7 @@ class AccountTest extends UnitaryTestCase
         );
         $this->assertEquals($customFieldData['help'], $out['data']['customFields']['data'][0]['help']);
         $this->assertEquals($customFieldData['value'], $out['data']['customFields']['data'][0]['value']);
-        $this->assertEquals($customFieldData['encrypted'], $out['data']['customFields']['data'][0]['isEncrypted']);
+        $this->assertEquals($customFieldData['isEncrypted'], $out['data']['customFields']['data'][0]['encrypted']);
         $this->assertEquals($customFieldData['required'], $out['data']['customFields']['data'][0]['required']);
     }
 }

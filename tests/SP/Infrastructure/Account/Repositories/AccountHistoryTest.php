@@ -294,7 +294,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testDelete(): void
     {
         $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) {
                 return $arg->getQuery()->getBindValues()['id'] === 100
                        && !empty($arg->getQuery()->getStatement());
             }
@@ -315,7 +315,7 @@ class AccountHistoryTest extends UnitaryTestCase
     public function testDeleteNoResults(): void
     {
         $callback = new Callback(
-            static function (QueryData $arg) use ($id) {
+            static function (QueryData $arg) {
                 return $arg->getQuery()->getBindValues()['id'] === 100
                        && !empty($arg->getQuery()->getStatement());
             }

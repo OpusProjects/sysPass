@@ -172,7 +172,7 @@ final class Api extends Service implements ApiService
             throw new ServiceException(
                 __u('Wrong parameters'),
                 SPException::ERROR,
-                join(PHP_EOL, $this->getHelp($this->apiRequest->getMethod())),
+                $this->getHelpHint($this->apiRequest->getMethod()),
                 JsonRpcResponse::INVALID_PARAMS
             );
         }
@@ -194,6 +194,20 @@ final class Api extends Service implements ApiService
         }
 
         return [];
+    }
+
+    /**
+     * Return the help for an action as a string hint
+     *
+     * @param string $action
+     *
+     * @return string
+     */
+    private function getHelpHint(string $action): string
+    {
+        $help = $this->getHelp($action);
+
+        return empty($help) ? '' : (string)json_encode($help);
     }
 
     /**

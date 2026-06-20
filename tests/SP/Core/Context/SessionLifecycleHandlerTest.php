@@ -180,6 +180,8 @@ class SessionLifecycleHandlerTest extends UnitaryTestCase
     {
         parent::tearDown();
 
-        session_destroy();
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_destroy();
+        }
     }
 }
