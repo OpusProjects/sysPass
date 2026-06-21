@@ -25,6 +25,10 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Bootstrap\Path;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -63,44 +67,42 @@ final class JsController extends ResourceBase
     /**
      * Return JS resources
      */
-    public function jsAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function jsAction(): ActionResponse
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)), true);
-
-            $this->minify->builder()
-                         ->addFiles($files)
-                         ->getMinified();
+            $minify = $this->minify->builder()
+                                   ->addFiles($this->buildFiles(urldecode($base), explode(',', urldecode($file)), true));
+        } elseif ($this->request->analyzeInt('g', 0) === 1) {
+            $minify = $this->minify->builder()
+                                   ->addFiles(
+                                       $this->buildFiles(
+                                           FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
+                                           self::JS_APP_MIN_FILES
+                                       ),
+                                       false
+                                   );
         } else {
-            $group = $this->request->analyzeInt('g', 0);
-
-            if ($group === 0) {
-                $this->minify
-                    ->builder()
-                    ->addFiles(
-                        $this->buildFiles(
-                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
-                            self::JS_MIN_FILES
-                        ),
-                        false
-                    )
-                    ->getMinified();
-            } elseif ($group === 1) {
-                $this->minify
-                    ->builder()
-                    ->addFiles(
-                        $this->buildFiles(
-                            FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'js'),
-                            self::JS_APP_MIN_FILES
-                        ),
-                        false
-                    )
-                    ->getMinified();
-            }
+            $minify = $this->minify->builder()
+                                   ->addFiles(
+                                       $this->buildFiles(
+                                           FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'js'),
+                                           self::JS_MIN_FILES
+                                       ),
+                                       false
+                                   );
         }
+
+        // getMinified() sets the body + the application/javascript content type on the response.
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function () use ($minify) {
+                $minify->getMinified();
+            }
+        );
     }
 
     /**

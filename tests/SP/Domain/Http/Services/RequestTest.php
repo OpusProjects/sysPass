@@ -599,7 +599,12 @@ class RequestTest extends UnitaryTestCase
             'b' => 2,
             'c' => 3
         ];
-        $signature = Hash::signMessage(implode('&', $params), 'a_key');
+        // Signed URLs are built by Uri::getUriSigned as "key=urlencode(value)" joined by '&';
+        // the signature is computed over that same string (see Request::verifySignature).
+        $signature = Hash::signMessage(
+            implode('&', array_map(static fn($k, $v) => $k . '=' . urlencode((string)$v), array_keys($params), $params)),
+            'a_key'
+        );
 
         $this->ensureGet();
 

@@ -113,7 +113,8 @@ class DatabaseConnectionData
         $self->dbSocket = $installData->getDbSocket();
         $self->dbHost = $installData->getDbHost();
         $self->dbPort = $installData->getDbPort();
-        $self->dbName = $installData->getDbName();
+        // Don't select the database in the install DSN: in normal mode it doesn't exist yet
+        // (it's created during setup). The setup selects it with `USE` once created/confirmed.
         $self->dbUser = $installData->getDbAdminUser();
         $self->dbPass = $installData->getDbAdminPass();
 

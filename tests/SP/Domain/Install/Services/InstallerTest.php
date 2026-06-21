@@ -439,8 +439,15 @@ class InstallerTest extends UnitaryTestCase
         $installer->run($params);
     }
 
+    private string|false $syspassDir = false;
+
     protected function setUp(): void
     {
+        // These tests assert the non-Docker SELF_IP_ADDRESS branch of the DB-auth-host
+        // detection; unset the Docker signal (SYSPASS_DIR) for the duration.
+        $this->syspassDir = getenv('SYSPASS_DIR');
+        putenv('SYSPASS_DIR');
+
         $this->databaseSetup = $this->createMock(DatabaseSetupService::class);
         $this->userService = $this->createMock(UserService::class);
         $this->request = $this->createStub(RequestService::class);
@@ -449,5 +456,14 @@ class InstallerTest extends UnitaryTestCase
         $this->userProfileService = $this->createMock(UserProfileService::class);
 
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->syspassDir !== false) {
+            putenv('SYSPASS_DIR=' . $this->syspassDir);
+        }
+
+        parent::tearDown();
     }
 }

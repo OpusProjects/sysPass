@@ -27,49 +27,55 @@ namespace SP\Modules\Web\Controllers\Install;
 
 use Exception;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Install\Adapters\InstallDataFactory;
+use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Ports\InstallerService;
 use SP\Modules\Web\Controllers\ControllerBase;
-use SP\Modules\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
+
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class InstallController
  */
 final class InstallController extends ControllerBase
 {
-    use JsonTrait;
-
     private InstallerService $installer;
+    private InstallData $installData;
 
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        InstallerService $installer
+        InstallerService $installer,
+        InstallData $installData
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->installer = $installer;
+        // Inject the same shared InstallData instance the setup services use, so the host
+        // detection in Installer::setupDbHost() is visible to MysqlSetup (otherwise a second,
+        // freshly-built copy leaves DbAuthHost null and the CREATE USER quoting fails).
+        $this->installData = $installData;
     }
 
     /**
-     * @return bool
      * @throws SPException
      */
-    public function installAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function installAction(): ActionResponse
     {
-        $installData = InstallDataFactory::buildFromRequest($this->request);
-
         try {
-            $this->installer->run($installData);
+            $this->installer->run($this->installData);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Installation finished'));
+            return ActionResponse::ok(__u('Installation finished'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

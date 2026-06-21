@@ -26,7 +26,6 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\Session;
 use SP\Core\Crypt\Csrf;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
@@ -59,11 +58,10 @@ return [
     JsController::class => autowire(
         JsController::class
     )->constructorParameter('minify', autowire(MinifyJs::class)),
-    Context::class => factory(
-        static function (ConfigDataInterface $configData, ?SessionHandlerInterface $sessionHandler = null) {
-            return new Session($sessionHandler);
-        }
-    ),
+    // Lazy: ConfigFile depends on Context but only uses it at save-time, while the
+    // session handler depends on ConfigData. A lazy proxy lets the config load first
+    // and breaks the ConfigData -> ConfigFile -> Context -> SessionHandler -> ConfigData cycle.
+    Context::class => autowire(Session::class)->lazy(),
     CsrfHandler::class => autowire(Csrf::class)
         ->constructorParameter('context', get(Context::class)),
     AccountSearchData::class => autowire(AccountSearchData::class)

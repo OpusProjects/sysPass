@@ -25,9 +25,14 @@
 namespace SP\Modules\Web\Controllers\Install;
 
 use SP\Core\Language;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Modules\Web\Controllers\ControllerBase;
 use SP\Mvc\View\Components\SelectItemAdapter;
+
+use function SP\__;
 
 /**
  * Class IndexController
@@ -36,14 +41,15 @@ use SP\Mvc\View\Components\SelectItemAdapter;
  */
 final class IndexController extends ControllerBase
 {
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $skipInstalled = $this->request->analyzeBool('skipInstalled', false);
 
         if ($skipInstalled === false && $this->configData->isInstalled()) {
-            $this->router->response()->redirect('index.php?r=login');
+            $this->router->response()->redirect('index.php?r=login')->send();
 
-            return;
+            return ActionResponse::ok('');
         }
 
         $this->layoutHelper->getPublicLayout('index', 'install');
@@ -65,6 +71,6 @@ final class IndexController extends ControllerBase
                 ->getItemsFromArraySelected([Language::$globalLang])
         );
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

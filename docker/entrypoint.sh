@@ -5,11 +5,14 @@ set -e
 cd /var/www/html
 
 # Install PHP dependencies if the vendor tree is missing (first run, or the
-# repo is bind-mounted without one). --no-dev keeps the legacy test stack
+# repo is bind-mounted without one). --no-dev keeps the dev/test stack
 # (and roave/security-advisories) out of the runtime image.
 if [ ! -f vendor/autoload.php ]; then
     echo "[entrypoint] vendor/ not found — running composer install..."
-    composer install --no-interaction --no-progress --prefer-dist --no-dev
+    # syspass.ini sets auto_prepend_file=vendor/autoload.php for web requests, but that
+    # file doesn't exist yet on first run, so composer itself would fatal before it could
+    # build vendor/. Disable the prepend for this one bootstrap invocation.
+    COMPOSER_ALLOW_SUPERUSER=1 php -d auto_prepend_file= /usr/bin/composer install --no-interaction --no-progress --prefer-dist --no-dev
 fi
 
 # lib/Base.php loads a .env via Dotenv::createImmutable()->load(), which throws if the

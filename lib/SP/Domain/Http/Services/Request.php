@@ -332,7 +332,13 @@ class Request implements RequestService
             if ($param === null) {
                 $params = array_merge($this->request->query->all(), $this->request->request->all());
                 unset($params['h']);
-                $uri = implode('&', $params);
+                // Must mirror Uri::getUriSigned(): `key=urlencode(value)` joined by '&'
+                // (not the bare values), or the HMAC never matches.
+                $uri = implode('&', array_map(
+                    static fn($name, $value) => sprintf('%s=%s', $name, urlencode((string)$value)),
+                    array_keys($params),
+                    $params
+                ));
             } else {
                 $uri = $this->params->get($param, '');
             }

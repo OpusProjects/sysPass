@@ -160,7 +160,7 @@ final class LayoutHelper extends HelperBase
         $this->view->append('jsLinks', $jsUriApp->getUriSigned($this->configData->getPasswordSalt()));
 
         $jsUriVendor = new Uri($baseUrl);
-        $jsUriVendor->addParams(['g' => 1]);
+        $jsUriVendor->addParams(['_r' => 'resource/js', 'g' => 1]);
 
         $this->view->append('jsLinks', $jsUriVendor->getUriSigned($this->configData->getPasswordSalt()));
 
@@ -170,6 +170,7 @@ final class LayoutHelper extends HelperBase
             $jsUriTheme = new Uri($baseUrl);
             $jsUriTheme->addParams(
                 [
+                    '_r' => 'resource/js',
                     'b' => FileSystem::buildPath($this->theme->getPath(), 'js'),
                     'f' => implode(',', $themeInfo['js'])
                 ]
@@ -206,6 +207,7 @@ final class LayoutHelper extends HelperBase
             $cssUriTheme = new Uri($baseUrl);
             $cssUriTheme->addParams(
                 [
+                    '_r' => 'resource/css',
                     'b' => FileSystem::buildPath($this->theme->getPath(), 'css'),
                     'f' => implode(',', $themeInfo['css'])
                 ]

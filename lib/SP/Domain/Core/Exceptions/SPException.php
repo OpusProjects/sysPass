@@ -51,10 +51,12 @@ class SPException extends Exception
         string            $message,
         protected int     $type = self::ERROR,
         protected ?string $hint = null,
-        int               $code = 0,
+        int|string        $code = 0,
         ?Exception         $previous = null
     ) {
-        parent::__construct($message, $code, $previous);
+        // Accept string codes (e.g. PDO SQLSTATEs like '42S22') and normalise to the int
+        // that \Exception requires, instead of throwing a TypeError that masks the real error.
+        parent::__construct($message, (int)$code, $previous);
     }
 
     public static function from(Throwable $throwable, Type $type = Type::ERROR): static
@@ -65,7 +67,7 @@ class SPException extends Exception
     public static function error(
         string    $message,
         ?string   $hint = null,
-        int       $code = 0,
+        int|string $code = 0,
         ?Exception $previous = null
     ): static {
         return new static($message, SPException::ERROR, $hint, $code, $previous);
@@ -74,7 +76,7 @@ class SPException extends Exception
     public static function critical(
         string    $message,
         ?string   $hint = null,
-        int       $code = 0,
+        int|string $code = 0,
         ?Exception $previous = null
     ): static {
         return new static($message, SPException::CRITICAL, $hint, $code, $previous);
@@ -83,7 +85,7 @@ class SPException extends Exception
     public static function warning(
         string    $message,
         ?string   $hint = null,
-        int       $code = 0,
+        int|string $code = 0,
         ?Exception $previous = null
     ): static {
         return new static($message, SPException::WARNING, $hint, $code, $previous);
@@ -92,7 +94,7 @@ class SPException extends Exception
     public static function info(
         string    $message,
         ?string   $hint = null,
-        int       $code = 0,
+        int|string $code = 0,
         ?Exception $previous = null
     ): static {
         return new static($message, SPException::INFO, $hint, $code, $previous);

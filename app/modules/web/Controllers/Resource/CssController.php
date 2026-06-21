@@ -25,6 +25,10 @@
 namespace SP\Modules\Web\Controllers\Resource;
 
 use SP\Core\Bootstrap\Path;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseStatus;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -46,33 +50,41 @@ final class CssController extends ResourceBase
     /**
      * Return CSS resources
      */
-    public function cssAction(): void
+    #[Action(ResponseType::CALLBACK)]
+    public function cssAction(): ActionResponse
     {
         $file = $this->request->analyzeString('f');
         $base = $this->request->analyzeString('b');
 
         if ($file && $base) {
-            $files = $this->buildFiles(urldecode($base), explode(',', urldecode($file)), true);
-
-            $this->minify->builder()
-                         ->addFiles($files)
-                         ->getMinified();
+            $minify = $this->minify->builder()
+                                   ->addFiles($this->buildFiles(urldecode($base), explode(',', urldecode($file)), true));
         } else {
-            $files = $this->buildFiles(
-                FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'css'),
-                self::CSS_MIN_FILES
-            );
+            $minify = $this->minify->builder()
+                                   ->addFiles(
+                                       $this->buildFiles(
+                                           FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'vendor', 'css'),
+                                           self::CSS_MIN_FILES
+                                       ),
+                                       false
+                                   );
 
-            $this->minify->builder()
-                         ->addFiles($files, false)
-                ->addFile(
-                    new FileHandler(
-                        FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'css', 'fonts.min.css')
-                    ),
-                    false
-                )
-                         ->getMinified();
+            // fonts.min.css ships with the theme, not public/css; only add it if present
+            // (FileHandler opens eagerly and would throw on a missing file).
+            $fonts = FileSystem::buildPath($this->pathsContext[Path::PUBLIC], 'css', 'fonts.min.css');
+
+            if (is_file($fonts)) {
+                $minify->addFile(new FileHandler($fonts), false);
+            }
         }
+
+        // getMinified() sets the body + the text/css content type on the shared response.
+        return new ActionResponse(
+            ResponseStatus::OK,
+            function () use ($minify) {
+                $minify->getMinified();
+            }
+        );
     }
 
     /**
