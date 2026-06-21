@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Language;
@@ -41,6 +42,7 @@ use SP\Tests\UnitaryTestCase;
  * Class LanguageTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class LanguageTest extends UnitaryTestCase
 {
 

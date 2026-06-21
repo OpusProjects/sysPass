@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Account\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -54,6 +55,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class PublicLinkTest extends UnitaryTestCase
 {
 
@@ -568,7 +570,7 @@ class PublicLinkTest extends UnitaryTestCase
         parent::setUp();
 
         $this->publicLinkRepository = $this->createMock(PublicLinkRepository::class);
-        $request = $this->createMock(RequestService::class);
+        $request = $this->createStub(RequestService::class);
         $request->method('getClientAddress')
                 ->willReturn(self::$faker->ipv4());
         $request->method('getHeader')

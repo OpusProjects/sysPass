@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Core\Crypt;
 
 use phpseclib3\Crypt\RSA;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -41,6 +42,7 @@ use function PHPUnit\Framework\once;
  * Class CryptPKITest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class CryptPKITest extends UnitaryTestCase
 {
     private CryptPKI                        $cryptPki;

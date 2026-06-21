@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Log\Providers;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
@@ -42,6 +43,7 @@ use SP\Tests\UnitaryTestCase;
  * Class LogHandlerTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class LogHandlerTest extends UnitaryTestCase
 {
 

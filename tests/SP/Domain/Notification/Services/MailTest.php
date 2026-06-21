@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Notification\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -44,6 +45,7 @@ use SP\Tests\UnitaryTestCase;
  * Class MailTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class MailTest extends UnitaryTestCase
 {
 

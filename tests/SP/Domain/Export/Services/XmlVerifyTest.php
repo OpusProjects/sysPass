@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Export\Services;
 
 use DOMDocument;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Bootstrap\Path;
@@ -44,6 +45,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class XmlVerifyTest extends UnitaryTestCase
 {
     private const VALID_ENCRYPTED_FILE  = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .

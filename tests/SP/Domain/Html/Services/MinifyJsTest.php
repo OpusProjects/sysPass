@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Html\Services;
 
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Ports\ResponseService;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -42,6 +43,7 @@ use TypeError;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class MinifyJsTest extends UnitaryTestCase
 {
 

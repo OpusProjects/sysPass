@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Plugin\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
@@ -47,6 +48,7 @@ use SP\Tests\UnitaryTestCase;
  * Class PluginDataTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class PluginDataTest extends UnitaryTestCase
 {
 

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core\Events;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -38,6 +39,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class EventDispatcherTest extends UnitaryTestCase
 {
     private const VALID_EVENTS = 'test|foo.bar.event';

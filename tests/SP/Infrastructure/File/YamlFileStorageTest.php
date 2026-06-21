@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\File;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\File\Ports\FileHandlerInterface;
@@ -37,6 +38,7 @@ use SP\Tests\UnitaryTestCase;
  * Class YamlFileStorageTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class YamlFileStorageTest extends UnitaryTestCase
 {
     private const YAML =

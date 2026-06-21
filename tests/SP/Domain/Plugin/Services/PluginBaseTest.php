@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Plugin\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Events\Event;
@@ -43,6 +44,7 @@ use SP\Tests\UnitaryTestCase;
  * Class PluginBaseTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class PluginBaseTest extends UnitaryTestCase
 {
 

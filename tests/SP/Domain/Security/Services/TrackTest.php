@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Security\Services;
 
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -46,6 +47,7 @@ use SP\Tests\UnitaryTestCase;
  * Class TrackTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class TrackTest extends UnitaryTestCase
 {
 

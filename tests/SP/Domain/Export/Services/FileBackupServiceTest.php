@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Export\Services;
 
 use PDO;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -52,6 +53,7 @@ use stdClass;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private BackupFile                         $fileBackupService;

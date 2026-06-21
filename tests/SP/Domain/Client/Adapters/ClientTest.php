@@ -27,6 +27,7 @@ namespace SP\Tests\Domain\Client\Adapters;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\Item;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -44,6 +45,7 @@ use SP\Tests\UnitaryTestCase;
  * Class ClientTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class ClientTest extends UnitaryTestCase
 {
     private MockObject|ActionsInterface       $actions;

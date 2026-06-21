@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\User\Services;
 
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
@@ -52,6 +53,7 @@ use SP\Tests\UnitaryTestCase;
  * Class UserTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class UserTest extends UnitaryTestCase
 {
 

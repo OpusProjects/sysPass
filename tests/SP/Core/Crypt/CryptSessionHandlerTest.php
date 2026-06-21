@@ -27,6 +27,7 @@ namespace SP\Tests\Core\Crypt;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Defuse\Crypto\Key;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -41,6 +42,7 @@ use SP\Tests\UnitaryTestCase;
  * Class CryptSessionHandlerTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class CryptSessionHandlerTest extends UnitaryTestCase
 {
 

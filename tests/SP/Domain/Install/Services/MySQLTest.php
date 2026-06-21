@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Install\Services;
 use PDO;
 use PDOException;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -50,6 +51,7 @@ use function SP\__u;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class MySQLTest extends UnitaryTestCase
 {
     private DbStorageHandler|MockObject $dbStorage;
