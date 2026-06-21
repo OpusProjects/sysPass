@@ -402,7 +402,9 @@ class MySQLTest extends UnitaryTestCase
             ],
         ];
 
-        $matcher = $this->any();
+        // atLeastOnce() (not the deprecated any()) keeps with() valid — with() now
+        // requires an expectation — while still exposing numberOfInvocations().
+        $matcher = $this->atLeastOnce();
 
         $this->pdo->expects($matcher)
                   ->method('exec')

@@ -82,11 +82,9 @@ class MinifyCssTest extends UnitaryTestCase
             $file->expects(self::once())
                  ->method('getHash')
                  ->willReturn($hash);
-            $file->expects(self::any())
-                 ->method('getName')
+            $file->method('getName')
                  ->willReturn(basename($filePath));
-            $file->expects(self::any())
-                 ->method('getFile')
+            $file->method('getFile')
                  ->willReturn($filePath);
             $file->expects(self::once())
                  ->method('checkFileExists');
@@ -160,14 +158,11 @@ class MinifyCssTest extends UnitaryTestCase
             $file->expects(self::once())
                  ->method('getHash')
                  ->willReturn($hash);
-            $file->expects(self::any())
-                 ->method('getBase')
+            $file->method('getBase')
                  ->willReturn(dirname($filePath));
-            $file->expects(self::any())
-                 ->method('getName')
+            $file->method('getName')
                  ->willReturn(basename($filePath));
-            $file->expects(self::any())
-                 ->method('getFile')
+            $file->method('getFile')
                  ->willReturn($filePath);
             $file->expects(self::once())
                  ->method('checkFileExists');
