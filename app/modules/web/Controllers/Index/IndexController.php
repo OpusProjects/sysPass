@@ -26,6 +26,9 @@ namespace SP\Modules\Web\Controllers\Index;
 
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Modules\Web\Controllers\ControllerBase;
 
 /**
@@ -41,15 +44,18 @@ final class IndexController extends ControllerBase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if ($this->session->isLoggedIn() === false || $this->session->getAuthCompleted() === false
         ) {
-            $this->router->response()->redirect('index.php?r=login');
-        } else {
-            $this->layoutHelper->getFullLayout('main', $this->acl);
+            $this->router->response()->redirect('index.php?r=login')->send();
 
-            $this->view();
+            return ActionResponse::ok('');
         }
+
+        $this->layoutHelper->getFullLayout('main', $this->acl);
+
+        return ActionResponse::ok($this->render());
     }
 }

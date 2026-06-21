@@ -156,6 +156,12 @@ sysPass.Requests = function (sysPassApp) {
                     return true;
                 }
 
+                // Bridge the new ActionResponse JSON contract (status: "OK"|"ERROR"|"WARNING")
+                // to the int codes the front-end switches on (JsonMessage: 0|1|2).
+                if (response && typeof response === "object" && typeof response.status === "string") {
+                    response.status = {OK: 0, ERROR: 1, WARNING: 2}[response.status] ?? response.status;
+                }
+
                 // Añadir entrada al historial
                 if (opts.addHistory === true) {
                     opts.callback = callbackOk;
@@ -195,7 +201,7 @@ sysPass.Requests = function (sysPassApp) {
                 if (sysPassApp.theme !== undefined
                     && (opts.type === "html"
                         || (response.responseJSON !== undefined
-                            && response.responseJSON.data !== undefined
+                            && response.responseJSON.data != null
                             && response.responseJSON.data.html !== undefined))
                 ) {
                     sysPassApp.theme.ajax.complete();

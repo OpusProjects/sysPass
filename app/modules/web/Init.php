@@ -61,6 +61,7 @@ use SP\Modules\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Modules\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Modules\Web\Controllers\Error\DatabaseErrorController;
 use SP\Modules\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Modules\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Modules\Web\Controllers\Install\InstallController;
 use SP\Modules\Web\Controllers\Items\AccountsUserController;
 use SP\Modules\Web\Controllers\Items\CategoriesController;
@@ -92,6 +93,7 @@ final class Init extends HttpModuleBase
         CssController::class,
         JsController::class,
         InstallController::class,
+        InstallIndexController::class,
         GetEnvironmentController::class,
         CheckNotices::class,
         StatusController::class,

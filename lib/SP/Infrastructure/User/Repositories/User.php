@@ -101,8 +101,8 @@ final class User extends BaseRepository implements UserRepository
             ->where('id <> :id')
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [
@@ -132,7 +132,7 @@ final class User extends BaseRepository implements UserRepository
             ->table(UserModel::TABLE)
             ->cols($user->toArray(['pass', 'isChangePass', 'isChangedPass', 'isMigrate']))
             ->set('lastUpdate', 'NOW()')
-            ->set('hashSalt', '')
+            ->set('hashSalt', "''")
             ->where('id = :id', ['id' => $user->getId()])
             ->limit(1);
 
@@ -282,8 +282,10 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
-            ->set('hashSalt', '');
+            // Drop null fields so NOT NULL columns with a schema default (e.g. loginCount)
+            // fall back to that default instead of being explicitly set to NULL.
+            ->cols(array_filter($user->toArray(null, ['id', 'hashSalt']), static fn($v) => $v !== null))
+            ->set('hashSalt', "''");
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the user'));
 
@@ -307,8 +309,8 @@ final class User extends BaseRepository implements UserRepository
             ->from(UserModel::TABLE)
             ->where(
                 'UPPER(:login) = UPPER(login) 
-                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\'
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\''
+                OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
             )
             ->bindValues(
                 [
@@ -452,7 +454,7 @@ final class User extends BaseRepository implements UserRepository
                        'email' => $user->getEmail(),
                        'isLdap' => $user->isLdap()
                    ])
-            ->set('hashSalt', '')
+            ->set('hashSalt', "''")
             ->set('lastLogin', 'NOW()')
             ->set('lastUpdate', 'NOW()')
             ->set('loginCount', 'loginCount + 1')

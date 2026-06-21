@@ -277,7 +277,8 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(UserGroupModel::TABLE)
-            ->cols($userGroup->toArray(null, ['id']));
+            // 'users' is a relation on the model, not a column on the UserGroup table.
+            ->cols($userGroup->toArray(null, ['id', 'users']));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the group'));
 

@@ -82,10 +82,9 @@ class UserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 3
+                return count($params) === 2
                        && $params['name'] === $userGroup->getName()
                        && $params['description'] === $userGroup->getDescription()
-                       && $params['users'] === $userGroup->getUsers()
                        && is_a($query, InsertInterface::class)
                        && !empty($query->getStatement());
             }

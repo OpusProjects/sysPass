@@ -100,28 +100,88 @@ Both pass: **1978 unit** + **93 integration**. Test-environment gotchas (the ima
 - Known separate flaky: `AccountPresetTest::testAddPresetPermissions` (a faker-data / consecutive-mock
   matcher issue, not language).
 
-## Web bootstrap is WIP
+## Web request flow & DI container
 
-The rewrite's web entry (`index.php` → `lib/Base.php`) was **never run by upstream CI** (only the
-unit/integration suites, which mock the infrastructure). It still has gaps:
+`index.php` (or `api.php`/`cli.php`) → `lib/Base.php` builds the **php-di** container and runs
+`Bootstrap::run($dic->get(BootstrapInterface), $dic->get(ModuleInterface))`. Per request:
+`Bootstrap::handleRequest()` → `Router::dispatch()` (Symfony Routing catch-all) →
+`manageWebRequest()` resolves the controller from the **`r` query param** and invokes the action.
+The rewrite's web entry was **never run by upstream CI** (only the mocked unit/integration suites),
+so these runtime contracts are easy to break:
 
-- `index.php` uses autoloaded `SP\` classes before loading the autoloader → the image sets
-  `auto_prepend_file = vendor/autoload.php`.
-- `lib/Base.php` loads a mandatory `.env` (`Dotenv::createImmutable()->load()`); the entrypoint writes one.
-- **Fixed (DI definition ordering):** php-di couldn't resolve `BootstrapInterface → ConfigFileService
-  → XmlFileStorageService` because `lib/Base.php` added `CoreDefinitions` *before* `DomainDefinitions`.
-  `DomainDefinitions` auto-wires every `SP\Domain\*\Ports\*Service` via a `*` wildcard, and php-di
-  gives **later** definition sources precedence — so the generic wildcard (`autowire(ConfigFile)`,
-  which reads the unbound `XmlFileStorageService` interface) shadowed Core's explicit
-  `ConfigFileService` definition. Fix: register `DomainDefinitions` **first**, then `CoreDefinitions`
-  (specific overrides generic), matching the order `tests/SP/IntegrationTestCase.php` already builds
-  the container with (which is why the suites passed).
-- **Still WIP (fresh-install file open):** `FileHandler extends SplFileObject` and opens its file in
-  the constructor, so building `ConfigFileService` when `app/config/config.xml` does not yet exist
-  throws a raw `RuntimeException` before `ConfigFile::initialize()` can fall through
-  `loadFromCache() ?? loadFromFile() ?? generateNewConfig()`. The fresh-install path (no config.xml)
-  is still blocked on this — it needs lazy file opening (or tolerating a missing file) so
-  `generateNewConfig()` runs. An already-installed instance (config.xml present) is unaffected.
+- **Routing:** `?r=<controller>/<action>/<p1>/<p2>` → `<Controller>Controller::<action>Action(...)`;
+  empty action → `index` (`lib/SP/Core/Bootstrap/RouteContext.php`). Leaf code reads ids from these
+  route params, not the path.
+- **DI definition order** (`lib/Base.php`): `DomainDefinitions` → `CoreDefinitions` → module
+  `module.php`, and **php-di gives later sources precedence** — the specific entry overrides the
+  `SP\Domain\*\Ports\*Service` wildcard auto-wiring; the module overrides Core. Keep this order.
+- **Compilation:** when `!DEBUG` the container is **compiled and lazy proxies are written**
+  (`enableCompilation`/`writeProxiesToFile`); when `DEBUG` it's built live. So (1) every definition
+  must be **compilable** — never bind a literal object; use `create()`/`autowire()`/`factory()`
+  (e.g. a `new SymfonyResponse()` constructor *default* is not compilable → inject it explicitly via
+  `->constructor(create(...))`); (2) a **circular dependency** is only broken by a lazy proxy → mark
+  the entry `->lazy()` (only `create()`/`autowire()` can be lazy, not `factory()`).
+- **`.env`** is loaded with `Dotenv::createImmutable()` → values land in **`$_ENV`/`$_SERVER` only,
+  not `getenv()`**; `SP\getFromEnv()` reads `$_ENV`/`$_SERVER` first. `DEBUG` defaults false.
+- `index.php` uses `SP\` classes before the autoloader loads → the image sets
+  `auto_prepend_file = vendor/autoload.php` (so the entrypoint's first `composer install` must run
+  with that prepend disabled). `lib/Base.php` requires a `.env` to exist (entrypoint writes one).
+
+## Controllers (hexagonal dispatch contract)
+
+Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionResponse` and carry
+`#[Action(ResponseType::JSON|PLAIN_TEXT|...)]` — `Bootstrap::getMethod()` rejects anything else with
+*"Incorrect method return type"*. Build with `ActionResponse::ok()/error()/warning()`.
+
+- **Legacy controllers aren't all migrated.** The old pattern (`fooAction(): bool` returning
+  `$this->returnJsonResponse(...)` from `JsonTrait`) **fails** the contract. When you touch one,
+  migrate it: add `#[Action]`, return `ActionResponse`, drop `JsonTrait`.
+- `SP\` global functions (`__`, `__u`, `logger`, `processException`, `getFromEnv`) are in namespace
+  `SP` — **`use function SP\...`** them (PHP's bare-call fallback only reaches the global namespace).
+- `ControllerBase` exposes `$this->view` (`TemplateInterface`); render a view and wrap the HTML in
+  `ActionResponse::ok($html)` with `#[Action(ResponseType::PLAIN_TEXT)]`.
+- **`Init::PARTIAL_INIT`** lists controllers that skip the not-installed / DB / session checks
+  (Install, Css, Js, Upgrade…). When not installed, `Init` redirects everything else to the install
+  route.
+
+## Persistence (models + repositories)
+
+- Repos build SQL with **Aura.SqlQuery** via `$this->queryFactory`. `->set($col, $rawExpr)` injects a
+  **RAW, unquoted** expression (`'NOW()'`, `0`, `"''"` for an empty string — *not* `''`, which yields
+  invalid SQL).
+- **`Model::toArray()` includes relation/non-column properties** (e.g. `UserGroup::$users`) — exclude
+  them from insert `cols` or you get *"Unknown column"*.
+- A model property left **null** is inserted as `NULL` and **overrides a column's schema DEFAULT** —
+  `array_filter(..., fn($v) => $v !== null)` the cols so `NOT NULL DEFAULT` columns use their default.
+- **`SPException` + `error()/critical()/warning()/info()` accept `int|string $code`** (cast to int) —
+  PDO SQLSTATEs are strings; a string reaching `\Exception` TypeErrors and **masks the real DB error**.
+  `processException()` accepts `Throwable` (PHP `Error`s like `TypeError` are not `Exception`).
+
+## The installer
+
+`InstallController::installAction()` → `Installer::run(InstallData)` → `setupDbHost` → `setupConfig`
+→ `setupDb` (`MysqlSetup`) → schema (`schemas/dbstructure.sql`) → admin user + master password →
+`config.xml <installed>1`. Two **modes** (`InstallData::isHostingMode()`):
+
+- **Normal** (`hostingmode=0`): admin creds (root) — installer **creates the DB** + a restricted
+  `sp_<rand>@<host>` user. App-user host is `%` **iff `getenv('SYSPASS_DIR')` is set** (the Docker
+  signal — `docker-compose.yml` sets it); else it falls back to `SERVER_ADDR`/reverse-DNS.
+- **Hosting** (`hostingmode=1`): DB already exists, use the given creds directly, no DB/user creation.
+  The Docker MariaDB auto-creates the `syspass` DB, so hosting mode "just works"; normal mode needs
+  the DB to **not** pre-exist.
+
+- `InstallData` is a **shared DI singleton** built from the request — the controller and `MysqlSetup`
+  must use the *same* instance (host detection mutates it).
+- The install connection **must not select the DB** (it may not exist yet) —
+  `DatabaseConnectionData::getFromInstallData` omits `dbName`; `MysqlSetup::checkDatabase` does
+  `USE <db>` after creating/confirming it.
+- Password fields are PKI-encrypted client-side (`analyzeEncrypted` decrypts; **falls back to the raw
+  value** if decryption fails — so plaintext works for scripted installs).
+- **Self-provisioning first run** (no `app/config/`): `config.xml` is opened `c+` (create,
+  no-truncate) and seeded by `generateNewConfig()`; `CryptPKI` generates the RSA keypair on first use.
+  These log caught/handled exceptions — expected, not fatal.
+- `FileHandler extends SplFileObject` → **opens its file in the constructor** (eagerly); a missing
+  file throws a raw `RuntimeException`. Open config-like files `c+` so they're created.
 
 ## Dependency status (PHP 8.5 codebase, Symfony 8)
 

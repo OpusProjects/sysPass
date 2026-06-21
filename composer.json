@@ -61,11 +61,11 @@
     "laminas/laminas-ldap": "^2.17",
     "symfony/yaml": "^8.1",
     "symfony/http-foundation": "^8.1",
-    "symfony/routing": "^8.1"
+    "symfony/routing": "^8.1",
+    "symfony/error-handler": "^8.1"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
-    "symfony/error-handler": "^8.1",
     "phpunit/phpunit": "^13.2",
     "fakerphp/faker": "^1.24",
     "nikic/php-parser": "^v5",

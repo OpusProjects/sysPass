@@ -156,9 +156,9 @@ function formatStackTrace(Throwable $e): string
 /**
  * Process an exception and log into the error log
  *
- * @param Exception $exception
+ * @param Throwable $exception
  */
-function processException(Exception $exception): void
+function processException(Throwable $exception): void
 {
     logger(
         sprintf(
@@ -279,7 +279,13 @@ function initModule(string $module): array
  */
 function getFromEnv(string $envVar, mixed $default = null): mixed
 {
-    $env = getenv($envVar) ?: $default;
+    // .env is loaded with Dotenv::createImmutable(), which populates $_ENV / $_SERVER but
+    // not getenv(); read those first, then fall back to a real environment variable.
+    $env = $_ENV[$envVar] ?? $_SERVER[$envVar] ?? getenv($envVar);
+
+    if ($env === false || $env === null || $env === '') {
+        $env = $default;
+    }
 
     if ($default !== null) {
         settype($env, gettype($default));

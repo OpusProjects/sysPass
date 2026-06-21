@@ -28,6 +28,7 @@ namespace SP\Core\Definitions;
 
 use Aura\SqlQuery\QueryFactory;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogHandler as MSyslogHandler;
 use Monolog\Handler\SyslogUdpHandler;
@@ -163,7 +164,10 @@ final class CoreDefinitions
             }),
             SymfonyRequest::class => factory([SymfonyRequest::class, 'createFromGlobals']),
             RequestService::class => autowire(Request::class),
-            ResponseService::class => create(Response::class),
+            // Inject SymfonyResponse explicitly: Response's constructor defaults it to
+            // `new SymfonyResponse()`, and PHP-DI cannot compile a literal object default.
+            ResponseService::class => create(Response::class)
+                ->constructor(create(SymfonyResponse::class)),
             Router::class => autowire(),
             UriContextInterface::class => autowire(UriContext::class),
             Context::class => create(Stateless::class),
@@ -172,10 +176,17 @@ final class CoreDefinitions
                 ->constructor(
                     create(XmlFileStorage::class)
                         ->constructor(
-                            create(FileHandler::class)
-                                ->constructor(
-                                    factory(static fn(PathsContext $p) => $p[Path::CONFIG_FILE])
-                                )
+                            factory(static function (PathsContext $p) {
+                                // FileHandler extends SplFileObject, which opens the file in its
+                                // constructor and throws if it is missing. On a fresh install
+                                // config.xml does not exist yet, so open it 'c+' (read/write,
+                                // create-if-missing, no truncate) — matching FileCacheBase. A new
+                                // file is empty, so XmlFileStorage::load() throws a FileException
+                                // that ConfigFile::loadFromFile() catches, falling back to
+                                // generateNewConfig(), which then writes the initial config through
+                                // this same writable handle.
+                                return new FileHandler($p[Path::CONFIG_FILE], 'c+');
+                            })
                         ),
                     create(FileCache::class)
                         ->constructor(
@@ -338,9 +349,13 @@ final class CoreDefinitions
                     CryptPKI::PRIVATE_KEY_FILE
                 );
 
+                // 'c' (create, no truncate) — NOT 'w', which truncates the key files on every
+                // construction, regenerating the RSA keypair on every request and breaking the
+                // PKI round-trip (browser encrypts with one public key, server decrypts with a
+                // newer private key). With 'c' the keypair is generated once and then persists.
                 return new CryptPKI(
-                    new FileHandler($publicKeyPath, 'w'),
-                    new FileHandler($privateKeyPath, 'w')
+                    new FileHandler($publicKeyPath, 'c'),
+                    new FileHandler($privateKeyPath, 'c')
                 );
             }),
             FileCacheService::class => create(FileCache::class),

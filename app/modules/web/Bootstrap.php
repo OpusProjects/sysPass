@@ -132,16 +132,20 @@ final class Bootstrap extends BootstrapBase
 
                 $this->eventDispatcher->notify('exception', new Event($e));
 
-                $this->buildResponse(
-                    $method,
-                    ActionResponse::error($e->getMessage(), $e->getTrace()),
-                    $response
-                );
+                // A handler (e.g. Init's not-installed/maintenance redirect) may have already
+                // sent the response; don't overwrite that 3xx with a 500 error page.
+                if (!$response->isSent()) {
+                    $this->buildResponse(
+                        $method,
+                        ActionResponse::error($e->getMessage(), $e->getTrace()),
+                        $response
+                    );
 
-                $response->code(Code::INTERNAL_SERVER_ERROR->value);
+                    $response->code(Code::INTERNAL_SERVER_ERROR->value);
+                }
             }
 
-            return $response->send(true);
+            return $response->isSent() ? $response : $response->send(true);
         };
     }
 

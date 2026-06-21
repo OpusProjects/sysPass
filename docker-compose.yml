@@ -1,4 +1,4 @@
-# Local development stack for sysPass (legacy 3.2.x / PHP 7.4 baseline).
+# Local development stack for sysPass (PHP 8.4+).
 #
 #   docker compose up --build
 #   -> web UI at http://localhost:8090  (first run shows the installer)
@@ -13,6 +13,11 @@ services:
     image: opusprojects/syspass:dev
     ports:
       - "8090:80"
+    environment:
+      # Signals the installer that sysPass runs in Docker, so in normal install mode the
+      # app DB user is created for host '%' (the app connects from a dynamic container IP)
+      # instead of relying on SERVER_ADDR/reverse-DNS detection.
+      SYSPASS_DIR: /var/www/html
     volumes:
       # Live-mount the source for development. Named volumes keep composer's
       # vendor tree and sysPass runtime state from being clobbered by the mount.
