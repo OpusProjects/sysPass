@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Import\Services;
 
 use ArrayIterator;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -50,6 +51,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class LdapImportTest extends UnitaryTestCase
 {
 

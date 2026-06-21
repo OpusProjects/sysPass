@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -46,6 +47,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class LdapAuthTest extends UnitaryTestCase
 {
 

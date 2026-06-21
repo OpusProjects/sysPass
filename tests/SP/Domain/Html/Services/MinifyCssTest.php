@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Html\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
@@ -42,6 +43,7 @@ use TypeError;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class MinifyCssTest extends UnitaryTestCase
 {
 

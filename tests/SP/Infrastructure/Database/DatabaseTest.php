@@ -29,6 +29,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use PDO;
 use PDOStatement;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -48,6 +49,7 @@ use SP\Tests\UnitaryTestCase;
  * Class DatabaseTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class DatabaseTest extends UnitaryTestCase
 {
 

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
@@ -45,6 +46,7 @@ use SP\Tests\UnitaryTestCase;
  * Class UserGroupTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class UserGroupTest extends UnitaryTestCase
 {
 

@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Api\Services;
 use Exception;
 use Faker\Factory;
 use JsonException;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -62,6 +63,7 @@ use stdClass;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class ApiTest extends UnitaryTestCase
 {
 

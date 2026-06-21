@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Auth\Providers\Database;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
@@ -41,6 +42,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class DatabaseAuthTest extends UnitaryTestCase
 {
 

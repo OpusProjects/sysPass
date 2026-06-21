@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\User\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
@@ -47,6 +48,7 @@ use SP\Tests\UnitaryTestCase;
  * Class UserMasterPassTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class UserMasterPassTest extends UnitaryTestCase
 {
 

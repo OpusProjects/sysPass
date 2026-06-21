@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Core\Acl;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -46,6 +47,7 @@ use function PHPUnit\Framework\once;
  * Class ActionsTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class ActionsTest extends UnitaryTestCase
 {
 

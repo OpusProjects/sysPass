@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Domain\Http\Services;
 
 use SP\Domain\Http\Ports\ResponseService as Response;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
@@ -44,6 +45,7 @@ use SP\Tests\PHPUnitHelper;
  * Class JsonResponseTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class JsonResponseTest extends TestCase
 {
 

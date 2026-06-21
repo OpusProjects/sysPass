@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Upgrade\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -49,6 +50,7 @@ use stdClass;
  * Class UpgradeTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class UpgradeTest extends UnitaryTestCase
 {
 

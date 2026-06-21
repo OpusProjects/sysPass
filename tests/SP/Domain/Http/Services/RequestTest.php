@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Http\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -47,6 +48,7 @@ use Symfony\Component\HttpFoundation\ServerBag;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class RequestTest extends UnitaryTestCase
 {
 

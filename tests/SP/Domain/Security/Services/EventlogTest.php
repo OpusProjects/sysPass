@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Security\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -43,6 +44,7 @@ use SP\Tests\UnitaryTestCase;
  * Class EventlogTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class EventlogTest extends UnitaryTestCase
 {
 

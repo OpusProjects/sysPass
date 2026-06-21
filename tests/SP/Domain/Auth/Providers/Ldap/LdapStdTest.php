@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
 use ArrayIterator;
 use EmptyIterator;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -48,6 +49,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class LdapStdTest extends UnitaryTestCase
 {
 

@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Crypt\Services;
 
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountMasterPasswordService;
@@ -47,6 +48,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class MasterPassTest extends UnitaryTestCase
 {
 

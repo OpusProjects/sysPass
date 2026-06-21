@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Account\Services;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -46,6 +47,7 @@ use SP\Tests\UnitaryTestCase;
  * Class AccountMasterPasswordTest
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class AccountMasterPasswordTest extends UnitaryTestCase
 {
     private MockObject|AccountService        $account;

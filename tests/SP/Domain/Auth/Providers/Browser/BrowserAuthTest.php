@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Domain\Auth\Providers\Browser;
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Dtos\UserLoginDto;
@@ -39,6 +40,7 @@ use SP\Tests\UnitaryTestCase;
  *
  */
 #[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
 class BrowserAuthTest extends UnitaryTestCase
 {
 
