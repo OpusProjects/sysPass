@@ -229,13 +229,10 @@ class MimeTypesTest extends UnitaryTestCase
             ->willReturn(true, false);
 
         $this->fileCache
-            ->expects(self::any())
             ->method('isExpired')
-            ->with(MimeTypes::CACHE_EXPIRE)
             ->willReturn(false);
 
         $this->fileCache
-            ->expects(self::any())
             ->method('isExpiredDate')
             ->willReturn(false);
 
@@ -259,7 +256,6 @@ class MimeTypesTest extends UnitaryTestCase
         );
         $this->fileCache = $this->createMock(FileCacheService::class);
         $this->fileCache
-            ->expects(self::any())
             ->method('load')
             ->willReturn($mimeTypes);
         $this->yamlFileStorage = $this->createMock(YamlFileStorageService::class);

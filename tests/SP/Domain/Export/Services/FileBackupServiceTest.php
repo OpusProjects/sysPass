@@ -158,7 +158,6 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->config->getConfigData()->setDbName('a_db');
 
         $this->dbFileHandler
-            ->expects(self::any())
             ->method('write')
             ->willThrowException(FileException::error('Filexception'));
 
