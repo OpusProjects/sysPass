@@ -360,19 +360,27 @@ abstract class IntegrationTestCase extends TestCase
                     $bodyChecker = (new ReflectionMethod($this, $attribute->newInstance()->target))
                         ->getClosure($this);
 
+                    // Run the per-test checker against the response body and return the response
+                    // for chaining, exactly as the previous with(callback)->willReturnSelf() stub
+                    // did. The checker's assertions (and any failure they raise) must run inline
+                    // here so they propagate through the application's response flow as before;
+                    // body() can legitimately be invoked more than once while a response is
+                    // assembled, so the count expectation is left open with atLeastOnce(), which
+                    // also pairs the double with an explicit expectation (replacing the bare
+                    // with() that PHPUnit 14 forbids).
                     $response = $this->getMockBuilder(Response::class)->onlyMethods(['body'])->getMock();
                     $response
+                        ->expects($this->atLeastOnce())
                         ->method('body')
-                        ->with(
-                            self::callback(static function (string $output) use ($bodyChecker) {
+                        ->willReturnCallback(
+                            static function (string $output) use ($response, $bodyChecker) {
                                 self::assertNotEmpty($output);
 
                                 $bodyChecker($output);
 
-                                return true;
-                            })
-                        )
-                        ->willReturnSelf();
+                                return $response;
+                            }
+                        );
 
                     $definitions[ResponseService::class] = $response;
                 },

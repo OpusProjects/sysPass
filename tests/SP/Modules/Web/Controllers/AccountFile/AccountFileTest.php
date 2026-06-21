@@ -275,7 +275,11 @@ class AccountFileTest extends IntegrationTestCase
      */
     private function outputCheckerView(string $output): void
     {
-        $crawler = new Crawler($output);
+        // The view action returns a JSON envelope whose data.html carries the rendered
+        // markup; crawl that fragment rather than the JSON wrapper so the img/title count
+        // is taken from the actual response payload.
+        $html = json_decode($output)->data->html;
+        $crawler = new Crawler($html);
         $filter = $crawler->filterXPath('//img|//div[@class="title"]')->count();
 
         self::assertEquals(2, $filter);
