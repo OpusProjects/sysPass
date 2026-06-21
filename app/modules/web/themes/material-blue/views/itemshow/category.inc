@@ -61,7 +61,7 @@ $category = $_getvar('category');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Category name'); ?></label>
@@ -77,7 +77,7 @@ $category = $_getvar('category');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($category->getDescription(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($category->getDescription() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php
                             echo __('Category description'); ?></label>

@@ -623,7 +623,7 @@ final class Account extends Service implements AccountService
     {
         $data = $this->accountRepository->getTotalNumAccounts()->getData(Simple::class);
 
-        return (int)$data['num'];
+        return (int)($data['num'] ?? 0);
     }
 
     /**

@@ -132,7 +132,7 @@ endif; ?>
                         echo __('Server Type'); ?></option>
                     <?php
                     /** @var SelectItem $serverType */
-                    foreach ($_getvar('serverTypes') as $serverType): ?>
+                    foreach ($_getvar('serverTypes') ?? [] as $serverType): ?>
                         <option
                                 value="<?php
                                 echo $serverType->getId(); ?>"
@@ -181,7 +181,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapServer(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getLdapServer() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_server"><?php
                         echo __('Server'); ?></label>
@@ -222,7 +222,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapBindUser(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getLdapBindUser() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_binduser"><?php
                         echo __('User'); ?></label>
@@ -315,7 +315,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapBase(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getLdapBase() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_base"><?php
                         echo __('Search base'); ?></label>
@@ -361,7 +361,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapGroup(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getLdapGroup() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_group"><?php
                         echo __('Group'); ?></label>
@@ -396,7 +396,7 @@ endif; ?>
                         echo __('Select Group'); ?></option>
                     <?php
                     /** @var SelectItem $userGroup */
-                    foreach ($_getvar('userGroups') as $userGroup): ?>
+                    foreach ($_getvar('userGroups') ?? [] as $userGroup): ?>
                         <option
                                 value="<?php
                                 echo $userGroup->getId(); ?>"
@@ -438,7 +438,7 @@ endif; ?>
                         echo __('Select User'); ?></option>
                     <?php
                     /** @var SelectItem $userProfile */
-                    foreach ($_getvar('userProfiles') as $userProfile): ?>
+                    foreach ($_getvar('userProfiles') ?? [] as $userProfile): ?>
                         <option
                                 value="<?php
                                 echo $userProfile->getId(); ?>"
@@ -575,7 +575,7 @@ endif; ?>
                         class="select-box" data-create="true">
                     <?php
                     /** @var SelectItem $userAttribute */
-                    foreach ($_getvar('userAttributes') as $userAttribute): ?>
+                    foreach ($_getvar('userAttributes') ?? [] as $userAttribute): ?>
                         <option
                                 value="<?php
                                 echo $userAttribute->getName(); ?>"
@@ -621,7 +621,7 @@ endif; ?>
                         class="select-box" data-create="true">
                     <?php
                     /** @var SelectItem $groupAttribute */
-                    foreach ($_getvar('groupAttributes') as $groupAttribute): ?>
+                    foreach ($_getvar('groupAttributes') ?? [] as $groupAttribute): ?>
                         <option
                                 value="<?php
                                 echo $groupAttribute->getName(); ?>"

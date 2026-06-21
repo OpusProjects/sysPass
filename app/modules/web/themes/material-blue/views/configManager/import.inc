@@ -70,7 +70,7 @@ use function SP\__;
                     echo __('Select User'); ?></option>
                 <?php
                 /** @var SelectItem $user */
-                foreach ($_getvar('users') as $user): ?>
+                foreach ($_getvar('users') ?? [] as $user): ?>
                     <option
                             value="<?php
                             echo $user->getId(); ?>" <?php
@@ -109,7 +109,7 @@ use function SP\__;
                     echo __('Select Group'); ?></option>
                 <?php
                 /** @var SelectItem $userGroup */
-                foreach ($_getvar('userGroups') as $userGroup): ?>
+                foreach ($_getvar('userGroups') ?? [] as $userGroup): ?>
                     <option
                             value="<?php
                             echo $userGroup->getId(); ?>" <?php

@@ -41,7 +41,7 @@ $tabs = $_getvar('tabs');
     <div id="tabsHeader" class="mdl-tabs__tab-bar"></div>
 
     <?php
-    foreach ($tabs as $index => $tab): ?>
+    foreach (($tabs ?? []) as $index => $tab): ?>
         <div id="tabs-<?php
         echo $index; ?>"
              class="mdl-tabs__panel"

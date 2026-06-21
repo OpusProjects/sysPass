@@ -65,7 +65,7 @@ final class Serde
      */
     public static function deserialize(string $data, ?string $class = null): object|array
     {
-        $value = unserialize($data);
+        $value = @unserialize($data);
 
         return match (true) {
             $value === false => throw SPException::error(__u('Couldn\'t deserialize the data')),

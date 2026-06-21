@@ -61,7 +61,7 @@ $client = $_getvar('client');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Client name'); ?></label>
@@ -78,7 +78,7 @@ $client = $_getvar('client');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($client->getDescription(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($client->getDescription() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php
                             echo __('Client description'); ?></label>

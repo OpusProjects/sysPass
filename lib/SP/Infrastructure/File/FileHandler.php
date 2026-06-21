@@ -106,7 +106,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
         $this->autoDetectEOL();
 
         while (!$this->eof()) {
-            $data = $this->fgetcsv($delimiter);
+            $data = $this->fgetcsv($delimiter, '"', '\\');
 
             if ($data === false) {
                 throw FileException::error(__u('Error while reading the CSV file file'), $this->file);

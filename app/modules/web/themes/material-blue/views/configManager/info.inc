@@ -83,7 +83,7 @@
                 echo __('Database'); ?></div>
 
             <?php
-            foreach ($_getvar('dbInfo') as $infoattr => $infoval): ?>
+            foreach ($_getvar('dbInfo') ?? [] as $infoattr => $infoval): ?>
                 <?php
                 printf('<b>%s</b> : %s', $infoattr, $infoval); ?>
                 <br>
@@ -131,7 +131,7 @@
                 <br>
                 <?php
                 printf('<b>%s</b>', __('OP Cache'));
-                foreach (opcache_get_status(false)['opcache_statistics'] as $key => $value):
+                foreach (opcache_get_status(false)['opcache_statistics'] ?? [] as $key => $value):
                     printf('<br/>%s : %s', $key, $value);
                 endforeach;
                 ?>
@@ -149,7 +149,7 @@
                 echo __('Server'); ?>
             </div>
             <?php
-            printf('<b>%s</b>', !$_getvar('isDemo') ? $_SERVER['SERVER_SOFTWARE'] : '***');
+            printf('<b>%s</b>', !$_getvar('isDemo') ? ($_SERVER['SERVER_SOFTWARE'] ?? '') : '***');
             ?>
         </td>
     </tr>
@@ -247,7 +247,7 @@
             <ul class="mdl-list">
                 <?php
                 /** @var Plugin $plugin */
-                foreach ($_getvar('plugins') as $name => $plugin): ?>
+                foreach ($_getvar('plugins') ?? [] as $name => $plugin): ?>
                     <li class="mdl-list__item">
                                 <span class="mdl-list__item-primary-content">
                                 <i class="material-icons mdl-list__item-icon">extension</i>

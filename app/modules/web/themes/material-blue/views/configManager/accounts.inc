@@ -451,7 +451,7 @@ endif; ?>
                         data-create="true">
                     <?php
                     /** @var SelectItem $mimeType */
-                    foreach ($_getvar('mimeTypes') as $mimeType): ?>
+                    foreach ($_getvar('mimeTypes') ?? [] as $mimeType): ?>
                         <option
                                 value="<?php
                                 echo $mimeType->getName(); ?>"
