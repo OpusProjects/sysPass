@@ -108,7 +108,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailServer(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getMailServer() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_server"><?php
                         echo __('Server'); ?></label>
@@ -169,7 +169,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="50"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailUser(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getMailUser() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_user"><?php
                         echo __('User'); ?></label>
@@ -208,7 +208,7 @@ use function SP\__;
                     <option value=""><?php
                         echo __('Disabled'); ?></option>
                     <?php
-                    foreach ($_getvar('mailSecurity') as $security): ?>
+                    foreach ($_getvar('mailSecurity') ?? [] as $security): ?>
                         <option
                                 value="<?php
                                 echo $security; ?>" <?php
@@ -230,7 +230,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailFrom(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getMailFrom() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_from"><?php
                         echo __('Sender email address'); ?></label>
@@ -266,7 +266,7 @@ use function SP\__;
                         data-create="true">
                     <?php
                     /** @var SelectItem $mailEvent */
-                    foreach ($_getvar('mailEvents') as $mailEvent): ?>
+                    foreach ($_getvar('mailEvents') ?? [] as $mailEvent): ?>
                         <option
                                 value="<?php
                                 echo $mailEvent->getName(); ?>"

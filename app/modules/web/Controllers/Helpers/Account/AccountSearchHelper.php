@@ -86,7 +86,7 @@ final class AccountSearchHelper extends HelperBase
     ) {
         parent::__construct($application, $template, $request);
 
-        $this->queryTimeStart = microtime(true);
+        $this->queryTimeStart = (int)microtime(true);
         $this->isIndex = $this->request->analyzeString('r') ===
                          $this->acl->getRouteFor(AclActionsInterface::ACCOUNT);
         $this->setVars();

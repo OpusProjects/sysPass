@@ -117,7 +117,7 @@ use function SP\__;
                        type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php
-                       echo htmlspecialchars($configData->getSyslogServer(), ENT_QUOTES); ?>"/>
+                       echo htmlspecialchars($configData->getSyslogServer() ?? '', ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="remotesyslog_server"><?php
                     echo __('Hostname or IP address'); ?></label>
@@ -156,7 +156,7 @@ use function SP\__;
                     class="select-box" data-create="true">
                 <?php
                 /** @var SelectItem $logEvent */
-                foreach ($_getvar('logEvents') as $logEvent): ?>
+                foreach ($_getvar('logEvents') ?? [] as $logEvent): ?>
                     <option
                             value="<?php
                             echo $logEvent->getName(); ?>"

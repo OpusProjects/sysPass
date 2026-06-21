@@ -111,7 +111,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getWikiSearchurl(), ENT_QUOTES); ?>">
+                           echo htmlspecialchars($configData->getWikiSearchurl() ?? '', ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_searchurl"><?php
                         echo __('Wiki search URL'); ?></label>
@@ -154,7 +154,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getWikiPageurl(), ENT_QUOTES); ?>">
+                           echo htmlspecialchars($configData->getWikiPageurl() ?? '', ENT_QUOTES); ?>">
                     <label class="mdl-textfield__label"
                            for="wiki_pageurl"><?php
                         echo __('Wiki page URL'); ?></label>

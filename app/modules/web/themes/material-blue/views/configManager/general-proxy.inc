@@ -79,7 +79,7 @@ use function SP\__;
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
                        value="<?php
-                       echo htmlspecialchars($configData->getProxyServer(), ENT_QUOTES); ?>">
+                       echo htmlspecialchars($configData->getProxyServer() ?? '', ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_server"><?php
                     echo __('Proxy server'); ?></label>
@@ -116,7 +116,7 @@ use function SP\__;
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
                        value="<?php
-                       echo htmlspecialchars($configData->getProxyUser(), ENT_QUOTES); ?>">
+                       echo htmlspecialchars($configData->getProxyUser() ?? '', ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="proxy_user"><?php
                     echo __('Proxy server user'); ?></label>

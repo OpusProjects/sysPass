@@ -116,7 +116,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
               data-hash="">
 
             <input type="hidden" name="sk" value="<?php
-            echo $sk; ?>">
+            echo $sk ?? ''; ?>">
             <input type="hidden" name="isAjax" value="1">
 
             <div class="mdl-tabs__panel is-active" id="account-panel">

@@ -50,7 +50,7 @@ use function SP\__;
                     echo __('Visits'); ?></div>
 
                 <?php
-                echo $accountView->countView . '(' . $accountView->countDecrypt . ')'; ?>
+                echo ($accountView->countView ?? '') . '(' . ($accountView->countDecrypt ?? '') . ')'; ?>
             </td>
         </tr>
         <tr>
@@ -61,12 +61,12 @@ use function SP\__;
                     echo __('Date Added'); ?></div>
 
                 <?php
-                echo $accountView->dateAdd ?>
+                echo $accountView->dateAdd ?? '' ?>
             </td>
         </tr>
 
         <?php
-        if ($_getvar('isModified') && $accountView->userEditName): ?>
+        if ($_getvar('isModified') && ($accountView->userEditName ?? null)): ?>
             <tr>
                 <td class="descField"><?php
                     echo __('Last Modification'); ?></td>
@@ -93,8 +93,8 @@ use function SP\__;
                     echo __('Owner'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userName, ENT_QUOTES) ?: htmlspecialchars(
-                    $accountView->login,
+                echo htmlspecialchars($accountView->userName ?? '', ENT_QUOTES) ?: htmlspecialchars(
+                    $accountView->login ?? '',
                     ENT_QUOTES
                 ); ?>
             </td>
@@ -107,7 +107,7 @@ use function SP\__;
                     echo __('Main Group'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userGroupName, ENT_QUOTES); ?>
+                echo htmlspecialchars($accountView->userGroupName ?? '', ENT_QUOTES); ?>
             </td>
         </tr>
 

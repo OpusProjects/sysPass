@@ -112,7 +112,7 @@ use function SP\__;
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
                        value="<?php
-                       echo htmlspecialchars($configData->getAuthBasicDomain(), ENT_QUOTES); ?>">
+                       echo htmlspecialchars($configData->getAuthBasicDomain() ?? '', ENT_QUOTES); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php
                     echo __('Domain name'); ?></label>
@@ -145,7 +145,7 @@ use function SP\__;
                     echo __('Select Group'); ?></option>
                 <?php
                 /** @var SelectItem $userGroup */
-                foreach ($_getvar('userGroups') as $userGroup): ?>
+                foreach ($_getvar('userGroups') ?? [] as $userGroup): ?>
                     <option
                             value="<?php
                             echo $userGroup->getId(); ?>" <?php
@@ -182,7 +182,7 @@ use function SP\__;
                     echo __('Select User'); ?></option>
                 <?php
                 /** @var SelectItem $userProfile */
-                foreach ($_getvar('userProfiles') as $userProfile): ?>
+                foreach ($_getvar('userProfiles') ?? [] as $userProfile): ?>
                     <option
                             value="<?php
                             echo $userProfile->getId(); ?>" <?php
