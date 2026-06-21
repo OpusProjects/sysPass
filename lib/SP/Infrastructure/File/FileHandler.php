@@ -72,13 +72,11 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function readToString(): string
     {
-        $this->autoDetectEOL();
-
-        try {
-            $data = $this->fread($this->getSize());
-        } catch (ValueError $e) {
-            throw FileException::error(sprintf(__('Unable to read from file (%s)'), $this->file, $e->getCode(), $e));
-        }
+        // Read by path rather than through this handle: it may have been opened
+        // write-only (e.g. the CryptPKI key files), in which case fread() on it
+        // fails with a "Bad file descriptor" notice. file_get_contents() also
+        // handles a zero-length file cleanly.
+        $data = @file_get_contents($this->file);
 
         if ($data === false) {
             throw FileException::error(sprintf(__('Unable to read from file (%s)'), $this->file));
