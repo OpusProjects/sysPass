@@ -48,11 +48,11 @@ use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Core\UI\ThemeContext;
 use SP\Domain\Account\Adapters\AccountPermission;
-use SP\Domain\Account\Ports\AccountAclService;
+use SP\Application\Account\Ports\AccountAclService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigFileService;
-use SP\Domain\Config\Ports\ConfigService;
+use SP\Application\Config\Ports\ConfigFileService;
+use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -65,14 +65,14 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
-use SP\Domain\Notification\Ports\MailService;
+use SP\Application\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileSystem;
-use SP\Modules\Web\Bootstrap;
+use SP\Infrastructure\Adapter\In\Web\Bootstrap;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\Generators\UserProfileDataGenerator;
 
@@ -107,7 +107,7 @@ abstract class IntegrationTestCase extends TestCase
             DomainDefinitions::getDefinitions(),
             CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'web')
         );
-        self::$moduleFile = FileSystem::buildPath(REAL_APP_ROOT, 'app', 'modules', 'web', 'module.php');
+        self::$moduleFile = FileSystem::buildPath(REAL_APP_ROOT, 'src', 'Infrastructure', 'Adapter', 'In', 'Web', 'module.php');
     }
 
     protected static function buildRequest(

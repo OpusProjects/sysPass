@@ -34,7 +34,7 @@ const APP_ROOT = __DIR__;
 const APP_MODULE = 'api';
 
 try {
-    $dic = FileSystem::require(FileSystem::buildPath(APP_ROOT, 'lib', 'Base.php'), ContainerInterface::class);
+    $dic = FileSystem::require(FileSystem::buildPath(APP_ROOT, 'src', 'Base.php'), ContainerInterface::class);
 
     Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
 } catch (Throwable $e) {

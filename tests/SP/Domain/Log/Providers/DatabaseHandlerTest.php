@@ -33,13 +33,13 @@ use RuntimeException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Config\Adapters\ConfigData;
-use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Security\Models\Eventlog;
-use SP\Domain\Security\Ports\EventlogService;
+use SP\Application\Security\Ports\EventlogService;
 use SP\Tests\Generators\ConfigDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

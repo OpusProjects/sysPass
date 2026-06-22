@@ -31,9 +31,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\Database\DatabaseAuth;
-use SP\Domain\User\Ports\UserPassService;
-use SP\Domain\User\Ports\UserService;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Application\User\Ports\UserPassService;
+use SP\Application\User\Ports\UserService;
+use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 

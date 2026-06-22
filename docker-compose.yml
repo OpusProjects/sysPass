@@ -23,7 +23,7 @@ services:
       # vendor tree and sysPass runtime state from being clobbered by the mount.
       - .:/var/www/html
       - vendor:/var/www/html/vendor
-      - config:/var/www/html/app/config
+      - config:/var/www/html/config
     depends_on:
       db:
         condition: service_healthy

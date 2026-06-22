@@ -56,14 +56,14 @@ $testDirectory = vfsStream::setup(
             'test.log' => ''
         ],
         'schemas' => [],
-        'app' => [
-            'locales' => [],
-            'modules' => [],
-            'resources' => [],
-            'config' => [],
+        'config' => [],
+        'resources' => [],
+        'var' => [
             'cache' => [
                 'secure_session' => []
-            ]
+            ],
+            'temp' => [],
+            'backup' => []
         ]
     ]
 );
@@ -71,20 +71,16 @@ $testDirectory = vfsStream::setup(
 $testResources = vfsStream::copyFromFileSystem(dirname(__DIR__) . '/res', $testDirectory->getChild('res'));
 vfsStream::copyFromFileSystem(REAL_APP_ROOT . '/schemas', $testDirectory->getChild('schemas'));
 $appResources = vfsStream::copyFromFileSystem(
-    REAL_APP_ROOT . '/app/resources',
-    $testDirectory->getChild('app/resources')
+    REAL_APP_ROOT . '/resources',
+    $testDirectory->getChild('resources')
 );
 vfsStream::copyFromFileSystem(
-    REAL_APP_ROOT . '/app/config',
-    $testDirectory->getChild('app/config')
-);
-vfsStream::copyFromFileSystem(
-    REAL_APP_ROOT . '/app/locales',
-    $testDirectory->getChild('app/locales')
+    REAL_APP_ROOT . '/config',
+    $testDirectory->getChild('config')
 );
 
 define('TEST_ROOT', $testDirectory->url());
-define('APP_PATH', $testDirectory->getChild('app')->url());
+define('APP_PATH', $testDirectory->url());
 define('RESOURCE_PATH', $testResources->url());
 define('TMP_PATH', $testDirectory->getChild('tmp')->url());
 
@@ -96,7 +92,7 @@ define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
 require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'BaseFunctions.php';
 
 logger('APP_PATH=' . APP_PATH);
 logger('TEST_ROOT=' . TEST_ROOT);

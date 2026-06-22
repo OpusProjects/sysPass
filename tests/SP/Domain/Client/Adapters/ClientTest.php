@@ -36,7 +36,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Tests\Generators\ClientGenerator;
 use SP\Tests\Generators\CustomFieldGenerator;
 use SP\Tests\UnitaryTestCase;

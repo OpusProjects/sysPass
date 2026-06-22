@@ -38,7 +38,7 @@ use PHPUnit\Framework\TestCase;
 #[Group('unitary')]
 class BaseBootstrapTest extends TestCase
 {
-    private const BASE = REAL_APP_ROOT . '/lib/Base.php';
+    private const BASE = REAL_APP_ROOT . '/src/Base.php';
 
     protected function setUp(): void
     {
