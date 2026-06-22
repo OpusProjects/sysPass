@@ -47,16 +47,20 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 
 | Area | Path |
 |---|---|
-| Domain layer (~460 classes: models, ports, services) | `lib/SP/Domain/` |
-| Infrastructure (DB, file, adapters) | `lib/SP/Infrastructure/` |
-| Core (bootstrap, DI definitions, ACL, crypt) | `lib/SP/Core/` (`Definitions/CoreDefinitions.php`, `DomainDefinitions.php`) |
-| Web / API / CLI modules (controllers, themes, views) | `app/modules/{web,api,cli}/` |
-| Theme (only one) | `app/modules/web/themes/material-blue/` |
+| Domain layer (models, driven ports, pure services) | `src/Domain/<Ctx>/` (`Models/`, `Dtos/`, `Ports/`, `Services/`) |
+| Application layer (use-cases, driving ports) | `src/Application/<Ctx>/` (`Ports/`, `Services/`) |
+| Infrastructure — driven adapters (repositories) | `src/Infrastructure/Adapter/Out/<Ctx>/Repositories/` |
+| Infrastructure — driving adapters (controllers) | `src/Infrastructure/Adapter/In/{Web,Api,Cli}/` |
+| Infrastructure — shared (DB, file, common repos) | `src/Infrastructure/{Database,File}/` |
+| Core (bootstrap, DI definitions, ACL, crypt) | `src/Core/` (`Definitions/CoreDefinitions.php`, `DomainDefinitions.php`) |
+| Theme (only one) | `src/Infrastructure/Adapter/In/Web/themes/material-blue/` |
 | Front-end JS/CSS (served via a PHP `file` route) | vendored under `public/vendor/`, `public/js/` |
-| Runtime-writable | `app/{config,cache,temp,backup}` |
+| Runtime config | `config/` (runtime; gitignored `config.xml` holds DB creds + crypto keys) |
+| Runtime-writable | `var/{cache,temp,backup}` |
+| Resources (locales, templates) | `resources/` |
 | DB schema | `schemas/dbstructure.sql` |
-| Tests (PHPUnit 11) | `tests/` (`tests/phpunit.xml`, bootstrap `tests/SP/bootstrap.php`) |
-| Entry points | `index.php` (web), `api.php` (api), `cli.php` (cli) → require `lib/Base.php` |
+| Tests (PHPUnit 11) — mirrors src | `tests/SP/{Domain,Application,Infrastructure,Core}/` |
+| Entry points | `index.php` (web), `api.php` (api), `cli.php` (cli) → require `src/Base.php` |
 
 **UI unchanged from 3.2** — same `material-blue` theme; the front-end diff is plumbing
 (namespace/route updates), not a redesign (CSS essentially untouched).
@@ -102,7 +106,7 @@ Both pass: **1978 unit** + **93 integration**. Test-environment gotchas (the ima
 
 ## Web request flow & DI container
 
-`index.php` (or `api.php`/`cli.php`) → `lib/Base.php` builds the **php-di** container and runs
+`index.php` (or `api.php`/`cli.php`) → `src/Base.php` builds the **php-di** container and runs
 `Bootstrap::run($dic->get(BootstrapInterface), $dic->get(ModuleInterface))`. Per request:
 `Bootstrap::handleRequest()` → `Router::dispatch()` (Symfony Routing catch-all) →
 `manageWebRequest()` resolves the controller from the **`r` query param** and invokes the action.
@@ -110,9 +114,9 @@ The rewrite's web entry was **never run by upstream CI** (only the mocked unit/i
 so these runtime contracts are easy to break:
 
 - **Routing:** `?r=<controller>/<action>/<p1>/<p2>` → `<Controller>Controller::<action>Action(...)`;
-  empty action → `index` (`lib/SP/Core/Bootstrap/RouteContext.php`). Leaf code reads ids from these
+  empty action → `index` (`src/Core/Bootstrap/RouteContext.php`). Leaf code reads ids from these
   route params, not the path.
-- **DI definition order** (`lib/Base.php`): `DomainDefinitions` → `CoreDefinitions` → module
+- **DI definition order** (`src/Base.php`): `DomainDefinitions` → `CoreDefinitions` → module
   `module.php`, and **php-di gives later sources precedence** — the specific entry overrides the
   `SP\Domain\*\Ports\*Service` wildcard auto-wiring; the module overrides Core. Keep this order.
 - **Compilation:** when `!DEBUG` the container is **compiled and lazy proxies are written**
@@ -125,7 +129,7 @@ so these runtime contracts are easy to break:
   not `getenv()`**; `SP\getFromEnv()` reads `$_ENV`/`$_SERVER` first. `DEBUG` defaults false.
 - `index.php` uses `SP\` classes before the autoloader loads → the image sets
   `auto_prepend_file = vendor/autoload.php` (so the entrypoint's first `composer install` must run
-  with that prepend disabled). `lib/Base.php` requires a `.env` to exist (entrypoint writes one).
+  with that prepend disabled). `src/Base.php` requires a `.env` to exist (entrypoint writes one).
 
 ## Controllers (hexagonal dispatch contract)
 
@@ -177,7 +181,7 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   `USE <db>` after creating/confirming it.
 - Password fields are PKI-encrypted client-side (`analyzeEncrypted` decrypts; **falls back to the raw
   value** if decryption fails — so plaintext works for scripted installs).
-- **Self-provisioning first run** (no `app/config/`): `config.xml` is opened `c+` (create,
+- **Self-provisioning first run** (no `config/`): `config.xml` is opened `c+` (create,
   no-truncate) and seeded by `generateNewConfig()`; `CryptPKI` generates the RSA keypair on first use.
   These log caught/handled exceptions — expected, not fatal.
 - `FileHandler extends SplFileObject` → **opens its file in the constructor** (eagerly); a missing
@@ -208,4 +212,4 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 ## Conventions
 
 - One logical change per PR; clear title (`old → new` + why) and body.
-- `app/config/config.xml` holds DB creds + crypto keys — never commit it.
+- `config/config.xml` holds DB creds + crypto keys — never commit it.

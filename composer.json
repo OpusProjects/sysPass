@@ -14,10 +14,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "SP\\": "lib/SP/",
-      "SP\\Modules\\Web\\": "app/modules/web/",
-      "SP\\Modules\\Api\\": "app/modules/api/",
-      "SP\\Modules\\Cli\\": "app/modules/cli/",
+      "SP\\": "src/",
       "SP\\Tests\\": "tests/SP/"
     }
   },
@@ -75,8 +72,8 @@
     "symfony/dom-crawler": "^8.1"
   },
   "scripts": {
-    "phpcs": "phpcs --standard=PSR2 lib",
-    "phpstan-app": "vendor/bin/phpstan analyse --level 6 lib",
+    "phpcs": "phpcs --standard=PSR2 src",
+    "phpstan-app": "vendor/bin/phpstan analyse --level 6 src",
     "phpstan-test": "vendor/bin/phpstan analyse --level 6 tests"
   },
   "suggest": {

@@ -35,8 +35,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\User\Ports\UserGroupService;
-use SP\Domain\User\Ports\UserProfileService;
+use SP\Application\User\Ports\UserGroupService;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Tests\UnitaryTestCase;
 
 /**

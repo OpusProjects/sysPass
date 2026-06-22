@@ -34,7 +34,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
-use SP\Domain\CustomField\Ports\CustomFieldDataService;
+use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Mvc\View\Components\SelectItemAdapter;
 use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\CustomFieldGenerator;

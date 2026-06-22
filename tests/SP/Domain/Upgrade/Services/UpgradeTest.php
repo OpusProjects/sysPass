@@ -34,7 +34,7 @@ use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;

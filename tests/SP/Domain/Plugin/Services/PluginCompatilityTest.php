@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginCompatility;
-use SP\Infrastructure\Common\Repositories\NoSuchItemException;
+use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Tests\UnitaryTestCase;
 
 /**

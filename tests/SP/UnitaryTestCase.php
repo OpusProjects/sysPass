@@ -56,7 +56,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Context\ContextException;
 use SP\Core\Context\Stateless;
-use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -99,7 +99,7 @@ abstract class UnitaryTestCase extends TestCase
         setlocale(LC_MESSAGES, $lang);
         setlocale(LC_ALL, $lang);
 
-        bindtextdomain('messages', APP_PATH . DIRECTORY_SEPARATOR . 'locales');
+        bindtextdomain('messages', APP_PATH . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'locales');
         textdomain('messages');
         bind_textdomain_codeset('messages', 'UTF-8');
     }

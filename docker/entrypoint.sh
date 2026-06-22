@@ -23,10 +23,10 @@ if [ ! -f .env ]; then
 fi
 
 # sysPass needs these writable at runtime (config.xml, caches, proxies, backups).
-for dir in app/config app/cache app/temp app/backup; do
+for dir in config var/cache var/temp var/backup; do
     mkdir -p "$dir"
     chown -R www-data:www-data "$dir"
 done
-chmod 750 app/config
+chmod 750 config
 
 exec "$@"

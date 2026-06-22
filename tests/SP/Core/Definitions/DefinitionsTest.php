@@ -36,7 +36,7 @@ use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Ports\ConfigFileService;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\ArchiveHandler;
 
