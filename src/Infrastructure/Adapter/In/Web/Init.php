@@ -242,8 +242,6 @@ final class Init extends HttpModuleBase
                 $this->initUserSession();
             }
 
-            //TODO:Load plugins
-
             if ($this->context->isLoggedIn()
                 && $this->context->getAppStatus() === ContextBase::APP_STATUS_RELOADED
             ) {
