@@ -34,7 +34,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__;
 use function SP\__u;
@@ -46,7 +45,6 @@ use function SP\__u;
  */
 final class ViewController extends ClientViewBase
 {
-    use JsonTrait;
 
     /**
      * View action
@@ -59,8 +57,7 @@ final class ViewController extends ClientViewBase
      * @throws QueryException
      * @throws SPException
      * @throws NoSuchItemException
-     */
-    #[Action(ResponseType::JSON)]
+     */    #[Action(ResponseType::JSON)]
     public function viewAction(int $id): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_VIEW)) {

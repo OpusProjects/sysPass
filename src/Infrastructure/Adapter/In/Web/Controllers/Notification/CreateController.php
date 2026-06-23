@@ -24,32 +24,30 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class CreateController
  */
 final class CreateController extends NotificationViewBase
 {
-    use JsonTrait;
 
     /**
      * @return bool
      * @throws JsonException
      */
-    public function createAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function createAction(): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -61,13 +59,13 @@ final class CreateController extends NotificationViewBase
 
             $this->eventDispatcher->notify('show.notification.create', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

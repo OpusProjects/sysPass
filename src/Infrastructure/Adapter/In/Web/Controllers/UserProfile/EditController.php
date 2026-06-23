@@ -24,20 +24,19 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserProfile;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class EditController
  */
 final class EditController extends UserProfileViewBase
 {
-    use JsonTrait;
 
     /**
      * Edit action
@@ -47,13 +46,12 @@ final class EditController extends UserProfileViewBase
      * @return bool
      * @throws JsonException
      */
-    public function editAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function editAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -65,13 +63,13 @@ final class EditController extends UserProfileViewBase
 
             $this->eventDispatcher->notify('show.userProfile.edit', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

@@ -34,7 +34,6 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
@@ -45,7 +44,6 @@ use function SP\__u;
 final class DeleteController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Delete action
@@ -57,8 +55,7 @@ final class DeleteController extends ClientSaveBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
-     */
-    #[Action(ResponseType::JSON)]
+     */    #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_DELETE)) {

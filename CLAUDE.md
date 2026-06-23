@@ -91,7 +91,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both pass: **1978 unit** + **93 integration**. Test-environment gotchas (the image provides these):
+Both pass: **1996 unit** + **93 integration**. Test-environment gotchas (the image provides these):
 
 - **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0`; without
   it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.
@@ -137,9 +137,9 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 `#[Action(ResponseType::JSON|PLAIN_TEXT|...)]` — `Bootstrap::getMethod()` rejects anything else with
 *"Incorrect method return type"*. Build with `ActionResponse::ok()/error()/warning()`.
 
-- **Legacy controllers aren't all migrated.** The old pattern (`fooAction(): bool` returning
-  `$this->returnJsonResponse(...)` from `JsonTrait`) **fails** the contract. When you touch one,
-  migrate it: add `#[Action]`, return `ActionResponse`, drop `JsonTrait`.
+- **All Web controllers are migrated.** The legacy pattern (`fooAction(): bool` returning
+  `$this->returnJsonResponse(...)` from `JsonTrait`) has been fully replaced. API controllers
+  (`src/Infrastructure/Adapter/In/Api/`) still need migration.
 - `SP\` global functions (`__`, `__u`, `logger`, `processException`, `getFromEnv`) are in namespace
   `SP` — **`use function SP\...`** them (PHP's bare-call fallback only reaches the global namespace).
 - `ControllerBase` exposes `$this->view` (`TemplateInterface`); render a view and wrap the HTML in

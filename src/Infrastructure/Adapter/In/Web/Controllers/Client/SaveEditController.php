@@ -36,7 +36,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
@@ -47,7 +46,6 @@ use function SP\__u;
 final class SaveEditController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Saves edit action
@@ -60,8 +58,7 @@ final class SaveEditController extends ClientSaveBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     */
-    #[Action(ResponseType::JSON)]
+     */    #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_EDIT)) {

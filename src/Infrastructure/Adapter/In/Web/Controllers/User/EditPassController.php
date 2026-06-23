@@ -24,21 +24,20 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\User\Models\User;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class EditPassController
  */
 final class EditPassController extends UserViewBase
 {
-    use JsonTrait;
 
     /**
      * Edit user's pass action
@@ -48,14 +47,13 @@ final class EditPassController extends UserViewBase
      * @return bool
      * @throws JsonException
      */
-    public function editPassAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function editPassAction(int $id): ActionResponse
     {
         try {
             // Check whether the user to modify is different from the session user
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -73,13 +71,13 @@ final class EditPassController extends UserViewBase
 
             $this->eventDispatcher->notify('show.user.editPass', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

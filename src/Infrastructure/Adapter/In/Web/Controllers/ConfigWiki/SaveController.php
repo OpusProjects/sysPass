@@ -27,10 +27,12 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigWiki;
 use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
 
@@ -47,7 +49,8 @@ final class SaveController extends SimpleControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         $eventMessage = EventMessage::build();
         $configData = $this->config->getConfigData();
@@ -58,7 +61,7 @@ final class SaveController extends SimpleControllerBase
         $wikiFilter = $this->request->analyzeString('wiki_filter');
 
         if ($wikiEnabled && (!$wikiSearchUrl || !$wikiPageUrl || !$wikiFilter)) {
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Missing Wiki parameters'));
+            return ActionResponse::error(__u('Missing Wiki parameters'));
         }
 
         if ($wikiEnabled) {
@@ -75,7 +78,7 @@ final class SaveController extends SimpleControllerBase
 
             $eventMessage->addDescription(__u('Wiki disabled'));
         } else {
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('No changes'));
+            return ActionResponse::ok(__u('No changes'));
         }
 
         return $this->saveConfig(
@@ -100,7 +103,7 @@ final class SaveController extends SimpleControllerBase
         } catch (UnauthorizedPageException $e) {
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            $this->returnJsonResponseException($e);
+            ActionResponse::error($e->getMessage());
         }
     }
 }

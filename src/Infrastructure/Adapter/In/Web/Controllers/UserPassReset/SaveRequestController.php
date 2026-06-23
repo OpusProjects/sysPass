@@ -24,28 +24,28 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserPassReset;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Application\User\Services\UserPassRecover;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveRequestController
  */
 final class SaveRequestController extends UserPassResetSaveBase
 {
-    use JsonTrait;
 
     /**
      * @return bool
      * @throws JsonException
      */
-    public function saveRequestAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveRequestAction(): ActionResponse
     {
         try {
             $this->checkTracking();
@@ -85,9 +85,7 @@ final class SaveRequestController extends UserPassResetSaveBase
                 UserPassRecover::getMailMessage($hash)
             );
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Request sent'),
+            return ActionResponse::ok(__u('Request sent'),
                 [__u('You will receive an email to complete the request shortly.')]
             );
         } catch (Exception $e) {
@@ -97,7 +95,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

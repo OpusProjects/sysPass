@@ -24,17 +24,18 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserSettingsGeneral;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Application\User\Ports\UserService;
 use SP\Application\User\Services\User;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 /**
@@ -44,7 +45,6 @@ use SP\Mvc\Controller\SimpleControllerHelper;
  */
 final class SaveController extends SimpleControllerBase
 {
-    use JsonTrait;
 
     private User $userService;
 
@@ -64,7 +64,8 @@ final class SaveController extends SimpleControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function saveAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveAction(): ActionResponse
     {
         try {
             $userData = $this->session->getUserData();
@@ -76,13 +77,13 @@ final class SaveController extends SimpleControllerBase
             // Save preferences in current session
             $userData->setPreferences($userPreferencesData);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Preferences updated'));
+            return ActionResponse::ok(__u('Preferences updated'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 

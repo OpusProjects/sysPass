@@ -24,22 +24,21 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Track;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class ClearController
  */
 final class ClearController extends TrackBase
 {
-    use JsonTrait;
 
     /**
      * Clears tracks
@@ -47,7 +46,8 @@ final class ClearController extends TrackBase
      * @return bool
      * @throws JsonException
      */
-    public function clearAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function clearAction(): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_CLEAR)) {
@@ -58,13 +58,13 @@ final class ClearController extends TrackBase
 
             $this->eventDispatcher->notify('clear.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Tracks cleared out'));
+            return ActionResponse::ok(__u('Tracks cleared out'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

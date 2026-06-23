@@ -24,18 +24,18 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Eventlog;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Application\Security\Ports\EventlogService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -43,7 +43,6 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class ClearController extends ControllerBase
 {
-    use JsonTrait;
 
     private EventlogService $eventlogService;
 
@@ -69,7 +68,8 @@ final class ClearController extends ControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function clearAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function clearAction(): ActionResponse
     {
         try {
             $this->eventlogService->clear();
@@ -79,11 +79,11 @@ final class ClearController extends ControllerBase
                 new Event($this, EventMessage::build()->addDescription(__u('Event log cleared')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Event log cleared'));
+            return ActionResponse::ok(__u('Event log cleared'));
         } catch (Exception $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

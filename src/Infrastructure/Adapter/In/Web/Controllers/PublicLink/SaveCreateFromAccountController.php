@@ -24,16 +24,17 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Account\PublickLinkType;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 use function SP\__u;
 use function SP\processException;
@@ -43,7 +44,6 @@ use function SP\processException;
  */
 final class SaveCreateFromAccountController extends PublicLinkSaveBase
 {
-    use JsonTrait;
 
     /**
      * Saves create action
@@ -55,13 +55,12 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
      * @throws JsonException
      * @throws SPException
      */
-    public function saveCreateFromAccountAction(int $accountId, int $notify): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateFromAccountAction(int $accountId, int $notify): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -78,13 +77,13 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $this->eventDispatcher->notify('create.publicLink.account', new Event($this));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link created'));
+            return ActionResponse::ok(__u('Link created'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

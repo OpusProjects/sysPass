@@ -44,7 +44,6 @@ use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\Crypt\Services\MasterPass;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__u;
@@ -54,7 +53,6 @@ use function SP\__u;
  */
 final class SaveController extends SimpleControllerBase
 {
-    use JsonTrait;
 
     public function __construct(
         Application                        $application,
@@ -72,8 +70,7 @@ final class SaveController extends SimpleControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
-     */
-    #[Action(ResponseType::JSON)]
+     */    #[Action(ResponseType::JSON)]
     public function saveAction(): ActionResponse
     {
         $currentMasterPass = $this->request->analyzeEncrypted('current_masterpass');

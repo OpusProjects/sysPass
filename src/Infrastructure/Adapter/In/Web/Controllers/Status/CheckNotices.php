@@ -24,12 +24,12 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Status;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
-use JsonException;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use Throwable;
 
 /**
@@ -37,7 +37,6 @@ use Throwable;
  */
 final class CheckNotices extends StatusBase
 {
-    use JsonTrait;
 
     /**
      * checkNoticesAction
@@ -45,7 +44,8 @@ final class CheckNotices extends StatusBase
      * @return bool
      * @throws JsonException
      */
-    public function checkNoticesAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function checkNoticesAction(): ActionResponse
     {
         try {
             $this->extensionChecker->checkCurl(true);
@@ -68,19 +68,19 @@ final class CheckNotices extends StatusBase
                         ];
                     }
 
-                    return $this->returnJsonResponseData($notices);
+                    return ActionResponse::ok('', $notices);
                 }
 
                 logger($requestData->message);
             }
 
-            return $this->returnJsonResponse(JsonMessage::JSON_ERROR, __u('Notifications not available'));
+            return ActionResponse::error(__u('Notifications not available'));
         } catch (CheckException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         } catch (Throwable $e) {
             processException($e);
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

@@ -24,14 +24,15 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Track;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class UnlockController
@@ -40,7 +41,6 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
  */
 final class UnlockController extends TrackBase
 {
-    use JsonTrait;
 
     /**
      * Unlocks a track
@@ -50,7 +50,8 @@ final class UnlockController extends TrackBase
      * @return bool
      * @throws JsonException
      */
-    public function unlockAction(int $id): ?bool
+    #[Action(ResponseType::JSON)]
+    public function unlockAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TRACK_UNLOCK)) {
@@ -61,13 +62,13 @@ final class UnlockController extends TrackBase
 
             $this->eventDispatcher->notify('unlock.track', new Event($this));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Track unlocked'));
+            return ActionResponse::ok(__u('Track unlocked'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

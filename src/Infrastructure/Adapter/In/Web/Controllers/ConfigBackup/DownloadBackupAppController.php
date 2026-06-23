@@ -42,7 +42,6 @@ use SP\Domain\Export\Dtos\BackupFile;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
@@ -53,7 +52,6 @@ use function SP\__u;
  */
 final class DownloadBackupAppController extends SimpleControllerBase
 {
-    use JsonTrait;
 
     public function __construct(
         Application                   $application,

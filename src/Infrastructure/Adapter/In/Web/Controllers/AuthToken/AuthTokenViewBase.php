@@ -38,7 +38,6 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 use SP\Mvc\View\Components\SelectItemAdapter;
@@ -49,7 +48,6 @@ use SP\Mvc\View\Components\SelectItemAdapter;
 abstract class AuthTokenViewBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * @throws AuthException

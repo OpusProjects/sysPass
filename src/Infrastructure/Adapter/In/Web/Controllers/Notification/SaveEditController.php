@@ -24,21 +24,20 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveEditController
  */
 final class SaveEditController extends NotificationSaveBase
 {
-    use JsonTrait;
 
     /**
      * Saves edit action
@@ -48,13 +47,12 @@ final class SaveEditController extends NotificationSaveBase
      * @return bool
      * @throws JsonException
      */
-    public function saveEditAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_EDIT)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -67,13 +65,13 @@ final class SaveEditController extends NotificationSaveBase
                 new Event($this, EventMessage::build()->addDescription(__u('Notification updated')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Notification updated'));
+            return ActionResponse::ok(__u('Notification updated'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

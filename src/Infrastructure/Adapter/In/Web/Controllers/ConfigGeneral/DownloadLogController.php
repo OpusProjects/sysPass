@@ -41,7 +41,6 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\SimpleControllerHelper;
 
 use function SP\__;
@@ -52,7 +51,6 @@ use function SP\__u;
  */
 final class DownloadLogController extends SimpleControllerBase
 {
-    use JsonTrait;
 
     public function __construct(
         Application                   $application,

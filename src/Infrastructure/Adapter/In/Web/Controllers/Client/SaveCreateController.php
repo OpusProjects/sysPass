@@ -35,7 +35,6 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
 use function SP\__u;
@@ -46,7 +45,6 @@ use function SP\__u;
 final class SaveCreateController extends ClientSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * @return ActionResponse
@@ -54,8 +52,7 @@ final class SaveCreateController extends ClientSaveBase
      * @throws ServiceException
      * @throws SPException
      * @throws DuplicatedItemException
-     */
-    #[Action(ResponseType::JSON)]
+     */    #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {

@@ -26,10 +26,12 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Plugin;
 
 
 use JsonException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
 
 /**
  * Class SearchController
@@ -44,18 +46,17 @@ final class SearchController extends PluginSearchBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
+            return ActionResponse::error(__u('You don\'t have permission to do this operation')
             );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('data', $this->getSearchGrid());
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }
