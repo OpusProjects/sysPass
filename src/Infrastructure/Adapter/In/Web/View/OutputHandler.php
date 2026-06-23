@@ -24,29 +24,19 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Mvc\View;
-
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
-use SP\Mvc\View\OutputHandler;
+namespace SP\Infrastructure\Adapter\In\Web\View;
 
 /**
- * Class OutputHandlerTest
+ * Class OutputHandler
  */
-#[Group('unitary')]
-class OutputHandlerTest extends TestCase
+final class OutputHandler implements OutputHandlerInterface
 {
-
-    public function testBufferedContent()
+    public function bufferedContent(callable $callback): string
     {
-        $callback = function () {
-            echo 'Hello world';
-            echo 'test_output';
-        };
+        ob_start();
 
-        $outputHandler = new OutputHandler();
-        $out = $outputHandler->bufferedContent($callback);
+        $callback();
 
-        $this->assertEquals('Hello worldtest_output', $out);
+        return ob_get_clean();
     }
 }

@@ -43,8 +43,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class AccountHistoryHelper

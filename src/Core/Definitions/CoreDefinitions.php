@@ -134,12 +134,12 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
-use SP\Mvc\View\OutputHandler;
-use SP\Mvc\View\OutputHandlerInterface;
-use SP\Mvc\View\Template;
-use SP\Mvc\View\TemplateInterface;
-use SP\Mvc\View\TemplateResolver;
-use SP\Mvc\View\TemplateResolverInterface;
+use SP\Infrastructure\Adapter\In\Web\View\OutputHandler;
+use SP\Infrastructure\Adapter\In\Web\View\OutputHandlerInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Template;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateResolver;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateResolverInterface;
 
 use function DI\autowire;
 use function DI\create;

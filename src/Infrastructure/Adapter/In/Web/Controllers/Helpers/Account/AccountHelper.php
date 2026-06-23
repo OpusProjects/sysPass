@@ -61,8 +61,8 @@ use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class AccountHelper

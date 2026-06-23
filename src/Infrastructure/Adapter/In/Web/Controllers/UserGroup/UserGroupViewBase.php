@@ -40,7 +40,7 @@ use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 /**
  * Class UserGroupViewBase

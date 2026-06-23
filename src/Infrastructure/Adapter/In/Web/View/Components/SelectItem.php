@@ -23,7 +23,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\View\Components;
+namespace SP\Infrastructure\Adapter\In\Web\View\Components;
 
 use JsonSerializable;
 use SP\Domain\Common\Models\ItemWithIdAndNameModel;

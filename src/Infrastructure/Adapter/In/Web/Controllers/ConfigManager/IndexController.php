@@ -63,8 +63,8 @@ use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsHelper;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\Components\DataTab;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 use SP\Util\Util;
 use RuntimeException;
 
