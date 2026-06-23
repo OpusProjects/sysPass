@@ -24,16 +24,16 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Plugin;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -41,7 +41,6 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class EnableController extends ControllerBase
 {
-    use JsonTrait;
 
     private PluginManagerService $pluginService;
 
@@ -65,7 +64,8 @@ final class EnableController extends ControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function enableAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function enableAction(int $id): ActionResponse
     {
         try {
             $this->pluginService->toggleEnabled($id, true);
@@ -75,13 +75,13 @@ final class EnableController extends ControllerBase
                 new Event($this, EventMessage::build()->addDescription(__u('Plugin enabled')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin enabled'));
+            return ActionResponse::ok(__u('Plugin enabled'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

@@ -24,34 +24,32 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\CustomField;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveCreateController
  */
 final class SaveCreateController extends CustomFieldSaveBase
 {
-    use JsonTrait;
 
     /**
      * @return bool
      * @throws JsonException
      */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -71,18 +69,16 @@ final class SaveCreateController extends CustomFieldSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_SUCCESS,
-                __u('Field added')
+            return ActionResponse::ok(__u('Field added')
             );
         } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

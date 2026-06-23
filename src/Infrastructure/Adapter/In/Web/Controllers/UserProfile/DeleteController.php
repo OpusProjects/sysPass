@@ -24,14 +24,14 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserProfile;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 
 /**
@@ -40,7 +40,6 @@ use SP\Mvc\Controller\ItemTrait;
 final class DeleteController extends UserProfileSaveBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     /**
      * Delete action
@@ -50,13 +49,12 @@ final class DeleteController extends UserProfileSaveBase
      * @return bool
      * @throws JsonException
      */
-    public function deleteAction(?int $id = null): bool
+    #[Action(ResponseType::JSON)]
+    public function deleteAction(?int $id = null): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_DELETE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -70,7 +68,7 @@ final class DeleteController extends UserProfileSaveBase
 
                 $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 
-                return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Profiles deleted'));
+                return ActionResponse::ok(__u('Profiles deleted'));
             }
 
             $this->userProfileService->delete($id);
@@ -88,13 +86,13 @@ final class DeleteController extends UserProfileSaveBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Profile deleted'));
+            return ActionResponse::ok(__u('Profile deleted'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

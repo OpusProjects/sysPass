@@ -24,8 +24,11 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Login;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -33,7 +36,6 @@ use SP\Application\Auth\Ports\LoginService;
 use SP\Application\Auth\Services\Login;
 use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -43,7 +45,6 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class LoginController extends ControllerBase
 {
-    use JsonTrait;
 
     private Login $loginService;
 
@@ -63,7 +64,8 @@ final class LoginController extends ControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function loginAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function loginAction(): ActionResponse
     {
         try {
             $from = $this->getSignedUriFromRequest($this->request, $this->configData);
@@ -88,7 +90,7 @@ final class LoginController extends ControllerBase
                 new Event($this, EventMessage::build()->addExtra('redirect', $redirector))
             );
 
-            return $this->returnJsonResponseData([
+            return ActionResponse::ok('', [
                                                      'url' => $this->session->getTrasientKey(
                                                          'redirect'
                                                      ) ?: $loginResponse->getRedirect(),
@@ -98,7 +100,7 @@ final class LoginController extends ControllerBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponse($e->getCode(), $e->getMessage());
+            return ActionResponse::error($e->getMessage());
         }
     }
 

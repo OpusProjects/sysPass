@@ -24,12 +24,13 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserGroup;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class ViewController
@@ -38,7 +39,6 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
  */
 final class ViewController extends UserGroupViewBase
 {
-    use JsonTrait;
 
     /**
      * View action
@@ -48,13 +48,12 @@ final class ViewController extends UserGroupViewBase
      * @return bool
      * @throws JsonException
      */
-    public function viewAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function viewAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_VIEW)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -65,13 +64,13 @@ final class ViewController extends UserGroupViewBase
 
             $this->eventDispatcher->notify('show.userGroup', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

@@ -24,17 +24,17 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Plugin;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
 /**
@@ -42,7 +42,6 @@ use SP\Mvc\Controller\WebControllerHelper;
  */
 final class ResetController extends ControllerBase
 {
-    use JsonTrait;
 
     private PluginManagerService $pluginService;
     private PluginDataService    $pluginDataService;
@@ -69,7 +68,8 @@ final class ResetController extends ControllerBase
      * @return bool
      * @throws JsonException
      */
-    public function resetAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function resetAction(int $id): ActionResponse
     {
         try {
             $this->pluginDataService->delete($this->pluginService->getById($id)->getName());
@@ -79,13 +79,13 @@ final class ResetController extends ControllerBase
                 new Event($this, EventMessage::build()->addDescription(__u('Plugin reset')))
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Plugin reset'));
+            return ActionResponse::ok(__u('Plugin reset'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

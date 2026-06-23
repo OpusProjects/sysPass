@@ -24,22 +24,21 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveEditPassController
  */
 final class SaveEditPassController extends UserSaveBase
 {
-    use JsonTrait;
 
     /**
      * Saves edit action
@@ -49,13 +48,12 @@ final class SaveEditPassController extends UserSaveBase
      * @return bool
      * @throws JsonException
      */
-    public function saveEditPassAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function saveEditPassAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -75,15 +73,15 @@ final class SaveEditPassController extends UserSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Password updated'));
+            return ActionResponse::ok(__u('Password updated'));
         } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 

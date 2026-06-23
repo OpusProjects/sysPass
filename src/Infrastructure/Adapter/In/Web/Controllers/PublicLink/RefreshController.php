@@ -24,20 +24,19 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class RefreshController
  */
 final class RefreshController extends PublicLinkSaveBase
 {
-    use JsonTrait;
 
     /**
      * Create action
@@ -47,13 +46,12 @@ final class RefreshController extends PublicLinkSaveBase
      * @return bool
      * @throws JsonException
      */
-    public function refreshAction(int $id): bool
+    #[Action(ResponseType::JSON)]
+    public function refreshAction(int $id): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_REFRESH)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -61,13 +59,13 @@ final class RefreshController extends PublicLinkSaveBase
 
             $this->eventDispatcher->notify('edit.publicLink.refresh', new Event($this));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link updated'));
+            return ActionResponse::ok(__u('Link updated'));
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

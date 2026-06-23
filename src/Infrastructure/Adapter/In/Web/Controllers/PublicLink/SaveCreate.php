@@ -24,33 +24,31 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveCreate
  */
 final class SaveCreate extends PublicLinkSaveBase
 {
-    use JsonTrait;
 
     /**
      * @return bool
      * @throws JsonException
      */
-    public function saveCreateAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveCreateAction(): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -60,9 +58,9 @@ final class SaveCreate extends PublicLinkSaveBase
 
             $this->eventDispatcher->notify('create.publicLink', new Event($this));
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Link created'));
+            return ActionResponse::ok(__u('Link created'));
         } catch (ValidationException $e) {
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         } catch (Exception $e) {
             processException($e);
 
@@ -71,7 +69,7 @@ final class SaveCreate extends PublicLinkSaveBase
                 new Event($e)
             );
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

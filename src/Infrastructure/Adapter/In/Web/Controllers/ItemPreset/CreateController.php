@@ -24,21 +24,20 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class CreateController
  */
 final class CreateController extends ItemPresetViewBase
 {
-    use JsonTrait;
 
     /**
      * @param  mixed  ...$args
@@ -46,13 +45,12 @@ final class CreateController extends ItemPresetViewBase
      * @return bool
      * @throws JsonException
      */
-    public function createAction(...$args): bool
+    #[Action(ResponseType::JSON)]
+    public function createAction(...$args): ActionResponse
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
-                return $this->returnJsonResponse(
-                    JsonMessage::JSON_ERROR,
-                    __u('You don\'t have permission to do this operation')
+                return ActionResponse::error(__u('You don\'t have permission to do this operation')
                 );
             }
 
@@ -70,13 +68,13 @@ final class CreateController extends ItemPresetViewBase
 
             $this->eventDispatcher->notify('show.itemPreset.create', new Event($this));
 
-            return $this->returnJsonResponseData(['html' => $this->render()]);
+            return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }

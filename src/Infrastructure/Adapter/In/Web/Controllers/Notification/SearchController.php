@@ -24,18 +24,18 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
-use JsonException;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\NotificationGrid;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -45,7 +45,6 @@ use SP\Mvc\Controller\WebControllerHelper;
 final class SearchController extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     private NotificationService $notificationService;
     private NotificationGrid    $notificationGrid;
@@ -70,19 +69,18 @@ final class SearchController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function searchAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_SEARCH)) {
-            return $this->returnJsonResponse(
-                JsonMessage::JSON_ERROR,
-                __u('You don\'t have permission to do this operation')
+            return ActionResponse::error(__u('You don\'t have permission to do this operation')
             );
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');
         $this->view->assign('data', $this->getSearchGrid());
 
-        return $this->returnJsonResponseData(['html' => $this->render()]);
+        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 
     /**

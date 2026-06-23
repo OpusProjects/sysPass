@@ -32,7 +32,6 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\PluginGrid;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 use SP\Mvc\Controller\ItemTrait;
 use SP\Mvc\Controller\WebControllerHelper;
 
@@ -42,7 +41,6 @@ use SP\Mvc\Controller\WebControllerHelper;
 abstract class PluginSearchBase extends ControllerBase
 {
     use ItemTrait;
-    use JsonTrait;
 
     private PluginManagerService $pluginService;
     private PluginGrid           $pluginGrid;

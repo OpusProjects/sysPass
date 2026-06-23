@@ -24,27 +24,27 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserPassReset;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\JsonTrait;
 
 /**
  * Class SaveResetController
  */
 final class SaveResetController extends UserPassResetSaveBase
 {
-    use JsonTrait;
 
     /**
      * @return bool
      * @throws JsonException
      */
-    public function saveResetAction(): bool
+    #[Action(ResponseType::JSON)]
+    public function saveResetAction(): ActionResponse
     {
         try {
             $this->checkTracking();
@@ -82,7 +82,7 @@ final class SaveResetController extends UserPassResetSaveBase
                 )
             );
 
-            return $this->returnJsonResponse(JsonMessage::JSON_SUCCESS, __u('Password updated'));
+            return ActionResponse::ok(__u('Password updated'));
         } catch (Exception $e) {
             processException($e);
 
@@ -90,7 +90,7 @@ final class SaveResetController extends UserPassResetSaveBase
 
             $this->eventDispatcher->notify('exception', new Event($e));
 
-            return $this->returnJsonResponseException($e);
+            return ActionResponse::error($e->getMessage());
         }
     }
 }
