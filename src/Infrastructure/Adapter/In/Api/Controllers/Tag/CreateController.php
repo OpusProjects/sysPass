@@ -48,7 +48,7 @@ final class CreateController extends TagBase
 
         $id = $this->tagService->create($tagData);
 
-        $tagData->setId($id);
+        $tagData = $tagData->mutate(['id' => $id]);
 
         $this->eventDispatcher->notify(new Event('create.tag', 
                 $this,
@@ -68,9 +68,8 @@ final class CreateController extends TagBase
      */
     private function buildTagData(): Tag
     {
-        $tagData = new Tag();
-        $tagData->setName($this->apiService->getParamString('name', true));
-
-        return $tagData;
+        return new Tag([
+            'name' => $this->apiService->getParamString('name', true),
+        ]);
     }
 }

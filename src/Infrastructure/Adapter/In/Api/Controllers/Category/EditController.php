@@ -63,11 +63,10 @@ final class EditController extends CategoryBase
      */
     private function buildCategoryData(): Category
     {
-        $categoryData = new Category();
-        $categoryData->setId($this->apiService->getParamInt('id', true));
-        $categoryData->setName($this->apiService->getParamString('name', true));
-        $categoryData->setDescription($this->apiService->getParamString('description'));
-
-        return $categoryData;
+        return new Category([
+            'id' => $this->apiService->getParamInt('id', true),
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+        ]);
     }
 }

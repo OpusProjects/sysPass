@@ -33,6 +33,8 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -41,8 +43,6 @@ final class DeleteController extends UserProfileSaveBase
 {
     use ItemTrait;
 
-use function SP\__u;
-use function SP\processException;
 
     /**
      * Delete action

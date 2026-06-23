@@ -159,11 +159,10 @@ class UserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 4
+                return count($params) === 3
                        && $params['id'] === $userGroup->getId()
                        && $params['name'] === $userGroup->getName()
                        && $params['description'] === $userGroup->getDescription()
-                       && $params['users'] === $userGroup->getUsers()
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
             }
@@ -225,8 +224,9 @@ class UserGroupTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userGroupId'] === 100;
+                    return count($params) === 2
+                           && $params['userGroupId1'] === 100
+                           && $params['userGroupId2'] === 100;
                 })
             );
 
@@ -353,8 +353,11 @@ class UserGroupTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userGroupId'] === 100;
+                    return count($params) === 4
+                           && $params['userGroupId1'] === 100
+                           && $params['userGroupId2'] === 100
+                           && $params['userGroupId3'] === 100
+                           && $params['userGroupId4'] === 100;
                 })
             );
 

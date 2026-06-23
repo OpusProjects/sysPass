@@ -160,7 +160,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                        'User.name',
                        'User.login'
                    ])
-            ->orderBy(['name ASC', 'clientName ASC'])
+            ->orderBy(['name ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

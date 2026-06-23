@@ -67,12 +67,11 @@ final class EditController extends UserGroupBase
      */
     private function buildUserGroupData(): UserGroup
     {
-        $userGroupData = new UserGroup();
-        $userGroupData->setId($this->apiService->getParamInt('id', true));
-        $userGroupData->setName($this->apiService->getParamString('name', true));
-        $userGroupData->setDescription($this->apiService->getParamString('description'));
-        $userGroupData->setUsers($this->apiService->getParamArray('usersId'));
-
-        return $userGroupData;
+        return new UserGroup([
+            'id' => $this->apiService->getParamInt('id', true),
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+            'users' => $this->apiService->getParamArray('usersId'),
+        ]);
     }
 }

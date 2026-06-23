@@ -32,6 +32,9 @@ use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
 
 /**
  * Class ViewController
@@ -42,9 +45,6 @@ final class ViewController extends ItemPresetViewBase
 {
     use ItemTrait;
 
-use function SP\__u;
-use function SP\processException;
-use function SP\__;
 
     /**
      * View action

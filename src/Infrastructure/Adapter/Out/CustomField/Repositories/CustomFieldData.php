@@ -223,7 +223,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
             )
             ->innerJoin('CustomFieldType as CF_Type', 'CF_Type.id = CF_Definition.typeId')
             ->where('CF_Definition.moduleId = :moduleId')
-            ->orderBy(['CF_Definition.required DESC', 'CF_Definition.text ASC'])
+            ->orderBy(['CF_Definition.required DESC', 'CF_Definition.name ASC'])
             ->bindValues([
                              'moduleId' => $moduleId,
                              'itemId' => $itemId

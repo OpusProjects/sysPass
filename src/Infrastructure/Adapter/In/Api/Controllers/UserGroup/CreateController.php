@@ -48,7 +48,7 @@ final class CreateController extends UserGroupBase
 
         $id = $this->userGroupService->create($userGroupData);
 
-        $userGroupData->setId($id);
+        $userGroupData = $userGroupData->mutate(['id' => $id]);
 
         $this->eventDispatcher->notify(new Event('create.userGroup', 
                 $this, EventMessage::build()
@@ -67,11 +67,10 @@ final class CreateController extends UserGroupBase
      */
     private function buildUserGroupData(): UserGroup
     {
-        $userGroupData = new UserGroup();
-        $userGroupData->setName($this->apiService->getParamString('name', true));
-        $userGroupData->setDescription($this->apiService->getParamString('description'));
-        $userGroupData->setUsers($this->apiService->getParamArray('usersId'));
-
-        return $userGroupData;
+        return new UserGroup([
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+            'users' => $this->apiService->getParamArray('usersId'),
+        ]);
     }
 }

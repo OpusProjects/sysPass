@@ -48,7 +48,7 @@ final class CreateController extends CategoryBase
 
         $id = $this->categoryService->create($categoryData);
 
-        $categoryData->setId($id);
+        $categoryData = $categoryData->mutate(['id' => $id]);
 
         $this->eventDispatcher->notify(new Event('create.category', 
                 $this,
@@ -68,10 +68,9 @@ final class CreateController extends CategoryBase
      */
     private function buildCategoryData(): Category
     {
-        $categoryData = new Category();
-        $categoryData->setName($this->apiService->getParamString('name', true));
-        $categoryData->setDescription($this->apiService->getParamString('description'));
-
-        return $categoryData;
+        return new Category([
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+        ]);
     }
 }

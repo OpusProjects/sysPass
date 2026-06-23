@@ -35,6 +35,7 @@ use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
+use function SP\__u;
 
 /**
  * Class SaveController
@@ -45,7 +46,6 @@ final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
-use function SP\__u;
 
     /**
      * @return bool
