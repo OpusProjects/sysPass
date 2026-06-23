@@ -54,9 +54,7 @@ final class SaveEditController extends AccountSaveBase
 
         $this->accountService->update($id, $this->accountForm->getItemData());
 
-        $this->eventDispatcher->notify(
-            'edit.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.account', 
                 $this,
                 function () use ($id) {
                     $accountDetails = $this->accountService->getByIdEnriched($id);

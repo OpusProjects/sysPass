@@ -74,9 +74,7 @@ final class DownloadExportController extends SimpleControllerBase
 
         $file = new FileHandler($filePath);
 
-        $this->eventDispatcher->notify(
-            'download.exportFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('download.exportFile', 
                 $this,
                 EventMessage::build(__u('File downloaded'))
                             ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))

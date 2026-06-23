@@ -103,9 +103,7 @@ final class Database implements DatabaseInterface
 
             $stmt = $this->prepareAndRunQuery($query);
 
-            $this->eventDispatcher->notify(
-                'database.query',
-                new Event($this, EventMessage::build()->addDescription($query->getStatement()))
+            $this->eventDispatcher->notify(new Event('database.query', $this, EventMessage::build()->addDescription($query->getStatement()))
             );
 
             if ($query instanceof SelectInterface) {
@@ -249,9 +247,7 @@ final class Database implements DatabaseInterface
         if (!$conn->inTransaction()) {
             $result = $conn->beginTransaction();
 
-            $this->eventDispatcher->notify(
-                'database.transaction.begin',
-                new Event(
+            $this->eventDispatcher->notify(new Event('database.transaction.begin', 
                     $this,
                     EventMessage::build()->addExtra('result', $result)
                 )
@@ -276,9 +272,7 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->commit();
 
-        $this->eventDispatcher->notify(
-            'database.transaction.end',
-            new Event(
+        $this->eventDispatcher->notify(new Event('database.transaction.end', 
                 $this,
                 EventMessage::build()->addExtra('result', $result)
             )
@@ -298,9 +292,7 @@ final class Database implements DatabaseInterface
 
         $result = $conn->inTransaction() && $conn->rollBack();
 
-        $this->eventDispatcher->notify(
-            'database.transaction.rollback',
-            new Event(
+        $this->eventDispatcher->notify(new Event('database.transaction.rollback', 
                 $this,
                 EventMessage::build()->addExtra('result', $result)
             )

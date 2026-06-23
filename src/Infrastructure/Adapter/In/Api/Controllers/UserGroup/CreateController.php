@@ -50,9 +50,7 @@ final class CreateController extends UserGroupBase
 
         $userGroupData->setId($id);
 
-        $this->eventDispatcher->notify(
-            'create.userGroup',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.userGroup', 
                 $this, EventMessage::build()
                 ->addDescription(__u('Group added'))
                 ->addDetail(__u('Name'), $userGroupData->getName())

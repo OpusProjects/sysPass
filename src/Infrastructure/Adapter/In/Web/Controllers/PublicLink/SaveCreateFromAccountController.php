@@ -75,13 +75,13 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $this->publicLinkService->create($publicLinkData);
 
-            $this->eventDispatcher->notify('create.publicLink.account', new Event($this));
+            $this->eventDispatcher->notify(new Event('create.publicLink.account', $this));
 
             return ActionResponse::ok(__u('Link created'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

@@ -105,9 +105,7 @@ final class IndexController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getTracksList());
         }
 
-        $this->eventDispatcher->notify(
-            'show.itemlist.security',
-            new Event($this)
+        $this->eventDispatcher->notify(new Event('show.itemlist.security', $this)
         );
 
         $this->tabsGridHelper->renderTabs(

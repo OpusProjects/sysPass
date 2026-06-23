@@ -45,7 +45,7 @@ final class SearchController extends TagBase
 
         $itemSearchData = $this->buildSearchData();
 
-        $this->eventDispatcher->notify('search.tag', new Event($this));
+        $this->eventDispatcher->notify(new Event('search.tag', $this));
 
         return ApiResponse::makeSuccess(
             $this->tagService->search($itemSearchData)->getDataAsArray()

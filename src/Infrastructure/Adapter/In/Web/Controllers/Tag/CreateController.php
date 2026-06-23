@@ -57,13 +57,13 @@ final class CreateController extends TagViewBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notify('show.tag.create', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.tag.create', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

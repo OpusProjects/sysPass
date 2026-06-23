@@ -74,10 +74,11 @@ abstract class LoggerBase extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function update(string $eventType, Event $event): void
+    public function update(Event $event): void
     {
         $this->language->setAppLocales();
 
+        $eventName = $event->getName();
         $userLogin = 'N/A';
 
         if ($this->context->isInitialized()) {
@@ -88,7 +89,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
 
         if ($source instanceof Exception) {
             $this->logger->error(
-                $eventType,
+                $eventName,
                 $this->formatContext(
                     __($source->getMessage()),
                     $this->request->getClientAddress(true),
@@ -97,7 +98,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             );
         } elseif (($eventMessage = $event->getEventMessage()) !== null) {
             $this->logger->debug(
-                $eventType,
+                $eventName,
                 $this->formatContext(
                     $eventMessage->composeText(' | '),
                     $this->request->getClientAddress(true),
@@ -106,7 +107,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
             );
         } else {
             $this->logger->debug(
-                $eventType,
+                $eventName,
                 $this->formatContext(
                     'N/A',
                     $this->request->getClientAddress(true),

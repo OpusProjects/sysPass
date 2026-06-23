@@ -59,9 +59,7 @@ final class SaveCreateController extends ItemPresetSaveBase
 
             $id = $this->itemPresetService->create($itemData);
 
-            $this->eventDispatcher->notify(
-                'create.itemPreset',
-                new Event(
+            $this->eventDispatcher->notify(new Event('create.itemPreset', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Value created'))
@@ -76,7 +74,7 @@ final class SaveCreateController extends ItemPresetSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

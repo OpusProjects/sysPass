@@ -61,9 +61,7 @@ final class DeleteController extends UserGroupSaveBase
             if ($id === null) {
                 $this->userGroupService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notify(
-                    'delete.userGroup.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Groups deleted')))
+                $this->eventDispatcher->notify(new Event('delete.userGroup.selection', $this, EventMessage::build()->addDescription(__u('Groups deleted')))
                 );
 
                 $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
@@ -73,9 +71,7 @@ final class DeleteController extends UserGroupSaveBase
 
             $this->userGroupService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.userGroup',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.userGroup', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Group deleted'))
@@ -90,7 +86,7 @@ final class DeleteController extends UserGroupSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

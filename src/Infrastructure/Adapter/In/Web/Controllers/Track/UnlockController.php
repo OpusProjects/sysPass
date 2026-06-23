@@ -60,13 +60,13 @@ final class UnlockController extends TrackBase
 
             $this->trackService->unlock($id);
 
-            $this->eventDispatcher->notify('unlock.track', new Event($this));
+            $this->eventDispatcher->notify(new Event('unlock.track', $this));
 
             return ActionResponse::ok(__u('Track unlocked'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

@@ -63,9 +63,9 @@ final class NotificationEvent extends Service implements EventReceiver
      * @param string $eventType Event name
      * @param Event $event Event object
      */
-    public function update(string $eventType, Event $event): void
+    public function update(Event $event): void
     {
-        switch ($eventType) {
+        switch ($event->getName()) {
             case 'request.account':
                 $this->requestAccountNotification($event);
                 break;

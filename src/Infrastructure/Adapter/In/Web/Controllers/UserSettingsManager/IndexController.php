@@ -72,7 +72,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     {
         $this->tabsHelper->addTab($this->getUserPreferences());
 
-        $this->eventDispatcher->notify('show.userSettings', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.userSettings', $this));
 
         $this->tabsHelper->renderTabs(
             Acl::getActionRoute(AclActionsInterface::USERSETTINGS),

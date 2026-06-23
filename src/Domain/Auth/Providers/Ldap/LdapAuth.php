@@ -122,9 +122,7 @@ final readonly class LdapAuth implements LdapAuthService
         $attributes = $this->ldap->actions()->getAttributes($filter);
 
         if ($attributes->count() === 0) {
-            $this->eventDispatcher->notify(
-                'ldap.getAttributes',
-                new Event(
+            $this->eventDispatcher->notify(new Event('ldap.getAttributes', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Error while searching the user on LDAP'))

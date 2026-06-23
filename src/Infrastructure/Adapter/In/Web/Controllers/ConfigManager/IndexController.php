@@ -159,9 +159,7 @@ final class IndexController extends ControllerBase
         }
 
 
-        $this->eventDispatcher->notify(
-            'show.config',
-            new Event($this)
+        $this->eventDispatcher->notify(new Event('show.config', $this)
         );
 
         $this->tabsHelper->renderTabs(

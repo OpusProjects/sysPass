@@ -84,7 +84,7 @@ final class EditPassController extends AccountViewBase
         );
         $this->view->assign('formRoute', 'account/saveEditPass');
 
-        $this->eventDispatcher->notify('show.account.editpass', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.editpass', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

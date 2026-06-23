@@ -63,9 +63,7 @@ final class SaveEditPassController extends UserSaveBase
 
             $this->userService->updatePass($id, $itemData->getPass());
 
-            $this->eventDispatcher->notify(
-                'edit.user.pass',
-                new Event(
+            $this->eventDispatcher->notify(new Event('edit.user.pass', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Password updated'))
@@ -79,7 +77,7 @@ final class SaveEditPassController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

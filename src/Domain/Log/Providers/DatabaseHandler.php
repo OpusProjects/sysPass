@@ -74,15 +74,17 @@ final class DatabaseHandler extends Provider implements EventReceiver
      *
      * @throws InvalidClassException
      */
-    public function update(string $eventType, Event $event): void
+    public function update(Event $event): void
     {
-        if (str_contains($eventType, 'database.')) {
+        $eventName = $event->getName();
+
+        if (str_contains($eventName, 'database.')) {
             return;
         }
 
         $this->language->setAppLocales();
 
-        $properties = ['action' => $eventType, 'level' => 'INFO'];
+        $properties = ['action' => $eventName, 'level' => 'INFO'];
 
         $source = $event->getSource();
 

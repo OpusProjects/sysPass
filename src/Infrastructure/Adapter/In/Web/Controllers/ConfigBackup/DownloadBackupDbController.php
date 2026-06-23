@@ -85,9 +85,7 @@ final class DownloadBackupDbController extends SimpleControllerBase
 
         $file = new FileHandler((string)$filePath);
 
-        $this->eventDispatcher->notify(
-            'download.backupDbFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('download.backupDbFile', 
                 $this,
                 EventMessage::build(__u('File downloaded'))
                             ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))

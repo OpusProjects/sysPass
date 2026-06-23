@@ -50,9 +50,7 @@ final class CreateController extends CategoryBase
 
         $categoryData->setId($id);
 
-        $this->eventDispatcher->notify(
-            'create.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.category', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Category added'))

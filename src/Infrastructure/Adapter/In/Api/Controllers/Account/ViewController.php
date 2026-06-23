@@ -61,9 +61,7 @@ final class ViewController extends AccountBase
         $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
         $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-        $this->eventDispatcher->notify(
-            'show.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.account', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Account displayed'))

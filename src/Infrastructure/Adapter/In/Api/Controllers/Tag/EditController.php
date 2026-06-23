@@ -48,9 +48,7 @@ final class EditController extends TagBase
 
         $this->tagService->update($tagData);
 
-        $this->eventDispatcher->notify(
-            'edit.tag',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.tag', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Tag updated'))

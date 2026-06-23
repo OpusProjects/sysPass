@@ -61,13 +61,13 @@ final class EditController extends UserProfileViewBase
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notify('show.userProfile.edit', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.userProfile.edit', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

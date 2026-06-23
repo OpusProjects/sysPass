@@ -86,7 +86,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             if ($authData->isAuthoritative() === false) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notify('login.auth.database', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.database', $this, $eventMessage));
 
                 return;
             }
@@ -95,12 +95,12 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notify('login.auth.database', new Event($this, $eventMessage));
+            $this->eventDispatcher->notify(new Event('login.auth.database', $this, $eventMessage));
 
             throw AuthException::info(__u('Wrong login'), __FUNCTION__, LoginStatus::INVALID_LOGIN->value);
         }
 
-        $this->eventDispatcher->notify('login.auth.database', new Event($this, $eventMessage));
+        $this->eventDispatcher->notify(new Event('login.auth.database', $this, $eventMessage));
     }
 
     /**
@@ -122,7 +122,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             if ($authData->isAuthoritative() === false) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.browser', $this, $eventMessage));
 
                 return;
             }
@@ -131,7 +131,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
             $eventMessage->addDescription(__u('Wrong login'));
 
-            $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
+            $this->eventDispatcher->notify(new Event('login.auth.browser', $this, $eventMessage));
 
             throw AuthException::info(__u('Wrong login'), __FUNCTION__, LoginStatus::INVALID_LOGIN->value);
         }
@@ -147,7 +147,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
                     $this->userService->createOnLogin($userLoginRequest);
                 }
 
-                $this->eventDispatcher->notify('login.auth.browser', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.browser', $this, $eventMessage));
             } catch (ConstraintException|DuplicatedItemException|QueryException $e) {
                 throw AuthException::error(
                     __u('Internal error'),
@@ -173,7 +173,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             if ($authData->isAuthoritative() === false) {
                 $eventMessage->addDescription(__u('Non authoritative auth'));
 
-                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
                 return;
             }
@@ -183,7 +183,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
                 $this->addTracking();
 
-                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
                 throw AuthException::info(__u('Wrong login'), __FUNCTION__, LoginStatus::INVALID_LOGIN->value);
             }
@@ -191,7 +191,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             if ($authData->getStatusCode() === LdapAuthService::ACCOUNT_EXPIRED) {
                 $eventMessage->addDescription(__u('Account expired'));
 
-                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
                 throw  AuthException::info(__u('Account expired'), __FUNCTION__, LoginStatus::USER_DISABLED->value);
             }
@@ -199,7 +199,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             if ($authData->getStatusCode() === LdapAuthService::ACCOUNT_NO_GROUPS) {
                 $eventMessage->addDescription(__u('User has no associated groups'));
 
-                $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
                 throw AuthException::info(
                     __u('User has no associated groups'),
@@ -210,12 +210,12 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
             $eventMessage->addDescription(__u('Internal error'));
 
-            $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+            $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
             throw AuthException::info(__u('Internal error'), __FUNCTION__, Service::STATUS_INTERNAL_ERROR);
         }
 
-        $this->eventDispatcher->notify('login.auth.ldap', new Event($this, $eventMessage));
+        $this->eventDispatcher->notify(new Event('login.auth.ldap', $this, $eventMessage));
 
         try {
             $userLoginRequest = new UserLoginRequest(

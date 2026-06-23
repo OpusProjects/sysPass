@@ -73,7 +73,7 @@ final class CreateController extends AccountViewBase
         );
         $this->view->assign('formRoute', 'account/saveCreate');
 
-        $this->eventDispatcher->notify('show.account.create', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.create', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

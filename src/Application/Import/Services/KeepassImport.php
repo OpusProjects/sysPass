@@ -63,9 +63,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
      */
     public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
-        $this->eventDispatcher->notify(
-            'run.import.keepass',
-            new Event($this, EventMessage::build()->addDescription(__u('KeePass XML Import')))
+        $this->eventDispatcher->notify(new Event('run.import.keepass', $this, EventMessage::build()->addDescription(__u('KeePass XML Import')))
         );
 
         $this->process($importParams);
@@ -82,9 +80,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     {
         $clientId = $this->addClient(new Client(['name' => 'KeePass']));
 
-        $this->eventDispatcher->notify(
-            'run.import.keepass.process.client',
-            new Event($this, EventMessage::build()->addDetail(__u('Client added'), 'KeePass'))
+        $this->eventDispatcher->notify(new Event('run.import.keepass.process.client', $this, EventMessage::build()->addDetail(__u('Client added'), 'KeePass'))
         );
 
         $this->getGroups();
@@ -126,9 +122,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
         if (!isset($this->entries[$groupName])) {
             $this->addCategory(new Category(['name' => $groupName, 'description' => 'KeePass']));
 
-            $this->eventDispatcher->notify(
-                'run.import.keepass.process.category',
-                new Event($this, EventMessage::build()->addDetail(__u('Category imported'), $groupName))
+            $this->eventDispatcher->notify(new Event('run.import.keepass.process.category', $this, EventMessage::build()->addDetail(__u('Category imported'), $groupName))
             );
 
             $this->entries[$groupName] = new SplObjectStorage();
@@ -205,9 +199,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
             try {
                 $this->addAccount($account->mutate(['clientId' => $clientId]), $importParamsDto);
 
-                $this->eventDispatcher->notify(
-                    'run.import.keepass.process.account',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.keepass.process.account', 
                         $this,
                         EventMessage::build()
                             ->addDetail(__u('Account imported'), $account->name)
@@ -217,7 +209,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
             } catch (SPException $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
             }
         }
     }

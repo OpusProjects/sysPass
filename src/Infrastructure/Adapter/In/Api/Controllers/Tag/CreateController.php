@@ -50,9 +50,7 @@ final class CreateController extends TagBase
 
         $tagData->setId($id);
 
-        $this->eventDispatcher->notify(
-            'create.tag',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.tag', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Tag added'))

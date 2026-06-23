@@ -72,9 +72,7 @@ final class LoginUser extends LoginBase implements LoginUserService
     {
         try {
             if ($userDto->isDisabled) {
-                $this->eventDispatcher->notify(
-                    'login.checkUser.disabled',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('login.checkUser.disabled', 
                         $this,
                         EventMessage::build()
                                     ->addDescription(__u('User disabled'))
@@ -88,9 +86,7 @@ final class LoginUser extends LoginBase implements LoginUserService
             }
 
             if ($userDto->isChangePass) {
-                $this->eventDispatcher->notify(
-                    'login.checkUser.changePass',
-                    new Event($this, EventMessage::build()->addDetail(__u('User'), $userDto->login))
+                $this->eventDispatcher->notify(new Event('login.checkUser.changePass', $this, EventMessage::build()->addDetail(__u('User'), $userDto->login))
                 );
 
                 $hash = Password::generateRandomBytes(16);

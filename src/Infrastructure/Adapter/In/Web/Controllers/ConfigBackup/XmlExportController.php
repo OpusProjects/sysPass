@@ -88,9 +88,7 @@ final class XmlExportController extends SimpleControllerBase
             return ActionResponse::error(__u('Passwords do not match'));
         }
 
-        $this->eventDispatcher->notify(
-            'run.export.start',
-            new Event($this, EventMessage::build(__u('sysPass XML export')))
+        $this->eventDispatcher->notify(new Event('run.export.start', $this, EventMessage::build(__u('sysPass XML export')))
         );
 
         Session::close();
@@ -100,18 +98,14 @@ final class XmlExportController extends SimpleControllerBase
             $exportPassword
         );
 
-        $this->eventDispatcher->notify(
-            'run.export.end',
-            new Event($this, EventMessage::build(__u('Export process finished')))
+        $this->eventDispatcher->notify(new Event('run.export.end', $this, EventMessage::build(__u('Export process finished')))
         );
 
         $verifyResult = $this->xmlVerifyService->verify($file, $exportPassword);
 
         $nodes = $verifyResult->getNodes();
 
-        $this->eventDispatcher->notify(
-            'run.export.verify',
-            new Event(
+        $this->eventDispatcher->notify(new Event('run.export.verify', 
                 $this,
                 EventMessage::build(__u('Verification of exported data finished'))
                             ->addDetail(__u('Version'), $verifyResult->getVersion())

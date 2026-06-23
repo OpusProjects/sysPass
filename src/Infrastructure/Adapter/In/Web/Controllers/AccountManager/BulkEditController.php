@@ -95,7 +95,7 @@ final class BulkEditController extends ControllerBase
 
         $this->setViewData();
 
-        $this->eventDispatcher->notify('show.account.bulkEdit', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.bulkEdit', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

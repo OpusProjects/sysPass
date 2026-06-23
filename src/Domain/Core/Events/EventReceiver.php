@@ -35,10 +35,9 @@ interface EventReceiver
     /**
      * Update from sources
      *
-     * @param string $eventType event's type
-     * @param Event $event event's source object
+     * @param Event $event event object (carries its own name)
      */
-    public function update(string $eventType, Event $event): void;
+    public function update(Event $event): void;
 
     /**
      * Return the events handled by this receiver in string format

@@ -86,7 +86,7 @@ final class SaveController extends SimpleControllerBase
                     $this->appLock->unlock();
                 }
 
-                $this->eventDispatcher->notify('save.config.general', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('save.config.general', $this, $eventMessage));
             }
         );
     }

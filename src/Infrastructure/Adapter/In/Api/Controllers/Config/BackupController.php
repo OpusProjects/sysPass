@@ -78,9 +78,7 @@ final class BackupController extends ControllerBase
 
         $this->fileBackupService->doBackup($path);
 
-        $this->eventDispatcher->notify(
-            'run.backup.end',
-            new Event(
+        $this->eventDispatcher->notify(new Event('run.backup.end', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Application and database backup completed successfully'))

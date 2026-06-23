@@ -66,9 +66,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         try {
-            $this->eventDispatcher->notify(
-                'run.import.syspass',
-                new Event($this, EventMessage::build()->addDescription(__u('sysPass XML Import')))
+            $this->eventDispatcher->notify(new Event('run.import.syspass', $this, EventMessage::build()->addDescription(__u('sysPass XML Import')))
             );
 
             $this->version = $this->getXmlVersion();
@@ -148,7 +146,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             } catch (CryptException $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
 
                 continue;
             }
@@ -173,9 +171,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             $nodeData->parentNode->removeChild($nodeData);
         }
 
-        $this->eventDispatcher->notify(
-            'run.import.syspass.process.decryption',
-            new Event($this, EventMessage::build()->addDescription(__u('Data unencrypted')))
+        $this->eventDispatcher->notify(new Event('run.import.syspass.process.decryption', $this, EventMessage::build()->addDescription(__u('Data unencrypted')))
         );
     }
 
@@ -187,9 +183,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
         $key = $importParams->getPassword() ?? sha1($this->configData->getPasswordSalt());
 
         if (!XmlVerify::checkXmlHash($this->document, $key)) {
-            $this->eventDispatcher->notify(
-                'run.import.syspass.process.verify',
-                new Event(
+            $this->eventDispatcher->notify(new Event('run.import.syspass.process.verify', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Error while checking integrity hash'))
@@ -225,9 +219,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addCategory(new Category($data));
 
-                $this->eventDispatcher->notify(
-                    'run.import.syspass.process.category',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.syspass.process.category', 
                         $this,
                         EventMessage::build()
                                     ->addDetail(__u('Category imported'), $data['name'])
@@ -235,9 +227,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 );
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(
-                'exception',
-                new Event(
+            $this->eventDispatcher->notify(new Event('exception', 
                     $e,
                     EventMessage::build()->addDescription(__('Unable to import categories'))
                 )
@@ -269,9 +259,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addClient(new Client($data));
 
-                $this->eventDispatcher->notify(
-                    'run.import.syspass.process.client',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.syspass.process.client', 
                         $this,
                         EventMessage::build()
                                     ->addDetail(__u('Client imported'), $data['name'])
@@ -279,9 +267,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                 );
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(
-                'exception',
-                new Event(
+            $this->eventDispatcher->notify(new Event('exception', 
                     $e,
                     EventMessage::build()->addDescription(__('Unable to import clients'))
                 )
@@ -314,18 +300,14 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addTag(new Tag($data));
 
-                $this->eventDispatcher->notify(
-                    'run.import.syspass.process.tag',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.syspass.process.tag', 
                         $this,
                         EventMessage::build()->addDetail(__u('Tag imported'), $data['name'])
                     )
                 );
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(
-                'exception',
-                new Event(
+            $this->eventDispatcher->notify(new Event('exception', 
                     $e,
                     EventMessage::build()->addDescription(__('Unable to import tags'))
                 )
@@ -371,23 +353,19 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addAccount($dtoWithTags, $importParams, true);
 
-                $this->eventDispatcher->notify(
-                    'run.import.syspass.process.account',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.syspass.process.account', 
                         $this,
                         EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
                     )
                 );
             } catch (Exception $e) {
-                $this->eventDispatcher->notify(
-                    'exception',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('exception', 
                         $e,
                         EventMessage::build()->addDescription(__('Unable to import account'))
                     )
                 );
 
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
             }
         }
     }

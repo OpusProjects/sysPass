@@ -69,7 +69,7 @@ final class ViewController extends ClientViewBase
 
         $this->setViewData($id);
 
-        $this->eventDispatcher->notify('show.client', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.client', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

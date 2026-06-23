@@ -60,9 +60,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
     public function export(): DOMElement
     {
         try {
-            $this->eventDispatcher->notify(
-                'run.export.process.account',
-                new Event($this, EventMessage::build()->addDescription(__u('Exporting accounts')))
+            $this->eventDispatcher->notify(new Event('run.export.process.account', $this, EventMessage::build()->addDescription(__u('Exporting accounts')))
             );
 
             $accounts = $this->accountService->getAllBasic();

@@ -68,7 +68,7 @@ final class EditController extends ClientViewBase
 
         $this->setViewData($id, false);
 
-        $this->eventDispatcher->notify('show.client.edit', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.client.edit', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

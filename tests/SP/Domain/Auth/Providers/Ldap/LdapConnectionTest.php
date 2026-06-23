@@ -32,6 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Core\Context\ContextException;
+use SP\Core\Events\Event;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
@@ -68,7 +69,7 @@ class LdapConnectionTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(once())
             ->method('notify')
-            ->with('ldap.check.connection');
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.connection'));
 
         $this->ldapConnection->connect($this->ldapParams);
     }
@@ -97,7 +98,7 @@ class LdapConnectionTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(self::exactly(2))
             ->method('notify')
-            ->with(...self::withConsecutive(['exception'], ['ldap.bind']));
+            ->with(self::callback(fn(Event $e) => in_array($e->getName(), ['exception', 'ldap.bind'])));
 
         $this->ldap
             ->expects(self::exactly(2))

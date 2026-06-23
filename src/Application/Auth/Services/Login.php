@@ -151,9 +151,7 @@ final class Login extends LoginBase implements LoginService
             );
             $this->context->setLocale($userDataDto->preferences->getLang());
 
-            $this->eventDispatcher->notify(
-                'login.session.load',
-                new Event($this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login))
+            $this->eventDispatcher->notify(new Event('login.session.load', $this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login))
             );
         } catch (ConstraintException|NoSuchItemException|QueryException $e) {
             throw ServiceException::from($e);
@@ -164,7 +162,7 @@ final class Login extends LoginBase implements LoginService
     {
         $this->language->setLanguage(true);
         $this->context->setAuthCompleted(true);
-        $this->eventDispatcher->notify('login.preferences.load', new Event($this));
+        $this->eventDispatcher->notify(new Event('login.preferences.load', $this));
     }
 
     /**

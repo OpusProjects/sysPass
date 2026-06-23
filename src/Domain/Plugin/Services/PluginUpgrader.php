@@ -63,9 +63,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
         try {
             $pluginModel = $this->pluginManagerService->getByName($plugin->getName());
         } catch (NoSuchItemException $e) {
-            $this->eventDispatcher->notify(
-                'plugin.upgrade',
-                new Event(
+            $this->eventDispatcher->notify(new Event('plugin.upgrade', 
                     $e,
                     EventMessage::build()
                                 ->addDetail(__('Plugin not registered'), $plugin->getName())
@@ -78,9 +76,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
         if ($pluginModel->getVersionLevel() === null
             || Version::checkVersion($pluginModel->getVersionLevel(), $version)
         ) {
-            $this->eventDispatcher->notify(
-                'plugin.upgrade.process',
-                new Event(
+            $this->eventDispatcher->notify(new Event('plugin.upgrade.process', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Upgrading plugin'))
@@ -92,9 +88,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
 
             $this->pluginManagerService->update($pluginModel->mutate(['data' => null, 'versionLevel' => $version]));
 
-            $this->eventDispatcher->notify(
-                'plugin.upgrade.process',
-                new Event(
+            $this->eventDispatcher->notify(new Event('plugin.upgrade.process', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Plugin upgraded'))

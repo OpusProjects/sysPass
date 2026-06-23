@@ -61,9 +61,7 @@ final class DeleteController extends UserSaveBase
             if ($id === null) {
                 $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notify(
-                    'delete.user.selection',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('delete.user.selection', 
                         $this,
                         EventMessage::build()
                             ->addDescription(__u('Users deleted'))
@@ -80,9 +78,7 @@ final class DeleteController extends UserSaveBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
-            $this->eventDispatcher->notify(
-                'delete.user',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.user', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('User deleted'))
@@ -95,7 +91,7 @@ final class DeleteController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

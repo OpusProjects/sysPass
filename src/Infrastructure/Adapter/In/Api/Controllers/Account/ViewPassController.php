@@ -85,9 +85,7 @@ final class ViewPassController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
 
-        $this->eventDispatcher->notify(
-            'show.account.pass',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.account.pass', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Password viewed'))

@@ -61,9 +61,7 @@ final class SaveCreateController extends UserProfileSaveBase
 
             $id = $this->userProfileService->create($profileData);
 
-            $this->eventDispatcher->notify(
-                'create.userProfile',
-                new Event(
+            $this->eventDispatcher->notify(new Event('create.userProfile', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Profile added'))
@@ -79,7 +77,7 @@ final class SaveCreateController extends UserProfileSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

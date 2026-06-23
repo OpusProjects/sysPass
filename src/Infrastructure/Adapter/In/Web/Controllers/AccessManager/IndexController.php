@@ -137,7 +137,7 @@ final class IndexController extends ControllerBase
             );
         }
 
-        $this->eventDispatcher->notify('show.itemlist.accesses', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.itemlist.accesses', $this));
 
         $this->tabsGridHelper->renderTabs(
             $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE),

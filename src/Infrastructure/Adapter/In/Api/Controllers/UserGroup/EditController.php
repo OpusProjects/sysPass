@@ -48,9 +48,7 @@ final class EditController extends UserGroupBase
 
         $this->userGroupService->update($userGroupData);
 
-        $this->eventDispatcher->notify(
-            'edit.userGroup',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.userGroup', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Group updated'))

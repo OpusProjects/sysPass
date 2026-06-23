@@ -61,7 +61,7 @@ final class IndexController extends AccountControllerBase
         $this->accountSearchHelper->getSearchBox();
         $this->accountSearchHelper->getAccountSearch();
 
-        $this->eventDispatcher->notify('show.account.search', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.search', $this));
 
         return ActionResponse::ok($this->render());
     }

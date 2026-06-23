@@ -61,9 +61,7 @@ final class SaveCreateController extends CategorySaveBase
 
         $id = $this->categoryService->create($itemData);
 
-        $this->eventDispatcher->notify(
-            'create.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.category', 
                 $this,
                 EventMessage::build(__u('Category added'))->addDetail(__u('Category'), $itemData->getName())
             )

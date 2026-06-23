@@ -45,9 +45,7 @@ final class EditController extends CategoryBase
 
         $this->categoryService->update($categoryData);
 
-        $this->eventDispatcher->notify(
-            'edit.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.category', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Category updated'))

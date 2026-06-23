@@ -53,16 +53,14 @@ final class SaveCreateController extends NotificationSaveBase
 
             $this->notificationService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notify(
-                'create.notification',
-                new Event($this, EventMessage::build()->addDescription(__u('Notification created')))
+            $this->eventDispatcher->notify(new Event('create.notification', $this, EventMessage::build()->addDescription(__u('Notification created')))
             );
 
             return ActionResponse::ok(__u('Notification created'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

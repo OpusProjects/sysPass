@@ -67,7 +67,7 @@ final class SaveController extends SimpleControllerBase
         return $this->saveConfig(
             $configData,
             $this->config,
-            fn() => $this->eventDispatcher->notify('save.config.account', new Event($this, $eventMessage))
+            fn() => $this->eventDispatcher->notify(new Event('save.config.account', $this, $eventMessage))
         );
     }
 

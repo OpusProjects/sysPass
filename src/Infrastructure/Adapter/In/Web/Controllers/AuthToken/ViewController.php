@@ -61,9 +61,7 @@ final class ViewController extends AuthTokenViewBase
 
         $this->setViewData($id);
 
-        $this->eventDispatcher->notify(
-            'show.authToken',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.authToken', 
                 $this,
                 EventMessage::build(__u('Authorization viewed'))->addDetail(__u('Authorization'), $id)
             )

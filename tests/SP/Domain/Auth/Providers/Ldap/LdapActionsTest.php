@@ -108,7 +108,7 @@ class LdapActionsTest extends UnitaryTestCase
 
         $this->eventDispatcher->expects(self::once())
                               ->method('notify')
-                              ->with('exception', new Event($exception));
+                              ->with(new Event('exception', $exception));
 
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage($message);
@@ -235,7 +235,7 @@ class LdapActionsTest extends UnitaryTestCase
 
         $this->eventDispatcher->expects(self::once())
                               ->method('notify')
-                              ->with('ldap.search.group');
+                              ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.search.group'));
 
         $this->expectException(LdapException::class);
         $this->expectExceptionMessage('Error while searching the group RDN');

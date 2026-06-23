@@ -69,9 +69,7 @@ final class SaveEditController extends ClientSaveBase
 
         $this->clientService->update($this->form->getItemData());
 
-        $this->eventDispatcher->notify(
-            'edit.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.client', 
                 $this,
                 EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
             )

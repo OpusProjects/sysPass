@@ -61,13 +61,13 @@ final class EditController extends CustomFieldViewBase
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notify('show.customField.edit', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.customField.edit', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

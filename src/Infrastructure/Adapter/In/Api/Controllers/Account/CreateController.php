@@ -51,9 +51,7 @@ final class CreateController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
-        $this->eventDispatcher->notify(
-            'create.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.account', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Account created'))

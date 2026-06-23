@@ -75,9 +75,7 @@ final class RefreshController extends SimpleControllerBase
 
         $this->masterPassService->updateConfig(Hash::hashKey(CryptSession::getSessionKey($this->session)));
 
-        $this->eventDispatcher->notify(
-            'refresh.masterPassword.hash',
-            new Event($this, EventMessage::build()->addDescription(__u('Master password hash updated')))
+        $this->eventDispatcher->notify(new Event('refresh.masterPassword.hash', $this, EventMessage::build()->addDescription(__u('Master password hash updated')))
         );
 
         return ActionResponse::ok(__u('Master password hash updated'));

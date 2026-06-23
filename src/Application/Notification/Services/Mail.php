@@ -94,7 +94,7 @@ final class Mail extends Service implements MailService
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(__u('Error while sending the email'), $e->getMessage(), $e->getCode(), $e);
         }
@@ -156,9 +156,7 @@ final class Mail extends Service implements MailService
         try {
             $this->mailer->send();
 
-            $this->eventDispatcher->notify(
-                'send.mail',
-                new Event(
+            $this->eventDispatcher->notify(new Event('send.mail', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Email sent'))
@@ -177,7 +175,7 @@ final class Mail extends Service implements MailService
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(__u('Error while sending the email'));
         }

@@ -46,9 +46,7 @@ final class ViewController extends UserGroupBase
         $id = $this->apiService->getParamInt('id', true);
         $userGroupData = $this->userGroupService->getById($id);
 
-        $this->eventDispatcher->notify(
-            'show.userGroup',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.userGroup', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Group viewed'))

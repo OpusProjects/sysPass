@@ -48,9 +48,7 @@ final class DeleteController extends UserGroupBase
 
         $this->userGroupService->delete($id);
 
-        $this->eventDispatcher->notify(
-            'delete.userGroup',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.userGroup', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Group deleted'))

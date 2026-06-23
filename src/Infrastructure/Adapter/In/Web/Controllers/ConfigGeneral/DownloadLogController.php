@@ -71,9 +71,7 @@ final class DownloadLogController extends SimpleControllerBase
 
         $file = new FileHandler($this->pathsContext[Path::LOG_FILE]);
 
-        $this->eventDispatcher->notify(
-            'download.logFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('download.logFile', 
                 $this,
                 EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), $file->getName())
             )

@@ -55,7 +55,7 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100, 200]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('request.account', $this, $eventMessage);
 
         $invokedCount = $this->exactly(2);
 
@@ -76,7 +76,7 @@ class NotificationEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->notificationEvent->update('request.account', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithRequestAccountAndNoUserId()
@@ -85,13 +85,13 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('request.account', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->never())
             ->method('create');
 
-        $this->notificationEvent->update('request.account', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithRequestAccountAndException()
@@ -101,7 +101,7 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100, 200]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('request.account', $this, $eventMessage);
 
         $invokedCount = $this->exactly(2);
 
@@ -110,7 +110,7 @@ class NotificationEventTest extends UnitaryTestCase
             ->method('create')
             ->willThrowException(new RuntimeException('test'));
 
-        $this->notificationEvent->update('request.account', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithShowLink()
@@ -121,7 +121,7 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->setExtra('notify', [true])
                                     ->setExtra('userId', [100]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('show.account.link', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->once())
@@ -135,7 +135,7 @@ class NotificationEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->notificationEvent->update('show.account.link', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithShowLinkAndException()
@@ -146,14 +146,14 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->setExtra('notify', [true])
                                     ->setExtra('userId', [100]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('show.account.link', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->once())
             ->method('create')
             ->willThrowException(new RuntimeException('test'));
 
-        $this->notificationEvent->update('show.account.link', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithShowLinkAndNoNotify()
@@ -163,13 +163,13 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('userId', [100]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('show.account.link', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->never())
             ->method('create');
 
-        $this->notificationEvent->update('show.account.link', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithShowLinkAndFalseNoNotify()
@@ -180,13 +180,13 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->setExtra('notify', [false])
                                     ->setExtra('userId', [100]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('show.account.link', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->never())
             ->method('create');
 
-        $this->notificationEvent->update('show.account.link', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testUpdateWithShowLinkAndNoUserId()
@@ -196,13 +196,13 @@ class NotificationEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('notify', [true]);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('show.account.link', $this, $eventMessage);
 
         $this->notificationService
             ->expects($this->never())
             ->method('create');
 
-        $this->notificationEvent->update('show.account.link', $event);
+        $this->notificationEvent->update($event);
     }
 
     public function testGetEvents()

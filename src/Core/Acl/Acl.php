@@ -274,9 +274,7 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             $actionName = __u('N/A');
         }
 
-        $this->eventDispatcher->notify(
-            'acl.deny',
-            new Event(
+        $this->eventDispatcher->notify(new Event('acl.deny', 
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('Access denied'))

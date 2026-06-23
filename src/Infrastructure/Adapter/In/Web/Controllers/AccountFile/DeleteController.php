@@ -57,17 +57,13 @@ final class DeleteController extends AccountFileBase
         if ($id === null) {
             $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-            $this->eventDispatcher->notify(
-                'delete.accountFile.selection',
-                new Event($this, EventMessage::build()->addDescription(__u('Files deleted')))
+            $this->eventDispatcher->notify(new Event('delete.accountFile.selection', $this, EventMessage::build()->addDescription(__u('Files deleted')))
             );
 
             return ActionResponse::ok(__u('Files deleted'));
         }
 
-        $this->eventDispatcher->notify(
-            'delete.accountFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.accountFile', 
                 $this,
                 EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
             )

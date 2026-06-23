@@ -60,16 +60,14 @@ final class SaveEditController extends NotificationSaveBase
 
             $this->notificationService->update($this->form->getItemData());
 
-            $this->eventDispatcher->notify(
-                'edit.notification',
-                new Event($this, EventMessage::build()->addDescription(__u('Notification updated')))
+            $this->eventDispatcher->notify(new Event('edit.notification', $this, EventMessage::build()->addDescription(__u('Notification updated')))
             );
 
             return ActionResponse::ok(__u('Notification updated'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

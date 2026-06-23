@@ -61,9 +61,7 @@ final class DeleteController extends ItemPresetSaveBase
             if ($id === null) {
                 $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notify(
-                    'delete.itemPreset',
-                    new Event($this, EventMessage::build()->addDescription(__u('Values deleted')))
+                $this->eventDispatcher->notify(new Event('delete.itemPreset', $this, EventMessage::build()->addDescription(__u('Values deleted')))
                 );
 
                 return ActionResponse::ok(__u('Values deleted'));
@@ -71,9 +69,7 @@ final class DeleteController extends ItemPresetSaveBase
 
             $this->itemPresetService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.itemPreset',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.itemPreset', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Value deleted'))
@@ -85,7 +81,7 @@ final class DeleteController extends ItemPresetSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

@@ -67,7 +67,7 @@ final class EditController extends CategoryViewBase
 
         $this->setViewData($id, false);
 
-        $this->eventDispatcher->notify('show.category.edit', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.category.edit', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

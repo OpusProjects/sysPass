@@ -35,13 +35,20 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 readonly class Event
 {
     /**
-     * @param object $source The emmiter of the event
+     * @param string $name The event name
+     * @param object $source The emitter of the event
      * @param EventMessage|Closure|null $eventMessage An {@link EventMessage} or a {@link Closure} that returns an {@link EventMessage}
      */
     public function __construct(
+        private string                    $name,
         private object                    $source,
         private EventMessage|Closure|null $eventMessage = null
     ) {
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**

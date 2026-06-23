@@ -175,9 +175,7 @@ final class IndexController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getItemPresetList());
         }
 
-        $this->eventDispatcher->notify(
-            'show.itemlist.items',
-            new Event($this)
+        $this->eventDispatcher->notify(new Event('show.itemlist.items', $this)
         );
 
         $this->tabsGridHelper->renderTabs(

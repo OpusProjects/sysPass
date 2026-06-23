@@ -58,9 +58,7 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
     public function export(): DOMElement
     {
         try {
-            $this->eventDispatcher->notify(
-                'run.export.process.client',
-                new Event($this, EventMessage::build()->addDescription(__u('Exporting clients')))
+            $this->eventDispatcher->notify(new Event('run.export.process.client', $this, EventMessage::build()->addDescription(__u('Exporting clients')))
             );
 
             $clients = $this->clientService->getAll();

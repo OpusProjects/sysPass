@@ -65,9 +65,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
         $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion, '<')) {
-            $this->eventDispatcher->notify(
-                'plugin.check.version',
-                new Event(
+            $this->eventDispatcher->notify(new Event('plugin.check.version', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(
@@ -81,9 +79,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
 
             $this->pluginService->toggleEnabledByName($plugin->getName(), false);
 
-            $this->eventDispatcher->notify(
-                'plugin.edit.disable',
-                new Event(
+            $this->eventDispatcher->notify(new Event('plugin.edit.disable', 
                     $this,
                     EventMessage::build()
                                 ->addDetail(__('Plugin disabled'), $plugin->getName())
@@ -93,9 +89,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
             return false;
         }
 
-        $this->eventDispatcher->notify(
-            'plugin.check.version',
-            new Event(
+        $this->eventDispatcher->notify(new Event('plugin.check.version', 
                 $this,
                 EventMessage::build()
                             ->addDescription(

@@ -51,9 +51,7 @@ final class ViewController extends CategoryBase
 
         $categoryData = $this->categoryService->getById($id);
 
-        $this->eventDispatcher->notify(
-            'show.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.category', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Category displayed'))

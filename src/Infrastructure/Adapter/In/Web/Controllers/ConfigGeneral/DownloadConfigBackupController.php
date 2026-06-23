@@ -70,9 +70,7 @@ final class DownloadConfigBackupController extends SimpleControllerBase
             return ActionResponse::warning(__('Ey, this is a DEMO!!'));
         }
 
-        $this->eventDispatcher->notify(
-            'download.configBackupFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('download.configBackupFile', 
                 $this,
                 EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), 'config.json')
             )

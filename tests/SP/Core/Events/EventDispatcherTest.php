@@ -75,7 +75,7 @@ class EventDispatcherTest extends UnitaryTestCase
     #[DataProvider('eventNameProvider')]
     public function testNotify(string $eventName)
     {
-        $event = new Event($this);
+        $event = new Event($eventName, $this);
 
         $this->eventReceiver->expects(self::once())
             ->method('getEvents')
@@ -83,15 +83,15 @@ class EventDispatcherTest extends UnitaryTestCase
 
         $this->eventReceiver->expects(self::once())
                             ->method('update')
-                            ->with($eventName, $event);
+                            ->with($event);
 
         $this->eventDispatcher->attach($this->eventReceiver);
-        $this->eventDispatcher->notify($eventName, $event);
+        $this->eventDispatcher->notify($event);
     }
 
     public function testNotifyWithWildcard()
     {
-        $event = new Event($this);
+        $event = new Event('test', $this);
 
         $this->eventReceiver->expects(self::once())
             ->method('getEvents')
@@ -99,10 +99,10 @@ class EventDispatcherTest extends UnitaryTestCase
 
         $this->eventReceiver->expects(self::once())
                             ->method('update')
-                            ->with('test', $event);
+                            ->with($event);
 
         $this->eventDispatcher->attach($this->eventReceiver);
-        $this->eventDispatcher->notify('test', $event);
+        $this->eventDispatcher->notify($event);
     }
 
     public function testNotifyWithInvalidEvent()
@@ -115,7 +115,7 @@ class EventDispatcherTest extends UnitaryTestCase
                             ->method('update');
 
         $this->eventDispatcher->attach($this->eventReceiver);
-        $this->eventDispatcher->notify('test', new Event($this));
+        $this->eventDispatcher->notify(new Event('test', $this));
     }
 
     protected function setUp(): void

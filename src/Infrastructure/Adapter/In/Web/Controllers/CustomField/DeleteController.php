@@ -61,9 +61,7 @@ final class DeleteController extends CustomFieldSaveBase
             if ($id === null) {
                 $this->customFieldDefService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-                $this->eventDispatcher->notify(
-                    'delete.customField.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Fields deleted')))
+                $this->eventDispatcher->notify(new Event('delete.customField.selection', $this, EventMessage::build()->addDescription(__u('Fields deleted')))
                 );
 
                 return ActionResponse::ok(__u('Fields deleted'));
@@ -71,13 +69,13 @@ final class DeleteController extends CustomFieldSaveBase
 
             $this->customFieldDefService->delete($id);
 
-            $this->eventDispatcher->notify('delete.customField', new Event($this));
+            $this->eventDispatcher->notify(new Event('delete.customField', $this));
 
             return ActionResponse::ok(__u('Field deleted'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

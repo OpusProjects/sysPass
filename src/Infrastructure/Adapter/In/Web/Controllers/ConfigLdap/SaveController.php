@@ -103,7 +103,7 @@ final class SaveController extends SimpleControllerBase
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notify('save.config.ldap', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('save.config.ldap', $this, $eventMessage));
             }
         );
     }

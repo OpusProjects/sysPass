@@ -144,9 +144,8 @@ class PluginBaseTest extends UnitaryTestCase
             $this->pluginLoaderService
         ) extends PluginBase {
 
-            public function update(string $eventType, Event $event): void
+            public function update(Event $event): void
             {
-                // TODO: Implement update() method.
             }
 
             public function getEvents(): ?string

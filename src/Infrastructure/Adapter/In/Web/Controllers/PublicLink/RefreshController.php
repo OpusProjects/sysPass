@@ -57,13 +57,13 @@ final class RefreshController extends PublicLinkSaveBase
 
             $this->publicLinkService->refresh($id);
 
-            $this->eventDispatcher->notify('edit.publicLink.refresh', new Event($this));
+            $this->eventDispatcher->notify(new Event('edit.publicLink.refresh', $this));
 
             return ActionResponse::ok(__u('Link updated'));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

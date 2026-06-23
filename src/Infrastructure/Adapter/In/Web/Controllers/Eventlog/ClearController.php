@@ -74,9 +74,7 @@ final class ClearController extends ControllerBase
         try {
             $this->eventlogService->clear();
 
-            $this->eventDispatcher->notify(
-                'clear.eventlog',
-                new Event($this, EventMessage::build()->addDescription(__u('Event log cleared')))
+            $this->eventDispatcher->notify(new Event('clear.eventlog', $this, EventMessage::build()->addDescription(__u('Event log cleared')))
             );
 
             return ActionResponse::ok(__u('Event log cleared'));

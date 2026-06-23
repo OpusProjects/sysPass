@@ -216,7 +216,7 @@ final class LayoutHelper extends HelperBase
             $this->view->append('cssLinks', $cssUriTheme->getUriSigned($this->configData->getPasswordSalt()));
         }
 
-        $this->eventDispatcher->notify('layout.resources.load', new Event($this->view));
+        $this->eventDispatcher->notify(new Event('layout.resources.load', $this->view));
     }
 
     /**

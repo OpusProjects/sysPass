@@ -109,7 +109,7 @@ final class SaveController extends SimpleControllerBase
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notify('save.config.mail', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('save.config.mail', $this, $eventMessage));
             }
         );
     }

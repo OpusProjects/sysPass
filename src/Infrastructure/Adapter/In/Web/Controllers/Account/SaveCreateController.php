@@ -50,9 +50,7 @@ final class SaveCreateController extends AccountSaveBase
 
         $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-        $this->eventDispatcher->notify(
-            'create.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.account', 
                 $this,
                 function () use ($accountId) {
                     $accountView = $this->accountService->getByIdEnriched($accountId);

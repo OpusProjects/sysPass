@@ -66,7 +66,7 @@ final class ViewController extends CategoryViewBase
 
         $this->setViewData($id);
 
-        $this->eventDispatcher->notify('show.category', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.category', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

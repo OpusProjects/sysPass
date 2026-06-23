@@ -69,13 +69,13 @@ final class EditPassController extends UserViewBase
 
             $this->view->assign('user', $user);
 
-            $this->eventDispatcher->notify('show.user.editPass', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.user.editPass', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

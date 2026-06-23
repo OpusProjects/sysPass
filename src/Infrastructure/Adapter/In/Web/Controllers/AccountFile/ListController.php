@@ -77,7 +77,7 @@ final class ListController extends AccountFileBase
             $this->view->assign('message', __('There are no linked files for the account'));
         }
 
-        $this->eventDispatcher->notify('list.accountFile', new Event($this));
+        $this->eventDispatcher->notify(new Event('list.accountFile', $this));
 
         return ActionResponse::ok($this->render());
     }

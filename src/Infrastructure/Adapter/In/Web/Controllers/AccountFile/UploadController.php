@@ -117,16 +117,14 @@ final class UploadController extends ControllerBase
                 'content' => $fileHandler->readToString()
             ];
         } catch (FileException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw SPException::error(__u('Internal error while reading the file'));
         }
 
         $this->accountFileService->create(new File($fileData));
 
-        $this->eventDispatcher->notify(
-            'upload.accountFile',
-            new Event(
+        $this->eventDispatcher->notify(new Event('upload.accountFile', 
                 $this,
                 static function () use ($accountId, $fileData): EventMessage {
                     $account = $this->accountService->getByIdEnriched($accountId);
