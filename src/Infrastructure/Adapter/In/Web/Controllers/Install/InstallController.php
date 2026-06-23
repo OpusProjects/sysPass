@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__u;
 use function SP\processException;

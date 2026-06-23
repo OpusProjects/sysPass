@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\ClientForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class ClientSaveBase

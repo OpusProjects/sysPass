@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\__u;
 

@@ -44,7 +44,7 @@ use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\Crypt\Services\MasterPass;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\__u;
 

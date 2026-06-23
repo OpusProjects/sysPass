@@ -36,7 +36,7 @@ use SP\Application\Auth\Ports\LoginService;
 use SP\Application\Auth\Services\Login;
 use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class LoginController

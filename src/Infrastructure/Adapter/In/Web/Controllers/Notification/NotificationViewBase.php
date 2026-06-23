@@ -35,7 +35,7 @@ use SP\Application\Notification\Ports\NotificationService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 /**

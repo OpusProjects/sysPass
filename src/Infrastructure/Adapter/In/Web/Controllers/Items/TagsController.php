@@ -31,7 +31,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Services\JsonResponse;
 use SP\Application\Tag\Ports\TagService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 /**

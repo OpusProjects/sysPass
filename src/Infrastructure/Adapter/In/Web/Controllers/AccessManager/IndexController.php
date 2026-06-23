@@ -48,7 +48,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\UserGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\UserGroupGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\UserProfileGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class IndexController

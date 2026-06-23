@@ -41,7 +41,7 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\logger;
 use function SP\processException;

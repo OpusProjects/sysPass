@@ -42,7 +42,7 @@ use SP\Domain\Export\Dtos\BackupFile;
 use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;

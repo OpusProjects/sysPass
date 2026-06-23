@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\CustomFieldDefForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class CustomFieldSaveBase

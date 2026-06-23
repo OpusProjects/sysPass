@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\__u;
 

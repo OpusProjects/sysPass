@@ -30,7 +30,7 @@ use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserGroupForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class UserGroupSaveBase

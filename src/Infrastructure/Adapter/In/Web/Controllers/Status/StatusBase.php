@@ -28,7 +28,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Status;
 use GuzzleHttp\ClientInterface;
 use SP\Core\Application;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 /**
  * Class StatusBase

@@ -30,7 +30,7 @@ use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\Tag\Ports\TagService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\TagForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class TagSaveBase

@@ -38,7 +38,7 @@ use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemPresetHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class ItemPresetViewBase

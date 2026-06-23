@@ -38,8 +38,8 @@ use SP\Domain\User\Models\UserProfile;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class UserProfileViewBase

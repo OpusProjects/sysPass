@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
 /**
  * Class Client

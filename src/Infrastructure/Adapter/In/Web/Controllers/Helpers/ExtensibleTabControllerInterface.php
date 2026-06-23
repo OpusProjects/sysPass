@@ -23,14 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\Controller;
+namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
 use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 
 /**
  * Interface ExtensibleTabController
  *
- * @package SP\Mvc\Controller
+ * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers
  */
 interface ExtensibleTabControllerInterface extends ExtensibleControllerInterface
 {

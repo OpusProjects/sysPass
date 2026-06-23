@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Import\Dtos\LdapImportParamsDto;
 use SP\Application\Import\Ports\LdapImportService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 use function SP\__;
 use function SP\__u;

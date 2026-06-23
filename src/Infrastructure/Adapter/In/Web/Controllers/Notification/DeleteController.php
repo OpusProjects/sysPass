@@ -31,7 +31,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
 /**
  * Class DeleteController

@@ -36,7 +36,7 @@ use SP\Domain\User\Models\UserPreferences;
 use SP\Application\User\Ports\UserService;
 use SP\Application\User\Services\User;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 /**
  * Class SaveController

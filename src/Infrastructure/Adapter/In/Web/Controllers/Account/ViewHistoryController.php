@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountHistoryHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__;
 

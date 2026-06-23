@@ -34,8 +34,8 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\AccountHistoryGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SearchGridControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class SearchController
