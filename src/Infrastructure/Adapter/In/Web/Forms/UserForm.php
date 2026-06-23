@@ -36,6 +36,8 @@ use SP\Domain\User\Models\User;
  */
 final class UserForm extends FormBase implements FormInterface
 {
+    private const int DEMO_ADMIN_USER_ID = 2;
+
     protected ?User $userData = null;
     protected int   $isLdap   = 0;
 
@@ -138,7 +140,7 @@ final class UserForm extends FormBase implements FormInterface
     private function isDemo(): bool
     {
         return $this->configData->isDemoEnabled()
-               && $this->itemId === 2 // FIXME: Ugly!!
+               && $this->itemId === self::DEMO_ADMIN_USER_ID
                && $this->context->getUserData()->getIsAdminApp();
     }
 
