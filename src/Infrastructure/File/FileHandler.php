@@ -135,10 +135,14 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     {
         $this->lock();
 
+        $this->rewind();
+        $this->ftruncate(0);
+
         if ($this->fwrite($data) === false) {
             throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 
+        $this->fflush();
         $this->unlock();
 
         return $this;

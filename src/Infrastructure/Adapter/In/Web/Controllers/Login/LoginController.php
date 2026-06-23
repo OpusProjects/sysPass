@@ -34,7 +34,6 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Application\Auth\Ports\LoginService;
 use SP\Application\Auth\Services\Login;
-use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
@@ -76,18 +75,9 @@ final class LoginController extends ControllerBase
 
             $this->checkForwarded();
 
-            $redirector = function ($route) use ($from) {
-                $uri = new Uri(ltrim($this->uriContext->getSubUri(), '/'));
-                $uri->addParam('r', $route);
-
-                if ($from !== null) {
-                    return $uri->addParam('from', $from)->getUriSigned($this->configData->getPasswordSalt());
-                }
-
-                return $uri->getUri();
-            };
-
-            $this->eventDispatcher->notify(new Event('login.finish', $this));
+            $this->eventDispatcher->notify(new Event('login.finish', $this,
+                EventMessage::build()->addExtra('from', $from)
+            ));
 
             return ActionResponse::ok('', [
                                                      'url' => $this->session->getTrasientKey(
