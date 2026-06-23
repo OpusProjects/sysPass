@@ -40,7 +40,7 @@ use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
-use SP\Mvc\Controller\Validators\PasswordValidator;
+use SP\Infrastructure\Adapter\In\Web\Validators\PasswordValidator;
 
 /**
  * Class AccountPreset

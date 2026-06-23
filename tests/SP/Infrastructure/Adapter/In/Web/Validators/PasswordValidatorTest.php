@@ -23,17 +23,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Mvc\Controller\Validators;
+namespace SP\Tests\Infrastructure\Adapter\In\Web\Validators;
 
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
-use SP\Mvc\Controller\Validators\PasswordValidator;
+use SP\Infrastructure\Adapter\In\Web\Validators\PasswordValidator;
 
 /**
  * Class PasswordValidatorTest
  *
- * @package SP\Tests\Mvc\Controller\Validators
+ * @package SP\Tests\Infrastructure\Adapter\In\Web\Validators
  */
 class PasswordValidatorTest extends TestCase
 {
