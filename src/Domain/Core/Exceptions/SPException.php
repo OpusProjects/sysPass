@@ -25,13 +25,12 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Exceptions;
 
-use Exception;
 use Throwable;
 
 /**
  * Extends the Exception class to provide hints within messages
  */
-class SPException extends Exception
+class SPException extends \Exception
 {
     public const CRITICAL = 1;
     public const WARNING  = 2;
@@ -45,14 +44,14 @@ class SPException extends Exception
      * @param int $type
      * @param string|null $hint
      * @param int $code
-     * @param Exception|null $previous
+     * @param Throwable|null $previous
      */
     public function __construct(
         string            $message,
         protected int     $type = self::ERROR,
         protected ?string $hint = null,
         int|string        $code = 0,
-        ?Exception         $previous = null
+        ?Throwable         $previous = null
     ) {
         // Accept string codes (e.g. PDO SQLSTATEs like '42S22') and normalise to the int
         // that \Exception requires, instead of throwing a TypeError that masks the real error.
@@ -68,7 +67,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int|string $code = 0,
-        ?Exception $previous = null
+        ?Throwable $previous = null
     ): static {
         return new static($message, SPException::ERROR, $hint, $code, $previous);
     }
@@ -77,7 +76,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int|string $code = 0,
-        ?Exception $previous = null
+        ?Throwable $previous = null
     ): static {
         return new static($message, SPException::CRITICAL, $hint, $code, $previous);
     }
@@ -86,7 +85,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int|string $code = 0,
-        ?Exception $previous = null
+        ?Throwable $previous = null
     ): static {
         return new static($message, SPException::WARNING, $hint, $code, $previous);
     }
@@ -95,7 +94,7 @@ class SPException extends Exception
         string    $message,
         ?string   $hint = null,
         int|string $code = 0,
-        ?Exception $previous = null
+        ?Throwable $previous = null
     ): static {
         return new static($message, SPException::INFO, $hint, $code, $previous);
     }
