@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers;
 
 use Exception;
-use SebastianBergmann\RecursionContext\Context;
+use SP\Domain\Core\Context\Context;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
