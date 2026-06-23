@@ -476,8 +476,6 @@ final class User extends BaseRepository implements UserRepository
      * @throws ConstraintException
      * @throws QueryException
      * @throws JsonException
-     *
-     * TODO: Handle serialized model migration
      */
     public function updatePreferencesById(int $id, UserPreferences $userPreferences): int
     {
