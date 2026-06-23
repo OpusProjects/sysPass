@@ -101,33 +101,4 @@ trait ControllerTrait
         exit('<script>sysPassApp.actions.main.logout();</script>');
     }
 
-    /**
-     * Action not available
-     *
-     * @throws SPException
-     */
-    protected function invalidAction(): void
-    {
-        JsonResponse::factory($this->router->response())->send(new JsonMessage(__u('Invalid Action')));
-    }
-
-    /**
-     * @throws SPException
-     * @deprecated
-     */
-    protected function checkSecurityToken(
-        string         $previousToken,
-        RequestService $request,
-        ConfigDataInterface $configData
-    ): void {
-        if ($request->analyzeString('h') !== null && $request->analyzeString('from') === null) {
-            $request->verifySignature($configData->getPasswordSalt());
-        } else {
-            $sk = $request->analyzeString('sk');
-
-            if (!$sk || $previousToken !== $sk) {
-                throw SPException::error(__u('Invalid Action'), null, 1);
-            }
-        }
-    }
 }
