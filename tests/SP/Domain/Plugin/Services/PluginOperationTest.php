@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Plugin\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\NoSuchPropertyException;
@@ -69,7 +70,7 @@ class PluginOperationTest extends UnitaryTestCase
                 self::callback(function (PluginData $current) use ($pluginDataStorage) {
                     return $current->getName() === 'test_plugin'
                            && $current->getItemId() === 100
-                           && $current->getData() === serialize($pluginDataStorage)
+                           && $current->getData() === Serde::serializeObjectToJson($pluginDataStorage)
                            && $current->getKey() === null;
                 })
             )
@@ -113,7 +114,7 @@ class PluginOperationTest extends UnitaryTestCase
                 self::callback(function (PluginData $current) use ($pluginDataStorage) {
                     return $current->getName() === 'test_plugin'
                            && $current->getItemId() === 100
-                           && $current->getData() === serialize($pluginDataStorage)
+                           && $current->getData() === Serde::serializeObjectToJson($pluginDataStorage)
                            && $current->getKey() === null;
                 })
             )

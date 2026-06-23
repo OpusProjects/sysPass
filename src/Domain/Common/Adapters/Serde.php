@@ -28,6 +28,7 @@ namespace SP\Domain\Common\Adapters;
 
 use __PHP_Incomplete_Class;
 use JsonException;
+use ReflectionClass;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
@@ -105,6 +106,52 @@ final class Serde
         try {
             return json_decode($data, flags: JSON_THROW_ON_ERROR);
         } catch (JsonException $e) {
+            throw SPException::from($e);
+        }
+    }
+
+    /**
+     * @throws SPException
+     */
+    public static function serializeObjectToJson(object $data): string
+    {
+        try {
+            $reflect = new ReflectionClass($data);
+            $props = [];
+
+            foreach ($reflect->getProperties() as $prop) {
+                $props[$prop->getName()] = $prop->getValue($data);
+            }
+
+            return json_encode($props, JSON_THROW_ON_ERROR);
+        } catch (\ReflectionException|JsonException $e) {
+            throw SPException::from($e);
+        }
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class
+     * @return T
+     *
+     * @throws SPException
+     */
+    public static function deserializeObjectFromJson(string $data, string $class): object
+    {
+        try {
+            $values = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
+            $reflect = new ReflectionClass($class);
+            $instance = $reflect->newInstanceWithoutConstructor();
+
+            foreach ($values as $name => $value) {
+                if ($reflect->hasProperty($name)) {
+                    $reflect->getProperty($name)->setValue($instance, $value);
+                }
+            }
+
+            return $instance;
+        } catch (\ReflectionException|JsonException $e) {
             throw SPException::from($e);
         }
     }

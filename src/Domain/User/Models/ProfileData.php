@@ -29,8 +29,6 @@ use SP\Domain\Common\Models\Model;
 
 /**
  * Class ProfileData
- *
- * TODO: serde using JSON
  */
 class ProfileData extends Model
 {

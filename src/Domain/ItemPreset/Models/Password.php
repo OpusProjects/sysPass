@@ -29,8 +29,6 @@ use SP\Domain\ItemPreset\Ports\PresetInterface;
 
 /**
  * Class Password
- *
- * TODO: serde using JSON
  */
 readonly class Password implements PresetInterface
 {

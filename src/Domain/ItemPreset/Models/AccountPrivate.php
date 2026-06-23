@@ -27,8 +27,6 @@ namespace SP\Domain\ItemPreset\Models;
 
 /**
  * Class AccountPrivate
- *
- * TODO: serde using JSON
  */
 readonly class AccountPrivate
 {
