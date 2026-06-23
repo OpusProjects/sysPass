@@ -47,8 +47,6 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
-     *
-     * TODO: remove?
      */
     public function indexAction(): void
     {
