@@ -59,7 +59,7 @@ and the web-server user differ.
 3. Make the runtime directories writable by the web-server user (`www-data` on Debian/Ubuntu,
    `apache` on RHEL-family, `http` on Arch):
    ```bash
-   chown -R www-data:www-data app/config app/backup app/cache app/temp
+   chown -R www-data:www-data config var/backup var/cache var/temp
    ```
 4. Install the PHP dependencies and create a `.env`:
    ```bash

@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Covers lib/Base.php — the web entry point's bootstrap. It is a procedural script
+ * Covers src/Base.php — the web entry point's bootstrap. It is a procedural script
  * that defines global constants (APP_PATH, DEBUG), loads the .env, and returns the
  * built php-di container. Because of those global side effects it cannot be require()d
  * in the test process, so it is exercised in a fresh subprocess.

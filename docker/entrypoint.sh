@@ -15,7 +15,7 @@ if [ ! -f vendor/autoload.php ]; then
     COMPOSER_ALLOW_SUPERUSER=1 php -d auto_prepend_file= /usr/bin/composer install --no-interaction --no-progress --prefer-dist --no-dev
 fi
 
-# lib/Base.php loads a .env via Dotenv::createImmutable()->load(), which throws if the
+# src/Base.php loads a .env via Dotenv::createImmutable()->load(), which throws if the
 # file is absent. The .env.example keys are all optional (commented), so a dev .env with
 # DEBUG enabled is enough.
 if [ ! -f .env ]; then
