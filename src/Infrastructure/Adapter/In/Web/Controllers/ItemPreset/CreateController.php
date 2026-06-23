@@ -33,6 +33,10 @@ use SP\Core\Events\Event;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
+
 /**
  * Class CreateController
  */

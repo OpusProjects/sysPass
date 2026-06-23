@@ -33,6 +33,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 
+use function SP\__u;
+
 /**
  * Class SearchController
  */

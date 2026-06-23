@@ -210,7 +210,7 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     public function open(string $mode = 'rb', ?bool $lock = false): FileHandlerInterface
     {
         try {
-            $file = new self($mode);
+            $file = new self($this->file, $mode);
 
             if ($lock) {
                 $file->lock();

@@ -73,8 +73,12 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
-                           && $params['userId'] === 100;
+                    return count($params) === 5
+                           && $params['userId1'] === 100
+                           && $params['userEditId'] === 100
+                           && $params['userId2'] === 100
+                           && $params['userId3'] === 100
+                           && $params['userId4'] === 100;
                 })
             );
 
@@ -532,8 +536,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['userGroupId'] === 100
+                           && $params['userGroupId2'] === 100
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );

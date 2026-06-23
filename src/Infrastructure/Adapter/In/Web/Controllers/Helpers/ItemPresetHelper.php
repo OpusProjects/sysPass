@@ -41,6 +41,8 @@ use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
+use function SP\__;
+
 /**
  * Class ItemPresetHelper
  *

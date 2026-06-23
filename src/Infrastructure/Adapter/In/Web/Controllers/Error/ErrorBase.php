@@ -29,6 +29,9 @@ use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\LayoutHelper;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
+use function SP\processException;
+use function SP\__;
+
 /**
  * Class ErrorBase
  */

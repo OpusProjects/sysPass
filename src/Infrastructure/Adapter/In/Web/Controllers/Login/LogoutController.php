@@ -33,6 +33,8 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 
+use function SP\__u;
+
 /**
  * Class LoginController
  *

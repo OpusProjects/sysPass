@@ -26,6 +26,8 @@ namespace SP\Infrastructure\Adapter\In\Cli\Commands;
 
 use RuntimeException;
 
+use function SP\__u;
+
 /**
  *
  */

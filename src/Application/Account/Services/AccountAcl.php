@@ -123,11 +123,11 @@ final class AccountAcl extends Service implements AccountAclService
      *
      * @return bool
      */
-    public static function getShowPermission(UserDto $userData, ProfileData $profileData): bool
+    public static function getShowPermission(UserDto $userData, ?ProfileData $profileData): bool
     {
         return $userData->isAdminApp
                || $userData->isAdminAcc
-               || $profileData->isAccPermission();
+               || ($profileData?->isAccPermission() ?? false);
     }
 
     /**

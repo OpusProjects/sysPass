@@ -25,6 +25,9 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Task;
 
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Task\Services\TaskFactory;
 use SP\Infrastructure\File\FileException;
 
@@ -38,7 +41,8 @@ final class TestTaskController
      *
      * @throws FileException
      */
-    public function testTaskAction(string $taskId): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function testTaskAction(string $taskId): ActionResponse
     {
         $task = TaskFactory::register($taskId, $taskId);
 
@@ -54,5 +58,7 @@ final class TestTaskController
         }
 
         TaskFactory::end($task);
+
+        return ActionResponse::ok('');
     }
 }

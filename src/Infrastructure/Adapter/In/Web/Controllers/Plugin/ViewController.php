@@ -42,6 +42,10 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Plugin\PluginManager;
 
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
+
 /**
  * Class ViewController
  */

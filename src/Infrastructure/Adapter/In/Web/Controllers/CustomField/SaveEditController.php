@@ -35,6 +35,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class SaveEditController
  */

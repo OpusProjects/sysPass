@@ -34,6 +34,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class ClearController
  */

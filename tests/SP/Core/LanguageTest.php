@@ -165,7 +165,7 @@ class LanguageTest extends UnitaryTestCase
         $this->context->setLocale($locale);
 
         $this->configData
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('getSiteLang')
             ->willReturn($appLocale);
 

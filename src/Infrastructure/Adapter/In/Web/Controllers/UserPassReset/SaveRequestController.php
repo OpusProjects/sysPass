@@ -34,6 +34,10 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\User\Services\UserPassRecover;
 
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
+
 /**
  * Class SaveRequestController
  */

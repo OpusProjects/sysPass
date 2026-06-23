@@ -24,8 +24,13 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Task;
 
-use SP\Domain\Http\Ports\ResponseService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Http\Ports\ResponseService;
+
+use function SP\processException;
 
 /**
  * Class TrackStatusController
@@ -48,7 +53,8 @@ final class TrackStatusController
      *
      * @throws \JsonException
      */
-    public function trackStatusAction(string $taskId): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function trackStatusAction(string $taskId): ActionResponse
     {
         $this->response->header('Content-Type', 'text/event-stream');
         $this->response->header('Cache-Control', 'no-store, no-cache');
@@ -70,5 +76,7 @@ final class TrackStatusController
         } catch (ServiceException $e) {
             processException($e);
         }
+
+        return ActionResponse::ok('');
     }
 }
