@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,34 +40,28 @@ final class CreateController extends TagBase
     /**
      * createAction
      */
-    public function createAction(): void
+    public function createAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_CREATE);
+        $this->setupApi(AclActionsInterface::TAG_CREATE);
 
-            $tagData = $this->buildTagData();
+        $tagData = $this->buildTagData();
 
-            $id = $this->tagService->create($tagData);
+        $id = $this->tagService->create($tagData);
 
-            $tagData->setId($id);
+        $tagData->setId($id);
 
-            $this->eventDispatcher->notify(
-                'create.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag added'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.tag',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Tag added'))
+                    ->addDetail(__u('Name'), $tagData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag added')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($tagData, $id, __('Tag added'));
     }
 
     /**

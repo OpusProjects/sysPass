@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-use Exception;
 use League\Fractal\Resource\Item;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -40,48 +39,40 @@ final class ViewController extends ClientBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    public function viewAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_VIEW);
+        $this->setupApi(AclActionsInterface::CLIENT_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+        $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $clientData = $this->clientService->getById($id);
+        $clientData = $this->clientService->getById($id);
 
-            $this->eventDispatcher->notify('show.client', new Event($this));
+        $this->eventDispatcher->notify('show.client', new Event($this));
 
-            $this->eventDispatcher->notify(
-                'show.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client displayed'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client displayed'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-            }
-
-            $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
-
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-                $this->fractal->parseIncludes(['customFields']);
-            }
-
-            $this->returnResponse(
-                ApiResponse::makeSuccess($out->toArray(), $id)
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
         }
+
+        $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
+
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
+            $this->fractal->parseIncludes(['customFields']);
+        }
+
+        return ApiResponse::makeSuccess($out->toArray(), $id);
     }
 }

@@ -31,6 +31,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Application\Api\Ports\ApiRequestService;
 use SP\Domain\Api\Services\JsonRpcResponse;
+use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Http\Code;
@@ -70,12 +71,16 @@ final class Bootstrap extends BootstrapBase
     private function manageApiRequest(): Closure
     {
         return function ($request, ResponseService $response) {
+            $apiRequestId = 0;
+
             try {
                 logger('API route');
 
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
 
                 $apiRequest = $this->buildInstanceFor(ApiRequestService::class);
+                $apiRequestId = $apiRequest->getId();
+
                 [$controllerName, $actionName] = explode('/', $apiRequest->getMethod());
                 $controllerClass = self::getClassFor($this->module->getName(), $controllerName, $actionName);
                 $method = $actionName . 'Action';
@@ -89,7 +94,7 @@ final class Bootstrap extends BootstrapBase
                         JsonRpcResponse::getResponseError(
                             self::OOPS_MESSAGE,
                             JsonRpcResponse::METHOD_NOT_FOUND,
-                            $apiRequest->getId()
+                            $apiRequestId
                         )
                     );
                 }
@@ -102,13 +107,18 @@ final class Bootstrap extends BootstrapBase
 
                 logger('Routing call: ' . $controllerClass . '::' . $method);
 
-                return call_user_func([$this->buildInstanceFor($controllerClass), $method]);
+                /** @var ApiResponse $apiResponse */
+                $apiResponse = call_user_func([$this->buildInstanceFor($controllerClass), $method]);
+
+                return $response->body(
+                    JsonRpcResponse::getResponse($apiResponse, $apiRequestId)
+                );
             } catch (Exception $e) {
                 processException($e);
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
 
-                return $response->body(JsonRpcResponse::getResponseException($e, 0));
+                return $response->body(JsonRpcResponse::getResponseException($e, $apiRequestId));
             } finally {
                 $this->router->skipRemaining();
             }

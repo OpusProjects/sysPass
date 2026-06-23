@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,35 +40,27 @@ final class EditController extends UserGroupBase
     /**
      * editAction
      */
-    public function editAction(): void
+    public function editAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_EDIT);
+        $this->setupApi(AclActionsInterface::GROUP_EDIT);
 
-            $userGroupData = $this->buildUserGroupData();
+        $userGroupData = $this->buildUserGroupData();
 
-            $this->userGroupService->update($userGroupData);
+        $this->userGroupService->update($userGroupData);
 
-            $this->eventDispatcher->notify(
-                'edit.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group updated'))
-                        ->addDetail(__u('Name'), $userGroupData->getName())
-                        ->addDetail('ID', $userGroupData->getId())
-                        ->addExtra('userGroupId', $userGroupData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.userGroup',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Group updated'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
+                    ->addDetail('ID', $userGroupData->getId())
+                    ->addExtra('userGroupId', $userGroupData->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated'));
     }
 
     /**

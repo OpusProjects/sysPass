@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,32 +40,26 @@ final class EditController extends TagBase
     /**
      * editAction
      */
-    public function editAction(): void
+    public function editAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_EDIT);
+        $this->setupApi(AclActionsInterface::TAG_EDIT);
 
-            $tagData = $this->buildTagData();
+        $tagData = $this->buildTagData();
 
-            $this->tagService->update($tagData);
+        $this->tagService->update($tagData);
 
-            $this->eventDispatcher->notify(
-                'edit.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag updated'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $tagData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.tag',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Tag updated'))
+                    ->addDetail(__u('Name'), $tagData->getName())
+                    ->addDetail('ID', $tagData->getId())
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated'));
     }
 
     /**

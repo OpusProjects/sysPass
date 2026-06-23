@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,33 +40,27 @@ final class CreateController extends UserGroupBase
     /**
      * createAction
      */
-    public function createAction(): void
+    public function createAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_CREATE);
+        $this->setupApi(AclActionsInterface::GROUP_CREATE);
 
-            $userGroupData = $this->buildUserGroupData();
+        $userGroupData = $this->buildUserGroupData();
 
-            $id = $this->userGroupService->create($userGroupData);
+        $id = $this->userGroupService->create($userGroupData);
 
-            $userGroupData->setId($id);
+        $userGroupData->setId($id);
 
-            $this->eventDispatcher->notify(
-                'create.userGroup',
-                new Event(
-                    $this, EventMessage::build()
-                    ->addDescription(__u('Group added'))
-                    ->addDetail(__u('Name'), $userGroupData->getName())
-                    ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.userGroup',
+            new Event(
+                $this, EventMessage::build()
+                ->addDescription(__u('Group added'))
+                ->addDetail(__u('Name'), $userGroupData->getName())
+                ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group added')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($userGroupData, $id, __('Group added'));
     }
 
     /**

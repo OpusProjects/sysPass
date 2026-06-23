@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Config;
 
-use Exception;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
@@ -43,7 +42,6 @@ use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ConfigHelp;
 
 use function SP\__;
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class BackupController
@@ -72,33 +70,25 @@ final class BackupController extends ControllerBase
     /**
      * backupAction
      */
-    public function backupAction(): void
+    public function backupAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
+        $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
-            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-            $this->fileBackupService->doBackup($path);
+        $this->fileBackupService->doBackup($path);
 
-            $this->eventDispatcher->notify(
-                'run.backup.end',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Application and database backup completed successfully'))
-                        ->addDetail(__u('Path'), $path)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'run.backup.end',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Application and database backup completed successfully'))
+                    ->addDetail(__u('Path'), $path)
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($this->buildBackupFiles($path), null, __('Backup process finished'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($this->buildBackupFiles($path), null, __('Backup process finished'));
     }
 
     /**

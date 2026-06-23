@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountRequest;
@@ -40,37 +39,31 @@ final class CreateController extends AccountBase
     /**
      * createAction
      */
-    public function createAction(): void
+    public function createAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_CREATE);
+        $this->setupApi(AclActionsInterface::ACCOUNT_CREATE);
 
-            $accountRequest = $this->buildAccountRequest();
+        $accountRequest = $this->buildAccountRequest();
 
-            $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $this->accountPresetService->checkPasswordPreset($accountRequest);
 
-            $accountId = $this->accountService->create($accountRequest);
+        $accountId = $this->accountService->create($accountRequest);
 
-            $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
 
-            $this->eventDispatcher->notify(
-                'create.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account created'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $accountDetails->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account created'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $accountDetails->getId())
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($accountDetails, $accountId, __('Account created')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($accountDetails, $accountId, __('Account created'));
     }
 
     /**

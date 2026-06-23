@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,34 +40,28 @@ final class CreateController extends CategoryBase
     /**
      * createAction
      */
-    public function createAction(): void
+    public function createAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_CREATE);
+        $this->setupApi(AclActionsInterface::CATEGORY_CREATE);
 
-            $categoryData = $this->buildCategoryData();
+        $categoryData = $this->buildCategoryData();
 
-            $id = $this->categoryService->create($categoryData);
+        $id = $this->categoryService->create($categoryData);
 
-            $categoryData->setId($id);
+        $categoryData->setId($id);
 
-            $this->eventDispatcher->notify(
-                'create.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category added'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category added'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category added')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($categoryData, $id, __('Category added'));
     }
 
     /**

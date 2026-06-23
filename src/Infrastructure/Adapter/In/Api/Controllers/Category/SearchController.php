@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
@@ -40,25 +39,17 @@ final class SearchController extends CategoryBase
     /**
      * searchAction
      */
-    public function searchAction(): void
+    public function searchAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_SEARCH);
+        $this->setupApi(AclActionsInterface::CATEGORY_SEARCH);
 
-            $itemSearchData = $this->buildSearchData();
+        $itemSearchData = $this->buildSearchData();
 
-            $this->eventDispatcher->notify('search.category', new Event($this));
+        $this->eventDispatcher->notify('search.category', new Event($this));
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess(
-                    $this->categoryService->search($itemSearchData)->getDataAsArray()
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess(
+            $this->categoryService->search($itemSearchData)->getDataAsArray()
+        );
     }
 
     /**

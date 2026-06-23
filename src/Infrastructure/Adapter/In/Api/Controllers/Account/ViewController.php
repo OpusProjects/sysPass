@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 
-use Exception;
 use League\Fractal\Resource\Item;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -42,51 +41,44 @@ final class ViewController extends AccountBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    public function viewAction(): ApiResponse
     {
+        $this->setupApi(AclActionsInterface::ACCOUNT_VIEW);
 
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_VIEW);
+        $id = $this->apiService->getParamInt('id', true);
+        $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $id = $this->apiService->getParamInt('id', true);
-            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
-
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-            }
-
-            $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
-
-            $this->accountService->incrementViewCounter($id);
-
-            $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
-            $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
-            $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
-
-            $this->eventDispatcher->notify(
-                'show.account',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Account displayed'))
-                        ->addDetail(__u('Name'), $accountDetails->getName())
-                        ->addDetail(__u('Client'), $accountDetails->getClientName())
-                        ->addDetail('ID', $id)
-                )
-            );
-
-            $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
-
-            if ($customFields) {
-                $this->fractal->parseIncludes(['customFields']);
-            }
-
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
-        } catch (Exception $e) {
-            $this->returnResponseException($e);
-
-            processException($e);
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
         }
+
+        $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+
+        $this->accountService->incrementViewCounter($id);
+
+        $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
+        $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
+        $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
+        $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
+
+        $this->eventDispatcher->notify(
+            'show.account',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Account displayed'))
+                    ->addDetail(__u('Name'), $accountDetails->getName())
+                    ->addDetail(__u('Client'), $accountDetails->getClientName())
+                    ->addDetail('ID', $id)
+            )
+        );
+
+        $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
+
+        if ($customFields) {
+            $this->fractal->parseIncludes(['customFields']);
+        }
+
+        return ApiResponse::makeSuccess($out->toArray(), $id);
     }
 }
