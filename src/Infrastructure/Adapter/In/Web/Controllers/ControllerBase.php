@@ -75,7 +75,6 @@ abstract class ControllerBase
     protected ?ProfileData                         $userProfileData = null;
     protected readonly bool                        $isAjax;
     protected readonly RouteContextData            $routeContextData;
-    protected readonly Helpers\JsonResponseHandler $jsonResponse;
     private readonly BrowserAuthService            $browser;
 
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
@@ -94,8 +93,6 @@ abstract class ControllerBase
         $this->layoutHelper = $webControllerHelper->getLayoutHelper();
         $this->view = $webControllerHelper->getTemplate();
         $this->uriContext = $webControllerHelper->getUriContext();
-        $this->jsonResponse = $webControllerHelper->getJsonResponseHandler();
-
         $this->isAjax = $this->request->isAjax();
 
         $loggedIn = $this->session->isLoggedIn();
