@@ -48,7 +48,7 @@ final class CreateController extends ClientBase
 
         $id = $this->clientService->create($clientData);
 
-        $clientData->setId($id);
+        $clientData = $clientData->mutate(['id' => $id]);
 
         $this->eventDispatcher->notify(new Event('create.client', 
                 $this,
@@ -68,11 +68,10 @@ final class CreateController extends ClientBase
      */
     private function buildClientData(): Client
     {
-        $clientData = new Client();
-        $clientData->setName($this->apiService->getParamString('name', true));
-        $clientData->setDescription($this->apiService->getParamString('description'));
-        $clientData->setIsGlobal($this->apiService->getParamInt('global'));
-
-        return $clientData;
+        return new Client([
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+            'isGlobal' => $this->apiService->getParamInt('global'),
+        ]);
     }
 }

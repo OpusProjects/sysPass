@@ -85,20 +85,25 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->newSelect()
             ->from(UserModel::TABLE)
             ->cols(['userGroupId AS id', '"User" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupId1')
             ->unionAll()
             ->from(UserToUserGroupModel::TABLE)
             ->cols(['userGroupId AS id', '"UserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupId2')
             ->unionAll()
             ->from(AccountToUserGroupModel::TABLE)
             ->cols(['userGroupId AS id', '"AccountToUserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId')
+            ->where('userGroupId = :userGroupId3')
             ->unionAll()
             ->from(AccountModel::TABLE)
             ->cols(['userGroupId AS id', '"Account" AS ref'])
-            ->where('userGroupId = :userGroupId')
-            ->bindValues(['userGroupId' => $userGroupId]);
+            ->where('userGroupId = :userGroupId4')
+            ->bindValues([
+                'userGroupId1' => $userGroupId,
+                'userGroupId2' => $userGroupId,
+                'userGroupId3' => $userGroupId,
+                'userGroupId4' => $userGroupId,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -130,15 +135,18 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
                     ->newSelect()
                     ->from(UserModel::TABLE)
                     ->cols(['id', '"User" AS ref'])
-                    ->where('userGroupId = :userGroupId')
+                    ->where('userGroupId = :userGroupId1')
                     ->unionAll()
                     ->from(UserToUserGroupModel::TABLE)
                     ->cols(['userId AS id', '"UserGroup" AS ref'])
-                    ->where('userGroupId = :userGroupId'),
+                    ->where('userGroupId = :userGroupId2'),
                 'Users'
             )
             ->innerJoin(UserModel::TABLE, sprintf('%s.id = %s.id', UserModel::TABLE, 'Users'))
-            ->bindValues(['userGroupId' => $userGroupId]);
+            ->bindValues([
+                'userGroupId1' => $userGroupId,
+                'userGroupId2' => $userGroupId,
+            ]);
 
         return $this->db->runQuery(QueryData::build($query));
     }
@@ -156,7 +164,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->from(UserGroupModel::TABLE)
             ->where('id = :id', ['id' => $id])
             ->limit(1);
@@ -177,7 +185,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->from(UserGroupModel::TABLE)
             ->where('name = :name', ['name' => $name])
             ->limit(1);
@@ -197,7 +205,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserGroupModel::TABLE)
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserGroupModel::class));
@@ -240,7 +248,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserGroupModel::TABLE)
-            ->cols(UserGroupModel::getCols())
+            ->cols(UserGroupModel::getCols(['users']))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -324,7 +332,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserGroupModel::TABLE)
-            ->cols($userGroup->toArray(null, ['id']))
+            ->cols($userGroup->toArray(null, ['id', 'users']))
             ->where('id = :id', ['id' => $userGroup->getId()])
             ->limit(1);
 

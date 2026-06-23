@@ -66,12 +66,11 @@ final class EditController extends ClientBase
      */
     private function buildClientData(): Client
     {
-        $clientData = new Client();
-        $clientData->setId($this->apiService->getParamInt('id', true));
-        $clientData->setName($this->apiService->getParamString('name', true));
-        $clientData->setDescription($this->apiService->getParamString('description'));
-        $clientData->setIsGlobal($this->apiService->getParamInt('global'));
-
-        return $clientData;
+        return new Client([
+            'id' => $this->apiService->getParamInt('id', true),
+            'name' => $this->apiService->getParamString('name', true),
+            'description' => $this->apiService->getParamString('description'),
+            'isGlobal' => $this->apiService->getParamInt('global'),
+        ]);
     }
 }

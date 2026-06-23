@@ -36,6 +36,8 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -44,8 +46,6 @@ final class DeleteController extends ControllerBase
 {
     use ItemTrait;
 
-use function SP\__u;
-use function SP\processException;
 
     private PluginManagerService $pluginService;
 

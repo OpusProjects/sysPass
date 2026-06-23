@@ -34,6 +34,8 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveEditController
@@ -42,8 +44,6 @@ final class SaveEditController extends UserGroupSaveBase
 {
     use ItemTrait;
 
-use function SP\__u;
-use function SP\processException;
 
     /**
      * Saves edit action

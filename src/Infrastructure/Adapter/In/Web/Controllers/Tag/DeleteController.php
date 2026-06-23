@@ -32,6 +32,8 @@ use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -40,8 +42,6 @@ final class DeleteController extends TagSaveBase
 {
     use ItemTrait;
 
-use function SP\__u;
-use function SP\processException;
 
     /**
      * Delete action

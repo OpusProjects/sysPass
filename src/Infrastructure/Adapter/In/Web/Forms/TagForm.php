@@ -72,9 +72,10 @@ final class TagForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->tagData = new Tag();
-        $this->tagData->setId($this->itemId);
-        $this->tagData->setName($this->request->analyzeString('name'));
+        $this->tagData = new Tag([
+            'id' => $this->itemId,
+            'name' => $this->request->analyzeString('name'),
+        ]);
     }
 
     /**

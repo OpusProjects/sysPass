@@ -81,27 +81,29 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $itemPresetData = new ItemPreset();
+        $data = [
+            'fixed' => (int)$this->request->analyzeBool('fixed_enabled', false),
+            'priority' => $this->request->analyzeInt('priority', 0),
+            'type' => $this->request->analyzeString('type'),
+        ];
 
         if ($this->itemId > 0) {
-            $itemPresetData->setId($this->itemId);
+            $data['id'] = $this->itemId;
         }
 
         if ($userId = $this->request->analyzeInt('user_id')) {
-            $itemPresetData->setUserId($userId);
+            $data['userId'] = $userId;
         }
 
         if ($userGroupId = $this->request->analyzeInt('user_group_id')) {
-            $itemPresetData->setUserGroupId($userGroupId);
+            $data['userGroupId'] = $userGroupId;
         }
 
         if ($userProfileId = $this->request->analyzeInt('user_profile_id')) {
-            $itemPresetData->setUserProfileId($userProfileId);
+            $data['userProfileId'] = $userProfileId;
         }
 
-        $itemPresetData->setFixed((int)$this->request->analyzeBool('fixed_enabled', false));
-        $itemPresetData->setPriority($this->request->analyzeInt('priority', 0));
-        $itemPresetData->setType($this->request->analyzeString('type'));
+        $itemPresetData = new ItemPreset($data);
 
         switch ($itemPresetData->getType()) {
             case ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION:
@@ -127,11 +129,12 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     private function makePermissionPreset(): AccountPermission
     {
-        $accountPermission = new AccountPermission();
-        $accountPermission->setUsersView($this->request->analyzeArray('users_view', null, []));
-        $accountPermission->setUsersEdit($this->request->analyzeArray('users_edit', null, []));
-        $accountPermission->setUserGroupsView($this->request->analyzeArray('user_groups_view', null, []));
-        $accountPermission->setUserGroupsEdit($this->request->analyzeArray('user_groups_edit', null, []));
+        $accountPermission = new AccountPermission(
+            $this->request->analyzeArray('users_view', null, []),
+            $this->request->analyzeArray('users_edit', null, []),
+            $this->request->analyzeArray('user_groups_view', null, []),
+            $this->request->analyzeArray('user_groups_edit', null, []),
+        );
 
         if (!$accountPermission->hasItems()) {
             throw new ValidationException(__u('There aren\'t any defined permissions'));

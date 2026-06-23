@@ -76,10 +76,11 @@ final class UserProfileForm extends FormBase implements FormInterface
     {
         $profileData = $this->getProfileDataFromRequest();
 
-        $this->userProfileData = new UserProfile();
-        $this->userProfileData->setName($this->request->analyzeString('profile_name'));
-        $this->userProfileData->setId($this->itemId);
-        $this->userProfileData->setProfile($profileData);
+        $this->userProfileData = new UserProfile([
+            'id' => $this->itemId,
+            'name' => $this->request->analyzeString('profile_name'),
+            'profile' => $profileData,
+        ]);
     }
 
     /**

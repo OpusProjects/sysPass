@@ -66,10 +66,9 @@ final class EditController extends TagBase
      */
     private function buildTagData(): Tag
     {
-        $tagData = new Tag();
-        $tagData->setId($this->apiService->getParamInt('id', true));
-        $tagData->setName($this->apiService->getParamString('name', true));
-
-        return $tagData;
+        return new Tag([
+            'id' => $this->apiService->getParamInt('id', true),
+            'name' => $this->apiService->getParamString('name', true),
+        ]);
     }
 }

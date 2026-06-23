@@ -73,22 +73,26 @@ final class NotificationForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $this->notificationData = new Notification();
-        $this->notificationData->setId($this->itemId);
-        $this->notificationData->setType($this->request->analyzeString('notification_type'));
-        $this->notificationData->setComponent($this->request->analyzeString('notification_component'));
-
         $description = NotificationMessage::factory()
             ->addDescription($this->request->analyzeString('notification_description'));
 
-        $this->notificationData->setDescription($description);
-        $this->notificationData->setUserId($this->request->analyzeInt('notification_user'));
-        $this->notificationData->setChecked($this->request->analyzeBool('notification_checkout', false));
+        $userId = $this->request->analyzeInt('notification_user');
 
-        if ($this->notificationData->getUserId() === 0 && $this->context->getUserData()->getIsAdminApp()) {
-            $this->notificationData->setOnlyAdmin($this->request->analyzeBool('notification_onlyadmin', false));
-            $this->notificationData->setSticky($this->request->analyzeBool('notification_sticky', false));
+        $data = [
+            'id' => $this->itemId,
+            'type' => $this->request->analyzeString('notification_type'),
+            'component' => $this->request->analyzeString('notification_component'),
+            'description' => $description,
+            'userId' => $userId,
+            'checked' => $this->request->analyzeBool('notification_checkout', false),
+        ];
+
+        if ($userId === 0 && $this->context->getUserData()->getIsAdminApp()) {
+            $data['onlyAdmin'] = $this->request->analyzeBool('notification_onlyadmin', false);
+            $data['sticky'] = $this->request->analyzeBool('notification_sticky', false);
         }
+
+        $this->notificationData = new Notification($data);
     }
 
     /**

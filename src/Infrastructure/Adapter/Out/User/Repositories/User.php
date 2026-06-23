@@ -238,8 +238,8 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getCols(['hash']))
-            ->orderBy(['name'])
+            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['hash']))
+            ->orderBy([sprintf('%s.name', UserModel::TABLE)])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
