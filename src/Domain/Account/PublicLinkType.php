@@ -24,11 +24,7 @@
 
 namespace SP\Domain\Account;
 
-/**
- * Enum PublickLinkType
- */
-enum PublickLinkType: int
+enum PublicLinkType: int
 {
-    // TODO: check number
     case Account = 1001;
 }
