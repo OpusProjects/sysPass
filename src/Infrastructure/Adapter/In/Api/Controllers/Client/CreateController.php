@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,34 +40,28 @@ final class CreateController extends ClientBase
     /**
      * createAction
      */
-    public function createAction(): void
+    public function createAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_CREATE);
+        $this->setupApi(AclActionsInterface::CLIENT_CREATE);
 
-            $clientData = $this->buildClientData();
+        $clientData = $this->buildClientData();
 
-            $id = $this->clientService->create($clientData);
+        $id = $this->clientService->create($clientData);
 
-            $clientData->setId($id);
+        $clientData->setId($id);
 
-            $this->eventDispatcher->notify(
-                'create.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client added'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'create.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client added'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $id, __('Client added')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($clientData, $id, __('Client added'));
     }
 
     /**

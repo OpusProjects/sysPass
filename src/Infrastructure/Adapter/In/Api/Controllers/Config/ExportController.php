@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Config;
 
 
-use Exception;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
@@ -43,7 +42,6 @@ use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ConfigHelp;
 
 use function SP\__u;
-use function SP\processException;
 
 /**
  * Class ExportController
@@ -70,39 +68,32 @@ final class ExportController extends ControllerBase
     /**
      * exportAction
      */
-    public function exportAction(): void
+    public function exportAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
+        $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
-            $password = $this->apiService->getParamString('password');
-            $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
+        $password = $this->apiService->getParamString('password');
+        $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-            $this->eventDispatcher->notify(
-                'run.export.start',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('sysPass XML export'))
-                        ->addDetail(__u('Path'), $path)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'run.export.start',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('sysPass XML export'))
+                    ->addDetail(__u('Path'), $path)
+            )
+        );
 
-            $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
+        $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
 
+        $this->eventDispatcher->notify(
+            'run.export.end',
+            new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
+        );
 
-            $this->eventDispatcher->notify(
-                'run.export.end',
-                new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
-            );
+        $exportFiles = ['files' => ['xml' => $file]];
 
-            $exportFiles = ['files' => ['xml' => $file]];
-
-            $this->returnResponse(ApiResponse::makeSuccess($exportFiles, null, __('Export process finished')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($exportFiles, null, __('Export process finished'));
     }
 }

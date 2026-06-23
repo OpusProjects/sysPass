@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -41,32 +40,26 @@ final class EditController extends ClientBase
     /**
      * editAction
      */
-    public function editAction(): void
+    public function editAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CLIENT_EDIT);
+        $this->setupApi(AclActionsInterface::CLIENT_EDIT);
 
-            $clientData = $this->buildClientData();
+        $clientData = $this->buildClientData();
 
-            $this->clientService->update($clientData);
+        $this->clientService->update($clientData);
 
-            $this->eventDispatcher->notify(
-                'edit.client',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Client updated'))
-                        ->addDetail(__u('Name'), $clientData->getName())
-                        ->addDetail('ID', $clientData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.client',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Client updated'))
+                    ->addDetail(__u('Name'), $clientData->getName())
+                    ->addDetail('ID', $clientData->getId())
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated'));
     }
 
     /**

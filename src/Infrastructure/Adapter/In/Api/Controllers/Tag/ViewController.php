@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -40,29 +39,23 @@ final class ViewController extends TagBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    public function viewAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_VIEW);
+        $this->setupApi(AclActionsInterface::TAG_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $tagData = $this->tagService->getById($id);
+        $id = $this->apiService->getParamInt('id', true);
+        $tagData = $this->tagService->getById($id);
 
-            $this->eventDispatcher->notify(
-                'show.tag',
-                new Event(
-                    $this, EventMessage::build()
-                    ->addDescription(__u('Tag displayed'))
-                    ->addDetail(__u('Name'), $tagData->getName())
-                    ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.tag',
+            new Event(
+                $this, EventMessage::build()
+                ->addDescription(__u('Tag displayed'))
+                ->addDetail(__u('Name'), $tagData->getName())
+                ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($tagData, $id);
     }
 }

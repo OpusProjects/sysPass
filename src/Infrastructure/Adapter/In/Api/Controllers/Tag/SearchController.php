@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
@@ -40,24 +39,17 @@ final class SearchController extends TagBase
     /**
      * searchAction
      */
-    public function searchAction(): void
+    public function searchAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_SEARCH);
+        $this->setupApi(AclActionsInterface::TAG_SEARCH);
 
-            $itemSearchData = $this->buildSearchData();
+        $itemSearchData = $this->buildSearchData();
 
-            $this->eventDispatcher->notify('search.tag', new Event($this));
-            $this->returnResponse(
-                ApiResponse::makeSuccess(
-                    $this->tagService->search($itemSearchData)->getDataAsArray()
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
+        $this->eventDispatcher->notify('search.tag', new Event($this));
 
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess(
+            $this->tagService->search($itemSearchData)->getDataAsArray()
+        );
     }
 
     /**

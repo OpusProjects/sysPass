@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -39,33 +38,27 @@ final class DeleteController extends CategoryBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    public function deleteAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_DELETE);
+        $this->setupApi(AclActionsInterface::CATEGORY_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $categoryData = $this->categoryService->getById($id);
+        $categoryData = $this->categoryService->getById($id);
 
-            $this->categoryService->delete($id);
+        $this->categoryService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category deleted'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $categoryData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category deleted'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $categoryData->getId())
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($categoryData, $id, __('Category deleted')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($categoryData, $id, __('Category deleted'));
     }
 }

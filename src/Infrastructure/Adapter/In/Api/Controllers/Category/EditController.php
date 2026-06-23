@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -38,34 +37,26 @@ final class EditController extends CategoryBase
     /**
      * editAction
      */
-    public function editAction(): void
+    public function editAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
+        $this->setupApi(AclActionsInterface::CATEGORY_EDIT);
 
-            $categoryData = $this->buildCategoryData();
+        $categoryData = $this->buildCategoryData();
 
-            $this->categoryService->update($categoryData);
+        $this->categoryService->update($categoryData);
 
-            $this->eventDispatcher->notify(
-                'edit.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category updated'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $categoryData->getId())
-                )
-            );
+        $this->eventDispatcher->notify(
+            'edit.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category updated'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $categoryData->getId())
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated'))
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated'));
     }
 
     /**

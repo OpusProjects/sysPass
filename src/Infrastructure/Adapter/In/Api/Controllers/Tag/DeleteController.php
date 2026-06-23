@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -39,34 +38,28 @@ final class DeleteController extends TagBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    public function deleteAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::TAG_DELETE);
+        $this->setupApi(AclActionsInterface::TAG_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $tagData = $this->tagService->getById($id);
+        $tagData = $this->tagService->getById($id);
 
-            $this->tagService->delete($id);
+        $this->tagService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.tag',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Tag removed'))
-                        ->addDetail(__u('Name'), $tagData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.tag',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Tag removed'))
+                    ->addDetail(__u('Name'), $tagData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($tagData, $id, __('Tag removed')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($tagData, $id, __('Tag removed'));
     }
 
 }

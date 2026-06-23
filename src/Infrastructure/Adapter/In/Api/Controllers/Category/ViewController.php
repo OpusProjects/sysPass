@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
-use Exception;
 use League\Fractal\Resource\Item;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -43,39 +42,33 @@ final class ViewController extends CategoryBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    public function viewAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::CATEGORY_VIEW);
+        $this->setupApi(AclActionsInterface::CATEGORY_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $customFields = Util::boolval($this->apiService->getParamString('customFields'));
+        $id = $this->apiService->getParamInt('id', true);
+        $customFields = Util::boolval($this->apiService->getParamString('customFields'));
 
-            $categoryData = $this->categoryService->getById($id);
+        $categoryData = $this->categoryService->getById($id);
 
-            $this->eventDispatcher->notify(
-                'show.category',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Category displayed'))
-                        ->addDetail(__u('Name'), $categoryData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.category',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Category displayed'))
+                    ->addDetail(__u('Name'), $categoryData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $out = $this->fractal->createData(new Item($categoryData, $this->categoryAdapter));
+        $out = $this->fractal->createData(new Item($categoryData, $this->categoryAdapter));
 
-            if ($customFields) {
-                $this->apiService->requireMasterPass();
-                $this->fractal->parseIncludes(['customFields']);
-            }
-
-            $this->returnResponse(ApiResponse::makeSuccess($out->toArray(), $id));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
+        if ($customFields) {
+            $this->apiService->requireMasterPass();
+            $this->fractal->parseIncludes(['customFields']);
         }
+
+        return ApiResponse::makeSuccess($out->toArray(), $id);
     }
 }

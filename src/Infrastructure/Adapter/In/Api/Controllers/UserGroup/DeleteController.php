@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -39,34 +38,28 @@ final class DeleteController extends UserGroupBase
     /**
      * deleteAction
      */
-    public function deleteAction(): void
+    public function deleteAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_DELETE);
+        $this->setupApi(AclActionsInterface::GROUP_DELETE);
 
-            $id = $this->apiService->getParamInt('id', true);
+        $id = $this->apiService->getParamInt('id', true);
 
-            $userGroupData = $this->userGroupService->getById($id);
+        $userGroupData = $this->userGroupService->getById($id);
 
-            $this->userGroupService->delete($id);
+        $this->userGroupService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group deleted'))
-                        ->addDetail(__u('Name'), $userGroupData->getName())
-                        ->addDetail('ID', $id)
-                        ->addExtra('userGroupId', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'delete.userGroup',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Group deleted'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
+                    ->addDetail('ID', $id)
+                    ->addExtra('userGroupId', $id)
+            )
+        );
 
-            $this->returnResponse(ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted')));
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted'));
     }
 }

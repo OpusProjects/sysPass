@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
-use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -40,32 +39,24 @@ final class ViewController extends UserGroupBase
     /**
      * viewAction
      */
-    public function viewAction(): void
+    public function viewAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::GROUP_VIEW);
+        $this->setupApi(AclActionsInterface::GROUP_VIEW);
 
-            $id = $this->apiService->getParamInt('id', true);
-            $userGroupData = $this->userGroupService->getById($id);
+        $id = $this->apiService->getParamInt('id', true);
+        $userGroupData = $this->userGroupService->getById($id);
 
-            $this->eventDispatcher->notify(
-                'show.userGroup',
-                new Event(
-                    $this,
-                    EventMessage::build()
-                        ->addDescription(__u('Group viewed'))
-                        ->addDetail(__u('Name'), $userGroupData->getName())
-                        ->addDetail('ID', $id)
-                )
-            );
+        $this->eventDispatcher->notify(
+            'show.userGroup',
+            new Event(
+                $this,
+                EventMessage::build()
+                    ->addDescription(__u('Group viewed'))
+                    ->addDetail(__u('Name'), $userGroupData->getName())
+                    ->addDetail('ID', $id)
+            )
+        );
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess($userGroupData, $id)
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess($userGroupData, $id);
     }
 }

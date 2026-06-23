@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-use Exception;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
@@ -59,23 +58,15 @@ final class SearchController extends ControllerBase
     /**
      * searchAction
      */
-    public function searchAction(): void
+    public function searchAction(): ApiResponse
     {
-        try {
-            $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
+        $this->setupApi(AclActionsInterface::ACCOUNT_SEARCH);
 
-            $accountSearchFilter = $this->buildAccountSearchFilter();
+        $accountSearchFilter = $this->buildAccountSearchFilter();
 
-            $this->returnResponse(
-                ApiResponse::makeSuccess(
-                    $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray()
-                )
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->returnResponseException($e);
-        }
+        return ApiResponse::makeSuccess(
+            $this->accountSearchService->getByFilter($accountSearchFilter)->getDataAsArray()
+        );
     }
 
     /**
