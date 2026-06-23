@@ -30,7 +30,7 @@ use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserProfileForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class UserProfileSaveBase

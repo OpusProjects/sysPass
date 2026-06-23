@@ -32,7 +32,7 @@ use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
 /**
  * Class DeleteController

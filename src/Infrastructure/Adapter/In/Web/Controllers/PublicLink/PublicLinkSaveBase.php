@@ -29,7 +29,7 @@ use SP\Core\Application;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\PublicLinkForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class PublicLinkSaveBase

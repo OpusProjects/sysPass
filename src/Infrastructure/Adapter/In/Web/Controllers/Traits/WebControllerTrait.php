@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Traits;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Mvc\Controller\ControllerTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ControllerTrait;
 
 use function SP\processException;
 

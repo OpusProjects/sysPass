@@ -30,8 +30,8 @@ use SP\Application\Account\Ports\AccountService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
 use SP\Infrastructure\Adapter\In\Web\Forms\FormInterface;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class AccountSaveBase

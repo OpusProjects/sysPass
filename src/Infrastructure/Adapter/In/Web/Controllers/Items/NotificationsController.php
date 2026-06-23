@@ -32,7 +32,7 @@ use SP\Domain\Html\Html;
 use SP\Domain\Http\Services\JsonResponse;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 /**
  * Class NotificationsController

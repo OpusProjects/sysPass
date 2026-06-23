@@ -51,7 +51,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\FileGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\ItemPresetGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\TagGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class ItemManagerController

@@ -47,7 +47,7 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Util\ErrorUtil;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;

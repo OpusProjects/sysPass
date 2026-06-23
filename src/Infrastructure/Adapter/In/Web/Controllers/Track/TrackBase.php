@@ -28,7 +28,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Track;
 use SP\Core\Application;
 use SP\Application\Security\Ports\TrackService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class TrackBase

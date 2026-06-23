@@ -39,7 +39,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Application\User\Services\UserPassRecover;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserForm;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class UserSaveBase

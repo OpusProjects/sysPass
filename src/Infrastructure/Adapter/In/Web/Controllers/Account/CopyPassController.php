@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperException;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__u;
 

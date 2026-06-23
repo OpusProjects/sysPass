@@ -35,7 +35,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
 use function SP\__u;
 

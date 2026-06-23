@@ -36,7 +36,7 @@ use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Application\CustomField\Ports\CustomFieldTypeService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 /**

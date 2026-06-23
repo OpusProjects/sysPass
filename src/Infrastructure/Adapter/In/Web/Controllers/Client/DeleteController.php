@@ -34,7 +34,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
-use SP\Mvc\Controller\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
 use function SP\__u;
 

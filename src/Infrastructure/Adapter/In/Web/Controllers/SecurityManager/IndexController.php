@@ -38,7 +38,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\TrackGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsGridHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class IndexController

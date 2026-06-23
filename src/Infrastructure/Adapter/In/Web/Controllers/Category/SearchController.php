@@ -36,8 +36,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\CategoryGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SearchGridControllerBase;
-use SP\Mvc\Controller\ItemTrait;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * SearchController

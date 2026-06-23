@@ -38,7 +38,7 @@ use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\WebControllerTrait;
-use SP\Mvc\Controller\SimpleControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
 /**
  * Class SimpleControllerBase

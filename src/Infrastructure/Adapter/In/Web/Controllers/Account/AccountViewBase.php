@@ -28,7 +28,7 @@ use SP\Core\Application;
 use SP\Core\UI\ThemeIcons;
 use SP\Application\Account\Ports\AccountService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountHelper;
-use SP\Mvc\Controller\WebControllerHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * A class for al viewable actions

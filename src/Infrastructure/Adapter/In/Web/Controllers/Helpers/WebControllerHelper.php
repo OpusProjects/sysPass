@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\Controller;
+namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
 use SP\Core\Bootstrap\Router;
 use SP\Core\PhpExtensionChecker;
@@ -34,7 +34,6 @@ use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\LayoutHelper;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
