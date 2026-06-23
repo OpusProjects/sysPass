@@ -23,7 +23,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\Controller\Validators;
+namespace SP\Infrastructure\Adapter\In\Web\Validators;
 
 /**
  * Class Validator

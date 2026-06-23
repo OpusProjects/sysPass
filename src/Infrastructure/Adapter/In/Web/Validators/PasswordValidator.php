@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\Controller\Validators;
+namespace SP\Infrastructure\Adapter\In\Web\Validators;
 
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -37,7 +37,7 @@ use function SP\__u;
 /**
  * Class PasswordValidator
  *
- * @package SP\Mvc\Controller
+ * @package SP\Infrastructure\Adapter\In\Web\Validators
  */
 class PasswordValidator implements ValidatorInterface
 {

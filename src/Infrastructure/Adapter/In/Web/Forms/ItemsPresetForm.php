@@ -34,7 +34,7 @@ use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
-use SP\Mvc\Controller\Validators\Validator;
+use SP\Infrastructure\Adapter\In\Web\Validators\Validator;
 
 /**
  * Class ItemsPresetForm
