@@ -137,9 +137,10 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 `#[Action(ResponseType::JSON|PLAIN_TEXT|...)]` — `Bootstrap::getMethod()` rejects anything else with
 *"Incorrect method return type"*. Build with `ActionResponse::ok()/error()/warning()`.
 
-- **All Web controllers are migrated.** The legacy pattern (`fooAction(): bool` returning
-  `$this->returnJsonResponse(...)` from `JsonTrait`) has been fully replaced. API controllers
-  (`src/Infrastructure/Adapter/In/Api/`) still need migration.
+- **All Web controllers are migrated.** The legacy `JsonTrait` pattern (`fooAction(): bool` +
+  `returnJsonResponse*()`) is gone — `JsonTrait` and `JsonResponseHandler` have been deleted.
+  API controllers use a separate dispatch (`void` return + `ApiResponse` via JSON-RPC) and
+  don't go through the `ActionResponse` contract.
 - `SP\` global functions (`__`, `__u`, `logger`, `processException`, `getFromEnv`) are in namespace
   `SP` — **`use function SP\...`** them (PHP's bare-call fallback only reaches the global namespace).
 - `ControllerBase` exposes `$this->view` (`TemplateInterface`); render a view and wrap the HTML in

@@ -63,11 +63,6 @@ abstract class BootstrapBase implements BootstrapInterface
     public const CONTEXT_ACTION_NAME = '_actionName';
 
     protected const OOPS_MESSAGE = 'Oops, it looks like this content does not exist...';
-    /**
-     * @deprecated Use {@link AppLock} instead
-     */
-    public static mixed $LOCK;
-    public static bool  $checkPhpVersion = false;
 
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
