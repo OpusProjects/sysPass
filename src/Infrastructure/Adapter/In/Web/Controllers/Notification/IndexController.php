@@ -26,6 +26,9 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
 use DI\DependencyException;
 use DI\NotFoundException;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,16 +51,17 @@ final class IndexController extends ControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION)) {
-            return;
+            return ActionResponse::ok('');
         }
 
         $this->view->addTemplate('index');
 
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

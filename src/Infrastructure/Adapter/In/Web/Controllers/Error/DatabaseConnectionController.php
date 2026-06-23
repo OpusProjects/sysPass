@@ -25,6 +25,9 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Error;
 
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 
 /**
@@ -35,7 +38,8 @@ final class DatabaseConnectionController extends ErrorBase
     /**
      * databaseConnectionAction
      */
-    public function databaseConnectionAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function databaseConnectionAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('error-database');
 
@@ -48,6 +52,6 @@ final class DatabaseConnectionController extends ErrorBase
             ]
         );
 
-        $this->view();
+        return ActionResponse::ok($this->view->render());
     }
 }

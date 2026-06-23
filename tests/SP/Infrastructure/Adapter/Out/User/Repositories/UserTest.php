@@ -387,8 +387,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['login'] === 'a_login'
+                           && $params['ssoLogin'] === 'a_login'
                            && $queryData->getMapClassName() === UserModel::class;
                 })
             );

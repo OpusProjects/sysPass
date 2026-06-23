@@ -44,12 +44,13 @@ final class SessionLifecycleHandler
         'use_cookies' => '1',
         'use_only_cookies' => '1',
         'cookie_httponly' => '1',
-        'cookie_secure' => '1',
         'cookie_samesite' => 'Strict',
         'use_trans_sid' => '0',
         'cache_limiter' => 'nocache',
         // session.sid_bits_per_character is deprecated as of PHP 8.5 (the session ID
         // format is being standardised), so it is no longer configured here.
+        // cookie_secure is set dynamically by sessionOptions() based on the
+        // connection scheme — hardcoding '1' breaks plain-HTTP dev environments.
     ];
     private const NEW_ID_KEY         = 'new_session_id';
     private const DESTROY_TIMEOUT    = 300;
@@ -74,7 +75,7 @@ final class SessionLifecycleHandler
     {
         if (session_status() != PHP_SESSION_ACTIVE
             && (headers_sent($filename, $line)
-                || !session_start(self::SESSION_OPTIONS))
+                || !session_start(self::sessionOptions()))
         ) {
             logger(sprintf('Headers sent in %s:%d file', $filename, $line));
 
@@ -84,7 +85,7 @@ final class SessionLifecycleHandler
         if (isset($_SESSION[self::DESTROY_TIME_KEY])) {
             if ($_SESSION[self::DESTROY_TIME_KEY] < time() - self::DESTROY_TIMEOUT) {
                 session_destroy();
-                session_start(self::SESSION_OPTIONS);
+                session_start(self::sessionOptions());
             }
 
             if (isset($_SESSION[self::NEW_ID_KEY])) {
@@ -98,9 +99,22 @@ final class SessionLifecycleHandler
     /**
      * @return string[]
      */
+    private static function sessionOptions(): array
+    {
+        $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (int)($_SERVER['SERVER_PORT'] ?? 0) === 443;
+
+        return array_merge(self::SESSION_OPTIONS, [
+            'cookie_secure' => $isSecure ? '1' : '0',
+        ]);
+    }
+
+    /**
+     * @return string[]
+     */
     private static function optionsWithoutStrictMode(): array
     {
-        return array_merge(self::SESSION_OPTIONS, ['use_strict_mode' => '0']);
+        return array_merge(self::sessionOptions(), ['use_strict_mode' => '0']);
     }
 
     /**

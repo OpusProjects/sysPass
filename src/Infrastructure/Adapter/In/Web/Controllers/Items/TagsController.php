@@ -25,6 +25,9 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -58,9 +61,12 @@ final class TagsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function tagsAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function tagsAction(): ActionResponse
     {
         JsonResponse::factory($this->router->response())
             ->sendRaw(SelectItemAdapter::factory($this->tagService->getAll())->getJsonItemsFromModel());
+
+        return ActionResponse::ok('');
     }
 }

@@ -24,6 +24,10 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Error;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
+
 /**
  * Class IndexController
  *
@@ -34,9 +38,11 @@ final class IndexController extends ErrorBase
     /**
      * indexAction
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('error');
-        $this->view();
+
+        return ActionResponse::ok($this->view->render());
     }
 }

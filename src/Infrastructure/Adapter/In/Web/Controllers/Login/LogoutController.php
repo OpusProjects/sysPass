@@ -28,6 +28,9 @@ use SP\Core\Context\ContextBase;
 use SP\Core\Context\SessionLifecycleHandler;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 
 /**
@@ -40,13 +43,14 @@ final class LogoutController extends ControllerBase
     /**
      * Logout action
      */
-    public function logoutAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function logoutAction(): ActionResponse
     {
         if ($this->session->isLoggedIn() === true) {
             $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
             $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
-            $this->eventDispatcher->notify(new Event('logout', 
+            $this->eventDispatcher->notify(new Event('logout',
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Logout session'))
@@ -62,9 +66,11 @@ final class LogoutController extends ControllerBase
 
             $this->layoutHelper->getCustomLayout('logout', 'logout');
 
-            $this->view();
+            return ActionResponse::ok($this->render());
         } else {
-            $this->router->response()->redirect('index.php?r=login');
+            $this->router->response()->redirect('index.php?r=login')->send();
+
+            return ActionResponse::ok('');
         }
     }
 }

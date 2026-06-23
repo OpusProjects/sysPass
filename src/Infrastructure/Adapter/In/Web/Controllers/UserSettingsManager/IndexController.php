@@ -28,6 +28,9 @@ use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Language;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\User\Models\UserPreferences;
@@ -60,9 +63,12 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $this->tabsHelper = $tabsHelper;
     }
 
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->getTabs();
+
+        return ActionResponse::ok($this->render());
     }
 
     /**
@@ -78,8 +84,6 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
             Acl::getActionRoute(AclActionsInterface::USERSETTINGS),
             $this->request->analyzeInt('tabIndex', 0)
         );
-
-        $this->view();
     }
 
     /**

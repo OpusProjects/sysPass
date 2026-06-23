@@ -513,6 +513,15 @@ class LoginAuthHandlerTest extends UnitaryTestCase
      * @throws Exception
      * @throws InvalidArgumentException
      */
+    protected function buildConfig(): \SP\Application\Config\Ports\ConfigFileService
+    {
+        $configData = new ConfigData();
+        $configData->setAuthBasicAutoLoginEnabled(true);
+        $config = $this->createStub(\SP\Application\Config\Ports\ConfigFileService::class);
+        $config->method('getConfigData')->willReturn($configData);
+        return $config;
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

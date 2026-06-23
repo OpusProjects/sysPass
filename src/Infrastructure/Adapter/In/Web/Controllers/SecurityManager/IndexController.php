@@ -33,6 +33,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\Security\Ports\EventlogService;
 use SP\Application\Security\Ports\TrackService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Html\DataGrid\DataGridTab;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\EventlogGrid;
@@ -80,9 +83,12 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->getGridTabs();
+
+        return ActionResponse::ok($this->render());
     }
 
     /**
@@ -112,8 +118,6 @@ final class IndexController extends ControllerBase
             Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
-
-        $this->view();
     }
 
     /**

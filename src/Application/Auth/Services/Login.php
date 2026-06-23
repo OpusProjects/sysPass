@@ -149,7 +149,7 @@ final class Login extends LoginBase implements LoginService
                     ->getById($userDataDto->userProfileId)
                     ->hydrate(ProfileData::class)
             );
-            $this->context->setLocale($userDataDto->preferences->getLang());
+            $this->context->setLocale($userDataDto->preferences?->getLang() ?? 'en_US');
 
             $this->eventDispatcher->notify(new Event('login.session.load', $this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login))
             );

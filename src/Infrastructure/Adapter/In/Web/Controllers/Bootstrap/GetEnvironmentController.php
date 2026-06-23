@@ -115,7 +115,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     private function getNotificationsEnabled(): bool
     {
         if ($this->session->isLoggedIn()) {
-            return $this->session->getUserData()->preferences->isCheckNotifications();
+            return $this->session->getUserData()->preferences?->isCheckNotifications() ?? true;
         }
 
         return false;
