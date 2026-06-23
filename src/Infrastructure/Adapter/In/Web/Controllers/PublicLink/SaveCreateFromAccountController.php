@@ -31,7 +31,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Account\Models\PublicLink;
-use SP\Domain\Account\PublickLinkType;
+use SP\Domain\Account\PublicLinkType;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -66,7 +66,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $publicLinkData = new PublicLink(
                 [
-                    'id' => PublickLinkType::Account->value,
+                    'id' => PublicLinkType::Account->value,
                     'itemId' => $accountId,
                     'notify' => (bool)$notify,
                     'hash' => Password::generateRandomBytes()
