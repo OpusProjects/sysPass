@@ -29,6 +29,8 @@ namespace SP\Infrastructure\Database;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Install\Adapters\InstallData;
 
+use function SP\getFromEnv;
+
 /**
  * Class DatabaseConnectionData
  */
@@ -97,14 +99,19 @@ class DatabaseConnectionData
     public static function getFromEnvironment(): DatabaseConnectionData
     {
         $self = new self();
-        $self->dbSocket = getenv('DB_SOCKET');
-        $self->dbHost = getenv('DB_SERVER');
-        $self->dbPort = (int)getenv('DB_PORT');
-        $self->dbName = getenv('DB_NAME');
-        $self->dbUser = getenv('DB_USER');
-        $self->dbPass = getenv('DB_PASS');
+        $self->dbSocket = getFromEnv('DB_SOCKET');
+        $self->dbHost = getFromEnv('DB_SERVER');
+        $self->dbPort = getFromEnv('DB_PORT', 0) ?: null;
+        $self->dbName = getFromEnv('DB_NAME');
+        $self->dbUser = getFromEnv('DB_USER');
+        $self->dbPass = getFromEnv('DB_PASS');
 
         return $self;
+    }
+
+    public static function hasEnvironmentConfig(): bool
+    {
+        return getFromEnv('DB_SERVER') !== null;
     }
 
     public static function getFromInstallData(InstallData $installData): DatabaseConnectionData

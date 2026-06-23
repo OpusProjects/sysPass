@@ -204,7 +204,10 @@ final class CoreDefinitions
                         return DatabaseConnectionData::getFromInstallData($installData);
                     }
 
-                    // TODO: get from env vars
+                    if (DatabaseConnectionData::hasEnvironmentConfig()) {
+                        return DatabaseConnectionData::getFromEnvironment();
+                    }
+
                     return DatabaseConnectionData::getFromConfig($configData);
                 }
             ),
