@@ -133,8 +133,6 @@ final class UserProfile extends Service implements UserProfileService
     /**
      * @param int $id
      * @return array
-     *
-     * TODO: Move to UserService instead?
      */
     public function getUsersForProfile(int $id): array
     {

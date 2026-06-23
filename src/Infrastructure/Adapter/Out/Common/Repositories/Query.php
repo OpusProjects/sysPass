@@ -141,6 +141,5 @@ final class Query implements QueryInterface
 
     public function resetFlags()
     {
-        // TODO: Implement resetFlags() method.
     }
 }

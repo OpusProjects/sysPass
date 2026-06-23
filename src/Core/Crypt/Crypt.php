@@ -48,7 +48,6 @@ class Crypt implements CryptInterface
      *
      * @return string|KeyProtectedByPassword
      * @throws CryptException
-     * @TODO: Update callers to use instance
      */
     public function makeSecuredKey(string $password, bool $useAscii = true): KeyProtectedByPassword|string
     {
@@ -122,7 +121,6 @@ class Crypt implements CryptInterface
      *
      * @return string
      * @throws CryptException
-     * @TODO: Update callers to use instance
      */
     public function decrypt(
         string                            $data,

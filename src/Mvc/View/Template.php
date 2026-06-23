@@ -176,9 +176,6 @@ final class Template implements TemplateInterface
         $this->contentTemplates->exchangeArray([]);
     }
 
-    /**
-     * TODO: remove
-     */
     public function getBase(): string
     {
         return $this->base;
