@@ -27,8 +27,6 @@ namespace SP\Domain\ItemPreset\Models;
 
 /**
  * Class AccountPermission
- *
- * TODO: serde using JSON
  */
 readonly class AccountPermission
 {

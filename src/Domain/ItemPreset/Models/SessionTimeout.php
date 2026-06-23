@@ -31,8 +31,6 @@ use SP\Domain\Http\Adapters\Address;
 
 /**
  * Class SessionTimeout
- *
- * TODO: serde using JSON
  */
 readonly class SessionTimeout
 {

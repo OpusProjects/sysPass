@@ -50,12 +50,21 @@ trait SerializedModel
                 $property = $this->{$hydratable->getSourceProperty()};
 
                 if (count($valid) > 0 && $property !== null) {
-                    return Serde::deserialize($property, $class) ?: null;
+                    return self::deserializeWithFallback($property, $class);
                 }
 
                 return null;
             }
         );
+    }
+
+    private static function deserializeWithFallback(string $data, string $class): ?object
+    {
+        if (str_starts_with($data, '{') || str_starts_with($data, '[')) {
+            return Serde::deserializeObjectFromJson($data, $class);
+        }
+
+        return Serde::deserialize($data, $class) ?: null;
     }
 
     private function parseAttribute(callable $callback): mixed
@@ -82,7 +91,7 @@ trait SerializedModel
                 );
 
                 if (count($valid) > 0) {
-                    return $this->mutate([$hydratable->getSourceProperty() => Serde::serialize($object)]);
+                    return $this->mutate([$hydratable->getSourceProperty() => Serde::serializeObjectToJson($object)]);
                 }
 
                 return $this;
