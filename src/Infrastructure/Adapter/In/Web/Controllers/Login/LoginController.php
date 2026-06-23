@@ -85,9 +85,7 @@ final class LoginController extends ControllerBase
                 return $uri->getUri();
             };
 
-            $this->eventDispatcher->notify(
-                'login.finish',
-                new Event($this, EventMessage::build()->addExtra('redirect', $redirector))
+            $this->eventDispatcher->notify(new Event('login.finish', $this, EventMessage::build()->addExtra('redirect', $redirector))
             );
 
             return ActionResponse::ok('', [
@@ -98,7 +96,7 @@ final class LoginController extends ControllerBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }
@@ -112,9 +110,7 @@ final class LoginController extends ControllerBase
         $forward = $this->request->getForwardedFor();
 
         if ($forward !== null) {
-            $this->eventDispatcher->notify(
-                'login.info',
-                new Event(
+            $this->eventDispatcher->notify(new Event('login.info', 
                     $this,
                     EventMessage::build()
                         ->addDetail(

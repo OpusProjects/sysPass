@@ -98,7 +98,7 @@ final class ViewHistoryController extends AccountControllerBase
 
         $this->view->assign('formRoute', 'account/saveRestore');
 
-        $this->eventDispatcher->notify('show.account.history', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.history', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

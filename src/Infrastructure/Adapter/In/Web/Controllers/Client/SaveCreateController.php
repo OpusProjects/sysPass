@@ -65,9 +65,7 @@ final class SaveCreateController extends ClientSaveBase
 
         $id = $this->clientService->create($itemData);
 
-        $this->eventDispatcher->notify(
-            'create.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.client', 
                 $this,
                 EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
             )

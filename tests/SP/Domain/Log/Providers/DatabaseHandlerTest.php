@@ -81,7 +81,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
     public function testUpdate()
     {
         $eventMessage = EventMessage::build()->addDescription('a_description')->addDetail('a_detail', 'a_value');
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->language
             ->expects($this->once())
@@ -102,7 +102,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('unsetAppLocales');
 
-        $this->databaseHandler->update('test_a.update', $event);
+        $this->databaseHandler->update($event);
     }
 
     /**
@@ -110,7 +110,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
      */
     public function testUpdateWithNoEventMessage()
     {
-        $event = new Event($this);
+        $event = new Event('test_a.update', $this);
 
         $this->language
             ->expects($this->once())
@@ -131,7 +131,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('unsetAppLocales');
 
-        $this->databaseHandler->update('test_a.update', $event);
+        $this->databaseHandler->update($event);
     }
 
     /**
@@ -139,7 +139,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
      */
     public function testUpdateWithSPExceptionMessage()
     {
-        $event = new Event(SPException::error('an_exception', 'a_hint'));
+        $event = new Event('test_a.update', SPException::error('an_exception', 'a_hint'));
 
         $this->language
             ->expects($this->once())
@@ -161,7 +161,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('unsetAppLocales');
 
-        $this->databaseHandler->update('test_a.update', $event);
+        $this->databaseHandler->update($event);
     }
 
     /**
@@ -182,7 +182,7 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('unsetAppLocales');
 
-        $this->databaseHandler->update('test_a.update', new Event($this));
+        $this->databaseHandler->update(new Event('test_a.update', $this));
     }
 
     protected function buildConfig(): ConfigFileService

@@ -69,9 +69,7 @@ final class SaveEditRestoreController extends AccountControllerBase
     {
         $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
-        $this->eventDispatcher->notify(
-            'edit.account.restore',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.account.restore', 
                 $this,
                 function () use ($id) {
                     $accountDetails = $this->accountService->getByIdEnriched($id);

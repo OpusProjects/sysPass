@@ -92,10 +92,11 @@ final class MailEvent extends Service implements EventReceiver
      * @param string $eventType Event name
      * @param Event $event Event object
      */
-    public function update(string $eventType, Event $event): void
+    public function update(Event $event): void
     {
         if (($eventMessage = $event->getEventMessage()) !== null) {
             try {
+                $eventName = $event->getName();
                 $recipients = $eventMessage->getExtra('email')
                               ?? $this->config->getConfigData()->getMailRecipients()
                                  ?? [];
@@ -113,7 +114,7 @@ final class MailEvent extends Service implements EventReceiver
                 if ($eventMessage->getDescriptionCounter() === 0
                     && $eventMessage->getDetailsCounter() === 0
                 ) {
-                    $mailMessage->addDescription(sprintf(__('Event: %s'), $eventType));
+                    $mailMessage->addDescription(sprintf(__('Event: %s'), $eventName));
                 } else {
                     $mailMessage->addDescription($eventMessage->composeText('<br>'));
                 }
@@ -135,7 +136,7 @@ final class MailEvent extends Service implements EventReceiver
                     )
                 );
 
-                $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventType;
+                $subject = $eventMessage->getDescription(new TextFormatter(), true) ?: $eventName;
 
                 $this->mailService->send($subject, $to, $mailMessage);
             } catch (Exception $e) {

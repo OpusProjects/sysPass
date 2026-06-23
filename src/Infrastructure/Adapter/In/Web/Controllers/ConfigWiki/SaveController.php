@@ -85,7 +85,7 @@ final class SaveController extends SimpleControllerBase
             $configData,
             $this->config,
             function () use ($eventMessage) {
-                $this->eventDispatcher->notify('save.config.wiki', new Event($this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('save.config.wiki', $this, $eventMessage));
             }
         );
     }
@@ -101,7 +101,7 @@ final class SaveController extends SimpleControllerBase
             $this->checks();
             $this->checkAccess(AclActionsInterface::CONFIG_WIKI);
         } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             ActionResponse::error($e->getMessage());
         }

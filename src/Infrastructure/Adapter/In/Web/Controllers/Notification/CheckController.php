@@ -55,9 +55,7 @@ final class CheckController extends NotificationSaveBase
 
             $this->notificationService->setCheckedById($id);
 
-            $this->eventDispatcher->notify(
-                'check.notification',
-                new Event(
+            $this->eventDispatcher->notify(new Event('check.notification', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Notification read'))
@@ -69,7 +67,7 @@ final class CheckController extends NotificationSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

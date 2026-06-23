@@ -59,8 +59,7 @@ interface EventDispatcherInterface
     /**
      * Notify to receivers
      *
-     * @param string $eventName Event name
-     * @param Event $event Event object
+     * @param Event $event Event object (carries its own name)
      */
-    public function notify(string $eventName, Event $event): void;
+    public function notify(Event $event): void;
 }

@@ -76,9 +76,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $importResults = new LdapImportResultsDto($objects->getCount());
 
-        $this->eventDispatcher->notify(
-            'import.ldap.groups',
-            new Event($this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
+        $this->eventDispatcher->notify(new Event('import.ldap.groups', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
         $iterator = $objects->getIterator();
@@ -94,9 +92,7 @@ final class LdapImport extends Service implements LdapImportService
                 try {
                     $this->userGroupService->create(new UserGroup($userGroup));
 
-                    $this->eventDispatcher->notify(
-                        'import.ldap.progress.groups',
-                        new Event(
+                    $this->eventDispatcher->notify(new Event('import.ldap.progress.groups', 
                             $this,
                             EventMessage::build()
                                         ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
@@ -107,7 +103,7 @@ final class LdapImport extends Service implements LdapImportService
                 } catch (Exception $e) {
                     processException($e);
 
-                    $this->eventDispatcher->notify('exception', new Event($e));
+                    $this->eventDispatcher->notify(new Event('exception', $e));
 
                     $importResults->addErrorObject();
                 }
@@ -171,9 +167,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $importResults = new LdapImportResultsDto($objects->getCount());
 
-        $this->eventDispatcher->notify(
-            'import.ldap.users',
-            new Event($this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
+        $this->eventDispatcher->notify(new Event('import.ldap.users', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
         );
 
         $iterator = $objects->getIterator();
@@ -195,9 +189,7 @@ final class LdapImport extends Service implements LdapImportService
                 try {
                     $this->userService->create(new User($user));
 
-                    $this->eventDispatcher->notify(
-                        'import.ldap.progress.users',
-                        new Event(
+                    $this->eventDispatcher->notify(new Event('import.ldap.progress.users', 
                             $this,
                             EventMessage::build()
                                         ->addDetail(
@@ -211,7 +203,7 @@ final class LdapImport extends Service implements LdapImportService
                 } catch (Exception $e) {
                     processException($e);
 
-                    $this->eventDispatcher->notify('exception', new Event($e));
+                    $this->eventDispatcher->notify(new Event('exception', $e));
 
                     $importResults->addErrorObject();
                 }

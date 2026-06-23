@@ -83,9 +83,7 @@ final class DeleteController extends ControllerBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);
 
-            $this->eventDispatcher->notify(
-                'delete.account.selection',
-                new Event($this, EventMessage::build()->addDescription(__u('Accounts removed')))
+            $this->eventDispatcher->notify(new Event('delete.account.selection', $this, EventMessage::build()->addDescription(__u('Accounts removed')))
             );
 
             return ActionResponse::ok(__u('Accounts removed'));
@@ -97,9 +95,7 @@ final class DeleteController extends ControllerBase
 
         $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $id, $this->customFieldService);
 
-        $this->eventDispatcher->notify(
-            'delete.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.account', 
                 $this,
                 EventMessage::build(__u('Account removed'))
                             ->addDetail(__u('Account'), $accountView->getName())

@@ -84,9 +84,7 @@ final class SaveRequestController extends AccountControllerBase
 
         $usersId = [$accountView->getUserId(), $accountView->getUserEditId()];
 
-        $this->eventDispatcher->notify(
-            'request.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('request.account', 
                 $this,
                 EventMessage::build(__u('Request'))
                             ->addDetail(

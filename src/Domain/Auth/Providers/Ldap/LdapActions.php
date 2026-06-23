@@ -107,9 +107,7 @@ final class LdapActions implements LdapActionsService
         $searchResults = $this->getResults($filter, ['dn']);
 
         if (iterator_count($searchResults) === 0) {
-            $this->eventDispatcher->notify(
-                'ldap.search.group',
-                new Event(
+            $this->eventDispatcher->notify(new Event('ldap.search.group', 
                     $this,
                     EventMessage::build(__u('Error while searching the group RDN'))
                                 ->addDetail(__u('Group'), $group)
@@ -174,7 +172,7 @@ final class LdapActions implements LdapActionsService
         try {
             return $this->ldap->search($filter, $searchBase, LaminasLdap::SEARCH_SCOPE_SUB, $attributes);
         } catch (LaminasLdapException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw LdapException::error($e->getMessage(), null, $e->getCode(), $e);
         }

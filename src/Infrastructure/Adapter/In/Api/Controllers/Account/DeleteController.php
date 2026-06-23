@@ -48,9 +48,7 @@ final class DeleteController extends AccountBase
 
         $this->accountService->delete($id);
 
-        $this->eventDispatcher->notify(
-            'delete.account',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.account', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Account removed'))

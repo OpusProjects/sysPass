@@ -88,7 +88,7 @@ final class CopyController extends AccountViewBase
         );
         $this->view->assign('formRoute', 'account/saveCopy');
 
-        $this->eventDispatcher->notify('show.account.copy', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.copy', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

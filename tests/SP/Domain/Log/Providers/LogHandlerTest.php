@@ -74,7 +74,7 @@ class LogHandlerTest extends UnitaryTestCase
             ->willReturn($ipv4);
 
         $eventMessage = EventMessage::build()->addDescription('test');
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test.event', $this, $eventMessage);
 
         $this->logger
             ->expects($this->once())
@@ -89,7 +89,7 @@ class LogHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->logHandler->update('test.event', $event);
+        $this->logHandler->update($event);
     }
 
     /**
@@ -113,7 +113,7 @@ class LogHandlerTest extends UnitaryTestCase
             ->with(true)
             ->willReturn($ipv4);
 
-        $event = new Event($this);
+        $event = new Event('test.event', $this);
 
         $this->logger
             ->expects($this->once())
@@ -128,7 +128,7 @@ class LogHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->logHandler->update('test.event', $event);
+        $this->logHandler->update($event);
     }
 
     /**
@@ -152,7 +152,7 @@ class LogHandlerTest extends UnitaryTestCase
             ->with(true)
             ->willReturn($ipv4);
 
-        $event = new Event(new RuntimeException('an_exception'));
+        $event = new Event('test.event', new RuntimeException('an_exception'));
 
         $this->logger
             ->expects($this->once())
@@ -167,7 +167,7 @@ class LogHandlerTest extends UnitaryTestCase
                 })
             );
 
-        $this->logHandler->update('test.event', $event);
+        $this->logHandler->update($event);
     }
 
 

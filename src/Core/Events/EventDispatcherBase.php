@@ -88,16 +88,17 @@ abstract class EventDispatcherBase implements EventDispatcherInterface
      * @param string $eventName event's name
      * @param Event $event event's object
      *
-     * TODO: Include event's name in Event object and simplify the method's signature
      */
-    final public function notify(string $eventName, Event $event): void
+    final public function notify(Event $event): void
     {
+        $eventName = $event->getName();
+
         /** @var EventReceiver $receiver */
         foreach ($this->receivers as $receiver) {
             $events = $receiver->getEvents();
 
             if ($events === '*' || preg_match(sprintf('/%s/i', $events), $eventName)) {
-                $receiver->update($eventName, $event);
+                $receiver->update($event);
             }
         }
     }

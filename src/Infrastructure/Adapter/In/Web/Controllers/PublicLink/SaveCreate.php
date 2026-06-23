@@ -56,7 +56,7 @@ final class SaveCreate extends PublicLinkSaveBase
 
             $this->publicLinkService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notify('create.publicLink', new Event($this));
+            $this->eventDispatcher->notify(new Event('create.publicLink', $this));
 
             return ActionResponse::ok(__u('Link created'));
         } catch (ValidationException $e) {
@@ -64,9 +64,7 @@ final class SaveCreate extends PublicLinkSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify(
-                'exception',
-                new Event($e)
+            $this->eventDispatcher->notify(new Event('exception', $e)
             );
 
             return ActionResponse::error($e->getMessage());

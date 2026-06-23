@@ -108,7 +108,7 @@ final class DeleteController extends AccountControllerBase
         );
         $this->view->assign('formRoute', 'account/saveDelete');
 
-        $this->eventDispatcher->notify('show.account.delete', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.delete', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

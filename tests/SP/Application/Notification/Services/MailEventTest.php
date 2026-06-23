@@ -61,7 +61,7 @@ class MailEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('email', ['an_email']);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->requestService
             ->expects($this->once())
@@ -87,7 +87,7 @@ class MailEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testUpdateWithConfiguredEmail()
@@ -98,7 +98,7 @@ class MailEventTest extends UnitaryTestCase
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->requestService
             ->expects($this->once())
@@ -124,7 +124,7 @@ class MailEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testUpdateWithNoEmail()
@@ -133,20 +133,20 @@ class MailEventTest extends UnitaryTestCase
                                     ->addDescription('a_description')
                                     ->addDetail('a_detail', 'a_value');
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->mailService
             ->expects($this->never())
             ->method('send');
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testUpdateWithNoDescriptionAndDetails()
     {
         $eventMessage = EventMessage::build()->setExtra('email', ['an_email']);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->requestService
             ->expects($this->once())
@@ -172,7 +172,7 @@ class MailEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testUpdateWithEmptyRecipients()
@@ -182,7 +182,7 @@ class MailEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->setExtra('email', ['an_email', '']);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->requestService
             ->expects($this->once())
@@ -208,7 +208,7 @@ class MailEventTest extends UnitaryTestCase
                 })
             );
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testUpdateWithException()
@@ -218,14 +218,14 @@ class MailEventTest extends UnitaryTestCase
                                     ->addDetail('a_detail', 'a_value')
                                     ->addExtra('email', ['an_email']);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test_a.update', $this, $eventMessage);
 
         $this->mailService
             ->expects($this->once())
             ->method('send')
             ->willThrowException(new RuntimeException('test'));
 
-        $this->mailEvent->update('test_a.update', $event);
+        $this->mailEvent->update($event);
     }
 
     public function testGetEventsString()

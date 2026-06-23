@@ -57,13 +57,13 @@ final class CreateController extends UserGroupViewBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notify('show.userGroup.create', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.userGroup.create', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

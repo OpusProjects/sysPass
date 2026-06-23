@@ -56,7 +56,7 @@ final class SaveCreateController extends TagSaveBase
 
             $this->tagService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notify('create.tag', new Event($this));
+            $this->eventDispatcher->notify(new Event('create.tag', $this));
 
             return ActionResponse::ok(__u('Tag added'));
         } catch (ValidationException $e) {
@@ -64,7 +64,7 @@ final class SaveCreateController extends TagSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

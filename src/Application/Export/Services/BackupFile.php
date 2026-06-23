@@ -82,9 +82,7 @@ final class BackupFile extends Service implements BackupFileService
         try {
             $this->deleteOldBackups($backupPath);
 
-            $this->eventDispatcher->notify(
-                'run.backup.start',
-                new Event($this, EventMessage::build()->addDescription(__u('Make Backup')))
+            $this->eventDispatcher->notify(new Event('run.backup.start', $this, EventMessage::build()->addDescription(__u('Make Backup')))
             );
 
             $configData = $this->config->getConfigData();
@@ -94,7 +92,7 @@ final class BackupFile extends Service implements BackupFileService
 
             $this->config->save($configData->setBackupHash($this->buildHash()));
         } catch (Exception $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(
                 __u('Error while doing the backup'),
@@ -125,9 +123,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function backupTables(string $dbName): void
     {
-        $this->eventDispatcher->notify(
-            'run.backup.process',
-            new Event(
+        $this->eventDispatcher->notify(new Event('run.backup.process', 
                 $this,
                 EventMessage::build()->addDescription(__u('Copying database'))
             )
@@ -263,9 +259,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function backupApp(string $directory): void
     {
-        $this->eventDispatcher->notify(
-            'run.backup.process',
-            new Event($this, EventMessage::build()->addDescription(__u('Copying application')))
+        $this->eventDispatcher->notify(new Event('run.backup.process', $this, EventMessage::build()->addDescription(__u('Copying application')))
         );
 
         $this->appArchiveHandler->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);

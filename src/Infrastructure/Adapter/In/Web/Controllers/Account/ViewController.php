@@ -91,7 +91,7 @@ final class ViewController extends AccountViewBase
 
         $this->accountService->incrementViewCounter($id);
 
-        $this->eventDispatcher->notify('show.account', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

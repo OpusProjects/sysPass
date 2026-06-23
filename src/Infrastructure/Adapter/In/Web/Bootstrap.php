@@ -130,7 +130,7 @@ final class Bootstrap extends BootstrapBase
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
 
                 // A handler (e.g. Init's not-installed/maintenance redirect) may have already
                 // sent the response; don't overwrite that 3xx with a 500 error page.

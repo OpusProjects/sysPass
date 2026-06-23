@@ -61,9 +61,7 @@ final class SaveCreateController extends UserSaveBase
 
             $id = $this->userService->create($itemData);
 
-            $this->eventDispatcher->notify(
-                'create.user',
-                new Event(
+            $this->eventDispatcher->notify(new Event('create.user', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('User added'))
@@ -81,7 +79,7 @@ final class SaveCreateController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

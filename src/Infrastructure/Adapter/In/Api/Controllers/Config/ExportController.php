@@ -75,9 +75,7 @@ final class ExportController extends ControllerBase
         $password = $this->apiService->getParamString('password');
         $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-        $this->eventDispatcher->notify(
-            'run.export.start',
-            new Event(
+        $this->eventDispatcher->notify(new Event('run.export.start', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('sysPass XML export'))
@@ -87,9 +85,7 @@ final class ExportController extends ControllerBase
 
         $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
 
-        $this->eventDispatcher->notify(
-            'run.export.end',
-            new Event($this, EventMessage::build()->addDescription(__u('Export process finished')))
+        $this->eventDispatcher->notify(new Event('run.export.end', $this, EventMessage::build()->addDescription(__u('Export process finished')))
         );
 
         $exportFiles = ['files' => ['xml' => $file]];

@@ -73,7 +73,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                 }
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(
                 __u('Error while updating the custom fields data'),
@@ -94,9 +94,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
         $customFieldsData = $this->customFieldService->getAllEncrypted();
 
         if (count($customFieldsData) === 0) {
-            $this->eventDispatcher->notify(
-                'update.masterPassword.customFieldsData',
-                new Event(
+            $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
@@ -107,9 +105,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             return;
         }
 
-        $this->eventDispatcher->notify(
-            'update.masterPassword.customFieldsData.start',
-            new Event(
+        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.start', 
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
@@ -131,15 +127,13 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
 
                 $errors[] = $customFieldData->getItemId();
             }
         }
 
-        $this->eventDispatcher->notify(
-            'update.masterPassword.customFieldsData.end',
-            new Event(
+        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.end', 
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('Update Master Password'))

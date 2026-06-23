@@ -64,7 +64,7 @@ final class CreateController extends ClientViewBase
 
         $this->setViewData();
 
-        $this->eventDispatcher->notify('show.client.create', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.client.create', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

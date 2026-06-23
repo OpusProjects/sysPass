@@ -48,9 +48,7 @@ final class DeleteController extends ClientBase
 
         $this->clientService->delete($id);
 
-        $this->eventDispatcher->notify(
-            'delete.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.client', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Client deleted'))

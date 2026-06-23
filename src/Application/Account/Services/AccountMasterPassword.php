@@ -70,9 +70,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
         try {
-            $this->eventDispatcher->notify(
-                'update.masterPassword.accounts.start',
-                new Event(
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accounts.start', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
@@ -87,12 +85,10 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $updateMasterPassRequest
             );
 
-            $this->eventDispatcher->notify(
-                'update.masterPassword.accounts.end',
-                new Event($this, $eventMessage)
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accounts.end', $this, $eventMessage)
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(
                 __u('Error while updating the accounts\' passwords'),
@@ -181,7 +177,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $accountsOk[] = $account->getId();
                 $counter++;
             } catch (SPException $e) {
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
 
                 $errorCount++;
 
@@ -221,9 +217,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
         try {
-            $this->eventDispatcher->notify(
-                'update.masterPassword.accountsHistory.start',
-                new Event(
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accountsHistory.start', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password (H)'))
@@ -238,12 +232,10 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $updateMasterPassRequest
             );
 
-            $this->eventDispatcher->notify(
-                'update.masterPassword.accountsHistory.end',
-                new Event($this, $eventMessage)
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accountsHistory.end', $this, $eventMessage)
             );
         } catch (Exception $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             throw ServiceException::error(
                 __u('Error while updating the accounts\' passwords in history'),

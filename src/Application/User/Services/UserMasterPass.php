@@ -123,7 +123,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
                 );
             }
         } catch (CryptException $e) {
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return new UserMasterPassDto(UserMasterPassStatus::CheckOld);
         } catch (Exception $e) {

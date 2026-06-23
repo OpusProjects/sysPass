@@ -107,9 +107,7 @@ final class LdapStd extends LdapBase
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
-            $this->eventDispatcher->notify(
-                'ldap.check.group',
-                new Event(
+            $this->eventDispatcher->notify(new Event('ldap.check.group', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('User in group verified'))
@@ -135,9 +133,7 @@ final class LdapStd extends LdapBase
         $filter = $this->getGroupMembershipDirectFilter($userDn);
 
         if ($this->ldapActions->getObjects($filter, ['dn'])->getCount() === 0) {
-            $this->eventDispatcher->notify(
-                'ldap.check.group',
-                new Event(
+            $this->eventDispatcher->notify(new Event('ldap.check.group', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('User does not belong to the group'))
@@ -150,9 +146,7 @@ final class LdapStd extends LdapBase
             return false;
         }
 
-        $this->eventDispatcher->notify(
-            'ldap.check.group',
-            new Event(
+        $this->eventDispatcher->notify(new Event('ldap.check.group', 
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('User in group verified'))

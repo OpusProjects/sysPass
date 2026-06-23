@@ -47,7 +47,7 @@ class EventTest extends TestCase
     public function testGetSource()
     {
         $object = (object)[1];
-        $event = new Event($object, EventMessage::build());
+        $event = new Event('test', $object, EventMessage::build());
 
         $out = $event->getSource(stdClass::class);
 
@@ -60,7 +60,7 @@ class EventTest extends TestCase
     public function testGetSourceWithException()
     {
         $object = (object)[1];
-        $event = new Event($object, EventMessage::build());
+        $event = new Event('test', $object, EventMessage::build());
 
         $this->expectException(InvalidClassException::class);
         $this->expectExceptionMessage('Source type mismatch');
@@ -71,8 +71,15 @@ class EventTest extends TestCase
     public function testGetEventMessage()
     {
         $eventMessage = EventMessage::build()->addDescription('test');
-        $event = new Event($this, $eventMessage);
+        $event = new Event('test', $this, $eventMessage);
 
         $this->assertEquals($eventMessage, $event->getEventMessage());
+    }
+
+    public function testGetName()
+    {
+        $event = new Event('my.event', $this);
+
+        $this->assertEquals('my.event', $event->getName());
     }
 }

@@ -51,9 +51,7 @@ final class EditPassController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($accountRequest->id)->getAccountVData();
 
-        $this->eventDispatcher->notify(
-            'edit.account.pass',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.account.pass', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Password updated'))

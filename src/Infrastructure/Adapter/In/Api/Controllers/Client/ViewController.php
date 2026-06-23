@@ -49,11 +49,9 @@ final class ViewController extends ClientBase
 
         $clientData = $this->clientService->getById($id);
 
-        $this->eventDispatcher->notify('show.client', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.client', $this));
 
-        $this->eventDispatcher->notify(
-            'show.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.client', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Client displayed'))

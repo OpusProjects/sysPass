@@ -81,11 +81,9 @@ abstract class BaseRepository implements Repository
 
                 logger('Transaction:Rollback');
 
-                $this->eventDispatcher->notify(
-                    'database.rollback',
-                    new Event($this, EventMessage::build()->addDescription(__u('Rollback')))
+                $this->eventDispatcher->notify(new Event('database.rollback', $this, EventMessage::build()->addDescription(__u('Rollback')))
                 );
-                $this->eventDispatcher->notify('exception', new Event($e));
+                $this->eventDispatcher->notify(new Event('exception', $e));
 
                 throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
             }

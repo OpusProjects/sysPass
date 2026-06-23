@@ -65,9 +65,7 @@ final class SaveEditController extends UserSaveBase
 
             $this->userService->update($itemData);
 
-            $this->eventDispatcher->notify(
-                'edit.user',
-                new Event(
+            $this->eventDispatcher->notify(new Event('edit.user', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('User updated'))
@@ -86,7 +84,7 @@ final class SaveEditController extends UserSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

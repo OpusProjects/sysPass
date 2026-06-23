@@ -69,9 +69,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $hash = $this->userPassRecoverService->requestForUserId($userData->getId());
 
-            $this->eventDispatcher->notify(
-                'request.user.passReset',
-                new Event(
+            $this->eventDispatcher->notify(new Event('request.user.passReset', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Password Recovery'))
@@ -93,7 +91,7 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $this->addTracking();
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

@@ -78,8 +78,8 @@ final class Upgrade extends Service implements UpgradeService
         $class = $this::class;
 
         $this->eventDispatcher->notify(
-            sprintf('upgrade.%s.start', $class),
             new Event(
+                sprintf('upgrade.%s.start', $class),
                 $this,
                 EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
             )
@@ -99,8 +99,8 @@ final class Upgrade extends Service implements UpgradeService
         }
 
         $this->eventDispatcher->notify(
-            sprintf('upgrade.%s.end', $class),
             new Event(
+                sprintf('upgrade.%s.end', $class),
                 $this,
                 EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
             )

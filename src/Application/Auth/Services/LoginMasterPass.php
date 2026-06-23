@@ -86,9 +86,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
     {
         try {
             if (!$this->temporaryMasterPassService->checkKey($key)) {
-                $this->eventDispatcher->notify(
-                    'login.masterPass',
-                    new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
+                $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Wrong master password')))
                 );
 
                 $this->addTracking();
@@ -96,9 +94,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
                 throw AuthException::info(__u('Wrong master password'), null, LoginStatus::INVALID_MASTER_PASS->value);
             }
 
-            $this->eventDispatcher->notify(
-                'login.masterPass.temporary',
-                new Event($this, EventMessage::build()->addDescription(__u('Using temporary password')))
+            $this->eventDispatcher->notify(new Event('login.masterPass.temporary', $this, EventMessage::build()->addDescription(__u('Using temporary password')))
             );
 
             $userMasterPassDto = $this->userMasterPassService->updateOnLogin(
@@ -108,9 +104,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
             );
 
             if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
-                $this->eventDispatcher->notify(
-                    'login.masterPass',
-                    new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
+                $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Wrong master password')))
                 );
 
                 $this->addTracking();
@@ -118,9 +112,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
                 throw AuthException::info(__u('Wrong master password'), null, LoginStatus::INVALID_MASTER_PASS->value);
             }
 
-            $this->eventDispatcher->notify(
-                'login.masterPass',
-                new Event($this, EventMessage::build()->addDescription(__u('Master password updated')))
+            $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Master password updated')))
             );
         } catch (NoSuchItemException|CryptException $e) {
             throw ServiceException::error('Internal error', __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
@@ -136,9 +128,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
         $userMasterPassDto = $this->userMasterPassService->updateFromOldPass($oldPass, $userLoginDto, $userDataDto);
 
         if ($userMasterPassDto->getUserMasterPassStatus() !== UserMasterPassStatus::Ok) {
-            $this->eventDispatcher->notify(
-                'login.masterPass',
-                new Event($this, EventMessage::build()->addDescription(__u('Wrong master password')))
+            $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Wrong master password')))
             );
 
             $this->addTracking();
@@ -146,9 +136,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
             throw AuthException::info(__u('Wrong master password'), null, LoginStatus::INVALID_MASTER_PASS->value);
         }
 
-        $this->eventDispatcher->notify(
-            'login.masterPass',
-            new Event($this, EventMessage::build()->addDescription(__u('Master password updated')))
+        $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Master password updated')))
         );
     }
 
@@ -176,9 +164,7 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
                     LoginStatus::INVALID_MASTER_PASS->value
                 );
             case UserMasterPassStatus::Ok:
-                $this->eventDispatcher->notify(
-                    'login.masterPass',
-                    new Event($this, EventMessage::build()->addDescription(__u('Master password loaded')))
+                $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Master password loaded')))
                 );
                 break;
         }

@@ -45,7 +45,7 @@ final class SearchController extends ClientBase
 
         $itemSearchData = $this->buildSearchData();
 
-        $this->eventDispatcher->notify('search.client', new Event($this));
+        $this->eventDispatcher->notify(new Event('search.client', $this));
 
         return ApiResponse::makeSuccess(
             $this->clientService->search($itemSearchData)->getDataAsArray()

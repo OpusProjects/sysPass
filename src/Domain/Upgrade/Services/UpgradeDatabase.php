@@ -68,9 +68,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         foreach ($this->getQueriesFromFile($version) as $query) {
             $count++;
 
-            $this->eventDispatcher->notify(
-                'upgrade.db.process',
-                new Event($this, EventMessage::build()->addDetail(__u('Version'), $version))
+            $this->eventDispatcher->notify(new Event('upgrade.db.process', $this, EventMessage::build()->addDetail(__u('Version'), $version))
             );
 
             try {
@@ -80,9 +78,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
 
                 logger('SQL: ' . $query);
 
-                $this->eventDispatcher->notify(
-                    'exception',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('exception', 
                         $this,
                         EventMessage::build()
                             ->addDescription(__u('Error while updating the database'))
@@ -102,9 +98,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
 
         $configData->setDatabaseVersion($version);
 
-        $this->eventDispatcher->notify(
-            'upgrade.db.process',
-            new Event(
+        $this->eventDispatcher->notify(new Event('upgrade.db.process', 
                 $this,
                 EventMessage::build()->addDescription(__u('Database updating was completed successfully.'))
             )

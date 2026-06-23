@@ -58,9 +58,7 @@ final class PluginRegister extends Service implements PluginRegisterService
         try {
             $this->pluginManagerService->getByName($plugin->getName());
 
-            $this->eventDispatcher->notify(
-                'register.plugin',
-                new Event(
+            $this->eventDispatcher->notify(new Event('register.plugin', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Plugin already registered'))
@@ -68,9 +66,7 @@ final class PluginRegister extends Service implements PluginRegisterService
                 )
             );
         } catch (NoSuchItemException) {
-            $this->eventDispatcher->notify(
-                'register.plugin',
-                new Event(
+            $this->eventDispatcher->notify(new Event('register.plugin', 
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Plugin not registered yet'))
@@ -90,9 +86,7 @@ final class PluginRegister extends Service implements PluginRegisterService
     {
         $this->pluginManagerService->create(new PluginModel(['name' => $plugin->getName(), 'enabled' => false]));
 
-        $this->eventDispatcher->notify(
-            'create.plugin',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.plugin', 
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('New Plugin'))

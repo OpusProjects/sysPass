@@ -61,9 +61,7 @@ final class DeleteController extends AuthTokenSaveBase
             $this->authTokenService->deleteByIdBatch($ids);
             $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $ids, $this->customFieldService);
 
-            $this->eventDispatcher->notify(
-                'delete.authToken.selection',
-                new Event($this, EventMessage::build(__u('Authorizations deleted')))
+            $this->eventDispatcher->notify(new Event('delete.authToken.selection', $this, EventMessage::build(__u('Authorizations deleted')))
             );
 
             return ActionResponse::ok(__u('Authorizations deleted'));
@@ -73,9 +71,7 @@ final class DeleteController extends AuthTokenSaveBase
 
         $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $id, $this->customFieldService);
 
-        $this->eventDispatcher->notify(
-            'delete.authToken',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.authToken', 
                 $this,
                 EventMessage::build(__u('Authorization deleted'))->addDetail(__u('Authorization'), $id)
             )

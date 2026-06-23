@@ -48,9 +48,7 @@ final class DeleteController extends CategoryBase
 
         $this->categoryService->delete($id);
 
-        $this->eventDispatcher->notify(
-            'delete.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.category', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Category deleted'))

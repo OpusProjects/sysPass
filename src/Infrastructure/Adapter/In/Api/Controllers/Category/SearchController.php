@@ -45,7 +45,7 @@ final class SearchController extends CategoryBase
 
         $itemSearchData = $this->buildSearchData();
 
-        $this->eventDispatcher->notify('search.category', new Event($this));
+        $this->eventDispatcher->notify(new Event('search.category', $this));
 
         return ApiResponse::makeSuccess(
             $this->categoryService->search($itemSearchData)->getDataAsArray()

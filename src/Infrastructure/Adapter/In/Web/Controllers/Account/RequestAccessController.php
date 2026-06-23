@@ -81,7 +81,7 @@ final class RequestAccessController extends ControllerBase
         $this->view->addTemplate('account-request');
         $this->view->assign('formRoute', 'account/saveRequest');
 
-        $this->eventDispatcher->notify('show.account.request', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.request', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

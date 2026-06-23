@@ -62,11 +62,11 @@ final class ViewController extends CustomFieldViewBase
 
             $this->setViewData($id);
 
-            $this->eventDispatcher->notify('show.customField', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.customField', $this));
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

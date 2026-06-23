@@ -78,9 +78,7 @@ final class DeleteController extends ControllerBase
         if ($id === null) {
             $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
-            $this->eventDispatcher->notify(
-                'delete.accountHistory.selection',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.accountHistory.selection', 
                     $this,
                     EventMessage::build(__u('Accounts removed'))
                 )
@@ -93,9 +91,7 @@ final class DeleteController extends ControllerBase
 
         $this->accountHistoryService->delete($id);
 
-        $this->eventDispatcher->notify(
-            'delete.accountHistory',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.accountHistory', 
                 $this,
                 EventMessage::build(__u('Account removed'))
                             ->addDetail(__u('Data'), (string)$accountHistoryDto)

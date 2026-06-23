@@ -59,9 +59,7 @@ final class SaveCreateController extends CustomFieldSaveBase
 
             $this->customFieldDefService->create($itemData);
 
-            $this->eventDispatcher->notify(
-                'create.customField',
-                new Event(
+            $this->eventDispatcher->notify(new Event('create.customField', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Field added'))
@@ -76,7 +74,7 @@ final class SaveCreateController extends CustomFieldSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

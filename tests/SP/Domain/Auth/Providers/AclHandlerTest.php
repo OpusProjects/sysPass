@@ -71,7 +71,7 @@ class AclHandlerTest extends UnitaryTestCase
                      ->method('getExtra')
                      ->with('userProfileId');
 
-        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
+        $this->aclHandler->update(new Event('edit.userProfile', $this, $eventMessage));
     }
 
     /**
@@ -91,7 +91,7 @@ class AclHandlerTest extends UnitaryTestCase
                                  ->with(1)
                                  ->willReturn([self::$faker->randomNumber()]);
 
-        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
+        $this->aclHandler->update(new Event('edit.userProfile', $this, $eventMessage));
     }
 
     /**
@@ -109,7 +109,7 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userProfileService->expects(self::never())
                                  ->method('getUsersForProfile');
 
-        $this->aclHandler->update('edit.userProfile', new Event($this, $eventMessage));
+        $this->aclHandler->update(new Event('edit.userProfile', $this, $eventMessage));
     }
 
     /**
@@ -124,7 +124,7 @@ class AclHandlerTest extends UnitaryTestCase
                      ->method('getExtra')
                      ->with('userId');
 
-        $this->aclHandler->update($userEvent, new Event($this, $eventMessage));
+        $this->aclHandler->update(new Event($userEvent, $this, $eventMessage));
     }
 
     /**
@@ -135,14 +135,14 @@ class AclHandlerTest extends UnitaryTestCase
     {
         $eventMessage = $this->createMock(EventMessage::class);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event($userEvent, $this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
                      ->with('userId')
                      ->willReturn([1]);
 
-        $this->aclHandler->update($userEvent, $event);
+        $this->aclHandler->update($event);
     }
 
     /**
@@ -154,14 +154,14 @@ class AclHandlerTest extends UnitaryTestCase
     {
         $eventMessage = $this->createMock(EventMessage::class);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event($userEvent, $this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
                      ->with('userId')
                      ->willReturn(null);
 
-        $this->aclHandler->update($userEvent, $event);
+        $this->aclHandler->update($event);
     }
 
     /**
@@ -175,7 +175,7 @@ class AclHandlerTest extends UnitaryTestCase
                      ->method('getExtra')
                      ->with('userGroupId');
 
-        $this->aclHandler->update('edit.userGroup', new Event($this, $eventMessage));
+        $this->aclHandler->update(new Event('edit.userGroup', $this, $eventMessage));
     }
 
     /**
@@ -185,7 +185,7 @@ class AclHandlerTest extends UnitaryTestCase
     {
         $eventMessage = $this->createMock(EventMessage::class);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('edit.userGroup', $this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
@@ -197,7 +197,7 @@ class AclHandlerTest extends UnitaryTestCase
             ->with(1)
             ->willReturn([self::$faker->randomNumber()]);
 
-        $this->aclHandler->update('edit.userGroup', $event);
+        $this->aclHandler->update($event);
     }
 
     /**
@@ -207,7 +207,7 @@ class AclHandlerTest extends UnitaryTestCase
     {
         $eventMessage = $this->createMock(EventMessage::class);
 
-        $event = new Event($this, $eventMessage);
+        $event = new Event('edit.userGroup', $this, $eventMessage);
 
         $eventMessage->expects(self::once())
                      ->method('getExtra')
@@ -217,7 +217,7 @@ class AclHandlerTest extends UnitaryTestCase
         $this->userGroupService->expects(self::never())
                                ->method('getUsageByUsers');
 
-        $this->aclHandler->update('edit.userGroup', $event);
+        $this->aclHandler->update($event);
     }
 
     protected function setUp(): void

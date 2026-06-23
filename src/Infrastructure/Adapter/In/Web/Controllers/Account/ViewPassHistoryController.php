@@ -86,9 +86,7 @@ final class ViewPassHistoryController extends AccountControllerBase
 
         $data = $this->accountPasswordHelper->getPasswordView($account, $useImage);
 
-        $this->eventDispatcher->notify(
-            'show.account.pass.history',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.account.pass.history', 
                 $this,
                 EventMessage::build(__u('Password viewed'))
                             ->addDetail(__u('Account'), $account->getName())

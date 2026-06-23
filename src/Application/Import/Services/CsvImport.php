@@ -71,9 +71,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
      */
     public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
-        $this->eventDispatcher->notify(
-            'run.import.csv',
-            new Event(
+        $this->eventDispatcher->notify(new Event('run.import.csv', 
                 $this,
                 EventMessage::build()
                             ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
@@ -134,9 +132,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
 
                 $this->addAccount($accountCreateDto, $importParamsDto);
 
-                $this->eventDispatcher->notify(
-                    'run.import.csv.process.account',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('run.import.csv.process.account', 
                         $this,
                         EventMessage::build()
                                     ->addDetail(__u('Account imported'), $accountName)
@@ -146,9 +142,7 @@ final class CsvImport extends ImportBase implements ItemsImportService
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify(
-                    'exception',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('exception', 
                         $e,
                         EventMessage::build()
                                     ->addDetail(__u('Error while importing the account'), $accountName)

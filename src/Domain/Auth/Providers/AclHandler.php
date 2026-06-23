@@ -96,9 +96,9 @@ final class AclHandler extends Provider implements EventReceiver
      * @param string $eventType event's type
      * @param Event $event event's source object
      */
-    public function update(string $eventType, Event $event): void
+    public function update(Event $event): void
     {
-        switch ($eventType) {
+        switch ($event->getName()) {
             case 'edit.userProfile':
                 $this->processUserProfile($event);
                 break;

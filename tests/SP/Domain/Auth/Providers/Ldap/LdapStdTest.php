@@ -28,6 +28,7 @@ namespace SP\Tests\Domain\Auth\Providers\Ldap;
 
 use ArrayIterator;
 use EmptyIterator;
+use SP\Core\Events\Event;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -108,7 +109,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(self::once())
             ->method('notify')
-            ->with('ldap.check.group', self::anything());
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.group'));
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, $groupsDn);
 
@@ -136,7 +137,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(self::once())
             ->method('notify')
-            ->with('ldap.check.group', self::anything());
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.group'));
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, $groupsDn);
 
@@ -170,7 +171,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(self::once())
             ->method('notify')
-            ->with('ldap.check.group', self::anything());
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.group'));
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, []);
 
@@ -204,7 +205,7 @@ class LdapStdTest extends UnitaryTestCase
         $this->eventDispatcher
             ->expects(self::once())
             ->method('notify')
-            ->with('ldap.check.group', self::anything());
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.group'));
 
         $out = $this->ldap->isUserInGroup($userDn, $userLogin, [$groupDn]);
 

@@ -57,13 +57,13 @@ final class CreateController extends UserViewBase
 
             $this->setViewData();
 
-            $this->eventDispatcher->notify('show.user.create', new Event($this));
+            $this->eventDispatcher->notify(new Event('show.user.create', $this));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

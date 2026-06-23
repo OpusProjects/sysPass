@@ -57,9 +57,7 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
     public function export(): DOMElement
     {
         try {
-            $this->eventDispatcher->notify(
-                'run.export.process.category',
-                new Event($this, EventMessage::build()->addDescription(__u('Exporting categories')))
+            $this->eventDispatcher->notify(new Event('run.export.process.category', $this, EventMessage::build()->addDescription(__u('Exporting categories')))
             );
 
             $categories = $this->categoryService->getAll();

@@ -50,9 +50,7 @@ final class CreateController extends ClientBase
 
         $clientData->setId($id);
 
-        $this->eventDispatcher->notify(
-            'create.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('create.client', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Client added'))

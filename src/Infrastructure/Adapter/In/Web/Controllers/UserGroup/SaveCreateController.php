@@ -61,9 +61,7 @@ final class SaveCreateController extends UserGroupSaveBase
 
             $id = $this->userGroupService->create($groupData);
 
-            $this->eventDispatcher->notify(
-                'create.userGroup',
-                new Event(
+            $this->eventDispatcher->notify(new Event('create.userGroup', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Group added'))
@@ -79,7 +77,7 @@ final class SaveCreateController extends UserGroupSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

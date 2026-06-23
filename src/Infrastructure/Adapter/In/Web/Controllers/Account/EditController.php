@@ -87,7 +87,7 @@ final class EditController extends AccountViewBase
 
         $this->accountService->incrementViewCounter($id);
 
-        $this->eventDispatcher->notify('show.account.edit', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.edit', $this));
 
         if ($this->isAjax === false) {
             $this->upgradeView();

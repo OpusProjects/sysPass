@@ -55,7 +55,7 @@ final class CreateController extends CategoryViewBase
 
         $this->setViewData();
 
-        $this->eventDispatcher->notify('show.category.create', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.category.create', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

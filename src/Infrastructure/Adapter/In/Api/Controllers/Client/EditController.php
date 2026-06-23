@@ -48,9 +48,7 @@ final class EditController extends ClientBase
 
         $this->clientService->update($clientData);
 
-        $this->eventDispatcher->notify(
-            'edit.client',
-            new Event(
+        $this->eventDispatcher->notify(new Event('edit.client', 
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Client updated'))

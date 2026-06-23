@@ -45,7 +45,7 @@ final class SearchController extends UserGroupBase
 
         $itemSearchData = $this->buildSearchData();
 
-        $this->eventDispatcher->notify('search.userGroup', new Event($this));
+        $this->eventDispatcher->notify(new Event('search.userGroup', $this));
 
         return ApiResponse::makeSuccess($this->userGroupService->search($itemSearchData)->getDataAsArray());
     }

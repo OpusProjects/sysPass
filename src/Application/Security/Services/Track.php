@@ -111,9 +111,7 @@ final class Track extends Service implements TrackService
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
                 $delaySeconds = (int)(self::TIME_SLEEP * $attempts);
 
-                $this->eventDispatcher->notify(
-                    'track.delay',
-                    new Event(
+                $this->eventDispatcher->notify(new Event('track.delay', 
                         $this,
                         EventMessage::build()
                             ->addDescription(
@@ -161,9 +159,7 @@ final class Track extends Service implements TrackService
     {
         $result = $this->trackRepository->add($this->buildTrackFrom($trackRequest));
 
-        $this->eventDispatcher->notify(
-            'track.add',
-            new Event(
+        $this->eventDispatcher->notify(new Event('track.add', 
                 $this,
                 EventMessage::build()->addDescription($this->request->getClientAddress(true))
             )

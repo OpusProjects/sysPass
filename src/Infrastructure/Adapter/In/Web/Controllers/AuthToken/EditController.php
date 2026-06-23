@@ -61,7 +61,7 @@ final class EditController extends AuthTokenViewBase
 
         $this->setViewData($id, false);
 
-        $this->eventDispatcher->notify('show.authToken.edit', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.authToken.edit', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

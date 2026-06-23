@@ -89,9 +89,7 @@ final class ViewPassController extends AccountControllerBase
 
         $this->accountService->incrementDecryptCounter($id);
 
-        $this->eventDispatcher->notify(
-            'show.account.pass',
-            new Event(
+        $this->eventDispatcher->notify(new Event('show.account.pass', 
                 $this,
                 EventMessage::build(__u('Password viewed'))
                             ->addDetail(__u('Account'), $account->getName())

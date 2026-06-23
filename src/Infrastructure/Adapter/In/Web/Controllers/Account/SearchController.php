@@ -55,7 +55,7 @@ final class SearchController extends AccountControllerBase
     {
         $this->accountSearchHelper->getAccountSearch();
 
-        $this->eventDispatcher->notify('show.account.search', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.account.search', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

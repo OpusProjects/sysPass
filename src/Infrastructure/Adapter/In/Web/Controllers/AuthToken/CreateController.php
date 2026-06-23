@@ -56,7 +56,7 @@ final class CreateController extends AuthTokenViewBase
 
         $this->setViewData(isReadonly: false);
 
-        $this->eventDispatcher->notify('show.authToken.create', new Event($this));
+        $this->eventDispatcher->notify(new Event('show.authToken.create', $this));
 
         return ActionResponse::ok('', ['html' => $this->render()]);
     }

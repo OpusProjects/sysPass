@@ -67,9 +67,7 @@ final class DeleteController extends CategorySaveBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $ids, $this->customFieldService);
 
-            $this->eventDispatcher->notify(
-                'delete.category',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.category', 
                     $this,
                     EventMessage::build()->addDescription(__u('Categories deleted'))
                 )
@@ -82,9 +80,7 @@ final class DeleteController extends CategorySaveBase
 
         $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
 
-        $this->eventDispatcher->notify(
-            'delete.category',
-            new Event(
+        $this->eventDispatcher->notify(new Event('delete.category', 
                 $this,
                 EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
             )

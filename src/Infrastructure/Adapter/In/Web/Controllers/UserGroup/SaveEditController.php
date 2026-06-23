@@ -65,9 +65,7 @@ final class SaveEditController extends UserGroupSaveBase
 
             $this->userGroupService->update($groupData);
 
-            $this->eventDispatcher->notify(
-                'edit.userGroup',
-                new Event(
+            $this->eventDispatcher->notify(new Event('edit.userGroup', 
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Group updated'))
@@ -84,7 +82,7 @@ final class SaveEditController extends UserGroupSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

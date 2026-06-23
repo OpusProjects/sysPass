@@ -62,9 +62,7 @@ final class DeleteController extends PublicLinkSaveBase
                 $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
 
-                $this->eventDispatcher->notify(
-                    'delete.publicLink.selection',
-                    new Event($this, EventMessage::build()->addDescription(__u('Links deleted')))
+                $this->eventDispatcher->notify(new Event('delete.publicLink.selection', $this, EventMessage::build()->addDescription(__u('Links deleted')))
                 );
 
                 return ActionResponse::ok(__u('Links deleted'));
@@ -72,9 +70,7 @@ final class DeleteController extends PublicLinkSaveBase
 
             $this->publicLinkService->delete($id);
 
-            $this->eventDispatcher->notify(
-                'delete.publicLink',
-                new Event(
+            $this->eventDispatcher->notify(new Event('delete.publicLink', 
                     $this,
                     EventMessage::build()->addDescription(__u('Link deleted'))->addDetail(__u('Link'), $id)
                 )
@@ -84,7 +80,7 @@ final class DeleteController extends PublicLinkSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

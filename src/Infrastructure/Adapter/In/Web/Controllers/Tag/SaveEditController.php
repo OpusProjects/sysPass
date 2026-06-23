@@ -60,7 +60,7 @@ final class SaveEditController extends TagSaveBase
 
             $this->tagService->update($this->form->getItemData());
 
-            $this->eventDispatcher->notify('edit.tag', new Event($this));
+            $this->eventDispatcher->notify(new Event('edit.tag', $this));
 
             return ActionResponse::ok(__u('Tag updated'));
         } catch (ValidationException $e) {
@@ -68,7 +68,7 @@ final class SaveEditController extends TagSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify('exception', new Event($e));
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }
