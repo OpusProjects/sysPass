@@ -63,6 +63,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
@@ -118,7 +119,7 @@ final class AccountSearchData
             $this->accountColor = $this->fileCache->load();
 
             logger('Loaded accounts color cache');
-        } catch (FileException $e) {
+        } catch (SPException $e) {
             processException($e);
         }
     }
