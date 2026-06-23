@@ -94,7 +94,6 @@ abstract class SimpleControllerBase
 
             throw new SessionTimeout();
         }
-//        $this->checkSecurityToken($this->session, $this->request);
     }
 
     /**
