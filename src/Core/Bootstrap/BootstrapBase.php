@@ -158,7 +158,7 @@ abstract class BootstrapBase implements BootstrapInterface
     {
         logger(__FUNCTION__);
 
-        self::$checkPhpVersion = Environment::checkPhpVersion();
+        $checkPhpVersion = Environment::checkPhpVersion();
 
         // Initialize authentication variables
         $this->initAuthVariables();
@@ -168,7 +168,7 @@ abstract class BootstrapBase implements BootstrapInterface
 
         $this->extensionChecker->checkMandatory();
 
-        if (!self::$checkPhpVersion) {
+        if (!$checkPhpVersion) {
             throw InitializationException::error(
                 sprintf(__('Required PHP version >= %s <= %s'), '8.4', '8.5'),
                 __u('Please update the PHP version to run sysPass')
