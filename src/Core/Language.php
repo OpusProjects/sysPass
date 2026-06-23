@@ -184,8 +184,10 @@ final class Language implements LanguageInterface
             return;
         }
 
-        if ($this->configData->getSiteLang() !== $this->context->getLocale()) {
-            $this->setLocales($this->configData->getSiteLang());
+        $siteLang = $this->configData->getSiteLang();
+
+        if ($siteLang !== null && $siteLang !== $this->context->getLocale()) {
+            $this->setLocales($siteLang);
 
             self::$appSet = true;
         }
@@ -197,7 +199,11 @@ final class Language implements LanguageInterface
     public function unsetAppLocales(): void
     {
         if (self::$appSet === true) {
-            $this->setLocales($this->context->getLocale());
+            $locale = $this->context->getLocale();
+
+            if ($locale !== null) {
+                $this->setLocales($locale);
+            }
 
             self::$appSet = false;
         }

@@ -41,6 +41,8 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
+use function SP\__;
+
 /**
  * Class UserSaveBase
  */

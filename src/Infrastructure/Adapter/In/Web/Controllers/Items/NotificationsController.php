@@ -37,6 +37,8 @@ use SP\Application\Notification\Ports\NotificationService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
+use function SP\__;
+
 /**
  * Class NotificationsController
  */

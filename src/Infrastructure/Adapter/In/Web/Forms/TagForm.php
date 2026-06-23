@@ -28,6 +28,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Tag\Models\Tag;
 
+use function SP\__u;
+
 /**
  * Class TagForm
  *

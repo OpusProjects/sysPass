@@ -36,6 +36,9 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class EnableController
  */

@@ -28,6 +28,8 @@ namespace SP\Domain\User\Services;
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__u;
+
 /**
  * Class UpdatedMasterPassException
  */

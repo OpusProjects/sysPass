@@ -108,7 +108,7 @@ final readonly class AccountFilter implements AccountFilterBuilder
     ): bool {
         return !$userData->isAdminApp
                && !$userData->isAdminAcc
-               && !($this->configData->isGlobalSearch() && $useGlobalSearch && $userProfile->isAccGlobalSearch());
+               && !($this->configData->isGlobalSearch() && $useGlobalSearch && ($userProfile?->isAccGlobalSearch() ?? false));
     }
 
     /**

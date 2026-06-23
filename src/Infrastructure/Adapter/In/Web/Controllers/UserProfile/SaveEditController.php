@@ -42,6 +42,9 @@ final class SaveEditController extends UserProfileSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * Saves edit action
      *

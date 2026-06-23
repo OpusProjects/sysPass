@@ -57,7 +57,7 @@ class FileCache extends FileCacheBase
         $this->checkOrInitializePath($path);
         $this->createPath();
 
-        $this->path->write(Serde::serialize($data));
+        $this->path->save(Serde::serialize($data));
 
         return $this;
     }

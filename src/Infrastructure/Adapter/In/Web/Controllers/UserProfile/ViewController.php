@@ -32,6 +32,10 @@ use Exception;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
+
 /**
  * Class UserProfileController
  *

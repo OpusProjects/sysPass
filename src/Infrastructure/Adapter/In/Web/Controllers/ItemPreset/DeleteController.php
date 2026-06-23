@@ -41,6 +41,9 @@ final class DeleteController extends ItemPresetSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * Delete action
      *

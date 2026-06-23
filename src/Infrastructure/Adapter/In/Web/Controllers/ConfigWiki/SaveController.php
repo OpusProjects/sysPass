@@ -45,6 +45,8 @@ final class SaveController extends SimpleControllerBase
 {
     use ConfigTrait;
 
+use function SP\__u;
+
     /**
      * @return bool
      * @throws JsonException

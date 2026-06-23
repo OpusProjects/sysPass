@@ -46,6 +46,8 @@ final class SearchController extends ControllerBase
 {
     use ItemTrait;
 
+use function SP\__u;
+
     private UserGroupService $userGroupService;
     private UserGroupGrid    $userGroupGrid;
 

@@ -44,6 +44,9 @@ final class DeleteController extends ControllerBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     private PluginManagerService $pluginService;
 
     public function __construct(

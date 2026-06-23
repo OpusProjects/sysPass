@@ -113,7 +113,7 @@ abstract class FileCacheBase implements FileCacheService
         }
 
         if (null === $this->path) {
-            $this->path = new FileHandler($path);
+            $this->path = new FileHandler($path, 'c+b');
         }
     }
 }

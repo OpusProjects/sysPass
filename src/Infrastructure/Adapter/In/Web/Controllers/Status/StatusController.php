@@ -33,6 +33,10 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use Throwable;
 
+use function SP\__u;
+use function SP\logger;
+use function SP\processException;
+
 /**
  * Class StatusController
  *

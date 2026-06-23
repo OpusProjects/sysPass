@@ -512,14 +512,14 @@ final class User extends BaseRepository implements UserRepository
             ->where(sprintf('%s.email IS NOT NULL', UserModel::TABLE))
             ->where(
                 sprintf(
-                    '(%s.userGroupId = :userGroupId OR %s.userGroupId = :userGroupId)',
+                    '(%s.userGroupId = :userGroupId OR %s.userGroupId = :userGroupId2)',
                     UserModel::TABLE,
                     UserToUserGroupModel::TABLE
                 )
             )
             ->where(sprintf('%s.isDisabled = 0', UserModel::TABLE))
             ->orderBy([sprintf('%s.login', UserModel::TABLE)])
-            ->bindValues(['userGroupId' => $groupId]);
+            ->bindValues(['userGroupId' => $groupId, 'userGroupId2' => $groupId]);
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(UserModel::class));
     }
@@ -592,7 +592,7 @@ final class User extends BaseRepository implements UserRepository
                     )
                     ->where(
                         sprintf(
-                            '%s.userId = :userId OR %s.userEditId = :userId',
+                            '%s.userId = :userId1 OR %s.userEditId = :userEditId',
                             AccountModel::TABLE,
                             AccountModel::TABLE
                         )
@@ -618,7 +618,7 @@ final class User extends BaseRepository implements UserRepository
                         ClientModel::TABLE,
                         sprintf('%s.id = %s.clientId', ClientModel::TABLE, AccountModel::TABLE)
                     )
-                    ->where(sprintf('%s.userId = :userId', AccountToUserModel::TABLE))
+                    ->where(sprintf('%s.userId = :userId2', AccountToUserModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.accountId as id', AccountToUserModel::TABLE),
@@ -640,7 +640,7 @@ final class User extends BaseRepository implements UserRepository
                             UserToUserGroupModel::TABLE
                         )
                     )
-                    ->where(sprintf('%s.userId = :userId', UserToUserGroupModel::TABLE))
+                    ->where(sprintf('%s.userId = :userId3', UserToUserGroupModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.userGroupId AS id', UserToUserGroupModel::TABLE),
@@ -662,7 +662,7 @@ final class User extends BaseRepository implements UserRepository
                         ClientModel::TABLE,
                         sprintf('%s.id = %s.clientId', ClientModel::TABLE, AccountModel::TABLE)
                     )
-                    ->where(sprintf('%s.userId = :userId', PublicLinkModel::TABLE))
+                    ->where(sprintf('%s.userId = :userId4', PublicLinkModel::TABLE))
                     ->cols(
                         [
                             sprintf('%s.id AS id', PublicLinkModel::TABLE),
@@ -677,7 +677,7 @@ final class User extends BaseRepository implements UserRepository
                 'Items'
             )
             ->orderBy(['Items.ref'])
-            ->bindValues(['userId' => $id]);
+            ->bindValues(['userId1' => $id, 'userEditId' => $id, 'userId2' => $id, 'userId3' => $id, 'userId4' => $id]);
 
         return $this->db->runQuery(QueryData::build($query));
     }

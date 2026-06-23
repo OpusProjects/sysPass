@@ -58,6 +58,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
 {
     use LockableTrait;
 
+use function SP\__u;
+
     /**
      * @var string[]
      */

@@ -38,6 +38,9 @@ use SP\Application\User\Services\User;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class SaveController
  *

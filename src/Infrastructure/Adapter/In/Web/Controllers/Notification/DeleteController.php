@@ -40,6 +40,9 @@ final class DeleteController extends NotificationSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * Delete action
      *

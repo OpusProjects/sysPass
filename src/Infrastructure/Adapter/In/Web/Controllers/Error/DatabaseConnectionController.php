@@ -30,6 +30,8 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__;
+
 /**
  * Class DatabaseConnectionController
  */

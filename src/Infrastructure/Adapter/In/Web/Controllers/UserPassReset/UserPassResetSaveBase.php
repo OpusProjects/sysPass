@@ -39,6 +39,9 @@ use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
+use function SP\__u;
+use function SP\processException;
+
 /**
  * Class UserPassResetSaveBase
  */

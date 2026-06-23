@@ -42,6 +42,9 @@ final class SaveCreateController extends UserSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * @return bool
      * @throws JsonException

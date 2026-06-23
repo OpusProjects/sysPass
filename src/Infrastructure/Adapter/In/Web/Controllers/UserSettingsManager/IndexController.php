@@ -42,6 +42,8 @@ use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
+use function SP\__;
+
 /**
  * Class IndexController
  *

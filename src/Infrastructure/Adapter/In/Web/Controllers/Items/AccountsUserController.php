@@ -26,10 +26,12 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\Application\Account\Ports\AccountService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 use stdClass;
@@ -62,7 +64,8 @@ final class AccountsUserController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function accountsUserAction(?int $accountId = null): void
+    #[Action(ResponseType::JSON)]
+    public function accountsUserAction(?int $accountId = null): ActionResponse
     {
         $outItems = [];
 
@@ -74,10 +77,6 @@ final class AccountsUserController extends SimpleControllerBase
             $outItems[] = $obj;
         }
 
-        $jsonResponse = new JsonMessage();
-        $jsonResponse->setStatus(0);
-        $jsonResponse->setData($outItems);
-
-        JsonResponse::factory($this->router->response())->send($jsonResponse);
+        return ActionResponse::ok('', $outItems);
     }
 }

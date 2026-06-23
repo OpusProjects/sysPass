@@ -41,6 +41,9 @@ final class DeleteController extends CustomFieldSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * Delete action
      *

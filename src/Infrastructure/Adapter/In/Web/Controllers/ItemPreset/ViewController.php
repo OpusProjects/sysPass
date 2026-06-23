@@ -42,6 +42,10 @@ final class ViewController extends ItemPresetViewBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+use function SP\__;
+
     /**
      * View action
      *

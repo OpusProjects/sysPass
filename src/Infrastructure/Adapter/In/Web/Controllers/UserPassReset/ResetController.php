@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserPassReset;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Util\ErrorUtil;
 
@@ -36,7 +39,8 @@ final class ResetController extends ControllerBase
      * @param string|null $hash
      *
      */
-    public function resetAction(?string $hash = null): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function resetAction(?string $hash = null): ActionResponse
     {
         $this->layoutHelper->getCustomLayout('reset', strtolower($this->routeContextData->actionName));
 
@@ -46,6 +50,6 @@ final class ResetController extends ControllerBase
             ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'reset');
         }
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

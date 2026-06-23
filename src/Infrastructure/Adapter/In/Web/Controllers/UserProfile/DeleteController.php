@@ -41,6 +41,9 @@ final class DeleteController extends UserProfileSaveBase
 {
     use ItemTrait;
 
+use function SP\__u;
+use function SP\processException;
+
     /**
      * Delete action
      *
