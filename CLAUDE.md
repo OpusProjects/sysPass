@@ -101,8 +101,9 @@ Both pass: **1996 unit** + **93 integration**. Test-environment gotchas (the ima
   logged-in user's preference, so `UserDataGenerator` pins `lang` to `en` (it used a random
   `faker->languageCode()`, which made integration tests assert English strings fail intermittently
   with da/is/fo/… responses).
-- Known separate flaky: `AccountPresetTest::testAddPresetPermissions` (a faker-data / consecutive-mock
-  matcher issue, not language).
+- `AccountPresetTest::testAddPresetPermissions` was flaky (faker-data collisions with the
+  logged-in user's id/userGroupId); fixed by applying the same `array_diff` exclusion in test
+  expectations that the production code uses.
 
 ## Web request flow & DI container
 
