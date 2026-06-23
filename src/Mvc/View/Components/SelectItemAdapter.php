@@ -36,7 +36,7 @@ use function SP\__u;
 /**
  * Class SelectItemAdapter
  */
-final readonly class SelectItemAdapter implements ItemAdapterInterface
+final readonly class SelectItemAdapter
 {
 
     public function __construct(protected array $items)
