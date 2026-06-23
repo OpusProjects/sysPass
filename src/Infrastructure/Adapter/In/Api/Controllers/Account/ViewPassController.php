@@ -26,17 +26,47 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 
 use Exception;
-use SP\Core\Crypt\Crypt;
+use SP\Core\Application;
+use SP\Core\Bootstrap\Router;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Account\Ports\AccountAdapter;
+use SP\Application\Account\Ports\AccountPresetService;
+use SP\Application\Account\Ports\AccountService;
+use SP\Application\Api\Ports\ApiService;
+use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 
 /**
  * Class ViewController
  */
 final class ViewPassController extends AccountBase
 {
+    private CryptInterface $crypt;
+
+    /**
+     * @throws InvalidClassException
+     */
+    public function __construct(
+        Application            $application,
+        Router                 $router,
+        ApiService             $apiService,
+        AclInterface           $acl,
+        AccountPresetService   $accountPresetService,
+        AccountService         $accountService,
+        CustomFieldDataService $customFieldService,
+        AccountAdapter         $accountAdapter,
+        CryptInterface         $crypt
+    ) {
+        parent::__construct($application, $router, $apiService, $acl, $accountPresetService, $accountService, $customFieldService, $accountAdapter);
+
+        $this->crypt = $crypt;
+    }
+
     /**
      * viewPassAction
      */
@@ -47,7 +77,7 @@ final class ViewPassController extends AccountBase
 
             $id = $this->apiService->getParamInt('id', true);
             $accountPassData = $this->accountService->getPasswordForId($id);
-            $password = Crypt::decrypt(
+            $password = $this->crypt->decrypt(
                 $accountPassData->getPass(),
                 $accountPassData->getKey(),
                 $this->apiService->getMasterPass()
