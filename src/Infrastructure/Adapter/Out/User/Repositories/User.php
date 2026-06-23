@@ -426,8 +426,8 @@ final class User extends BaseRepository implements UserRepository
             ->cols(['id'])
             ->from(UserModel::TABLE)
             ->where('UPPER(login) = UPPER(:login)')
-            ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $login]);
+            ->orWhere('UPPER(ssoLogin) = UPPER(:ssoLogin)')
+            ->bindValues(['login' => $login, 'ssoLogin' => $login]);
 
         return $this->db->runQuery(QueryData::build($query))->getNumRows() > 0;
     }
@@ -455,8 +455,8 @@ final class User extends BaseRepository implements UserRepository
             ->set('lastUpdate', 'NOW()')
             ->set('loginCount', 'loginCount + 1')
             ->where('UPPER(login) = UPPER(:login)')
-            ->where('UPPER(ssoLogin) = UPPER(:login)')
-            ->bindValues(['login' => $user->getLogin()])
+            ->orWhere('UPPER(ssoLogin) = UPPER(:ssoLogin)')
+            ->bindValues(['login' => $user->getLogin(), 'ssoLogin' => $user->getLogin()])
             ->limit(1);
 
         return $this->db->runQuery(QueryData::build($query))->getAffectedNumRows();

@@ -186,9 +186,11 @@ class UserTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                $count = count(array_diff_assoc($params, $user->toArray(['pass', 'name', 'email', 'isLdap', 'login'])));
+                $expected = $user->toArray(['pass', 'name', 'email', 'isLdap', 'login']);
+                $expected['ssoLogin'] = $user->getLogin();
+                $count = count(array_diff_assoc($params, $expected));
 
-                return count($params) === 5
+                return count($params) === 6
                        && $count === 0
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
@@ -504,8 +506,9 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 1
+                    return count($params) === 2
                            && $params['login'] === 'a_login'
+                           && $params['ssoLogin'] === 'a_login'
                            && $queryData->getMapClassName() === SimpleModel::class;
                 })
             )
