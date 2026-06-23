@@ -38,6 +38,8 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
+use function SP\processException;
+
 /**
  * Class LoginController
  *
@@ -85,8 +87,7 @@ final class LoginController extends ControllerBase
                 return $uri->getUri();
             };
 
-            $this->eventDispatcher->notify(new Event('login.finish', $this, EventMessage::build()->addExtra('redirect', $redirector))
-            );
+            $this->eventDispatcher->notify(new Event('login.finish', $this));
 
             return ActionResponse::ok('', [
                                                      'url' => $this->session->getTrasientKey(

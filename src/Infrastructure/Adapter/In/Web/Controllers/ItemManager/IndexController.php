@@ -40,6 +40,9 @@ use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\Tag\Ports\TagService;
 use SP\Html\DataGrid\DataGridTab;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\AccountGrid;
@@ -127,9 +130,12 @@ final class IndexController extends ControllerBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->getGridTabs();
+
+        return ActionResponse::ok($this->render());
     }
 
     /**
@@ -182,8 +188,6 @@ final class IndexController extends ControllerBase
             Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
-
-        $this->view();
     }
 
     /**

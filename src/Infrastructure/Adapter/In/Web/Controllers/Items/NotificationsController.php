@@ -25,6 +25,9 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -59,7 +62,8 @@ final class NotificationsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function notificationsAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function notificationsAction(): ActionResponse
     {
         $notifications = array_map(
             static function ($notification) {
@@ -86,5 +90,7 @@ final class NotificationsController extends SimpleControllerBase
         ]);
 
         JsonResponse::factory($this->router->response())->send($jsonResponse);
+
+        return ActionResponse::ok('');
     }
 }

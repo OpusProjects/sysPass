@@ -26,6 +26,9 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\Application\Client\Ports\ClientService;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -58,11 +61,14 @@ final class ClientsController extends SimpleControllerBase
      * @throws QueryException
      * @throws SPException
      */
-    public function clientsAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function clientsAction(): ActionResponse
     {
         JsonResponse::factory($this->router->response())
                     ->sendRaw(
                         SelectItemAdapter::factory($this->clientService->getAllForUser())->getJsonItemsFromModel()
                     );
+
+        return ActionResponse::ok('');
     }
 }

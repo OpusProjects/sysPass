@@ -265,12 +265,12 @@ final class CoreDefinitions
                 static function (
                     AuthProvider        $authProvider,
                     ConfigDataInterface $configData,
-                    LdapAuthService     $ldapAuth,
+                    ContainerInterface  $container,
                     BrowserAuthService  $browserAuth,
                     DatabaseAuthService $databaseAuth,
                 ) {
                     if ($configData->isLdapEnabled()) {
-                        $authProvider->registerAuth($ldapAuth, AuthType::Ldap);
+                        $authProvider->registerAuth($container->get(LdapAuthService::class), AuthType::Ldap);
                     }
 
                     if ($configData->isAuthBasicEnabled()) {
@@ -339,7 +339,7 @@ final class CoreDefinitions
                 );
             }),
             QueryFactory::class => create(QueryFactory::class)
-                ->constructor('mysql', QueryFactory::COMMON),
+                ->constructor('mysql'),
             CryptInterface::class => create(Crypt::class),
             CryptPKIHandler::class => factory(static function (PathsContext $pathsContext) {
                 $publicKeyPath = FileSystem::buildPath(

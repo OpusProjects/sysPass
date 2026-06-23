@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Plugin;
 
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -41,16 +44,17 @@ final class IndexController extends PluginSearchBase
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN)) {
-            return;
+            return ActionResponse::ok('');
         }
 
         $this->view->addTemplate('index');
 
         $this->view->assign('data', $this->getSearchGrid());
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

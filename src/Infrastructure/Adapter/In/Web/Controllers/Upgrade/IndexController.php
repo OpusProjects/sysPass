@@ -27,6 +27,9 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade;
 
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -51,12 +54,13 @@ final class IndexController extends ControllerBase
      *
      * @throws FileException
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('index', 'upgrade');
 
         $this->actions->reset();
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

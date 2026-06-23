@@ -85,7 +85,10 @@ final class LdapParams
     public static function fromArray(array $params): LdapParams
     {
         $validParams = count(
-            array_filter(array_intersect(self::REQUIRED_PARAMS, array_keys($params)), static fn($v) => !empty($v))
+            array_filter(
+                array_intersect_key($params, array_flip(self::REQUIRED_PARAMS)),
+                static fn($v) => !empty($v)
+            )
         );
 
         if ($validParams !== count(self::REQUIRED_PARAMS)) {

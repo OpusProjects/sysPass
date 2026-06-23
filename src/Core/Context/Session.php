@@ -179,7 +179,7 @@ class Session extends ContextBase implements SessionContext
      */
     public function isLoggedIn(): bool
     {
-        return $this->getUserData()->login && $this->getUserData()->preferences !== null;
+        return (bool) $this->getUserData()->login;
     }
 
     /**

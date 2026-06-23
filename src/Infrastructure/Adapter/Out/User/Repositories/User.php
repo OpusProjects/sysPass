@@ -178,7 +178,6 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
@@ -240,8 +239,6 @@ final class User extends BaseRepository implements UserRepository
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
             ->cols(UserModel::getCols(['hash']))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
-            ->cols(UserProfileModel::getColsWithPreffix(UserProfileModel::TABLE))
             ->orderBy(['name'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -336,15 +333,14 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newSelect()
             ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
-            ->cols(UserGroupModel::getColsWithPreffix(UserGroupModel::TABLE))
             ->from(UserModel::TABLE)
             ->innerJoin(
                 UserGroupModel::TABLE,
                 sprintf('%s.id = %s.userGroupId', UserGroupModel::TABLE, UserModel::TABLE)
             )
             ->where(sprintf('%s.login = :login', UserModel::TABLE))
-            ->orWhere(sprintf('%s.ssoLogin = :login', UserModel::TABLE))
-            ->bindValues(['login' => $login])
+            ->orWhere(sprintf('%s.ssoLogin = :ssoLogin', UserModel::TABLE))
+            ->bindValues(['login' => $login, 'ssoLogin' => $login])
             ->limit(1);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, UserModel::class));

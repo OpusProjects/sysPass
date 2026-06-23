@@ -124,7 +124,7 @@ final class Language implements LanguageInterface
         $userDto = $this->context->getUserData();
 
         return ($userDto->id > 0)
-            ? $userDto->preferences->getLang()
+            ? ($userDto->preferences?->getLang() ?? '')
             : '';
     }
 

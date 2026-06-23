@@ -25,6 +25,9 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Login;
 
 use SP\Core\Context\SessionLifecycleHandler;
+use SP\Domain\Common\Attributes\Action;
+use SP\Domain\Common\Dtos\ActionResponse;
+use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 
 final class IndexController extends ControllerBase
@@ -32,7 +35,8 @@ final class IndexController extends ControllerBase
     /**
      * Index action
      */
-    public function indexAction(): void
+    #[Action(ResponseType::PLAIN_TEXT)]
+    public function indexAction(): ActionResponse
     {
         SessionLifecycleHandler::clean();
 
@@ -42,6 +46,6 @@ final class IndexController extends ControllerBase
 
         $this->prepareSignedUriOnView();
 
-        $this->view();
+        return ActionResponse::ok($this->render());
     }
 }

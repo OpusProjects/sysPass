@@ -969,7 +969,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
 
     public function isAuthBasicEnabled(): bool
     {
-        return (bool)$this->get(ConfigDataInterface::AUTH_BASIC_ENABLED, true);
+        return (bool)$this->get(ConfigDataInterface::AUTH_BASIC_ENABLED, false);
     }
 
     public function setAuthBasicEnabled(?bool $authBasicEnabled): ConfigDataInterface
@@ -996,7 +996,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
      */
     public function isAuthBasicAutoLoginEnabled(): bool
     {
-        return (bool)$this->get(ConfigDataInterface::AUTH_BASIC_AUTO_LOGIN_ENABLED, true);
+        return (bool)$this->get(ConfigDataInterface::AUTH_BASIC_AUTO_LOGIN_ENABLED, false);
     }
 
     public function setAuthBasicAutoLoginEnabled(?bool $authBasicAutoLoginEnabled): ConfigDataInterface
