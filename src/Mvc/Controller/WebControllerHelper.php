@@ -34,7 +34,6 @@ use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\JsonResponseHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\LayoutHelper;
 use SP\Mvc\View\TemplateInterface;
 
@@ -47,8 +46,7 @@ final readonly class WebControllerHelper
         private SimpleControllerHelper $simpleControllerHelper,
         private TemplateInterface      $template,
         private BrowserAuthService     $browser,
-        private LayoutHelper        $layoutHelper,
-        private JsonResponseHandler $jsonResponseHandler
+        private LayoutHelper        $layoutHelper
     ) {
     }
 
@@ -102,8 +100,4 @@ final readonly class WebControllerHelper
         return $this->simpleControllerHelper->getRouteContextData();
     }
 
-    public function getJsonResponseHandler(): JsonResponseHandler
-    {
-        return $this->jsonResponseHandler;
-    }
 }
