@@ -36,7 +36,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Image\Ports\ImageService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperException;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 use function SP\__u;

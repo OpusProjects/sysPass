@@ -36,7 +36,7 @@ use SP\Html\DataGrid\DataGridInterface;
 use SP\Html\DataGrid\Layout\DataGridHeader;
 use SP\Html\DataGrid\Layout\DataGridPager;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class GridBase

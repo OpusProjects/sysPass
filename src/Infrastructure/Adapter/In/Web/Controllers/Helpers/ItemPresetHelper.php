@@ -38,8 +38,8 @@ use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class ItemPresetHelper

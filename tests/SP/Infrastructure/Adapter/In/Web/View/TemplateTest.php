@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Mvc\View;
+namespace SP\Tests\Infrastructure\Adapter\In\Web\View;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
@@ -32,9 +32,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\OutputHandlerInterface;
-use SP\Mvc\View\Template;
-use SP\Mvc\View\TemplateResolverInterface;
+use SP\Infrastructure\Adapter\In\Web\View\OutputHandlerInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Template;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateResolverInterface;
 use SP\Tests\UnitaryTestCase;
 
 /**

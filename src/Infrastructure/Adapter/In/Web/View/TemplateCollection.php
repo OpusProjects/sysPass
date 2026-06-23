@@ -22,17 +22,18 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\View;
+declare(strict_types=1);
 
-use SP\Domain\Core\Exceptions\FileNotFoundException;
+namespace SP\Infrastructure\Adapter\In\Web\View;
+
+use SP\Core\DataCollection;
 
 /**
- * Interface TemplateResolver
+ * Class TemplateCollection
+ *
+ * @template-extends DataCollection<string, mixed>
  */
-interface TemplateResolverInterface
+final class TemplateCollection extends DataCollection
 {
-    /**
-     * @throws FileNotFoundException
-     */
-    public function getTemplateFor(string $base, string $name): string;
+
 }

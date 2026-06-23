@@ -22,44 +22,17 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
-
-namespace SP\Mvc\View;
+namespace SP\Infrastructure\Adapter\In\Web\View;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Core\UI\ThemeInterface;
-use SP\Infrastructure\File\FileSystem;
-
-use function SP\__;
 
 /**
- * Class TemplateResolver
+ * Interface TemplateResolver
  */
-final readonly class TemplateResolver implements TemplateResolverInterface
+interface TemplateResolverInterface
 {
-    private const  TEMPLATE_EXTENSION = '.inc';
-
-    public function __construct(private ThemeInterface $theme)
-    {
-    }
-
     /**
      * @throws FileNotFoundException
      */
-    public function getTemplateFor(string $base, string $name): string
-    {
-        $template = FileSystem::buildPath(
-            $this->theme->getViewsPath(),
-            $base,
-            $name . self::TEMPLATE_EXTENSION
-        );
-
-        if (!is_readable($template)) {
-            $msg = sprintf(__('Unable to retrieve "%s" template: %s'), $template, $name);
-
-            throw FileNotFoundException::warning($msg);
-        }
-
-        return $template;
-    }
+    public function getTemplateFor(string $base, string $name): string;
 }

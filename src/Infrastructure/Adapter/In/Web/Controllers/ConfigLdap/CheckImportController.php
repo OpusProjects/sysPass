@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 use function SP\__u;

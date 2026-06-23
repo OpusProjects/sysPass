@@ -30,7 +30,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 use function SP\__;
 

@@ -23,10 +23,10 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Mvc\View\Components;
+namespace SP\Infrastructure\Adapter\In\Web\View\Components;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class DataTab

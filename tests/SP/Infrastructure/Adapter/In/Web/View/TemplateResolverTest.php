@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace SP\Tests\Mvc\View;
+namespace SP\Tests\Infrastructure\Adapter\In\Web\View;
 
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\Group;
@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Mvc\View\TemplateResolver;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateResolver;
 
 /**
  * Class TemplateResolverTest

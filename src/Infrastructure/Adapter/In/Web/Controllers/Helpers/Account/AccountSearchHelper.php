@@ -49,8 +49,8 @@ use SP\Html\DataGrid\DataGridSort;
 use SP\Html\DataGrid\Layout\DataGridHeaderSort;
 use SP\Html\DataGrid\Layout\DataGridPager;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\Components\SelectItemAdapter;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 use function SP\getElapsedTime;

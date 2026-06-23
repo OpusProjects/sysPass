@@ -46,7 +46,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\WebControllerTrait;
 use SP\Mvc\Controller\WebControllerHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\logger;
 use function SP\processException;

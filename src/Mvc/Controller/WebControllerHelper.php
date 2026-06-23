@@ -35,7 +35,7 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\LayoutHelper;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**
  * Class WebControllerHelper

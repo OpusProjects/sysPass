@@ -32,7 +32,7 @@ use SP\Domain\Http\Services\JsonResponse;
 use SP\Application\Tag\Ports\TagService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Mvc\Controller\SimpleControllerHelper;
-use SP\Mvc\View\Components\SelectItemAdapter;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 /**
  * Class TagsController

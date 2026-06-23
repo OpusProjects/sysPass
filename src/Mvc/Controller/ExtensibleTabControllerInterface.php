@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Mvc\Controller;
 
-use SP\Mvc\View\Components\DataTab;
+use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 
 /**
  * Interface ExtensibleTabController

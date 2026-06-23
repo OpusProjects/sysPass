@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
-use SP\Mvc\View\Components\DataTab;
+use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 
 /**
  * Class TabsHelper

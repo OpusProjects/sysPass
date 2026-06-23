@@ -34,7 +34,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 

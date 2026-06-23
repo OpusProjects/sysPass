@@ -40,7 +40,7 @@ use SP\Domain\Http\Providers\Uri;
 use SP\Application\Install\Services\Installer;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\File\FileSystem;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 use SP\Plugin\PluginManager;
 
 use function SP\__;

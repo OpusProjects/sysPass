@@ -24,16 +24,29 @@
 
 declare(strict_types=1);
 
-namespace SP\Mvc\View;
+namespace SP\Tests\Infrastructure\Adapter\In\Web\View;
 
-use SP\Core\DataCollection;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\TestCase;
+use SP\Infrastructure\Adapter\In\Web\View\OutputHandler;
 
 /**
- * Class TemplateCollection
- *
- * @template-extends DataCollection<string, mixed>
+ * Class OutputHandlerTest
  */
-final class TemplateCollection extends DataCollection
+#[Group('unitary')]
+class OutputHandlerTest extends TestCase
 {
 
+    public function testBufferedContent()
+    {
+        $callback = function () {
+            echo 'Hello world';
+            echo 'test_output';
+        };
+
+        $outputHandler = new OutputHandler();
+        $out = $outputHandler->bufferedContent($callback);
+
+        $this->assertEquals('Hello worldtest_output', $out);
+    }
 }
