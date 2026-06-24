@@ -29,49 +29,6 @@ use SP\Domain\Core\Context\Context;
 use SP\Html\Assets\IconInterface;
 use SP\Infrastructure\File\FileCache;
 
-/**
- * Class ThemeIcons
- *
- * @method IconInterface warning
- * @method IconInterface download
- * @method IconInterface clear
- * @method IconInterface play
- * @method IconInterface help
- * @method IconInterface publicLink
- * @method IconInterface back
- * @method IconInterface restore
- * @method IconInterface save
- * @method IconInterface up
- * @method IconInterface down
- * @method IconInterface viewPass
- * @method IconInterface copy
- * @method IconInterface clipboard
- * @method IconInterface email
- * @method IconInterface refresh
- * @method IconInterface editPass
- * @method IconInterface appAdmin
- * @method IconInterface accAdmin
- * @method IconInterface ldapUser
- * @method IconInterface disabled
- * @method IconInterface navPrev
- * @method IconInterface navNext
- * @method IconInterface navFirst
- * @method IconInterface navLast
- * @method IconInterface add
- * @method IconInterface view
- * @method IconInterface edit
- * @method IconInterface delete
- * @method IconInterface optional
- * @method IconInterface check
- * @method IconInterface search
- * @method IconInterface account
- * @method IconInterface group
- * @method IconInterface settings
- * @method IconInterface info
- * @method IconInterface enabled
- * @method IconInterface remove
- *
- */
 interface ThemeIconsInterface
 {
     public static function loadIcons(
@@ -80,16 +37,83 @@ interface ThemeIconsInterface
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface;
 
-    /**
-     * @param string $name
-     *
-     * @return IconInterface
-     */
     public function getIconByName(string $name): IconInterface;
 
-    /**
-     * @param string $alias
-     * @param IconInterface $icon
-     */
     public function addIcon(string $alias, IconInterface $icon): void;
+
+    public function warning(): IconInterface;
+
+    public function download(): IconInterface;
+
+    public function clear(): IconInterface;
+
+    public function play(): IconInterface;
+
+    public function help(): IconInterface;
+
+    public function publicLink(): IconInterface;
+
+    public function back(): IconInterface;
+
+    public function restore(): IconInterface;
+
+    public function save(): IconInterface;
+
+    public function up(): IconInterface;
+
+    public function down(): IconInterface;
+
+    public function viewPass(): IconInterface;
+
+    public function copy(): IconInterface;
+
+    public function clipboard(): IconInterface;
+
+    public function email(): IconInterface;
+
+    public function refresh(): IconInterface;
+
+    public function editPass(): IconInterface;
+
+    public function appAdmin(): IconInterface;
+
+    public function accAdmin(): IconInterface;
+
+    public function ldapUser(): IconInterface;
+
+    public function disabled(): IconInterface;
+
+    public function navPrev(): IconInterface;
+
+    public function navNext(): IconInterface;
+
+    public function navFirst(): IconInterface;
+
+    public function navLast(): IconInterface;
+
+    public function add(): IconInterface;
+
+    public function view(): IconInterface;
+
+    public function edit(): IconInterface;
+
+    public function delete(): IconInterface;
+
+    public function optional(): IconInterface;
+
+    public function check(): IconInterface;
+
+    public function search(): IconInterface;
+
+    public function account(): IconInterface;
+
+    public function group(): IconInterface;
+
+    public function settings(): IconInterface;
+
+    public function info(): IconInterface;
+
+    public function enabled(): IconInterface;
+
+    public function remove(): IconInterface;
 }
