@@ -26,12 +26,12 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
 
 use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Application\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
@@ -46,12 +46,14 @@ abstract class PublicLinkViewBase extends ControllerBase
 {
     private PublicLinkService $publicLinkService;
     private AccountService    $accountService;
+    private UriContextInterface $uriContext;
 
     public function __construct(
-        Application       $application,
-        WebControllerHelper $webControllerHelper,
-        PublicLinkService $publicLinkService,
-        AccountService    $accountService
+        Application          $application,
+        WebControllerHelper  $webControllerHelper,
+        PublicLinkService    $publicLinkService,
+        AccountService       $accountService,
+        UriContextInterface  $uriContext
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -59,6 +61,7 @@ abstract class PublicLinkViewBase extends ControllerBase
 
         $this->publicLinkService = $publicLinkService;
         $this->accountService = $accountService;
+        $this->uriContext = $uriContext;
     }
 
     /**
@@ -80,7 +83,8 @@ abstract class PublicLinkViewBase extends ControllerBase
 
         $this->view->assign('publicLink', $publicLink);
         $this->view->assign('isView', $isView);
-        $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo(), ['allowed_classes' => false]));
+        $useInfo = $publicLink->getUseInfo();
+        $this->view->assign('usageInfo', $useInfo !== null ? unserialize($useInfo, ['allowed_classes' => false]) : []);
         $this->view->assign(
             'accounts',
             SelectItemAdapter::factory($this->accountService->getForUser())
@@ -90,7 +94,8 @@ abstract class PublicLinkViewBase extends ControllerBase
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($isView === true) {
-            $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
+            $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
+                       $this->uriContext->getSubUri();
 
             $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));
             $this->view->assign('disabled', 'disabled');
