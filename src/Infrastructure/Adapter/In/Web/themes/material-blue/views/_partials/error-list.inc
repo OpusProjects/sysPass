@@ -14,7 +14,7 @@ use SP\Mvc\View\TemplateInterface;
             <?php if (is_array($err)): ?>
                 <?php if ($err['type'] === SPException::CRITICAL): ?>
                     <li class="msg-critical">
-                        <i class="material-icons <?php echo $icons->getIconCritical()->getClass(); ?>"><?php echo $icons->getIconCritical()->getIcon(); ?></i>
+                        <i class="material-icons <?php echo $icons->warning()->getClass(); ?>"><?php echo $icons->warning()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
                             <p class="hint">
@@ -24,7 +24,7 @@ use SP\Mvc\View\TemplateInterface;
                     </li>
                 <?php elseif ($err['type'] === SPException::WARNING): ?>
                     <li class="msg-warning">
-                        <i class="material-icons <?php echo $icons->getIconWarning()->getClass(); ?>"><?php echo $icons->getIconWarning()->getIcon(); ?></i>
+                        <i class="material-icons <?php echo $icons->warning()->getClass(); ?>"><?php echo $icons->warning()->getIcon(); ?></i>
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
                             <p class="hint">
@@ -36,7 +36,7 @@ use SP\Mvc\View\TemplateInterface;
                     <li class="msg-ok">
                         <strong><?php echo $err['description']; ?></strong>
                         <?php if ($err['hint']): ?>
-                            <i class="material-icons <?php echo $icons->getIconInfo()->getClass(); ?>"><?php echo $icons->getIconInfo()->getIcon(); ?></i>
+                            <i class="material-icons <?php echo $icons->info()->getClass(); ?>"><?php echo $icons->info()->getIcon(); ?></i>
                             <p class="hint">
                                 <?php echo $err['hint']; ?>
                             </p>
