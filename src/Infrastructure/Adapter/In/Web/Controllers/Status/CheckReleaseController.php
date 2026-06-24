@@ -4,7 +4,7 @@
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -28,6 +28,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\CheckException;
 use Throwable;
@@ -37,48 +38,59 @@ use function SP\logger;
 use function SP\processException;
 
 /**
- * Class CheckNotices
+ * Class CheckReleaseController
+ *
+ * @package SP\Infrastructure\Adapter\In\Web\Controllers
  */
-final class CheckNotices extends StatusBase
+final class CheckReleaseController extends StatusBase
 {
 
+    private const TAG_VERSION_REGEX = '/v?(?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)\.(?P<build>\d+)(?P<pre_release>\-[a-z0-9\.]+)?$/';
+
     /**
-     * checkNoticesAction
+     * checkReleaseAction
      *
      * @return bool
      * @throws JsonException
      */
     #[Action(ResponseType::JSON)]
-    public function checkNoticesAction(): ActionResponse
+    public function checkReleaseAction(): ActionResponse
     {
         try {
             $this->extensionChecker->checkCurl(true);
 
-            $request = $this->client->request('GET', AppInfoInterface::APP_NOTICES_URL);
+            $request = $this->client->request('GET', AppInfoInterface::APP_UPDATES_URL);
 
             if ($request->getStatusCode() === 200
                 && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
             ) {
                 $requestData = json_decode($request->getBody(), false, 512, JSON_THROW_ON_ERROR);
 
-                if ($requestData !== null && !isset($requestData->message)) {
-                    $notices = [];
+                if ($requestData !== null && !isset($requestData->message)
+                    && preg_match(self::TAG_VERSION_REGEX, $requestData->tag_name, $matches)) {
+                    $pubVersion = $matches['major'].
+                                  $matches['minor'].
+                                  $matches['patch'].
+                                  '.'.
+                                  $matches['build'];
 
-                    foreach ($requestData as $notice) {
-                        $notices[] = [
-                            'title' => $notice->title,
-                            'date'  => $notice->created_at,
-                            'text'  => $notice->body,
-                        ];
+                    if (Version::checkVersion(Version::getVersionStringNormalized(), $pubVersion)) {
+                        return ActionResponse::ok('', [
+                            'version'     => $requestData->tag_name,
+                            'url'         => $requestData->html_url,
+                            'title'       => $requestData->name,
+                            'description' => $requestData->body,
+                            'date'        => $requestData->published_at,
+                        ]);
                     }
 
-                    return ActionResponse::ok('', $notices);
+                    return ActionResponse::ok('');
                 }
 
                 logger($requestData->message);
             }
 
-            return ActionResponse::error(__u('Notifications not available'));
+            return ActionResponse::error(__u('Version unavailable'));
         } catch (CheckException $e) {
             return ActionResponse::error($e->getMessage());
         } catch (Throwable $e) {
