@@ -33,7 +33,7 @@ use SP\Domain\Common\Models\Model;
 class Eventlog extends Model
 {
     protected ?int    $id          = null;
-    protected ?int    $date        = null;
+    protected int|string|null $date = null;
     protected ?string $login       = null;
     protected ?int    $userId      = null;
     protected ?string $ipAddress   = null;
@@ -46,7 +46,7 @@ class Eventlog extends Model
         return $this->id;
     }
 
-    public function getDate(): ?int
+    public function getDate(): int|string|null
     {
         return $this->date;
     }
