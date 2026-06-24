@@ -65,10 +65,9 @@ final class CreateController extends ItemPresetViewBase
             }
 
             $this->view->assign('header', __('New Value'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'itemPreset/saveCreate');
 
-            $this->setViewData(null, $type);
+            $this->setViewData(null, $type, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.itemPreset.create', $this));
 

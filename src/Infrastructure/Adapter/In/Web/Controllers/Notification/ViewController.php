@@ -60,9 +60,7 @@ final class ViewController extends NotificationViewBase
             }
 
             $this->view->assign('header', __('View Notification'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.notification', $this));
 

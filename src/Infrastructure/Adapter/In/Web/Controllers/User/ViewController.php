@@ -62,9 +62,7 @@ final class ViewController extends UserViewBase
             }
 
             $this->view->assign('header', __('View User'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.user', $this));
 

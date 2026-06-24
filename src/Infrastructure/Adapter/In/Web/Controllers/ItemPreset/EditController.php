@@ -60,10 +60,9 @@ final class EditController extends ItemPresetViewBase
             }
 
             $this->view->assign('header', __('Edit Value'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'itemPreset/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.itemPreset.edit', $this));
 

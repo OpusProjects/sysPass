@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\CustomField;
 
-use Controllers\Helpers\CustomFields;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\CustomFields;
 use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -74,7 +74,7 @@ abstract class CustomFieldViewBase extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $customFieldId = null): void
+    protected function setViewData(?int $customFieldId = null, bool $isView = false): void
     {
         $this->view->addTemplate('custom_field', 'itemshow');
 
@@ -83,6 +83,7 @@ abstract class CustomFieldViewBase extends ControllerBase
             : new CustomFieldDefinition();
 
         $this->view->assign('field', $customField);
+        $this->view->assign('isView', $isView);
         $this->view->assign(
             'types',
             SelectItemAdapter::factory($this->customFieldTypeService->getAll())
@@ -96,7 +97,7 @@ abstract class CustomFieldViewBase extends ControllerBase
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

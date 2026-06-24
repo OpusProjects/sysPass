@@ -79,7 +79,7 @@ abstract class UserGroupViewBase extends ControllerBase
      * @throws ServiceException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $userGroupId = null): void
+    protected function setViewData(?int $userGroupId = null, bool $isView = false): void
     {
         $this->view->addTemplate('user_group', 'itemshow');
 
@@ -88,6 +88,7 @@ abstract class UserGroupViewBase extends ControllerBase
             : new UserGroup();
 
         $this->view->assign('group', $userGroupData);
+        $this->view->assign('isView', $isView);
 
         $users = $userGroupData->getUsers() ?: [];
 
@@ -104,7 +105,7 @@ abstract class UserGroupViewBase extends ControllerBase
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

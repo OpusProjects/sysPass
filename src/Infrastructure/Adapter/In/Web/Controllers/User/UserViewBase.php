@@ -81,7 +81,7 @@ abstract class UserViewBase extends ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
-    protected function setViewData(?int $userId = null): void
+    protected function setViewData(?int $userId = null, bool $isView = false): void
     {
         $this->view->addTemplate('user', 'itemshow');
 
@@ -108,7 +108,9 @@ abstract class UserViewBase extends ControllerBase
             $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE)
         );
 
-        if ($this->view->isView === true
+        $this->view->assign('isView', $isView);
+
+        if ($isView === true
             || ($this->configData->isDemoEnabled()
                 && $user->getLogin() === 'demo')
         ) {

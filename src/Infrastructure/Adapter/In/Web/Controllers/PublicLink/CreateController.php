@@ -56,10 +56,9 @@ final class CreateController extends PublicLinkViewBase
             }
 
             $this->view->assign('header', __('New Public Link'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'publicLink/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.publicLink.create', $this));
 

@@ -56,10 +56,9 @@ final class CreateController extends TagViewBase
             }
 
             $this->view->assign('header', __('New Tag'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'tag/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.tag.create', $this));
 

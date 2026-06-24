@@ -75,7 +75,7 @@ abstract class UserProfileViewBase extends ControllerBase
      * @throws ServiceException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $profileId = null): void
+    protected function setViewData(?int $profileId = null, bool $isView = false): void
     {
         $this->view->addTemplate('user_profile', 'itemshow');
 
@@ -85,10 +85,11 @@ abstract class UserProfileViewBase extends ControllerBase
 
         $this->view->assign('profile', $profile);
         $this->view->assign('profileData', $profile->getProfile() ?: new ProfileData());
+        $this->view->assign('isView', $isView);
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign(
                 'usedBy',
                 $profileId
