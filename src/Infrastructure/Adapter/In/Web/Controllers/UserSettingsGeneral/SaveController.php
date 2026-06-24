@@ -75,10 +75,9 @@ final class SaveController extends SimpleControllerBase
 
             $userPreferencesData = $this->getUserPreferencesData($userData);
 
-            $this->userService->updatePreferencesById($userData->getId(), $userPreferencesData);
+            $this->userService->updatePreferencesById($userData->id, $userPreferencesData);
 
-            // Save preferences in current session
-            $userData->setPreferences($userPreferencesData);
+            $this->session->setUserData($userData->mutate(['preferences' => $userPreferencesData]));
 
             return ActionResponse::ok(__u('Preferences updated'));
         } catch (Exception $e) {
@@ -97,22 +96,18 @@ final class SaveController extends SimpleControllerBase
      */
     private function getUserPreferencesData(UserDto $userData): UserPreferences
     {
-        $userPreferencesData = clone ($userData->preferences ?? new UserPreferences());
-
-        $userPreferencesData->setUserId($userData->id);
-        $userPreferencesData->setLang($this->request->analyzeString('userlang'));
-        $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
-        $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
-        $userPreferencesData->setAccountLink($this->request->analyzeBool('account_link', false));
-        $userPreferencesData->setSortViews($this->request->analyzeBool('sort_views', false));
-        $userPreferencesData->setTopNavbar($this->request->analyzeBool('top_navbar', false));
-        $userPreferencesData->setOptionalActions($this->request->analyzeBool('optional_actions', false));
-        $userPreferencesData->setResultsAsCards($this->request->analyzeBool('resultsascards', false));
-        $userPreferencesData->setCheckNotifications($this->request->analyzeBool('check_notifications', false));
-        $userPreferencesData->setShowAccountSearchFilters(
-            $this->request->analyzeBool('show_account_search_filters', false)
-        );
-
-        return $userPreferencesData;
+        return ($userData->preferences ?? new UserPreferences())->mutate([
+            'user_id' => $userData->id,
+            'lang' => $this->request->analyzeString('userlang'),
+            'theme' => $this->request->analyzeString('usertheme', 'material-blue'),
+            'resultsPerPage' => $this->request->analyzeInt('resultsperpage', 12),
+            'accountLink' => $this->request->analyzeBool('account_link', false),
+            'sortViews' => $this->request->analyzeBool('sort_views', false),
+            'topNavbar' => $this->request->analyzeBool('top_navbar', false),
+            'optionalActions' => $this->request->analyzeBool('optional_actions', false),
+            'resultsAsCards' => $this->request->analyzeBool('resultsascards', false),
+            'checkNotifications' => $this->request->analyzeBool('check_notifications', false),
+            'showAccountSearchFilters' => $this->request->analyzeBool('show_account_search_filters', false),
+        ]);
     }
 }
