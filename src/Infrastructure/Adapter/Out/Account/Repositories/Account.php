@@ -94,7 +94,7 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilter()
             ->cols([
-                       'Account.id,',
+                       'Account.id',
                        'Account.name',
                        'Account.login',
                        'Account.pass',
@@ -120,7 +120,7 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->accountFilterUser
             ->buildFilterHistory()
             ->cols([
-                       'AccountHistory.id,',
+                       'AccountHistory.id',
                        'AccountHistory.name',
                        'AccountHistory.login',
                        'AccountHistory.pass',
