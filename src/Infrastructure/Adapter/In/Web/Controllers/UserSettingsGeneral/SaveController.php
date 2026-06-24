@@ -97,9 +97,9 @@ final class SaveController extends SimpleControllerBase
      */
     private function getUserPreferencesData(UserDto $userData): UserPreferences
     {
-        $userPreferencesData = clone $userData->getPreferences();
+        $userPreferencesData = clone ($userData->preferences ?? new UserPreferences());
 
-        $userPreferencesData->setUserId($userData->getId());
+        $userPreferencesData->setUserId($userData->id);
         $userPreferencesData->setLang($this->request->analyzeString('userlang'));
         $userPreferencesData->setTheme($this->request->analyzeString('usertheme', 'material-blue'));
         $userPreferencesData->setResultsPerPage($this->request->analyzeInt('resultsperpage', 12));
