@@ -103,7 +103,8 @@ final class Util
             $position = $parameter->getPosition();
 
             if (isset($parametersValue[$position])) {
-                $type = self::getMethodParameterTypes($parameter)[0]->getName();
+                $types = self::getMethodParameterTypes($parameter);
+                $type = $types ? $types[0]->getName() : 'string';
 
                 $methodParameters[$position] = match ($type) {
                     'int' => (int)$parametersValue[$position],
