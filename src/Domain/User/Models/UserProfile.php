@@ -61,9 +61,9 @@ class UserProfile extends Model implements ItemWithIdAndNameModel
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getProfile(): string
+    public function getProfile(): ?string
     {
         return $this->profile;
     }
