@@ -437,7 +437,7 @@ class PublicLinkTest extends UnitaryTestCase
 
         $actual = $this->publicLink->getById($itemId);
 
-        $this->assertEquals($builPublicLinkList->toArray(null, ['clientName']), $actual->toArray());
+        $this->assertEquals($builPublicLinkList->toArray(), $actual->toArray());
     }
 
     /**

@@ -45,14 +45,18 @@ class ItemPreset extends Model implements HydratableModel
 
     public const TABLE = 'ItemPreset';
 
-    protected ?int    $id            = null;
-    protected ?string $type          = null;
-    protected ?int    $userId        = null;
-    protected ?int    $userGroupId   = null;
-    protected ?int    $userProfileId = null;
-    protected ?int    $fixed         = null;
-    protected ?int    $priority      = null;
-    protected ?string $data          = null;
+    protected ?int    $id              = null;
+    protected ?string $type            = null;
+    protected ?int    $userId          = null;
+    protected ?int    $userGroupId     = null;
+    protected ?int    $userProfileId   = null;
+    protected ?int    $fixed           = null;
+    protected ?int    $priority        = null;
+    protected ?string $data            = null;
+    protected ?int    $score           = null;
+    protected ?string $userName        = null;
+    protected ?string $userProfileName = null;
+    protected ?string $userGroupName   = null;
 
     public function getUserGroupId(): ?int
     {
@@ -92,5 +96,25 @@ class ItemPreset extends Model implements HydratableModel
     public function getUserId(): ?int
     {
         return $this->userId;
+    }
+
+    public function getScore(): ?int
+    {
+        return $this->score;
+    }
+
+    public function getUserName(): ?string
+    {
+        return $this->userName;
+    }
+
+    public function getUserProfileName(): ?string
+    {
+        return $this->userProfileName;
+    }
+
+    public function getUserGroupName(): ?string
+    {
+        return $this->userGroupName;
     }
 }

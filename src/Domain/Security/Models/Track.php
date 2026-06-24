@@ -32,13 +32,16 @@ use SP\Domain\Common\Models\Model;
  */
 class Track extends Model
 {
-    protected ?int    $id         = null;
-    protected ?int    $userId     = null;
-    protected ?string $source     = null;
-    protected ?int    $time       = null;
-    protected ?int    $timeUnlock = null;
-    protected ?string $ipv4       = null;
-    protected ?string $ipv6       = null;
+    protected ?int    $id             = null;
+    protected ?int    $userId         = null;
+    protected ?string $source         = null;
+    protected ?int    $time           = null;
+    protected ?int    $timeUnlock     = null;
+    protected ?string $ipv4           = null;
+    protected ?string $ipv6           = null;
+    protected ?string $dateTime       = null;
+    protected ?string $dateTimeUnlock = null;
+    protected ?int    $tracked        = null;
 
     public function getId(): ?int
     {
@@ -73,5 +76,20 @@ class Track extends Model
     public function getTimeUnlock(): ?int
     {
         return $this->timeUnlock;
+    }
+
+    public function getDateTime(): ?string
+    {
+        return $this->dateTime;
+    }
+
+    public function getDateTimeUnlock(): ?string
+    {
+        return $this->dateTimeUnlock;
+    }
+
+    public function getTracked(): ?int
+    {
+        return $this->tracked;
     }
 }
