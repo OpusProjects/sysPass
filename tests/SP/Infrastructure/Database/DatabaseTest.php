@@ -155,7 +155,7 @@ class DatabaseTest extends UnitaryTestCase
 
         $query->expects($this->atLeast($times))
               ->method('getStatement')
-              ->willReturn('test_query');
+              ->willReturn('SELECT * FROM test WHERE col1 = :a AND col2 = :b AND col3 = :c');
 
         if ($useValues) {
             $query->expects($this->exactly($times))
@@ -199,7 +199,7 @@ class DatabaseTest extends UnitaryTestCase
 
         $pdo->expects($this->exactly($times))
             ->method('prepare')
-            ->with('test_query', $prepareOptions)
+            ->with('SELECT * FROM test WHERE col1 = :a AND col2 = :b AND col3 = :c', $prepareOptions)
             ->willReturn($pdoStatement);
 
         $pdoStatement->expects($this->exactly($times))
