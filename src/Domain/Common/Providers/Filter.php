@@ -75,7 +75,7 @@ final class Filter
 
     public static function getString(?string $value): string
     {
-        return htmlspecialchars(trim($value), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML401);
+        return htmlspecialchars(trim($value ?? ''), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML401);
     }
 
     public static function getRaw(string $value): string
