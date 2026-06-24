@@ -88,11 +88,11 @@ final class UpgradeController extends ControllerBase
     private function checkEnvironment(): void
     {
         if ($this->request->analyzeBool('chkConfirm', false) === false) {
-            throw new ValidationException(SPException::ERROR, __u('The updating need to be confirmed'));
+            throw new ValidationException(__u('The updating need to be confirmed'));
         }
 
         if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
-            throw new ValidationException(SPException::ERROR, __u('Wrong security code'));
+            throw new ValidationException(__u('Wrong security code'));
         }
     }
 }

@@ -72,7 +72,7 @@ final class CheckController extends SimpleControllerBase
         $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
 
         if (empty($mailParams->getServer()) || empty($mailParams->getFrom()) || count($mailRecipients) === 0) {
-            throw new ValidationException(SPException::ERROR, __u('Missing Mail parameters'));
+            throw new ValidationException(__u('Missing Mail parameters'));
         }
 
         $this->mailService->check($mailParams, $mailRecipients[0]);
