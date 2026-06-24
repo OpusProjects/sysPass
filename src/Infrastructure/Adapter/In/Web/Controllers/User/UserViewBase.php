@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -106,7 +105,7 @@ abstract class UserViewBase extends ControllerBase
         );
         $this->view->assign(
             'nextAction',
-            Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE)
+            $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE)
         );
 
         if ($this->view->isView === true

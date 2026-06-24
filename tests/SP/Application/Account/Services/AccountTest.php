@@ -1114,12 +1114,14 @@ class AccountTest extends UnitaryTestCase
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
 
+        $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword);
+
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto))
+            ->with(AccountModel::create($encryptedDto))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
-                                  ->with(true, $id, $accountCreateDto->withEncryptedPassword($encryptedPassword));
+                                  ->with(true, $id, $encryptedDto);
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
@@ -1164,12 +1166,14 @@ class AccountTest extends UnitaryTestCase
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
 
+        $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword);
+
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($accountCreateDto))
+            ->with(AccountModel::create($encryptedDto))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
-                                  ->with(false, $id, $accountCreateDto->withEncryptedPassword($encryptedPassword));
+                                  ->with(false, $id, $encryptedDto);
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 

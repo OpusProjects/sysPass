@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ItemManager;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Application\Account\Ports\AccountFileService;
@@ -185,7 +184,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE),
+            $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
     }

@@ -344,7 +344,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                    ])
             ->join('INNER', 'Category', 'Account.categoryId = Category.id')
             ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->orderBy(['Account.date DESC', 'clientName ASC', 'Account.id DESC'])
+            ->orderBy(['date DESC', 'clientName ASC', 'Account.id DESC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

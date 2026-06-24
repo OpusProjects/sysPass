@@ -103,7 +103,7 @@ final class UserForm extends FormBase implements FormInterface
             'isDisabled' => $this->request->analyzeBool('disabled', false),
             'isChangePass' => $this->request->analyzeBool('changepass_enabled', false),
             'pass' => $this->request->analyzeEncrypted('password'),
-            'isLdap' => $this->isLdap,
+            'isLdap' => (bool)$this->isLdap,
         ]);
     }
 
@@ -144,7 +144,7 @@ final class UserForm extends FormBase implements FormInterface
     {
         return $this->configData->isDemoEnabled()
                && $this->itemId === self::DEMO_ADMIN_USER_ID
-               && $this->context->getUserData()->getIsAdminApp();
+               && $this->context->getUserData()->isAdminApp;
     }
 
     /**

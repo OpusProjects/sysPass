@@ -169,7 +169,7 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(AccountModel::TABLE)
-            ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id']))
+            ->cols($account->toArray(null, ['countDecrypt', 'countView', 'dateAdd', 'dateEdit', 'id', 'passDate']))
             ->set('dateAdd', 'NOW()')
             ->set('passDate', 'UNIX_TIMESTAMP()');
 

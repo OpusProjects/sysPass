@@ -148,7 +148,7 @@ final class AccountSearchData
             ): AccountSearchItem {
                 $cache = $this->accountCacheService->getCacheForAccount(
                     $accountSearchView->getId(),
-                    strtotime($accountSearchView->getDateEdit())
+                    $accountSearchView->getDateEdit() !== null ? strtotime($accountSearchView->getDateEdit()) : 0
                 );
 
                 // Get the account's ACL

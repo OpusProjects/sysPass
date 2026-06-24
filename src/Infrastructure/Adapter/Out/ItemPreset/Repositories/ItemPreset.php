@@ -238,9 +238,9 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->from(ItemPresetModel::TABLE)
             ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset'))
             ->cols([
-                       'IF(userId IS NOT NULL, priority + 3, 
-                        IF(userGroupId IS NOT NULL, priority + 2, 
-                        IF(userProfileId IS NOT NULL, priority + 1, 0)))' => 'score',
+                       'IF(ItemPreset.userId IS NOT NULL, ItemPreset.priority + 3,
+                        IF(ItemPreset.userGroupId IS NOT NULL, ItemPreset.priority + 2,
+                        IF(ItemPreset.userProfileId IS NOT NULL, ItemPreset.priority + 1, 0)))' => 'score',
                        'User.name' => 'userName',
                        'UserProfile.name' => 'userProfileName',
                        'UserGroup.name' => 'userGroupName'

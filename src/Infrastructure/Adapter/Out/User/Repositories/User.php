@@ -70,10 +70,15 @@ final class User extends BaseRepository implements UserRepository
             throw DuplicatedItemException::error(__u('Duplicated user login/email'));
         }
 
+        $cols = array_filter(
+            $user->toArray(null, ['id', 'hashSalt', 'lastUpdate']),
+            static fn($v) => $v !== null
+        );
+
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols($user->toArray(null, ['id', 'hashSalt']))
+            ->cols($cols)
             ->set('lastUpdate', 'NOW()')
             ->where('id = :id', ['id' => $user->getId()])
             ->limit(1);
@@ -100,9 +105,9 @@ final class User extends BaseRepository implements UserRepository
             ->from(UserModel::TABLE)
             ->where('id <> :id')
             ->where(
-                'UPPER(:login) = UPPER(login) 
+                '(UPPER(:login) = UPPER(login)
                 OR (UPPER(:ssoLogin) = UPPER(ssoLogin) AND ssoLogin IS NOT NULL AND ssoLogin <> \'\')
-                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\')'
+                OR (UPPER(:email) = UPPER(email) AND email IS NOT NULL AND email <> \'\'))'
             )
             ->bindValues(
                 [

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\SecurityManager;
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -115,7 +114,7 @@ final class IndexController extends ControllerBase
         );
 
         $this->tabsGridHelper->renderTabs(
-            Acl::getActionRoute(AclActionsInterface::SECURITY_MANAGE),
+            $this->acl->getRouteFor(AclActionsInterface::SECURITY_MANAGE),
             $this->request->analyzeInt('tabIndex', 0)
         );
     }

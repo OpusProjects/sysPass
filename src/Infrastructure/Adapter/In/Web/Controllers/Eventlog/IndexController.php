@@ -24,8 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Eventlog;
 
-use DI\DependencyException;
-use DI\NotFoundException;
+use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -33,7 +32,12 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Application\Security\Ports\EventlogService;
+use SP\Html\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\EventlogGrid;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
  * Class IndexController
@@ -42,11 +46,26 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
  */
 final class IndexController extends ControllerBase
 {
+    use ItemTrait;
+
+    private EventlogGrid    $eventlogGrid;
+    private EventlogService $eventlogService;
+
+    public function __construct(
+        Application     $application,
+        WebControllerHelper $webControllerHelper,
+        EventlogService $eventlogService,
+        EventlogGrid    $eventlogGrid
+    ) {
+        parent::__construct($application, $webControllerHelper);
+
+        $this->checkLoggedIn();
+
+        $this->eventlogService = $eventlogService;
+        $this->eventlogGrid = $eventlogGrid;
+    }
+
     /**
-     * indexAction
-     *
-     * @throws DependencyException
-     * @throws NotFoundException
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -63,5 +82,18 @@ final class IndexController extends ControllerBase
         $this->view->assign('data', $this->getSearchGrid());
 
         return ActionResponse::ok($this->render());
+    }
+
+    protected function getSearchGrid(): DataGridInterface
+    {
+        $itemSearchData = $this->getSearchData(
+            $this->configData->getAccountCount(),
+            $this->request
+        );
+
+        return $this->eventlogGrid->updatePager(
+            $this->eventlogGrid->getGrid($this->eventlogService->search($itemSearchData)),
+            $itemSearchData
+        );
     }
 }

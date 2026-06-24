@@ -120,6 +120,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->newUpdate()
             ->table(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
+            ->set('hash', ':hash')
             ->where('id = :id')
             ->limit(1)
             ->bindValues(

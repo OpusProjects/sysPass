@@ -47,14 +47,14 @@ class AccountFilterUserTest extends UnitaryTestCase
 {
     private const WHERE_HASHES = [
         'Account' => [
-            'withoutGlobalSearch' => '12fc7a2aa62477d11938d028b5648670252e66dc',
-            'withoutGlobalSearchAndFullGroupAccess' => '703fc200665cebcd102714035189780515eeff39',
+            'withoutGlobalSearch' => '29c5a7308681716f44f520ce97d01f99ac235e62',
+            'withoutGlobalSearchAndFullGroupAccess' => '0ad8aba520c7ece2bc72e6d4995608cca14e6535',
             'withGlobalSearchPrivate' => 'fa13ffe26c4c597a1a7e54486409927a8c722176',
             'withGlobalSearchPrivateGroup' => '26a211bd03e2a150bd1f2dffd6d78638a94634ea',
         ],
         'AccountHistory' => [
-            'withoutGlobalSearch' => 'f5dc834955371863301a516ee7606436d522abdd',
-            'withoutGlobalSearchAndFullGroupAccess' => '3ef96426906a1c96ba6c4e5d768dd182acc35b93',
+            'withoutGlobalSearch' => '4e3f8f1d5acb05509d35f98af074775c9e2967db',
+            'withoutGlobalSearchAndFullGroupAccess' => 'c758b3366e39d51858a06106dc1444328d30cb94',
             'withGlobalSearchPrivate' => '4daf2520c5b791b66dadf0e83b681d7fea6df17f',
             'withGlobalSearchPrivateGroup' => 'c5282775ef23fd9130e60223e3613d999fa89094',
         ],
