@@ -3,8 +3,8 @@
 
      use function SP\__;
 
-     echo $icons->getIconHelp()->getClass(); ?> btn-help"
-     data-help="help-account-search"><?php echo $icons->getIconHelp()->getIcon(); ?>
+     echo $icons->help()->getClass(); ?> btn-help"
+     data-help="help-account-search"><?php echo $icons->help()->getIcon(); ?>
 </div>
 
 <div class="mdl-tooltip" for="help-account_search">

@@ -19,7 +19,7 @@ use function SP\__;
             <button id="btnBack"
                     class="btn-back mdl-button mdl-js-button mdl-button--raised mdl-button--accent">
                 <i class="material-icons"
-                   title="<?php echo __('Back'); ?>"><?php echo $icons->getIconBack()->getIcon(); ?></i>
+                   title="<?php echo __('Back'); ?>"><?php echo $icons->back()->getIcon(); ?></i>
                 <?php
                 echo __('Back'); ?>
             </button>
