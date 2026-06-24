@@ -39,7 +39,7 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
-use SP\Plugin\PluginManager;
+use SP\Domain\Plugin\Services\PluginManager;
 
 use function SP\__u;
 use function SP\processException;

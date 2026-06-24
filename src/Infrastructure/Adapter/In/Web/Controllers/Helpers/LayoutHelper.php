@@ -41,7 +41,6 @@ use SP\Application\Install\Services\Installer;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
-use SP\Plugin\PluginManager;
 
 use function SP\__;
 use function SP\processException;
