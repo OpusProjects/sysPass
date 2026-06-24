@@ -189,6 +189,12 @@ final class Database implements DatabaseInterface
                 }
             }
 
+            $expandedBinds = array_filter(
+                $expandedBinds,
+                static fn($param) => preg_match('/:'.$param.'(?![a-zA-Z0-9_])/', $sql),
+                ARRAY_FILTER_USE_KEY
+            );
+
             $stmt = $connection->prepare($sql, $options);
 
             foreach ($expandedBinds as $param => $value) {
