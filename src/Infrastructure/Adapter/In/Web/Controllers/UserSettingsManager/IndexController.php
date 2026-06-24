@@ -104,7 +104,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $template->addTemplate('general');
 
         $userData = $this->session->getUserData();
-        $userPreferences = $userData->getPreferences() ?? new UserPreferences();
+        $userPreferences = $userData->preferences ?? new UserPreferences();
 
         $template->assign(
             'langs',
