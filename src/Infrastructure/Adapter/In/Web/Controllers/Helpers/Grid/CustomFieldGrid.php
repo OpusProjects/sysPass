@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-use Controllers\Helpers\CustomFields;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\CustomFields;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Html\DataGrid\Action\DataGridAction;
 use SP\Html\DataGrid\Action\DataGridActionSearch;

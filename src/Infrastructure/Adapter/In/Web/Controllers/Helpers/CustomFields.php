@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace Controllers\Helpers;
+namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
 use SP\Domain\Core\Acl\AclActionsInterface;
 
