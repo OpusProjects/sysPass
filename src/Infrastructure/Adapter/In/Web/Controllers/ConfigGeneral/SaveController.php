@@ -140,7 +140,7 @@ final class SaveController extends SimpleControllerBase
 
         if ($remoteSyslogEnabled) {
             if (!$syslogServer || !$syslogPort) {
-                throw new ValidationException(SPException::ERROR, __u('Missing remote syslog parameters'));
+                throw new ValidationException(__u('Missing remote syslog parameters'));
             }
 
             $configData->setSyslogRemoteEnabled(true);
@@ -169,7 +169,7 @@ final class SaveController extends SimpleControllerBase
         $proxyPass = $this->request->analyzeEncrypted('proxy_pass');
 
         if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            throw new ValidationException(SPException::ERROR, __u('Missing Proxy parameters '));
+            throw new ValidationException(__u('Missing Proxy parameters'));
         }
 
         if ($proxyEnabled) {
