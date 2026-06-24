@@ -58,7 +58,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id']));
+            ->cols($itemPreset->toArray(null, ['id', 'score', 'userName', 'userProfileName', 'userGroupName']));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
 
@@ -76,7 +76,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id']))
+            ->cols($itemPreset->toArray(null, ['id', 'score', 'userName', 'userProfileName', 'userGroupName']))
             ->where('id = :id')
             ->limit(1)
             ->bindValues(
@@ -123,7 +123,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols())
+            ->cols(ItemPresetModel::getCols(['score', 'userName', 'userProfileName', 'userGroupName']))
             ->where('id = :id')
             ->bindValues(['id' => $itemPresetId])
             ->limit(1);
@@ -150,7 +150,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols())
+            ->cols(ItemPresetModel::getCols(['score', 'userName', 'userProfileName', 'userGroupName']))
             ->cols(
                 [
                     'IF(userId IS NOT NULL, priority + 3, 
@@ -192,7 +192,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getCols());
+            ->cols(ItemPresetModel::getCols(['score', 'userName', 'userProfileName', 'userGroupName']));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, ItemPresetModel::class));
     }
@@ -236,7 +236,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(ItemPresetModel::TABLE)
-            ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset'))
+            ->cols(ItemPresetModel::getColsWithPreffix('ItemPreset', ['score', 'userName', 'userProfileName', 'userGroupName']))
             ->cols([
                        'IF(ItemPreset.userId IS NOT NULL, ItemPreset.priority + 3,
                         IF(ItemPreset.userGroupId IS NOT NULL, ItemPreset.priority + 2,

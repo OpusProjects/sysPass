@@ -57,7 +57,7 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(self::TABLE)
-            ->cols($track->toArray(null, ['id', 'time']))
+            ->cols($track->toArray(null, ['id', 'time', 'dateTime', 'dateTimeUnlock', 'tracked']))
             ->set('time', 'UNIX_TIMESTAMP()');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating track'));
@@ -118,7 +118,7 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(TrackModel::getCols())
+            ->cols(TrackModel::getCols(['dateTime', 'dateTimeUnlock', 'tracked']))
             ->where('time >= :time AND (ipv4 = :ipv4 OR ipv6 = :ipv6) AND source = :source AND timeUnlock IS NULL')
             ->bindValues([
                              'time' => $track->getTime(),
@@ -147,7 +147,7 @@ final class Track extends BaseRepository implements TrackRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(TrackModel::getCols())
+            ->cols(TrackModel::getCols(['dateTime', 'dateTimeUnlock', 'tracked']))
             ->cols([
                        'FROM_UNIXTIME(time)' => 'dateTime',
                        'FROM_UNIXTIME(timeUnlock)' => 'dateTimeUnlock',
