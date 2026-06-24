@@ -73,9 +73,10 @@ abstract class ItemPresetViewBase extends ControllerBase
      * @throws NoSuchPropertyException
      * @throws QueryException
      */
-    protected function setViewData(?int $id = null, ?string $type = null): void
+    protected function setViewData(?int $id = null, ?string $type = null, bool $isView = false): void
     {
         $this->view->addTemplate('item_preset', 'itemshow');
+        $this->view->assign('isView', $isView);
 
         $itemPresetData = $id
             ? $this->itemPresetService->getById($id)
@@ -105,7 +106,7 @@ abstract class ItemPresetViewBase extends ControllerBase
         $this->view->assign('preset', $itemPresetData);
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

@@ -64,9 +64,8 @@ final class ViewController extends ItemPresetViewBase
             }
 
             $this->view->assign('header', __('Display Value'));
-            $this->view->assign('isView', true);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.itemPreset', $this));
 

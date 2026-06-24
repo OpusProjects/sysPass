@@ -56,10 +56,9 @@ final class CreateController extends UserProfileViewBase
             }
 
             $this->view->assign('header', __('New Profile'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'userProfile/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.userProfile.create', $this));
 

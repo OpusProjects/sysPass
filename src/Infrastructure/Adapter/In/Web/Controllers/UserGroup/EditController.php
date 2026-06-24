@@ -60,10 +60,9 @@ final class EditController extends UserGroupViewBase
             }
 
             $this->view->assign('header', __('Edit Group'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'userGroup/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.userGroup.edit', $this));
 

@@ -62,9 +62,7 @@ final class ViewController extends UserGroupViewBase
             }
 
             $this->view->assign('header', __('View Group'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.userGroup', $this));
 

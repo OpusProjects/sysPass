@@ -56,10 +56,9 @@ final class CreateController extends CustomFieldViewBase
             }
 
             $this->view->assign('header', __('New Field'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'customField/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.customField.create', $this));
 

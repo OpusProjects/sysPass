@@ -62,9 +62,7 @@ final class ViewController extends UserProfileViewBase
             }
 
             $this->view->assign('header', __('View Profile'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.userProfile', $this));
 

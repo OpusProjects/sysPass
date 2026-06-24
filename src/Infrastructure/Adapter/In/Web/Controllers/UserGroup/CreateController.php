@@ -56,10 +56,9 @@ final class CreateController extends UserGroupViewBase
             }
 
             $this->view->assign('header', __('New Group'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'userGroup/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.userGroup.create', $this));
 

@@ -63,7 +63,7 @@ abstract class TagViewBase extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $tagId = null): void
+    protected function setViewData(?int $tagId = null, bool $isView = false): void
     {
         $this->view->addTemplate('tag', 'itemshow');
 
@@ -72,10 +72,11 @@ abstract class TagViewBase extends ControllerBase
             : new Tag();
 
         $this->view->assign('tag', $tag);
+        $this->view->assign('isView', $isView);
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

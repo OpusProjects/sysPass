@@ -60,10 +60,9 @@ final class EditController extends CustomFieldViewBase
             }
 
             $this->view->assign('header', __('Edit Field'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'customField/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.customField.edit', $this));
 

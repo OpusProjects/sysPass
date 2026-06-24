@@ -60,10 +60,9 @@ final class EditController extends UserProfileViewBase
             }
 
             $this->view->assign('header', __('Edit Profile'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'userProfile/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.userProfile.edit', $this));
 

@@ -68,7 +68,7 @@ abstract class NotificationViewBase extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $notificationId = null): void
+    protected function setViewData(?int $notificationId = null, bool $isView = false): void
     {
         $this->view->addTemplate('notification');
 
@@ -77,6 +77,7 @@ abstract class NotificationViewBase extends ControllerBase
             : new Notification();
 
         $this->view->assign('notification', $notification);
+        $this->view->assign('isView', $isView);
 
         if ($this->userDto->isAdminApp) {
             $this->view->assign(
@@ -88,7 +89,7 @@ abstract class NotificationViewBase extends ControllerBase
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

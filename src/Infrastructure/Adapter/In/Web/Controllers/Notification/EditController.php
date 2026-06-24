@@ -60,10 +60,9 @@ final class EditController extends NotificationViewBase
             }
 
             $this->view->assign('header', __('Edit Notification'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'notification/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.notification.edit', $this));
 

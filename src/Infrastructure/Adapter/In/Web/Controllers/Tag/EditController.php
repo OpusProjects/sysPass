@@ -60,10 +60,9 @@ final class EditController extends TagViewBase
             }
 
             $this->view->assign('header', __('Edit Tag'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'tag/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.tag.edit', $this));
 

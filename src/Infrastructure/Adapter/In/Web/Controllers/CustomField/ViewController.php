@@ -62,9 +62,7 @@ final class ViewController extends CustomFieldViewBase
             }
 
             $this->view->assign('header', __('View Field'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.customField', $this));
         } catch (Exception $e) {

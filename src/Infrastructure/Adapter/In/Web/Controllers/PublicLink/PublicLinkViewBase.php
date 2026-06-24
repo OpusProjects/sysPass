@@ -70,7 +70,7 @@ abstract class PublicLinkViewBase extends ControllerBase
      * @throws QueryException
      * @throws NoSuchItemException
      */
-    protected function setViewData(?int $publicLinkId = null): void
+    protected function setViewData(?int $publicLinkId = null, bool $isView = false): void
     {
         $this->view->addTemplate('public_link', 'itemshow');
 
@@ -79,6 +79,7 @@ abstract class PublicLinkViewBase extends ControllerBase
             : new PublicLinkList();
 
         $this->view->assign('publicLink', $publicLink);
+        $this->view->assign('isView', $isView);
         $this->view->assign('usageInfo', unserialize($publicLink->getUseInfo(), ['allowed_classes' => false]));
         $this->view->assign(
             'accounts',
@@ -88,7 +89,7 @@ abstract class PublicLinkViewBase extends ControllerBase
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
-        if ($this->view->isView === true) {
+        if ($isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
 
             $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));

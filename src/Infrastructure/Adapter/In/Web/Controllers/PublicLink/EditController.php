@@ -60,10 +60,9 @@ final class EditController extends PublicLinkViewBase
             }
 
             $this->view->assign('header', __('Edit Public Link'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'publicLink/saveEdit/'.$id);
 
-            $this->setViewData($id);
+            $this->setViewData($id, isView: false);
 
             $this->eventDispatcher->notify(new Event('show.publicLink.edit', $this));
 

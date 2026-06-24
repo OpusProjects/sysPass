@@ -62,9 +62,7 @@ final class PublicLinkController extends PublicLinkViewBase
             }
 
             $this->view->assign('header', __('View Link'));
-            $this->view->assign('isView', true);
-
-            $this->setViewData($id);
+            $this->setViewData($id, isView: true);
 
             $this->eventDispatcher->notify(new Event('show.publicLink', $this));
 

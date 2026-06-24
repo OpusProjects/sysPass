@@ -56,10 +56,9 @@ final class CreateController extends NotificationViewBase
             }
 
             $this->view->assign('header', __('New Notification'));
-            $this->view->assign('isView', false);
             $this->view->assign('route', 'notification/saveCreate');
 
-            $this->setViewData();
+            $this->setViewData(isView: false);
 
             $this->eventDispatcher->notify(new Event('show.notification.create', $this));
 
