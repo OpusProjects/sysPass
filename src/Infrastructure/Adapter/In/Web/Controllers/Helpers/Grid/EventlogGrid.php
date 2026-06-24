@@ -131,6 +131,8 @@ final class EventlogGrid extends GridBase
             'description',
             false,
             function ($value) use ($isDemoMode) {
+                $value = $value ?? '';
+
                 if ($isDemoMode) {
                     $value = preg_replace(
                         '/\d+\.\d+\.\d+\.\d+/',

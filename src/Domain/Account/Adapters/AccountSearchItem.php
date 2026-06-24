@@ -100,28 +100,28 @@ final class AccountSearchItem
 
     public function getShortUrl(): string
     {
-        return Html::truncate($this->accountSearchView->getUrl(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getUrl() ?? '', $this->textMaxLength);
     }
 
     public function isUrlIslink(): bool
     {
-        return preg_match('#^\w+://#', $this->accountSearchView->getUrl()) === 1;
+        return preg_match('#^\w+://#', $this->accountSearchView->getUrl() ?? '') === 1;
     }
 
     public function getShortLogin(): string
     {
-        return Html::truncate($this->accountSearchView->getLogin(), $this->textMaxLength);
+        return Html::truncate($this->accountSearchView->getLogin() ?? '', $this->textMaxLength);
     }
 
     public function getShortClientName(): string
     {
-        return Html::truncate($this->accountSearchView->getClientName(), $this->textMaxLength / 3);
+        return Html::truncate($this->accountSearchView->getClientName() ?? '', (int)($this->textMaxLength / 3));
     }
 
     public function getClientLink(): ?string
     {
         return self::$wikiEnabled
-            ? $this->configData->getWikiSearchurl() . $this->accountSearchView->getClientName()
+            ? $this->configData->getWikiSearchurl() . ($this->accountSearchView->getClientName() ?? '')
             : null;
     }
 
@@ -239,6 +239,6 @@ final class AccountSearchItem
 
     public function isWikiMatch(string $wikiFilter): bool
     {
-        return preg_match('/^' . $wikiFilter . '/i', $this->accountSearchView->getName()) === 1;
+        return preg_match('/^' . $wikiFilter . '/i', $this->accountSearchView->getName() ?? '') === 1;
     }
 }
