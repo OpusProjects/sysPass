@@ -71,8 +71,8 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Items\TagsController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Login\LoginController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Resource\CssController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Resource\JsController;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Status\CheckNotices;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Status\StatusController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Status\CheckNoticesController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Status\CheckReleaseController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Task\TrackStatusController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade\UpgradeController;
@@ -95,8 +95,8 @@ final class Init extends HttpModuleBase
         InstallController::class,
         InstallIndexController::class,
         GetEnvironmentController::class,
-        CheckNotices::class,
-        StatusController::class,
+        CheckNoticesController::class,
+        CheckReleaseController::class,
         UpgradeIndexController::class,
         UpgradeController::class,
         DatabaseConnectionController::class,

@@ -39,7 +39,7 @@ use function SP\processException;
 /**
  * Class SaveCreate
  */
-final class SaveCreate extends PublicLinkSaveBase
+final class SaveCreateController extends PublicLinkSaveBase
 {
 
     /**
