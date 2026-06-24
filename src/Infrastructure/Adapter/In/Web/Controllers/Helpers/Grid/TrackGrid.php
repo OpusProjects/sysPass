@@ -213,8 +213,8 @@ final class TrackGrid extends GridBase
         $gridAction->setId(AclActionsInterface::TRACK_CLEAR);
         $gridAction->setType(DataGridActionType::MENUBAR_ITEM);
         $gridAction->setSkip(true);
-        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
-        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_CLEAR));
+        $gridAction->setName(__('Clear Tracks'));
+        $gridAction->setTitle(__('Clear Tracks'));
         $gridAction->setIcon($this->icons->clear());
         $gridAction->setOnClickFunction('track/clear');
         $gridAction->addData(
@@ -233,8 +233,8 @@ final class TrackGrid extends GridBase
         $gridAction = new DataGridAction();
         $gridAction->setId(AclActionsInterface::TRACK_UNLOCK);
         $gridAction->setType(DataGridActionType::EDIT_ITEM);
-        $gridAction->setName(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
-        $gridAction->setTitle(Acl::getActionInfo(AclActionsInterface::TRACK_UNLOCK));
+        $gridAction->setName(__('Unlock Track'));
+        $gridAction->setTitle(__('Unlock Track'));
         $gridAction->setIcon($this->icons->check());
         $gridAction->setOnClickFunction('track/unlock');
         $gridAction->setFilterRowSource('tracked', 0);
