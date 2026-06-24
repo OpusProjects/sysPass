@@ -140,9 +140,58 @@ final class Database implements DatabaseInterface
         try {
             $connection = $this->dbStorageHandler->getConnection();
 
-            $stmt = $connection->prepare($query->getStatement(), $options);
+            $sql = $query->getStatement();
+            $bindValues = $query->getBindValues() ?? [];
+            $expandedBinds = [];
 
-            foreach ($query->getBindValues() ?? [] as $param => $value) {
+            foreach ($bindValues as $param => $value) {
+                if (is_array($value)) {
+                    $placeholders = [];
+                    foreach (array_values($value) as $i => $v) {
+                        $key = $param . '_' . $i;
+                        $placeholders[] = ':' . $key;
+                        $expandedBinds[$key] = $v;
+                    }
+                    $sql = str_replace(':' . $param, implode(', ', $placeholders), $sql);
+                } else {
+                    $expandedBinds[$param] = $value;
+                }
+            }
+
+            // PDO native prepared statements don't support the same named
+            // parameter appearing more than once.  Deduplicate by replacing
+            // the 2nd+ occurrence of :param with :param__2, :param__3, etc.
+            // and binding each copy to the same value.
+            foreach ($expandedBinds as $param => $value) {
+                $token = ':' . $param;
+                $count = substr_count($sql, $token);
+                if ($count > 1) {
+                    $offset = 0;
+                    $occurrence = 0;
+                    while (($pos = strpos($sql, $token, $offset)) !== false) {
+                        $endPos = $pos + strlen($token);
+                        $nextChar = $sql[$endPos] ?? '';
+                        if (ctype_alnum($nextChar) || $nextChar === '_') {
+                            $offset = $endPos;
+                            continue;
+                        }
+                        $occurrence++;
+                        if ($occurrence > 1) {
+                            $newParam = $param . '__' . $occurrence;
+                            $newToken = ':' . $newParam;
+                            $sql = substr_replace($sql, $newToken, $pos, strlen($token));
+                            $expandedBinds[$newParam] = $value;
+                            $offset = $pos + strlen($newToken);
+                        } else {
+                            $offset = $endPos;
+                        }
+                    }
+                }
+            }
+
+            $stmt = $connection->prepare($sql, $options);
+
+            foreach ($expandedBinds as $param => $value) {
                 $type = match (true) {
                     is_int($value) => PDO::PARAM_INT,
                     is_bool($value) => PDO::PARAM_BOOL,

@@ -29,7 +29,6 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -124,7 +123,7 @@ final class ViewController extends ControllerBase
         $this->view->assign('plugin', $pluginData);
         $this->view->assign('pluginInfo', $pluginInfo);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-use SP\Core\Acl\Acl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Adapters\Address;
@@ -177,7 +176,7 @@ final class TrackGrid extends GridBase
         $gridActionSearch->setOnSubmitFunction('appMgmt/search');
         $gridActionSearch->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::TRACK_SEARCH)
         );
 
         return $gridActionSearch;
@@ -199,7 +198,7 @@ final class TrackGrid extends GridBase
         $gridAction->addData('action-form', 'frmSearchTrack');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TRACK_SEARCH)
+            $this->acl->getRouteFor(AclActionsInterface::TRACK_SEARCH)
         );
 
         return $gridAction;
@@ -220,7 +219,7 @@ final class TrackGrid extends GridBase
         $gridAction->setOnClickFunction('track/clear');
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TRACK_CLEAR)
+            $this->acl->getRouteFor(AclActionsInterface::TRACK_CLEAR)
         );
 
         return $gridAction;
@@ -241,7 +240,7 @@ final class TrackGrid extends GridBase
         $gridAction->setFilterRowSource('tracked', 0);
         $gridAction->addData(
             'action-route',
-            Acl::getActionRoute(AclActionsInterface::TRACK_UNLOCK)
+            $this->acl->getRouteFor(AclActionsInterface::TRACK_UNLOCK)
         );
 
         return $gridAction;

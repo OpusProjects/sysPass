@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -79,7 +78,7 @@ abstract class NotificationViewBase extends ControllerBase
 
         $this->view->assign('notification', $notification);
 
-        if ($this->userDto->getIsAdminApp()) {
+        if ($this->userDto->isAdminApp) {
             $this->view->assign(
                 'users',
                 SelectItemAdapter::factory($this->userService->getAll())
@@ -87,7 +86,7 @@ abstract class NotificationViewBase extends ControllerBase
             );
         }
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::NOTIFICATION));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::NOTIFICATION));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

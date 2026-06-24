@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserGroup;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -103,7 +102,7 @@ abstract class UserGroupViewBase extends ControllerBase
                 : []
         );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

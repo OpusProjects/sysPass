@@ -60,7 +60,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
                        'Tag.name',
                    ])
             ->from('AccountToTag')
-            ->join('INNER', 'Tag', 'Tag.id == AccountToTag.tagId')
+            ->join('INNER', 'Tag', 'Tag.id = AccountToTag.tagId')
             ->where('AccountToTag.accountId = :accountId')
             ->bindValues(['accountId' => $id])
             ->orderBy(['Tag.name ASC']);

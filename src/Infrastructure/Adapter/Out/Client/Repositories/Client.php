@@ -121,6 +121,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->newUpdate()
             ->table(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
+            ->set('hash', ':hash')
             ->where('id = :id')
             ->bindValues(
                 [

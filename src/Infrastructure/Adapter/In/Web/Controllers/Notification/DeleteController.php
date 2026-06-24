@@ -56,7 +56,7 @@ final class DeleteController extends NotificationSaveBase
     {
         try {
             if ($id === null) {
-                if ($this->userDto->getIsAdminApp()) {
+                if ($this->userDto->isAdminApp) {
                     $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
                 } else {
                     $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
@@ -68,7 +68,7 @@ final class DeleteController extends NotificationSaveBase
                 return ActionResponse::ok(__u('Notifications deleted'));
             }
 
-            if ($this->userDto->getIsAdminApp()) {
+            if ($this->userDto->isAdminApp) {
                 $this->notificationService->deleteAdmin($id);
             } else {
                 $this->notificationService->delete($id);

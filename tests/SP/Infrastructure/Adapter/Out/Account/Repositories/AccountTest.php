@@ -177,7 +177,7 @@ class AccountTest extends UnitaryTestCase
             static function (QueryData $arg) use ($account) {
                 $params = $arg->getQuery()->getBindValues();
 
-                return count($params) === 18
+                return count($params) === 17
                        && $params['userId'] === $account->getUserId()
                        && $params['userGroupId'] === $account->getUserGroupId()
                        && $params['userEditId'] === $account->getUserEditId()
@@ -191,7 +191,6 @@ class AccountTest extends UnitaryTestCase
                        && $params['notes'] === $account->getNotes()
                        && $params['isPrivate'] === $account->getIsPrivate()
                        && $params['isPrivateGroup'] === $account->getIsPrivateGroup()
-                       && $params['passDate'] === $account->getPassDate()
                        && $params['passDateChange'] === $account->getPassDateChange()
                        && $params['parentId'] === $account->getParentId()
                        && $params['otherUserEdit'] === $account->getOtherUserEdit()

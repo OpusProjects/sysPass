@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Tag;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -74,7 +73,7 @@ abstract class TagViewBase extends ControllerBase
 
         $this->view->assign('tag', $tag);
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ITEMS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
         if ($this->view->isView === true) {
             $this->view->assign('disabled', 'disabled');

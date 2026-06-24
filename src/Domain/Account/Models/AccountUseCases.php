@@ -40,6 +40,9 @@ trait AccountUseCases
     {
         $account = new Account();
         $account->passDate = time();
+        $account->userEditId = $accountCreateDto->userId;
+        $account->pass = $accountCreateDto->pass;
+        $account->key = $accountCreateDto->key;
         self::buildCommon($accountCreateDto, $account);
 
         return $account;
@@ -57,6 +60,7 @@ trait AccountUseCases
         $account->userGroupId = $accountDto->userGroupId;
         $account->name = $accountDto->name;
         $account->clientId = $accountDto->clientId;
+        $account->categoryId = $accountDto->categoryId;
         $account->login = $accountDto->login;
         $account->url = $accountDto->url;
         $account->notes = $accountDto->notes;

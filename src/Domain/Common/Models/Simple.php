@@ -34,4 +34,20 @@ namespace SP\Domain\Common\Models;
  */
 final class Simple extends Model
 {
+    private array $dynamicProperties = [];
+
+    public function __set(string $name, mixed $value): void
+    {
+        $this->dynamicProperties[$name] = $value;
+    }
+
+    public function __get(string $name): mixed
+    {
+        return $this->dynamicProperties[$name] ?? null;
+    }
+
+    public function __isset(string $name): bool
+    {
+        return isset($this->dynamicProperties[$name]);
+    }
 }

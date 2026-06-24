@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
 
-use SP\Core\Acl\Acl;
 use SP\Core\Application;
 use SP\Core\Bootstrap\BootstrapWeb;
 use SP\Domain\Account\Models\PublicLinkList;
@@ -87,7 +86,7 @@ abstract class PublicLinkViewBase extends ControllerBase
                 ->getItemsFromModelSelected([$publicLink->getItemId()])
         );
 
-        $this->view->assign('nextAction', Acl::getActionRoute(AclActionsInterface::ACCESS_MANAGE));
+        $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
 
         if ($this->view->isView === true) {
             $baseUrl = ($this->configData->getApplicationUrl() ?: BootstrapWeb::$WEBURI).BootstrapWeb::$SUBURI;
