@@ -75,7 +75,7 @@ final class IndexController extends ControllerBase
         $this->eventlogService = $eventlogService;
         $this->trackService = $trackService;
 
-        $this->itemSearchData = new ItemSearchDto();
+        $this->itemSearchData = new ItemSearchDto(limitCount: $this->configData->getAccountCount());
     }
 
     /**
@@ -98,8 +98,6 @@ final class IndexController extends ControllerBase
      */
     protected function getGridTabs(): void
     {
-        $this->itemSearchData->setLimitCount($this->configData->getAccountCount());
-
         if ($this->checkAccess(AclActionsInterface::EVENTLOG)
             && $this->configData->isLogEnabled()
         ) {
