@@ -160,7 +160,7 @@ final class PublicLink extends Service implements PublicLinkService
                 'data' => $this->getSecuredLinkData($publicLink->getItemId(), $key),
                 'dateExpire' => self::calcDateExpire($this->config),
                 'maxCountViews' => $this->config->getConfigData()->getPublinksMaxViews(),
-                'userId' => $publicLink->getUserId() ?? $this->context->getUserData()->getId()
+                'userId' => $publicLink->getUserId() ?? $this->context->getUserData()->id
             ]
         );
     }
