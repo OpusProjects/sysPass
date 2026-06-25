@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Auth\Models\AuthToken;
+use SP\Domain\Auth\Models\AuthTokenList;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AuthTokenGenerator;
@@ -177,7 +178,7 @@ class AuthTokenTest extends IntegrationTestCase
         $authTokenGenerator = AuthTokenGenerator::factory();
 
         $this->addDatabaseMapperResolver(
-            AuthToken::class,
+            AuthTokenList::class,
             QueryResult::withTotalNumRows(
                 [
                     $authTokenGenerator->buildAuthToken(),

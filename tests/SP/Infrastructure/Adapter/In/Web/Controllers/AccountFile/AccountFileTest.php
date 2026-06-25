@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\File;
+use SP\Domain\Account\Models\FileList;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\BodyChecker;
@@ -105,9 +106,9 @@ class AccountFileTest extends IntegrationTestCase
         $fileData = FileDataGenerator::factory()->buildFileData();
 
         $this->addDatabaseMapperResolver(
-            File::class,
+            FileList::class,
             new QueryResult(
-                [File::buildFromSimpleModel($fileData)]
+                [FileList::buildFromSimpleModel($fileData)]
             )
         );
 
@@ -162,11 +163,11 @@ class AccountFileTest extends IntegrationTestCase
         $fileDataGenerator = FileDataGenerator::factory();
 
         $this->addDatabaseMapperResolver(
-            File::class,
+            FileList::class,
             QueryResult::withTotalNumRows(
                 [
-                    File::buildFromSimpleModel($fileDataGenerator->buildFileData()),
-                    File::buildFromSimpleModel($fileDataGenerator->buildFileData())
+                    FileList::buildFromSimpleModel($fileDataGenerator->buildFileData()),
+                    FileList::buildFromSimpleModel($fileDataGenerator->buildFileData())
                 ],
                 2
             )
@@ -222,8 +223,8 @@ class AccountFileTest extends IntegrationTestCase
         $fileDataGenerator = FileDataGenerator::factory();
 
         $this->addDatabaseMapperResolver(
-            File::class,
-            new QueryResult([File::buildFromSimpleModel($fileDataGenerator->buildFileData())])
+            FileList::class,
+            new QueryResult([FileList::buildFromSimpleModel($fileDataGenerator->buildFileData())])
         );
 
         $container = $this->buildContainer(
