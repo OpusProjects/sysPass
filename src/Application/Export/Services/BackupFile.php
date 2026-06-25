@@ -199,13 +199,13 @@ final class BackupFile extends Service implements BackupFileService
             foreach ($rows as $row) {
                 $values = array_map(
                     function (mixed $value) {
-                        if (is_numeric($value)) {
+                        if ($value === null) {
+                            return 'NULL';
+                        } elseif (is_numeric($value)) {
                             return $value;
-                        } elseif ($value) {
-                            return $this->databaseUtil->escape((string)$value);
                         }
 
-                        return null;
+                        return $this->databaseUtil->escape((string)$value);
                     },
                     $row
                 );
