@@ -139,8 +139,8 @@ final class AccountPasswordHelper extends HelperBase
 
         return trim(
             $this->crypt->decrypt(
-                $accountPassItemWithIdAndName->getPass(),
-                $accountPassItemWithIdAndName->getKey(),
+                $accountPassItemWithIdAndName->getPass() ?? '',
+                $accountPassItemWithIdAndName->getKey() ?? '',
                 CryptSession::getSessionKey($this->context)
             )
         );
