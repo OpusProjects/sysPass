@@ -181,7 +181,7 @@ final class AccountSearchItem
     public function getNumFiles(): int
     {
         return $this->configData->isFilesEnabled()
-            ? $this->accountSearchView->getNumFiles()
+            ? $this->accountSearchView->getNumFiles() ?? 0
             : 0;
     }
 
