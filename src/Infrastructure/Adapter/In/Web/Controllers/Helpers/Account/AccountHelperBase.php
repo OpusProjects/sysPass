@@ -76,7 +76,7 @@ abstract class AccountHelperBase extends HelperBase
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass)
         ) {
-            throw UpdatedMasterPassException::info(__u('The master password needs to be updated'));
+            throw new UpdatedMasterPassException(SPException::INFO);
         }
 
         $this->actionId = $actionId;
