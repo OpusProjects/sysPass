@@ -32,6 +32,9 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
+use function SP\__;
+use function SP\__u;
+
 final class EditController extends CategoryBase
 {
     /**

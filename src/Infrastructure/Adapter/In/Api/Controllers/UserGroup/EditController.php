@@ -32,6 +32,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\User\Models\UserGroup;
 
+use function SP\__;
+use function SP\__u;
+
 /**
  * Class EditController
  */

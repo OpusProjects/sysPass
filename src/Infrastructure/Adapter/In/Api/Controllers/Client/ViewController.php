@@ -31,6 +31,8 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Util\Util;
 
+use function SP\__u;
+
 /**
  * Class ViewController
  */
