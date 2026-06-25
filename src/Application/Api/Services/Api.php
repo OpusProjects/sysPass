@@ -266,7 +266,7 @@ final class Api extends Service implements ApiService
         try {
             $tokenPass = $this->getParam('tokenPass', true);
 
-            Hash::checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
+            Hash::checkHashKey($tokenPass, $this->authToken->getHash() ?? '') || $this->accessDenied();
 
             $vaultData = $this->authToken->getVault();
 

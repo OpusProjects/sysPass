@@ -164,8 +164,8 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $encryptedPassword = $this->accountCryptService
                     ->getPasswordEncrypted(
                         $this->crypt->decrypt(
-                            $account->getPass(),
-                            $account->getKey(),
+                            $account->getPass() ?? '',
+                            $account->getKey() ?? '',
                             $updateMasterPassRequest->getCurrentMasterPass()
                         ),
                         $updateMasterPassRequest->getNewMasterPass()

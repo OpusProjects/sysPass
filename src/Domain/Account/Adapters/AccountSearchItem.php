@@ -133,7 +133,7 @@ final class AccountSearchItem
             $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                        $this->uriContext->getSubUri();
 
-            return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
+            return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash() ?? '');
         }
 
         return null;

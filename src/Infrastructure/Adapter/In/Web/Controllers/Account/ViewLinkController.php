@@ -98,7 +98,7 @@ final class ViewLinkController extends AccountControllerBase
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 
-            $vault = Serde::deserialize($publicLink->getData(), VaultInterface::class);
+            $vault = Serde::deserialize($publicLink->getData() ?? '', VaultInterface::class);
 
             $accountViewDto = AccountViewDto::fromModel(
                 Serde::deserialize(
