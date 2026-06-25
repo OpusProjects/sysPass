@@ -138,7 +138,8 @@ final class AccountSearchData
 
         $accountLinkEnabled = (null !== $userPreferencesData && $userPreferencesData->isAccountLink())
                               || $this->configData->isAccountLink();
-        $favorites = $this->accountToFavoriteService->getForUserId($this->context->getUserData()->id);
+        $userId = $this->context->getUserData()->id;
+        $favorites = $userId !== null ? $this->accountToFavoriteService->getForUserId($userId) : [];
 
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (
