@@ -62,17 +62,17 @@ final class DeleteController extends UserSaveBase
             }
 
             if ($id === null) {
-                $this->userService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+                $this->userService->deleteByIdBatch($ids);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $ids, $this->customFieldService);
 
-                $this->eventDispatcher->notify(new Event('delete.user.selection', 
+                $this->eventDispatcher->notify(new Event('delete.user.selection',
                         $this,
                         EventMessage::build()
                             ->addDescription(__u('Users deleted'))
-                            ->setExtra('userId', $this->getItemsIdFromRequest($this->request))
+                            ->setExtra('userId', $ids)
                     )
                 );
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
                 return ActionResponse::ok(__u('Users deleted'));
             }
