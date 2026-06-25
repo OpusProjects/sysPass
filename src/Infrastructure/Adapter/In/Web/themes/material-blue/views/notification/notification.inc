@@ -64,7 +64,7 @@ $notification = $_getvar('notification');
                                type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $notification->getType(); ?>" <?php
+                               echo htmlspecialchars($notification->getType() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('disabled'); ?>>
                         <label class="mdl-textfield__label"
                                for="notification_type"><?php
@@ -81,7 +81,7 @@ $notification = $_getvar('notification');
                                name="notification_component" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $notification->getComponent(); ?>" <?php
+                               echo htmlspecialchars($notification->getComponent() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('disabled'); ?>>
                         <label class="mdl-textfield__label"
                                for="notification_component"><?php

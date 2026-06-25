@@ -126,7 +126,7 @@ final class Installer implements InstallerService
             );
         }
 
-        if (strlen($this->installData->getMasterPassword()) < 11) {
+        if (strlen($this->installData->getMasterPassword() ?? '') < 11) {
             throw new InvalidArgumentException(
                 __u('Master password too short'),
                 SPException::CRITICAL,
@@ -315,7 +315,7 @@ final class Installer implements InstallerService
                 new Config(
                     [
                         'parameter' => 'masterPwd',
-                        'value' => Hash::hashKey($this->installData->getMasterPassword())
+                        'value' => Hash::hashKey($this->installData->getMasterPassword() ?? '')
                     ]
                 )
             );
