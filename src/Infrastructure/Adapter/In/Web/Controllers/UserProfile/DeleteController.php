@@ -62,12 +62,12 @@ final class DeleteController extends UserProfileSaveBase
             }
 
             if ($id === null) {
-                $this->userProfileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+                $this->userProfileService->deleteByIdBatch($ids);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $ids, $this->customFieldService);
 
                 $this->eventDispatcher->notify(new Event('delete.userProfile.selection', $this, EventMessage::build()->addDescription(__u('Profiles deleted')))
                 );
-
-                $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 
                 return ActionResponse::ok(__u('Profiles deleted'));
             }
