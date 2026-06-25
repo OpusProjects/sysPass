@@ -77,7 +77,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPermissionView(ItemPreset $itemPresetData): void
     {
-        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?? new AccountPermission();
+        $accountPermission = $itemPresetData->hydrate(AccountPermission::class) ?? new AccountPermission([], [], [], []);
 
         $this->view->assign('typeTemplate', 'item_preset-permission');
         $this->view->assign('presetName', __('Permission Preset'));
@@ -135,7 +135,7 @@ final class ItemPresetHelper extends HelperBase
      */
     public function makeAccountPasswordView(ItemPreset $itemPresetData): void
     {
-        $password = $itemPresetData->hydrate(Password::class) ?? new Password();
+        $password = $itemPresetData->hydrate(Password::class) ?? new Password(0, false, false, false, false, false, false, 0, 0);
 
         $this->view->assign('typeTemplate', 'item_preset-password');
         $this->view->assign('presetName', __('Account Password Preset'));
