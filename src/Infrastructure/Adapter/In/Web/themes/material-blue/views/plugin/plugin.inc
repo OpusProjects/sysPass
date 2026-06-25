@@ -37,7 +37,7 @@ use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;
 
-$pluginInfo = $_getvar('pluginInfo');
+$plugin = $_getvar('plugin');
 ?>
 
 <div id="box-popup">
@@ -56,7 +56,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($pluginInfo->getName() ?? '', ENT_QUOTES); ?>" <?php
+                               echo htmlspecialchars($plugin->getName() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -72,7 +72,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo implode('.', $pluginInfo->getVersion() ?? []); ?>" <?php
+                               echo htmlspecialchars($plugin->getVersionLevel() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="version"><?php
@@ -82,58 +82,17 @@ $pluginInfo = $_getvar('pluginInfo');
             </tr>
             <tr>
                 <td class="descField"><?php
-                    echo __('Compatible Version'); ?></td>
+                    echo __('Enabled'); ?></td>
                 <td class="valField">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="compatible_version" name="compatible_version"
-                               type="text"
+                        <input id="enabled" name="enabled" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo implode('.', $pluginInfo->getCompatibleVersion() ?? []); ?>" <?php
+                               echo $plugin->getEnabled() ? __('Yes') : __('No'); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
-                               for="compatible_version"><?php
-                            echo __('sysPass compatible version'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php
-                    echo __('Author'); ?></td>
-                <td class="valField">
-                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input id="author" name="author" type="text"
-                               class="mdl-textfield__input mdl-color-text--indigo-400"
-                               value="<?php
-                               echo htmlspecialchars($pluginInfo->getAuthor() ?? '', ENT_QUOTES); ?>" <?php
-                        echo $_getvar('readonly'); ?>>
-                        <label class="mdl-textfield__label"
-                               for="author"><?php
-                            echo __('Plugin author'); ?></label>
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td class="descField"><?php
-                    echo __('Events'); ?></td>
-                <td class="valField">
-                    <div class="lowres-title"><?php
-                        echo __('Events'); ?></div>
-
-                    <div class="list-wrap">
-                        <ul class="mdl-list">
-                            <?php
-                            foreach ($pluginInfo->getEvents() as $event): ?>
-                                <li class="mdl-list__item">
-                                <span class="mdl-list__item-primary-content">
-                                <i class="material-icons mdl-list__item-icon">flash_on</i>
-                                    <?php
-                                    echo $event; ?>
-                                </span>
-                                </li>
-                            <?php
-                            endforeach; ?>
-                        </ul>
+                               for="enabled"><?php
+                            echo __('Plugin enabled'); ?></label>
                     </div>
                 </td>
             </tr>
