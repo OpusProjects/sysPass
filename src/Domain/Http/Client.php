@@ -39,7 +39,7 @@ final class Client
         $options = ['timeout' => 10, 'version' => 1.1,];
 
         if ($configData->isProxyEnabled()) {
-            $options['proxy'] = sprintf('tcp://%s:%d', $configData->getProxyServer(), $configData->getProxyPort());
+            $options['proxy'] = sprintf('tcp://%s:%d', $configData->getProxyServer() ?? '', $configData->getProxyPort());
 
             if (!empty($configData->getProxyUser()) && !empty($configData->getProxyPass())) {
                 $options['auth'] = [$configData->getProxyUser(), $configData->getProxyPass()];

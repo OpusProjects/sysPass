@@ -172,7 +172,7 @@ final class GetEnvironmentController extends SimpleControllerBase
      */
     private function getCSRF(): ?string
     {
-        logger(sprintf('CSRF key (get): %s', $this->session->getCSRF()));
+        logger(sprintf('CSRF key (get): %s', $this->session->getCSRF() ?? ''));
 
         return $this->session->getCSRF();
     }
