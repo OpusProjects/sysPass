@@ -79,31 +79,31 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
             foreach ($accounts as $account) {
                 $accountName = $this->document->createElement(
                     'name',
-                    $this->document->createTextNode($account->getName())->nodeValue
+                    $this->document->createTextNode($account->getName() ?? '')->nodeValue
                 );
                 $accountCustomerId = $this->document->createElement('clientId', (string)$account->getClientId());
                 $accountCategoryId = $this->document->createElement('categoryId', (string)$account->getCategoryId());
                 $accountLogin = $this->document->createElement(
                     'login',
-                    $this->document->createTextNode($account->getLogin())->nodeValue
+                    $this->document->createTextNode($account->getLogin() ?? '')->nodeValue
                 );
                 $accountUrl = $this->document->createElement(
                     'url',
                     $this->document->createTextNode(
-                        $account->getUrl()
+                        $account->getUrl() ?? ''
                     )->nodeValue
                 );
                 $accountNotes = $this->document->createElement(
                     'notes',
-                    $this->document->createTextNode($account->getNotes())->nodeValue
+                    $this->document->createTextNode($account->getNotes() ?? '')->nodeValue
                 );
                 $accountPass = $this->document->createElement(
                     'pass',
-                    $this->document->createTextNode($account->getPass())->nodeValue
+                    $this->document->createTextNode($account->getPass() ?? '')->nodeValue
                 );
                 $accountIV = $this->document->createElement(
                     'key',
-                    $this->document->createTextNode($account->getKey())->nodeValue
+                    $this->document->createTextNode($account->getKey() ?? '')->nodeValue
                 );
                 $tags = $this->document->createElement('tags');
 
