@@ -45,7 +45,7 @@ if ($_getvar('isImage')): ?>
     echo $fileDto->type; ?>;base64, <?php
     echo $_getvar('data'); ?>" border="0"/>
     <div class="title"><?php
-    echo htmlspecialchars($fileDto->name, ENT_QUOTES); ?></div><?php
+    echo htmlspecialchars($fileDto->name ?? '', ENT_QUOTES); ?></div><?php
 else: ?>
     <pre><?php
         echo $_getvar('data'); ?></pre>

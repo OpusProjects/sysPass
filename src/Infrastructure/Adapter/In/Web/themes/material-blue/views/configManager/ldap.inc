@@ -403,7 +403,7 @@ endif; ?>
                             <?php
                             echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>>
                             <?php
-                            echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?>
                         </option>
                     <?php
                     endforeach; ?>
@@ -445,7 +445,7 @@ endif; ?>
                             <?php
                             echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>>
                             <?php
-                            echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?>
                         </option>
                     <?php
                     endforeach; ?>

@@ -57,7 +57,7 @@ $accountView = $_getvar('accountData');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -73,7 +73,7 @@ $accountView = $_getvar('accountData');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getClientName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getClientName() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php
@@ -89,7 +89,7 @@ $accountView = $_getvar('accountData');
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getCategoryName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getCategoryName() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="category"><?php
@@ -105,7 +105,7 @@ $accountView = $_getvar('accountData');
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getUrl(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getUrl() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="url"><?php
@@ -121,7 +121,7 @@ $accountView = $_getvar('accountData');
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getLogin(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getLogin() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="login"><?php
@@ -140,7 +140,7 @@ $accountView = $_getvar('accountData');
                                 name="notes"
                                 maxlength="1000"
                                 readonly><?php
-                            echo htmlspecialchars($accountView->getNotes(), ENT_QUOTES); ?></textarea>
+                            echo htmlspecialchars($accountView->getNotes() ?? '', ENT_QUOTES); ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php
                             echo __('Notes about the account'); ?></label>

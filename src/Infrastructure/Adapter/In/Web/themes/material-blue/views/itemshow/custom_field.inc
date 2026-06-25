@@ -63,7 +63,7 @@ $field = $_getvar('field');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($field->getName(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($field->getName() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Field name'); ?></label>

@@ -222,7 +222,7 @@ function _t(string $domain, string $message, bool $translate = true): string
 /**
  * Capitalize multi-byte strings
  */
-function mb_ucfirst($string): string
+function mb_ucfirst(string $string): string
 {
     return mb_strtoupper(mb_substr($string, 0, 1));
 }

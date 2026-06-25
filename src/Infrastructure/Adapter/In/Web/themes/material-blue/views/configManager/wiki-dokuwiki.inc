@@ -130,7 +130,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUrl(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getDokuwikiUrl() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_url"><?php
                         echo __('API URL'); ?></label>
@@ -168,7 +168,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUrlBase(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getDokuwikiUrlBase() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_urlbase"><?php
                         echo __('Base URL'); ?></label>
@@ -197,7 +197,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUser(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getDokuwikiUser() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_user"><?php
                         echo __('User'); ?></label>
@@ -246,7 +246,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiNamespace(), ENT_QUOTES); ?>"/>
+                           echo htmlspecialchars($configData->getDokuwikiNamespace() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_namespace"><?php
                         echo __('Namespace'); ?></label>

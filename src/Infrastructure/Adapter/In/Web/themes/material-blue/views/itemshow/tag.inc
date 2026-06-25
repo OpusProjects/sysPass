@@ -60,7 +60,7 @@ $tag = $_getvar('tag');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Tag name'); ?></label>

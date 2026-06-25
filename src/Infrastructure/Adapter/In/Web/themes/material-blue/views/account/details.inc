@@ -78,7 +78,7 @@ use function SP\__;
                     printf(
                         '%s (%s)',
                         $accountView->dateEdit,
-                        htmlspecialchars($accountView->userEditName, ENT_QUOTES)
+                        htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES)
                     ); ?>
                 </td>
             </tr>
@@ -132,7 +132,7 @@ use function SP\__;
                         echo __('Editor'); ?></div>
 
                     <?php
-                    echo htmlspecialchars($accountView->userEditName, ENT_QUOTES) ?: htmlspecialchars(
+                    echo htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES) ?: htmlspecialchars(
                         $accountView->userEditLogin,
                         ENT_QUOTES
                     ); ?>

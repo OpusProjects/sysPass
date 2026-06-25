@@ -87,7 +87,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $client->getId(); ?>"><?php
-                                        echo htmlspecialchars($client->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -110,7 +110,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $category->getId(); ?>"><?php
-                                        echo htmlspecialchars($category->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -133,7 +133,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $user->getId(); ?>"><?php
-                                        echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -156,7 +156,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $group->getId(); ?>"><?php
-                                        echo htmlspecialchars($group->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -175,7 +175,7 @@ use function SP\__;
                                 foreach ($_getvar('tags') as $tag): ?>
                                     <option value="<?php
                                     echo $tag->getId(); ?>"><?php
-                                        echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -205,7 +205,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $user->getId(); ?>"><?php
-                                                echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
+                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -238,7 +238,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $user->getId(); ?>"><?php
-                                                echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
+                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -279,7 +279,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $userGroup->getId(); ?>"><?php
-                                                echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -312,7 +312,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $userGroup->getId(); ?>"><?php
-                                                echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>

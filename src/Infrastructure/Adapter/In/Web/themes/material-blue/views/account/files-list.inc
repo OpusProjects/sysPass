@@ -45,7 +45,7 @@ use function SP\__;
             <li class="mdl-list__item">
                 <span class="mdl-list__item-primary-content"
                       title="<?php
-                      echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>">
+                      echo htmlspecialchars($file->getName() ?? '', ENT_QUOTES); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
                     <span><?php
                         printf('%s (%d KB)', Html::truncate($file->getName(), 50), $file->getSize() / 1024); ?></span>
@@ -55,7 +55,7 @@ use function SP\__;
                     <?php
                     if ($file->getThumb() !== 'no_thumb'): ?>
                         <span title="<?php
-                        echo htmlspecialchars($file->getName(), ENT_QUOTES); ?>"
+                        echo htmlspecialchars($file->getName() ?? '', ENT_QUOTES); ?>"
                               class="btn-action"
                               data-item-id="<?php
                               echo $file->getId(); ?>"

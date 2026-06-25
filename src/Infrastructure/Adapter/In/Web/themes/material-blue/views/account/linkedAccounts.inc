@@ -45,8 +45,8 @@ use function SP\__;
                         <?php
                         printf(
                             '%s (%s)',
-                            htmlspecialchars($account->name, ENT_QUOTES),
-                            htmlspecialchars($account->clientName, ENT_QUOTES)
+                            htmlspecialchars($account->name ?? '', ENT_QUOTES),
+                            htmlspecialchars($account->clientName ?? '', ENT_QUOTES)
                         ); ?>
                     </span>
                     <span class="list-actions">

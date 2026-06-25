@@ -427,7 +427,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                         <option
                                 value="<?php
                                 echo $userGroup->getId(); ?>"><?php
-                            echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                            echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                     <?php
                     endforeach; ?>
                 </select>
