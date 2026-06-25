@@ -58,7 +58,7 @@ final class AccountSearchFilterDto
      *
      * @return AccountSearchFilterDto
      */
-    public static function build(string $txtSearch): AccountSearchFilterDto
+    public static function build(?string $txtSearch): AccountSearchFilterDto
     {
         return (new self())->setTxtSearch($txtSearch);
     }

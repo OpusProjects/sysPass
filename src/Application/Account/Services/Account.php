@@ -321,6 +321,14 @@ final class Account extends Service implements AccountService
                     $accountCreateDto = Account::buildWithUserData($userData, $accountCreateDto);
                 }
 
+                if ($accountCreateDto->userGroupId === null) {
+                    $accountCreateDto = $accountCreateDto->withUserGroupId($userData->userGroupId ?? 0);
+                }
+
+                if ($accountCreateDto->userId === null) {
+                    $accountCreateDto = $accountCreateDto->withUserId($userData->id ?? 0);
+                }
+
                 $accountCreateDto = $accountCreateDto->withEncryptedPassword(
                     $this->accountCryptService->getPasswordEncrypted($accountCreateDto->pass)
                 );
@@ -409,6 +417,18 @@ final class Account extends Service implements AccountService
 
                     $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
                     $changeUserGroup = $this->userCanChangeGroup($userData, $userProfile, $account);
+
+                    if ($accountUpdateDto->userGroupId === null) {
+                        $accountUpdateDto = $accountUpdateDto->mutate(
+                            ['userGroupId' => $account->getUserGroupId()]
+                        );
+                    }
+
+                    if ($accountUpdateDto->userId === null) {
+                        $accountUpdateDto = $accountUpdateDto->mutate(
+                            ['userId' => $account->getUserId()]
+                        );
+                    }
                 } else {
                     $changeOwner = false;
                     $changeUserGroup = false;

@@ -68,7 +68,7 @@ abstract class AccountDto extends Dto
     /**
      * @throws SPException
      */
-    public function withUserId(int $id): static
+    public function withUserId(?int $id): static
     {
         return $this->mutate(['userId' => $id]);
     }
@@ -76,7 +76,7 @@ abstract class AccountDto extends Dto
     /**
      * @throws SPException
      */
-    public function withUserGroupId(int $id): static
+    public function withUserGroupId(?int $id): static
     {
         return $this->mutate(['userGroupId' => $id]);
     }

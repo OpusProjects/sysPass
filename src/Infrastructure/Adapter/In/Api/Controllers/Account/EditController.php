@@ -85,7 +85,7 @@ final class EditController extends AccountBase
         $accountRequest->parentId = $this->apiService->getParamInt('parentId');
         $accountRequest->userId = $this->apiService->getParamInt('userId', false);
         $accountRequest->userGroupId = $this->apiService->getParamInt('userGroupId', false);
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
+        $accountRequest->userEditId = $this->context->getUserData()->id;
 
         $tagsId = array_map(
             'intval',
