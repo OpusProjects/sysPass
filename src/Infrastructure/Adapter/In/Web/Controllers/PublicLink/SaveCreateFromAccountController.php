@@ -66,7 +66,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
 
             $publicLinkData = new PublicLink(
                 [
-                    'id' => PublicLinkType::Account->value,
+                    'typeId' => PublicLinkType::Account->value,
                     'itemId' => $accountId,
                     'notify' => (bool)$notify,
                     'hash' => Password::generateRandomBytes()
