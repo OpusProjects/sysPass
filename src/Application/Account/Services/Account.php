@@ -215,6 +215,10 @@ final class Account extends Service implements AccountService
 
                     $this->addHistory($accountId);
 
+                    if ($accountUpdateDto->userEditId === null) {
+                        $accountUpdateDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
+                    }
+
                     $this->accountRepository->updateBulk(
                         $accountId,
                         AccountModel::update($accountUpdateDto),
@@ -413,6 +417,10 @@ final class Account extends Service implements AccountService
                 $this->addHistory($id);
 
                 $accountUpdateDto = $this->setPresetPrivate($accountUpdateDto, $id);
+
+                if ($accountUpdateDto->userEditId === null) {
+                    $accountUpdateDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
+                }
 
                 $this->accountRepository->update(
                     $id,

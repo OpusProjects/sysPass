@@ -450,7 +450,7 @@ final class Account extends BaseRepository implements AccountRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(AccountModel::TABLE)
-            ->cols(AccountModel::getCols())
+            ->cols(AccountModel::getColsWithPreffix(AccountModel::TABLE))
             ->where('id = :id')
             ->bindValues(['id' => $accountId])
             ->limit(1);

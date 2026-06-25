@@ -100,7 +100,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                        'url' => $accountData->getUrl(),
                        'pass' => $accountData->getPass(),
                        'key' => $accountData->getKey(),
-                       'notes' => $accountData->getNotes(),
+                       'notes' => $accountData->getNotes() ?? '',
                        'userId' => $accountData->getUserId(),
                        'userGroupId' => $accountData->getUserGroupId(),
                        'userEditId' => $accountData->getUserEditId(),
@@ -161,7 +161,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
         $query = $this->queryFactory
             ->newSelect()
             ->from(AccountHistoryModel::TABLE)
-            ->cols(AccountHistoryModel::getCols())
+            ->cols(AccountHistoryModel::getColsWithPreffix(AccountHistoryModel::TABLE))
             ->where('id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);

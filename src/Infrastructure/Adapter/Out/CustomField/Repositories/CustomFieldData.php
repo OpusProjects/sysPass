@@ -169,7 +169,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newSelect()
             ->from(CustomFieldDataModel::TABLE)
-            ->cols(CustomFieldDataModel::getCols());
+            ->cols(CustomFieldDataModel::getColsWithPreffix(CustomFieldDataModel::TABLE));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
     }
@@ -186,8 +186,8 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
         $query = $this->queryFactory
             ->newSelect()
             ->from(CustomFieldDataModel::TABLE)
-            ->cols(CustomFieldDataModel::getCols())
-            ->where('key IS NOT NULL')
+            ->cols(CustomFieldDataModel::getColsWithPreffix(CustomFieldDataModel::TABLE))
+            ->where('`key` IS NOT NULL')
             ->orderBy(['definitionId ASC']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, CustomFieldDataModel::class));
