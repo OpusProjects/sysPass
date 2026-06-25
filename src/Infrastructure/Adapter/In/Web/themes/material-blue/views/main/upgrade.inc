@@ -79,8 +79,8 @@
                 </div>
 
                 <?php
-                if (Version::checkVersion($_getvar('version'), '130.16011001')
-                    && count($_getvar('constraints')) > 0
+                if (Version::checkVersion($_getvar('version') ?? '', '130.16011001')
+                    && count($_getvar('constraints', [])) > 0
                 ):
                     ?>
                     <div>

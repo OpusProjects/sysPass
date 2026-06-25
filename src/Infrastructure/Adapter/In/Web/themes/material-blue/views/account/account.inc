@@ -48,7 +48,7 @@ $showDetails = $gotData && $accountAcl->isShowDetails();
 $showPermissions = $accountAcl->isShowPermission()
                    || $_getvar('allowPrivate', false)
                    || $_getvar('allowPrivateGroup', false);
-$showCustomFields = count($_getvar('customFields', 0)) > 0;
+$showCustomFields = count($_getvar('customFields', [])) > 0;
 ?>
 
 <div class="data-container">
