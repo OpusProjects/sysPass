@@ -76,6 +76,7 @@ trait AccountUseCases
     {
         $account = new Account();
         self::buildCommon($accountUpdateDto, $account);
+        $account->userEditId = $accountUpdateDto->userEditId;
 
         return $account;
     }

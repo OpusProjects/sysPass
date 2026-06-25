@@ -62,7 +62,7 @@ final class AccountAclDto
             $accountDetailsResponse->getUsers(),
             $accountDetailsResponse->getAccountView()->getUserGroupId(),
             $accountDetailsResponse->getUserGroups(),
-            strtotime($accountDetailsResponse->getAccountView()->getDateEdit())
+            strtotime($accountDetailsResponse->getAccountView()->getDateEdit() ?? '') ?: 0
         );
     }
 
@@ -100,7 +100,7 @@ final class AccountAclDto
             $users,
             $accountSearchView->getUserGroupId(),
             $userGroups,
-            strtotime($accountSearchView->getDateEdit())
+            strtotime($accountSearchView->getDateEdit() ?? '') ?: 0
         );
     }
 
