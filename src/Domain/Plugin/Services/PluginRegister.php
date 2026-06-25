@@ -56,7 +56,7 @@ final class PluginRegister extends Service implements PluginRegisterService
     public function registerFor(Plugin $plugin): void
     {
         try {
-            $this->pluginManagerService->getByName($plugin->getName());
+            $this->pluginManagerService->getByName($plugin->getName() ?? '');
 
             $this->eventDispatcher->notify(new Event('register.plugin', 
                     $this,
