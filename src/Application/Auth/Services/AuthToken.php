@@ -156,8 +156,8 @@ final class AuthToken extends Service implements AuthTokenService
             || self::canUseSecureTokenAction($authToken->getActionId())
         ) {
             $properties = [
-                'vault' => $this->getSecureData($token, $authToken->getHash())->getSerialized(),
-                'hash' => Hash::hashKey($authToken->getHash())
+                'vault' => $this->getSecureData($token, $authToken->getHash() ?? '')->getSerialized(),
+                'hash' => Hash::hashKey($authToken->getHash() ?? '')
             ];
         } else {
             $properties = [
@@ -230,7 +230,7 @@ final class AuthToken extends Service implements AuthTokenService
         $this->authTokenRepository->transactionAware(
             function () use ($authToken) {
                 $token = $this->generateToken();
-                $vault = Serde::serialize($this->getSecureData($token, $authToken->getHash()));
+                $vault = Serde::serialize($this->getSecureData($token, $authToken->getHash() ?? ''));
 
                 $this->authTokenRepository->refreshTokenByUserId(
                     $authToken->getUserId(),
@@ -239,7 +239,7 @@ final class AuthToken extends Service implements AuthTokenService
                 $this->authTokenRepository->refreshVaultByUserId(
                     $authToken->getUserId(),
                     $vault,
-                    Hash::hashKey($authToken->getHash())
+                    Hash::hashKey($authToken->getHash() ?? '')
                 );
 
                 $secureData = $this->injectSecureData($authToken, $token);
