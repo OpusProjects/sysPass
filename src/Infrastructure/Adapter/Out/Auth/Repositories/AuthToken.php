@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Adapter\Out\Auth\Repositories;
 
 use Exception;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -157,10 +158,10 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                        'AuthToken.userId',
                        'AuthToken.actionId',
                        'AuthToken.token',
-                       'User.name',
-                       'User.login'
+                       'User.name AS userName',
+                       'User.login AS userLogin'
                    ])
-            ->orderBy(['name ASC'])
+            ->orderBy(['User.login ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -172,7 +173,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             $query->bindValues(['userLogin' => $search, 'userName' => $search]);
         }
 
-        return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenModel::class), true);
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AuthTokenListModel::class), true);
     }
 
     /**

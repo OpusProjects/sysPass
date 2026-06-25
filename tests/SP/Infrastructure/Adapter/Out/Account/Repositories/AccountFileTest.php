@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\File as FileModel;
+use SP\Domain\Account\Models\FileList as FileListModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -184,7 +185,7 @@ class AccountFileTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['id'] === $id
-                       && $arg->getMapClassName() === FileModel::class
+                       && $arg->getMapClassName() === FileListModel::class
                        && !empty($query->getStatement());
             }
         );
@@ -210,7 +211,7 @@ class AccountFileTest extends UnitaryTestCase
                        && $params['clientName'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike
                        && $params['type'] === $searchStringLike
-                       && $arg->getMapClassName() === FileModel::class
+                       && $arg->getMapClassName() === FileListModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

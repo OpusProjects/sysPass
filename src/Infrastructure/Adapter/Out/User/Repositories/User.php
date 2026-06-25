@@ -36,6 +36,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
+use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
@@ -243,7 +244,13 @@ final class User extends BaseRepository implements UserRepository
                 UserProfileModel::TABLE,
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
-            ->cols(UserModel::getColsWithPreffix(UserModel::TABLE, ['hash']))
+            ->cols(array_merge(
+                UserModel::getColsWithPreffix(UserModel::TABLE, ['hash']),
+                [
+                    sprintf('%s.name AS userProfileName', UserProfileModel::TABLE),
+                    sprintf('%s.name AS userGroupName', UserGroupModel::TABLE),
+                ]
+            ))
             ->orderBy([sprintf('%s.name', UserModel::TABLE)])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -260,7 +267,7 @@ final class User extends BaseRepository implements UserRepository
             $query->bindValues(['name' => $search, 'login' => $search]);
         }
 
-        $queryData = QueryData::build($query)->setMapClassName(UserModel::class);
+        $queryData = QueryData::build($query)->setMapClassName(UserListModel::class);
 
         return $this->db->runQuery($queryData, true);
     }

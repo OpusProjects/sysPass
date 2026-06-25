@@ -1,6 +1,6 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
@@ -23,30 +23,20 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Generators;
+namespace SP\Domain\Auth\Models;
 
-use SP\Domain\Plugin\Models\Plugin;
-
-/**
- * Class PluginGenerator
- */
-final class PluginGenerator extends DataGenerator
+class AuthTokenList extends AuthToken
 {
+    protected ?string $userName  = null;
+    protected ?string $userLogin = null;
 
-    public function buildPlugin(): Plugin
+    public function getUserName(): ?string
     {
-        return new Plugin($this->pluginProperties());
+        return $this->userName;
     }
 
-    private function pluginProperties(): array
+    public function getUserLogin(): ?string
     {
-        return [
-            'id' => $this->faker->randomNumber(3),
-            'name' => $this->faker->colorName(),
-            'data' => $this->faker->text(),
-            'enabled' => $this->faker->boolean(),
-            'available' => $this->faker->boolean(),
-            'versionLevel' => sprintf('%d.%d', $this->faker->randomNumber(4, true), $this->faker->randomNumber(6, true))
-        ];
+        return $this->userLogin;
     }
 }

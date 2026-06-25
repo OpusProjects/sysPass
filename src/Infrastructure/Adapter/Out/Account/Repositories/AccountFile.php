@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Models\File as FileModel;
+use SP\Domain\Account\Models\FileList as FileListModel;
 use SP\Domain\Account\Ports\AccountFileRepository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -97,7 +98,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->bindValues(['id' => $id])
             ->limit(1);
 
-        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileListModel::class));
     }
 
     /**
@@ -210,6 +211,6 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
                                ]);
         }
 
-        return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class), true);
+        return $this->db->runQuery(QueryData::buildWithMapper($query, FileListModel::class), true);
     }
 }

@@ -37,6 +37,7 @@ class Plugin extends Model implements ItemWithIdAndNameModel
     protected ?string $name         = null;
     protected ?string $data         = null;
     protected ?bool   $enabled      = null;
+    protected ?bool   $available    = null;
     protected ?string $versionLevel = null;
 
     public function getId(): ?int
@@ -57,6 +58,11 @@ class Plugin extends Model implements ItemWithIdAndNameModel
     public function getEnabled(): ?bool
     {
         return $this->enabled;
+    }
+
+    public function getAvailable(): ?bool
+    {
+        return $this->available;
     }
 
     public function getVersionLevel(): ?string

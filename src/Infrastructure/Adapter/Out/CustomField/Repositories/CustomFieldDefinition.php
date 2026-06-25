@@ -30,6 +30,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
+use SP\Domain\CustomField\Models\CustomFieldDefinitionList as CustomFieldDefinitionListModel;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\RepositoryItemTrait;
@@ -205,7 +206,10 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             ->newSelect()
             ->from(sprintf('%s AS CF_Definition', CustomFieldDefinitionModel::TABLE))
             ->innerJoin('CustomFieldType AS CF_Type', 'CF_Type.id = CF_Definition.typeId')
-            ->cols(CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'))
+            ->cols(array_merge(
+                CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'),
+                ['CF_Type.name AS typeName']
+            ))
             ->orderBy(['CF_Definition.moduleId ASC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
@@ -218,7 +222,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
             $query->bindValues(['name' => $search]);
         }
 
-        $queryData = QueryData::build($query)->setMapClassName(CustomFieldDefinitionModel::class);
+        $queryData = QueryData::build($query)->setMapClassName(CustomFieldDefinitionListModel::class);
 
         return $this->db->runQuery($queryData, true);
     }
