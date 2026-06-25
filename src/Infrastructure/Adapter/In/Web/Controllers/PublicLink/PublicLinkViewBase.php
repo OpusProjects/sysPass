@@ -93,7 +93,7 @@ abstract class PublicLinkViewBase extends ControllerBase
             $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                        $this->uriContext->getSubUri();
 
-            $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash()));
+            $this->view->assign('publicLinkURL', PublicLink::getLinkForHash($baseUrl, $publicLink->getHash() ?? ''));
             $this->view->assign('disabled', 'disabled');
             $this->view->assign('readonly', 'readonly');
         } else {

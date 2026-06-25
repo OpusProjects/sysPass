@@ -74,7 +74,7 @@ final class NotificationsController extends SimpleControllerBase
                 return sprintf(
                     '(%s) - %s',
                     $notification->getComponent(),
-                    Html::truncate(Html::stripTags($notification->getDescription()), 30)
+                    Html::truncate(Html::stripTags($notification->getDescription() ?? ''), 30)
                 );
             },
             $this->notificationService->getAllActiveForCurrentUser()
