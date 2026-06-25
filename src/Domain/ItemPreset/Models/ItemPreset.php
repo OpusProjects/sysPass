@@ -53,6 +53,7 @@ class ItemPreset extends Model implements HydratableModel
     protected ?int    $fixed           = null;
     protected ?int    $priority        = null;
     protected ?string $data            = null;
+    protected ?string $hash            = null;
     protected ?int    $score           = null;
     protected ?string $userName        = null;
     protected ?string $userProfileName = null;
@@ -96,6 +97,11 @@ class ItemPreset extends Model implements HydratableModel
     public function getUserId(): ?int
     {
         return $this->userId;
+    }
+
+    public function getHash(): ?string
+    {
+        return $this->hash;
     }
 
     public function getScore(): ?int
