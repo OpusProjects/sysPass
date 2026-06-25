@@ -377,7 +377,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                         printf(
                                             '%s: %s',
                                             __('Expiry Date'),
-                                            Date::getDateFromUnix($accountSearchData->getPublicLinkDateExpire())
+                                            Date::getDateFromUnix($accountSearchData->getPublicLinkDateExpire() ?? 0)
                                         ); ?>
                                         <br>
                                         <?php
