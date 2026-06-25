@@ -164,7 +164,7 @@ $accountView = $_getvar('accountData');
                             <input id="password" name="password" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php
-                                   echo $accountView->getPass(); ?>"
+                                   echo htmlspecialchars($accountView->getPass() ?? '', ENT_QUOTES); ?>"
                                    readonly>
                             <label class="mdl-textfield__label"
                                    for="password"><?php

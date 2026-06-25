@@ -399,7 +399,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             if (AccountSearchItem::$dokuWikiEnabled): ?>
                                 <a href="<?php
                                 echo $_getvar('wikiPageUrl'), urlencode(
-                                    $accountSearchData->getName()
+                                    $accountSearchData->getName() ?? ''
                                 ); ?>"
                                    target="_blank">
                                     <i class="material-icons"
