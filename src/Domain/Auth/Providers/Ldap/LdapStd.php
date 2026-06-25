@@ -199,6 +199,6 @@ final class LdapStd extends LdapBase
      */
     protected function pickServer(): string
     {
-        return $this->ldapParams->getServer();
+        return $this->ldapParams->getServer() ?? '';
     }
 }
