@@ -77,7 +77,7 @@ final class EditPassController extends AccountBase
         $accountRequest->id = $this->apiService->getParamInt('id', true);
         $accountRequest->pass = $this->apiService->getParamString('pass', true);
         $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->userEditId = $this->context->getUserData()->getId();
+        $accountRequest->userEditId = $this->context->getUserData()->id;
 
         return $accountRequest;
     }

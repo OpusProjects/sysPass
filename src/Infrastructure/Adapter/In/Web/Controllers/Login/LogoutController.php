@@ -56,7 +56,7 @@ final class LogoutController extends ControllerBase
                     $this,
                     EventMessage::build()
                         ->addDescription(__u('Logout session'))
-                        ->addDetail(__u('User'), $this->session->getUserData()->getLogin())
+                        ->addDetail(__u('User'), $this->session->getUserData()->login)
                         ->addDetail(__u('Inactive time'), $inactiveTime.' min.')
                         ->addDetail(__u('Total time'), $totalTime.' min.')
                 )
