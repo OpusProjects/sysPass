@@ -86,7 +86,7 @@ class PublicLink extends Model implements ItemWithIdAndNameModel
 
     public function isNotify(): bool
     {
-        return $this->notify;
+        return $this->notify ?? false;
     }
 
     public function getDateAdd(): ?int
