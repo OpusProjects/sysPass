@@ -41,6 +41,7 @@ use SP\Infrastructure\File\DirectoryHandler;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ConfigHelp;
 
+use function SP\__;
 use function SP\__u;
 
 /**

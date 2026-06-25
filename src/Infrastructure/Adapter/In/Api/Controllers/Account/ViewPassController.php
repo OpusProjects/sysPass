@@ -40,6 +40,8 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 
+use function SP\__u;
+
 /**
  * Class ViewController
  */

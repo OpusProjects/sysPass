@@ -31,6 +31,8 @@ use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 
+use function SP\__;
+
 /**
  * Class JsonRpcResponse
  */

@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Help;
 
+use function SP\__;
+
 /**
  * Class UserGroupHelp
  *

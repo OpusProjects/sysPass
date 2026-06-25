@@ -29,6 +29,8 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
+use function SP\__u;
+
 /**
  * Class ViewController
  *
