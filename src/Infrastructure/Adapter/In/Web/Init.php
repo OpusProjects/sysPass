@@ -227,7 +227,7 @@ final class Init extends HttpModuleBase
             }
 
             // Checks if the database is set up
-            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+            if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName() ?? '')) {
                 logger('Database checking error', 'ERROR');
 
                 $this->router->response()->redirect($this->getUriFor(self::ROUTE_ERROR_DATABASE))->send();

@@ -87,7 +87,7 @@ final class BackupFile extends Service implements BackupFileService
 
             $configData = $this->config->getConfigData();
 
-            $this->backupTables($configData->getDbName());
+            $this->backupTables($configData->getDbName() ?? '');
             $this->backupApp($applicationPath);
 
             $this->config->save($configData->setBackupHash($this->buildHash()));

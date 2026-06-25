@@ -103,7 +103,7 @@ final class Init extends HttpModuleBase
             throw new InitializationException('Database connection error');
         }
 
-        if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName())) {
+        if (!$this->databaseUtil->checkDatabaseTables($this->configData->getDbName() ?? '')) {
             throw new InitializationException('Database checking error');
         }
 
