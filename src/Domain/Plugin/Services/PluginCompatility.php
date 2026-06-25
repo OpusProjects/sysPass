@@ -61,7 +61,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
      */
     public function checkFor(Plugin $plugin): bool
     {
-        $pluginVersion = implode('.', $plugin->getCompatibleVersion());
+        $pluginVersion = implode('.', $plugin->getCompatibleVersion() ?? []);
         $appVersion = implode('.', array_slice(Installer::VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion, '<')) {
@@ -71,7 +71,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                                 ->addDescription(
                                     sprintf(
                                         __('Plugin version not compatible (%s)'),
-                                        implode('.', $plugin->getVersion())
+                                        implode('.', $plugin->getVersion() ?? [])
                                     )
                                 )
                 )
@@ -95,7 +95,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                             ->addDescription(
                                 sprintf(
                                     __('Plugin version compatible (%s)'),
-                                    implode('.', $plugin->getVersion())
+                                    implode('.', $plugin->getVersion() ?? [])
                                 )
                             )
             )

@@ -35,6 +35,6 @@ final class FontIcon extends IconBase
      */
     public function getClassButton(): string
     {
-        return str_replace('-text--', '--', $this->getClass());
+        return str_replace('-text--', '--', $this->getClass() ?? '');
     }
 }
