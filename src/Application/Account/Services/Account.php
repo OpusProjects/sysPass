@@ -449,6 +449,10 @@ final class Account extends Service implements AccountService
             function () use ($id, $accountUpdateDto) {
                 $this->addHistory($id);
 
+                if ($accountUpdateDto->userEditId === null) {
+                    $accountUpdateDto = $accountUpdateDto->mutate(['userEditId' => $this->context->getUserData()->id]);
+                }
+
                 $encryptedPassword = $this->accountCryptService->getPasswordEncrypted($accountUpdateDto->pass);
 
                 $this->accountRepository->editPassword(
