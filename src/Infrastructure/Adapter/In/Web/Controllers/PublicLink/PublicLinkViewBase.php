@@ -31,7 +31,6 @@ use SP\Application\Account\Ports\AccountService;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Application\Account\Services\PublicLink;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
@@ -46,14 +45,12 @@ abstract class PublicLinkViewBase extends ControllerBase
 {
     private PublicLinkService $publicLinkService;
     private AccountService    $accountService;
-    private UriContextInterface $uriContext;
 
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,
         PublicLinkService    $publicLinkService,
         AccountService       $accountService,
-        UriContextInterface  $uriContext
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -61,7 +58,6 @@ abstract class PublicLinkViewBase extends ControllerBase
 
         $this->publicLinkService = $publicLinkService;
         $this->accountService = $accountService;
-        $this->uriContext = $uriContext;
     }
 
     /**
