@@ -66,7 +66,7 @@ final class Serde
      */
     public static function deserialize(string $data, ?string $class = null): object|array
     {
-        $value = @unserialize($data);
+        $value = @unserialize($data, ['allowed_classes' => true]);
 
         return match (true) {
             $value === false => throw SPException::error(__u('Couldn\'t deserialize the data')),
@@ -95,7 +95,7 @@ final class Serde
             preg_replace('/^O:\d+:"[^"]++"/', 'O:8:"stdClass"', $serialized)
         );
 
-        return unserialize($dump ?? '');
+        return unserialize($dump ?? '', ['allowed_classes' => [\stdClass::class]]);
     }
 
     /**

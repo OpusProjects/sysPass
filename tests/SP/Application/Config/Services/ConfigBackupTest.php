@@ -187,7 +187,7 @@ class ConfigBackupTest extends UnitaryTestCase
                             ->with('config_backup')
                             ->willReturn($hexConfigData);
 
-        $out = unserialize($this->configBackup->getBackup());
+        $out = unserialize($this->configBackup->getBackup(), ['allowed_classes' => [ConfigData::class]]);
 
         $this->assertEquals($configData, $out);
     }
