@@ -28,6 +28,7 @@ use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
+use SP\Domain\Html\Html;
 use SP\Html\DataGrid\Action\DataGridActionBase;
 use SP\Html\DataGrid\DataGridTab;
 
@@ -167,7 +168,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             <?php
                             if ($accountSearchItem->isUrlIslink()): ?>
                                 <a href="<?php
-                                echo $accountSearchItem->getSafeUrl(); ?>"
+                                echo Html::getSafeUrl($accountSearchData->getUrl() ?? ''); ?>"
                                    target="_blank"
                                    title="<?php
                                    printf(

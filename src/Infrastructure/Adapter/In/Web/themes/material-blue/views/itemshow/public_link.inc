@@ -31,6 +31,7 @@
  */
 
 use SP\Domain\Account\Models\PublicLinkList;
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Mvc\View\Components\SelectItem;
@@ -112,7 +113,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Creation Date'); ?></div>
 
                         <?php
-                        echo $publicLink->getDateAddFormat(); ?>
+                        echo Date::getDateFromUnix($publicLink->getDateAdd() ?? 0); ?>
                     </td>
                 </tr>
                 <tr>
@@ -123,7 +124,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Expiry Date '); ?></div>
 
                         <?php
-                        echo $publicLink->getDateExpireFormat(); ?>
+                        echo Date::getDateFromUnix($publicLink->getDateExpire() ?? 0); ?>
                     </td>
                 </tr>
                 <tr>
@@ -145,7 +146,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Visits'); ?></div>
 
                         <?php
-                        echo $publicLink->getCountViewsString(); ?>
+                        printf('%d / %d', $publicLink->getCountViews() ?? 0, $publicLink->getMaxCountViews() ?? 0); ?>
                     </td>
                 </tr>
                 <tr>
