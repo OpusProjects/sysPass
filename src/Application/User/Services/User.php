@@ -210,7 +210,7 @@ final class User extends Service implements UserService
     {
         $response = $this->userMasterPassService->create(
             $masterPass,
-            $user->getLogin(),
+            $user->getLogin() ?? '',
             $userPass
         );
 
