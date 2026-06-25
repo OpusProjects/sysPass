@@ -74,7 +74,7 @@ abstract class AccountHelperBase extends HelperBase
             throw new UnauthorizedPageException(SPException::INFO);
         }
 
-        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass)
+        if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass ?? 0)
         ) {
             throw new UpdatedMasterPassException(SPException::INFO);
         }
