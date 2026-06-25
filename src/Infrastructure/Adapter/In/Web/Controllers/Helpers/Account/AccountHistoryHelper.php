@@ -104,7 +104,7 @@ final class AccountHistoryHelper extends AccountHelperBase
             )->getItemsFromArraySelected([$accountHistoryViewDto->id])
         );
 
-        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->passDate));
+        $this->view->assign('accountPassDate', date('Y-m-d H:i:s', $accountHistoryViewDto->passDate ?? 0));
         $this->view->assign(
             'accountPassDateChange',
             date('Y-m-d', $accountHistoryViewDto->passDateChange ?: 0)

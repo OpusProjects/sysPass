@@ -192,7 +192,7 @@
                 endif; ?>
 
                 <?php
-                if (Version::checkVersion($_getvar('version'), '210.17022601')): ?>
+                if (Version::checkVersion($_getvar('version') ?? '', '210.17022601')): ?>
                     <div>
                         <ul class="errors">
                             <li class="msg-warning">

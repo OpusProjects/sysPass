@@ -80,7 +80,7 @@ final class SaveController extends SimpleControllerBase
         $noAccountPassChange = $this->request->analyzeBool('no_account_change', false);
 
 
-        if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->lastUpdateMPass)) {
+        if (!$this->masterPassService->checkUserUpdateMPass($this->session->getUserData()->lastUpdateMPass ?? 0)) {
             return ActionResponse::ok(__u('Master password updated'), __u('Please, restart the session for update it'));
         }
 

@@ -234,7 +234,7 @@ final class AccountHelper extends AccountHelperBase
 
         $this->view->assign(
             'accountPassDate',
-            date('Y-m-d H:i:s', $accountData->getPassDate())
+            date('Y-m-d H:i:s', $accountData->getPassDate() ?? 0)
         );
         $this->view->assign(
             'accountPassDateChange',
