@@ -268,8 +268,19 @@ final class Api extends Service implements ApiService
 
             Hash::checkHashKey($tokenPass, $this->authToken->getHash()) || $this->accessDenied();
 
+            $vaultData = $this->authToken->getVault();
+
+            if ($vaultData === null) {
+                throw new ServiceException(
+                    __u('Internal error'),
+                    SPException::ERROR,
+                    __u('Invalid data'),
+                    JsonRpcResponse::INTERNAL_ERROR
+                );
+            }
+
             /** @var VaultInterface $vault */
-            $vault = unserialize($this->authToken->getVault(), ['allowed_classes' => [Vault::class, Crypt::class]]);
+            $vault = unserialize($vaultData, ['allowed_classes' => [Vault::class, Crypt::class]]);
 
             $key = sha1($tokenPass . $this->getParam('authToken'));
 
