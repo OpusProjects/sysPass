@@ -77,7 +77,7 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
                 )
             );
 
-            $this->pluginService->toggleEnabledByName($plugin->getName(), false);
+            $this->pluginService->toggleEnabledByName($plugin->getName() ?? '', false);
 
             $this->eventDispatcher->notify(new Event('plugin.edit.disable', 
                     $this,
