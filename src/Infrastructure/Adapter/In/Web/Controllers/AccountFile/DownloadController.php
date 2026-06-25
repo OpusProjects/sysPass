@@ -69,7 +69,7 @@ final class DownloadController extends AccountFileBase
         $response->header('Content-Transfer-Encoding', 'binary');
         $response->header('Accept-Ranges', 'bytes');
 
-        $type = strtolower($fileDto->type);
+        $type = strtolower($fileDto->type ?? '');
 
         if ($type === 'application/pdf') {
             $disposition = sprintf('inline; filename="%s"', $fileDto->name);

@@ -140,7 +140,7 @@ final class UserMasterPass extends Service implements UserMasterPassService
      */
     private function makeKeyForUser(string $userLogin, string $userPass): string
     {
-        return trim($userPass . $userLogin . $this->config->getConfigData()->getPasswordSalt());
+        return trim($userPass . $userLogin . ($this->config->getConfigData()->getPasswordSalt() ?? ''));
     }
 
     /**

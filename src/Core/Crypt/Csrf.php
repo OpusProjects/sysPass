@@ -96,7 +96,7 @@ final readonly class Csrf implements CsrfHandler
 
             $this->context->setCSRF($key);
 
-            logger(sprintf('CSRF key (set): %s', $this->context->getCSRF()));
+            logger(sprintf('CSRF key (set): %s', $this->context->getCSRF() ?? ''));
         }
     }
 }
