@@ -249,7 +249,7 @@ final class Init extends HttpModuleBase
                 $this->context->setUserProfile(
                     $this->userProfileService
                         ->getById($this->context->getUserData()->userProfileId ?? 0)
-                        ->hydrate(ProfileData::class)
+                        ->hydrate(ProfileData::class) ?? new ProfileData()
                 );
             }
 

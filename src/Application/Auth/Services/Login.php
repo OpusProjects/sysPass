@@ -147,7 +147,7 @@ final class Login extends LoginBase implements LoginService
             $this->context->setUserProfile(
                 $this->userProfileService
                     ->getById($userDataDto->userProfileId ?? 0)
-                    ->hydrate(ProfileData::class)
+                    ->hydrate(ProfileData::class) ?? new ProfileData()
             );
             $this->context->setLocale($userDataDto->preferences?->getLang() ?? 'en_US');
 

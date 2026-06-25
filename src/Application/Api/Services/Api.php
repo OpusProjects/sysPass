@@ -241,7 +241,7 @@ final class Api extends Service implements ApiService
         $this->context->setUserProfile(
             $this->userProfileService
                 ->getById($userDto->userProfileId ?? 0)
-                ->hydrate(ProfileData::class)
+                ->hydrate(ProfileData::class) ?? new ProfileData()
         );
     }
 
