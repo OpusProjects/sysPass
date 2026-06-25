@@ -242,7 +242,7 @@ final class Installer implements InstallerService
 
                 $dnsHostname = gethostbyaddr($address);
 
-                if (strlen($dnsHostname) < 60) {
+                if ($dnsHostname !== false && strlen($dnsHostname) < 60) {
                     $this->installData->setDbAuthHostDns($dnsHostname);
                 }
             }

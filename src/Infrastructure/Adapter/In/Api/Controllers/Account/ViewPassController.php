@@ -78,8 +78,8 @@ final class ViewPassController extends AccountBase
         $id = $this->apiService->getParamInt('id', true);
         $accountPassData = $this->accountService->getPasswordForId($id);
         $password = $this->crypt->decrypt(
-            $accountPassData->getPass(),
-            $accountPassData->getKey(),
+            $accountPassData->getPass() ?? '',
+            $accountPassData->getKey() ?? '',
             $this->apiService->getMasterPass()
         );
 
