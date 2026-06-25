@@ -24,14 +24,12 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigDokuWiki;
 
-use JsonException;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
@@ -88,18 +86,11 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @throws JsonException
      * @throws SessionTimeout
      */
     protected function initialize(): void
     {
-        try {
-            $this->checks();
-            $this->checkAccess(AclActionsInterface::CONFIG_WIKI);
-        } catch (UnauthorizedPageException $e) {
-            $this->eventDispatcher->notify(new Event('exception', $e));
-
-            ActionResponse::error($e->getMessage());
-        }
+        $this->checks();
+        $this->checkAccess(AclActionsInterface::CONFIG_WIKI);
     }
 }
