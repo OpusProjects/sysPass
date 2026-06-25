@@ -68,7 +68,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->newInsert()
             ->into(CategoryModel::TABLE)
             ->cols($category->toArray(null, ['id', 'hash']))
-            ->col('hash', $this->makeItemHash($category->getName()));
+            ->col('hash', $this->makeItemHash($category->getName() ?? ''));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the category'));
 
@@ -127,7 +127,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->bindValues(
                 [
                     'id' => $category->getId(),
-                    'hash' => $this->makeItemHash($category->getName())
+                    'hash' => $this->makeItemHash($category->getName() ?? '')
                 ]
             );
 

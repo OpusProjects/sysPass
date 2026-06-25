@@ -68,7 +68,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->newInsert()
             ->into(ClientModel::TABLE)
             ->cols($client->toArray(null, ['id', 'hash']))
-            ->col('hash', $this->makeItemHash($client->getName()));
+            ->col('hash', $this->makeItemHash($client->getName() ?? ''));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the client'));
 
@@ -126,7 +126,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->bindValues(
                 [
                     'id' => $client->getId(),
-                    'hash' => $this->makeItemHash($client->getName())
+                    'hash' => $this->makeItemHash($client->getName() ?? '')
                 ]
             );
 

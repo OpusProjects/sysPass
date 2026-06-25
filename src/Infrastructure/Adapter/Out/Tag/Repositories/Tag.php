@@ -67,7 +67,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->newInsert()
             ->into(TagModel::TABLE)
             ->cols($tag->toArray(null, ['id', 'hash']))
-            ->col('hash', $this->makeItemHash($tag->getName()));
+            ->col('hash', $this->makeItemHash($tag->getName() ?? ''));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the tag'));
 
@@ -126,7 +126,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->bindValues(
                 [
                     'id' => $tag->getId(),
-                    'hash' => $this->makeItemHash($tag->getName())
+                    'hash' => $this->makeItemHash($tag->getName() ?? '')
                 ]
             );
 
