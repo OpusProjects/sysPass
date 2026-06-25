@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Html\DataGrid\Action\DataGridAction;
@@ -126,17 +127,29 @@ final class PublicLinkGrid extends GridBase
         $gridData->setDataRowSourceId('id');
         $gridData->addDataRowSource('accountName');
         $gridData->addDataRowSource('clientName');
-        $gridData->addDataRowSource('getDateAddFormat', true);
-        $gridData->addDataRowSource('getDateExpireFormat', true);
+        $gridData->addDataRowSource(
+            'dateAdd',
+            false,
+            fn($value) => Date::getDateFromUnix($value ?? 0),
+            false
+        );
+        $gridData->addDataRowSource(
+            'dateExpire',
+            false,
+            fn($value) => Date::getDateFromUnix($value ?? 0),
+            false
+        );
         $gridData->addDataRowSource('userLogin');
         $gridData->addDataRowSource(
             'notify',
             false,
-            function ($value) {
-                return $value ? __('ON') : __('OFF');
-            }
+            fn($value) => $value ? __('ON') : __('OFF')
         );
-        $gridData->addDataRowSource('getCountViewsString', true);
+        $gridData->addDataRowSource(
+            'countViews',
+            false,
+            fn($value) => (int)$value
+        );
         $gridData->setData($this->queryResult);
 
         return $gridData;
