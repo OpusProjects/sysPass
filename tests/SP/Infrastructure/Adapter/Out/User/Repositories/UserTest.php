@@ -43,6 +43,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
@@ -563,7 +564,7 @@ class UserTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
                        && $params['login'] === $searchStringLike
-                       && $arg->getMapClassName() === UserModel::class
+                       && $arg->getMapClassName() === UserListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -591,7 +592,7 @@ class UserTest extends UnitaryTestCase
                 $params = $query->getBindValues();
 
                 return count($params) === 0
-                       && $arg->getMapClassName() === UserModel::class
+                       && $arg->getMapClassName() === UserListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -635,7 +636,7 @@ class UserTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['name'] === $searchStringLike
                        && $params['login'] === $searchStringLike
-                       && $arg->getMapClassName() === UserModel::class
+                       && $arg->getMapClassName() === UserListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }

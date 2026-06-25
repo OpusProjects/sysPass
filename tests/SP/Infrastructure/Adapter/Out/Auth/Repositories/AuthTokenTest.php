@@ -34,6 +34,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -74,7 +75,7 @@ class AuthTokenTest extends UnitaryTestCase
                 return count($params) === 2
                        && $params['userLogin'] === $searchStringLike
                        && $params['userName'] === $searchStringLike
-                       && $arg->getMapClassName() === AuthTokenModel::class
+                       && $arg->getMapClassName() === AuthTokenListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -98,7 +99,7 @@ class AuthTokenTest extends UnitaryTestCase
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
                 return count($query->getBindValues()) === 0
-                       && $arg->getMapClassName() === AuthTokenModel::class
+                       && $arg->getMapClassName() === AuthTokenListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }

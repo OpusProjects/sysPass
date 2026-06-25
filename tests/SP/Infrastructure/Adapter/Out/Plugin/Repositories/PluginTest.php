@@ -131,11 +131,12 @@ class PluginTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 5
+                return count($params) === 6
                        && $params['id'] === $plugin->getId()
                        && $params['name'] === $plugin->getName()
                        && $params['data'] === $plugin->getData()
                        && $params['enabled'] === $plugin->getEnabled()
+                       && $params['available'] === $plugin->getAvailable()
                        && $params['versionLevel'] === $plugin->getVersionLevel()
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());
@@ -382,10 +383,11 @@ class PluginTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 4
+                return count($params) === 5
                        && $params['name'] === $plugin->getName()
                        && $params['data'] === $plugin->getData()
                        && $params['enabled'] === $plugin->getEnabled()
+                       && $params['available'] === $plugin->getAvailable()
                        && $params['versionLevel'] === $plugin->getVersionLevel()
                        && is_a($query, InsertInterface::class)
                        && !empty($query->getStatement());

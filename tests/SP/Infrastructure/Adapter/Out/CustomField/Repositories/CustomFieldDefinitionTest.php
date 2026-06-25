@@ -37,6 +37,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
+use SP\Domain\CustomField\Models\CustomFieldDefinitionList as CustomFieldDefinitionListModel;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\CustomField\Repositories\CustomFieldDefinition;
 use SP\Infrastructure\Database\QueryData;
@@ -229,7 +230,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
 
                 return count($params) === 1
                        && $params['name'] === $searchStringLike
-                       && $arg->getMapClassName() === CustomFieldDefinitionModel::class
+                       && $arg->getMapClassName() === CustomFieldDefinitionListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
@@ -255,7 +256,7 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
                 $params = $query->getBindValues();
 
                 return count($params) === 0
-                       && $arg->getMapClassName() === CustomFieldDefinitionModel::class
+                       && $arg->getMapClassName() === CustomFieldDefinitionListModel::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
