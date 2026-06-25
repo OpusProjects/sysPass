@@ -234,13 +234,13 @@ final class Api extends Service implements ApiService
      */
     private function setupUser(): void
     {
-        $userDto = UserDto::fromModel($this->userService->getById($this->authToken->getUserId()));
+        $userDto = UserDto::fromModel($this->userService->getById($this->authToken->getUserId() ?? 0));
         $userDto->isDisabled && $this->accessDenied();
 
         $this->context->setUserData($userDto);
         $this->context->setUserProfile(
             $this->userProfileService
-                ->getById($userDto->userProfileId)
+                ->getById($userDto->userProfileId ?? 0)
                 ->hydrate(ProfileData::class)
         );
     }
