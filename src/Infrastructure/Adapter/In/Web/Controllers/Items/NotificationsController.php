@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Html;
+use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Services\JsonResponse;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
