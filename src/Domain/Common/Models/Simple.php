@@ -43,11 +43,29 @@ final class Simple extends Model
 
     public function __get(string $name): mixed
     {
-        return $this->dynamicProperties[$name] ?? null;
+        if (array_key_exists($name, $this->dynamicProperties)) {
+            return $this->dynamicProperties[$name];
+        }
+
+        return parent::offsetGet($name);
     }
 
     public function __isset(string $name): bool
     {
-        return isset($this->dynamicProperties[$name]);
+        return isset($this->dynamicProperties[$name]) || parent::offsetExists($name);
+    }
+
+    public function offsetGet(mixed $offset): mixed
+    {
+        if (array_key_exists($offset, $this->dynamicProperties)) {
+            return $this->dynamicProperties[$offset];
+        }
+
+        return parent::offsetGet($offset);
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->dynamicProperties[$offset]) || parent::offsetExists($offset);
     }
 }
