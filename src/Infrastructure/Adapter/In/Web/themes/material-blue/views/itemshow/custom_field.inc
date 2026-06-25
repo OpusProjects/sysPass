@@ -122,7 +122,7 @@ $field = $_getvar('field');
                         <input id="help" name="help" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $field->getHelp(); ?>">
+                               echo htmlspecialchars($field->getHelp() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="help"><?php
                             echo __('Field\'s help'); ?></label>
