@@ -55,7 +55,7 @@ use function SP\__;
             <?php
             if (!$_getvar('isImage')): ?>
                 <td class="dialog-text dialog-user-text"><?php
-                    echo wordwrap($_getvar('login'), 50, PHP_EOL, true); ?></td>
+                    echo wordwrap($_getvar('login') ?? '', 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php
@@ -81,7 +81,7 @@ use function SP\__;
             <?php
             if (!$_getvar('isImage')): ?>
                 <td class="dialog-text dialog-pass-text"><?php
-                    echo wordwrap($_getvar('pass'), 50, PHP_EOL, true); ?></td>
+                    echo wordwrap($_getvar('pass') ?? '', 50, PHP_EOL, true); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php

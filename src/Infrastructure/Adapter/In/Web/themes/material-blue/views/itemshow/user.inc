@@ -159,7 +159,7 @@ $user = $_getvar('user');
                                 <label class="mdl-textfield__label"
                                        for="email"><?php
                                     echo __('Email address'); ?></label>
-                            </div
+                            </div>
                         </td>
 
                     </tr>
