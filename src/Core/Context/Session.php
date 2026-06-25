@@ -442,7 +442,7 @@ class Session extends ContextBase implements SessionContext
         $ctxKey = $this->getContextKey($pluginName, new ContextCollection());
         $ctxKey->set($key, $value);
 
-        $this->setContextKey($pluginName, $value);
+        $this->setContextKey($pluginName, $ctxKey);
 
         return $value;
     }
