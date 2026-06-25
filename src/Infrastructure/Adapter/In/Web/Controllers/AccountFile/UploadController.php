@@ -126,7 +126,7 @@ final class UploadController extends ControllerBase
 
         $this->eventDispatcher->notify(new Event('upload.accountFile', 
                 $this,
-                static function () use ($accountId, $fileData): EventMessage {
+                function () use ($accountId, $fileData): EventMessage {
                     $account = $this->accountService->getByIdEnriched($accountId);
 
                     return EventMessage::build()
