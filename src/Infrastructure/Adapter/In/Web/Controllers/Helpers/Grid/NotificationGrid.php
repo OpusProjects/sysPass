@@ -145,7 +145,7 @@ final class NotificationGrid extends GridBase
             'date',
             false,
             function ($value) {
-                return Date::getDateFromUnix($value);
+                return Date::getDateFromUnix($value ?? 0);
             }
         );
         $gridData->addDataRowSource('type');
@@ -154,7 +154,7 @@ final class NotificationGrid extends GridBase
             'description',
             false,
             function ($data) {
-                return Html::stripTags($data);
+                return Html::stripTags($data ?? '');
             }
         );
         $gridData->addDataRowSourceWithIcon(
