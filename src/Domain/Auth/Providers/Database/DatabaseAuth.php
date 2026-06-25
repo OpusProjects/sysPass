@@ -92,7 +92,7 @@ final readonly class DatabaseAuth implements DatabaseAuthService
                 || $userDto->pass === md5($userLoginDto->getLoginPass())
                 || hash_equals(
                     $userDto->pass,
-                    crypt($userLoginDto->getLoginPass(), $userDto->hashSalt)
+                    crypt($userLoginDto->getLoginPass(), $userDto->hashSalt ?? '')
                 )
                 || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass));
     }
