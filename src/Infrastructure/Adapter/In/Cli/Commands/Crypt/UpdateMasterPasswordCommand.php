@@ -156,7 +156,7 @@ final class UpdateMasterPasswordCommand extends CommandBase
             $style->warning(__('All accounts passwords will be encrypted again.'));
             $style->warning(__('Users will need to enter the new Master Password.'));
             $style->warning(
-                printf(
+                sprintf(
                     __('It will be updated %s accounts. This process could take some time long.'),
                     $this->accountService->getTotalNumAccounts()
                 )
