@@ -86,7 +86,7 @@ $field = $_getvar('field');
                                     value='<?php
                                     echo $type->getId(); ?>' <?php
                             echo ($type->getId() === $field->getTypeId()) ? 'selected' : ''; ?>><?php
-                                echo __($type->getItemProperty('text')); ?></option>
+                                echo __($type->getItemProperty('text') ?? ''); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
