@@ -39,7 +39,6 @@ use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
-use SP\Domain\Plugin\Services\PluginManager;
 
 use function SP\__u;
 use function SP\processException;
@@ -52,20 +51,17 @@ final class ViewController extends ControllerBase
 {
 
     private PluginManagerService $pluginService;
-    private PluginManager        $pluginManager;
 
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,
         PluginManagerService $pluginService,
-        PluginManager        $pluginManager
     ) {
         parent::__construct($application, $webControllerHelper);
 
         $this->checkLoggedIn();
 
         $this->pluginService = $pluginService;
-        $this->pluginManager = $pluginManager;
     }
 
     /**
@@ -118,10 +114,8 @@ final class ViewController extends ControllerBase
         $pluginData = $pluginId
             ? $this->pluginService->getById($pluginId)
             : new Plugin();
-        $pluginInfo = $this->pluginManager->getPlugin($pluginData->getName());
 
         $this->view->assign('plugin', $pluginData);
-        $this->view->assign('pluginInfo', $pluginInfo);
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
