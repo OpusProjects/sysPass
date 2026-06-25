@@ -87,6 +87,7 @@ final class CopyController extends AccountViewBase
             ]
         );
         $this->view->assign('formRoute', 'account/saveCopy');
+        $this->view->assign('copyAction', true);
 
         $this->eventDispatcher->notify(new Event('show.account.copy', $this));
 

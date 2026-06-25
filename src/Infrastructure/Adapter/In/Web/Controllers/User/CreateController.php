@@ -57,6 +57,7 @@ final class CreateController extends UserViewBase
 
             $this->view->assign('header', __('New User'));
             $this->view->assign('route', 'user/saveCreate');
+            $this->view->assign('createAction', true);
 
             $this->setViewData(isView: false);
 
