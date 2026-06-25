@@ -152,7 +152,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(PluginDataModel::getCols())
+            ->cols(PluginDataModel::getColsWithPreffix(self::TABLE))
             ->where('name = :name')
             ->bindValues(['name' => $name]);
 
@@ -173,7 +173,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(PluginDataModel::getCols())
+            ->cols(PluginDataModel::getColsWithPreffix(self::TABLE))
             ->orderBy(['name']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, PluginDataModel::class));
@@ -197,7 +197,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(PluginDataModel::getCols())
+            ->cols(PluginDataModel::getColsWithPreffix(self::TABLE))
             ->where('name IN (:name)', ['name' => $names])
             ->orderBy(['name']);
 
@@ -246,7 +246,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
         $query = $this->queryFactory
             ->newSelect()
             ->from(self::TABLE)
-            ->cols(PluginDataModel::getCols())
+            ->cols(PluginDataModel::getColsWithPreffix(self::TABLE))
             ->where('name = :name AND itemId = :itemId', ['name' => $name, 'itemId' => $itemId])
             ->limit(1);
 
