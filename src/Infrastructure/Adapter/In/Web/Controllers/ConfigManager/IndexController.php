@@ -269,6 +269,7 @@ final class IndexController extends ControllerBase
     {
         $template = clone $this->view;
         $template->addTemplate('wiki');
+        $template->addTemplate('wiki-dokuwiki');
 
         $template->assign(
             'curlIsAvailable',
