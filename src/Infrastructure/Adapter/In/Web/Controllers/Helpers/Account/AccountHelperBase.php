@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 use SP\Core\Application;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
@@ -70,7 +71,7 @@ abstract class AccountHelperBase extends HelperBase
     final public function initializeFor(int $actionId): void
     {
         if (!$this->acl->checkUserAccess($actionId)) {
-            throw UnauthorizedPageException::info($actionId);
+            throw new UnauthorizedPageException(SPException::INFO);
         }
 
         if (!$this->masterPassService->checkUserUpdateMPass($this->context->getUserData()->lastUpdateMPass)
