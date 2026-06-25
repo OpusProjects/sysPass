@@ -8,9 +8,9 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Mvc\View\TemplateInterface;
 
 ?>
-<?php if (count($_getvar('errors')) > 0): ?>
+<?php if (count($_getvar('errors', [])) > 0): ?>
     <ul class="errors round">
-        <?php foreach ($_getvar('errors') as $err): ?>
+        <?php foreach ($_getvar('errors', []) as $err): ?>
             <?php if (is_array($err)): ?>
                 <?php if ($err['type'] === SPException::CRITICAL): ?>
                     <li class="msg-critical">

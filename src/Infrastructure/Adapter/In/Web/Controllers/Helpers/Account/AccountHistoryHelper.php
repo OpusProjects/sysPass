@@ -121,7 +121,7 @@ final class AccountHistoryHelper extends AccountHelperBase
         );
         $this->view->assign(
             'isModified',
-            strtotime($accountHistoryViewDto->dateEdit) !== false
+            strtotime($accountHistoryViewDto->dateEdit ?? '') !== false
         );
 
         $accountActionsDto = new AccountActionsDto($this->accountId, $accountHistoryViewDto->id, 0);
