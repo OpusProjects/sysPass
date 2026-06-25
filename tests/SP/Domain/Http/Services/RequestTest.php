@@ -721,11 +721,11 @@ class RequestTest extends UnitaryTestCase
     {
         $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
 
-        $path = '/../../public/js/app.js';
+        $path = '/../../public/js/app.min.js';
 
         $out = Request::getSecureAppPath($path, $appRoot);
 
-        $this->assertEquals($appRoot . '/app.js', $out);
+        $this->assertEquals($appRoot . '/app.min.js', $out);
     }
 
     public function testGetSecureAppPathWithUnknownFile()
@@ -806,11 +806,11 @@ class RequestTest extends UnitaryTestCase
     {
         $appRoot = preg_replace('#\w+://#', '', REAL_APP_ROOT) . '/public/js';
 
-        $path = '/../../public/js/app.js';
+        $path = '/../../public/js/app.min.js';
 
         $out = Request::getSecureAppFile($path, $appRoot);
 
-        $this->assertEquals('app.js', $out);
+        $this->assertEquals('app.min.js', $out);
     }
 
     public function testGetSecureAppFileWithUnknownFile()
