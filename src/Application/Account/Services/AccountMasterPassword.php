@@ -172,7 +172,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                     );
 
                 // Call the specific updater
-                $passUpdater($account->getId(), $encryptedPassword);
+                $passUpdater($account->getId() ?? 0, $encryptedPassword);
 
                 $accountsOk[] = $account->getId();
                 $counter++;
