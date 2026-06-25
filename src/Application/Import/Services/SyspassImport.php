@@ -123,7 +123,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             ->item(0)
             ?->getAttribute('hash');
 
-        if (!empty($hash) && !Hash::checkHashKey($importParams->getPassword(), $hash)) {
+        if (!empty($hash) && !Hash::checkHashKey($importParams->getPassword() ?? '', $hash)) {
             throw ImportException::error(__u('Wrong encryption password'));
         }
 
