@@ -72,11 +72,16 @@ final class DownloadBackupAppController extends SimpleControllerBase
             return ActionResponse::warning(__('Ey, this is a DEMO!!'));
         }
 
+        $backupHash = $this->configData->getBackupHash();
+        if ($backupHash === null) {
+            return ActionResponse::error(__u('No backup available'));
+        }
+
         Session::close();
 
         $filePath = new BackupFile(
             BackupType::app,
-            $this->configData->getBackupHash(),
+            $backupHash,
             $this->pathsContext[Path::BACKUP],
             'gz'
         );
