@@ -91,7 +91,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both pass: **1996 unit** + **93 integration**. Test-environment gotchas (the image provides these):
+Both pass: **1977 unit** + **93 integration**. Test-environment gotchas (the image provides these):
 
 - **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0`; without
   it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.
@@ -163,53 +163,57 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   PDO SQLSTATEs are strings; a string reaching `\Exception` TypeErrors and **masks the real DB error**.
   `processException()` accepts `Throwable` (PHP `Error`s like `TypeError` are not `Exception`).
 
+## Model patterns
+
+- **Models are immutable** — `Model::__set()` throws `Error('Dynamic properties not allowed')`.
+  Use `$model->mutate(['prop' => $value])` to get a new instance with changed properties.
+  Constructor accepts `?array $properties`. Exception: `ProfileData` and `ConfigData` still have
+  setters.
+- **Dtos** (`src/Domain/*/Dtos/`) extend `Dto` — `public readonly` constructor properties, use
+  `mutate(array)` for copies.
+- **`SerializedModel` trait** — models with a serialized blob column (e.g. `ItemPreset.data`,
+  `UserProfile.profile`) use `#[Hydratable('prop', [TargetClass::class])]` +
+  `hydrate(string $class): ?object` (deserialize) / `dehydrate(object): static` (serialize via
+  `Serde::serializeObjectToJson`). Call `hydrate()` before passing to templates that call methods
+  on the deserialized object.
+- **Nullable model getters + `declare(strict_types=1)`** — many model getters return `?string`,
+  `?int`. Code in strict-types files that passes these to functions expecting non-nullable params
+  (e.g. `Html::truncate(string $text, ...)`, `preg_match(string $pattern, string $subject)`) must
+  null-coalesce: `$model->getFoo() ?? ''`.
+- **`ValidationException`** — constructor is `__construct(string $message, ...)`. Do **not** pass
+  `SPException::ERROR` as the first argument (that's the `$type` param of `SPException`, not
+  `ValidationException`'s `$message`).
+- **`BootstrapWeb` is removed** — use `UriContextInterface` (injected via DI) for
+  `getWebUri()`/`getSubUri()` instead of the deleted static `BootstrapWeb::$WEBURI`/`$SUBURI`.
+
 ## The installer
 
-`InstallController::installAction()` → `Installer::run(InstallData)` → `setupDbHost` → `setupConfig`
-→ `setupDb` (`MysqlSetup`) → schema (`schemas/dbstructure.sql`) → admin user + master password →
-`config.xml <installed>1`. Two **modes** (`InstallData::isHostingMode()`):
+`InstallController::installAction()` → `Installer::run(InstallData)` → schema → admin user →
+`config.xml <installed>1`. Two modes:
 
-- **Normal** (`hostingmode=0`): admin creds (root) — installer **creates the DB** + a restricted
-  `sp_<rand>@<host>` user. App-user host is `%` **iff `getenv('SYSPASS_DIR')` is set** (the Docker
-  signal — `docker-compose.yml` sets it); else it falls back to `SERVER_ADDR`/reverse-DNS.
-- **Hosting** (`hostingmode=1`): DB already exists, use the given creds directly, no DB/user creation.
-  The Docker MariaDB auto-creates the `syspass` DB, so hosting mode "just works"; normal mode needs
-  the DB to **not** pre-exist.
+- **Hosting** (`hostingmode=1`): DB already exists, use the given creds directly. The Docker
+  MariaDB auto-creates `syspass` DB, so hosting mode "just works."
+- **Normal** (`hostingmode=0`): installer creates the DB + restricted user.
 
-- `InstallData` is a **shared DI singleton** built from the request — the controller and `MysqlSetup`
-  must use the *same* instance (host detection mutates it).
-- The install connection **must not select the DB** (it may not exist yet) —
-  `DatabaseConnectionData::getFromInstallData` omits `dbName`; `MysqlSetup::checkDatabase` does
-  `USE <db>` after creating/confirming it.
-- Password fields are PKI-encrypted client-side (`analyzeEncrypted` decrypts; **falls back to the raw
-  value** if decryption fails — so plaintext works for scripted installs).
-- **Self-provisioning first run** (no `config/`): `config.xml` is opened `c+` (create,
-  no-truncate) and seeded by `generateNewConfig()`; `CryptPKI` generates the RSA keypair on first use.
-  These log caught/handled exceptions — expected, not fatal.
-- `FileHandler extends SplFileObject` → **opens its file in the constructor** (eagerly); a missing
-  file throws a raw `RuntimeException`. Open config-like files `c+` so they're created.
+Key constraints:
+- `InstallData` is a **shared DI singleton** — the controller and `MysqlSetup` must use the same
+  instance (host detection mutates it).
+- Install connection **must not select the DB** (it may not exist yet).
+- Password fields are PKI-encrypted client-side; falls back to raw value for scripted installs.
+- `FileHandler extends SplFileObject` — opens its file in the constructor (eagerly); open
+  config-like files `c+` so they're created.
 
-## Dependency status (PHP 8.5 codebase, Symfony 8)
+## Current stack
 
-- **Done:** `guzzlehttp/guzzle` 6 → 7; `monolog/monolog` 1 → 3; `phpseclib/phpseclib` 2 → 3
-  (RSA factory API — see `CryptPKI`); removed unused `doctrine/common`; **replaced the abandoned
-  `klein/klein` router with `symfony/http-foundation` + `symfony/routing`** (the HTTP layer now goes
-  through `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
-- **Symfony 5.4 → 8.0 — done, staged one PR per major** (whole `symfony/*` suite moved together each
-  step; the sanctioned exception to one-package-per-PR): `5.4 → 6.4` (#19), `6.4 → 7.4 LTS` (#20),
-  PHP `8.2/8.3 → 8.4` prerequisite (#21), `7.4 → 8.0` (#22).
-- **PHP 8.4 → 8.5 — supported** (floor raised from 8.2: a modern-only range). Dev image and
-  `config.platform` are on **PHP 8.5**; constraint `~8.4 || ~8.5`; `Environment` allows `>= 8.4 < 8.6`.
-  Notable version breaks fixed along the way: console `$defaultName` → `#[AsCommand]` (7.0);
-  strictly-typed / `final` Request bags in tests (`FileBag`/`InputBag`) (7.0); default bcrypt cost
-  10 → 12 (PHP 8.4); `Request::get()` removed → `$request->query->get()` (8.0); implicit-nullable
-  params (`?Type`) and no-arg `get_class()` (8.4, removed in 8.5); `E_STRICT` removed and `Directory`
-  made `final` (8.5); `SplObjectStorage` `attach/contains/detach` → `offset*` and
-  `PDO::MYSQL_ATTR_*` → `\Pdo\Mysql::ATTR_*` (8.5). Remaining 8.5 deprecations are vendor
-  (faker/fractal — cleared by the dependency-upgrade phase) plus the `session.sid_bits_per_character`
-  ini (runtime, not our code).
-- The old 3.2.x line was gridlocked by `roave/security-advisories` + `fabpot/goutte`'s guzzle-6 pin —
-  the reason we adopted the rewrite (which uses `symfony/dom-crawler`, not goutte).
+- **PHP 8.5** — `config.platform`, Docker image, and CI. Constraint `~8.4 || ~8.5`; `Environment`
+  allows `>= 8.4 < 8.6`.
+- **Symfony 8.0** — HTTP foundation, routing, console, DomCrawler.
+- **Key libraries:** `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
+  (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
+  abandoned `klein/klein` router — the HTTP layer goes through
+  `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
+- Remaining 8.5 deprecations are vendor-side (faker/fractal) plus the
+  `session.sid_bits_per_character` ini (runtime, not our code).
 
 ## Conventions
 

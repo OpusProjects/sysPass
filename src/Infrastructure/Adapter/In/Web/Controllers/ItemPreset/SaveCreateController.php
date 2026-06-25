@@ -60,7 +60,7 @@ final class SaveCreateController extends ItemPresetSaveBase
 
             $itemData = $this->form->getItemData();
 
-            $id = $this->itemPresetService->create($itemData);
+            $id = $this->itemPresetService->create($itemData->getItemPreset());
 
             $this->eventDispatcher->notify(new Event('create.itemPreset', 
                     $this,

@@ -64,7 +64,7 @@ final class SaveEditController extends ItemPresetSaveBase
 
             $itemData = $this->form->getItemData();
 
-            $this->itemPresetService->update($itemData);
+            $this->itemPresetService->update($itemData->getItemPreset());
 
             $this->eventDispatcher->notify(new Event('edit.itemPreset', 
                     $this,
