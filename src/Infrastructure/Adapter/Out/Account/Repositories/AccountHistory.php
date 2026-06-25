@@ -160,45 +160,9 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     {
         $query = $this->queryFactory
             ->newSelect()
-            ->from(sprintf('%s AS Account', AccountHistoryModel::TABLE))
-            ->cols([
-                       'Account.id',
-                       'Account.accountId',
-                       'Account.name',
-                       'Account.categoryId',
-                       'Account.userId',
-                       'Account.clientId',
-                       'Account.userGroupId',
-                       'Account.userEditId',
-                       'Account.login',
-                       'Account.url',
-                       'Account.notes',
-                       'Account.countView',
-                       'Account.countDecrypt',
-                       'Account.dateAdd',
-                       'Account.dateEdit',
-                       'Account.otherUserEdit',
-                       'Account.otherUserGroupEdit',
-                       'Account.isPrivate',
-                       'Account.isPrivateGroup',
-                       'Account.passDate',
-                       'Account.passDateChange',
-                       'Account.parentId',
-                       'Account.isModify',
-                       'Account.isDeleted',
-                       'Category.name AS categoryName',
-                       'User.name AS userName',
-                       'Client.name AS clientName',
-                       'UserGroup.name AS userGroupName',
-                       'UserEdit.name AS userEditName',
-                       'UserEdit.login AS userEditLogin',
-                   ])
-            ->where('Account.id = :id')
-            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
-            ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->join('INNER', 'UserGroup', 'Account.userGroupId = UserGroup.id')
-            ->join('INNER', 'User', 'Account.userId = User.id')
-            ->join('LEFT', 'User AS UserEdit', 'Account.userEditId = UserEdit.id')
+            ->from(AccountHistoryModel::TABLE)
+            ->cols(AccountHistoryModel::getCols())
+            ->where('id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);
 
