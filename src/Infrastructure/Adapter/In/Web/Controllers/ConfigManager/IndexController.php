@@ -522,14 +522,14 @@ final class IndexController extends ControllerBase
         $template->addTemplate('info');
 
         $template->assign('dbInfo', $this->databaseUtil->getDBinfo());
-        $template->assign('dbName', $this->configData->getDbName() . '@' . $this->configData->getDbHost());
+        $template->assign('dbName', ($this->configData->getDbName() ?? '') . '@' . ($this->configData->getDbHost() ?? ''));
         $template->assign(
             'configBackupDate',
             date('r', $this->configService->getByParam('config_backup_date', 0))
         );
         $template->assign(
             'locale',
-            Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed'))
+            Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang() ?? '', __('Not installed'))
         );
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
         $template->assign(
