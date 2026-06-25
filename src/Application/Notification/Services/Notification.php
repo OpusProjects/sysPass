@@ -238,15 +238,16 @@ final class Notification extends Service implements NotificationService
     public function getAllActiveForCurrentUser(): array
     {
         $userData = $this->context->getUserData();
+        $userId = $userData->id ?? 0;
 
         if ($userData->isAdminApp) {
             return $this->notificationRepository
-                ->getAllActiveForAdmin($userData->id)
+                ->getAllActiveForAdmin($userId)
                 ->getDataAsArray(NotificationModel::class);
         }
 
         return $this->notificationRepository
-            ->getAllActiveForUserId($userData->id)
+            ->getAllActiveForUserId($userId)
             ->getDataAsArray(NotificationModel::class);
     }
 
@@ -259,14 +260,15 @@ final class Notification extends Service implements NotificationService
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
         $userData = $this->context->getUserData();
+        $userId = $userData->id ?? 0;
 
         if ($userData->isAdminApp) {
             return $this->notificationRepository
-                ->searchForAdmin($itemSearchData, $userData->id);
+                ->searchForAdmin($itemSearchData, $userId);
         }
 
         return $this->notificationRepository
-            ->searchForUserId($itemSearchData, $userData->id);
+            ->searchForUserId($itemSearchData, $userId);
     }
 
     /**
