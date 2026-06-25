@@ -119,12 +119,7 @@ final class ViewController extends ControllerBase
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE));
 
-        if (true) {
-            $this->view->assign('disabled', 'disabled');
-            $this->view->assign('readonly', 'readonly');
-        } else {
-            $this->view->assign('disabled', false);
-            $this->view->assign('readonly', false);
-        }
+        $this->view->assign('disabled', 'disabled');
+        $this->view->assign('readonly', 'readonly');
     }
 }

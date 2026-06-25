@@ -51,7 +51,7 @@ class Tag extends Model implements ItemWithIdAndNameModel
 
     public function withHash(): Tag
     {
-        return $this->mutate(['hash' => sha1(strtolower(preg_replace('#[.\s_,\-;\'":()|/]+#', '', $this->name ?? '')))]);
+        return $this->mutate(['hash' => sha1(strtolower(preg_replace('#[.\s_,\-;\'":()|/]+#', '', $this->name ?? '') ?? ''))]);
     }
 
     public function getHash(): ?string

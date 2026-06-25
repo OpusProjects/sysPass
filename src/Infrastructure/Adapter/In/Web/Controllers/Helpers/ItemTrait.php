@@ -102,7 +102,7 @@ trait ItemTrait
      */
     private static function getFormIdForName(string $name): string
     {
-        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name)));
+        return sprintf('cf_%s', strtolower(preg_replace('/\W*/', '', $name) ?? ''));
     }
 
     /**
