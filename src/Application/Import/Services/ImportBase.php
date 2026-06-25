@@ -191,14 +191,14 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addCategory(Category $category): int
     {
-        $key = $category->getId() ?? $category->getName();
+        $key = $category->getId() ?? $category->getName() ?? '';
 
         return $this->getOrSetCache(
             self::ITEM_CATEGORY,
             $key,
             function () use ($category): int {
                 try {
-                    return $this->categoryService->getByName($category->getName())?->getId();
+                    return $this->categoryService->getByName($category->getName() ?? '')?->getId();
                 } catch (NoSuchItemException) {
                     return $this->categoryService->create($category);
                 }
@@ -214,14 +214,14 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addClient(Client $client): int
     {
-        $key = $client->getId() ?? $client->getName();
+        $key = $client->getId() ?? $client->getName() ?? '';
 
         return $this->getOrSetCache(
             self::ITEM_CLIENT,
             $key,
             function () use ($client): int {
                 try {
-                    return $this->clientService->getByName($client->getName())?->getId();
+                    return $this->clientService->getByName($client->getName() ?? '')?->getId();
                 } catch (NoSuchItemException) {
                     return $this->clientService->create($client);
                 }
@@ -236,14 +236,14 @@ abstract class ImportBase extends Service implements ImportService
      */
     protected function addTag(Tag $tag): int
     {
-        $key = $tag->getId() ?? $tag->getName();
+        $key = $tag->getId() ?? $tag->getName() ?? '';
 
         return $this->getOrSetCache(
             self::ITEM_TAG,
             $key,
             function () use ($tag): int {
                 try {
-                    return $this->tagService->getByName($tag->getName())?->getId();
+                    return $this->tagService->getByName($tag->getName() ?? '')?->getId();
                 } catch (NoSuchItemException) {
                     return $this->tagService->create($tag);
                 }
