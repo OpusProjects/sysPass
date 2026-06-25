@@ -145,7 +145,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 sprintf(
                     $query,
                     $dbc->quote($user),
-                    $dbc->quote($this->installData->getDbAuthHost()),
+                    $dbc->quote($this->installData->getDbAuthHost() ?? ''),
                     $dbc->quote($pass)
                 )
             );
@@ -157,7 +157,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                     sprintf(
                         $query,
                         $dbc->quote($user),
-                        $this->installData->getDbAuthHostDns(),
+                        $dbc->quote($this->installData->getDbAuthHostDns() ?? ''),
                         $dbc->quote($pass)
                     )
                 );
@@ -220,7 +220,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                         $query,
                         $this->installData->getDbName(),
                         $dbc->quote($dbUser),
-                        $dbc->quote($this->installData->getDbAuthHost())
+                        $dbc->quote($this->installData->getDbAuthHost() ?? '')
                     )
                 );
 
@@ -232,7 +232,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                             $query,
                             $this->installData->getDbName(),
                             $dbc->quote($dbUser),
-                            $dbc->quote($this->installData->getDbAuthHostDns())
+                            $dbc->quote($this->installData->getDbAuthHostDns() ?? '')
                         )
                     );
                 }
@@ -301,7 +301,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                     sprintf(
                         'DROP USER IF EXISTS %s@%s',
                         $dbc->quote($dbUser),
-                        $dbc->quote($this->installData->getDbAuthHost())
+                        $dbc->quote($this->installData->getDbAuthHost() ?? '')
                     )
                 );
 
@@ -312,7 +312,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                         sprintf(
                             'DROP USER IF EXISTS %s@%s',
                             $dbc->quote($dbUser),
-                            $dbc->quote($this->installData->getDbAuthHostDns())
+                            $dbc->quote($this->installData->getDbAuthHostDns() ?? '')
                         )
                     );
                 }
