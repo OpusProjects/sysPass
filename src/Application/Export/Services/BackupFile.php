@@ -160,7 +160,7 @@ final class BackupFile extends Service implements BackupFileService
                 sprintf('-- Table %s', strtoupper($table)),
                 '-- ',
                 sprintf('DROP TABLE IF EXISTS `%s`;', $table),
-                sprintf('%s;', $data->{'Create Table'} ?? null),
+                sprintf('%s;', $data->{'Create Table'} ?? ''),
                 ''
             ];
 
@@ -177,7 +177,7 @@ final class BackupFile extends Service implements BackupFileService
                 sprintf('-- View %s', strtoupper($view)),
                 '-- ',
                 sprintf('DROP TABLE IF EXISTS `%s`;', $view),
-                sprintf('%s;', $data->{'Create View'} ?? null),
+                sprintf('%s;', $data->{'Create View'} ?? ''),
                 ''
             ];
 

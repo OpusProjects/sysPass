@@ -103,8 +103,8 @@ abstract class PluginBase implements Plugin
 
     protected function setLocales(): void
     {
-        $locales = sprintf('%s%slocales', $this->getBase(), DIRECTORY_SEPARATOR);
-        $name = strtolower($this->getName());
+        $locales = sprintf('%s%slocales', $this->getBase() ?? '', DIRECTORY_SEPARATOR);
+        $name = strtolower($this->getName() ?? '');
 
         bindtextdomain($name, $locales);
         bind_textdomain_codeset($name, 'UTF-8');
