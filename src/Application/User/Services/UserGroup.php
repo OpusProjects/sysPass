@@ -144,7 +144,7 @@ final class UserGroup extends Service implements UserGroupService
                 $users = $userGroup->getUsers();
 
                 if ($users !== null) {
-                    $this->userToUserGroupService->update($userGroup->getId(), $users);
+                    $this->userToUserGroupService->update($userGroup->getId() ?? 0, $users);
                 }
             },
             $this

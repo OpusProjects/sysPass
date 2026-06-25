@@ -107,7 +107,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 );
                 $tags = $this->document->createElement('tags');
 
-                foreach ($this->accountToTagService->getTagsByAccountId($account->getId()) as $itemData) {
+                foreach ($this->accountToTagService->getTagsByAccountId($account->getId() ?? 0) as $itemData) {
                     $tag = $this->document->createElement('tag');
                     $tags->appendChild($tag);
 

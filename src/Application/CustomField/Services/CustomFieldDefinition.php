@@ -117,7 +117,7 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
     {
         return $this->customFieldDefinitionRepository->transactionAware(
             function () use ($customFieldDefinition) {
-                $this->customFieldDefinitionRepository->delete($customFieldDefinition->getId());
+                $this->customFieldDefinitionRepository->delete($customFieldDefinition->getId() ?? 0);
 
                 return $this->customFieldDefinitionRepository->create($customFieldDefinition);
             },
