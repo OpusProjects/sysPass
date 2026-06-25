@@ -58,7 +58,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newInsert()
             ->into(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id', 'score', 'userName', 'userProfileName', 'userGroupName']));
+            ->cols($itemPreset->toArray(null, ['id', 'hash', 'score', 'userName', 'userProfileName', 'userGroupName']))
+            ->col('hash', $this->makeItemHash($itemPreset->getType() ?? ''));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
 
@@ -76,7 +77,8 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(ItemPresetModel::TABLE)
-            ->cols($itemPreset->toArray(null, ['id', 'score', 'userName', 'userProfileName', 'userGroupName']))
+            ->cols($itemPreset->toArray(null, ['id', 'hash', 'score', 'userName', 'userProfileName', 'userGroupName']))
+            ->col('hash', $this->makeItemHash($itemPreset->getType() ?? ''))
             ->where('id = :id')
             ->limit(1)
             ->bindValues(
