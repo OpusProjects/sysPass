@@ -47,7 +47,10 @@ class Session
      */
     public static function getSessionKey(SessionContext $sessionContext): string
     {
-        return $sessionContext->getVault()->getData(self::getKey($sessionContext));
+        $vault = $sessionContext->getVault()
+            ?? throw new CryptException('Session vault not initialized');
+
+        return $vault->getData(self::getKey($sessionContext));
     }
 
     private static function getKey(SessionContext $sessionContext): string
@@ -86,6 +89,9 @@ class Session
 
         $newSeed = self::buildSeed(session_id(), (string)$sessionContext->setSidStartTime(time()));
 
-        $sessionContext->setVault($sessionContext->getVault()->reKey($newSeed, $oldSeed));
+        $vault = $sessionContext->getVault()
+            ?? throw new CryptException('Session vault not initialized');
+
+        $sessionContext->setVault($vault->reKey($newSeed, $oldSeed));
     }
 }
