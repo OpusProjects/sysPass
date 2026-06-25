@@ -40,7 +40,7 @@ use function SP\__;
     <ul id="files-list " class="mdl-list">
         <?php
         foreach ($_getvar('files') as $file):
-            $extension = mb_strtoupper($file->getExtension());
+            $extension = mb_strtoupper($file->getExtension() ?? '');
             ?>
             <li class="mdl-list__item">
                 <span class="mdl-list__item-primary-content"

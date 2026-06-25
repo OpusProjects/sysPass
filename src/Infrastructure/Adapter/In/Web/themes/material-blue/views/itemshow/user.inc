@@ -444,7 +444,7 @@ $user = $_getvar('user');
                                     echo __('Master Password Date'); ?></div>
 
                                 <?php
-                                echo gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass()); ?>
+                                echo gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass() ?? 0); ?>
                             </td>
                         </tr>
 
