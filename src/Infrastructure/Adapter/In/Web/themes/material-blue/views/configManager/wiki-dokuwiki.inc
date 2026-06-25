@@ -269,20 +269,7 @@ endif; ?>
             </button>
         </li>
         <li>
-            <button type="button"
-                    class="btn-action mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
-                    echo $icons->check()->getClassButton(); ?>"
-                    data-onclick="checks/wiki"
-                    data-action-route="configWiki/checkDokuwiki"
-                    data-src="#frmWiki"
-                    title="<?php
-                    echo $icons->check()->getTitle(); ?>">
-                <i class="material-icons"><?php
-                    echo $icons->check()->getIcon(); ?></i>
-            </button>
-        </li>
-        <li>
-            <button form="frmWiki"
+            <button form="frmDokuWiki"
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
                     echo $icons->save()->getClassButton(); ?>"
                     title="<?php
