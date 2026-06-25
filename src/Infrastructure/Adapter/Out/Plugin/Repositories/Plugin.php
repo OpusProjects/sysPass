@@ -197,7 +197,7 @@ final class Plugin extends BaseRepository implements PluginRepository
         $query = $this->queryFactory
             ->newDelete()
             ->from(self::TABLE)
-            ->where('id IN (:ids) AND sticky = 0', ['ids' => $pluginsId]);
+            ->where('id IN (:ids)', ['ids' => $pluginsId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the plugins'));
 
