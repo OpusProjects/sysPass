@@ -81,10 +81,14 @@ abstract class PublicLinkViewBase extends ControllerBase
         $this->view->assign('isView', $isView);
         $useInfo = $publicLink->getUseInfo();
         $this->view->assign('usageInfo', $useInfo !== null ? unserialize($useInfo, ['allowed_classes' => false]) : []);
+        $accounts = [];
+        foreach ($this->accountService->getForUser() as $account) {
+            $accounts[$account->id] = $account->name;
+        }
         $this->view->assign(
             'accounts',
-            SelectItemAdapter::factory($this->accountService->getForUser())
-                ->getItemsFromModelSelected([$publicLink->getItemId()])
+            SelectItemAdapter::factory($accounts)
+                ->getItemsFromArraySelected([$publicLink->getItemId()])
         );
 
         $this->view->assign('nextAction', $this->acl->getRouteFor(AclActionsInterface::ACCESS_MANAGE));
