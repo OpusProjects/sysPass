@@ -64,7 +64,7 @@ final class SaveEditPassController extends UserSaveBase
 
             $itemData = $this->form->getItemData();
 
-            $this->userService->updatePass($id, $itemData->getPass());
+            $this->userService->updatePass($id, $itemData->getPass() ?? '');
 
             $this->eventDispatcher->notify(new Event('edit.user.pass', 
                     $this,
