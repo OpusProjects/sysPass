@@ -493,7 +493,7 @@ endif; ?>
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php
-                           echo $configData->getLdapFilterUserObject(); ?>"/>
+                           echo htmlspecialchars($configData->getLdapFilterUserObject() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_filter_user_object"><?php
                         echo __('Filter'); ?></label>
@@ -536,7 +536,7 @@ endif; ?>
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php
-                           echo $configData->getLdapFilterGroupObject(); ?>"/>
+                           echo htmlspecialchars($configData->getLdapFilterGroupObject() ?? '', ENT_QUOTES); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_filter_group_object"><?php
                         echo __('Filter'); ?></label>
