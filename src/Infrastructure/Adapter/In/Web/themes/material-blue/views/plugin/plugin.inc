@@ -56,7 +56,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $pluginInfo->getName(); ?>" <?php
+                               echo htmlspecialchars($pluginInfo->getName() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -72,7 +72,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo implode('.', $pluginInfo->getVersion()); ?>" <?php
+                               echo implode('.', $pluginInfo->getVersion() ?? []); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="version"><?php
@@ -89,7 +89,7 @@ $pluginInfo = $_getvar('pluginInfo');
                                type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo implode('.', $pluginInfo->getCompatibleVersion()); ?>" <?php
+                               echo implode('.', $pluginInfo->getCompatibleVersion() ?? []); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="compatible_version"><?php
@@ -105,7 +105,7 @@ $pluginInfo = $_getvar('pluginInfo');
                         <input id="author" name="author" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo $pluginInfo->getAuthor(); ?>" <?php
+                               echo htmlspecialchars($pluginInfo->getAuthor() ?? '', ENT_QUOTES); ?>" <?php
                         echo $_getvar('readonly'); ?>>
                         <label class="mdl-textfield__label"
                                for="author"><?php
