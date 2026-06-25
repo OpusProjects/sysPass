@@ -84,6 +84,7 @@ final class EditController extends AccountViewBase
             ]
         );
         $this->view->assign('formRoute', 'account/saveEdit');
+        $this->view->assign('editAction', true);
 
         $this->accountService->incrementViewCounter($id);
 
