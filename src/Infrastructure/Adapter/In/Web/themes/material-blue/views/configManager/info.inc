@@ -255,10 +255,10 @@
                                     echo $name; ?>
                                     <br>
                                     <?php
-                                    printf('Version: %s', implode('.', $plugin->getVersion())); ?>
+                                    printf('Version: %s', implode('.', $plugin->getVersion() ?? [])); ?>
                                     <br>
                                     <?php
-                                    printf('Autor: %s', $plugin->getAuthor()); ?>
+                                    printf('Autor: %s', $plugin->getAuthor() ?? ''); ?>
                                 </span>
                     </li>
                 <?php

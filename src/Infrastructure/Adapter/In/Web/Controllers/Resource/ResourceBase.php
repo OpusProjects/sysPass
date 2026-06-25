@@ -50,6 +50,6 @@ abstract class ResourceBase extends SimpleControllerBase
     ) {
         parent::__construct($application, $simpleControllerHelper);
 
-        $this->request->verifySignature($this->configData->getPasswordSalt());
+        $this->request->verifySignature($this->configData->getPasswordSalt() ?? '');
     }
 }

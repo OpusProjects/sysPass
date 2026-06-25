@@ -78,7 +78,7 @@ trait ControllerTrait
                 $uri->addParam('_r', 'login');
 
                 if ($route && $hash) {
-                    $key = $configData->getPasswordSalt();
+                    $key = $configData->getPasswordSalt() ?? '';
                     $request->verifySignature($key);
 
                     $uri->addParam('from', $route);

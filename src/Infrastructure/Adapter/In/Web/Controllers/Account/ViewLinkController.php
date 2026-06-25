@@ -164,7 +164,7 @@ final class ViewLinkController extends AccountControllerBase
                                 ->addDetail(__u('IP'), $clientAddress)
                                 ->addDetail(
                                     __u('Link'),
-                                    $deepLink->getUriSigned($this->configData->getPasswordSalt())
+                                    $deepLink->getUriSigned($this->configData->getPasswordSalt() ?? '')
                                 )
                                 ->addExtra('userId', $publicLink->getUserId())
                                 ->addExtra('notify', $publicLink->isNotify())
