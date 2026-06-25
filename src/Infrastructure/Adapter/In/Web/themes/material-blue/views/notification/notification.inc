@@ -100,7 +100,7 @@ $notification = $_getvar('notification');
                                    name="notification_date" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php
-                                   echo Date::getDateFromUnix($notification->getDate()); ?>"
+                                   echo Date::getDateFromUnix($notification->getDate() ?? 0); ?>"
                                 <?php
                                 echo $_getvar('disabled'); ?>>
                             <label class="mdl-textfield__label"
