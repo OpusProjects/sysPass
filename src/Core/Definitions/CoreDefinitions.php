@@ -418,7 +418,7 @@ final class CoreDefinitions
                             return new FileCache(
                                 SecureSession::getFileNameFrom(
                                     $uuidCookie,
-                                    $configData->getPasswordSalt(),
+                                    $configData->getPasswordSalt() ?? '',
                                     $pathsContext[Path::CACHE]
                                 )
                             );

@@ -197,10 +197,10 @@ abstract class ControllerBase
 
         if ($from) {
             try {
-                $this->request->verifySignature($this->configData->getPasswordSalt());
+                $this->request->verifySignature($this->configData->getPasswordSalt() ?? '');
 
                 $this->view->assign('from', $from);
-                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt()));
+                $this->view->assign('from_hash', Hash::signMessage($from, $this->configData->getPasswordSalt() ?? ''));
             } catch (SPException $e) {
                 processException($e);
             }

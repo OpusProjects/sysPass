@@ -41,6 +41,6 @@ final class Link
     ): string {
         return (new Uri($baseUrl))
             ->addParam('r', sprintf('%s/%d', $actionRoute, $itemId))
-            ->getUriSigned($configData->getPasswordSalt());
+            ->getUriSigned($configData->getPasswordSalt() ?? '');
     }
 }

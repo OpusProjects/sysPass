@@ -267,7 +267,7 @@ final class XmlExport extends Service implements XmlExportService
     {
         try {
             $hash = self::generateHashFromNodes($this->document);
-            $key = $password ?: sha1($this->configData->getPasswordSalt());
+            $key = $password ?: sha1($this->configData->getPasswordSalt() ?? '');
 
             $hashNode = $this->document->createElement('Hash', $hash);
             $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));

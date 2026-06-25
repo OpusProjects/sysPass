@@ -45,7 +45,7 @@ final readonly class RequestBasedPassword implements RequestBasedPasswordInterfa
         return hash_pbkdf2(
             'sha1',
             $this->getWellKnownData(),
-            $this->configData->getPasswordSalt(),
+            $this->configData->getPasswordSalt() ?? '',
             5000,
             32
         );

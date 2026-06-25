@@ -170,7 +170,7 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function getPublicLinkKey(?string $hash = null): PublicLinkKey
     {
-        return new PublicLinkKey($this->config->getConfigData()->getPasswordSalt(), $hash);
+        return new PublicLinkKey($this->config->getConfigData()->getPasswordSalt() ?? '', $hash);
     }
 
     /**

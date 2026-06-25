@@ -54,7 +54,7 @@ trait WebControllerTrait
 
         if ($from) {
             try {
-                $request->verifySignature($configData->getPasswordSalt(), 'from');
+                $request->verifySignature($configData->getPasswordSalt() ?? '', 'from');
             } catch (SPException $e) {
                 processException($e);
 
