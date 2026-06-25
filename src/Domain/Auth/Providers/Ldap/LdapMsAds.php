@@ -192,13 +192,19 @@ final class LdapMsAds extends LdapBase
 
     protected function pickServer(): string
     {
-        $server = $this->ldapParams->getServer();
+        $server = $this->ldapParams->getServer() ?? '';
 
         if (preg_match(Address::PATTERN_IP_ADDRESS, $server)) {
             return $server;
         }
 
-        $dnsServerQuery = '_msdcs' . substr($server, strpos($server, '.'));
+        $dotPos = strpos($server, '.');
+
+        if ($dotPos === false) {
+            return $server;
+        }
+
+        $dnsServerQuery = '_msdcs' . substr($server, $dotPos);
 
         logger(sprintf('Querying DNS zone: %s', $dnsServerQuery));
 
@@ -214,6 +220,6 @@ final class LdapMsAds extends LdapBase
             $adServers[] = $record['target'];
         }
 
-        return count($adServers) > 0 ? array_rand($adServers) : $server;
+        return count($adServers) > 0 ? $adServers[array_rand($adServers)] : $server;
     }
 }
