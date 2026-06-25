@@ -251,6 +251,10 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('ctx_userLogin', mb_strtoupper($userDto->login ?? ''));
         $this->view->assign('ctx_userName', $userDto->name ?: mb_strtoupper($userDto->login ?? ''));
         $this->view->assign('ctx_userGroup', $userDto->userGroupName);
+        $this->view->assign('ctx_userId', $userDto->id);
+        $this->view->assign('ctx_userGroupId', $userDto->userGroupId);
+        $this->view->assign('ctx_userIsAdminApp', $userDto->isAdminApp);
+        $this->view->assign('ctx_userIsAdminAcc', $userDto->isAdminAcc);
         $this->view->assign('showPassIcon', !($this->configData->isLdapEnabled() && $userDto->isLdap));
     }
 
