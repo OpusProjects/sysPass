@@ -74,7 +74,7 @@ final class MinifyJs extends Minify
             '#\s*//\s.*$#m'
         ];
 
-        return str_replace(["\r\n", "\r", "\n", "\t"], '', preg_replace($regexReplace, '', $buffer));
+        return str_replace(["\r\n", "\r", "\n", "\t"], '', preg_replace($regexReplace, '', $buffer) ?? '');
     }
 
     protected function getContentTypeHeader(): string

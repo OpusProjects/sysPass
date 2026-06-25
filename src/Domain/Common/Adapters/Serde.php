@@ -95,7 +95,7 @@ final class Serde
             preg_replace('/^O:\d+:"[^"]++"/', 'O:8:"stdClass"', $serialized)
         );
 
-        return unserialize($dump);
+        return unserialize($dump ?? '');
     }
 
     /**
