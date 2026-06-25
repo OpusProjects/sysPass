@@ -485,7 +485,7 @@ final class Account extends Service implements AccountService
 
                 $result = $this->accountRepository->restoreModified(
                     $dto->accountId,
-                    AccountModel::restoreModified($dto, $this->context->getUserData()->id)
+                    AccountModel::restoreModified($dto, $this->context->getUserData()->id ?? 0)
                 );
 
                 if ($result->getAffectedNumRows() === 0) {
@@ -507,7 +507,7 @@ final class Account extends Service implements AccountService
     public function restoreRemoved(AccountHistoryDto $accountHistoryDto): void
     {
         $result = $this->accountRepository->createRemoved(
-            AccountModel::restoreRemoved($accountHistoryDto, $this->context->getUserData()->id)
+            AccountModel::restoreRemoved($accountHistoryDto, $this->context->getUserData()->id ?? 0)
         );
 
         if ($result->getAffectedNumRows() === 0) {

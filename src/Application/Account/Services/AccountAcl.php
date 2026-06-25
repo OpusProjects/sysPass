@@ -161,7 +161,7 @@ final class AccountAcl extends Service implements AccountAclService
      */
     private function getCacheFileForAcl(int $accountId, int $actionId): string
     {
-        $userId = $this->context->getUserData()->id;
+        $userId = $this->context->getUserData()->id ?? 0;
 
         return FileSystem::buildPath(
             $this->pathsContext[Path::CACHE],
