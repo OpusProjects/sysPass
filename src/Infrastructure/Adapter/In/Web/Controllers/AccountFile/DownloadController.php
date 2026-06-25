@@ -63,8 +63,8 @@ final class DownloadController extends AccountFileBase
         );
 
         $response = $this->router->response();
-        $response->header('Content-Length', $fileDto->size);
-        $response->header('Content-Type', $fileDto->type);
+        $response->header('Content-Length', (string)($fileDto->size ?? 0));
+        $response->header('Content-Type', $fileDto->type ?? 'application/octet-stream');
         $response->header('Content-Description', ' sysPass file');
         $response->header('Content-Transfer-Encoding', 'binary');
         $response->header('Accept-Ranges', 'bytes');

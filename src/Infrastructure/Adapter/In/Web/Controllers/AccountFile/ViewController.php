@@ -60,8 +60,8 @@ final class ViewController extends AccountFileBase
 
         $this->view->addTemplate('file', 'itemshow');
 
-        if (FileSystem::isImage($fileDto->type)) {
-            $this->view->assign('data', chunk_split(base64_encode($fileDto->content)));
+        if (FileSystem::isImage($fileDto->type ?? '')) {
+            $this->view->assign('data', chunk_split(base64_encode($fileDto->content ?? '')));
             $this->view->assign('fileData', $fileDto);
             $this->view->assign('isImage', 1);
 
@@ -80,7 +80,7 @@ final class ViewController extends AccountFileBase
 
         if (in_array($type, self::MIME_VIEW)) {
             $this->view->assign('mime', $type);
-            $this->view->assign('data', htmlentities($fileDto->content));
+            $this->view->assign('data', htmlentities($fileDto->content ?? ''));
 
             $this->eventDispatcher->notify(new Event('show.accountFile', 
                     $this,
