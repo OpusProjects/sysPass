@@ -96,6 +96,22 @@ $plugin = $_getvar('plugin');
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td class="descField"><?php
+                    echo __('Available'); ?></td>
+                <td class="valField">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="available" name="available" type="text"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               value="<?php
+                               echo $plugin->getAvailable() ? __('Yes') : __('No'); ?>" <?php
+                        echo $_getvar('readonly'); ?>>
+                        <label class="mdl-textfield__label"
+                               for="available"><?php
+                            echo __('Plugin available'); ?></label>
+                    </div>
+                </td>
+            </tr>
         </table>
     </form>
 </div>
