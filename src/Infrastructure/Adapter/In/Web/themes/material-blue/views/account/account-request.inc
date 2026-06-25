@@ -62,7 +62,7 @@ $accountView = $_getvar('accountData');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -78,7 +78,7 @@ $accountView = $_getvar('accountData');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getClientName(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($accountView->getClientName() ?? '', ENT_QUOTES); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php

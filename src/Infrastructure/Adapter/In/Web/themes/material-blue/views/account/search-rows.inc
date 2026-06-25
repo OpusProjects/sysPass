@@ -79,15 +79,15 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                           class="mdl-chip__contact mdl-color-text--white">
                                         <?php
                                         echo htmlspecialchars(
-                                            mb_ucfirst($accountSearchData->getClientName()),
+                                            mb_ucfirst($accountSearchData->getClientName() ?? ''),
                                             ENT_QUOTES
                                         ); ?>
                                     </span>
                                     <span class="mdl-chip__text"
                                           title="<?php
-                                          echo htmlspecialchars($accountSearchData->getClientName(), ENT_QUOTES); ?>">
+                                          echo htmlspecialchars($accountSearchData->getClientName() ?? '', ENT_QUOTES); ?>">
                                         <?php
-                                        echo htmlspecialchars($accountSearchItem->getShortClientName(), ENT_QUOTES); ?>
+                                        echo htmlspecialchars($accountSearchItem->getShortClientName() ?? '', ENT_QUOTES); ?>
                                     </span>
                                 </span>
                             </a>
@@ -99,15 +99,15 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                       class="mdl-chip__contact mdl-color-text--white">
                                     <?php
                                     echo htmlspecialchars(
-                                        mb_ucfirst($accountSearchData->getClientName()),
+                                        mb_ucfirst($accountSearchData->getClientName() ?? ''),
                                         ENT_QUOTES
                                     ); ?>
                                 </span>
                                 <span class="mdl-chip__text"
                                       title="<?php
-                                      echo htmlspecialchars($accountSearchData->getClientName(), ENT_QUOTES); ?>">
+                                      echo htmlspecialchars($accountSearchData->getClientName() ?? '', ENT_QUOTES); ?>">
                                     <?php
-                                    echo htmlspecialchars($accountSearchItem->getShortClientName(), ENT_QUOTES); ?>
+                                    echo htmlspecialchars($accountSearchItem->getShortClientName() ?? '', ENT_QUOTES); ?>
                                 </span>
                             </span>
                         <?php
@@ -130,12 +130,12 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-item-id="<?php
                                echo $accountSearchData->getId(); ?>"
                                data-onclick="account/view"><?php
-                                echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?></a>
+                                echo htmlspecialchars($accountSearchData->getName() ?? '', ENT_QUOTES); ?></a>
                         <?php
                         else: ?>
                             <div class="field-text">
                                 <?php
-                                echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>
+                                echo htmlspecialchars($accountSearchData->getName() ?? '', ENT_QUOTES); ?>
                             </div>
                         <?php
                         endif; ?>
@@ -146,7 +146,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             echo __('Category'); ?></div>
                         <div class="field-text">
                             <?php
-                            echo htmlspecialchars($accountSearchData->getCategoryName(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($accountSearchData->getCategoryName() ?? '', ENT_QUOTES); ?>
                         </div>
                     </div>
 
@@ -157,7 +157,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 echo __('User'); ?></div>
                             <div class="field-text">
                                 <?php
-                                echo htmlspecialchars($accountSearchItem->getShortLogin(), ENT_QUOTES); ?>
+                                echo htmlspecialchars($accountSearchItem->getShortLogin() ?? '', ENT_QUOTES); ?>
                             </div>
                         </div>
 
@@ -172,16 +172,16 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                    title="<?php
                                    printf(
                                        __('Open link to: %s'),
-                                       htmlspecialchars($accountSearchData->getUrl(), ENT_QUOTES)
+                                       htmlspecialchars($accountSearchData->getUrl() ?? '', ENT_QUOTES)
                                    ); ?>">
                                     <?php
-                                    echo htmlspecialchars($accountSearchItem->getShortUrl(), ENT_QUOTES); ?>
+                                    echo htmlspecialchars($accountSearchItem->getShortUrl() ?? '', ENT_QUOTES); ?>
                                 </a>
                             <?php
                             else: ?>
                                 <div class="field-text"><?php
                                     echo htmlspecialchars(
-                                        $accountSearchItem->getShortUrl(),
+                                        $accountSearchItem->getShortUrl() ?? '',
                                         ENT_QUOTES
                                     ); ?></div>
                             <?php
@@ -202,7 +202,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                   data-tag-id="<?php
                                   echo $tag->id; ?>">
                                 <?php
-                                echo htmlspecialchars($tag->name, ENT_QUOTES); ?>
+                                echo htmlspecialchars($tag->name ?? '', ENT_QUOTES); ?>
                             </span>
                         <?php
                         endforeach; ?>
@@ -412,10 +412,10 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                    data-action-route="<?php
                                    echo AclActionsInterface::WIKI_VIEW; ?>"
                                    data-pagename="<?php
-                                   echo htmlspecialchars($accountSearchData->getName(), ENT_QUOTES); ?>"
+                                   echo htmlspecialchars($accountSearchData->getName() ?? '', ENT_QUOTES); ?>"
                                    data-pagename="<?php
                                    echo htmlspecialchars(
-                                       $accountSearchData->getName(),
+                                       $accountSearchData->getName() ?? '',
                                        ENT_QUOTES
                                    ); ?>"
                                    data-onclick="wiki/show">library_books</i>

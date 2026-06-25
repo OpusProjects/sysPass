@@ -103,7 +103,7 @@ $password = $_getvar('password');
                 <input id="regex" name="regex" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php
-                       echo htmlspecialchars($password->getRegex(), ENT_QUOTES); ?>"/>
+                       echo htmlspecialchars($password->getRegex() ?? '', ENT_QUOTES); ?>"/>
                 <label class="mdl-textfield__label"
                        for="regex"><?php
                     echo __('Regular Expression'); ?></label>

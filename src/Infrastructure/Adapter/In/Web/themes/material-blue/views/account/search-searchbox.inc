@@ -78,7 +78,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $client->getId(); ?>" <?php
                     echo $client->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($client->getName(), ENT_QUOTES); ?></option>
+                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -94,7 +94,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $category->getId(); ?>" <?php
                     echo $category->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($category->getName(), ENT_QUOTES); ?></option>
+                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -203,7 +203,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $tag->getId(); ?>" <?php
                     echo $tag->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></option>
+                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></option>
                 <?php
                 endforeach; ?>
             </select>

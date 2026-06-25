@@ -72,8 +72,8 @@ $authToken = $_getvar('authToken');
                             echo $user->isSelected() ? 'selected' : ''; ?>><?php
                                 printf(
                                     '%s (%s)',
-                                    htmlspecialchars($user->getName(), ENT_QUOTES),
-                                    htmlspecialchars($user->getItemProperty('login'), ENT_QUOTES)
+                                    htmlspecialchars($user->getName() ?? '', ENT_QUOTES),
+                                    htmlspecialchars($user->getItemProperty('login') ?? '', ENT_QUOTES)
                                 ); ?></option>
                         <?php
                         endforeach; ?>
@@ -99,7 +99,7 @@ $authToken = $_getvar('authToken');
                             <option value="<?php
                             echo $action->getId(); ?>" <?php
                             echo $action->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($action->getName(), ENT_QUOTES); ?></option>
+                                echo htmlspecialchars($action->getName() ?? '', ENT_QUOTES); ?></option>
                         <?php
                         endforeach; ?>
                     </select>

@@ -132,7 +132,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="100"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getName(), ENT_QUOTES)
+                                           ? htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES)
                                            : ''; ?>"
                                     <?php
                                     echo $_getvar('readonly'); ?>
@@ -168,7 +168,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             : ''; ?>
                                     >
                                         <?php
-                                        echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>
+                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -214,7 +214,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             : ''; ?>
                                     >
                                         <?php
-                                        echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>
+                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -245,7 +245,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="255"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getUrl(), ENT_QUOTES)
+                                           ? htmlspecialchars($accountView->getUrl() ?? '', ENT_QUOTES)
                                            : ''; ?>"
                                     <?php
                                     echo $_getvar('readonly'); ?>
@@ -266,7 +266,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                        maxlength="50"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getLogin(), ENT_QUOTES)
+                                           ? htmlspecialchars($accountView->getLogin() ?? '', ENT_QUOTES)
                                            : ''; ?>"
                                     <?php
                                     echo $_getvar('readonly'); ?>
@@ -357,7 +357,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 maxlength="5000" <?php
                         echo $_getvar('readonly'); ?>><?php
                             echo $gotData
-                                ? htmlspecialchars($accountView->getNotes(), ENT_QUOTES) : ''; ?></textarea>
+                                ? htmlspecialchars($accountView->getNotes() ?? '', ENT_QUOTES) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
                                     echo __('Notes about the account'); ?></label>
@@ -386,7 +386,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                             <?php
                                             echo $tag->isSelected() ? 'selected' : ''; ?>>
                                             <?php
-                                            echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?>
+                                            echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>
@@ -424,7 +424,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                                 <?php
                                                 if ($tag->isSelected()): ?>
                                                     <span class="tag"><?php
-                                                        echo htmlspecialchars($tag->getName(), ENT_QUOTES); ?></span>
+                                                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></span>
                                                 <?php
                                                 endif; ?>
                                             <?php
@@ -489,7 +489,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                                 value="<?php
                                                 echo $history->getId(); ?>">
                                             <?php
-                                            echo htmlspecialchars($history->getName(), ENT_QUOTES); ?>
+                                            echo htmlspecialchars($history->getName() ?? '', ENT_QUOTES); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>
@@ -511,7 +511,7 @@ $showCustomFields = count($_getvar('customFields', 0)) > 0;
                                 printf(
                                     '%s (%s)',
                                     $accountView->getDateEdit(),
-                                    htmlspecialchars($accountView->getUserEditName(), ENT_QUOTES)
+                                    htmlspecialchars($accountView->getUserEditName() ?? '', ENT_QUOTES)
                                 ); ?>
                             </td>
                         </tr>

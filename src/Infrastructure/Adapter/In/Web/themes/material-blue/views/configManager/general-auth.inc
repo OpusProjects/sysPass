@@ -150,7 +150,7 @@ use function SP\__;
                             value="<?php
                             echo $userGroup->getId(); ?>" <?php
                     echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                        echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -187,7 +187,7 @@ use function SP\__;
                             value="<?php
                             echo $userProfile->getId(); ?>" <?php
                     echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
+                        echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?></option>
                 <?php
                 endforeach; ?>
             </select>

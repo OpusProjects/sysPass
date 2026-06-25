@@ -118,7 +118,7 @@ $accountAcl = $_getvar('accountAcl');
                                         <?php
                                         echo $client->isSelected() ? 'selected' : ''; ?>>
                                         <?php
-                                        echo htmlspecialchars($client->getName(), ENT_QUOTES); ?>
+                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -146,7 +146,7 @@ $accountAcl = $_getvar('accountAcl');
                                         <?php
                                         echo $category->isSelected() ? 'selected' : ''; ?>>
                                         <?php
-                                        echo htmlspecialchars($category->getName(), ENT_QUOTES); ?>
+                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -249,7 +249,7 @@ $accountAcl = $_getvar('accountAcl');
                                             <?php
                                             echo $history->isSelected() ? 'selected' : ''; ?>>
                                             <?php
-                                            echo htmlspecialchars($history->getName(), ENT_QUOTES); ?>
+                                            echo htmlspecialchars($history->getName() ?? '', ENT_QUOTES); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>

@@ -72,7 +72,7 @@ use function SP\__;
                                                 echo $otherUser->getId(); ?>"
                                             <?php
                                             echo $otherUser->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></option>
+                                            echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -94,7 +94,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></span>
+                                                    echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -125,7 +125,7 @@ use function SP\__;
                                                 echo $otherUser->getId(); ?>"
                                             <?php
                                             echo $otherUser->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></option>
+                                            echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -147,7 +147,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars($otherUser->getName(), ENT_QUOTES); ?></span>
+                                                    echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -185,7 +185,7 @@ use function SP\__;
                                                 echo $otherUserGroup->getId(); ?>"
                                             <?php
                                             echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></option>
+                                            echo htmlspecialchars($otherUserGroup->getName() ?? '', ENT_QUOTES); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -208,7 +208,7 @@ use function SP\__;
                                             if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php
                                                     echo htmlspecialchars(
-                                                        $otherUserGroup->getName(),
+                                                        $otherUserGroup->getName() ?? '',
                                                         ENT_QUOTES
                                                     ); ?></span>
                                             <?php
@@ -241,7 +241,7 @@ use function SP\__;
                                                 echo $otherUserGroup->getId(); ?>"
                                             <?php
                                             echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUserGroup->getName(), ENT_QUOTES); ?></option>
+                                            echo htmlspecialchars($otherUserGroup->getName() ?? '', ENT_QUOTES); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -264,7 +264,7 @@ use function SP\__;
                                             if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php
                                                     echo htmlspecialchars(
-                                                        $otherUserGroup->getName(),
+                                                        $otherUserGroup->getName() ?? '',
                                                         ENT_QUOTES
                                                     ); ?></span>
                                             <?php
@@ -317,7 +317,7 @@ use function SP\__;
                                     echo $user->getId(); ?>"
                                 <?php
                                 echo $user->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
+                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
@@ -351,7 +351,7 @@ use function SP\__;
                                     echo $userGroup->getId(); ?>"
                                 <?php
                                 echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                         <?php
                         endforeach; ?>
                     </select>

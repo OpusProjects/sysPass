@@ -64,7 +64,7 @@ $group = $_getvar('group');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($group->getName(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Group name'); ?></label>
@@ -81,7 +81,7 @@ $group = $_getvar('group');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($group->getDescription(), ENT_QUOTES); ?>">
+                               echo htmlspecialchars($group->getDescription() ?? '', ENT_QUOTES); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php
                             echo __('Group description'); ?></label>
@@ -114,7 +114,7 @@ $group = $_getvar('group');
                                     <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>>
                                     <?php
-                                    echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
+                                    echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
                                 </option>
                             <?php
                             endforeach; ?>
@@ -131,7 +131,7 @@ $group = $_getvar('group');
                                         if ($user->isSelected()): ?>
                                             <span class="tag">
                                                 <?php
-                                                echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
+                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
                                             </span>
                                         <?php
                                         endif; ?>
@@ -175,16 +175,16 @@ $group = $_getvar('group');
                                                 <?php
                                                 printf(
                                                     '%s (%s)*',
-                                                    htmlspecialchars($user->name, ENT_QUOTES),
-                                                    htmlspecialchars($user->login, ENT_QUOTES)
+                                                    htmlspecialchars($user->name ?? '', ENT_QUOTES),
+                                                    htmlspecialchars($user->login ?? '', ENT_QUOTES)
                                                 ); ?>
                                             <?php
                                             else: ?>
                                                 <?php
                                                 printf(
                                                     '%s (%s)',
-                                                    htmlspecialchars($user->name, ENT_QUOTES),
-                                                    htmlspecialchars($user->login, ENT_QUOTES)
+                                                    htmlspecialchars($user->name ?? '', ENT_QUOTES),
+                                                    htmlspecialchars($user->login ?? '', ENT_QUOTES)
                                                 ); ?>
                                             <?php
                                             endif; ?>

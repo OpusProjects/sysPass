@@ -83,7 +83,7 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>"
                                        maxlength="80" <?php
                                 echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
@@ -102,7 +102,7 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($user->getLogin() ?? '', ENT_QUOTES); ?>"
                                        maxlength="80" <?php
                                 echo $user->isLdap() ? 'readonly' : $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
@@ -132,7 +132,7 @@ $user = $_getvar('user');
                                            type="text"
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            value="<?php
-                                           echo htmlspecialchars($user->getSsoLogin(), ENT_QUOTES); ?>"
+                                           echo htmlspecialchars($user->getSsoLogin() ?? '', ENT_QUOTES); ?>"
                                            maxlength="100" <?php
                                     echo $_getvar('readonly'); ?>>
                                     <label class="mdl-textfield__label"
@@ -153,7 +153,7 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getEmail(), ENT_QUOTES); ?>"
+                                       echo htmlspecialchars($user->getEmail() ?? '', ENT_QUOTES); ?>"
                                        maxlength="50" <?php
                                 echo $_getvar('readonly'); ?>>
                                 <label class="mdl-textfield__label"
@@ -223,7 +223,7 @@ $user = $_getvar('user');
                                             value="<?php
                                             echo $profile->getId(); ?>" <?php
                                     echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($profile->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($profile->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -250,7 +250,7 @@ $user = $_getvar('user');
                                             value="<?php
                                             echo $group->getId(); ?>" <?php
                                     echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($group->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -267,7 +267,7 @@ $user = $_getvar('user');
                                   maxlength="1000" <?php
                         echo $_getvar('readonly'); ?>>
                             <?php
-                            echo htmlspecialchars($user->getNotes(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($user->getNotes() ?? '', ENT_QUOTES); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -468,7 +468,7 @@ $user = $_getvar('user');
                                                     printf(
                                                         '%s: %s',
                                                         $item->ref,
-                                                        htmlspecialchars($item->name, ENT_QUOTES) ?: $item->id
+                                                        htmlspecialchars($item->name ?? '', ENT_QUOTES) ?: $item->id
                                                     ); ?>
                                                 </span>
                                             </li>

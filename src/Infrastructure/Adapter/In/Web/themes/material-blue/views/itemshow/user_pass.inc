@@ -59,7 +59,7 @@ $user = $_getvar('user');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>" readonly
+                               echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>" readonly
                                disabled/>
                     </div>
                 </td>
@@ -73,7 +73,7 @@ $user = $_getvar('user');
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($user->getLogin(), ENT_QUOTES); ?>"
+                               echo htmlspecialchars($user->getLogin() ?? '', ENT_QUOTES); ?>"
                                readonly disabled/>
                     </div>
                 </td>

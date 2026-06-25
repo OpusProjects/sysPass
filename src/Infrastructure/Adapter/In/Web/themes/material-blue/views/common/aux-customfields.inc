@@ -41,7 +41,7 @@ foreach ($customFields as $index => $field):?>
     <tr>
         <td class="descField">
             <?php
-            echo htmlspecialchars($field->definitionName, ENT_QUOTES); ?>
+            echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?>
             <?php
             if ($field->isEncrypted && $field->isValueEncrypted === true): ?>
                 <i class="icon material-icons mdl-color-text--teal-500"
@@ -104,7 +104,7 @@ foreach ($customFields as $index => $field):?>
                            maxlength="500"
                            value="<?php
                            echo !$_getvar('showViewCustomPass') && !empty($field->value) ? '***' : htmlspecialchars(
-                               $field->value,
+                               $field->value ?? '',
                                ENT_QUOTES
                            ); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
@@ -112,7 +112,7 @@ foreach ($customFields as $index => $field):?>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName, ENT_QUOTES); ?></label>
+                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
                 </div>
             <?php
             elseif ($field->typeName === 'textarea'): ?>
@@ -125,11 +125,11 @@ foreach ($customFields as $index => $field):?>
                             id="<?php
                             echo $field->formId; ?>" <?php
                     echo $_getvar('readonly'); ?>><?php
-                        echo htmlspecialchars($field->value, ENT_QUOTES); ?></textarea>
+                        echo htmlspecialchars($field->value ?? '', ENT_QUOTES); ?></textarea>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName, ENT_QUOTES); ?></label>
+                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
                 </div>
             <?php
             else: ?>
@@ -143,13 +143,13 @@ foreach ($customFields as $index => $field):?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="500"
                            value="<?php
-                           echo htmlspecialchars($field->value, ENT_QUOTES); ?>" <?php
+                           echo htmlspecialchars($field->value ?? '', ENT_QUOTES); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
                     echo $_getvar('readonly'); ?>>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName, ENT_QUOTES); ?></label>
+                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
                 </div>
             <?php
             endif; ?>

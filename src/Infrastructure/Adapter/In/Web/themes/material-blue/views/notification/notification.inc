@@ -125,7 +125,7 @@ $notification = $_getvar('notification');
                                     name="notification_description" <?php
                             echo $_getvar('readonly'); ?>>
                                 <?php
-                                echo htmlspecialchars($notification->getDescription(), ENT_QUOTES); ?>
+                                echo htmlspecialchars($notification->getDescription() ?? '', ENT_QUOTES); ?>
                             </textarea>
                             <label class="mdl-textfield__label"
                                    for="notification_description"><?php
@@ -135,7 +135,7 @@ $notification = $_getvar('notification');
                     else: ?>
                         <div class="notification-description">
                             <?php
-                            echo htmlspecialchars($notification->getDescription(), ENT_QUOTES); ?>
+                            echo htmlspecialchars($notification->getDescription() ?? '', ENT_QUOTES); ?>
                         </div>
                     <?php
                     endif; ?>
@@ -164,7 +164,7 @@ $notification = $_getvar('notification');
                                     <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>>
                                     <?php
-                                    echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
+                                    echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
                                 </option>
                             <?php
                             endforeach; ?>

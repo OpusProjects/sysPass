@@ -87,7 +87,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $user->getId(); ?>" <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($user->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -115,7 +115,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $userGroup->getId(); ?>" <?php
                                     echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -143,7 +143,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $userProfile->getId(); ?>" <?php
                                     echo $userProfile->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($userProfile->getName(), ENT_QUOTES); ?></option>
+                                        echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>

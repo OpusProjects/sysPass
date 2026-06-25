@@ -76,7 +76,7 @@ use function SP\__;
                             echo $user->getId(); ?>" <?php
                     echo $user->isSelected() ? 'selected' : ''; ?>>
                         <?php
-                        echo htmlspecialchars($user->getName(), ENT_QUOTES); ?>
+                        echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
                     </option>
                 <?php
                 endforeach; ?>
@@ -115,7 +115,7 @@ use function SP\__;
                             echo $userGroup->getId(); ?>" <?php
                     echo $userGroup->isSelected() ? 'selected' : ''; ?>>
                         <?php
-                        echo htmlspecialchars($userGroup->getName(), ENT_QUOTES); ?>
+                        echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?>
                     </option>
                 <?php
                 endforeach; ?>

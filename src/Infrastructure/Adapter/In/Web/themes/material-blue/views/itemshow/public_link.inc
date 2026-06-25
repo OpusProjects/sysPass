@@ -75,8 +75,8 @@ $publicLink = $_getvar('publicLink');
                                 <?php
                                 printf(
                                     '%s (%s)',
-                                    htmlspecialchars($account->getName(), ENT_QUOTES),
-                                    htmlspecialchars($account->getItemProperty('clientName'), ENT_QUOTES)
+                                    htmlspecialchars($account->getName() ?? '', ENT_QUOTES),
+                                    htmlspecialchars($account->getItemProperty('clientName') ?? '', ENT_QUOTES)
                                 ); ?>
                             </option>
                         <?php
