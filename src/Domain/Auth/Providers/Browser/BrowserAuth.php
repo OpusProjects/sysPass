@@ -81,7 +81,7 @@ final class BrowserAuth implements BrowserAuthService
             return $browserAuthData->fail();
         }
 
-        return $this->checkServerAuthUser($userLoginDto->getLoginUser())
+        return $this->checkServerAuthUser($userLoginDto->getLoginUser() ?? '')
             ? $browserAuthData->success()
             : $browserAuthData->fail();
     }

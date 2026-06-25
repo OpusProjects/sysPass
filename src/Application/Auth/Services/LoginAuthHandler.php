@@ -138,9 +138,9 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
         if ($this->configData->isAuthBasicAutoLoginEnabled()) {
             try {
-                if (!$this->userService->checkExistsByLogin($userLoginDto->getLoginUser())) {
+                if (!$this->userService->checkExistsByLogin($userLoginDto->getLoginUser() ?? '')) {
                     $userLoginRequest = new UserLoginRequest(
-                        $userLoginDto->getLoginUser(),
+                        $userLoginDto->getLoginUser() ?? '',
                         $userLoginDto->getLoginPass()
                     );
 
@@ -219,14 +219,14 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
 
         try {
             $userLoginRequest = new UserLoginRequest(
-                $userLoginDto->getLoginUser(),
+                $userLoginDto->getLoginUser() ?? '',
                 $userLoginDto->getLoginPass(),
                 $authData->getName(),
                 $authData->getEmail(),
                 true
             );
 
-            if ($this->userService->checkExistsByLogin($userLoginDto->getLoginUser())) {
+            if ($this->userService->checkExistsByLogin($userLoginDto->getLoginUser() ?? '')) {
                 $this->userService->updateOnLogin($userLoginRequest);
             } else {
                 $this->userService->createOnLogin($userLoginRequest);

@@ -160,8 +160,8 @@ final class UserMasterPass extends Service implements UserMasterPassService
             if (Hash::checkHashKey($userMasterPass, $systemMasterPassHash)) {
                 $response = $this->create(
                     $userMasterPass,
-                    $userLoginDto->getLoginUser(),
-                    $userLoginDto->getLoginPass()
+                    $userLoginDto->getLoginUser() ?? '',
+                    $userLoginDto->getLoginPass() ?? ''
                 );
 
                 $this->userRepository->updateMasterPassById(

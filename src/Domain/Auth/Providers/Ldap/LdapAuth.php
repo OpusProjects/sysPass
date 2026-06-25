@@ -73,7 +73,7 @@ final readonly class LdapAuth implements LdapAuthService
 
             $this->ldap->connect();
 
-            $this->getAttributes($userLoginDto->getLoginUser(), $ldapAuthData);
+            $this->getAttributes($userLoginDto->getLoginUser() ?? '', $ldapAuthData);
 
             // Check whether the account is locked or expired
             if ($ldapAuthData->getExpire() > 0) {

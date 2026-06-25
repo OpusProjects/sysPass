@@ -65,16 +65,16 @@ final readonly class DatabaseAuth implements DatabaseAuthService
     {
         try {
             $userDto = UserDto::fromModel(
-                $this->userService->getByLogin($userLoginDto->getLoginUser())
+                $this->userService->getByLogin($userLoginDto->getLoginUser() ?? '')
             );
 
             if ($userDto->isMigrate && $this->checkMigrateUser($userDto, $userLoginDto)) {
-                $this->userPassService->migrateUserPassById($userDto->id, $userLoginDto->getLoginPass());
+                $this->userPassService->migrateUserPassById($userDto->id, $userLoginDto->getLoginPass() ?? '');
 
                 return $userDto;
             }
 
-            if (Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass)) {
+            if (Hash::checkHashKey($userLoginDto->getLoginPass() ?? '', $userDto->pass)) {
                 return $userDto;
             }
         } catch (Exception $e) {
@@ -86,15 +86,16 @@ final readonly class DatabaseAuth implements DatabaseAuthService
 
     private function checkMigrateUser(UserDto $userDto, UserLoginDto $userLoginDto): bool
     {
-        $passHashSha = sha1($userDto->hashSalt . $userLoginDto->getLoginPass());
+        $loginPass = $userLoginDto->getLoginPass() ?? '';
+        $passHashSha = sha1($userDto->hashSalt . $loginPass);
 
         return ($userDto->pass === $passHashSha
-                || $userDto->pass === md5($userLoginDto->getLoginPass())
+                || $userDto->pass === md5($loginPass)
                 || hash_equals(
                     $userDto->pass,
-                    crypt($userLoginDto->getLoginPass(), $userDto->hashSalt ?? '')
+                    crypt($loginPass, $userDto->hashSalt ?? '')
                 )
-                || Hash::checkHashKey($userLoginDto->getLoginPass(), $userDto->pass));
+                || Hash::checkHashKey($loginPass, $userDto->pass));
     }
 
     /**
