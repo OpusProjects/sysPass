@@ -137,9 +137,9 @@ final class ItemPreset extends Service implements ItemPresetService
 
         return $this->getForUser(
             $type,
-            $userDto->id,
-            $userDto->userGroupId,
-            $userDto->userProfileId
+            $userDto->id ?? 0,
+            $userDto->userGroupId ?? 0,
+            $userDto->userProfileId ?? 0
         );
     }
 
