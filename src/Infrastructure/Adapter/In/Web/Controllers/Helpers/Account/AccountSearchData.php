@@ -179,7 +179,7 @@ final class AccountSearchData
                     isset($favorites[$accountSearchView->getId()]),
                     $users,
                     $userGroups,
-                    $this->pickAccountColor($accountSearchView->getClientId()),
+                    $this->pickAccountColor($accountSearchView->getClientId() ?? 0),
                     $accountLinkEnabled
                 );
             }
