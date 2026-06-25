@@ -28,6 +28,8 @@ namespace SP\Tests;
 use PDO;
 use SP\Infrastructure\Database\DatabaseException;
 
+use function SP\processException;
+
 /**
  *
  */

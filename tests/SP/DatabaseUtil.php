@@ -30,6 +30,8 @@ use PDO;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseException;
 
+use function SP\processException;
+
 /**
  * Trait DatabaseUtil
  *
