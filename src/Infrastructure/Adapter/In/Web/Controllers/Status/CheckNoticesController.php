@@ -75,7 +75,9 @@ final class CheckNoticesController extends StatusBase
                     return ActionResponse::ok('', $notices);
                 }
 
-                logger($requestData->message);
+                if (isset($requestData->message)) {
+                    logger($requestData->message);
+                }
             }
 
             return ActionResponse::error(__u('Notifications not available'));

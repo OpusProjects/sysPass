@@ -87,7 +87,9 @@ final class CheckReleaseController extends StatusBase
                     return ActionResponse::ok('');
                 }
 
-                logger($requestData->message);
+                if (isset($requestData->message)) {
+                    logger($requestData->message);
+                }
             }
 
             return ActionResponse::error(__u('Version unavailable'));
