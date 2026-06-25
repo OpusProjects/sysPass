@@ -248,7 +248,7 @@ final class Init extends HttpModuleBase
                 // Reload the user profile permissions
                 $this->context->setUserProfile(
                     $this->userProfileService
-                        ->getById($this->context->getUserData()->userProfileId)
+                        ->getById($this->context->getUserData()->userProfileId ?? 0)
                         ->hydrate(ProfileData::class)
                 );
             }
