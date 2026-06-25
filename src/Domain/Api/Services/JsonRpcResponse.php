@@ -28,6 +28,7 @@ namespace SP\Domain\Api\Services;
 
 use Exception;
 use SP\Domain\Api\Dtos\ApiResponse;
+use Throwable;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;
 
@@ -66,7 +67,7 @@ final class JsonRpcResponse
         );
     }
 
-    public static function getResponseException(Exception $e, int $id): string
+    public static function getResponseException(Throwable $e, int $id): string
     {
         $data = ($e instanceof SPException) ? $e->getHint() : null;
 

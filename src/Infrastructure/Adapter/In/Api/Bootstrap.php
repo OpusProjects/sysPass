@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Adapter\In\Api;
 
 use Closure;
-use Exception;
 use Psr\Container\ContainerExceptionInterface;
+use Throwable;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Application\Api\Ports\ApiRequestService;
@@ -113,7 +113,7 @@ final class Bootstrap extends BootstrapBase
                 return $response->body(
                     JsonRpcResponse::getResponse($apiResponse, $apiRequestId)
                 );
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 processException($e);
 
                 $response->code(Code::INTERNAL_SERVER_ERROR->value);
