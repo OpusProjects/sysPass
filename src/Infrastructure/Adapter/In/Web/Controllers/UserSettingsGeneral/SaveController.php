@@ -75,7 +75,7 @@ final class SaveController extends SimpleControllerBase
 
             $userPreferencesData = $this->getUserPreferencesData($userData);
 
-            $this->userService->updatePreferencesById($userData->id, $userPreferencesData);
+            $this->userService->updatePreferencesById($userData->id ?? 0, $userPreferencesData);
 
             $this->session->setUserData($userData->mutate(['preferences' => $userPreferencesData]));
 
