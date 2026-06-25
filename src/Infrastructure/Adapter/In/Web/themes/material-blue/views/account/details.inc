@@ -133,7 +133,7 @@ use function SP\__;
 
                     <?php
                     echo htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES) ?: htmlspecialchars(
-                        $accountView->userEditLogin,
+                        $accountView->userEditLogin ?? '',
                         ENT_QUOTES
                     ); ?>
                 </td>

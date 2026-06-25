@@ -422,7 +422,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             <?php
                             else: ?>
                                 <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName()); ?>"
+                                echo $_getvar('wikiPageUrl'), urlencode($accountSearchData->getName() ?? ''); ?>"
                                    target="_blank">
                                     <i class="material-icons"
                                        title="<?php
