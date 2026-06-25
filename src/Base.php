@@ -73,7 +73,7 @@ try {
             $moduleDefinitions
         )
         ->build();
-} catch (Exception $e) {
+} catch (Throwable $e) {
     processException($e);
 
     die($e->getMessage());

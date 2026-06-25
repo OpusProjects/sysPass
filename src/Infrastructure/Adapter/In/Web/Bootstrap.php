@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web;
 use Closure;
 use Exception;
 use Psr\Container\ContainerExceptionInterface;
+use Throwable;
 use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
 use ReflectionException;
@@ -127,7 +128,7 @@ final class Bootstrap extends BootstrapBase
                 $this->buildResponse($method, $actionResponse, $response);
             } catch (SessionTimeout) {
                 logger('Session timeout');
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 processException($e);
 
                 $this->eventDispatcher->notify(new Event('exception', $e));
