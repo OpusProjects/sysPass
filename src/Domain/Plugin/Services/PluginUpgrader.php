@@ -61,7 +61,7 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
     public function upgradeFor(Plugin $plugin, string $version): void
     {
         try {
-            $pluginModel = $this->pluginManagerService->getByName($plugin->getName());
+            $pluginModel = $this->pluginManagerService->getByName($plugin->getName() ?? '');
         } catch (NoSuchItemException $e) {
             $this->eventDispatcher->notify(new Event('plugin.upgrade', 
                     $e,

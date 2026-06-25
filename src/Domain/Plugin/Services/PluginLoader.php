@@ -55,7 +55,7 @@ final class PluginLoader extends Service implements PluginLoaderService
     public function loadFor(Plugin $plugin): void
     {
         try {
-            $model = $this->pluginManagerService->getByName($plugin->getName());
+            $model = $this->pluginManagerService->getByName($plugin->getName() ?? '');
         } catch (NoSuchItemException $e) {
             $this->eventDispatcher->notify(new Event('plugin.load', 
                     $e,
