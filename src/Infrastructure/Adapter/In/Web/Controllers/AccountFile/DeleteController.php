@@ -63,13 +63,13 @@ final class DeleteController extends AccountFileBase
             return ActionResponse::ok(__u('Files deleted'));
         }
 
-        $this->eventDispatcher->notify(new Event('delete.accountFile', 
+        $this->accountFileService->delete($id);
+
+        $this->eventDispatcher->notify(new Event('delete.accountFile',
                 $this,
                 EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
             )
         );
-
-        $this->accountFileService->delete($id);
 
         return ActionResponse::ok(__u('File deleted'));
     }
