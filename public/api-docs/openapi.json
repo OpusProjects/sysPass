@@ -1,0 +1,1206 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "sysPass API",
+    "description": "sysPass password manager JSON-RPC 2.0 API.\n\nAll requests are `POST /api.php` with a JSON-RPC envelope. The `method` field selects the operation (e.g. `account/search`). Parameters go inside `params` alongside `authToken`.\n\n**Authentication:** Every request must include an `authToken` in `params`. Create tokens in the web UI under Users > Authorizations.",
+    "version": "3.2",
+    "license": {
+      "name": "GPL-3.0",
+      "url": "https://www.gnu.org/licenses/gpl-3.0.html"
+    }
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "Current server"
+    }
+  ],
+  "tags": [
+    {"name": "Account", "description": "Password account management"},
+    {"name": "Category", "description": "Category management"},
+    {"name": "Client", "description": "Client management"},
+    {"name": "Tag", "description": "Tag management"},
+    {"name": "UserGroup", "description": "User group management"},
+    {"name": "Config", "description": "Backup and export"}
+  ],
+  "paths": {
+    "/api.php#account/view": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "View account",
+        "operationId": "accountView",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JsonRpcRequest"
+              },
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/view",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "customFields": false,
+                  "tokenPass": "token_password"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          },
+          "500": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcErrorResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve a single account by ID.\n\n**Method:** `account/view`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Account ID |\n| customFields | boolean | no | Include custom fields in response |\n| tokenPass | string | yes* | Token password (required when customFields is true) |"
+      }
+    },
+    "/api.php#account/viewPass": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "View account password",
+        "operationId": "accountViewPass",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/viewPass",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "tokenPass": "token_password",
+                  "details": true
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account password",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve the decrypted password for an account.\n\n**Method:** `account/viewPass`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Account ID |\n| tokenPass | string | yes | Token password |\n| details | boolean | no | Include account details in response |"
+      }
+    },
+    "/api.php#account/create": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Create account",
+        "operationId": "accountCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/create",
+                "params": {
+                  "authToken": "your_token_here",
+                  "tokenPass": "token_password",
+                  "name": "My Server",
+                  "categoryId": 1,
+                  "clientId": 1,
+                  "pass": "s3cret",
+                  "login": "admin",
+                  "url": "https://example.com",
+                  "notes": "Production server",
+                  "private": false,
+                  "privateGroup": false,
+                  "expireDate": "2025-12-31",
+                  "parentId": null,
+                  "tagsId": [1, 2],
+                  "userGroupId": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a new password account.\n\n**Method:** `account/create`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| tokenPass | string | yes | Token password |\n| name | string | yes | Account name |\n| categoryId | integer | yes | Category ID |\n| clientId | integer | yes | Client ID |\n| pass | string | yes | Password |\n| login | string | no | Access user |\n| url | string | no | Access URL or IP |\n| notes | string | no | Notes about the account |\n| private | boolean | no | Private account |\n| privateGroup | boolean | no | Private account for group |\n| expireDate | string | no | Password expiry date |\n| parentId | integer | no | Linked account ID |\n| tagsId | integer[] | no | Array of tag IDs |\n| userGroupId | integer | no | Group ID |"
+      }
+    },
+    "/api.php#account/edit": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Edit account",
+        "operationId": "accountEdit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/edit",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "name": "Updated Server Name",
+                  "categoryId": 2,
+                  "clientId": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Edit an existing account. Only the fields provided will be updated.\n\n**Method:** `account/edit`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Account ID |\n| name | string | no | Account name |\n| categoryId | integer | no | Category ID |\n| clientId | integer | no | Client ID |\n| login | string | no | Access user |\n| url | string | no | Access URL or IP |\n| notes | string | no | Notes about the account |\n| private | boolean | no | Private account |\n| privateGroup | boolean | no | Private account for group |\n| expireDate | string | no | Password expiry date |\n| parentId | integer | no | Linked account ID |\n| tagsId | integer[] | no | Array of tag IDs |\n| userGroupId | integer | no | Group ID |"
+      }
+    },
+    "/api.php#account/editPass": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Edit account password",
+        "operationId": "accountEditPass",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/editPass",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "tokenPass": "token_password",
+                  "pass": "new_s3cret",
+                  "expireDate": "2026-12-31"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Change the password of an existing account.\n\n**Method:** `account/editPass`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Account ID |\n| tokenPass | string | yes | Token password |\n| pass | string | yes | New password |\n| expireDate | string | no | Password expiry date |"
+      }
+    },
+    "/api.php#account/search": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Search accounts",
+        "operationId": "accountSearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/search",
+                "params": {
+                  "authToken": "your_token_here",
+                  "text": "server",
+                  "count": 25,
+                  "categoryId": 1,
+                  "clientId": null,
+                  "tagsId": [1],
+                  "op": "and"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Search for accounts matching the given criteria.\n\n**Method:** `account/search`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| text | string | no | Text to search for |\n| count | integer | no | Number of results to display (default 50) |\n| categoryId | integer | no | Category ID to filter on |\n| clientId | integer | no | Client ID to filter on |\n| tagsId | integer[] | no | Array of tag IDs for filtering |\n| op | string | no | Filtering operator (`and` or `or`) |"
+      }
+    },
+    "/api.php#account/delete": {
+      "post": {
+        "tags": ["Account"],
+        "summary": "Delete account",
+        "operationId": "accountDelete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "account/delete",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account deleted",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Delete an account by ID.\n\n**Method:** `account/delete`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Account ID |"
+      }
+    },
+    "/api.php#category/view": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "View category",
+        "operationId": "categoryView",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "category/view",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve a single category by ID.\n\n**Method:** `category/view`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Category ID |\n| customFields | boolean | no | Include custom fields |\n| tokenPass | string | yes* | Token password (required when customFields is true) |"
+      }
+    },
+    "/api.php#category/create": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Create category",
+        "operationId": "categoryCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "category/create",
+                "params": {
+                  "authToken": "your_token_here",
+                  "name": "Web Servers",
+                  "description": "Web server credentials"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a new category.\n\n**Method:** `category/create`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| name | string | yes | Category name |\n| description | string | no | Category description |"
+      }
+    },
+    "/api.php#category/edit": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Edit category",
+        "operationId": "categoryEdit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "category/edit",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "name": "Updated Name",
+                  "description": "Updated description"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Edit an existing category.\n\n**Method:** `category/edit`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Category ID |\n| name | string | yes | Category name |\n| description | string | no | Category description |"
+      }
+    },
+    "/api.php#category/search": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Search categories",
+        "operationId": "categorySearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "category/search",
+                "params": {
+                  "authToken": "your_token_here",
+                  "text": "web",
+                  "count": 25
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Search for categories.\n\n**Method:** `category/search`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| text | string | no | Text to search for |\n| count | integer | no | Number of results to display |"
+      }
+    },
+    "/api.php#category/delete": {
+      "post": {
+        "tags": ["Category"],
+        "summary": "Delete category",
+        "operationId": "categoryDelete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "category/delete",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category deleted",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Delete a category by ID.\n\n**Method:** `category/delete`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Category ID |"
+      }
+    },
+    "/api.php#client/view": {
+      "post": {
+        "tags": ["Client"],
+        "summary": "View client",
+        "operationId": "clientView",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "client/view",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve a single client by ID.\n\n**Method:** `client/view`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Client ID |\n| customFields | boolean | no | Include custom fields |\n| tokenPass | string | yes* | Token password (required when customFields is true) |"
+      }
+    },
+    "/api.php#client/create": {
+      "post": {
+        "tags": ["Client"],
+        "summary": "Create client",
+        "operationId": "clientCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "client/create",
+                "params": {
+                  "authToken": "your_token_here",
+                  "name": "Acme Corp",
+                  "description": "Main client",
+                  "global": false
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a new client.\n\n**Method:** `client/create`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| name | string | yes | Client name |\n| description | string | no | Client description |\n| global | boolean | no | Global client |"
+      }
+    },
+    "/api.php#client/edit": {
+      "post": {
+        "tags": ["Client"],
+        "summary": "Edit client",
+        "operationId": "clientEdit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "client/edit",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "name": "Acme Corp Updated",
+                  "description": "Updated description",
+                  "global": true
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Edit an existing client.\n\n**Method:** `client/edit`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Client ID |\n| name | string | yes | Client name |\n| description | string | no | Client description |\n| global | boolean | no | Global client |"
+      }
+    },
+    "/api.php#client/search": {
+      "post": {
+        "tags": ["Client"],
+        "summary": "Search clients",
+        "operationId": "clientSearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "client/search",
+                "params": {
+                  "authToken": "your_token_here",
+                  "text": "acme",
+                  "count": 25
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Search for clients.\n\n**Method:** `client/search`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| text | string | no | Text to search for |\n| count | integer | no | Number of results to display |"
+      }
+    },
+    "/api.php#client/delete": {
+      "post": {
+        "tags": ["Client"],
+        "summary": "Delete client",
+        "operationId": "clientDelete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "client/delete",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Client deleted",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Delete a client by ID.\n\n**Method:** `client/delete`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Client ID |"
+      }
+    },
+    "/api.php#tag/view": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "View tag",
+        "operationId": "tagView",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "tag/view",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve a single tag by ID.\n\n**Method:** `tag/view`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Tag ID |"
+      }
+    },
+    "/api.php#tag/create": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Create tag",
+        "operationId": "tagCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "tag/create",
+                "params": {
+                  "authToken": "your_token_here",
+                  "name": "production"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a new tag.\n\n**Method:** `tag/create`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| name | string | yes | Tag name |"
+      }
+    },
+    "/api.php#tag/edit": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Edit tag",
+        "operationId": "tagEdit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "tag/edit",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "name": "staging"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Edit an existing tag.\n\n**Method:** `tag/edit`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Tag ID |\n| name | string | yes | Tag name |"
+      }
+    },
+    "/api.php#tag/search": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Search tags",
+        "operationId": "tagSearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "tag/search",
+                "params": {
+                  "authToken": "your_token_here",
+                  "text": "prod",
+                  "count": 25
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Search for tags.\n\n**Method:** `tag/search`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| text | string | no | Text to search for |\n| count | integer | no | Number of results to display |"
+      }
+    },
+    "/api.php#tag/delete": {
+      "post": {
+        "tags": ["Tag"],
+        "summary": "Delete tag",
+        "operationId": "tagDelete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "tag/delete",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag deleted",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Delete a tag by ID.\n\n**Method:** `tag/delete`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | Tag ID |"
+      }
+    },
+    "/api.php#userGroup/view": {
+      "post": {
+        "tags": ["UserGroup"],
+        "summary": "View user group",
+        "operationId": "userGroupView",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "userGroup/view",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User group details",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Retrieve a single user group by ID.\n\n**Method:** `userGroup/view`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | User group ID |"
+      }
+    },
+    "/api.php#userGroup/create": {
+      "post": {
+        "tags": ["UserGroup"],
+        "summary": "Create user group",
+        "operationId": "userGroupCreate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "userGroup/create",
+                "params": {
+                  "authToken": "your_token_here",
+                  "name": "Developers",
+                  "description": "Development team",
+                  "usersId": [1, 2, 3]
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User group created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a new user group.\n\n**Method:** `userGroup/create`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| name | string | yes | Group name |\n| description | string | no | Group description |\n| usersId | integer[] | no | Array of user IDs to add to the group |"
+      }
+    },
+    "/api.php#userGroup/edit": {
+      "post": {
+        "tags": ["UserGroup"],
+        "summary": "Edit user group",
+        "operationId": "userGroupEdit",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "userGroup/edit",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1,
+                  "name": "Developers Updated",
+                  "description": "Updated description",
+                  "usersId": [1, 2]
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User group updated",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Edit an existing user group.\n\n**Method:** `userGroup/edit`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | User group ID |\n| name | string | yes | Group name |\n| description | string | no | Group description |\n| usersId | integer[] | no | Array of user IDs |"
+      }
+    },
+    "/api.php#userGroup/search": {
+      "post": {
+        "tags": ["UserGroup"],
+        "summary": "Search user groups",
+        "operationId": "userGroupSearch",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "userGroup/search",
+                "params": {
+                  "authToken": "your_token_here",
+                  "text": "dev",
+                  "count": 25
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Search for user groups.\n\n**Method:** `userGroup/search`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| text | string | no | Text to search for |\n| count | integer | no | Number of results to display |"
+      }
+    },
+    "/api.php#userGroup/delete": {
+      "post": {
+        "tags": ["UserGroup"],
+        "summary": "Delete user group",
+        "operationId": "userGroupDelete",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "userGroup/delete",
+                "params": {
+                  "authToken": "your_token_here",
+                  "id": 1
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User group deleted",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Delete a user group by ID.\n\n**Method:** `userGroup/delete`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| id | integer | yes | User group ID |"
+      }
+    },
+    "/api.php#config/backup": {
+      "post": {
+        "tags": ["Config"],
+        "summary": "Create backup",
+        "operationId": "configBackup",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "config/backup",
+                "params": {
+                  "authToken": "your_token_here",
+                  "path": "/var/backup"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Backup created",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Create a database and application backup.\n\n**Method:** `config/backup`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| path | string | no | Backup destination path |"
+      }
+    },
+    "/api.php#config/export": {
+      "post": {
+        "tags": ["Config"],
+        "summary": "Export data",
+        "operationId": "configExport",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {"$ref": "#/components/schemas/JsonRpcRequest"},
+              "example": {
+                "jsonrpc": "2.0",
+                "method": "config/export",
+                "params": {
+                  "authToken": "your_token_here",
+                  "path": "/var/export",
+                  "password": "export_password"
+                },
+                "id": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Export completed",
+            "content": {
+              "application/json": {
+                "schema": {"$ref": "#/components/schemas/JsonRpcSuccessResponse"}
+              }
+            }
+          }
+        },
+        "description": "Export sysPass data (encrypted XML).\n\n**Method:** `config/export`\n\n**Params:**\n| Name | Type | Required | Description |\n|------|------|----------|-------------|\n| authToken | string | yes | API auth token |\n| path | string | no | Export destination path |\n| password | string | no | Encryption password for the export |"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "JsonRpcRequest": {
+        "type": "object",
+        "required": ["jsonrpc", "method", "params", "id"],
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"],
+            "description": "JSON-RPC version"
+          },
+          "method": {
+            "type": "string",
+            "description": "API method in the format `controller/action`",
+            "example": "account/search"
+          },
+          "params": {
+            "type": "object",
+            "description": "Method parameters including authToken",
+            "required": ["authToken"],
+            "properties": {
+              "authToken": {
+                "type": "string",
+                "description": "API authentication token (create in web UI under Users > Authorizations)"
+              }
+            },
+            "additionalProperties": true
+          },
+          "id": {
+            "type": "integer",
+            "description": "Request identifier"
+          }
+        }
+      },
+      "JsonRpcSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"]
+          },
+          "result": {
+            "type": "object",
+            "properties": {
+              "itemId": {
+                "type": "integer",
+                "nullable": true,
+                "description": "ID of the created/modified item"
+              },
+              "result": {
+                "description": "Response data (object or array depending on method)"
+              },
+              "resultCode": {
+                "type": "integer",
+                "description": "0 = success, 1 = error"
+              },
+              "resultMessage": {
+                "type": "string",
+                "nullable": true,
+                "description": "Human-readable result message"
+              },
+              "count": {
+                "type": "integer",
+                "nullable": true,
+                "description": "Number of items in result (for array results)"
+              }
+            }
+          },
+          "id": {
+            "type": "integer",
+            "description": "Echoed request identifier"
+          }
+        }
+      },
+      "JsonRpcErrorResponse": {
+        "type": "object",
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "enum": ["2.0"]
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Error message"
+              },
+              "code": {
+                "type": "integer",
+                "description": "JSON-RPC error code (-32700 parse, -32600 invalid request, -32601 method not found, -32602 invalid params, -32603 internal error, -32000 server error)"
+              },
+              "data": {
+                "description": "Additional error data",
+                "nullable": true
+              }
+            }
+          },
+          "id": {
+            "type": "integer",
+            "description": "Echoed request identifier"
+          }
+        }
+      }
+    }
+  }
+}
