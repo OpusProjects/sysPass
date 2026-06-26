@@ -32,6 +32,7 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -75,6 +76,10 @@ final class DeleteController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR_HISTORY_DELETE)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         if ($id === null) {
             $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
 
