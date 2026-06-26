@@ -3,7 +3,7 @@
   "info": {
     "title": "sysPass API",
     "description": "sysPass password manager JSON-RPC 2.0 API.\n\nAll requests are `POST /api.php` with a JSON-RPC envelope. The `method` field selects the operation (e.g. `account/search`). Parameters go inside `params` alongside `authToken`.\n\n**Authentication:** Every request must include an `authToken` in `params`. Create tokens in the web UI under Users > Authorizations.",
-    "version": "3.2",
+    "version": "@@VERSION@@",
     "license": {
       "name": "GPL-3.0",
       "url": "https://www.gnu.org/licenses/gpl-3.0.html"
