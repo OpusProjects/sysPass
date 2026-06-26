@@ -126,7 +126,7 @@ final class ImportController extends SimpleControllerBase
              || empty($ldapImportParams->getUserNameAttribute())
              || empty($ldapImportParams->getDefaultUserGroup())
              || empty($ldapImportParams->getDefaultUserProfile()))
-            && ($checkImportGroups === true && empty($ldapImportParams->getUserGroupNameAttribute()))
+            || ($checkImportGroups === true && empty($ldapImportParams->getUserGroupNameAttribute()))
         ) {
             throw ValidationException::error(__u('Wrong LDAP parameters'));
         }
