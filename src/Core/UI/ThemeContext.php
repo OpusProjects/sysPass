@@ -40,12 +40,15 @@ final class ThemeContext implements ThemeContextInterface
     private string $viewsPath;
     private string $uri;
 
+    private string $basePath;
+
     public function __construct(
         string                  $basePath,
         string                  $baseUri,
         private readonly string $module,
         private readonly string $name
     ) {
+        $this->basePath = $basePath;
         $this->fullPath = FileSystem::buildPath($basePath, $name);
         $this->path = FileSystem::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
         $this->viewsPath = FileSystem::buildPath($this->fullPath, 'views');
@@ -75,6 +78,11 @@ final class ThemeContext implements ThemeContextInterface
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getBasePath(): string
+    {
+        return $this->basePath;
     }
 
     public function getViewsPath(): string

@@ -144,9 +144,9 @@ class ThemeTest extends UnitaryTestCase
      */
     public function testGetAvailable()
     {
-        $viewsPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('syspass_theme_', true);
+        $basePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('syspass_theme_', true);
         $themeName = 'material-blue';
-        $themePath = $viewsPath . DIRECTORY_SEPARATOR . $themeName;
+        $themePath = $basePath . DIRECTORY_SEPARATOR . $themeName;
 
         mkdir($themePath, 0777, true);
         file_put_contents(
@@ -154,28 +154,17 @@ class ThemeTest extends UnitaryTestCase
             "<?php return ['name' => 'Material Blue'];"
         );
 
-        // The production code calls is_dir() on the bare entry name returned by
-        // Directory::read(), so resolution depends on the current working dir.
-        $previousCwd = getcwd();
-        chdir($viewsPath);
-
         try {
             $this->themeContext
                 ->expects(self::once())
-                ->method('getViewsDirectory')
-                ->willReturn(dir($viewsPath));
-
-            $this->themeContext
-                ->expects(self::once())
-                ->method('getViewsPath')
-                ->willReturn($viewsPath);
+                ->method('getBasePath')
+                ->willReturn($basePath);
 
             $available = $this->theme->getAvailable();
         } finally {
-            chdir($previousCwd);
             unlink($themePath . DIRECTORY_SEPARATOR . 'index.php');
             rmdir($themePath);
-            rmdir($viewsPath);
+            rmdir($basePath);
         }
 
         $this->assertEquals([$themeName => 'Material Blue'], $available);

@@ -44,5 +44,7 @@ interface ThemeContextInterface
 
     public function getUri(): string;
 
+    public function getBasePath(): string;
+
     public function getViewsDirectory(): Directory;
 }

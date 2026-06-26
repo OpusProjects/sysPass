@@ -66,14 +66,17 @@ final readonly class Theme implements ThemeInterface
      */
     public function getAvailable(): array
     {
-        $directory = $this->themeContext->getViewsDirectory();
+        $basePath = $this->themeContext->getBasePath();
+        $directory = dir($basePath);
         $themesAvailable = [];
 
         while (false !== ($themeDir = $directory->read())) {
-            if (is_dir($themeDir) && $themeDir !== '.' && $themeDir !== '..') {
+            $themeDirPath = FileSystem::buildPath($basePath, $themeDir);
+
+            if (is_dir($themeDirPath) && $themeDir !== '.' && $themeDir !== '..') {
                 try {
                     $themeInfo = FileSystem::require(
-                        FileSystem::buildPath($this->themeContext->getViewsPath(), $themeDir, 'index.php')
+                        FileSystem::buildPath($themeDirPath, 'index.php')
                     );
 
                     if (is_array($themeInfo) && isset($themeInfo['name'])) {
