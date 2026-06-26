@@ -109,7 +109,7 @@ final class LdapParams
         );
 
         $ldapParams->searchBase = $params['searchBase'];
-        $ldapParams->port = $serverAndPort['port'] ?? 389;
+        $ldapParams->port = (int)($serverAndPort['port'] ?? 389);
         $ldapParams->group = $params['group'];
         $ldapParams->tlsEnabled = $params['tlsEnabled'];
         $ldapParams->filterUserObject = $params['filterUserObject'];
