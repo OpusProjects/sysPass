@@ -64,8 +64,7 @@ final class DisableController extends ControllerBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function disableAction(int $id): ActionResponse

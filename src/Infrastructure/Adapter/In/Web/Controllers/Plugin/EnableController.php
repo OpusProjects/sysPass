@@ -64,8 +64,7 @@ final class EnableController extends ControllerBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function enableAction(int $id): ActionResponse

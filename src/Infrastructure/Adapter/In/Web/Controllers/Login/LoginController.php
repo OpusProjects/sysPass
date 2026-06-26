@@ -62,8 +62,7 @@ final class LoginController extends ControllerBase
     /**
      * Login action
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function loginAction(): ActionResponse

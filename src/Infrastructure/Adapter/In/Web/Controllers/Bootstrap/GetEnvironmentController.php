@@ -110,7 +110,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return ActionResponse
      */
     private function getNotificationsEnabled(): bool
     {
@@ -122,7 +122,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return ActionResponse
      */
     private function getCookiesEnabled(): bool
     {
@@ -144,7 +144,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
+     * @return ActionResponse
      */
     private function getAuthBasicAutologinEnabled(): bool
     {

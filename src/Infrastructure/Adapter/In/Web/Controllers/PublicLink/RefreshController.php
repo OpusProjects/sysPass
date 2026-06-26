@@ -46,8 +46,7 @@ final class RefreshController extends PublicLinkSaveBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function refreshAction(int $id): ActionResponse

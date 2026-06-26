@@ -48,8 +48,7 @@ final class SaveEditPassController extends UserSaveBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveEditPassAction(int $id): ActionResponse

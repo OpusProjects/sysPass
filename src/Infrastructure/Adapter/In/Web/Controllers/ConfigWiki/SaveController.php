@@ -47,7 +47,7 @@ final class SaveController extends SimpleControllerBase
 
 
     /**
-     * @return bool
+     * @return ActionResponse
      * @throws JsonException
      */
     #[Action(ResponseType::JSON)]

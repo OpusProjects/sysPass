@@ -43,8 +43,7 @@ final class CreateController extends PublicLinkViewBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function createAction(): ActionResponse

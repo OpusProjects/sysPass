@@ -51,8 +51,7 @@ final class SaveCreateFromAccountController extends PublicLinkSaveBase
      * @param int $accountId
      * @param int $notify
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      * @throws SPException
      */
     #[Action(ResponseType::JSON)]

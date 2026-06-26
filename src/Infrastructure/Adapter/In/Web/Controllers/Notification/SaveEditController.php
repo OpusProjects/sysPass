@@ -47,8 +47,7 @@ final class SaveEditController extends NotificationSaveBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse

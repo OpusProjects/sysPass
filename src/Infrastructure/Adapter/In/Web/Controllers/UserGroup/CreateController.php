@@ -43,8 +43,7 @@ final class CreateController extends UserGroupViewBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function createAction(): ActionResponse

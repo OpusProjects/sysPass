@@ -43,8 +43,7 @@ final class SaveResetController extends UserPassResetSaveBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveResetAction(): ActionResponse

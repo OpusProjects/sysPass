@@ -49,7 +49,7 @@ final class SaveEditController extends CustomFieldSaveBase
      *
      * @param int $id
      *
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
     #[Action(ResponseType::JSON)]

@@ -50,7 +50,7 @@ final class CheckReleaseController extends StatusBase
     /**
      * checkReleaseAction
      *
-     * @return bool
+     * @return ActionResponse
      * @throws JsonException
      */
     #[Action(ResponseType::JSON)]

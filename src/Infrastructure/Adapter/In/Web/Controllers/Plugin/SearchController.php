@@ -43,7 +43,7 @@ final class SearchController extends PluginSearchBase
     /**
      * Search action
      *
-     * @return bool
+     * @return ActionResponse
      * @throws JsonException
      * @throws ConstraintException
      * @throws QueryException

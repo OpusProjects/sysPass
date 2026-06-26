@@ -52,7 +52,6 @@ final class ClearController extends ControllerBase
     /**
      * @throws SessionTimeout
      * @throws AuthException
-     * @throws JsonException
      */
     public function __construct(
         Application $application,
@@ -68,8 +67,7 @@ final class ClearController extends ControllerBase
 
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function clearAction(): ActionResponse

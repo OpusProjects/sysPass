@@ -46,8 +46,7 @@ final class CreateController extends ItemPresetViewBase
     /**
      * @param  mixed  ...$args
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function createAction(...$args): ActionResponse

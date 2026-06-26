@@ -49,8 +49,7 @@ final class DeleteController extends CustomFieldSaveBase
      *
      * @param  int|null  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
