@@ -112,7 +112,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
             ->cols($eventlog->toArray(null, ['id', 'date']))
             ->set('date', 'UNIX_TIMESTAMP()');
 
-        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the plugin'));
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while adding the event log'));
 
         return $this->db->runQuery($queryData);
     }
