@@ -205,7 +205,7 @@ class AccountFileTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%' . $item->getSeachString() . '%';
+                $searchStringLike = '%' . $item->getSearchString() . '%';
 
                 return $params['name'] === $searchStringLike
                        && $params['clientName'] === $searchStringLike

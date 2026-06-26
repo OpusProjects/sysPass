@@ -81,7 +81,7 @@ class PublicLinkTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) use ($item) {
                 $params = $arg->getQuery()->getBindValues();
-                $searchStringLike = '%' . $item->getSeachString() . '%';
+                $searchStringLike = '%' . $item->getSearchString() . '%';
 
                 return $params['login'] === $searchStringLike
                        && $params['accountName'] === $searchStringLike

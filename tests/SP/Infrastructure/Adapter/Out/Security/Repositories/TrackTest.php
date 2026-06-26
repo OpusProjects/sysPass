@@ -140,7 +140,7 @@ class TrackTest extends UnitaryTestCase
             static function (QueryData $arg) use ($item) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
-                $searchStringLike = '%' . $item->getSeachString() . '%';
+                $searchStringLike = '%' . $item->getSearchString() . '%';
 
                 return count($params) === 2
                        && $params['time'] === 1000

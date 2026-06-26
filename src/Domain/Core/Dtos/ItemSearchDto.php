@@ -33,18 +33,18 @@ use SP\Domain\Common\Providers\Filter;
 class ItemSearchDto
 {
     public function __construct(
-        private ?string       $seachString = null,
+        private ?string       $searchString = null,
         private readonly ?int $limitStart = 0,
         private readonly ?int $limitCount = 0,
     ) {
-        if (!empty($seachString)) {
-            $this->seachString = Filter::safeSearchString($seachString);
+        if (!empty($searchString)) {
+            $this->searchString = Filter::safeSearchString($searchString);
         }
     }
 
-    public function getSeachString(): ?string
+    public function getSearchString(): ?string
     {
-        return $this->seachString;
+        return $this->searchString;
     }
 
     public function getLimitStart(): int

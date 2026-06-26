@@ -158,10 +158,10 @@ final class Track extends BaseRepository implements TrackRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('source LIKE :source');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(['source' => $search]);
         }

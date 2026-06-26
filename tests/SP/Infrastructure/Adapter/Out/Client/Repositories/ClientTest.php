@@ -243,7 +243,7 @@ class ClientTest extends UnitaryTestCase
             static function (QueryData $arg) use ($item) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
-                $searchStringLike = '%' . $item->getSeachString() . '%';
+                $searchStringLike = '%' . $item->getSearchString() . '%';
 
                 return count($params) === 2
                        && $params['name'] === $searchStringLike

@@ -171,12 +171,12 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('User.login LIKE :login')
                   ->orWhere('Account.name LIKE :accountName')
                   ->orWhere('Client.name LIKE :clientName');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues([
                                    'login' => $search,

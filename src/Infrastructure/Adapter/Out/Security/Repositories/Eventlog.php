@@ -83,10 +83,10 @@ final class Eventlog extends BaseRepository implements EventlogRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('action LIKE :action OR ipAddress LIKE :ipAddress OR description LIKE :description');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(['action' => $search, 'ipAddress' => $search, 'description' => $search]);
         }

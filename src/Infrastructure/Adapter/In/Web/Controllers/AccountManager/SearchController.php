@@ -75,7 +75,7 @@ final class SearchController extends SearchGridControllerBase
     {
         $itemSearchData = $this->getSearchData($this->configData->getAccountCount(), $this->request);
 
-        $filter = AccountSearchFilterDto::build($itemSearchData->getSeachString())
+        $filter = AccountSearchFilterDto::build($itemSearchData->getSearchString())
                                         ->setLimitCount($itemSearchData->getLimitCount())
                                         ->setLimitStart($itemSearchData->getLimitStart());
 

@@ -254,7 +254,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where(
                 'ItemPreset.type  LIKE :type 
                 OR User.name LIKE :userName 
@@ -262,7 +262,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
                 OR UserGroup.name LIKE :userGroupName'
             );
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(
                 [

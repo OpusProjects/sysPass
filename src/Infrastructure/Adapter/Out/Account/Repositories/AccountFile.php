@@ -195,13 +195,13 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('AccountFile.name LIKE :name')
                   ->orWhere('AccountFile.type LIKE :type')
                   ->orWhere('Account.name LIKE :accountName')
                   ->orWhere('Client.name LIKE :clientName');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues([
                                    'name' => $search,

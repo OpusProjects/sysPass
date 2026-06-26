@@ -282,10 +282,10 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('(type LIKE :type OR component LIKE :component)');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(['type' => $search, 'component' => $search]);
         }

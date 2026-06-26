@@ -147,8 +147,8 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+        if (!empty($itemSearchData->getSearchString())) {
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->where('name LIKE :name', ['name' => $search]);
         }

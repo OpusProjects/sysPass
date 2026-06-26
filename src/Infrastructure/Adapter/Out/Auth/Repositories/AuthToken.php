@@ -165,10 +165,10 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('User.login  LIKE :userLogin OR User.name LIKE :userName');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(['userLogin' => $search, 'userName' => $search]);
         }
