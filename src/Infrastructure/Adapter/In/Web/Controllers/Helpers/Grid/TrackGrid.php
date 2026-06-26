@@ -64,7 +64,7 @@ final class TrackGrid extends GridBase
         $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->addDataAction($this->getRefrestAction());
+        $grid->addDataAction($this->getRefreshAction());
         $grid->addDataAction($this->getClearAction());
         $grid->addDataAction($this->getUnlockAction());
 
@@ -185,7 +185,7 @@ final class TrackGrid extends GridBase
     /**
      * @return DataGridAction
      */
-    private function getRefrestAction(): DataGridAction
+    private function getRefreshAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(AclActionsInterface::TRACK_SEARCH);

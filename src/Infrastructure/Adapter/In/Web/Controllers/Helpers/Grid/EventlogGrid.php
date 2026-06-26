@@ -65,7 +65,7 @@ final class EventlogGrid extends GridBase
         $grid->addDataAction($searchAction);
         $grid->setPager($this->getPager($searchAction));
 
-        $grid->addDataAction($this->getRefrestAction());
+        $grid->addDataAction($this->getRefreshAction());
         $grid->addDataAction($this->getClearAction());
 
         $grid->setTime(round(getElapsedTime($this->queryTimeStart), 5));
@@ -182,7 +182,7 @@ final class EventlogGrid extends GridBase
         return $gridActionSearch;
     }
 
-    private function getRefrestAction(): DataGridAction
+    private function getRefreshAction(): DataGridAction
     {
         $gridAction = new DataGridAction();
         $gridAction->setId(AclActionsInterface::EVENTLOG_SEARCH);
