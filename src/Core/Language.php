@@ -186,7 +186,7 @@ final class Language implements LanguageInterface
 
         $siteLang = $this->configData->getSiteLang();
 
-        if ($siteLang !== null && $siteLang !== $this->context->getLocale()) {
+        if ($siteLang !== $this->context->getLocale()) {
             $this->setLocales($siteLang);
 
             self::$appSet = true;
