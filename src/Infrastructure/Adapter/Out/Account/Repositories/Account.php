@@ -522,14 +522,14 @@ final class Account extends BaseRepository implements AccountRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where('name LIKE :name')
                   ->orWhere('clientName LIKE :clientName')
                   ->orWhere('categoryName LIKE :categoryName')
                   ->orWhere('userName LIKE :userName')
                   ->orWhere('userGroupName LIKE :userGroupName');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues([
                                    'name' => $search,

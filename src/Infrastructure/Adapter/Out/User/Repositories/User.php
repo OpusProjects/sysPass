@@ -259,10 +259,10 @@ final class User extends BaseRepository implements UserRepository
             $query->where(sprintf('%s.isAdminApp = 0', UserModel::TABLE));
         }
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query->where(sprintf('%s.name LIKE :name OR %s.login LIKE :login', UserModel::TABLE, UserModel::TABLE));
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues(['name' => $search, 'login' => $search]);
         }

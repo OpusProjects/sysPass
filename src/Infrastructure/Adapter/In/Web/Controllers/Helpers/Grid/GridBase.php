@@ -77,7 +77,7 @@ abstract class GridBase extends HelperBase implements GridInterface
         $dataGrid->getPager()
                  ->setLimitStart($itemSearchData->getLimitStart())
                  ->setLimitCount($itemSearchData->getLimitCount())
-                 ->setFilterOn(!empty($itemSearchData->getSeachString()));
+                 ->setFilterOn(!empty($itemSearchData->getSearchString()));
 
         $dataGrid->updatePager();
 

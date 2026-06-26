@@ -306,12 +306,12 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
-        if (!empty($itemSearchData->getSeachString())) {
+        if (!empty($itemSearchData->getSearchString())) {
             $query
                 ->where('Account.name LIKE :name')
                 ->orWhere('Client.name LIKE :clientName');
 
-            $search = '%' . $itemSearchData->getSeachString() . '%';
+            $search = '%' . $itemSearchData->getSearchString() . '%';
 
             $query->bindValues([
                                    'name' => $search,
