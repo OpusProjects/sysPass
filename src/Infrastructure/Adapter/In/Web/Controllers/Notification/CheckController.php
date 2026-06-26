@@ -44,8 +44,7 @@ final class CheckController extends NotificationSaveBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function checkAction(int $id): ActionResponse

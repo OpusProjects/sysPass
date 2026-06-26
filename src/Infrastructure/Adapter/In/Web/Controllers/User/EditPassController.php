@@ -48,8 +48,7 @@ final class EditPassController extends UserViewBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function editPassAction(int $id): ActionResponse

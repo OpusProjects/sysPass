@@ -46,8 +46,7 @@ final class ClearController extends TrackBase
     /**
      * Clears tracks
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function clearAction(): ActionResponse

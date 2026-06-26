@@ -64,8 +64,7 @@ final class SaveController extends SimpleControllerBase
     }
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveAction(): ActionResponse

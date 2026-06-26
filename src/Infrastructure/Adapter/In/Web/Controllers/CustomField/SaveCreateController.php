@@ -44,8 +44,7 @@ final class SaveCreateController extends CustomFieldSaveBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse

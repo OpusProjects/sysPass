@@ -43,8 +43,7 @@ final class SaveCreateController extends PublicLinkSaveBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse

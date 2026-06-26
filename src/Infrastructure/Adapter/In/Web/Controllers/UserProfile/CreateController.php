@@ -43,8 +43,7 @@ final class CreateController extends UserProfileViewBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function createAction(): ActionResponse

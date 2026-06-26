@@ -50,8 +50,7 @@ final class UnlockController extends TrackBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function unlockAction(int $id): ActionResponse

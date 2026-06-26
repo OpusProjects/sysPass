@@ -56,7 +56,7 @@ final class UpgradeController extends ControllerBase
     }
 
     /**
-     * @return bool
+     * @return ActionResponse
      * @throws SPException
      */
     #[Action(ResponseType::JSON)]

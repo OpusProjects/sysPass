@@ -40,8 +40,7 @@ final class SaveCreateController extends NotificationSaveBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse

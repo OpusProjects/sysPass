@@ -47,8 +47,7 @@ final class EditController extends PublicLinkViewBase
      *
      * @param  int  $id
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function editAction(int $id): ActionResponse

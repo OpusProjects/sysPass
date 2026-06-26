@@ -44,8 +44,7 @@ final class SaveCreateController extends ItemPresetSaveBase
 {
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse

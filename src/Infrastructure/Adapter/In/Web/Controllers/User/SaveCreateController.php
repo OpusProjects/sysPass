@@ -46,8 +46,7 @@ final class SaveCreateController extends UserSaveBase
 
 
     /**
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse

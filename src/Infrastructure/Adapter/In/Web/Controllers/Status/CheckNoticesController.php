@@ -45,7 +45,7 @@ final class CheckNoticesController extends StatusBase
     /**
      * checkNoticesAction
      *
-     * @return bool
+     * @return ActionResponse
      * @throws JsonException
      */
     #[Action(ResponseType::JSON)]

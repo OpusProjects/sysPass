@@ -68,8 +68,7 @@ final class SearchController extends ControllerBase
     /**
      * searchAction
      *
-     * @return bool
-     * @throws JsonException
+     * @return ActionResponse
      * @throws ConstraintException
      * @throws QueryException
      */
