@@ -356,7 +356,7 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setSessionTimeout(?int $sessionTimeout): ConfigDataInterface;
 
-    public function getSiteLang(): ?string;
+    public function getSiteLang(): string;
 
     public function setSiteLang(?string $siteLang): ConfigDataInterface;
 

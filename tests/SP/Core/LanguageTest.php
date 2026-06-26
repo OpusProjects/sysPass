@@ -122,10 +122,10 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($appLocale, $this->context->getLocale());
     }
 
-    public function testSetLanguageForceWithBrowserLanguage()
+    public function testSetLanguageForceWithDefaultSiteLang()
     {
         $locale = 'es_ES';
-        $browserLocale = 'en_US';
+        $defaultLang = 'en_US';
 
         $this->context->setLocale($locale);
 
@@ -134,20 +134,14 @@ class LanguageTest extends UnitaryTestCase
         $this->configData
             ->expects(self::once())
             ->method('getSiteLang')
-            ->willReturn(null);
-
-        $this->request
-            ->expects(self::once())
-            ->method('getHeader')
-            ->with('Accept-Language')
-            ->willReturn($browserLocale);
+            ->willReturn($defaultLang);
 
         $this->language->setLanguage(true);
 
-        $this->assertEquals($browserLocale . '.utf8', Language::$localeStatus);
-        $this->assertEquals($browserLocale . '.utf8', getenv('LANG'));
-        $this->assertEquals($browserLocale . '.utf8', getenv('LANGUAGE'));
-        $this->assertEquals($browserLocale, $this->context->getLocale());
+        $this->assertEquals($defaultLang . '.utf8', Language::$localeStatus);
+        $this->assertEquals($defaultLang . '.utf8', getenv('LANG'));
+        $this->assertEquals($defaultLang . '.utf8', getenv('LANGUAGE'));
+        $this->assertEquals($defaultLang, $this->context->getLocale());
     }
 
     public function testGetAvailableLanguages()

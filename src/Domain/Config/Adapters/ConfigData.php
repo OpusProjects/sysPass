@@ -42,6 +42,7 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
     private const DEFAULT_FILES_ALLOWED_SIZE    = 1024;
     private const DEFAULT_MAIL_PORT             = 587;
     private const DEFAULT_SESSION_TIMEOUT       = 300;
+    private const DEFAULT_SITE_LANG             = 'en_US';
     private const DEFAULT_SITE_THEME            = 'material-blue';
     private const DEFAULT_SYSLOG_PORT           = 514;
     private const DEFAULT_ACCOUNT_EXPIRE_TIME   = 10368000;
@@ -726,9 +727,9 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
-    public function getSiteLang(): ?string
+    public function getSiteLang(): string
     {
-        return $this->get(ConfigDataInterface::SITE_LANG);
+        return $this->get(ConfigDataInterface::SITE_LANG) ?: self::DEFAULT_SITE_LANG;
     }
 
     public function setSiteLang(?string $siteLang): ConfigDataInterface
