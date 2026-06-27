@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Common\Providers;
 
-use SP\Application\Install\Services\Installer;
+use SP\Domain\Core\AppInfoInterface;
 
 /**
  * Class Version
@@ -37,7 +37,7 @@ final class Version
      */
     public static function getVersionStringNormalized(): string
     {
-        return implode('', Installer::VERSION) . '.' . Installer::BUILD;
+        return implode('', AppInfoInterface::APP_VERSION) . '.' . AppInfoInterface::APP_BUILD;
     }
 
     /**
@@ -132,10 +132,10 @@ final class Version
      */
     public static function getVersionArray(bool $retBuild = false): array
     {
-        $version = array_values(Installer::VERSION);
+        $version = array_values(AppInfoInterface::APP_VERSION);
 
         if ($retBuild === true) {
-            $version[] = Installer::BUILD;
+            $version[] = AppInfoInterface::APP_BUILD;
 
             return $version;
         }
