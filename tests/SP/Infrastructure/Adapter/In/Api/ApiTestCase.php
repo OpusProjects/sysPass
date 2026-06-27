@@ -38,7 +38,8 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use SP\Application\Api\Services\ApiRequest;
+use SP\Application\Api\Ports\ApiRequestService;
+use SP\Application\Api\Services\RestApiRequest;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
@@ -58,7 +59,7 @@ use function DI\create;
 define('APP_MODULE', 'api');
 
 /**
- * Class WebTestCase
+ * Class ApiTestCase
  */
 abstract class ApiTestCase extends TestCase
 {
@@ -132,7 +133,7 @@ abstract class ApiTestCase extends TestCase
      * @throws NotFoundException
      * @throws Exception
      */
-    final protected function callApi(int $actionId, array $params): Response
+    final protected function callApi(int $actionId, array $params): ResponseService
     {
         $databaseConnectionData = DatabaseConnectionData::getFromEnvironment();
 
@@ -140,26 +141,39 @@ abstract class ApiTestCase extends TestCase
             ->addDefinitions(
                 APP_DEFINITIONS_FILE,
                 [
-                    ApiRequest::class          => function (ContainerInterface $c) use ($actionId, $params) {
+                    ApiRequestService::class => function (ContainerInterface $c) use ($actionId, $params) {
                         $token = self::createApiToken(
                             $c->get(AuthToken::class),
                             $actionId
                         );
 
-                        $data = [
-                            'jsonrpc' => '2.0',
-                            'method'  => self::METHOD_ACTION_MAP[$actionId],
-                            'params'  => array_merge(
-                                [
-                                    'authToken' => $token->getToken(),
-                                    'tokenPass' => self::AUTH_TOKEN_PASS,
-                                ],
-                                $params
-                            ),
-                            'id'      => 1,
-                        ];
+                        $method = self::METHOD_ACTION_MAP[$actionId];
 
-                        return new ApiRequest(json_encode($data, JSON_THROW_ON_ERROR));
+                        $allParams = array_merge(
+                            [
+                                'authToken' => $token->getToken(),
+                                'tokenPass' => self::AUTH_TOKEN_PASS,
+                            ],
+                            $params
+                        );
+
+                        $request = new SymfonyRequest(
+                            [],
+                            [],
+                            ['_rest_method' => $method],
+                            [],
+                            [],
+                            ['HTTP_AUTHORIZATION' => 'Bearer ' . $token->getToken()],
+                            json_encode($params, JSON_THROW_ON_ERROR)
+                        );
+
+                        foreach ($allParams as $key => $value) {
+                            if (!str_starts_with($key, '_')) {
+                                $request->attributes->set($key, $value);
+                            }
+                        }
+
+                        return RestApiRequest::buildFromSymfonyRequest($request);
                     },
                     DbStorageHandler::class => create(MysqlHandler::class)
                         ->constructor($databaseConnectionData),
