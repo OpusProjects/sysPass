@@ -26,6 +26,9 @@
     {"name": "Client", "description": "Client management"},
     {"name": "Tag", "description": "Tag management"},
     {"name": "UserGroup", "description": "User group management"},
+    {"name": "User", "description": "User management"},
+    {"name": "Profile", "description": "User profile management"},
+    {"name": "AuthToken", "description": "API auth token management"},
     {"name": "PublicLink", "description": "Public link management"},
     {"name": "Notification", "description": "Notification management"},
     {"name": "EventLog", "description": "Event log search and clear"},
@@ -633,6 +636,285 @@
         ],
         "responses": {
           "200": {"description": "User group deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/users": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Search users",
+        "operationId": "searchUsers",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["User"],
+        "summary": "Create user",
+        "operationId": "createUser",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "login", "userGroupId", "userProfileId"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "login": {"type": "string"},
+                  "email": {"type": "string"},
+                  "notes": {"type": "string"},
+                  "userGroupId": {"type": "integer"},
+                  "userProfileId": {"type": "integer"},
+                  "isAdminApp": {"type": "integer", "description": "Application admin (0/1)"},
+                  "isAdminAcc": {"type": "integer", "description": "Account admin (0/1)"},
+                  "isDisabled": {"type": "integer", "description": "Disabled (0/1)"},
+                  "isChangePass": {"type": "integer", "description": "Force password change (0/1)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "User created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/users/{id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "View user",
+        "operationId": "viewUser",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "User details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "put": {
+        "tags": ["User"],
+        "summary": "Edit user",
+        "operationId": "editUser",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "login", "userGroupId", "userProfileId"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "login": {"type": "string"},
+                  "email": {"type": "string"},
+                  "notes": {"type": "string"},
+                  "userGroupId": {"type": "integer"},
+                  "userProfileId": {"type": "integer"},
+                  "isAdminApp": {"type": "integer"},
+                  "isAdminAcc": {"type": "integer"},
+                  "isDisabled": {"type": "integer"},
+                  "isChangePass": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "User updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["User"],
+        "summary": "Delete user",
+        "operationId": "deleteUser",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "User deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/profiles": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "Search profiles",
+        "operationId": "searchProfiles",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["Profile"],
+        "summary": "Create profile",
+        "operationId": "createProfile",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "profile": {"type": "string", "description": "JSON-encoded profile data"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Profile created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/profiles/{id}": {
+      "get": {
+        "tags": ["Profile"],
+        "summary": "View profile",
+        "operationId": "viewProfile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Profile details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "put": {
+        "tags": ["Profile"],
+        "summary": "Edit profile",
+        "operationId": "editProfile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "profile": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Profile updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["Profile"],
+        "summary": "Delete profile",
+        "operationId": "deleteProfile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Profile deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/auth-tokens": {
+      "get": {
+        "tags": ["AuthToken"],
+        "summary": "Search auth tokens",
+        "operationId": "searchAuthTokens",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["AuthToken"],
+        "summary": "Create auth token",
+        "operationId": "createAuthToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "actionId"],
+                "properties": {
+                  "userId": {"type": "integer", "description": "User ID for the token"},
+                  "actionId": {"type": "integer", "description": "Action ID the token authorizes"},
+                  "password": {"type": "string", "description": "Token password (for secured actions)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Auth token created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/auth-tokens/{id}": {
+      "get": {
+        "tags": ["AuthToken"],
+        "summary": "View auth token",
+        "operationId": "viewAuthToken",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Auth token details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "put": {
+        "tags": ["AuthToken"],
+        "summary": "Edit auth token",
+        "operationId": "editAuthToken",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "actionId"],
+                "properties": {
+                  "userId": {"type": "integer"},
+                  "actionId": {"type": "integer"},
+                  "password": {"type": "string"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Auth token updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["AuthToken"],
+        "summary": "Delete auth token",
+        "operationId": "deleteAuthToken",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Auth token deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
         }
       }
     },
