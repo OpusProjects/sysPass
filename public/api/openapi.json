@@ -26,6 +26,7 @@
     {"name": "Client", "description": "Client management"},
     {"name": "Tag", "description": "Tag management"},
     {"name": "UserGroup", "description": "User group management"},
+    {"name": "CustomField", "description": "Custom field definition management"},
     {"name": "Config", "description": "Backup and export"}
   ],
   "paths": {
@@ -562,6 +563,103 @@
         ],
         "responses": {
           "200": {"description": "User group deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/custom-fields": {
+      "get": {
+        "tags": ["CustomField"],
+        "summary": "Search custom fields",
+        "operationId": "searchCustomFields",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["CustomField"],
+        "summary": "Create custom field",
+        "operationId": "createCustomField",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "typeId", "moduleId"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "typeId": {"type": "integer", "description": "Field type ID"},
+                  "moduleId": {"type": "integer", "description": "Module ID this field applies to"},
+                  "required": {"type": "integer", "description": "Whether the field is required (0/1)"},
+                  "help": {"type": "string", "description": "Help text"},
+                  "showInList": {"type": "integer", "description": "Show in list view (0/1)"},
+                  "isEncrypted": {"type": "integer", "description": "Encrypt field value (0/1)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Custom field created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/custom-fields/{id}": {
+      "get": {
+        "tags": ["CustomField"],
+        "summary": "View custom field",
+        "operationId": "viewCustomField",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Custom field details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "put": {
+        "tags": ["CustomField"],
+        "summary": "Edit custom field",
+        "operationId": "editCustomField",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "typeId", "moduleId"],
+                "properties": {
+                  "name": {"type": "string"},
+                  "typeId": {"type": "integer"},
+                  "moduleId": {"type": "integer"},
+                  "required": {"type": "integer"},
+                  "help": {"type": "string"},
+                  "showInList": {"type": "integer"},
+                  "isEncrypted": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Custom field updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["CustomField"],
+        "summary": "Delete custom field",
+        "operationId": "deleteCustomField",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Custom field deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
         }
       }
     },

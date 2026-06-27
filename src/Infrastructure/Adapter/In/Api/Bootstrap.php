@@ -107,6 +107,13 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/auth-tokens/{id}',        'authToken', 'edit'],
         ['DELETE', '/api/v1/auth-tokens/{id}',        'authToken', 'delete'],
 
+        // Custom Fields
+        ['GET',    '/api/v1/custom-fields',           'customField', 'search'],
+        ['POST',   '/api/v1/custom-fields',           'customField', 'create'],
+        ['GET',    '/api/v1/custom-fields/{id}',      'customField', 'view'],
+        ['PUT',    '/api/v1/custom-fields/{id}',      'customField', 'edit'],
+        ['DELETE', '/api/v1/custom-fields/{id}',      'customField', 'delete'],
+
         // Config
         ['POST',   '/api/v1/config/backup',           'config',    'backup'],
         ['POST',   '/api/v1/config/export',           'config',    'export'],

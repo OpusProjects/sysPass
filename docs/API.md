@@ -126,6 +126,16 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `PUT` | `/api/v1/auth-tokens/{id}` | Edit auth token |
 | `DELETE` | `/api/v1/auth-tokens/{id}` | Delete auth token |
 
+### Custom Fields
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/custom-fields` | Search custom field definitions |
+| `POST` | `/api/v1/custom-fields` | Create custom field definition |
+| `GET` | `/api/v1/custom-fields/{id}` | View custom field definition |
+| `PUT` | `/api/v1/custom-fields/{id}` | Edit custom field definition |
+| `DELETE` | `/api/v1/custom-fields/{id}` | Delete custom field definition |
+
 ### Config
 
 | Method | Path | Description |
