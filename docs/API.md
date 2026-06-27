@@ -55,6 +55,10 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `DELETE` | `/api/v1/accounts/{id}` | Delete account |
 | `POST` | `/api/v1/accounts/{id}/password` | View (decrypt) password |
 | `PUT` | `/api/v1/accounts/{id}/password` | Edit password |
+| `GET` | `/api/v1/accounts/{id}/files` | List files for account |
+| `POST` | `/api/v1/accounts/{id}/files` | Upload file (base64 content) |
+| `GET` | `/api/v1/accounts/{id}/files/{fileId}` | View/download file |
+| `DELETE` | `/api/v1/accounts/{id}/files/{fileId}` | Delete file |
 
 ### Categories
 

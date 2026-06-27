@@ -215,6 +215,73 @@
         }
       }
     },
+    "/api/v1/accounts/{id}/files": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "List account files",
+        "operationId": "listAccountFiles",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "Account ID"}
+        ],
+        "responses": {
+          "200": {"description": "File list", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["Account"],
+        "summary": "Upload file to account",
+        "operationId": "uploadAccountFile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "Account ID"}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "content"],
+                "properties": {
+                  "name": {"type": "string", "description": "File name"},
+                  "content": {"type": "string", "description": "Base64-encoded file content"},
+                  "type": {"type": "string", "description": "MIME type (default: application/octet-stream)"},
+                  "extension": {"type": "string", "description": "File extension"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "File uploaded", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/accounts/{id}/files/{fileId}": {
+      "get": {
+        "tags": ["Account"],
+        "summary": "View/download account file",
+        "operationId": "viewAccountFile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "Account ID"},
+          {"name": "fileId", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "File ID"}
+        ],
+        "responses": {
+          "200": {"description": "File data", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["Account"],
+        "summary": "Delete account file",
+        "operationId": "deleteAccountFile",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "Account ID"},
+          {"name": "fileId", "in": "path", "required": true, "schema": {"type": "integer"}, "description": "File ID"}
+        ],
+        "responses": {
+          "200": {"description": "File deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
     "/api/v1/categories": {
       "get": {
         "tags": ["Category"],
