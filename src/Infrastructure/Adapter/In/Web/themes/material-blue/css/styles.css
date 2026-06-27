@@ -120,19 +120,19 @@ body.userpassreset {
   body.login #wrap,
   body.logout #wrap,
   body.userpassreset #wrap {
-    background: transparent; }
+    background: transparent;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center; }
   body.login #container,
   body.logout #container,
   body.userpassreset #container {
-    padding-top: 5%; }
+    padding-top: 0; }
   body.login footer,
   body.logout footer,
   body.userpassreset footer {
-    background: #78909C; }
-    body.login footer a,
-    body.logout footer a,
-    body.userpassreset footer a {
-      color: #f2f2f2; }
+    display: none; }
 
 #box-pub-noheader {
   background: transparent url("public/images/logo_full_nobg_outline.png") no-repeat top center;
@@ -142,7 +142,7 @@ body.userpassreset {
   margin: 0 auto; }
   #box-pub-noheader > div {
     width: 100%;
-    padding: 1em;
+    padding: 2.5em 1em 4.5em;
     margin: 0 auto; }
   #box-pub-noheader .box-spacer {
     height: 15em;
@@ -160,12 +160,16 @@ body.userpassreset {
     -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     background-color: #f2f2f2; }
+    #box-pub-noheader .box-form form {
+      display: flex;
+      align-items: center; }
     #box-pub-noheader .box-form form fieldset#box-data {
-      height: 100%;
-      min-height: 14em;
+      flex: 1;
       text-align: left;
       background-color: transparent;
-      margin-bottom: 2em; }
+      padding: 0;
+      margin: 0;
+      border: 0; }
       #box-pub-noheader .box-form form fieldset#box-data legend {
         width: 100%;
         color: #607d8b;
@@ -178,11 +182,13 @@ body.userpassreset {
       #box-pub-noheader .box-form form fieldset#box-data .form-control > i {
         margin-right: .5em;
         opacity: .5; }
+      #box-pub-noheader .box-form form fieldset#box-data .form-control {
+        padding-left: 2em; }
       #box-pub-noheader .box-form form fieldset#box-data .extra-hidden {
         display: none; }
     #box-pub-noheader .box-form div#box-buttons {
-      margin-top: 2em;
-      text-align: center; }
+      padding-right: 1em;
+      margin-top: 2.3em; }
 
 @media screen and (max-width: 600px) {
   #box-pub-noheader {
@@ -1185,9 +1191,7 @@ div.tag-list-box span.tag, div.tags-box span.tag {
   position: relative;
   min-height: 14em; }
   #box-pub-noheader #box-login #box-buttons {
-    position: absolute;
-    top: 2em;
-    right: 2em; }
+    padding-right: 1em; }
   #box-pub-noheader #box-login #box-actions {
     width: 100%;
     text-align: right; }
