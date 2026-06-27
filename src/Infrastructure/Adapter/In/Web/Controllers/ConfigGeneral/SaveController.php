@@ -26,22 +26,17 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigGeneral;
 
 use SP\Core\Application;
 use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Config\Services\ConfigUtil;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
-
-use function SP\__u;
 
 /**
  * Class SaveController
@@ -69,29 +64,25 @@ final class SaveController extends SimpleControllerBase
     public function saveAction(): ActionResponse
     {
         $configData = $this->config->getConfigData();
-        $eventMessage = EventMessage::build();
 
-        $this->handleGeneralConfig($configData);
-        $this->handleEventsConfig($configData, $eventMessage);
-        $this->handleProxyConfig($configData, $eventMessage);
-        $this->handleAuthConfig($configData, $eventMessage);
+        $this->handleSiteConfig($configData);
 
         return $this->saveConfig(
             $configData,
             $this->config,
-            function () use ($eventMessage, $configData) {
+            function () use ($configData) {
                 if ($configData->isMaintenance()) {
                     $this->appLock->lock($this->session->getUserData()->id, 'config');
                 } elseif ($this->appLock->getLock() !== false) {
                     $this->appLock->unlock();
                 }
 
-                $this->eventDispatcher->notify(new Event('save.config.general', $this, $eventMessage));
+                $this->eventDispatcher->notify(new Event('save.config.general', $this));
             }
         );
     }
 
-    private function handleGeneralConfig(ConfigDataInterface $configData): void
+    private function handleSiteConfig(ConfigDataInterface $configData): void
     {
         $siteLang = $this->request->analyzeString('site_lang');
         $siteTheme = $this->request->analyzeString('site_theme', 'material-blue');
@@ -114,108 +105,6 @@ final class SaveController extends SimpleControllerBase
         $configData->setCheckUpdates($checkUpdatesEnabled);
         $configData->setCheckNotices($checkNoticesEnabled);
         $configData->setEncryptSession($encryptSessionEnabled);
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    private function handleEventsConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
-    {
-        $logEnabled = $this->request->analyzeBool('log_enabled', false);
-        $syslogEnabled = $this->request->analyzeBool('syslog_enabled', false);
-        $remoteSyslogEnabled = $this->request->analyzeBool('syslog_remote_enabled', false);
-        $syslogServer = $this->request->analyzeString('syslog_remote_server');
-        $syslogPort = $this->request->analyzeInt('syslog_remote_port', 0);
-
-        $configData->setLogEnabled($logEnabled);
-        $configData->setLogEvents(
-            $this->request->analyzeArray(
-                'log_events',
-                fn($items) => ConfigUtil::eventsAdapter($items),
-                []
-            )
-        );
-
-        $configData->setSyslogEnabled($syslogEnabled);
-
-        if ($remoteSyslogEnabled) {
-            if (!$syslogServer || !$syslogPort) {
-                throw new ValidationException(__u('Missing remote syslog parameters'));
-            }
-
-            $configData->setSyslogRemoteEnabled(true);
-            $configData->setSyslogServer($syslogServer);
-            $configData->setSyslogPort($syslogPort);
-
-            if ($configData->isSyslogRemoteEnabled() === false) {
-                $eventMessage->addDescription(__u('Remote syslog enabled'));
-            }
-        } elseif ($configData->isSyslogRemoteEnabled()) {
-            $configData->setSyslogRemoteEnabled(false);
-
-            $eventMessage->addDescription(__u('Remote syslog disabled'));
-        }
-    }
-
-    /**
-     * @throws ValidationException
-     */
-    private function handleProxyConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
-    {
-        $proxyEnabled = $this->request->analyzeBool('proxy_enabled', false);
-        $proxyServer = $this->request->analyzeString('proxy_server');
-        $proxyPort = $this->request->analyzeInt('proxy_port', 8080);
-        $proxyUser = $this->request->analyzeString('proxy_user');
-        $proxyPass = $this->request->analyzeEncrypted('proxy_pass');
-
-        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
-            throw new ValidationException(__u('Missing Proxy parameters'));
-        }
-
-        if ($proxyEnabled) {
-            $configData->setProxyEnabled(true);
-            $configData->setProxyServer($proxyServer);
-            $configData->setProxyPort($proxyPort);
-            $configData->setProxyUser($proxyUser);
-
-            if ($proxyPass !== '***') {
-                $configData->setProxyPass($proxyPass);
-            }
-
-            if ($configData->isProxyEnabled() === false) {
-                $eventMessage->addDescription(__u('Proxy enabled'));
-            }
-        } elseif ($configData->isProxyEnabled()) {
-            $configData->setProxyEnabled(false);
-
-            $eventMessage->addDescription(__u('Proxy disabled'));
-        }
-    }
-
-    private function handleAuthConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
-    {
-        $authBasicEnabled = $this->request->analyzeBool('authbasic_enabled', false);
-        $authBasicAutologinEnabled = $this->request->analyzeBool('authbasic_autologin_enabled', false);
-        $authBasicDomain = $this->request->analyzeString('authbasic_domain');
-        $authSsoDefaultGroup = $this->request->analyzeInt('sso_default_group');
-        $authSsoDefaultProfile = $this->request->analyzeInt('sso_default_profile');
-
-        if ($authBasicEnabled) {
-            $configData->setAuthBasicEnabled(true);
-            $configData->setAuthBasicAutoLoginEnabled($authBasicAutologinEnabled);
-            $configData->setAuthBasicDomain($authBasicDomain);
-            $configData->setSsoDefaultGroup($authSsoDefaultGroup);
-            $configData->setSsoDefaultProfile($authSsoDefaultProfile);
-
-            if ($configData->isAuthBasicEnabled() === false) {
-                $eventMessage->addDescription(__u('Auth Basic enabled'));
-            }
-        } elseif ($configData->isAuthBasicEnabled()) {
-            $configData->setAuthBasicEnabled(false);
-            $configData->setAuthBasicAutoLoginEnabled(false);
-
-            $eventMessage->addDescription(__u('Auth Basic disabled'));
-        }
     }
 
     /**

@@ -75,7 +75,7 @@ use function SP\__;
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="wiki-fields" style="<?php echo $configData->isWikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Wiki search URL'); ?>
@@ -118,7 +118,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="wiki-fields" style="<?php echo $configData->isWikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Wiki page URL'); ?>
@@ -161,7 +161,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="wiki-fields" style="<?php echo $configData->isWikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Account name prefix'); ?>
@@ -192,6 +192,15 @@ use function SP\__;
             </td>
         </tr>
     </table>
+
+    <script>
+        document.getElementById('wiki_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.wiki-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
 
 <div class="tab-actions">

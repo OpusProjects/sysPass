@@ -126,7 +126,7 @@ endif; ?>
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="account-expire-fields" style="<?php echo $configData->isAccountExpireEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Password expiry time'); ?>
@@ -321,7 +321,7 @@ endif; ?>
                         </span>
                     </li>
 
-                    <li class="mdl-list__item mdl-list__item--two-line">
+                    <li class="mdl-list__item mdl-list__item--two-line publiclinks-fields" style="<?php echo $configData->isPublinksEnabled() ? '' : 'display:none'; ?>">
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="publiclinks_image_enabled">
@@ -345,7 +345,7 @@ endif; ?>
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="publiclinks-fields" style="<?php echo $configData->isPublinksEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Expire time'); ?>
@@ -365,7 +365,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="publiclinks-fields" style="<?php echo $configData->isPublinksEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Maximum visits'); ?>
@@ -419,7 +419,7 @@ endif; ?>
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="files-fields" style="<?php echo $configData->isFilesEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Allowed MIME types'); ?>
@@ -463,7 +463,7 @@ endif; ?>
                 </select>
             </td>
         </tr>
-        <tr>
+        <tr class="files-fields" style="<?php echo $configData->isFilesEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Maximum file size'); ?>
@@ -500,6 +500,27 @@ endif; ?>
             </td>
         </tr>
     </table>
+
+    <script>
+        document.getElementById('publiclinks_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.publiclinks-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+        document.getElementById('files_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.files-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+        document.getElementById('account_expire_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.account-expire-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
 
 <div class="tab-actions">

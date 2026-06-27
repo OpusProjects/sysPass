@@ -71,7 +71,7 @@ use function SP\__;
                         </span>
                     </li>
 
-                    <li class="mdl-list__item mdl-list__item--two-line">
+                    <li class="mdl-list__item mdl-list__item--two-line mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="mail_requests_enabled">
@@ -97,7 +97,7 @@ use function SP\__;
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Server'); ?>
@@ -115,7 +115,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Port'); ?>
@@ -134,7 +134,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField"></td>
             <td class="valField">
                 <ul class="config-mail-list-action mdl-list">
@@ -158,7 +158,7 @@ use function SP\__;
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields mailauth-fields" style="<?php echo ($configData->isMailEnabled() && $configData->isMailAuthenabled()) ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('User'); ?>
@@ -176,7 +176,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields mailauth-fields" style="<?php echo ($configData->isMailEnabled() && $configData->isMailAuthenabled()) ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Password'); ?>
@@ -194,7 +194,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Security'); ?>
@@ -219,7 +219,7 @@ use function SP\__;
                 </select>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Sender email address'); ?>
@@ -237,7 +237,7 @@ use function SP\__;
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Recipients'); ?>
@@ -252,7 +252,7 @@ use function SP\__;
                        echo implode(',', $configData->getMailRecipients() ?? []); ?>"/>
             </td>
         </tr>
-        <tr>
+        <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Events'); ?>
@@ -279,6 +279,26 @@ use function SP\__;
             </td>
         </tr>
     </table>
+
+    <script>
+        document.getElementById('mail_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.mail-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+            var authVisible = this.checked && document.getElementById('mail_auth_enabled').checked;
+            var authEls = document.querySelectorAll('.mailauth-fields');
+            for (var j = 0; j < authEls.length; j++) {
+                authEls[j].style.display = authVisible ? '' : 'none';
+            }
+        });
+        document.getElementById('mail_auth_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.mailauth-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
 
 <div class="tab-actions">

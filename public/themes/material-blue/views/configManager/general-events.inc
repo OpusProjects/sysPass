@@ -39,11 +39,10 @@ use function SP\__;
 
 <div id="title" class="titleNormal">
     <i class="material-icons">view_headline</i>
-    <?php
-    echo __('Events'); ?>
+    <?php echo __('Log'); ?>
 </div>
 
-<table id="tblEvents" class="data tblConfig">
+<table class="data tblConfig">
     <tr>
         <td class="descField"></td>
         <td class="valField">
@@ -66,7 +65,45 @@ use function SP\__;
                             echo __('Saves the actions done by the application.'); ?></span>
                     </span>
                 </li>
+            </ul>
+        </td>
+    </tr>
+    <tr class="log-fields" style="<?php echo $configData->isLogEnabled() ? '' : 'display:none'; ?>">
+        <td class="descField">
+            <?php echo __('Events'); ?>
+        </td>
+        <td class="valField">
+            <div class="lowres-title"><?php
+                echo __('Events'); ?></div>
 
+            <select id="log_events" name="log_events[]" multiple="multiple"
+                    class="select-box" data-create="true">
+                <?php
+                /** @var SelectItem $logEvent */
+                foreach ($_getvar('logEvents') ?? [] as $logEvent): ?>
+                    <option
+                            value="<?php
+                            echo $logEvent->getName(); ?>"
+                        <?php
+                        echo $logEvent->isSelected() ? 'selected' : '' ?>><?php
+                        echo $logEvent->getName(); ?></option>
+                <?php
+                endforeach; ?>
+            </select>
+        </td>
+    </tr>
+</table>
+
+<div id="title" class="titleNormal">
+    <i class="material-icons">dns</i>
+    Syslog
+</div>
+
+<table class="data tblConfig">
+    <tr>
+        <td class="descField"></td>
+        <td class="valField">
+            <ul class="config-events-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
@@ -102,14 +139,12 @@ use function SP\__;
                         <span class="mdl-list__item-sub-title"></span>
                     </span>
                 </li>
-
             </ul>
         </td>
     </tr>
-    <tr>
+    <tr class="remotesyslog-fields" style="<?php echo $configData->isSyslogRemoteEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
-            <?php
-            echo __('Server'); ?>
+            <?php echo __('Server'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -124,10 +159,9 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
+    <tr class="remotesyslog-fields" style="<?php echo $configData->isSyslogRemoteEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
-            <?php
-            echo __('Port'); ?>
+            <?php echo __('Port'); ?>
         </td>
         <td class="valField">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -143,29 +177,19 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
-        <td class="descField">
-            <?php
-            echo __('Events'); ?>
-        </td>
-        <td class="valField">
-            <div class="lowres-title"><?php
-                echo __('Events'); ?></div>
-
-            <select id="log_events" name="log_events[]" multiple="multiple"
-                    class="select-box" data-create="true">
-                <?php
-                /** @var SelectItem $logEvent */
-                foreach ($_getvar('logEvents') ?? [] as $logEvent): ?>
-                    <option
-                            value="<?php
-                            echo $logEvent->getName(); ?>"
-                        <?php
-                        echo $logEvent->isSelected() ? 'selected' : '' ?>><?php
-                        echo $logEvent->getName(); ?></option>
-                <?php
-                endforeach; ?>
-            </select>
-        </td>
-    </tr>
 </table>
+
+<script>
+    document.getElementById('log_enabled').addEventListener('change', function () {
+        var els = document.querySelectorAll('.log-fields');
+        for (var i = 0; i < els.length; i++) {
+            els[i].style.display = this.checked ? '' : 'none';
+        }
+    });
+    document.getElementById('remotesyslog_enabled').addEventListener('change', function () {
+        var rows = document.querySelectorAll('.remotesyslog-fields');
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].style.display = this.checked ? '' : 'none';
+        }
+    });
+</script>

@@ -95,7 +95,7 @@ endif; ?>
                             </span>
                     </li>
 
-                    <li class="mdl-list__item mdl-list__item--two-line">
+                    <li class="mdl-list__item mdl-list__item--two-line ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
                         <div class="mdl-switch__box">
                             <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                    for="ldap_tls_enabled">
@@ -119,7 +119,7 @@ endif; ?>
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField"><?php
                 echo __('Server Type'); ?></td>
             <td class="valField">
@@ -146,7 +146,7 @@ endif; ?>
                 </select>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Server'); ?>
@@ -188,7 +188,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Bind User'); ?>
@@ -229,7 +229,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Bind Password'); ?>
@@ -281,7 +281,7 @@ endif; ?>
                 endif; ?>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Search base'); ?>
@@ -322,7 +322,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Group'); ?>
@@ -368,7 +368,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Default Group'); ?>
@@ -410,7 +410,7 @@ endif; ?>
                 </select>
             </td>
         </tr>
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Default Profile'); ?>
@@ -453,12 +453,12 @@ endif; ?>
             </td>
         </tr>
 
-        <tr class="header">
+        <tr class="header ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td colspan="2"><?php
                 echo __('Advanced Settings'); ?></td>
         </tr>
 
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('User Filter'); ?>
@@ -501,7 +501,7 @@ endif; ?>
             </td>
         </tr>
 
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Group Filter'); ?>
@@ -544,7 +544,7 @@ endif; ?>
             </td>
         </tr>
 
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('User Attributes'); ?>
@@ -590,7 +590,7 @@ endif; ?>
             </td>
         </tr>
 
-        <tr>
+        <tr class="ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Group Attributes'); ?>
@@ -638,7 +638,7 @@ endif; ?>
     </table>
 
 
-    <div class="tab-actions">
+    <div class="tab-actions ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
         <ul>
             <li>
                 <button id="btnBack" type="button"
@@ -676,13 +676,13 @@ endif; ?>
         </ul>
     </div>
 
-    <div id="title" class="titleNormal">
+    <div id="title" class="titleNormal ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
         <i class="material-icons">import_export</i>
         <?php
         echo __('Import'); ?>
     </div>
 
-    <table id="tblLdap" class="data tblConfig">
+    <table id="tblLdap" class="data tblConfig ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
         <tr>
             <td class="descField">
                 <?php
@@ -831,7 +831,7 @@ endif; ?>
         </tr>
     </table>
 
-    <div class="tab-actions">
+    <div class="tab-actions ldap-fields" style="<?php echo $configData->isLdapEnabled() ? '' : 'display:none'; ?>">
         <ul>
             <li>
                 <button id="btnBack" type="button"
@@ -869,4 +869,13 @@ endif; ?>
             </li>
         </ul>
     </div>
+
+    <script>
+        document.getElementById('ldap_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.ldap-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
