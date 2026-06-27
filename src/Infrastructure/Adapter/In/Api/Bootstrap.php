@@ -86,6 +86,13 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/user-groups/{id}',        'userGroup', 'edit'],
         ['DELETE', '/api/v1/user-groups/{id}',        'userGroup', 'delete'],
 
+        // Profiles
+        ['GET',    '/api/v1/profiles',                'profile',   'search'],
+        ['POST',   '/api/v1/profiles',                'profile',   'create'],
+        ['GET',    '/api/v1/profiles/{id}',           'profile',   'view'],
+        ['PUT',    '/api/v1/profiles/{id}',           'profile',   'edit'],
+        ['DELETE', '/api/v1/profiles/{id}',           'profile',   'delete'],
+
         // Users
         ['GET',    '/api/v1/users',                   'user',      'search'],
         ['POST',   '/api/v1/users',                   'user',      'create'],
