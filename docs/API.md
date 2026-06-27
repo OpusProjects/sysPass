@@ -126,6 +126,17 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `PUT` | `/api/v1/auth-tokens/{id}` | Edit auth token |
 | `DELETE` | `/api/v1/auth-tokens/{id}` | Delete auth token |
 
+### Notifications
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/notifications` | Search notifications |
+| `POST` | `/api/v1/notifications` | Create notification |
+| `GET` | `/api/v1/notifications/{id}` | View notification |
+| `PUT` | `/api/v1/notifications/{id}` | Edit notification |
+| `DELETE` | `/api/v1/notifications/{id}` | Delete notification |
+| `PUT` | `/api/v1/notifications/{id}/check` | Mark notification as read |
+
 ### Event Log
 
 | Method | Path | Description |

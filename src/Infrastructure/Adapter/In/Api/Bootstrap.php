@@ -107,6 +107,14 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/auth-tokens/{id}',        'authToken', 'edit'],
         ['DELETE', '/api/v1/auth-tokens/{id}',        'authToken', 'delete'],
 
+        // Notifications
+        ['GET',    '/api/v1/notifications',              'notification', 'search'],
+        ['POST',   '/api/v1/notifications',              'notification', 'create'],
+        ['GET',    '/api/v1/notifications/{id}',         'notification', 'view'],
+        ['PUT',    '/api/v1/notifications/{id}',         'notification', 'edit'],
+        ['DELETE', '/api/v1/notifications/{id}',         'notification', 'delete'],
+        ['PUT',    '/api/v1/notifications/{id}/check',   'notification', 'check'],
+
         // Event Log
         ['GET',    '/api/v1/event-log',               'eventlog',    'search'],
         ['DELETE', '/api/v1/event-log',               'eventlog',    'clear'],

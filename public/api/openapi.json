@@ -26,6 +26,7 @@
     {"name": "Client", "description": "Client management"},
     {"name": "Tag", "description": "Tag management"},
     {"name": "UserGroup", "description": "User group management"},
+    {"name": "Notification", "description": "Notification management"},
     {"name": "EventLog", "description": "Event log search and clear"},
     {"name": "CustomField", "description": "Custom field definition management"},
     {"name": "Config", "description": "Backup and export"}
@@ -564,6 +565,114 @@
         ],
         "responses": {
           "200": {"description": "User group deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/notifications": {
+      "get": {
+        "tags": ["Notification"],
+        "summary": "Search notifications",
+        "operationId": "searchNotifications",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["Notification"],
+        "summary": "Create notification",
+        "operationId": "createNotification",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "component", "description"],
+                "properties": {
+                  "type": {"type": "string", "description": "Notification type"},
+                  "component": {"type": "string", "description": "Source component"},
+                  "description": {"type": "string", "description": "Notification text"},
+                  "userId": {"type": "integer", "description": "Target user ID"},
+                  "sticky": {"type": "integer", "description": "Sticky notification (0/1)"},
+                  "onlyAdmin": {"type": "integer", "description": "Admin-only notification (0/1)"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Notification created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/notifications/{id}": {
+      "get": {
+        "tags": ["Notification"],
+        "summary": "View notification",
+        "operationId": "viewNotification",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Notification details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "put": {
+        "tags": ["Notification"],
+        "summary": "Edit notification",
+        "operationId": "editNotification",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["type", "component", "description"],
+                "properties": {
+                  "type": {"type": "string"},
+                  "component": {"type": "string"},
+                  "description": {"type": "string"},
+                  "userId": {"type": "integer"},
+                  "sticky": {"type": "integer"},
+                  "onlyAdmin": {"type": "integer"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {"description": "Notification updated", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["Notification"],
+        "summary": "Delete notification",
+        "operationId": "deleteNotification",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Notification deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/notifications/{id}/check": {
+      "put": {
+        "tags": ["Notification"],
+        "summary": "Mark notification as read",
+        "operationId": "checkNotification",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Notification marked as read", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
         }
       }
     },
