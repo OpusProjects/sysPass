@@ -57,6 +57,10 @@ final class Bootstrap extends BootstrapBase
         ['DELETE', '/api/v1/accounts/{id}',           'account',   'delete'],
         ['POST',   '/api/v1/accounts/{id}/password',  'account',   'viewPass'],
         ['PUT',    '/api/v1/accounts/{id}/password',  'account',   'editPass'],
+        ['GET',    '/api/v1/accounts/{id}/files',           'accountFile', 'search'],
+        ['POST',   '/api/v1/accounts/{id}/files',           'accountFile', 'upload'],
+        ['GET',    '/api/v1/accounts/{id}/files/{fileId}',  'accountFile', 'view'],
+        ['DELETE', '/api/v1/accounts/{id}/files/{fileId}',  'accountFile', 'delete'],
 
         // Categories
         ['GET',    '/api/v1/categories',              'category',  'search'],
@@ -156,7 +160,13 @@ final class Bootstrap extends BootstrapBase
     protected function configureRouter(): void
     {
         foreach (self::ROUTE_MAP as [$method, $path, $controller, $action]) {
-            $requirements = str_contains($path, '{id}') ? ['id' => '\d+'] : [];
+            $requirements = [];
+            if (str_contains($path, '{id}')) {
+                $requirements['id'] = '\d+';
+            }
+            if (str_contains($path, '{fileId}')) {
+                $requirements['fileId'] = '\d+';
+            }
             $this->router->respondPath(
                 $method,
                 $path,
