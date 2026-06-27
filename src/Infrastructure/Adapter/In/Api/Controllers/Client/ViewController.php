@@ -51,9 +51,7 @@ final class ViewController extends ClientBase
 
         $clientData = $this->clientService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.client', $this));
-
-        $this->eventDispatcher->notify(new Event('show.client', 
+        $this->eventDispatcher->notify(new Event('show.client',
                 $this,
                 EventMessage::build()
                     ->addDescription(__u('Client displayed'))
@@ -61,10 +59,6 @@ final class ViewController extends ClientBase
                     ->addDetail('ID', $id)
             )
         );
-
-        if ($customFields) {
-            $this->apiService->requireMasterPass();
-        }
 
         $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
 
