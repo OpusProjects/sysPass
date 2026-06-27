@@ -31,6 +31,5 @@ enum ResponseType
 {
     case PLAIN_TEXT;
     case JSON;
-    case JSON_RPC;
     case CALLBACK;
 }

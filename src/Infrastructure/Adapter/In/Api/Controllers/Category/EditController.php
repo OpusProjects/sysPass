@@ -57,7 +57,7 @@ final class EditController extends CategoryBase
             )
         );
 
-        return ApiResponse::makeSuccess($categoryData, $categoryData->getId(), __('Category updated'));
+        return ApiResponse::makeSuccess($categoryData, __('Category updated'), $categoryData->getId());
     }
 
     /**

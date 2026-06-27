@@ -60,6 +60,6 @@ final class DeleteController extends ClientBase
             )
         );
 
-        return ApiResponse::makeSuccess($clientData, $id, __('Client deleted'));
+        return ApiResponse::makeSuccess($clientData, __('Client deleted'), $id);
     }
 }

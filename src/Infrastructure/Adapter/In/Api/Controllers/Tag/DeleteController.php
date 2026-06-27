@@ -60,7 +60,7 @@ final class DeleteController extends TagBase
             )
         );
 
-        return ApiResponse::makeSuccess($tagData, $id, __('Tag removed'));
+        return ApiResponse::makeSuccess($tagData, __('Tag removed'), $id);
     }
 
 }

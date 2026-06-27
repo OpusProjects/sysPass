@@ -61,6 +61,6 @@ final class DeleteController extends AccountBase
             )
         );
 
-        return ApiResponse::makeSuccess($accountDetails, $id, __('Account removed'));
+        return ApiResponse::makeSuccess($accountDetails, __('Account removed'), $id);
     }
 }

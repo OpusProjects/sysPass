@@ -97,6 +97,6 @@ final class ViewPassController extends AccountBase
             )
         );
 
-        return ApiResponse::makeSuccess(["password" => $password], $id);
+        return ApiResponse::makeSuccess(["password" => $password]);
     }
 }

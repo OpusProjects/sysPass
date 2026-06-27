@@ -61,7 +61,7 @@ final class EditController extends UserGroupBase
             )
         );
 
-        return ApiResponse::makeSuccess($userGroupData, $userGroupData->getId(), __('Group updated'));
+        return ApiResponse::makeSuccess($userGroupData, __('Group updated'), $userGroupData->getId());
     }
 
     /**

@@ -61,7 +61,7 @@ final class CreateController extends UserGroupBase
             )
         );
 
-        return ApiResponse::makeSuccess($userGroupData, $id, __('Group added'));
+        return ApiResponse::makeSuccess($userGroupData, __('Group added'), $id);
     }
 
     /**

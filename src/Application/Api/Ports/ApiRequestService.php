@@ -25,27 +25,13 @@ declare(strict_types=1);
 
 namespace SP\Application\Api\Ports;
 
-use SP\Domain\Api\Services\ApiRequestException;
-
 /**
- * Class ApiRequest
- *
- * @package SP\Domain\Api\Services
+ * Interface ApiRequestService
  */
 interface ApiRequestService
 {
     public const PHP_REQUEST_STREAM = 'php://input';
 
-    /**
-     * Build the ApiRequest from the request itself.
-     *
-     * It will read the 'php://input' strean and get the contents into a JSON format
-     *
-     * @param string $stream
-     *
-     * @return ApiRequestService
-     * @throws ApiRequestException
-     */
     public static function buildFromRequest(string $stream = self::PHP_REQUEST_STREAM): ApiRequestService;
 
     /**

@@ -91,6 +91,6 @@ final class ExportController extends ControllerBase
 
         $exportFiles = ['files' => ['xml' => $file]];
 
-        return ApiResponse::makeSuccess($exportFiles, null, __('Export process finished'));
+        return ApiResponse::makeSuccess($exportFiles, __('Export process finished'));
     }
 }

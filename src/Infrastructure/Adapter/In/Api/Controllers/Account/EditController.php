@@ -62,7 +62,7 @@ final class EditController extends AccountBase
             )
         );
 
-        return ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Account updated'));
+        return ApiResponse::makeSuccess($accountDetails, __('Account updated'), $accountRequest->id);
     }
 
     /**

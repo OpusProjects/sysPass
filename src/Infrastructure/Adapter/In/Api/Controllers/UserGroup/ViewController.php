@@ -57,6 +57,6 @@ final class ViewController extends UserGroupBase
             )
         );
 
-        return ApiResponse::makeSuccess($userGroupData, $id);
+        return ApiResponse::makeSuccess($userGroupData);
     }
 }
