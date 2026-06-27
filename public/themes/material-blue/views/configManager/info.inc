@@ -37,7 +37,7 @@
     use SP\Domain\Common\Providers\Version;
     use SP\Domain\Config\Ports\ConfigDataInterface;
     use SP\Domain\Core\UI\ThemeIconsInterface;
-    use SP\Application\Install\Services\Installer;
+    use SP\Domain\Core\AppInfoInterface;
     use SP\Domain\Plugin\Ports\Plugin;
     use SP\Mvc\View\TemplateInterface;
 
@@ -59,7 +59,7 @@
             <?php
             printf(
                 '%s (<b>%s</b>)',
-                Installer::VERSION_TEXT,
+                implode('.', array_slice(AppInfoInterface::APP_VERSION, 0, 2)),
                 Version::getVersionStringNormalized()
             ); ?>
             <br>
