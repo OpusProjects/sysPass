@@ -58,12 +58,10 @@ final class SearchController extends CategoryBase
      */
     private function buildSearchData(): ItemSearchDto
     {
-        $itemSearchData = new ItemSearchDto();
-        $itemSearchData->setSeachString($this->apiService->getParamString('text'));
-        $itemSearchData->setLimitCount(
+        return new ItemSearchDto(
+            $this->apiService->getParamString('text'),
+            0,
             $this->apiService->getParamInt('count', false, self::SEARCH_COUNT_ITEMS)
         );
-
-        return $itemSearchData;
     }
 }
