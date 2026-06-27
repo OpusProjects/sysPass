@@ -47,7 +47,7 @@ use function DI\get;
 
 return [
     'paths' => add([
-                       [Path::VIEW, FileSystem::buildPath(__DIR__, 'themes')],
+                       [Path::VIEW, FileSystem::buildPath(APP_ROOT, 'public', 'themes')],
                        [Path::PLUGINS, FileSystem::buildPath(__DIR__, 'plugins')],
                    ]),
     BootstrapInterface::class => autowire(Bootstrap::class),
