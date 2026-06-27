@@ -126,6 +126,16 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `PUT` | `/api/v1/auth-tokens/{id}` | Edit auth token |
 | `DELETE` | `/api/v1/auth-tokens/{id}` | Delete auth token |
 
+### Public Links
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/public-links` | Search public links |
+| `POST` | `/api/v1/public-links` | Create public link |
+| `GET` | `/api/v1/public-links/{id}` | View public link |
+| `DELETE` | `/api/v1/public-links/{id}` | Delete public link |
+| `POST` | `/api/v1/public-links/{id}/refresh` | Refresh (regenerate) public link |
+
 ### Notifications
 
 | Method | Path | Description |

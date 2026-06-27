@@ -107,6 +107,13 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/auth-tokens/{id}',        'authToken', 'edit'],
         ['DELETE', '/api/v1/auth-tokens/{id}',        'authToken', 'delete'],
 
+        // Public Links
+        ['GET',    '/api/v1/public-links',                  'publicLink', 'search'],
+        ['POST',   '/api/v1/public-links',                  'publicLink', 'create'],
+        ['GET',    '/api/v1/public-links/{id}',             'publicLink', 'view'],
+        ['DELETE', '/api/v1/public-links/{id}',             'publicLink', 'delete'],
+        ['POST',   '/api/v1/public-links/{id}/refresh',     'publicLink', 'refresh'],
+
         // Notifications
         ['GET',    '/api/v1/notifications',              'notification', 'search'],
         ['POST',   '/api/v1/notifications',              'notification', 'create'],

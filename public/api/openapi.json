@@ -26,6 +26,7 @@
     {"name": "Client", "description": "Client management"},
     {"name": "Tag", "description": "Tag management"},
     {"name": "UserGroup", "description": "User group management"},
+    {"name": "PublicLink", "description": "Public link management"},
     {"name": "Notification", "description": "Notification management"},
     {"name": "EventLog", "description": "Event log search and clear"},
     {"name": "CustomField", "description": "Custom field definition management"},
@@ -565,6 +566,83 @@
         ],
         "responses": {
           "200": {"description": "User group deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/public-links": {
+      "get": {
+        "tags": ["PublicLink"],
+        "summary": "Search public links",
+        "operationId": "searchPublicLinks",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "post": {
+        "tags": ["PublicLink"],
+        "summary": "Create public link",
+        "operationId": "createPublicLink",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["itemId"],
+                "properties": {
+                  "itemId": {"type": "integer", "description": "Account ID to link"},
+                  "notify": {"type": "integer", "description": "Send notifications on access (0/1)"},
+                  "dateExpire": {"type": "integer", "description": "Expiry timestamp"},
+                  "maxCountViews": {"type": "integer", "description": "Maximum number of views"}
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {"description": "Public link created", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/public-links/{id}": {
+      "get": {
+        "tags": ["PublicLink"],
+        "summary": "View public link",
+        "operationId": "viewPublicLink",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Public link details", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["PublicLink"],
+        "summary": "Delete public link",
+        "operationId": "deletePublicLink",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Public link deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/public-links/{id}/refresh": {
+      "post": {
+        "tags": ["PublicLink"],
+        "summary": "Refresh public link",
+        "operationId": "refreshPublicLink",
+        "description": "Regenerates the link hash and resets the view counter.",
+        "parameters": [
+          {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
+        ],
+        "responses": {
+          "200": {"description": "Public link refreshed", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
         }
       }
     },
