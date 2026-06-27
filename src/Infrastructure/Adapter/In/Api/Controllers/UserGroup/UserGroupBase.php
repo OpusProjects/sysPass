@@ -31,7 +31,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Api\Controllers\Help\TagHelp;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\UserGroupHelp;
 
 /**
  * Class UserGroupBase
@@ -54,6 +54,6 @@ abstract class UserGroupBase extends ControllerBase
 
         $this->userGroupService = $groupService;
 
-        $this->apiService->setHelpClass(TagHelp::class);
+        $this->apiService->setHelpClass(UserGroupHelp::class);
     }
 }
