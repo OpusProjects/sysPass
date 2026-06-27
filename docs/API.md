@@ -1,7 +1,8 @@
 # API
 
 sysPass exposes a **REST API** for programmatic access to accounts, categories,
-clients, tags, user groups, and configuration operations.
+clients, tags, user groups, users, profiles, auth tokens, public links,
+notifications, event log, custom fields, and configuration operations.
 
 ## Interactive documentation (Swagger UI)
 
