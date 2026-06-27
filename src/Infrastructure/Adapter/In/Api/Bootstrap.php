@@ -107,6 +107,10 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/auth-tokens/{id}',        'authToken', 'edit'],
         ['DELETE', '/api/v1/auth-tokens/{id}',        'authToken', 'delete'],
 
+        // Event Log
+        ['GET',    '/api/v1/event-log',               'eventlog',    'search'],
+        ['DELETE', '/api/v1/event-log',               'eventlog',    'clear'],
+
         // Custom Fields
         ['GET',    '/api/v1/custom-fields',           'customField', 'search'],
         ['POST',   '/api/v1/custom-fields',           'customField', 'create'],

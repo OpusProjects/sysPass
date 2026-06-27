@@ -126,6 +126,13 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `PUT` | `/api/v1/auth-tokens/{id}` | Edit auth token |
 | `DELETE` | `/api/v1/auth-tokens/{id}` | Delete auth token |
 
+### Event Log
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/event-log` | Search event log entries |
+| `DELETE` | `/api/v1/event-log` | Clear event log |
+
 ### Custom Fields
 
 | Method | Path | Description |
