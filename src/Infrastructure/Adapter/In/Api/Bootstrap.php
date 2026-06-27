@@ -100,6 +100,13 @@ final class Bootstrap extends BootstrapBase
         ['PUT',    '/api/v1/users/{id}',              'user',      'edit'],
         ['DELETE', '/api/v1/users/{id}',              'user',      'delete'],
 
+        // Auth Tokens
+        ['GET',    '/api/v1/auth-tokens',             'authToken', 'search'],
+        ['POST',   '/api/v1/auth-tokens',             'authToken', 'create'],
+        ['GET',    '/api/v1/auth-tokens/{id}',        'authToken', 'view'],
+        ['PUT',    '/api/v1/auth-tokens/{id}',        'authToken', 'edit'],
+        ['DELETE', '/api/v1/auth-tokens/{id}',        'authToken', 'delete'],
+
         // Config
         ['POST',   '/api/v1/config/backup',           'config',    'backup'],
         ['POST',   '/api/v1/config/export',           'config',    'export'],
