@@ -14,7 +14,11 @@
   ],
   "autoload": {
     "psr-4": {
-      "SP\\": "src/",
+      "SP\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
       "SP\\Tests\\": "tests/SP/"
     }
   },
