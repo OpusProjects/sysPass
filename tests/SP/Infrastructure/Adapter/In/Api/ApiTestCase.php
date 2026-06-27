@@ -56,7 +56,9 @@ use stdClass;
 
 use function DI\create;
 
-define('APP_MODULE', 'api');
+if (!defined('APP_MODULE')) {
+    define('APP_MODULE', 'api');
+}
 
 /**
  * Class ApiTestCase

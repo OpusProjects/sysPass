@@ -65,8 +65,6 @@ Project documentation lives in the [`docs/`](docs) folder:
 - [`docs/INSTALL.md`](docs/INSTALL.md) — requirements, installation (Docker and manual, multi-distro), and how to run the test suite.
 - [`docs/API.md`](docs/API.md) — REST API reference, authentication, and [Swagger UI](/api/docs/) interactive docs.
 
-The original online docs (`doc.syspass.org`) are offline; material is being consolidated in-tree.
-
 ---
 
 ## ⚖️ License
