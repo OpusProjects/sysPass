@@ -26,12 +26,12 @@ use Psr\Container\ContainerInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Infrastructure\File\FileSystem;
-use SP\Infrastructure\Adapter\In\Web\Bootstrap;
+use SP\Infrastructure\Adapter\In\Api\Bootstrap;
 
 use function SP\processException;
 
-const APP_ROOT = __DIR__;
-const APP_MODULE = 'web';
+define('APP_ROOT', dirname(__DIR__));
+const APP_MODULE = 'api';
 
 try {
     $dic = FileSystem::require(FileSystem::buildPath(APP_ROOT, 'src', 'Base.php'), ContainerInterface::class);
@@ -40,3 +40,4 @@ try {
 } catch (Throwable $e) {
     processException($e);
 }
+
