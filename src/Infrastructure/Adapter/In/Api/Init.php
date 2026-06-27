@@ -34,6 +34,7 @@ use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
+use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Database\DatabaseUtil;
 
@@ -48,18 +49,20 @@ final class Init extends HttpModuleBase
     private DatabaseUtil $databaseUtil;
 
     public function __construct(
-        Application     $application,
-        ProvidersHelper $providersHelper,
-        RequestService  $request,
-        Router           $router,
+        Application       $application,
+        ProvidersHelper   $providersHelper,
+        RequestService    $request,
+        Router            $router,
+        AppLockHandler    $appLock,
         LanguageInterface $language,
-        DatabaseUtil    $databaseUtil
+        DatabaseUtil      $databaseUtil
     ) {
         parent::__construct(
             $application,
             $providersHelper,
             $request,
-            $router
+            $router,
+            $appLock
         );
 
         $this->language = $language;

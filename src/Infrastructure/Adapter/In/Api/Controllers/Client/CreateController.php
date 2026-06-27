@@ -62,7 +62,7 @@ final class CreateController extends ClientBase
             )
         );
 
-        return ApiResponse::makeSuccess($clientData, $id, __('Client added'));
+        return ApiResponse::makeSuccess($clientData, __('Client added'), $id);
     }
 
     /**

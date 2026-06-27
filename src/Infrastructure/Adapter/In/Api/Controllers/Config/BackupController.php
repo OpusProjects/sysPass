@@ -86,7 +86,7 @@ final class BackupController extends ControllerBase
             )
         );
 
-        return ApiResponse::makeSuccess($this->buildBackupFiles($path), null, __('Backup process finished'));
+        return ApiResponse::makeSuccess($this->buildBackupFiles($path), __('Backup process finished'));
     }
 
     /**

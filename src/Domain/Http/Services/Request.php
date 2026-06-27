@@ -73,8 +73,8 @@ class Request implements RequestService
     private function getParamsForMethod(): InputBag
     {
         return match ($this->method) {
-            Method::GET => $this->request->query,
-            Method::POST => $this->request->request
+            Method::GET, Method::DELETE => $this->request->query,
+            Method::POST, Method::PUT => $this->request->request
         };
     }
 

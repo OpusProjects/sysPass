@@ -61,6 +61,6 @@ final class DeleteController extends UserGroupBase
             )
         );
 
-        return ApiResponse::makeSuccess($userGroupData, $id, __('Group deleted'));
+        return ApiResponse::makeSuccess($userGroupData, __('Group deleted'), $id);
     }
 }

@@ -62,7 +62,7 @@ final class CreateController extends TagBase
             )
         );
 
-        return ApiResponse::makeSuccess($tagData, $id, __('Tag added'));
+        return ApiResponse::makeSuccess($tagData, __('Tag added'), $id);
     }
 
     /**

@@ -64,7 +64,7 @@ final class EditPassController extends AccountBase
             )
         );
 
-        return ApiResponse::makeSuccess($accountDetails, $accountRequest->id, __('Password updated'));
+        return ApiResponse::makeSuccess($accountDetails, __('Password updated'), $accountRequest->id);
     }
 
     /**

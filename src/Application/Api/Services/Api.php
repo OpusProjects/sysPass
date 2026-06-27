@@ -25,8 +25,8 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Api\Services;
-use SP\Domain\Api\Services\JsonRpcResponse;
 use SP\Domain\Api\Services\ApiStatuses;
+use SP\Domain\Http\Code;
 
 use Exception;
 use SP\Core\Application;
@@ -105,13 +105,19 @@ final class Api extends Service implements ApiService
                 __u('Attempts exceeded'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         }
 
         try {
+            $token = $this->getParam('authToken');
+
+            if ($token === null) {
+                $this->accessDenied();
+            }
+
             $this->authToken = $this->authTokenService
-                ->getTokenByToken($actionId, $this->getParam('authToken'));
+                ->getTokenByToken($actionId, $token);
         } catch (NoSuchItemException $e) {
             logger($e->getMessage(), 'ERROR');
 
@@ -120,7 +126,7 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         }
 
@@ -153,7 +159,7 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 null,
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         }
     }
@@ -175,7 +181,7 @@ final class Api extends Service implements ApiService
                 __u('Wrong parameters'),
                 SPException::ERROR,
                 $this->getHelpHint($this->apiRequest->getMethod()),
-                JsonRpcResponse::INVALID_PARAMS
+                Code::BAD_REQUEST->value
             );
         }
 
@@ -223,7 +229,7 @@ final class Api extends Service implements ApiService
             __u('Unauthorized access'),
             SPException::ERROR,
             null,
-            JsonRpcResponse::INTERNAL_ERROR
+            401
         );
     }
 
@@ -275,7 +281,7 @@ final class Api extends Service implements ApiService
                     __u('Internal error'),
                     SPException::ERROR,
                     __u('Invalid data'),
-                    JsonRpcResponse::INTERNAL_ERROR
+                    Code::INTERNAL_SERVER_ERROR->value
                 );
             }
 
@@ -292,14 +298,14 @@ final class Api extends Service implements ApiService
                 __u('Internal error'),
                 SPException::ERROR,
                 __u('Invalid data'),
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         } catch (CryptException $e) {
             throw new ServiceException(
                 __u('Internal error'),
                 SPException::ERROR,
                 $e->getMessage(),
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         }
     }
@@ -314,7 +320,7 @@ final class Api extends Service implements ApiService
                 __u('API not initialized'),
                 SPException::ERROR,
                 __u('Please run setup method before'),
-                JsonRpcResponse::INTERNAL_ERROR
+                Code::INTERNAL_SERVER_ERROR->value
             );
         }
     }

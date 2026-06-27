@@ -60,6 +60,6 @@ final class DeleteController extends CategoryBase
             )
         );
 
-        return ApiResponse::makeSuccess($categoryData, $id, __('Category deleted'));
+        return ApiResponse::makeSuccess($categoryData, __('Category deleted'), $id);
     }
 }

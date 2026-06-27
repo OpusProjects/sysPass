@@ -73,6 +73,6 @@ final class ViewController extends ClientBase
             $this->fractal->parseIncludes(['customFields']);
         }
 
-        return ApiResponse::makeSuccess($out->toArray(), $id);
+        return ApiResponse::makeSuccess($out->toArray());
     }
 }

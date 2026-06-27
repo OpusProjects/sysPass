@@ -86,6 +86,31 @@ final class Router
     }
 
     /**
+     * Register a responder for a specific URL path with named parameters.
+     *
+     * Unlike {@see respond()}, this registers an actual path (e.g. `/api/v1/accounts/{id}`)
+     * instead of a catch-all. Named parameters are injected into the request attributes
+     * during dispatch.
+     *
+     * @param string|string[] $methods
+     * @param array<string,string> $requirements Regex constraints for path parameters
+     */
+    public function respondPath(string|array $methods, string $path, callable $callback, array $requirements = []): void
+    {
+        $route = new Route(
+            $path,
+            ['_callback' => Closure::fromCallable($callback)],
+            $requirements,
+            [],
+            '',
+            [],
+            array_map('strtoupper', (array)$methods)
+        );
+
+        $this->routes->add('route_' . $this->routeCount++, $route);
+    }
+
+    /**
      * Set the error handler, invoked as ($router, $message, $exceptionClass, $throwable).
      */
     public function onError(callable $callback): void
@@ -137,6 +162,12 @@ final class Router
         try {
             try {
                 $parameters = $matcher->match($request->getPathInfo());
+
+                foreach ($parameters as $key => $value) {
+                    if (!str_starts_with($key, '_')) {
+                        $request->attributes->set($key, $value);
+                    }
+                }
 
                 /** @var Closure $callback */
                 $callback = $parameters['_callback'];

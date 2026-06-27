@@ -60,7 +60,7 @@ final class EditController extends TagBase
             )
         );
 
-        return ApiResponse::makeSuccess($tagData, $tagData->getId(), __('Tag updated'));
+        return ApiResponse::makeSuccess($tagData, __('Tag updated'), $tagData->getId());
     }
 
     /**

@@ -56,6 +56,6 @@ final class ViewController extends TagBase
             )
         );
 
-        return ApiResponse::makeSuccess($tagData, $id);
+        return ApiResponse::makeSuccess($tagData);
     }
 }

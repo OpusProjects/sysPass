@@ -140,7 +140,7 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 
 - **All Web controllers are migrated.** The legacy `JsonTrait` pattern (`fooAction(): bool` +
   `returnJsonResponse*()`) is gone — `JsonTrait` and `JsonResponseHandler` have been deleted.
-  API controllers use a separate dispatch (`void` return + `ApiResponse` via JSON-RPC) and
+  API controllers use a separate dispatch (`ApiResponse` return via REST) and
   don't go through the `ActionResponse` contract.
 - `SP\` global functions (`__`, `__u`, `logger`, `processException`, `getFromEnv`) are in namespace
   `SP` — **`use function SP\...`** them (PHP's bare-call fallback only reaches the global namespace).

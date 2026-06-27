@@ -23,7 +23,8 @@
  */
 
 use SP\Application\Api\Ports\ApiRequestService;
-use SP\Application\Api\Services\ApiRequest;
+use SP\Application\Api\Services\RestApiRequest;
+use SP\Core\Bootstrap\Router;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Infrastructure\Adapter\In\Api\Bootstrap;
@@ -36,7 +37,9 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
-    ApiRequestService::class => factory([ApiRequest::class, 'buildFromRequest']),
+    ApiRequestService::class => factory(function (Router $router) {
+        return RestApiRequest::buildFromSymfonyRequest($router->request());
+    }),
     BootstrapInterface::class => autowire(Bootstrap::class),
     ModuleInterface::class => autowire(Init::class)
 ];

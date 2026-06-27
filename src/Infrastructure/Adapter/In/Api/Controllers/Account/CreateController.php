@@ -64,7 +64,7 @@ final class CreateController extends AccountBase
             )
         );
 
-        return ApiResponse::makeSuccess($accountDetails, $accountId, __('Account created'));
+        return ApiResponse::makeSuccess($accountDetails, __('Account created'), $accountId);
     }
 
     /**

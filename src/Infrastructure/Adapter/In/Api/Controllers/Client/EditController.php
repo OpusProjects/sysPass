@@ -60,7 +60,7 @@ final class EditController extends ClientBase
             )
         );
 
-        return ApiResponse::makeSuccess($clientData, $clientData->getId(), __('Client updated'));
+        return ApiResponse::makeSuccess($clientData, __('Client updated'), $clientData->getId());
     }
 
     /**

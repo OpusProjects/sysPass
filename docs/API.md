@@ -1,6 +1,6 @@
 # API
 
-sysPass exposes a **JSON-RPC 2.0** API for programmatic access to accounts, categories,
+sysPass exposes a **REST API** for programmatic access to accounts, categories,
 clients, tags, user groups, and configuration operations.
 
 ## Interactive documentation (Swagger UI)
@@ -11,12 +11,27 @@ The API is documented with an OpenAPI 3.0 spec served through Swagger UI:
 http://<your-host>/api/docs/
 ```
 
-From there you can browse every method, see request/response examples, and use
+From there you can browse every endpoint, see request/response schemas, and use
 **Try it out** to make live calls.
+
+## Base URL
+
+All endpoints are under `/api/v1/`:
+
+```
+http://<your-host>/api/v1/accounts
+http://<your-host>/api/v1/categories
+...
+```
 
 ## Authentication
 
-Every API request requires an **auth token** passed inside `params.authToken`.
+Every request requires an **API auth token** sent as a Bearer token in the
+`Authorization` header:
+
+```
+Authorization: Bearer <your_token_here>
+```
 
 To create a token:
 
@@ -25,93 +40,118 @@ To create a token:
 3. Create a new API authorization — this generates the token.
 
 Some operations (viewing passwords, custom fields, exports) additionally require
-the **token password** (`tokenPass`), which is set when creating the authorization.
+the **token password** (`tokenPass`), sent in the request body or query string.
 
-## Request format
+## Endpoints
 
-All requests are `POST /api.php` with a JSON body:
+### Accounts
 
-```json
-{
-  "jsonrpc": "2.0",
-  "method": "<controller>/<action>",
-  "params": {
-    "authToken": "your_token_here",
-    ...
-  },
-  "id": 1
-}
-```
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/accounts` | Search accounts |
+| `POST` | `/api/v1/accounts` | Create account |
+| `GET` | `/api/v1/accounts/{id}` | View account |
+| `PUT` | `/api/v1/accounts/{id}` | Edit account |
+| `DELETE` | `/api/v1/accounts/{id}` | Delete account |
+| `POST` | `/api/v1/accounts/{id}/password` | View (decrypt) password |
+| `PUT` | `/api/v1/accounts/{id}/password` | Edit password |
 
-### Available methods
+### Categories
 
-| Controller | Methods |
-|------------|---------|
-| **account** | `view`, `viewPass`, `create`, `edit`, `editPass`, `search`, `delete` |
-| **category** | `view`, `create`, `edit`, `search`, `delete` |
-| **client** | `view`, `create`, `edit`, `search`, `delete` |
-| **tag** | `view`, `create`, `edit`, `search`, `delete` |
-| **userGroup** | `view`, `create`, `edit`, `search`, `delete` |
-| **config** | `backup`, `export` |
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/categories` | Search categories |
+| `POST` | `/api/v1/categories` | Create category |
+| `GET` | `/api/v1/categories/{id}` | View category |
+| `PUT` | `/api/v1/categories/{id}` | Edit category |
+| `DELETE` | `/api/v1/categories/{id}` | Delete category |
+
+### Clients
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/clients` | Search clients |
+| `POST` | `/api/v1/clients` | Create client |
+| `GET` | `/api/v1/clients/{id}` | View client |
+| `PUT` | `/api/v1/clients/{id}` | Edit client |
+| `DELETE` | `/api/v1/clients/{id}` | Delete client |
+
+### Tags
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/tags` | Search tags |
+| `POST` | `/api/v1/tags` | Create tag |
+| `GET` | `/api/v1/tags/{id}` | View tag |
+| `PUT` | `/api/v1/tags/{id}` | Edit tag |
+| `DELETE` | `/api/v1/tags/{id}` | Delete tag |
+
+### User Groups
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/user-groups` | Search user groups |
+| `POST` | `/api/v1/user-groups` | Create user group |
+| `GET` | `/api/v1/user-groups/{id}` | View user group |
+| `PUT` | `/api/v1/user-groups/{id}` | Edit user group |
+| `DELETE` | `/api/v1/user-groups/{id}` | Delete user group |
+
+### Config
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/api/v1/config/backup` | Create backup |
+| `POST` | `/api/v1/config/export` | Export data (encrypted XML) |
 
 ## Response format
 
-### Success
+### Success (200 / 201)
 
 ```json
 {
-  "jsonrpc": "2.0",
-  "result": {
-    "itemId": null,
-    "result": { ... },
-    "resultCode": 0,
-    "resultMessage": null,
-    "count": 5
-  },
-  "id": 1
+  "data": { ... },
+  "message": "Account created",
+  "count": 5,
+  "itemId": 3
 }
 ```
 
-### Error
+Fields `message`, `count`, and `itemId` are included only when applicable.
+
+### Error (400 / 401 / 404 / 500)
 
 ```json
 {
-  "jsonrpc": "2.0",
   "error": {
     "message": "Error description",
-    "code": -32601,
-    "data": null
-  },
-  "id": 1
+    "detail": "Additional details"
+  }
 }
 ```
 
-| Code | Meaning |
-|------|---------|
-| -32700 | Parse error |
-| -32600 | Invalid request |
-| -32601 | Method not found |
-| -32602 | Invalid params |
-| -32603 | Internal error |
-| -32000 | Server error |
-
-## Quick example
+## Quick examples
 
 Search for accounts containing "server":
 
 ```bash
-curl -X POST http://localhost:8090/api.php \
-  -H 'Content-Type: application/json' \
-  -d '{
-    "jsonrpc": "2.0",
-    "method": "account/search",
-    "params": {
-      "authToken": "your_token_here",
-      "text": "server",
-      "count": 10
-    },
-    "id": 1
-  }'
+curl http://localhost:8090/api/v1/accounts?text=server&count=10 \
+  -H 'Authorization: Bearer your_token_here'
 ```
 
-For full parameter details on every method, see the [Swagger UI](/api/docs/).
+Create a category:
+
+```bash
+curl -X POST http://localhost:8090/api/v1/categories \
+  -H 'Authorization: Bearer your_token_here' \
+  -H 'Content-Type: application/json' \
+  -d '{"name": "Web Servers", "description": "Web server credentials"}'
+```
+
+Delete a tag:
+
+```bash
+curl -X DELETE http://localhost:8090/api/v1/tags/5 \
+  -H 'Authorization: Bearer your_token_here'
+```
+
+For full parameter details on every endpoint, see the [Swagger UI](/api/docs/).

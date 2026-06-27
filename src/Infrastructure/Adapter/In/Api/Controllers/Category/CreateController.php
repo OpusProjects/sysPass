@@ -62,7 +62,7 @@ final class CreateController extends CategoryBase
             )
         );
 
-        return ApiResponse::makeSuccess($categoryData, $id, __('Category added'));
+        return ApiResponse::makeSuccess($categoryData, __('Category added'), $id);
     }
 
     /**
