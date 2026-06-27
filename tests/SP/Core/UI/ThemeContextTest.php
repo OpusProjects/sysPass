@@ -48,6 +48,6 @@ class ThemeContextTest extends UnitaryTestCase
         $this->assertEquals('/tmp/' . $name, $themeContext->getFullPath());
         $this->assertEquals('/tmp/' . $name, $themeContext->getPath());
         $this->assertEquals('/tmp/' . $name . '/views', $themeContext->getViewsPath());
-        $this->assertEquals('/uri/src/Infrastructure/Adapter/In/Web/themes/' . $name, $themeContext->getUri());
+        $this->assertEquals('/uri/public/themes/' . $name, $themeContext->getUri());
     }
 }

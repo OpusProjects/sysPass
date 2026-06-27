@@ -53,7 +53,7 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 | Infrastructure — driving adapters (controllers) | `src/Infrastructure/Adapter/In/{Web,Api,Cli}/` |
 | Infrastructure — shared (DB, file, common repos) | `src/Infrastructure/{Database,File}/` |
 | Core (bootstrap, DI definitions, ACL, crypt) | `src/Core/` (`Definitions/CoreDefinitions.php`, `DomainDefinitions.php`) |
-| Theme (only one) | `src/Infrastructure/Adapter/In/Web/themes/material-blue/` |
+| Theme (only one) | `public/themes/material-blue/` |
 | Front-end JS/CSS (served via a PHP `file` route) | vendored under `public/vendor/`, `public/js/` |
 | Runtime config | `config/` (runtime; gitignored `config.xml` holds DB creds + crypto keys) |
 | Runtime-writable | `var/{cache,temp,backup}` |
