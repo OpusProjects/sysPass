@@ -38,48 +38,31 @@ use function SP\__;
     <div id="footer-right" class="footer-parts">
         <div id="status">
             <?php if ($_getvar('httpsEnabled')): ?>
-                <span id="secure-info" class="status-info">
-                    <i class="material-icons mdl-color-text--teal-500">https</i>
-                </span>
+                <span id="secure-info" class="status-secure"><i class="material-icons">lock</i> <span class="secure-label">HTTPS</span></span>
                 <span for="secure-info"
-                      class="mdl-tooltip mdl-tooltip--top"><?php echo 'HTTPS'; ?></span>
+                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Secure connection'); ?></span>
             <?php else: ?>
-                <span id="secure-info" class="status-info">
-                    <i class="material-icons mdl-color-text--red-900">http</i>
-                </span>
+                <span id="secure-info" class="status-insecure"><i class="material-icons">lock_open</i> <span class="secure-label">HTTP</span></span>
                 <span for="secure-info"
-                      class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Tells whether the connection uses HTTPS or not.') . '<br><br>' . __('Passwords sent from forms are encrypted using PKI, the remain data don\'t.'); ?></span>
+                      class="mdl-tooltip mdl-tooltip--top"><?php echo __('Insecure connection'); ?></span>
             <?php endif; ?>
 
             <?php if (DEBUG): ?>
-                <i class="material-icons mdl-color-text--red-900"
-                   title="Debug ON">bug_report</i>
+                <span id="debug-info" class="status-debug"><i class="material-icons">bug_report</i> <span class="debug-label">Debug ON</span></span>
+                <span for="debug-info"
+                      class="mdl-tooltip mdl-tooltip--top">Debug ON</span>
             <?php endif; ?>
 
             <?php if ($_getvar('isDemo')): ?>
-                <span class="status-info">
-                    <i class="material-icons mdl-color-text--teal-500"
-                       title="<?php echo __('Demo'); ?>">play_circle_outline</i>
-                </span>
+                <span class="status-secure">DEMO</span>
             <?php endif; ?>
 
             <div id="updates"></div>
             <div id="notices"></div>
-        </div>
 
-        <div id="project">
-            <a id="app-info" href="<?php echo $_getvar('app_website_url'); ?>"
-               target="_blank">
-                <?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?>
-            </a>
+            <span id="app-info" class="project"><?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?></span>
             <span for="app-info"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('Help :: FAQ :: Changelog'); ?></span>
-            &nbsp;::&nbsp;
-            <a id="app-project" href="<?php echo $_getvar('app_blog_url'); ?>"
-               target="_blank">cygnux.org</a>
-            <span for="app-project"
-                  class="mdl-tooltip mdl-tooltip--top mdl-tooltip--large"><?php echo __('A cygnux.org project'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top"><?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?></span>
         </div>
-        <!-- Close Project -->
     </div>
 </footer> <!-- Close footer -->

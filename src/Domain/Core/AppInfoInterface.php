@@ -36,10 +36,10 @@ interface AppInfoInterface
     public const APP_NAME = 'sysPass';
     public const APP_DESC = 'Systems Password Manager';
     public const APP_ALIAS = 'SPM';
+    public const APP_VERSION = [4, 0, 0];
+    public const APP_BUILD = 21031301;
     public const APP_WEBSITE_URL = 'https://www.syspass.org';
-    public const APP_BLOG_URL = 'https://www.cygnux.org';
-    public const APP_DOC_URL = 'https://doc.syspass.org';
-    public const APP_UPDATES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/releases/latest';
-    public const APP_NOTICES_URL = 'https://api.github.com/repos/nuxsmin/sysPass/issues?milestone=none&state=open&labels=Notices';
-    public const APP_ISSUES_URL = 'https://github.com/nuxsmin/sysPass/issues';
+    public const APP_UPDATES_URL = 'https://api.github.com/repos/OpusProjects/sysPass/releases/latest';
+    public const APP_NOTICES_URL = 'https://api.github.com/repos/OpusProjects/sysPass/issues?milestone=none&state=open&labels=Notices';
+    public const APP_ISSUES_URL = 'https://github.com/OpusProjects/sysPass/issues';
 }

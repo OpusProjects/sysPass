@@ -31,6 +31,7 @@ use SP\Domain\Install\Services\DatabaseSetupService;
 use Exception;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
@@ -60,12 +61,10 @@ use function SP\processException;
  */
 final class Installer implements InstallerService
 {
-    /**
-     * sysPass' version and build number
-     */
-    public const VERSION      = [4, 0, 0];
-    public const VERSION_TEXT = '4.0';
-    public const BUILD        = 21031301;
+    /** @deprecated Use AppInfoInterface::APP_VERSION */
+    public const VERSION = AppInfoInterface::APP_VERSION;
+    /** @deprecated Use AppInfoInterface::APP_BUILD */
+    public const BUILD   = AppInfoInterface::APP_BUILD;
 
     private RequestService $request;
     private ?InstallData   $installData = null;
