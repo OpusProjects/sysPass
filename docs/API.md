@@ -96,6 +96,16 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `PUT` | `/api/v1/user-groups/{id}` | Edit user group |
 | `DELETE` | `/api/v1/user-groups/{id}` | Delete user group |
 
+### Users
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/api/v1/users` | Search users |
+| `POST` | `/api/v1/users` | Create user |
+| `GET` | `/api/v1/users/{id}` | View user |
+| `PUT` | `/api/v1/users/{id}` | Edit user |
+| `DELETE` | `/api/v1/users/{id}` | Delete user |
+
 ### Config
 
 | Method | Path | Description |
