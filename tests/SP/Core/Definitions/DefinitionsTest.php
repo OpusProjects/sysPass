@@ -53,7 +53,9 @@ class DefinitionsTest extends TestCase
      */
     public function testGetDefinitions()
     {
-        define('APP_MODULE', 'test');
+        if (!defined('APP_MODULE')) {
+            define('APP_MODULE', 'test');
+        }
 
         $configData = $this->createStub(ConfigDataInterface::class);
         $configData->method('getSiteTheme')->willReturn('theme');
