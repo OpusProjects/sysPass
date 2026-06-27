@@ -29,7 +29,7 @@ use SP\Infrastructure\File\FileSystem;
 use function SP\logger;
 use function SP\processException;
 
-const APP_ROOT = __DIR__;
+define('APP_ROOT', dirname(__DIR__));
 const APP_MODULE = 'cli';
 
 try {

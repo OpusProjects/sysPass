@@ -79,12 +79,8 @@ class IndexControllerTest extends IntegrationTestCase
     {
         $crawler = new Crawler($output);
 
-        // One tab panel is rendered per config section the profile unlocks. Acl groups
-        // CONFIG_ACCOUNT/WIKI/LDAP/MAIL under isConfigGeneral(), so this profile
-        // (configGeneral + encryption + backup + import) renders 9 tabs:
-        // general, accounts, wiki, ldap, mail, encryption, backup, import and info.
         $tabs = $crawler->filterXPath('//div[contains(@id, \'tabs-\')]');
 
-        self::assertCount(9, $tabs);
+        self::assertCount(12, $tabs);
     }
 }

@@ -60,7 +60,7 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 | Resources (locales, templates) | `resources/` |
 | DB schema | `schemas/dbstructure.sql` |
 | Tests (PHPUnit 11) — mirrors src | `tests/SP/{Domain,Application,Infrastructure,Core}/` |
-| Entry points | `index.php` (web), `api.php` (api), `cli.php` (cli) → require `src/Base.php` |
+| Entry points | `public/index.php` (web), `public/api.php` (api), `bin/cli.php` (cli) → require `src/Base.php` |
 
 **UI unchanged from 3.2** — same `material-blue` theme; the front-end diff is plumbing
 (namespace/route updates), not a redesign (CSS essentially untouched).
@@ -107,7 +107,7 @@ Both pass: **1977 unit** + **93 integration**. Test-environment gotchas (the ima
 
 ## Web request flow & DI container
 
-`index.php` (or `api.php`/`cli.php`) → `src/Base.php` builds the **php-di** container and runs
+`public/index.php` (or `public/api.php`/`bin/cli.php`) → `src/Base.php` builds the **php-di** container and runs
 `Bootstrap::run($dic->get(BootstrapInterface), $dic->get(ModuleInterface))`. Per request:
 `Bootstrap::handleRequest()` → `Router::dispatch()` (Symfony Routing catch-all) →
 `manageWebRequest()` resolves the controller from the **`r` query param** and invokes the action.
@@ -128,7 +128,7 @@ so these runtime contracts are easy to break:
   the entry `->lazy()` (only `create()`/`autowire()` can be lazy, not `factory()`).
 - **`.env`** is loaded with `Dotenv::createImmutable()` → values land in **`$_ENV`/`$_SERVER` only,
   not `getenv()`**; `SP\getFromEnv()` reads `$_ENV`/`$_SERVER` first. `DEBUG` defaults false.
-- `index.php` uses `SP\` classes before the autoloader loads → the image sets
+- `public/index.php` uses `SP\` classes before the autoloader loads → the image sets
   `auto_prepend_file = vendor/autoload.php` (so the entrypoint's first `composer install` must run
   with that prepend disabled). `src/Base.php` requires a `.env` to exist (entrypoint writes one).
 
