@@ -124,6 +124,9 @@ final class IndexController extends ControllerBase
     {
         if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
+            $this->tabsHelper->addTab($this->getEventsConfig());
+            $this->tabsHelper->addTab($this->getProxyConfig());
+            $this->tabsHelper->addTab($this->getAuthConfig());
         }
 
         if ($this->checkAccess(AclActionsInterface::CONFIG_ACCOUNT)) {
@@ -202,20 +205,15 @@ final class IndexController extends ControllerBase
             $this->configData->isDemoEnabled()
             && !$this->userDto->isAdminApp ? 'disabled' : ''
         );
-        $template->assign(
-            'users',
-            SelectItemAdapter::factory($this->userService->getAll())->getItemsFromModel()
-        );
-        $template->assign(
-            'userGroups',
-            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
-        );
-        $template->assign(
-            'userProfiles',
-            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
-        );
-
         $template->assign('curlIsAvailable', $this->extensionChecker->checkCurl());
+
+        return new DataTab(__('General'), $template);
+    }
+
+    protected function getEventsConfig(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('events');
 
         $events = array_merge(LogInterface::EVENTS, $this->configData->getLogEvents());
 
@@ -230,7 +228,36 @@ final class IndexController extends ControllerBase
                              )
         );
 
-        return new DataTab(__('General'), $template);
+        return new DataTab(__('Logs'), $template);
+    }
+
+    protected function getProxyConfig(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('proxy');
+
+        return new DataTab(__('Proxy'), $template);
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    protected function getAuthConfig(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('auth');
+
+        $template->assign(
+            'userGroups',
+            SelectItemAdapter::factory($this->userGroupService->getAll())->getItemsFromModel()
+        );
+        $template->assign(
+            'userProfiles',
+            SelectItemAdapter::factory($this->userProfileService->getAll())->getItemsFromModel()
+        );
+
+        return new DataTab(__('Authentication'), $template);
     }
 
     /**

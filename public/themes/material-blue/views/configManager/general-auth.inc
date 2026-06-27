@@ -67,7 +67,7 @@ use function SP\__;
                     </span>
                 </li>
 
-                <li class="mdl-list__item mdl-list__item--two-line">
+                <li class="mdl-list__item mdl-list__item--two-line authbasic-fields" style="<?php echo $configData->isAuthBasicEnabled() ? '' : 'display:none'; ?>">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                for="authbasicautologin_enabled">
@@ -89,7 +89,7 @@ use function SP\__;
             </ul>
         </td>
     </tr>
-    <tr>
+    <tr class="authbasic-fields" style="<?php echo $configData->isAuthBasicEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Domain'); ?>
@@ -119,7 +119,7 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
+    <tr class="authbasic-fields" style="<?php echo $configData->isAuthBasicEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Default Group'); ?>
@@ -156,7 +156,7 @@ use function SP\__;
             </select>
         </td>
     </tr>
-    <tr>
+    <tr class="authbasic-fields" style="<?php echo $configData->isAuthBasicEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Default Profile'); ?>
@@ -194,3 +194,12 @@ use function SP\__;
         </td>
     </tr>
 </table>
+
+<script>
+    document.getElementById('authbasic_enabled').addEventListener('change', function () {
+        var els = document.querySelectorAll('.authbasic-fields');
+        for (var i = 0; i < els.length; i++) {
+            els[i].style.display = this.checked ? '' : 'none';
+        }
+    });
+</script>

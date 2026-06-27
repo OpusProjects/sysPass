@@ -68,7 +68,7 @@ use function SP\__;
             </ul>
         </td>
     </tr>
-    <tr>
+    <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Server'); ?>
@@ -86,7 +86,7 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
+    <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Port'); ?>
@@ -105,7 +105,7 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
+    <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('User'); ?>
@@ -123,7 +123,7 @@ use function SP\__;
             </div>
         </td>
     </tr>
-    <tr>
+    <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
         <td class="descField">
             <?php
             echo __('Password'); ?>
@@ -143,3 +143,12 @@ use function SP\__;
     </tr>
 
 </table>
+
+<script>
+    document.getElementById('proxy_enabled').addEventListener('change', function () {
+        var rows = document.querySelectorAll('.proxy-fields');
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].style.display = this.checked ? '' : 'none';
+        }
+    });
+</script>

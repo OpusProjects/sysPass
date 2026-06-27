@@ -1,26 +1,4 @@
 <?php
-/*
- * sysPass
- *
- * @author nuxsmin
- * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
- *
- * This file is part of sysPass.
- *
- * sysPass is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * sysPass is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
- */
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -35,13 +13,13 @@ use function SP\__;
  * @var TemplateInterface $this
  */
 ?>
-<form method="post" name="frmConfig" id="frmConfig" class="form-action"
+<form method="post" name="frmProxy" id="frmProxy" class="form-action"
       data-onsubmit="config/save"
-      data-action-route="configGeneral/save"
+      data-action-route="configProxy/save"
       data-hash="">
 
     <?php
-    include $this->includeTemplate('general-site'); ?>
+    include $this->includeTemplate('general-proxy'); ?>
 </form>
 
 <div class="tab-actions">
@@ -57,7 +35,7 @@ use function SP\__;
             </button>
         </li>
         <li>
-            <button form="frmConfig"
+            <button form="frmProxy"
                     class="mdl-button mdl-js-button mdl-button--fab mdl-button--mini-fab mdl-button--colored <?php
                     echo $icons->save()->getClassButton(); ?>"
                     title="<?php

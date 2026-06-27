@@ -389,8 +389,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                                 <input type="checkbox"
                                        id="temporary_masterpass_email"
                                        class="mdl-switch__input"
-                                       name="temporary_masterpass_email" <?php
-                                echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>/>
+                                       name="temporary_masterpass_email"/>
                             </label>
                         </div>
 
@@ -406,7 +405,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                 </ul>
             </td>
         </tr>
-        <tr>
+        <tr class="temppass-email-fields" style="display:none">
             <td class="descField">
                 <?php
                 echo __('Group'); ?>
@@ -417,8 +416,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
 
                 <select id="temporary_masterpass_group"
                         name="temporary_masterpass_group"
-                        class="select-box select-box-deselect" <?php
-                echo !$configData->isMailEnabled() ? 'disabled' : ''; ?>>
+                        class="select-box select-box-deselect">
                     <option value=""><?php
                         echo __('Select Group'); ?></option>
                     <?php
@@ -451,6 +449,15 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
         <?php
         endif; ?>
     </table>
+
+    <script>
+        document.getElementById('temporary_masterpass_email').addEventListener('change', function () {
+            var els = document.querySelectorAll('.temppass-email-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
 
 <div class="tab-actions">

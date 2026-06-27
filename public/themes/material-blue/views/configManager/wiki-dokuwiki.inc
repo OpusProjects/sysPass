@@ -100,7 +100,7 @@ endif; ?>
             </td>
         </tr>
 
-        <tr>
+        <tr class="dokuwiki-fields" style="<?php echo $configData->isDokuwikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('API URL'); ?>
@@ -137,7 +137,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="dokuwiki-fields" style="<?php echo $configData->isDokuwikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Base URL'); ?>
@@ -175,7 +175,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="dokuwiki-fields" style="<?php echo $configData->isDokuwikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('User'); ?>
@@ -204,7 +204,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="dokuwiki-fields" style="<?php echo $configData->isDokuwikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Password'); ?>
@@ -223,7 +223,7 @@ endif; ?>
                 </div>
             </td>
         </tr>
-        <tr>
+        <tr class="dokuwiki-fields" style="<?php echo $configData->isDokuwikiEnabled() ? '' : 'display:none'; ?>">
             <td class="descField">
                 <?php
                 echo __('Namespace'); ?>
@@ -254,6 +254,15 @@ endif; ?>
             </td>
         </tr>
     </table>
+
+    <script>
+        document.getElementById('dokuwiki_enabled').addEventListener('change', function () {
+            var els = document.querySelectorAll('.dokuwiki-fields');
+            for (var i = 0; i < els.length; i++) {
+                els[i].style.display = this.checked ? '' : 'none';
+            }
+        });
+    </script>
 </form>
 
 <div class="tab-actions">

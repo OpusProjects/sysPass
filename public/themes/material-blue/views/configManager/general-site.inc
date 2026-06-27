@@ -190,9 +190,16 @@ endif; ?>
             </div>
         </td>
     </tr>
+</table>
+
+<div id="title" class="titleNormal">
+    <i class="material-icons">security</i>
+    <?php echo __('Security'); ?>
+</div>
+
+<table class="data tblConfig">
     <tr>
-        <td class="descField"></td>
-        <td class="valField">
+        <td class="valField" colspan="2" style="padding-left: 3em">
             <ul class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
@@ -213,6 +220,42 @@ endif; ?>
                     </span>
                 </li>
 
+                <li class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="encrypt_session_enabled">
+                            <input type="checkbox" id="encrypt_session_enabled"
+                                   class="mdl-switch__input"
+                                   name="encrypt_session_enabled" <?php
+                            echo $configData->isEncryptSession() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php
+                            echo __('Encrypt Session'); ?></span>
+                        <span class="mdl-list__item-sub-title">
+                            <?php echo __('Encrypt PHP session data'); ?>
+                            <?php echo __(
+                                'This feature increases the PHP sessions security, because the stored data won\'t be readable.'
+                            ); ?>
+                        </span>
+                    </span>
+                </li>
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<div id="title" class="titleNormal">
+    <i class="material-icons">build</i>
+    <?php echo __('Maintenance'); ?>
+</div>
+
+<table class="data tblConfig">
+    <tr>
+        <td class="valField" colspan="2" style="padding-left: 3em">
+            <ul class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
@@ -254,7 +297,20 @@ endif; ?>
                             ); ?></span>
                     </span>
                 </li>
+            </ul>
+        </td>
+    </tr>
+</table>
 
+<div id="title" class="titleNormal">
+    <i class="material-icons">update</i>
+    <?php echo __('Updates'); ?>
+</div>
+
+<table class="data tblConfig">
+    <tr>
+        <td class="valField" colspan="2" style="padding-left: 3em">
+            <ul class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
@@ -292,31 +348,6 @@ endif; ?>
                             echo __(
                                 'Check if there are either sysPass security or warning notices (only for administrators).'
                             ); ?></span>
-                    </span>
-                </li>
-
-                <li class="mdl-list__item mdl-list__item--two-line">
-                    <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                               for="encrypt_session_enabled">
-                            <input type="checkbox" id="encrypt_session_enabled"
-                                   class="mdl-switch__input"
-                                   name="encrypt_session_enabled" <?php
-                            echo $configData->isEncryptSession() ? 'checked' : ''; ?>/>
-                        </label>
-                    </div>
-
-                    <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Encrypt Session'); ?></span>
-                        <span class="mdl-list__item-sub-title">
-                            <?php
-                            echo __('Encrypt PHP session data'); ?>
-                            <?php
-                            echo __(
-                                'This feature increases the PHP sessions security, because the stored data won\'t be readable.'
-                            ); ?>
-                        </span>
                     </span>
                 </li>
             </ul>
