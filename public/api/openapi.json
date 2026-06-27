@@ -26,6 +26,7 @@
     {"name": "Client", "description": "Client management"},
     {"name": "Tag", "description": "Tag management"},
     {"name": "UserGroup", "description": "User group management"},
+    {"name": "EventLog", "description": "Event log search and clear"},
     {"name": "CustomField", "description": "Custom field definition management"},
     {"name": "Config", "description": "Backup and export"}
   ],
@@ -563,6 +564,28 @@
         ],
         "responses": {
           "200": {"description": "User group deleted", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      }
+    },
+    "/api/v1/event-log": {
+      "get": {
+        "tags": ["EventLog"],
+        "summary": "Search event log",
+        "operationId": "searchEventLog",
+        "parameters": [
+          {"name": "text", "in": "query", "schema": {"type": "string"}, "description": "Text to search for"},
+          {"name": "count", "in": "query", "schema": {"type": "integer", "default": 25}, "description": "Number of results"}
+        ],
+        "responses": {
+          "200": {"description": "Search results", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
+        }
+      },
+      "delete": {
+        "tags": ["EventLog"],
+        "summary": "Clear event log",
+        "operationId": "clearEventLog",
+        "responses": {
+          "200": {"description": "Event log cleared", "content": {"application/json": {"schema": {"$ref": "#/components/schemas/SuccessResponse"}}}}
         }
       }
     },
