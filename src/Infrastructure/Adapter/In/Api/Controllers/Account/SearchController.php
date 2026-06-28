@@ -79,7 +79,7 @@ final class SearchController extends ControllerBase
                                         ->setCategoryId($this->apiService->getParamInt('categoryId'))
                                         ->setClientId($this->apiService->getParamInt('clientId'))
                                         ->setTagsId(
-                                            array_map('intval', $this->apiService->getParamArray('tagsId', false, []))
+                                            array_map(intval(...), $this->apiService->getParamArray('tagsId', false, []))
                                         )
                                         ->setLimitCount($this->apiService->getParamInt('count', false, 50))
                                         ->setSortOrder(

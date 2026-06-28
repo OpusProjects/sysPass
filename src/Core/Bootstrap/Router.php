@@ -79,7 +79,7 @@ final class Router
             [],
             '',
             [],
-            array_map('strtoupper', (array)$methods)
+            array_map(strtoupper(...), (array)$methods)
         );
 
         $this->routes->add('route_' . $this->routeCount++, $route);
@@ -104,7 +104,7 @@ final class Router
             [],
             '',
             [],
-            array_map('strtoupper', (array)$methods)
+            array_map(strtoupper(...), (array)$methods)
         );
 
         $this->routes->add('route_' . $this->routeCount++, $route);
