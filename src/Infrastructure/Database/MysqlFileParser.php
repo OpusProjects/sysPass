@@ -55,7 +55,7 @@ final readonly class MysqlFileParser implements DatabaseFileInterface
             $lineLength = strlen($line);
 
             if ($lineLength > 0 && !(str_starts_with($line, '--') || str_starts_with($line, 'DELIMITER'))) {
-                if (substr($line, -$delimiterLength) === $delimiter) {
+                if (str_ends_with($line, $delimiter)) {
                     $query[] = substr($line, 0, $lineLength - $delimiterLength);
 
                     yield implode(' ', $query);
