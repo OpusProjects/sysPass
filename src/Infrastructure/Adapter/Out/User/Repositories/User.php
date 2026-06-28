@@ -207,7 +207,7 @@ final class User extends BaseRepository implements UserRepository
      */
     public function deleteByIdBatch(array $ids): QueryResult
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return new QueryResult();
         }
 

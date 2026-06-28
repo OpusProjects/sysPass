@@ -190,7 +190,7 @@ final class Plugin extends BaseRepository implements PluginRepository
      */
     public function deleteByIdBatch(array $pluginsId): QueryResult
     {
-        if (count($pluginsId) === 0) {
+        if (empty($pluginsId)) {
             return new QueryResult();
         }
 

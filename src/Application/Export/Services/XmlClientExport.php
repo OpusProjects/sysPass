@@ -69,7 +69,7 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
                 throw ServiceException::error(__u('Unable to create node'));
             }
 
-            if (count($clients) === 0) {
+            if (empty($clients)) {
                 return $nodeClients;
             }
 

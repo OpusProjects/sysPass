@@ -240,7 +240,7 @@ final class Category extends BaseRepository implements CategoryRepository
      */
     public function deleteByIdBatch(array $categoryIds): QueryResult
     {
-        if (count($categoryIds) === 0) {
+        if (empty($categoryIds)) {
             return new QueryResult();
         }
 

@@ -147,7 +147,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
      */
     public function deleteAdminBatch(array $notificationsId): QueryResult
     {
-        if (count($notificationsId) === 0) {
+        if (empty($notificationsId)) {
             return new QueryResult();
         }
 
@@ -235,7 +235,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
      */
     public function deleteByIdBatch(array $notificationsId): QueryResult
     {
-        if (count($notificationsId) === 0) {
+        if (empty($notificationsId)) {
             return new QueryResult();
         }
 

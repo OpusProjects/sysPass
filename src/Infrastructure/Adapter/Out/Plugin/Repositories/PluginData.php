@@ -190,7 +190,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      */
     public function getByNameBatch(array $names): QueryResult
     {
-        if (count($names) === 0) {
+        if (empty($names)) {
             return new QueryResult();
         }
 
@@ -217,7 +217,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      */
     public function deleteByNameBatch(array $names): QueryResult
     {
-        if (count($names) === 0) {
+        if (empty($names)) {
             return new QueryResult();
         }
 

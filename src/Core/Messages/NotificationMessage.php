@@ -47,11 +47,11 @@ final class NotificationMessage extends MessageBase
             $message .= '<h3>' . $this->title . '</h3>';
         }
 
-        if (count($this->description) !== 0) {
+        if (!empty($this->description)) {
             $message .= '<div class="notice-description">' . $this->getDescription($formatter) . '</div>';
         }
 
-        if (count($this->footer) !== 0) {
+        if (!empty($this->footer)) {
             $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
         }
 
@@ -79,11 +79,11 @@ final class NotificationMessage extends MessageBase
             $parts[] = $this->title;
         }
 
-        if (count($this->description) !== 0) {
+        if (!empty($this->description)) {
             $parts[] = implode($delimiter, $this->description);
         }
 
-        if (count($this->footer) !== 0) {
+        if (!empty($this->footer)) {
             $parts[] = implode($delimiter, $this->footer);
         }
 

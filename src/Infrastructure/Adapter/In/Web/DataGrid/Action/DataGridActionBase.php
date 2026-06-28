@@ -191,7 +191,7 @@ abstract class DataGridActionBase implements DataGridActionInterface
                 $this->onClickArgs
             );
 
-            return count($args) > 0
+            return !empty($args)
                 ? sprintf('%s(%s)', $this->onClickFunction, implode(',', $args))
                 : $this->onClickFunction;
         }

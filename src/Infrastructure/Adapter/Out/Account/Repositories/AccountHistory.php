@@ -238,7 +238,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      */
     public function deleteByIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return 0;
         }
 
@@ -263,7 +263,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      */
     public function deleteByAccountIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return 0;
         }
 

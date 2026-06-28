@@ -92,7 +92,7 @@ final class EditController extends AccountBase
             $this->apiService->getParamArray('tagsId', false, [])
         );
 
-        if (count($tagsId) !== 0) {
+        if (!empty($tagsId)) {
             $accountRequest->updateTags = true;
             $accountRequest->tags = $tagsId;
         }

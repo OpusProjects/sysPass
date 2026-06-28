@@ -59,7 +59,7 @@ final class DataGridActionSearch extends DataGridActionBase
                 : $arg;
         }
 
-        return count($args) > 0
+        return !empty($args)
             ? sprintf('return %s(%s);', $this->onSubmitFunction, implode(',', $args))
             : $this->onSubmitFunction;
     }

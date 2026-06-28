@@ -131,7 +131,7 @@ abstract class Dto implements DtoInterface
 
         $tranformations = self::getTransformations();
 
-        if (count($tranformations) > 0) {
+        if (!empty($tranformations)) {
             array_walk(
                 $modelProperties,
                 static function (mixed &$v, string $k) use ($tranformations, $model) {

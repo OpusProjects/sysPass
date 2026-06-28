@@ -49,7 +49,7 @@ trait SerializedModel
 
                 $property = $this->{$hydratable->getSourceProperty()};
 
-                if (count($valid) > 0 && $property !== null) {
+                if (!empty($valid) && $property !== null) {
                     return self::deserializeWithFallback($property, $class);
                 }
 
@@ -90,7 +90,7 @@ trait SerializedModel
                     static fn(string $targetClass) => is_a($object, $targetClass)
                 );
 
-                if (count($valid) > 0) {
+                if (!empty($valid)) {
                     return $this->mutate([$hydratable->getSourceProperty() => Serde::serializeObjectToJson($object)]);
                 }
 

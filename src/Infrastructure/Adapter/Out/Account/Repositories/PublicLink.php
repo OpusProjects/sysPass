@@ -118,7 +118,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      */
     public function deleteByIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return 0;
         }
 

@@ -207,7 +207,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      */
     public function deleteByIdBatch(array $itemPresetIds): QueryResult
     {
-        if (count($itemPresetIds) === 0) {
+        if (empty($itemPresetIds)) {
             return new QueryResult();
         }
 

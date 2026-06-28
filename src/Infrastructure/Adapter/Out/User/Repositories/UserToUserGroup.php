@@ -97,7 +97,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      */
     public function update(int $id, array $users): QueryResult
     {
-        if (count($users) === 0) {
+        if (empty($users)) {
             return new QueryResult();
         }
 
@@ -141,7 +141,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      */
     public function add(int $groupId, array $users): QueryResult
     {
-        if (count($users) === 0) {
+        if (empty($users)) {
             return new QueryResult();
         }
 

@@ -61,7 +61,7 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
      */
     public function update(int $id, array $users): int
     {
-        if (count($users) === 0) {
+        if (empty($users)) {
             return $this->userToUserGroupRepository->delete($id)->getAffectedNumRows();
         }
 

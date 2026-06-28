@@ -60,9 +60,9 @@ readonly class AccountPermission
 
     public function hasItems(): bool
     {
-        return count($this->usersView) > 0
-               || count($this->usersEdit) > 0
-               || count($this->userGroupsView) > 0
-               || count($this->userGroupsEdit) > 0;
+        return !empty($this->usersView)
+               || !empty($this->usersEdit)
+               || !empty($this->userGroupsView)
+               || !empty($this->userGroupsEdit);
     }
 }

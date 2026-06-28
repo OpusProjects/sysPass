@@ -138,7 +138,7 @@ final class PhpExtensionChecker implements PhpExtensionCheckerService
             ARRAY_FILTER_USE_BOTH
         );
 
-        if (count($missing) > 0) {
+        if (!empty($missing)) {
             throw new CheckException(sprintf(self::MSG_NOT_AVAILABLE, implode(',', array_keys($missing))));
         }
 

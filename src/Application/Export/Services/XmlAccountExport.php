@@ -72,7 +72,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 throw ServiceException::error(__u('Unable to create node'));
             }
 
-            if (count($accounts) === 0) {
+            if (empty($accounts)) {
                 return $nodeAccounts;
             }
 

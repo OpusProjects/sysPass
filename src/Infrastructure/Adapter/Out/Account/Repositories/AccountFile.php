@@ -154,7 +154,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
      */
     public function deleteByIdBatch(array $ids): int
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return 0;
         }
 

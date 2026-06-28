@@ -68,7 +68,7 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
                 throw ServiceException::error(__u('Unable to create node'));
             }
 
-            if (count($categories) === 0) {
+            if (empty($categories)) {
                 return $nodeCategories;
             }
 
