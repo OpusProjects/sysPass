@@ -115,7 +115,7 @@ final class NotificationForm extends FormBase implements FormInterface
         if (!$this->notificationData->getUserId()
             && !$this->notificationData->isOnlyAdmin()
             && !$this->notificationData->isSticky()) {
-            throw new ValidationException(__u('A target  is needed'));
+            throw new ValidationException(__u('A target is needed'));
         }
     }
 
