@@ -156,8 +156,8 @@ final readonly class LdapAuth implements LdapAuthService
             $ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
         }
 
-        $ldapAuthData->setDn($attributes->get('dn'));
-        $ldapAuthData->setExpire($attributes->get('expire'));
+        $ldapAuthData->setDn((string)($attributes->get('dn') ?? ''));
+        $ldapAuthData->setExpire((int)($attributes->get('expire') ?? 0));
         $ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
                 $attributes['dn'],
