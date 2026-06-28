@@ -45,7 +45,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Code;
 use SP\Domain\Http\Header;
 use SP\Domain\Http\Ports\ResponseService;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 
 use function SP\logger;
 use function SP\processException;

@@ -35,7 +35,7 @@ use SP\Domain\Http\Header;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;

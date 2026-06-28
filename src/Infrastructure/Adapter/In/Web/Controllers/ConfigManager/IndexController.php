@@ -65,7 +65,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 use RuntimeException;
 
 use function SP\__;

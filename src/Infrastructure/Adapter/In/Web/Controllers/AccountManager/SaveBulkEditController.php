@@ -42,7 +42,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 
 use function SP\__u;
 
