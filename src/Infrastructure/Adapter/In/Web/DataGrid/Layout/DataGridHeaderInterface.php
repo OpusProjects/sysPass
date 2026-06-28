@@ -23,29 +23,22 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Layout;
 
 /**
- * Class DataGrid for creating a data matrix
+ * Interface DataGridHeader
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-final class DataGrid extends DataGridBase
+interface DataGridHeaderInterface
 {
     /**
-     * Tab title
+     * @param $header string
      */
-    private string $title = '';
+    public function addHeader(string $header): void;
 
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): DataGrid
-    {
-        $this->title = $title;
-
-        return $this;
-    }
+    /**
+     * @return array
+     */
+    public function getHeaders(): array;
 }

@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 /**
  * sysPass
@@ -24,38 +23,39 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Action;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Layout;
+
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridSortInterface;
+use SplObjectStorage;
 
 /**
- * Class DataGridActionHelp
+ * Class DataGridHeaderActions for adding headers to sort results
+ *
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-final class DataGridActionHelp extends DataGridActionBase
+final class DataGridHeaderSort extends DataGridHeaderBase
 {
-    /**
-     * @var string
-     */
-    private string $template;
+    private SplObjectStorage $sortFields;
 
-    /**
-     * DataGridActionHelp constructor.
-     *
-     * @param string $template
-     */
-    public function __construct(string $template)
+    public function __construct()
     {
-        parent::__construct();
-
-        $this->type = DataGridActionType::HELP_ITEM;
-        $this->template = $template;
-
-        $this->setSkip(true);
+        $this->sortFields = new SplObjectStorage();
     }
 
+
     /**
-     * @return string
+     * @return DataGridSortInterface[]|null
      */
-    public function getTemplate(): string
+    public function getSortFields(): ?SplObjectStorage
     {
-        return $this->template;
+        return $this->sortFields;
+    }
+
+
+    public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
+    {
+        $this->sortFields->offsetSet($field);
+
+        return $this;
     }
 }

@@ -24,7 +24,7 @@
 
 /**
  * @var DataGridAction|DataGridActionSearch $action
- * @var SP\Html\DataGrid\DataGridTab $data
+ * @var SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab $data
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar
@@ -33,9 +33,9 @@
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
-use SP\Html\DataGrid\Action\DataGridActionType;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
 use SP\Mvc\View\TemplateInterface;
 
 if (!isset($data)) {

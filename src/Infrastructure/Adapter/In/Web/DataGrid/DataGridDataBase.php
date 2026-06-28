@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 use SP\Domain\Core\UI\IconInterface;
 use SP\Infrastructure\Database\QueryResult;
@@ -32,7 +32,7 @@ use SP\Infrastructure\Database\QueryResult;
 /**
  * Class DataGridDataBase for setting the matrix data source
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
 abstract class DataGridDataBase implements DataGridDataInterface
 {

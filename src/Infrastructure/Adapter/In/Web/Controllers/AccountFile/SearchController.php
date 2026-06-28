@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\FileGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SearchGridControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;

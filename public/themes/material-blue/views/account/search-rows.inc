@@ -29,8 +29,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Html\Html;
-use SP\Html\DataGrid\Action\DataGridActionBase;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionBase;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 
 use function SP\__;
 

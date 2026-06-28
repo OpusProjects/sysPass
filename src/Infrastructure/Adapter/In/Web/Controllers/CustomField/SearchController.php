@@ -33,7 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\CustomFieldGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;

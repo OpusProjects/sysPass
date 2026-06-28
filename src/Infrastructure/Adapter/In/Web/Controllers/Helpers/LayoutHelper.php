@@ -37,7 +37,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
-use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 

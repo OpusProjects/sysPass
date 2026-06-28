@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
-use SP\Html\DataGrid\DataGridTab;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 
 /**
  * Class TabsGridHelper

@@ -23,39 +23,30 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Layout;
-
-use SP\Html\DataGrid\DataGridSortInterface;
-use SplObjectStorage;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 /**
- * Class DataGridHeaderActions for adding headers to sort results
+ * Class DataGridTab to create a data matrix for use in tabs
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-final class DataGridHeaderSort extends DataGridHeaderBase
+final class DataGridTab extends DataGridBase
 {
-    private SplObjectStorage $sortFields;
-
-    public function __construct()
-    {
-        $this->sortFields = new SplObjectStorage();
-    }
-
-
     /**
-     * @return DataGridSortInterface[]|null
+     * Tab title
      */
-    public function getSortFields(): ?SplObjectStorage
+    private string $title = '';
+
+    public function getTitle(): string
     {
-        return $this->sortFields;
+        return $this->title;
     }
 
-
-    public function addSortField(DataGridSortInterface $field): DataGridHeaderSort
+    public function setTitle(string $title): DataGridTab
     {
-        $this->sortFields->offsetSet($field);
+        $this->title = $title;
 
         return $this;
     }
 }
+    

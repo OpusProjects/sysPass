@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-use SP\Html\DataGrid\DataGridInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Database\QueryResult;
 
 

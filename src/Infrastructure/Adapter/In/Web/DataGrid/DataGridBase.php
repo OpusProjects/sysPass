@@ -23,14 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Html\DataGrid\Action\DataGridActionInterface;
-use SP\Html\DataGrid\Layout\DataGridHeaderInterface;
-use SP\Html\DataGrid\Layout\DataGridPagerBase;
-use SP\Html\DataGrid\Layout\DataGridPagerInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridHeaderInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridPagerBase;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridPagerInterface;
 
 use function SP\__;
 use function SP\logger;
@@ -39,7 +39,7 @@ use function SP\processException;
 /**
  * Class DataGridBase for creating a data matrix
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
 abstract class DataGridBase implements DataGridInterface
 {

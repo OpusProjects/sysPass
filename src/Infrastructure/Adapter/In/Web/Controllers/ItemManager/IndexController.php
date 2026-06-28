@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\Tag\Ports\TagService;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

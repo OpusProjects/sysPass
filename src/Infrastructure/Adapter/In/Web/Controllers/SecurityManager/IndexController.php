@@ -35,7 +35,7 @@ use SP\Application\Security\Ports\TrackService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\EventlogGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\TrackGrid;

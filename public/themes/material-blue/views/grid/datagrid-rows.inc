@@ -1,6 +1,6 @@
 <?php
 /**
- * @var SP\Html\DataGrid\DataGridTab $data
+ * @var SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab $data
  * @var TemplateInterface $this
  * @var callable $_getvar
  */
