@@ -69,7 +69,7 @@ final class CryptSessionHandler implements SessionHandlerInterface
             logger($e->getMessage());
             logger('Session data not encrypted.');
 
-            return $data;
+            return '';
         }
     }
 
