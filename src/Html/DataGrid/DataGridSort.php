@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Html\DataGrid;
 
-use SP\Html\Assets\IconInterface;
+use SP\Domain\Core\UI\IconInterface;
 
 /**
  * Class DataGridSort for defining sort fields

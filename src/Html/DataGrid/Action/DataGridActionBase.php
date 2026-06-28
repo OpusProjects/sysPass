@@ -28,7 +28,7 @@ namespace SP\Html\DataGrid\Action;
 
 use Closure;
 use RuntimeException;
-use SP\Html\Assets\IconInterface;
+use SP\Domain\Core\UI\IconInterface;
 
 /**
  * Class DataGridAction for creating an action for each item in the data grid
