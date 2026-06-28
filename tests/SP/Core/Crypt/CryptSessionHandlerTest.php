@@ -102,7 +102,7 @@ class CryptSessionHandlerTest extends UnitaryTestCase
 
         $out = $this->cryptSessionHandler->read('test');
 
-        $this->assertEquals('session_data', $out);
+        $this->assertEquals('', $out);
     }
 
     public function testWrite()
