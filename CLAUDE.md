@@ -91,7 +91,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both pass: **1977 unit** + **93 integration**. Test-environment gotchas (the image provides these):
+Both pass: **2061 unit** + **93 integration**. Test-environment gotchas (the image provides these):
 
 - **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0`; without
   it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.
@@ -212,8 +212,9 @@ Key constraints:
   (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
   abandoned `klein/klein` router — the HTTP layer goes through
   `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
-- Remaining 8.5 deprecations are vendor-side (faker/fractal) plus the
-  `session.sid_bits_per_character` ini (runtime, not our code).
+- Faker 1.24 emits `trigger_deprecation()` notices (provider API deprecated for Faker 2) —
+  these are library-internal (not PHP-level), suppressed by `display_errors=0` in `phpunit.xml`.
+  `session.sid_bits_per_character` was removed from `SessionLifecycleHandler::SESSION_OPTIONS`.
 
 ## Conventions
 

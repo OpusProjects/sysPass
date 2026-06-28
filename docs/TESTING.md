@@ -3,7 +3,7 @@
 sysPass uses **PHPUnit 13** with two test suites: a fast unit suite that needs no
 external services, and an integration suite backed by a real MariaDB database.
 
-Both suites pass: **1986 unit tests** and **93 integration tests**.
+Both suites pass: **2061 unit tests** and **93 integration tests**.
 
 ## Quick start (Docker)
 
@@ -105,6 +105,15 @@ re-seed the schema before running them again.
 
 - Place tests in `tests/SP/` mirroring the `src/` path of the class under test.
 - Tag unit tests with `#[Group('unitary')]` and integration tests with `#[Group('integration')]`.
-- Use `UnitaryTestCase` as the base class for unit tests (sets up common mocks).
+- Use PHPUnit attributes (`#[Test]`, `#[DataProvider]`, `#[Group]`) — the codebase
+  uses no legacy `@test`/`@dataProvider` annotations.
+- Simple model/DTO/service tests can extend `TestCase` directly.
+- Use `UnitaryTestCase` as the base class for unit tests that need common mocks.
 - Integration tests extend `IntegrationTestCase` or `DatabaseTestCase` which handle
   the DI container and database connection.
+- For classes with DI constructor dependencies, stub the interfaces
+  (`$this->createStub(FooInterface::class)`) rather than instantiating real
+  implementations.
+- Test serialization round-trips for models that use `SerializedModel` or have
+  `__wakeup()` logic — stale serialized data is a common source of runtime errors
+  after class renames.
