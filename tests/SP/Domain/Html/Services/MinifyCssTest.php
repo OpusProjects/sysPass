@@ -188,7 +188,7 @@ class MinifyCssTest extends UnitaryTestCase
                            ],
                            [Header::PRAGMA->value, 'public; maxage={2592000}'],
                            [\SP\Domain\Http\Header::EXPIRES->value, self::anything()],
-                           [Header::CONTENT_TYPE->value, 'text/css; charset: UTF-8']
+                           [Header::CONTENT_TYPE->value, 'text/css; charset=UTF-8']
                        )
                        );
 
