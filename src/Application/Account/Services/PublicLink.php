@@ -87,7 +87,7 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public static function createLinkHash(): string
     {
-        return hash('sha256', uniqid('sysPassPublicLink', true));
+        return bin2hex(random_bytes(32));
     }
 
     /**
