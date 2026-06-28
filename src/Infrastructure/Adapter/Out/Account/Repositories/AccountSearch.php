@@ -306,9 +306,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     public function withFilterForGroup(int $userGroupId): SelectInterface
     {
         return $this->query
-            ->where('Account.userGroupId = :userGroupId')
-            ->orWhere(
-                '(Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = :userGroupId))'
+            ->where(
+                '(Account.userGroupId = :userGroupId OR Account.id IN (SELECT AccountToUserGroup.accountId FROM AccountToUserGroup WHERE AccountToUserGroup.accountId = id AND AccountToUserGroup.userGroupId = :userGroupId))'
             )
             ->bindValues([
                              'userGroupId' => $userGroupId,
@@ -450,7 +449,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     {
         return $this->query
             ->where(
-                '(Account.isPrivate = 1 AND Account.userId = :userId) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId)'
+                '((Account.isPrivate = 1 AND Account.userId = :userId) OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId))'
             )
             ->bindValues([
                              'userId' => $userId,
