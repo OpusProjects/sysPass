@@ -71,7 +71,7 @@ interface Plugin extends EventReceiver
 
     public function getData(): mixed;
 
-    public function saveData(int $id, mixed $data): void;
+    public function saveData(int $id, object $data): void;
 
     public function onLoad();
 
