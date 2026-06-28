@@ -86,7 +86,7 @@ class Request implements RequestService
         $server = $this->request->server;
 
         $this->https = Util::boolval($server->get('HTTPS', 'off'))
-                       || $server->get('SERVER_PORT', 0) === 443;
+                       || (int)$server->get('SERVER_PORT', 0) === 443;
     }
 
     /**
