@@ -196,10 +196,13 @@ abstract class BootstrapBase implements BootstrapInterface
         $authorization = $server->get('HTTP_AUTHORIZATION') ?? $server->get('REDIRECT_HTTP_AUTHORIZATION', '');
 
         if (preg_match('/Basic\s+(.*)$/i', $authorization, $matches)) {
-            [$name, $password] = explode(':', base64_decode($matches[1]), 2);
+            $decoded = base64_decode($matches[1]);
+            $separatorPos = strpos($decoded, ':');
 
-            $server->set('PHP_AUTH_USER', strip_tags($name));
-            $server->set('PHP_AUTH_PW', strip_tags($password));
+            if ($separatorPos !== false) {
+                $server->set('PHP_AUTH_USER', strip_tags(substr($decoded, 0, $separatorPos)));
+                $server->set('PHP_AUTH_PW', strip_tags(substr($decoded, $separatorPos + 1)));
+            }
         }
     }
 
