@@ -42,12 +42,10 @@ if ($dataGridData->getDataCount() > 0):
                     if ($rowSrc['truncate'] === true):
                         $value = Html::truncate($value, (int)(150 / $numFields));
                     endif;
-                else:
-                    $value = '&nbsp;';
                 endif;
                 ?>
                 <td class="cell-data"><?php
-                    echo $value; ?></td>
+                    echo !empty($value) ? htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8') : '&nbsp;'; ?></td>
             <?php
             endforeach; ?>
 
