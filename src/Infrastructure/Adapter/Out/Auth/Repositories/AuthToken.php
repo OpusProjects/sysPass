@@ -217,8 +217,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
             ->newSelect()
             ->cols(['id'])
             ->from(self::TABLE)
-            ->where('userId = :userId')
-            ->orWhere('token = :token')
+            ->where('(userId = :userId OR token = :token)')
             ->where('actionId = :actionId')
             ->bindValues(
                 [
