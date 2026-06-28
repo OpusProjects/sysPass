@@ -56,7 +56,7 @@ $pager = $data->getPager();
                        type="text" id="search"
                        name="search"
                        value="<?php
-                       echo $_getvar('searchTxt'); ?>"/>
+                       echo htmlspecialchars($_getvar('searchTxt') ?? '', ENT_QUOTES, 'UTF-8'); ?>"/>
                 <label class="mdl-textfield__label"
                        for="search"><?php
                     echo __('Text to search for'); ?></label>

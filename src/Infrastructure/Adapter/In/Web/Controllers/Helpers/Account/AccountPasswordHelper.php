@@ -93,7 +93,7 @@ final class AccountPasswordHelper extends HelperBase
                 $this->imageUtil->convertText($pass)
             );
         } else {
-            $this->view->assign('login', $accountData->getLogin());
+            $this->view->assign('login', htmlspecialchars($accountData->getLogin() ?? '', ENT_COMPAT));
             $this->view->assign(
                 'pass',
                 htmlspecialchars($pass, ENT_COMPAT)
