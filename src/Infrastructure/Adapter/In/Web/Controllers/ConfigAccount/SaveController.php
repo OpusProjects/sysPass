@@ -106,13 +106,13 @@ final class SaveController extends SimpleControllerBase
                 throw new ValidationException(__u('Maximum size per file is 16MB'));
             }
 
-            $configData->setFilesEnabled(true);
-            $configData->setFilesAllowedMime($this->request->analyzeArray('files_allowed_mimetypes', null, []));
-            $configData->setFilesAllowedSize($filesAllowedSize);
-
             if ($configData->isFilesEnabled() === false) {
                 $eventMessage->addDescription(__u('Files enabled'));
             }
+
+            $configData->setFilesEnabled(true);
+            $configData->setFilesAllowedMime($this->request->analyzeArray('files_allowed_mimetypes', null, []));
+            $configData->setFilesAllowedSize($filesAllowedSize);
         } elseif ($configData->isFilesEnabled()) {
             $configData->setFilesEnabled(false);
 
@@ -131,14 +131,14 @@ final class SaveController extends SimpleControllerBase
         $pubLinksEnabled = $this->request->analyzeBool('publiclinks_enabled', false);
 
         if ($pubLinksEnabled) {
+            if ($configData->isPublinksEnabled() === false) {
+                $eventMessage->addDescription(__u('Public links enabled'));
+            }
+
             $configData->setPublinksEnabled(true);
             $configData->setPublinksImageEnabled($this->request->analyzeBool('publiclinks_image_enabled', false));
             $configData->setPublinksMaxTime($this->request->analyzeInt('publiclinks_maxtime', 10) * 60);
             $configData->setPublinksMaxViews($this->request->analyzeInt('publiclinks_maxviews', 3));
-
-            if ($configData->isPublinksEnabled() === false) {
-                $eventMessage->addDescription(__u('Public links enabled'));
-            }
         } elseif ($configData->isPublinksEnabled()) {
             $configData->setPublinksEnabled(false);
 
