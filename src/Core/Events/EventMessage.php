@@ -204,7 +204,7 @@ class EventMessage implements MessageInterface
      */
     public function addExtra(string $type, array|string|int|bool|null $data): EventMessage
     {
-        if (!isset($this->extra[$type]) || !in_array($data, $this->extra[$type])) {
+        if (!isset($this->extra[$type]) || !in_array($data, $this->extra[$type], true)) {
             $this->extra[$type][] = $data;
         }
 

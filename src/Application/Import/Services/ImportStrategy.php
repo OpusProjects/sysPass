@@ -104,7 +104,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             $fileType = $fileHandler->getFileType();
 
-            if (!in_array($fileType, self::ALLOWED_MIME)) {
+            if (!in_array($fileType, self::ALLOWED_MIME, true)) {
                 throw ImportException::error(
                     sprintf(__('Mime type not supported ("%s")'), $fileType),
                     __u('Please, check the file format')
