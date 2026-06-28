@@ -97,6 +97,12 @@ abstract class Cookie
             return false;
         }
 
-        return setcookie($this->cookieName, $data, 0, $this->uriContext->getWebRoot());
+        return setcookie($this->cookieName, $data, [
+            'expires'  => 0,
+            'path'     => $this->uriContext->getWebRoot(),
+            'secure'   => true,
+            'httponly'  => true,
+            'samesite' => 'Strict',
+        ]);
     }
 }
