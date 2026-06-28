@@ -57,7 +57,7 @@ final class CheckNoticesController extends StatusBase
             $request = $this->client->request('GET', AppInfoInterface::APP_NOTICES_URL);
 
             if ($request->getStatusCode() === 200
-                && strpos($request->getHeaderLine('content-type'), 'application/json') !== false
+                && str_contains($request->getHeaderLine('content-type'), 'application/json')
             ) {
                 $requestData = json_decode($request->getBody(), false, 512, JSON_THROW_ON_ERROR);
 
