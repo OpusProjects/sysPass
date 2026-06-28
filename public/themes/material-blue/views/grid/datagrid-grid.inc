@@ -36,7 +36,7 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 if (!isset($data)) {
     $data = $_getvar('data');

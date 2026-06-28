@@ -30,8 +30,8 @@
  */
 
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\Components\DataTab;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 $tabs = $_getvar('tabs');
 ?>

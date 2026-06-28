@@ -34,7 +34,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Plugin\Ports\Plugin;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 

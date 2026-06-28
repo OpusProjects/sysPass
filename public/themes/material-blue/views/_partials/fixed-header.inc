@@ -6,7 +6,7 @@
 
 use SP\Domain\Core\UI\IconInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 

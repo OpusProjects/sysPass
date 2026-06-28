@@ -31,7 +31,7 @@
 
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\CustomField\Services\CustomFieldItem;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 

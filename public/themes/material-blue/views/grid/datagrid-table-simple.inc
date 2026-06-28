@@ -1,14 +1,14 @@
 <?php
 /**
  * @var DataGridTab $data
- * @var \SP\Mvc\View\TemplateInterface $this
+ * @var \SP\Infrastructure\Adapter\In\Web\View\TemplateInterface $this
  * @var DataGridAction|DataGridActionSearch $action
  */
 
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
-use SP\Mvc\View\Template;
+use SP\Infrastructure\Adapter\In\Web\View\Template;
 
 if (!isset($data)) {
     $data = $_getvar('data');
