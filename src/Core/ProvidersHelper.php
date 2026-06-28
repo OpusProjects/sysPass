@@ -52,22 +52,22 @@ final readonly class ProvidersHelper
         return $this->logHandler;
     }
 
-    public function getDatabaseLogHandler(): DatabaseHandler
+    public function getDatabaseLogHandler(): ?DatabaseHandler
     {
         return $this->databaseLogHandler;
     }
 
-    public function getMailHandler(): MailEvent
+    public function getMailHandler(): ?MailEvent
     {
         return $this->mailHandler;
     }
 
-    public function getAclHandler(): AclHandler
+    public function getAclHandler(): ?AclHandler
     {
         return $this->aclHandler;
     }
 
-    public function getNotificationHandler(): NotificationEvent
+    public function getNotificationHandler(): ?NotificationEvent
     {
         return $this->notificationHandler;
     }
