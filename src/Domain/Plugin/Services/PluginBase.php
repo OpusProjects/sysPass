@@ -90,7 +90,7 @@ abstract class PluginBase implements Plugin
      * @throws QueryException
      * @throws ServiceException
      */
-    final public function saveData(int $id, mixed $data): void
+    final public function saveData(int $id, object $data): void
     {
         if ($this->data === null) {
             $this->pluginOperation->create($id, $data);
