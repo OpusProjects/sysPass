@@ -129,7 +129,9 @@ class InstallerTest extends UnitaryTestCase
         $params->setDbName(self::$faker->colorName());
         $params->setDbHost(self::$faker->domainName());
         $params->setAdminLogin(self::$faker->userName());
-        $params->setAdminPass(self::$faker->password());
+        $adminPass = self::$faker->password();
+        $params->setAdminPass($adminPass);
+        $params->setAdminPassRepeat($adminPass);
         $params->setMasterPassword(self::$faker->password(11));
         $params->setSiteLang(self::$faker->languageCode());
 
@@ -316,6 +318,23 @@ class InstallerTest extends UnitaryTestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Please, enter the admin\'s password');
+
+        $installer->run($params);
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws SPException
+     **/
+    public function testAdminPassDoesNotMatch(): void
+    {
+        $params = $this->getInstallData();
+        $params->setAdminPassRepeat('different_password');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Passwords do not match');
 
         $installer->run($params);
     }

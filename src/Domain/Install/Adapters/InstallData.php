@@ -42,8 +42,9 @@ final class InstallData
     private ?string $dbSocket       = null;
     private int     $dbPort         = 0;
     private ?string $adminLogin     = null;
-    private ?string $adminPass      = null;
-    private ?string $masterPassword = null;
+    private ?string $adminPass       = null;
+    private ?string $adminPassRepeat = null;
+    private ?string $masterPassword  = null;
     private bool    $hostingMode    = false;
     private ?string $dbAuthHost     = null;
     private ?string $dbAuthHostDns  = null;
@@ -88,6 +89,16 @@ final class InstallData
     public function setAdminPass(string $adminPass): void
     {
         $this->adminPass = $adminPass;
+    }
+
+    public function getAdminPassRepeat(): ?string
+    {
+        return $this->adminPassRepeat;
+    }
+
+    public function setAdminPassRepeat(string $adminPassRepeat): void
+    {
+        $this->adminPassRepeat = $adminPassRepeat;
     }
 
     public function getMasterPassword(): ?string

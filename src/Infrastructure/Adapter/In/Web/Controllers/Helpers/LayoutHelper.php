@@ -120,9 +120,9 @@ final class LayoutHelper extends HelperBase
         $this->view->assign('app_desc', AppInfoInterface::APP_DESC);
         $this->view->assign('app_website_url', AppInfoInterface::APP_WEBSITE_URL);
         $this->view->assign('app_version', implode('.', array_slice(AppInfoInterface::APP_VERSION, 0, 2)));
-        $this->view->assign('logo_icon', $baseUrl . '/public/images/logo_icon.png');
-        $this->view->assign('logo_no_bg_color', $baseUrl . '/public/images/logo_full_nobg_outline_color.png');
-        $this->view->assign('logo_no_bg', $baseUrl . '/public/images/logo_full_nobg_outline.png');
+        $this->view->assign('logo_icon', $baseUrl . '/images/logo_icon.png');
+        $this->view->assign('logo_no_bg_color', $baseUrl . '/images/logo_full_nobg_outline_color.png');
+        $this->view->assign('logo_no_bg', $baseUrl . '/images/logo_full_nobg_outline.png');
         $this->view->assign('httpsEnabled', $this->request->isHttps());
         $this->view->assign('homeRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT));
 

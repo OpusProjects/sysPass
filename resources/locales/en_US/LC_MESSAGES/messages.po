@@ -6892,6 +6892,25 @@ msgstr "Search results of '%s'"
 msgid "Page"
 msgstr "Page"
 
+
+msgid "Installation"
+msgstr "Installation"
+
+msgid "Install Mode"
+msgstr "Install Mode"
+
+msgid "Standard"
+msgstr "Standard"
+
+msgid "Hosting"
+msgstr "Hosting"
+
+msgid "Creates the database and the DB user with the provided credentials"
+msgstr "Creates the database and the DB user with the provided credentials"
+
+msgid "Uses the provided credentials directly — the database must already exist"
+msgstr "Uses the provided credentials directly — the database must already exist"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" directory does not exist."
 

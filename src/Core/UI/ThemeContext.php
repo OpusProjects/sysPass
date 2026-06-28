@@ -52,7 +52,7 @@ final class ThemeContext implements ThemeContextInterface
         $this->fullPath = FileSystem::buildPath($basePath, $name);
         $this->path = FileSystem::buildPath(str_replace(APP_ROOT, '', $basePath), $name);
         $this->viewsPath = FileSystem::buildPath($this->fullPath, 'views');
-        $this->uri = sprintf('%s/public/themes/%s', $baseUri, $name);
+        $this->uri = sprintf('%s/themes/%s', $baseUri, $name);
     }
 
     public function getModule(): string

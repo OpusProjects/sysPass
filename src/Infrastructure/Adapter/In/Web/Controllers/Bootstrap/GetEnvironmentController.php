@@ -29,6 +29,7 @@ use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
 use SP\Core\Crypt\CryptPKI;
+use SP\Core\Language;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -36,6 +37,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\LanguageInterface;
 use SP\Application\Import\Services\ImportStrategy;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\File\FileException;
@@ -57,7 +59,8 @@ final class GetEnvironmentController extends SimpleControllerBase
         private readonly CryptPKIHandler      $cryptPKI,
         private readonly BrowserAuthService   $browser,
         private readonly PluginManagerService $pluginManagerService,
-        private readonly PathsContext         $pathsContext
+        private readonly PathsContext         $pathsContext,
+        private readonly LanguageInterface    $language,
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -106,6 +109,13 @@ final class GetEnvironmentController extends SimpleControllerBase
      */
     private function getJsLang(): array
     {
+        if (!$this->configData->isInstalled()) {
+            $lang = Language::resolveLanguage(
+                $this->request->getHeader('Accept-Language')
+            );
+            $this->language->setLocales($lang);
+        }
+
         return FileSystem::require(FileSystem::buildPath($this->pathsContext[Path::RESOURCES], 'strings.js.inc'));
     }
 
