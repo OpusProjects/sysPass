@@ -387,7 +387,7 @@ final class Account extends BaseRepository implements AccountRepository
             $optional[] = 'userGroupId';
         }
 
-        $cols = array_filter($account->toArray($optional), static fn($value) => !empty($value));
+        $cols = array_filter($account->toArray($optional), static fn($value) => $value !== null);
 
         if (empty($cols)) {
             return new QueryResult();
