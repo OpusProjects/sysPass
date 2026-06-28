@@ -70,13 +70,13 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <?php
                         if (null !== $accountSearchItem->getClientLink()): ?>
                             <a href="<?php
-                            echo $accountSearchItem->getClientLink(); ?>"
+                            echo htmlspecialchars($accountSearchItem->getClientLink() ?? '', ENT_QUOTES, 'UTF-8'); ?>"
                                target="blank"
                                title="<?php
                                echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php
-                                    echo $accountSearchItem->getColor(); ?>;"
+                                    echo htmlspecialchars($accountSearchItem->getColor() ?? '', ENT_QUOTES, 'UTF-8'); ?>;"
                                           class="mdl-chip__contact mdl-color-text--white">
                                         <?php
                                         echo htmlspecialchars(
@@ -96,7 +96,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php
-                                echo $accountSearchItem->getColor(); ?>;"
+                                echo htmlspecialchars($accountSearchItem->getColor() ?? '', ENT_QUOTES, 'UTF-8'); ?>;"
                                       class="mdl-chip__contact mdl-color-text--white">
                                     <?php
                                     echo htmlspecialchars(

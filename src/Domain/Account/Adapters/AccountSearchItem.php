@@ -121,7 +121,7 @@ final class AccountSearchItem
     public function getClientLink(): ?string
     {
         return self::$wikiEnabled
-            ? $this->configData->getWikiSearchurl() . ($this->accountSearchView->getClientName() ?? '')
+            ? $this->configData->getWikiSearchurl() . urlencode($this->accountSearchView->getClientName() ?? '')
             : null;
     }
 
