@@ -198,7 +198,7 @@ final class Api extends Service implements ApiService
     private function getHelp(string $action): array
     {
         if ($this->helpClass !== null) {
-            return call_user_func([$this->helpClass, 'getHelpFor'], $action);
+            return $this->helpClass::getHelpFor($action);
         }
 
         return [];

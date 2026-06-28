@@ -136,7 +136,7 @@ abstract class Dto implements DtoInterface
                 $modelProperties,
                 static function (mixed &$v, string $k) use ($tranformations, $model) {
                     if ($v !== null && array_key_exists($k, $tranformations)) {
-                        $v = call_user_func($tranformations[$k], $model);
+                        $v = ($tranformations[$k])($model);
                     }
                 }
             );
