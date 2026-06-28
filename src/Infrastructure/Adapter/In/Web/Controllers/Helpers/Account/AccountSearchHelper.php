@@ -67,7 +67,7 @@ final class AccountSearchHelper extends HelperBase
      */
     private bool $filterOn = false;
     private bool $isAjax   = false;
-    private int  $queryTimeStart;
+    private float $queryTimeStart;
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
 
@@ -86,7 +86,7 @@ final class AccountSearchHelper extends HelperBase
     ) {
         parent::__construct($application, $template, $request);
 
-        $this->queryTimeStart = (int)microtime(true);
+        $this->queryTimeStart = microtime(true);
         $this->isIndex = $this->request->analyzeString('r') ===
                          $this->acl->getRouteFor(AclActionsInterface::ACCOUNT);
         $this->setVars();
