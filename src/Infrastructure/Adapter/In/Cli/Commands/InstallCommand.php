@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
 use SP\Application\Install\Services\Installer;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

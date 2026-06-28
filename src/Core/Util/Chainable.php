@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
-/*
+/**
  * sysPass
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,31 +23,31 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Util;
+namespace SP\Core\Util;
 
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
-use SP\Util\Chainable;
+use Closure;
 
 /**
- * Class ChainableTest
- *
+ * Class Chainable
  */
-#[Group('unitary')]
-class ChainableTest extends TestCase
+final class Chainable
 {
-    public function testNext()
-    {
-        $chain = (new Chainable(fn($n) => $this->increment($n, 1), $this, 1))
-            ->next(fn($n) => $this->increment($n, 2))
-            ->next(fn($n) => $this->increment($n, 3))
-            ->resolve();
+    private array $args;
 
-        $this->assertEquals(7, $chain);
+    public function __construct(private readonly Closure $next, private readonly object $bindTo, ...$args)
+    {
+        $this->args = $args;
     }
 
-    private function increment(int $a, int $b): int
+    public function next(Closure $next): Chainable
     {
-        return $a + $b;
+        $resolved = $this->next->call($this->bindTo, ...$this->args);
+
+        return new self($next, $this->bindTo, $resolved);
+    }
+
+    public function resolve(): mixed
+    {
+        return $this->next->call($this->bindTo, ...$this->args);
     }
 }

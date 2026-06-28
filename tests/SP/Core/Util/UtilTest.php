@@ -24,12 +24,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Util;
+namespace SP\Tests\Core\Util;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Tests\UnitaryTestCase;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 
 /**
  * Class UtilTest

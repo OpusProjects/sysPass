@@ -39,7 +39,7 @@ use SP\Application\Crypt\Services\MasterPass;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Cli\Commands\CommandBase;
 use SP\Infrastructure\Adapter\In\Cli\Commands\Validators;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\LockableTrait;
 use Symfony\Component\Console\Input\InputInterface;

@@ -31,7 +31,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Util\Util;
+use SP\Core\Util\Util;
 
 use function SP\__u;
 
