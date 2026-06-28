@@ -89,8 +89,8 @@ final readonly class DatabaseAuth implements DatabaseAuthService
         $loginPass = $userLoginDto->getLoginPass() ?? '';
         $passHashSha = sha1($userDto->hashSalt . $loginPass);
 
-        return ($userDto->pass === $passHashSha
-                || $userDto->pass === md5($loginPass)
+        return (hash_equals($userDto->pass, $passHashSha)
+                || hash_equals($userDto->pass, md5($loginPass))
                 || hash_equals(
                     $userDto->pass,
                     crypt($loginPass, $userDto->hashSalt ?? '')
