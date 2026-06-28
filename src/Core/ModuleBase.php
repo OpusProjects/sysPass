@@ -67,16 +67,21 @@ abstract class ModuleBase implements ModuleInterface
             return;
         }
 
-        if ($this->configData->isLogEnabled()) {
-            $this->eventDispatcher->attach($this->providersHelper->getDatabaseLogHandler());
+        if ($this->configData->isLogEnabled() && ($dbLog = $this->providersHelper->getDatabaseLogHandler())) {
+            $this->eventDispatcher->attach($dbLog);
         }
 
-        if ($this->configData->isMailEnabled()) {
-            $this->eventDispatcher->attach($this->providersHelper->getMailHandler());
+        if ($this->configData->isMailEnabled() && ($mail = $this->providersHelper->getMailHandler())) {
+            $this->eventDispatcher->attach($mail);
         }
 
-        $this->eventDispatcher->attach($this->providersHelper->getAclHandler());
-        $this->eventDispatcher->attach($this->providersHelper->getNotificationHandler());
+        if ($acl = $this->providersHelper->getAclHandler()) {
+            $this->eventDispatcher->attach($acl);
+        }
+
+        if ($notification = $this->providersHelper->getNotificationHandler()) {
+            $this->eventDispatcher->attach($notification);
+        }
     }
 
     protected function checkUpgradeNeeded(): bool
