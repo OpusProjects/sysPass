@@ -264,8 +264,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
             $this->query->orderBy(['Account.countView DESC']);
         } else {
             $sortOrder = match ($filter->getSortOrder()) {
-                AccountSearchConstants::SORT_DIR_ASC => 'ASC',
                 AccountSearchConstants::SORT_DIR_DESC => 'DESC',
+                default => 'ASC',
             };
 
             $this->query->orderBy([
