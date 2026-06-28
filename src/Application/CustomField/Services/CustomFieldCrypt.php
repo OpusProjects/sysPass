@@ -91,7 +91,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
     {
         $customFieldsData = $this->customFieldService->getAllEncrypted();
 
-        if (count($customFieldsData) === 0) {
+        if (empty($customFieldsData)) {
             $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData', 
                     $this,
                     EventMessage::build()

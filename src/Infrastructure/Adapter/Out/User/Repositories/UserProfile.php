@@ -116,7 +116,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      */
     public function deleteByIdBatch(array $ids): QueryResult
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return new QueryResult();
         }
 

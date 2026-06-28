@@ -86,7 +86,7 @@ final class UploadController extends ControllerBase
 
         $filesAllowedMime = $this->configData->getFilesAllowedMime();
 
-        if (count($filesAllowedMime) === 0) {
+        if (empty($filesAllowedMime)) {
             throw new SPException(__u('There aren\'t any allowed MIME types'));
         }
 

@@ -173,7 +173,7 @@ final class AccountSearchFilterDto
 
     public function hasTags(): bool
     {
-        return null !== $this->tagsId && count($this->tagsId) !== 0;
+        return null !== $this->tagsId && !empty($this->tagsId);
     }
 
     public function isSortViews(): bool

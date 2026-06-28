@@ -70,7 +70,7 @@ final class AccountItems extends Service implements AccountItemsService
         if ($userCanChangePermissions) {
             if (null === $accountUpdateDto->userGroupsView) {
                 $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->userGroupsView) > 0) {
+            } elseif (!empty($accountUpdateDto->userGroupsView)) {
                 $this->accountToUserGroupRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserGroupRepository
@@ -84,7 +84,7 @@ final class AccountItems extends Service implements AccountItemsService
 
             if (null === $accountUpdateDto->userGroupsEdit) {
                 $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->userGroupsEdit) > 0) {
+            } elseif (!empty($accountUpdateDto->userGroupsEdit)) {
                 $this->accountToUserGroupRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserGroupRepository
@@ -98,7 +98,7 @@ final class AccountItems extends Service implements AccountItemsService
 
             if (null === $accountUpdateDto->usersView) {
                 $this->accountToUserRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (count($accountUpdateDto->usersView) > 0) {
+            } elseif (!empty($accountUpdateDto->usersView)) {
                 $this->accountToUserRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserRepository
@@ -112,7 +112,7 @@ final class AccountItems extends Service implements AccountItemsService
 
             if (null === $accountUpdateDto->usersEdit) {
                 $this->accountToUserRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (count($accountUpdateDto->usersEdit) > 0) {
+            } elseif (!empty($accountUpdateDto->usersEdit)) {
                 $this->accountToUserRepository->transactionAware(
                     function () use ($accountUpdateDto, $accountId) {
                         $this->accountToUserRepository
@@ -127,7 +127,7 @@ final class AccountItems extends Service implements AccountItemsService
 
         if (null === $accountUpdateDto->tags) {
             $this->accountToTagRepository->deleteByAccountId($accountId);
-        } elseif (count($accountUpdateDto->tags) > 0) {
+        } elseif (!empty($accountUpdateDto->tags)) {
             $this->accountToTagRepository->transactionAware(
                 function () use ($accountUpdateDto, $accountId) {
                     $this->accountToTagRepository->deleteByAccountId($accountId);
@@ -146,7 +146,7 @@ final class AccountItems extends Service implements AccountItemsService
         try {
             if ($userCanChangePermissions) {
                 if (null !== $accountCreateDto->userGroupsView
-                    && count($accountCreateDto->userGroupsView) > 0
+                    && !empty($accountCreateDto->userGroupsView)
                 ) {
                     $this->accountToUserGroupRepository->addByType(
                         $accountId,
@@ -155,7 +155,7 @@ final class AccountItems extends Service implements AccountItemsService
                 }
 
                 if (null !== $accountCreateDto->userGroupsEdit
-                    && count($accountCreateDto->userGroupsEdit) > 0
+                    && !empty($accountCreateDto->userGroupsEdit)
                 ) {
                     $this->accountToUserGroupRepository->addByType(
                         $accountId,
@@ -164,16 +164,16 @@ final class AccountItems extends Service implements AccountItemsService
                     );
                 }
 
-                if (null !== $accountCreateDto->usersView && count($accountCreateDto->usersView) > 0) {
+                if (null !== $accountCreateDto->usersView && !empty($accountCreateDto->usersView)) {
                     $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersView);
                 }
 
-                if (null !== $accountCreateDto->usersEdit && count($accountCreateDto->usersEdit) > 0) {
+                if (null !== $accountCreateDto->usersEdit && !empty($accountCreateDto->usersEdit)) {
                     $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersEdit, true);
                 }
             }
 
-            if (null !== $accountCreateDto->tags && count($accountCreateDto->tags) > 0) {
+            if (null !== $accountCreateDto->tags && !empty($accountCreateDto->tags)) {
                 $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
             }
         } catch (SPException $e) {

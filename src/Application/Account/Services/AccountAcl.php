@@ -217,7 +217,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Check out if user is listed in secondary users of the account
         $userInUsers = $this->getUserInSecondaryUsers($this->userData->id ?? 0);
-        $this->accountPermission->setUserInUsers(count($userInUsers) > 0);
+        $this->accountPermission->setUserInUsers(!empty($userInUsers));
 
         if ($this->accountPermission->isUserInUsers()) {
             $this->accountPermission->setResultView(true);
@@ -249,7 +249,7 @@ final class AccountAcl extends Service implements AccountAclService
                 $this->userData->userGroupId ?? 0
             );
 
-        $this->accountPermission->setUserInGroups(count($userGroupsInSecondaryUserGroups) > 0);
+        $this->accountPermission->setUserInGroups(!empty($userGroupsInSecondaryUserGroups));
 
         if ($this->accountPermission->isUserInGroups()) {
             $this->accountPermission->setResultView(true);

@@ -143,7 +143,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      */
     public function deleteBatch(array $itemIds, int $moduleId): QueryResult
     {
-        if (count($itemIds) === 0) {
+        if (empty($itemIds)) {
             return new QueryResult();
         }
 

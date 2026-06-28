@@ -153,7 +153,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
      */
     public function deleteByIdBatch(array $ids): QueryResult
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return new QueryResult();
         }
 

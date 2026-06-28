@@ -123,7 +123,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      */
     public function deleteByIdBatch(array $authTokensId): QueryResult
     {
-        if (count($authTokensId) === 0) {
+        if (empty($authTokensId)) {
             return new QueryResult();
         }
 

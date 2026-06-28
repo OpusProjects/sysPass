@@ -163,7 +163,7 @@ class Request implements RequestService
                 PREG_SPLIT_NO_EMPTY
             );
 
-            if (count($matches) > 0) {
+            if (!empty($matches)) {
                 return $matches;
             }
         }

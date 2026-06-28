@@ -59,7 +59,7 @@ final class CreateController extends ItemPresetViewBase
 
             $type = null;
 
-            if (count($args) > 0) {
+            if (!empty($args)) {
                 $type = Filter::getString($args[0]);
             }
 

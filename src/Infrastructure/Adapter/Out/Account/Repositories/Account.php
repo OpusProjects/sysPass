@@ -389,7 +389,7 @@ final class Account extends BaseRepository implements AccountRepository
 
         $cols = array_filter($account->toArray($optional), static fn($value) => !empty($value));
 
-        if (count($cols) === 0) {
+        if (empty($cols)) {
             return new QueryResult();
         }
 
@@ -489,7 +489,7 @@ final class Account extends BaseRepository implements AccountRepository
      */
     public function deleteByIdBatch(array $accountsId): QueryResult
     {
-        if (count($accountsId) === 0) {
+        if (empty($accountsId)) {
             return new QueryResult();
         }
 

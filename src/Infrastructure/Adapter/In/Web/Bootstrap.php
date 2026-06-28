@@ -169,7 +169,7 @@ final class Bootstrap extends BootstrapBase
             );
         }
 
-        if (count($method->getAttributes(Action::class)) === 0) {
+        if (empty($method->getAttributes(Action::class))) {
             throw InitializationException::error('Method is not defined as an action');
         }
 

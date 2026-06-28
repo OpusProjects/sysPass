@@ -222,7 +222,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      */
     public function deleteByIdBatch(array $ids): QueryResult
     {
-        if (count($ids) === 0) {
+        if (empty($ids)) {
             return new QueryResult();
         }
 

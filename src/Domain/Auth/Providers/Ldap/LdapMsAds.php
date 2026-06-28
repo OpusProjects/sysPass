@@ -220,6 +220,6 @@ final class LdapMsAds extends LdapBase
             $adServers[] = $record['target'];
         }
 
-        return count($adServers) > 0 ? $adServers[array_rand($adServers)] : $server;
+        return !empty($adServers) ? $adServers[array_rand($adServers)] : $server;
     }
 }

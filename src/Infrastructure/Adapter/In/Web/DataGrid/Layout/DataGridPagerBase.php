@@ -231,7 +231,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     {
         $args = $this->parseArgs();
 
-        return count($args) > 0
+        return !empty($args)
             ? $this->onClickFunction . '(' . implode(',', $args) . ')'
             : $this->onClickFunction;
     }

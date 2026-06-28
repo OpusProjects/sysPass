@@ -71,7 +71,7 @@ final class ListController extends AccountFileBase
         );
         $this->view->assign('fileDeleteRoute', $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_FILE_DELETE));
 
-        if (count($files) === 0) {
+        if (empty($files)) {
             $this->view->addTemplate('no_records_found', '_partials');
 
             $this->view->assign('message', __('There are no linked files for the account'));

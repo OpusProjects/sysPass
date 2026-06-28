@@ -239,7 +239,7 @@ final class Client extends BaseRepository implements ClientRepository
      */
     public function deleteByIdBatch(array $clientIds): QueryResult
     {
-        if (count($clientIds) === 0) {
+        if (empty($clientIds)) {
             return new QueryResult();
         }
 

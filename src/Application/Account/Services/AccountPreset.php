@@ -109,19 +109,19 @@ final class AccountPreset extends Service implements AccountPresetService
             $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
             $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
 
-            if (count($usersView) > 0) {
+            if (!empty($usersView)) {
                 $this->accountToUserRepository->addByType($accountId, $usersView);
             }
 
-            if (count($usersEdit) > 0) {
+            if (!empty($usersEdit)) {
                 $this->accountToUserRepository->addByType($accountId, $usersEdit, true);
             }
 
-            if (count($userGroupsView) > 0) {
+            if (!empty($userGroupsView)) {
                 $this->accountToUserGroupRepository->addByType($accountId, $userGroupsView);
             }
 
-            if (count($userGroupsEdit) > 0) {
+            if (!empty($userGroupsEdit)) {
                 $this->accountToUserGroupRepository->addByType($accountId, $userGroupsEdit, true);
             }
         }
