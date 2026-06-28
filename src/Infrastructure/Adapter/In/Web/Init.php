@@ -235,7 +235,7 @@ final class Init extends HttpModuleBase
                 throw new InitializationException('Database checking error');
             }
 
-            if (!in_array($controller, self::NO_SESSION_ACTIVITY)) {
+            if (!in_array($controller, self::NO_SESSION_ACTIVITY, true)) {
                 // Initialize user session context
                 $this->initUserSession();
             }
