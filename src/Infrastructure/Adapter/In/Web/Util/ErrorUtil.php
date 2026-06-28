@@ -64,19 +64,14 @@ final class ErrorUtil
         ?string   $replace = null,
         bool      $render = true
     ): void {
-        switch (get_class($e)) {
-            case UpdatedMasterPassException::class:
-                self::showErrorInView($view, self::ERR_UPDATE_MPASS, $render, $replace);
-                break;
-            case UnauthorizedPageException::class:
-                self::showErrorInView($view, self::ERR_PAGE_NO_PERMISSION, $render, $replace);
-                break;
-            case AccountPermissionException::class:
-                self::showErrorInView($view, self::ERR_ACCOUNT_NO_PERMISSION, $render, $replace);
-                break;
-            default:
-                self::showErrorInView($view, self::ERR_EXCEPTION, $render, $replace);
-        }
+        $errorCode = match ($e::class) {
+            UpdatedMasterPassException::class => self::ERR_UPDATE_MPASS,
+            UnauthorizedPageException::class => self::ERR_PAGE_NO_PERMISSION,
+            AccountPermissionException::class => self::ERR_ACCOUNT_NO_PERMISSION,
+            default => self::ERR_EXCEPTION,
+        };
+
+        self::showErrorInView($view, $errorCode, $render, $replace);
     }
 
     /**
