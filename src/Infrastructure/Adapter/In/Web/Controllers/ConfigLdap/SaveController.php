@@ -62,6 +62,10 @@ final class SaveController extends SimpleControllerBase
         $ldapEnabled = $this->request->analyzeBool('ldap_enabled', false);
 
         if ($ldapEnabled) {
+            if ($configData->isLdapEnabled() === false) {
+                $eventMessage->addDescription(__u('LDAP enabled'));
+            }
+
             $ldapParams = LdapParams::fromRequest($this->request);
 
             $ldapDefaultGroup = $this->request->analyzeInt('ldap_defaultgroup');
@@ -86,10 +90,6 @@ final class SaveController extends SimpleControllerBase
 
             if ($ldapParams->getBindPass() !== '***') {
                 $configData->setLdapBindPass($ldapParams->getBindPass());
-            }
-
-            if ($configData->isLdapEnabled() === false) {
-                $eventMessage->addDescription(__u('LDAP enabled'));
             }
         } elseif ($configData->isLdapEnabled()) {
             $configData->setLdapEnabled(false);

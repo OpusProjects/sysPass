@@ -61,13 +61,13 @@ final class SaveController extends SimpleControllerBase
                 throw new ValidationException(__u('Missing remote syslog parameters'));
             }
 
-            $configData->setSyslogRemoteEnabled(true);
-            $configData->setSyslogServer($syslogServer);
-            $configData->setSyslogPort($syslogPort);
-
             if ($configData->isSyslogRemoteEnabled() === false) {
                 $eventMessage->addDescription(__u('Remote syslog enabled'));
             }
+
+            $configData->setSyslogRemoteEnabled(true);
+            $configData->setSyslogServer($syslogServer);
+            $configData->setSyslogPort($syslogPort);
         } elseif ($configData->isSyslogRemoteEnabled()) {
             $configData->setSyslogRemoteEnabled(false);
 

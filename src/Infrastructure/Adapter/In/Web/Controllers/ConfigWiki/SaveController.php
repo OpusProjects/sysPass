@@ -66,14 +66,14 @@ final class SaveController extends SimpleControllerBase
         }
 
         if ($wikiEnabled) {
+            if ($configData->isWikiEnabled() === false) {
+                $eventMessage->addDescription(__u('Wiki enabled'));
+            }
+
             $configData->setWikiEnabled(true);
             $configData->setWikiSearchurl($wikiSearchUrl);
             $configData->setWikiPageurl($wikiPageUrl);
             $configData->setWikiFilter(explode(',', $wikiFilter));
-
-            if ($configData->isWikiEnabled() === false) {
-                $eventMessage->addDescription(__u('Wiki enabled'));
-            }
         } elseif ($configData->isWikiEnabled()) {
             $configData->setWikiEnabled(false);
 

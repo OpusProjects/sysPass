@@ -44,15 +44,15 @@ final class SaveController extends SimpleControllerBase
         $authSsoDefaultProfile = $this->request->analyzeInt('sso_defaultprofile');
 
         if ($authBasicEnabled) {
+            if ($configData->isAuthBasicEnabled() === false) {
+                $eventMessage->addDescription(__u('Auth Basic enabled'));
+            }
+
             $configData->setAuthBasicEnabled(true);
             $configData->setAuthBasicAutoLoginEnabled($authBasicAutologinEnabled);
             $configData->setAuthBasicDomain($authBasicDomain);
             $configData->setSsoDefaultGroup($authSsoDefaultGroup);
             $configData->setSsoDefaultProfile($authSsoDefaultProfile);
-
-            if ($configData->isAuthBasicEnabled() === false) {
-                $eventMessage->addDescription(__u('Auth Basic enabled'));
-            }
         } elseif ($configData->isAuthBasicEnabled()) {
             $configData->setAuthBasicEnabled(false);
             $configData->setAuthBasicAutoLoginEnabled(false);
