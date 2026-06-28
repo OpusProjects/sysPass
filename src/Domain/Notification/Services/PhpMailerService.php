@@ -126,7 +126,7 @@ final readonly class PhpMailerService implements MailerInterface
 
             if ($this->debug) {
                 $mailer->SMTPDebug = 2;
-                $mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper($level));
+                $mailer->Debugoutput = static fn($str, $level) => logger($str, strtoupper((string)$level));
             }
 
             $mailer->setFrom($mailParams->getFrom(), $appName);
