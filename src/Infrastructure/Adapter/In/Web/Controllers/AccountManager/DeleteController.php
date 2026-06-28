@@ -79,6 +79,11 @@ final class DeleteController extends ControllerBase
     {
         if ($id === null) {
             $ids = $this->getItemsIdFromRequest($this->request);
+
+            if (empty($ids)) {
+                return ActionResponse::error(__u('No items selected'));
+            }
+
             $this->accountService->deleteByIdBatch($ids);
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::ACCOUNT, $ids, $this->customFieldService);

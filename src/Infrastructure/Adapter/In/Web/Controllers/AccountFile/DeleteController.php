@@ -55,7 +55,13 @@ final class DeleteController extends AccountFileBase
     public function deleteAction(?int $id): ActionResponse
     {
         if ($id === null) {
-            $this->accountFileService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+            $ids = $this->getItemsIdFromRequest($this->request);
+
+            if (empty($ids)) {
+                return ActionResponse::error(__u('No items selected'));
+            }
+
+            $this->accountFileService->deleteByIdBatch($ids);
 
             $this->eventDispatcher->notify(new Event('delete.accountFile.selection', $this, EventMessage::build()->addDescription(__u('Files deleted')))
             );

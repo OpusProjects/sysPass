@@ -61,7 +61,13 @@ final class DeleteController extends CustomFieldSaveBase
             }
 
             if ($id === null) {
-                $this->customFieldDefService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->customFieldDefService->deleteByIdBatch($ids);
 
                 $this->eventDispatcher->notify(new Event('delete.customField.selection', $this, EventMessage::build()->addDescription(__u('Fields deleted')))
                 );
