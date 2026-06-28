@@ -71,8 +71,13 @@ final class ThemeIcons implements ThemeIconsInterface
             if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
                 && !$cache->isExpired(self::CACHE_EXPIRE)
             ) {
-                return $cache->load();
-                // logger('Loaded icons cache', 'INFO');
+                $cached = $cache->load();
+
+                if ($cached instanceof ThemeIconsInterface) {
+                    return $cached;
+                }
+
+                logger('Icons cache contains stale class — rebuilding', 'INFO');
             }
 
             $icons = FileSystem::require(
