@@ -75,7 +75,8 @@ final readonly class ActionResponse implements JsonSerializable
     {
         return match (gettype($actionResponse->subject)) {
             'string' => $actionResponse->subject,
-            'array' => implode(PHP_EOL, $actionResponse->subject)
+            'array' => implode(PHP_EOL, $actionResponse->subject),
+            default => '',
         };
     }
 
@@ -100,7 +101,8 @@ final readonly class ActionResponse implements JsonSerializable
     {
         return match (gettype($this->subject)) {
             'string' => __($this->subject),
-            'array' => array_map('SP\__', $this->subject)
+            'array' => array_map(__(...), $this->subject),
+            default => '',
         };
     }
 }
