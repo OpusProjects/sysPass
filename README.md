@@ -46,7 +46,7 @@ This fork carries **[@nuxsmin](https://github.com/nuxsmin)**'s planned [hexagona
 
 Current stack:
 
-- **PHP 8.4 – 8.5** — language runtime
+- **PHP 8.4+** — language runtime
 - **Symfony 8** — HTTP, routing & console components
 - **Hexagonal architecture** — ports & adapters
 - **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
@@ -62,7 +62,8 @@ Current stack:
 
 Project documentation lives in the [`docs/`](docs) folder:
 
-- [`docs/INSTALL.md`](docs/INSTALL.md) — requirements, installation (Docker and manual, multi-distro), and how to run the test suite.
+- [`docs/INSTALL.md`](docs/INSTALL.md) — requirements and installation (Docker and manual, multi-distro).
+- [`docs/TESTING.md`](docs/TESTING.md) — running the test suites, test layout, environment requirements, and writing new tests.
 - [`docs/API.md`](docs/API.md) — REST API reference, authentication, and [Swagger UI](/api/docs/) interactive docs.
 
 ---
