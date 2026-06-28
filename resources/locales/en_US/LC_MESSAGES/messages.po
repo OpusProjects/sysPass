@@ -7253,3 +7253,6 @@ msgstr "Uses the provided credentials directly — the database must already exi
 
 #~ msgid "Text"
 #~ msgstr "Text"
+
+msgid "Passwords match"
+msgstr ""

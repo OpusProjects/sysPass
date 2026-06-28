@@ -67,13 +67,13 @@ sysPass.Theme = function (log) {
     };
 
     // Función para generar claves aleatorias.
-    const randomPassword = function ($target) {
+    const randomPassword = function ($target, $repeat) {
         sysPassApp.util.password.random(function (password, level) {
             $target.attr("data-pass", password);
 
             // if ($target) {
             const $dstParent = $target.parent();
-            const $targetR = $("#" + $target.attr("id") + "_repeat");
+            const $targetR = $repeat || $("#" + $target.attr("id") + "_repeat");
 
             sysPassApp.util.password.output(level, $target);
 
@@ -88,10 +88,12 @@ sysPass.Theme = function (log) {
 
             // Poner la clave en el input de repetición y encriptarla
             if ($targetR.length > 0) {
+                $targetR.attr("data-pass", password);
                 $targetR.val(password).parent()
                     .addClass(mdl.CssClasses_.IS_DIRTY)
                     .removeClass(mdl.CssClasses_.IS_INVALID);
                 sysPassApp.encryptFormValue($targetR);
+                $targetR.trigger("change");
             }
         });
     };
@@ -176,6 +178,7 @@ sysPass.Theme = function (log) {
 
             const $passwordRepeat = $form.find("#" + $this.attr("id") + "_repeat");
             $passwordRepeat.attr("id", targetId + "_repeat");
+            $passwordRepeat.data("match-source", $this);
 
             $this.attr("id", targetId);
             $this.attr("data-pass", $this.val());
@@ -206,7 +209,7 @@ sysPass.Theme = function (log) {
             $passwordActions
                 .find(".passGen")
                 .on("click", function () {
-                    randomPassword($this);
+                    randomPassword($this, $passwordRepeat);
 
                     $this.blur();
                 });
@@ -254,6 +257,7 @@ sysPass.Theme = function (log) {
             const $this = $(this);
             const uniqueId = sysPassApp.util.uniqueId();
             const targetId = $this.attr("id") + "-" + uniqueId;
+            const $matchSource = $this.data("match-source");
 
             $this.attr("data-pass", $this.val());
 
@@ -261,7 +265,11 @@ sysPass.Theme = function (log) {
 
             $this.attr("id", targetId);
 
-            $this.parent().after("<div class='password-strength' id='password-strength-" + targetId + "' style='display:none'><div class='password-strength-bar'></div><span class='password-strength-label'></span></div>");
+            if ($matchSource) {
+                $this.parent().after("<div class='password-match' id='password-match-" + targetId + "' style='display:none'><i class='material-icons password-match-icon'></i><span class='password-match-label'></span></div>");
+            } else {
+                $this.parent().after("<div class='password-strength' id='password-strength-" + targetId + "' style='display:none'><div class='password-strength-track'><div class='password-strength-bar'></div></div><span class='password-strength-label'></span></div>");
+            }
             $this.parent().after('<div class="password-actions" />');
 
             const $actions = $this.parent().next(".password-actions");
@@ -273,11 +281,48 @@ sysPass.Theme = function (log) {
                 $actions.prepend($icon);
             }
 
-            $this.on("keyup", function () {
-                sysPassApp.util.password.checkLevel($this);
+            if ($matchSource) {
+                const $matchDiv = $("#password-match-" + targetId);
+                const $matchIcon = $matchDiv.find(".password-match-icon");
+                const $matchLabel = $matchDiv.find(".password-match-label");
 
-                this.dataset.pass = $this.val();
-            });
+                const checkMatch = function () {
+                    const srcVal = $matchSource[0].dataset.pass || $matchSource.val();
+                    const repVal = $this[0].dataset.pass || $this.val();
+
+                    if (repVal === "") {
+                        $matchDiv.hide();
+                        return;
+                    }
+
+                    $matchDiv.show();
+
+                    if (srcVal === repVal) {
+                        $matchDiv.removeClass("no-match").addClass("match");
+                        $matchIcon.text("check_circle");
+                        $matchLabel.text(sysPassApp.config.LANG[73]);
+                    } else {
+                        $matchDiv.removeClass("match").addClass("no-match");
+                        $matchIcon.text("cancel");
+                        $matchLabel.text(sysPassApp.config.LANG[74]);
+                    }
+                };
+
+                $this.on("keyup", function () {
+                    this.dataset.pass = $this.val();
+                    checkMatch();
+                });
+
+                $this.on("change", checkMatch);
+
+                $matchSource.on("keyup.match change.match", checkMatch);
+            } else {
+                $this.on("keyup", function () {
+                    sysPassApp.util.password.checkLevel($this);
+
+                    this.dataset.pass = $this.val();
+                });
+            }
 
             // Crear evento para mostrar clave generada/introducida
             $icon.on("mouseover", function () {

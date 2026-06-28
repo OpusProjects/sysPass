@@ -7911,7 +7911,7 @@ msgid "Hosting"
 msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Crea la base de datos y el usuario de BD con las credenciales proporcionadas"
+msgstr "Crea la base de datos y el usuario de base de datos con las credenciales proporcionadas"
 
 msgid "Uses the provided credentials directly — the database must already exist"
 msgstr "Usa las credenciales proporcionadas directamente — la base de datos debe existir previamente"
@@ -7975,3 +7975,6 @@ msgstr "Usa las credenciales proporcionadas directamente — la base de datos de
 
 #~ msgid "Text"
 #~ msgstr "Texto"
+
+msgid "Passwords match"
+msgstr "Las claves coinciden"

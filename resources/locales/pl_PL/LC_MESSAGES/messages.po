@@ -7847,3 +7847,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Podaj rozszerzenie i wciśnij enter aby dodać. Pamiętaj aby zapisać "
 #~ "konfigurację."
+
+msgid "Passwords match"
+msgstr ""

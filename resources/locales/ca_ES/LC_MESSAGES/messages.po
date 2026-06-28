@@ -7237,3 +7237,6 @@ msgstr ""
 
 #~ msgid "Text"
 #~ msgstr "Text"
+
+msgid "Passwords match"
+msgstr ""

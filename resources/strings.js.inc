@@ -96,5 +96,7 @@ return [
     69 => __('Error while checking for updates'),
     70 => __('sysPass Notices'),
     71 => __('Clear the tracks out?'),
-    72 => __('File downloaded')
+    72 => __('File downloaded'),
+    73 => __('Passwords match'),
+    74 => __('Passwords do not match')
 ];
