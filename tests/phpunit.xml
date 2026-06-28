@@ -62,11 +62,8 @@
     <source>
         <include>
             <directory suffix=".php">../src</directory>
-            <directory suffix=".php">../src/Infrastructure/Adapter/In/Web</directory>
         </include>
         <exclude>
-            <directory suffix=".php">../src/Html/Assets</directory>
-            <directory suffix=".php">../src/Html/DataGrid</directory>
             <file>../src/Domain/Config/Adapters/ConfigData.php</file>
         </exclude>
     </source>
