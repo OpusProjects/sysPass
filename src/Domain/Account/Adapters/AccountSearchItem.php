@@ -152,8 +152,8 @@ final class AccountSearchItem
     public function getAccesses(): array
     {
         $accesses = [
-            '(G*) <em>' . $this->accountSearchView->getUserGroupName() . '</em>',
-            '(U*) <em>' . $this->accountSearchView->getUserLogin() . '</em>',
+            '(G*) <em>' . htmlspecialchars($this->accountSearchView->getUserGroupName() ?? '', ENT_QUOTES, 'UTF-8') . '</em>',
+            '(U*) <em>' . htmlspecialchars($this->accountSearchView->getUserLogin() ?? '', ENT_QUOTES, 'UTF-8') . '</em>',
         ];
 
         $userLabel = $this->accountSearchView->getOtherUserEdit() === 1 ? 'U+' : 'U';
@@ -163,7 +163,7 @@ final class AccountSearchItem
             $accesses[] = sprintf(
                 '(%s) <em>%s</em>',
                 $userGroupLabel,
-                $group->getName()
+                htmlspecialchars($group->getName() ?? '', ENT_QUOTES, 'UTF-8')
             );
         }
 
@@ -171,7 +171,7 @@ final class AccountSearchItem
             $accesses[] = sprintf(
                 '(%s) <em>%s</em>',
                 $userLabel,
-                $user->login
+                htmlspecialchars($user->login ?? '', ENT_QUOTES, 'UTF-8')
             );
         }
 
