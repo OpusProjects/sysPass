@@ -49,7 +49,7 @@ final class Image implements ImageService
         private readonly string    $font,
         private readonly string    $tempPath
     ) {
-        $checker->checkCurl(true);
+        $checker->checkGd(true);
     }
 
     /**
