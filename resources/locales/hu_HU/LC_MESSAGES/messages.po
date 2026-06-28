@@ -7938,3 +7938,6 @@ msgstr ""
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
 #~ msgstr "Írj kiterjesztést, majd nyomj entert a hozzáadáshoz"
+
+msgid "Passwords match"
+msgstr ""

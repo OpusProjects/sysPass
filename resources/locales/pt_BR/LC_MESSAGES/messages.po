@@ -7292,3 +7292,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
+
+msgid "Passwords match"
+msgstr ""

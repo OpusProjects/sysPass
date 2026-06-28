@@ -7575,3 +7575,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Skriva víðkingina og trýst á Enter fyri at skoyta uppí. Minst til at "
 #~ "goyma uppsetanina."
+
+msgid "Passwords match"
+msgstr ""

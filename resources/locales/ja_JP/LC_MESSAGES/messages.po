@@ -7697,3 +7697,6 @@ msgstr ""
 msgid "Uses the provided credentials directly — the database must already exist"
 msgstr ""
 
+
+msgid "Passwords match"
+msgstr ""

@@ -7741,3 +7741,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
 #~ "konfigurationen."
+
+msgid "Passwords match"
+msgstr ""

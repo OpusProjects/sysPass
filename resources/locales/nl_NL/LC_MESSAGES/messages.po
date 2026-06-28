@@ -7671,3 +7671,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Typ de extensie en druk op enter. Vergeet hierna niet de configuratie op "
 #~ "te slaan."
+
+msgid "Passwords match"
+msgstr ""
