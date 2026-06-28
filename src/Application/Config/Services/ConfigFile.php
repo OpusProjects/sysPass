@@ -219,7 +219,7 @@ class ConfigFile implements ConfigFileService
      */
     public function reload(): ConfigDataInterface
     {
-        $this->initialize();
+        $this->configData = $this->initialize();
 
         return clone $this->configData;
     }
