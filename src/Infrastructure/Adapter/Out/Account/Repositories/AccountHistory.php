@@ -68,7 +68,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                    ])
             ->join('INNER', 'User as User', 'Account.userId = User.id')
             ->join('LEFT', 'User as UserEdit', 'Account.userEditId = UserEdit.id')
-            ->where('Account.id = :id')
+            ->where('Account.accountId = :id')
             ->bindValues(['id' => $id])
             ->orderBy(['Account.id DESC']);
 
