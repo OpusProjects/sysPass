@@ -90,7 +90,7 @@ final class CreateController extends AccountBase
         $accountRequest->userGroupId =
             $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
         $accountRequest->tags = array_map(
-            'intval',
+            intval(...),
             $this->apiService->getParamArray('tagsId', false, [])
         );
         $accountRequest->pass = $this->apiService->getParamRaw('pass', true);

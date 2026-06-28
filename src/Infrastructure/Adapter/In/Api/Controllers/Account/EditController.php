@@ -88,7 +88,7 @@ final class EditController extends AccountBase
         $accountRequest->userEditId = $this->context->getUserData()->id;
 
         $tagsId = array_map(
-            'intval',
+            intval(...),
             $this->apiService->getParamArray('tagsId', false, [])
         );
 

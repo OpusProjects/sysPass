@@ -85,7 +85,7 @@ final class PhpExtensionChecker implements PhpExtensionCheckerService
     {
         $this->available = array_intersect(
             array_keys(self::EXTENSIONS),
-            array_map('strtolower', get_loaded_extensions())
+            array_map(strtolower(...), get_loaded_extensions())
         );
     }
 
