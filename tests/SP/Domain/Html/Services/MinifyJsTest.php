@@ -188,7 +188,7 @@ class MinifyJsTest extends UnitaryTestCase
                            ],
                            [\SP\Domain\Http\Header::PRAGMA->value, 'public; maxage={2592000}'],
                            [\SP\Domain\Http\Header::EXPIRES->value, self::anything()],
-                           [\SP\Domain\Http\Header::CONTENT_TYPE->value, 'application/javascript; charset: UTF-8']
+                           [\SP\Domain\Http\Header::CONTENT_TYPE->value, 'application/javascript; charset=UTF-8']
                        )
                        );
 
