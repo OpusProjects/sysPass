@@ -25,7 +25,7 @@
 defined('APP_ROOT') || die();
 
 use SP\Core\UI\ThemeIcons;
-use SP\Html\Assets\FontIcon;
+use SP\Domain\Core\UI\FontIcon;
 
 use function SP\__u;
 

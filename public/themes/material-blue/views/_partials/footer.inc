@@ -4,7 +4,7 @@
  * @var TemplateInterface $this
  */
 
-use SP\Html\Assets\IconInterface;
+use SP\Domain\Core\UI\IconInterface;
 use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;
