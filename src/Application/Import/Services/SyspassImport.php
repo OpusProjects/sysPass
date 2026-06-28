@@ -180,7 +180,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
      */
     private function checkIntegrity(ImportParamsDto $importParams): void
     {
-        $key = $importParams->getPassword() ?? sha1($this->configData->getPasswordSalt());
+        $key = $importParams->getPassword() ?: sha1($this->configData->getPasswordSalt() ?? '');
 
         if (!XmlVerify::checkXmlHash($this->document, $key)) {
             $this->eventDispatcher->notify(new Event('run.import.syspass.process.verify', 
