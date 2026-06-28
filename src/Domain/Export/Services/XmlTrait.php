@@ -36,9 +36,15 @@ trait XmlTrait
 {
     private static function generateHashFromNodes(DOMDocument $document): string
     {
+        $nodes = (new DOMXPath($document))->query('/Root/*[not(self::Meta)]');
+
+        if ($nodes === false) {
+            return sha1('');
+        }
+
         return sha1(
             array_reduce(
-                iterator_to_array((new DOMXPath($document))->query('/Root/*[not(self::Meta)]')->getIterator()),
+                iterator_to_array($nodes->getIterator()),
                 static fn(string $carry, DOMNode $node) => $carry . $document->saveXML($node),
                 ''
             )
