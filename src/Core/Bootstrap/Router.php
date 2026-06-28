@@ -74,7 +74,7 @@ final class Router
     {
         $route = new Route(
             '/{req}',
-            ['req' => '', '_callback' => Closure::fromCallable($callback)],
+            ['req' => '', '_callback' => $callback(...)],
             ['req' => '.*'],
             [],
             '',
@@ -99,7 +99,7 @@ final class Router
     {
         $route = new Route(
             $path,
-            ['_callback' => Closure::fromCallable($callback)],
+            ['_callback' => $callback(...)],
             $requirements,
             [],
             '',
@@ -115,7 +115,7 @@ final class Router
      */
     public function onError(callable $callback): void
     {
-        $this->onError = Closure::fromCallable($callback);
+        $this->onError = $callback(...);
     }
 
     /**
