@@ -35,70 +35,70 @@ use SP\Domain\Core\UI\IconInterface;
  */
 interface DataGridActionInterface
 {
-    public function setName(string $name);
+    public function setName(string $name): static;
 
     public function getName(): ?string;
 
-    public function setId(string $id);
+    public function setId(string $id): static;
 
     public function getId(): ?string;
 
-    public function setTitle(string $title);
+    public function setTitle(string $title): static;
 
     public function getTitle(): ?string;
 
-    public function setOnClickFunction(string $function);
+    public function setOnClickFunction(string $function): static;
 
-    public function setOnClickArgs(string $args);
+    public function setOnClickArgs(string $args): static;
 
     public function getOnClick(): ?string;
 
-    public function setIcon(IconInterface $icon);
+    public function setIcon(IconInterface $icon): static;
 
     public function getIcon(): ?IconInterface;
 
-    public function setSkip(bool $skip);
+    public function setSkip(bool $skip): static;
 
     public function isSkip(): ?bool;
 
-    public function setIsHelper(bool $helper);
+    public function setIsHelper(bool $helper): static;
 
     public function isHelper(): ?bool;
 
-    public function setFilterRowSource(string $rowSource, mixed $value = 1);
+    public function setFilterRowSource(string $rowSource, mixed $value = 1): static;
 
     public function getFilterRowSource(): ?array;
 
-    public function setType(int $type);
+    public function setType(int $type): static;
 
     public function getType(): ?int;
 
     public function getData(): ?array;
 
-    public function setData(array $data): DataGridActionInterface;
+    public function setData(array $data): static;
 
-    public function addData(string $name, mixed $data);
+    public function addData(string $name, mixed $data): static;
 
     public function getAttributes(): array;
 
-    public function setAttributes(array $attributes): DataGridActionInterface;
+    public function setAttributes(array $attributes): static;
 
-    public function addAttribute(string $name, mixed $value);
+    public function addAttribute(string $name, mixed $value): static;
 
     public function getRuntimeFilter(): ?callable;
 
     /**
      * Set the reflective method that determines whether the action is displayed
      */
-    public function setRuntimeFilter(string $class, string $method): DataGridActionInterface;
+    public function setRuntimeFilter(string $class, string $method): static;
 
     public function getClassesAsString(): ?string;
 
     public function getClasses(): array;
 
-    public function setClasses(array $classes);
+    public function setClasses(array $classes): void;
 
-    public function addClass(mixed $value): DataGridActionInterface;
+    public function addClass(mixed $value): static;
 
     /**
      * Returns if the action is used for selecting multiple items
