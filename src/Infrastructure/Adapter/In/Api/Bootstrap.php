@@ -224,7 +224,7 @@ final class Bootstrap extends BootstrapBase
                 logger('Routing call: ' . $controllerClass . '::' . $method);
 
                 /** @var ApiResponse $apiResponse */
-                $apiResponse = call_user_func([$this->buildInstanceFor($controllerClass), $method]);
+                $apiResponse = $this->buildInstanceFor($controllerClass)->$method();
 
                 $responseData = $apiResponse->getResponse();
 
