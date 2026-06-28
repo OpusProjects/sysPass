@@ -200,7 +200,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     public static function getETA(int $startTime, int $numItems, int $totalItems): array
     {
         if ($numItems > 0 && $totalItems > 0) {
-            $runtime = time() - $startTime;
+            $runtime = max(1, time() - $startTime);
             $eta = (int)((($totalItems * $runtime) / $numItems) - $runtime);
 
             return [$eta, $numItems / $runtime];
