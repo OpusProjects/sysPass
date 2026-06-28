@@ -40,9 +40,9 @@ require FileSystem::buildPath(APP_ROOT, 'vendor', 'autoload.php');
 
 define('APP_PATH', APP_ROOT);
 
-// BaseFunctions.php defines MODULES_PATH/LOG_FILE from APP_PATH at load time, so it
+// Functions.php defines MODULES_PATH/LOG_FILE from APP_PATH at load time, so it
 // must be required after APP_PATH is defined.
-require 'BaseFunctions.php';
+require __DIR__ . '/Core/Functions.php';
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();
