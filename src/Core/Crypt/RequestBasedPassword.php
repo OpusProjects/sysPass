@@ -46,7 +46,7 @@ final readonly class RequestBasedPassword implements RequestBasedPasswordInterfa
             'sha1',
             $this->getWellKnownData(),
             $this->configData->getPasswordSalt() ?? '',
-            5000,
+            100000,
             32
         );
     }
