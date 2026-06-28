@@ -208,7 +208,8 @@ final class AuthToken extends Service implements AuthTokenService
 
         return match ($currentToken->getNumRows()) {
             1 => $currentToken->getData(AuthTokenModel::class)->getToken(),
-            0 => $this->generateToken()
+            0 => $this->generateToken(),
+            default => $this->generateToken(),
         };
     }
 
