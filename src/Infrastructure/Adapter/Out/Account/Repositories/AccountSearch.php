@@ -185,9 +185,9 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         if ($accountSearchFilter->getClientId() !== null) {
             $this->query
                 ->where(
-                    'Account.categoryId = :clientId',
+                    'Account.clientId = :clientId',
                     [
-                        'categoryId' => $accountSearchFilter->getClientId(),
+                        'clientId' => $accountSearchFilter->getClientId(),
                     ]
                 );
         }
