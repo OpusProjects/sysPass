@@ -63,7 +63,7 @@ readonly class Event
         if ($type !== null && !is_a($this->source, $type)) {
             throw InvalidClassException::error(
                 'Source type mismatch',
-                sprintf('Source: %s - Expected: %s', get_class($this->source), $type)
+                sprintf('Source: %s - Expected: %s', $this->source::class, $type)
             );
         }
 

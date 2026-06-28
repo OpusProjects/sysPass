@@ -134,7 +134,7 @@ function formatStackTrace(Throwable $e): string
                 $type = ucfirst(gettype($arg));
 
                 if ($type === 'Object') {
-                    $type = sprintf('Object(%s)', get_class($arg));
+                    $type = sprintf('Object(%s)', $arg::class);
                 }
 
                 $args[] = $type;

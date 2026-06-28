@@ -176,7 +176,7 @@ final class Router
                 // No responder matched (e.g. an unsupported method); fall through.
             } catch (Throwable $e) {
                 if ($this->onError !== null) {
-                    ($this->onError)($this, $e->getMessage(), get_class($e), $e);
+                    ($this->onError)($this, $e->getMessage(), $e::class, $e);
                 } else {
                     throw $e;
                 }

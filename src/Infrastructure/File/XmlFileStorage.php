@@ -96,7 +96,7 @@ final readonly class XmlFileStorage implements XmlFileStorageService
             if (is_array($value)) {
                 $this->serializeItems($value, $newNode, $key);
             } elseif (is_object($value)) {
-                $newNode->setAttribute('class', get_class($value));
+                $newNode->setAttribute('class', $value::class);
                 $this->serializeItems($value, $newNode, $key);
             } else {
                 $newNode->appendChild($this->document->createTextNode(trim((string)$value)));
