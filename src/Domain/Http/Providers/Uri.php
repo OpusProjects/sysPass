@@ -77,13 +77,13 @@ final class Uri
         return sprintf(
             '%s?%s',
             $this->base,
-            implode('&', array_map([__CLASS__, 'mapParts'], array_keys($this->params), $this->params))
+            implode('&', array_map(self::mapParts(...), array_keys($this->params), $this->params))
         );
     }
 
     public function getUriSigned(string $key): string
     {
-        $uri = implode('&', array_map([__CLASS__, 'mapParts'], array_keys($this->params), $this->params));
+        $uri = implode('&', array_map(self::mapParts(...), array_keys($this->params), $this->params));
 
         return sprintf('%s?%s&h=%s', $this->base, $uri, Hash::signMessage($uri, $key));
     }
