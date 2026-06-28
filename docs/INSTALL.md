@@ -68,22 +68,6 @@ and the web-server user differ.
    ```
 5. Start the database and web server and complete the web installer.
 
-## Running the test suite
+---
 
-The suite is PHPUnit 11; the integration tests are database-backed. Using the Docker stack:
-
-```bash
-# Install dependencies (including dev) into the container
-docker compose exec app composer install
-
-# Unit suite (no DB needed)
-docker compose exec -w /var/www/html app \
-  vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
-
-# Integration suite — seed the schema into DB `syspass`, then run the integration group
-docker compose exec -T db mariadb -uroot -psyspass syspass < schemas/dbstructure.sql
-docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PASS=syspass -e DB_PORT=3306 \
-  -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
-```
-
-Both suites pass: **1979 unit tests** and **93 integration tests**.
+See [`TESTING.md`](TESTING.md) for how to run the test suites.
