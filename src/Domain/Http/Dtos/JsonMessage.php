@@ -26,7 +26,6 @@ declare(strict_types=1);
 namespace SP\Domain\Http\Dtos;
 
 use JsonSerializable;
-use stdClass;
 
 use function SP\__;
 
@@ -67,11 +66,7 @@ final class JsonMessage implements JsonSerializable
         return $this;
     }
 
-    /**
-     * @param array|stdClass $data
-     * @return JsonMessage
-     */
-    public function setData(array|stdClass $data): JsonMessage
+    public function setData(array $data): JsonMessage
     {
         $this->data = $data;
 
@@ -80,7 +75,7 @@ final class JsonMessage implements JsonSerializable
 
     public function setMessages(array $messages): JsonMessage
     {
-        $this->messages = array_map('SP\__', $messages);
+        $this->messages = array_map(__(...), $messages);
 
         return $this;
     }
