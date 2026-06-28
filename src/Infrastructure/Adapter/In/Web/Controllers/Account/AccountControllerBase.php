@@ -36,7 +36,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
  */
 abstract class AccountControllerBase extends ControllerBase
 {
-    private const LOGIN_NOT_REQUIRED = ['ViewLinkController'];
+    private const LOGIN_NOT_REQUIRED = [ViewLinkController::class];
 
     /**
      * @throws AuthException
@@ -57,7 +57,7 @@ abstract class AccountControllerBase extends ControllerBase
      */
     private function initialize(): void
     {
-        if (in_array(static::class, self::LOGIN_NOT_REQUIRED)) {
+        if (!in_array(static::class, self::LOGIN_NOT_REQUIRED, true)) {
             $this->checkLoggedIn();
         }
 
