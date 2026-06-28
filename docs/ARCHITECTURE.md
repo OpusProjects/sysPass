@@ -5,9 +5,9 @@ under `src/`. Each layer has a strict dependency direction: inner layers never
 depend on outer layers.
 
 ```
-Domain  <──  Application  <──  Infrastructure
-                                     │
-              Core (shared kernel) ───┘
+Domain  ←──  Application  ←──  Infrastructure
+   ↑              ↑                   ↑
+   └──────── Core (shared kernel) ────┘
 ```
 
 ## Layers
