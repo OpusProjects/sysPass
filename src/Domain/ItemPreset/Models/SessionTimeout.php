@@ -56,7 +56,7 @@ readonly class SessionTimeout
     private function parseMask(array $parse): string
     {
         if (isset($parse['cidr'])) {
-            return Address::cidrToDec($parse['cidr']);
+            return Address::cidrToDec((int)$parse['cidr']);
         } elseif (isset($parse['mask'])) {
             return $parse['mask'];
         } else {
