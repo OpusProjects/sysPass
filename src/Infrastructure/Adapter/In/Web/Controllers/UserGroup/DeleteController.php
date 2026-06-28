@@ -62,6 +62,11 @@ final class DeleteController extends UserGroupSaveBase
 
             if ($id === null) {
                 $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
                 $this->userGroupService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $ids, $this->customFieldService);
 

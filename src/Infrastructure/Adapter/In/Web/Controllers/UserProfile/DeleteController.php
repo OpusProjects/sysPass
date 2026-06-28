@@ -62,6 +62,11 @@ final class DeleteController extends UserProfileSaveBase
 
             if ($id === null) {
                 $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
                 $this->userProfileService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $ids, $this->customFieldService);
 

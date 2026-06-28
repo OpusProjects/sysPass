@@ -61,7 +61,13 @@ final class DeleteController extends ItemPresetSaveBase
             }
 
             if ($id === null) {
-                $this->itemPresetService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->itemPresetService->deleteByIdBatch($ids);
 
                 $this->eventDispatcher->notify(new Event('delete.itemPreset', $this, EventMessage::build()->addDescription(__u('Values deleted')))
                 );

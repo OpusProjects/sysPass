@@ -61,6 +61,11 @@ final class DeleteController extends TagSaveBase
 
             if ($id === null) {
                 $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
                 $this->tagService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::TAG, $ids, $this->customFieldService);
 

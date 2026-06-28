@@ -58,6 +58,11 @@ final class DeleteController extends AuthTokenSaveBase
 
         if ($id === null) {
             $ids = $this->getItemsIdFromRequest($this->request);
+
+            if (empty($ids)) {
+                return ActionResponse::error(__u('No items selected'));
+            }
+
             $this->authTokenService->deleteByIdBatch($ids);
             $this->deleteCustomFieldsForItem(AclActionsInterface::AUTHTOKEN, $ids, $this->customFieldService);
 

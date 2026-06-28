@@ -81,7 +81,13 @@ final class DeleteController extends ControllerBase
         }
 
         if ($id === null) {
-            $this->accountHistoryService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+            $ids = $this->getItemsIdFromRequest($this->request);
+
+            if (empty($ids)) {
+                return ActionResponse::error(__u('No items selected'));
+            }
+
+            $this->accountHistoryService->deleteByIdBatch($ids);
 
             $this->eventDispatcher->notify(new Event('delete.accountHistory.selection', 
                     $this,

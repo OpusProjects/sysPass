@@ -61,7 +61,13 @@ final class DeleteController extends PublicLinkSaveBase
             }
 
             if ($id === null) {
-                $this->publicLinkService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->publicLinkService->deleteByIdBatch($ids);
 
 
                 $this->eventDispatcher->notify(new Event('delete.publicLink.selection', $this, EventMessage::build()->addDescription(__u('Links deleted')))

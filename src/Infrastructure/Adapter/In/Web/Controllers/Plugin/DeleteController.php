@@ -78,7 +78,13 @@ final class DeleteController extends ControllerBase
             }
 
             if ($id === null) {
-                $this->pluginService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->pluginService->deleteByIdBatch($ids);
 
                 $this->eventDispatcher->notify(new Event('delete.plugin.selection', $this));
 
