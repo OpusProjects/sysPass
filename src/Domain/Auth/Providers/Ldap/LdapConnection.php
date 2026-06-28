@@ -103,7 +103,7 @@ final class LdapConnection implements LdapConnectionHandler
         try {
             $this->ldap->setOptions(
                 [
-                    'host' => $ldapParams->getPort(),
+                    'host' => $ldapParams->getServer(),
                     'port' => $ldapParams->getPort(),
                     'useStartTls' => $ldapParams->isTlsEnabled(),
                     'username' => $ldapParams->getBindDn(),
