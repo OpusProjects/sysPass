@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Core\UI;
 
 use SP\Domain\Core\Context\Context;
-use SP\Html\Assets\IconInterface;
+use SP\Domain\Core\UI\IconInterface;
 use SP\Infrastructure\File\FileCache;
 
 interface ThemeIconsInterface

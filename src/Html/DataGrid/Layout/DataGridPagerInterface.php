@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Html\DataGrid\Layout;
 
-use SP\Html\Assets\IconInterface;
+use SP\Domain\Core\UI\IconInterface;
 use SP\Html\DataGrid\Action\DataGridActionSearch;
 
 /**

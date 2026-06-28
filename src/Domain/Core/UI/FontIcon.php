@@ -23,18 +23,18 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\Assets;
+namespace SP\Domain\Core\UI;
 
 /**
- * Interface IconInterface
+ * Class FontIcon for creating the data grid icons
  */
-interface IconInterface
+final class FontIcon extends IconBase
 {
-    public function getTitle(): ?string;
-
-    public function getClass(): ?string;
-
-    public function getIcon(): ?string;
-
-    public function mutate(?string $icon = null, ?string $class = null, ?string $title = null): IconInterface;
+    /**
+     * Return the icon class adapted for a button
+     */
+    public function getClassButton(): string
+    {
+        return str_replace('-text--', '--', $this->getClass() ?? '');
+    }
 }
