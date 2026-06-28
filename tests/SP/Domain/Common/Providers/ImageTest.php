@@ -94,7 +94,7 @@ class ImageTest extends TestCase
 
         $phpExtensionCheckerService = $this->createMock(PhpExtensionCheckerStub::class);
         $phpExtensionCheckerService->expects($this->once())
-                                   ->method('checkCurl')
+                                   ->method('checkGd')
                                    ->with(true);
 
         $this->imageUtil = new Image(
