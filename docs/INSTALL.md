@@ -1,42 +1,45 @@
 # Installation
 
-The original online documentation (`doc.syspass.org`) is offline. This guide is maintained
-in-tree for this fork's **PHP 8.4–8.5** codebase.
-
 ## Requirements
 
-- **PHP 8.4 or 8.5** with extensions: `pdo_mysql`, `gd`, `gettext`, `mbstring`, `intl`,
-  `dom` / `xml`, `json`, `curl`, `fileinfo`, `zlib`, and `ldap` (LDAP / Active Directory auth).
-- **MariaDB ≥ 10.1** (or MySQL).
-- A **web server** (Apache or Nginx); SSL strongly recommended.
+- **PHP 8.4+** with extensions: `pdo_mysql`, `gd`, `gettext`, `mbstring`, `intl`,
+  `dom` / `xml`, `json`, `curl`, `fileinfo`, `zlib`, and `ldap` (optional — only for
+  LDAP / Active Directory authentication).
+- **MariaDB 10.1+** (or MySQL 5.7+).
+- A **web server** (Apache or Nginx); SSL strongly recommended for production.
 - **[Composer](https://getcomposer.org/)** to install the PHP dependencies.
 
 ## Option A — Docker (recommended for development)
 
-This fork ships a one-command development stack (**PHP 8.5** + Apache + MariaDB). See the
+This fork ships a one-command development stack (PHP 8.5 + Apache + MariaDB). See the
 [`docker/`](../docker) directory and [`docker-compose.yml`](../docker-compose.yml).
 
 ```bash
 docker compose up --build -d
 ```
 
-- The app is served on <http://localhost:8090>; MariaDB is reachable as host `db`
-  (user `root`, password `syspass`, database `syspass`).
-- The image installs the PHP extensions, prepends the Composer autoloader
-  (`auto_prepend_file`), and the entrypoint runs `composer install` and writes a dev `.env`.
+The app is served on <http://localhost:8090>. MariaDB is reachable as host `db`
+(user `root`, password `syspass`, database `syspass`).
 
-> **Note:** the web UI installer flow of the hexagonal rewrite is still being completed
-> (the web entry point was never exercised by upstream's CI). The stack builds, installs the
-> PHP dependencies, and runs the full test suites; finishing the browser installer is
-> tracked separately.
+The image installs all required PHP extensions, prepends the Composer autoloader
+(`auto_prepend_file`), and the entrypoint runs `composer install` and writes a
+dev `.env`. Once the containers are up, open the browser and complete the web
+installer.
+
+### Docker install mode
+
+The Docker MariaDB container auto-creates the `syspass` database, so select
+**Hosting** mode in the installer — it uses the provided credentials directly
+instead of trying to create the database. Use `db` as the database server,
+`root` / `syspass` as the DB credentials, and `syspass` as the database name.
 
 ## Option B — Manual installation
 
-The procedure is the same on any Linux distribution; only the package names, the web-root path,
-and the web-server user differ.
+The procedure is the same on any Linux distribution; only the package names,
+the web-root path, and the web-server user differ.
 
-1. **Install the dependencies** — a web server, **PHP 8.4–8.5** with the extensions listed under
-   [Requirements](#requirements), MariaDB, and Composer:
+1. **Install the dependencies** — a web server, **PHP 8.4+** with the extensions
+   listed under [Requirements](#requirements), MariaDB, and Composer:
 
    - **Debian / Ubuntu:**
      ```bash
@@ -56,17 +59,28 @@ and the web-server user differ.
    For Nginx, use PHP-FPM instead of the Apache PHP module.
 
 2. Place the sysPass source under the web root — e.g. `/var/www/html/syspass`.
-3. Make the runtime directories writable by the web-server user (`www-data` on Debian/Ubuntu,
-   `apache` on RHEL-family, `http` on Arch):
+   Point the web server's document root at the `public/` subdirectory.
+
+3. Make the runtime directories writable by the web-server user (`www-data` on
+   Debian/Ubuntu, `apache` on RHEL-family, `http` on Arch):
    ```bash
    chown -R www-data:www-data config var/backup var/cache var/temp
    ```
+
 4. Install the PHP dependencies and create a `.env`:
    ```bash
    composer install --no-dev
    cp .env.example .env
    ```
-5. Start the database and web server and complete the web installer.
+
+5. Start the database and web server, then open the browser and complete the
+   web installer. The installer creates the database schema, sets up the admin
+   account and master password, and writes `config/config.xml`.
+
+   - **Standard mode** — the installer creates the database and a restricted DB
+     user with the credentials you provide.
+   - **Hosting mode** — the database must already exist; the installer uses the
+     provided credentials directly.
 
 ---
 
