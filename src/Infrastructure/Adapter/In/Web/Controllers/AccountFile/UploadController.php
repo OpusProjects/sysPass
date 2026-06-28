@@ -156,14 +156,16 @@ final class UploadController extends ControllerBase
      */
     private function checkAllowedMimeType(string $type, FileHandlerInterface $fileHandler): string
     {
+        $serverType = $fileHandler->getFileType();
+
+        if (in_array($serverType, $this->configData->getFilesAllowedMime(), true)) {
+            return $serverType;
+        }
+
         if (in_array($type, $this->configData->getFilesAllowedMime(), true)) {
             return $type;
         }
 
-        if (in_array($fileHandler->getFileType(), $this->configData->getFilesAllowedMime(), true)) {
-            return $fileHandler->getFileType();
-        }
-
-        throw SPException::error(__u('File type not allowed'), sprintf(__('MIME type: %s'), $type));
+        throw SPException::error(__u('File type not allowed'), sprintf(__('MIME type: %s'), $serverType));
     }
 }
