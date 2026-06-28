@@ -31,6 +31,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use function SP\__u;
 use function SP\processException;
@@ -54,11 +55,21 @@ final class DeleteController extends NotificationSaveBase
     public function deleteAction(?int $id = null): ActionResponse
     {
         try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_DELETE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
             if ($id === null) {
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
                 if ($this->userDto->isAdminApp) {
-                    $this->notificationService->deleteAdminBatch($this->getItemsIdFromRequest($this->request));
+                    $this->notificationService->deleteAdminBatch($ids);
                 } else {
-                    $this->notificationService->deleteByIdBatch($this->getItemsIdFromRequest($this->request));
+                    $this->notificationService->deleteByIdBatch($ids);
                 }
 
                 $this->eventDispatcher->notify(new Event('delete.notification.selection', $this, EventMessage::build()->addDescription(__u('Notifications deleted')))
