@@ -49,8 +49,6 @@ use function SP\logger;
 final class ImportStrategy extends Service implements ImportStrategyService
 {
     public const ALLOWED_MIME = [
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.ms-excel',
         'text/plain',
         'text/csv',
         'text/x-csv',
@@ -85,7 +83,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
         $fileHandler = $importParams->getFile();
 
         return match ($this->checkFile($fileHandler)) {
-            'text/plain', 'text/csv' => new CsvImport(
+            'text/plain', 'text/csv', 'text/x-csv' => new CsvImport(
                 $this->application,
                 $this->importHelper,
                 $this->crypt,
