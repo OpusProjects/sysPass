@@ -62,9 +62,10 @@ Current stack:
 
 Project documentation lives in the [`docs/`](docs) folder:
 
+- [`docs/API.md`](docs/API.md) — REST API reference, authentication, and [Swagger UI](/api/docs/) interactive docs.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — hexagonal layer map, request lifecycle, DI container, and dependency rules.
 - [`docs/INSTALL.md`](docs/INSTALL.md) — requirements and installation (Docker and manual, multi-distro).
 - [`docs/TESTING.md`](docs/TESTING.md) — running the test suites, test layout, environment requirements, and writing new tests.
-- [`docs/API.md`](docs/API.md) — REST API reference, authentication, and [Swagger UI](/api/docs/) interactive docs.
 
 ---
 
