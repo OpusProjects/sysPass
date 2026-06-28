@@ -225,8 +225,8 @@ class UserTest extends UnitaryTestCase
                 $params = $query->getBindValues();
 
                 return count($params) === 3
-                       && $params['pass'] === 'super_secret'
-                       && $params['key'] === 'a_key'
+                       && $params['mPass'] === 'super_secret'
+                       && $params['mKey'] === 'a_key'
                        && $params['id'] === 100
                        && is_a($query, UpdateInterface::class)
                        && !empty($query->getStatement());

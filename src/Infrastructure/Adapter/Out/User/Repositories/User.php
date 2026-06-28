@@ -392,7 +392,7 @@ final class User extends BaseRepository implements UserRepository
         $query = $this->queryFactory
             ->newUpdate()
             ->table(UserModel::TABLE)
-            ->cols(['pass' => $pass, 'key' => $key])
+            ->cols(['mPass' => $pass, 'mKey' => $key])
             ->set('lastUpdateMPass', 'UNIX_TIMESTAMP()')
             ->set('isMigrate', 0)
             ->set('isChangedPass', 0)
