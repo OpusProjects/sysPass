@@ -56,17 +56,17 @@ final readonly class DirectoryHandler implements DirectoryHandlerService
 
     public function isDir(): bool
     {
-        return @is_dir($this->path);
+        return is_dir($this->path);
     }
 
     public function create(int $permissions = 0750): bool
     {
-        return @mkdir($this->path, $permissions, true);
+        return mkdir($this->path, $permissions, true);
     }
 
     public function isWritable(): bool
     {
-        return @is_writable($this->path);
+        return is_writable($this->path);
     }
 
     /**
