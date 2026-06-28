@@ -78,7 +78,7 @@ final class ViewController extends AccountFileBase
 
         $type = strtolower($fileDto->type ?? '');
 
-        if (in_array($type, self::MIME_VIEW)) {
+        if (in_array($type, self::MIME_VIEW, true)) {
             $this->view->assign('mime', $type);
             $this->view->assign('data', htmlentities($fileDto->content ?? ''));
 
