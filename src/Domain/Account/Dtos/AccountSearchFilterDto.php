@@ -236,7 +236,7 @@ final class AccountSearchFilterDto
         $this->limitCount = null;
         $this->sortViews = null;
         $this->searchFavorites = false;
-        $this->sortOrder = AccountSearchConstants::SORT_DEFAULT;
-        $this->sortKey = AccountSearchConstants::SORT_DIR_ASC;
+        $this->sortOrder = AccountSearchConstants::SORT_DIR_ASC;
+        $this->sortKey = AccountSearchConstants::SORT_DEFAULT;
     }
 }
