@@ -29,7 +29,7 @@
  */
 
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 ?>
 <div ID='debuginfo' class='round'>

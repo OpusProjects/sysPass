@@ -26,7 +26,7 @@ use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGrid;
-use SP\Mvc\View\Components\SelectItem;
+use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItem;
 
 use function SP\__;
 

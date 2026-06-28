@@ -5,7 +5,7 @@
  */
 
 use SP\Domain\Core\UI\IconInterface;
-use SP\Mvc\View\TemplateInterface;
+use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
 
