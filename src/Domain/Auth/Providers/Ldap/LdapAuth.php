@@ -141,7 +141,7 @@ final readonly class LdapAuth implements LdapAuthService
         }
 
         if (!empty($attributes->get('fullname'))) {
-            $ldapAuthData->setName($attributes->get('fullname'));
+            $ldapAuthData->setName((string)$attributes->get('fullname'));
         } else {
             $name = trim(
                 sprintf('%s %s', $attributes->get('name', ''), $attributes->get('sn', ''))
@@ -153,7 +153,7 @@ final readonly class LdapAuth implements LdapAuthService
         $mail = $attributes->get('mail');
 
         if ($mail !== null) {
-            $ldapAuthData->setEmail(is_array($mail) ? $mail[0] : $mail);
+            $ldapAuthData->setEmail((string)(is_array($mail) ? $mail[0] : $mail));
         }
 
         $ldapAuthData->setDn((string)($attributes->get('dn') ?? ''));
