@@ -71,7 +71,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         if (null !== $accountSearchItem->getClientLink()): ?>
                             <a href="<?php
                             echo htmlspecialchars($accountSearchItem->getClientLink() ?? '', ENT_QUOTES, 'UTF-8'); ?>"
-                               target="blank"
+                               target="_blank"
                                title="<?php
                                echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
