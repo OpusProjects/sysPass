@@ -184,9 +184,9 @@ class MinifyCssTest extends UnitaryTestCase
                            [\SP\Domain\Http\Header::ETAG->value, $etag],
                            [
                                \SP\Domain\Http\Header::CACHE_CONTROL->value,
-                               'public, max-age={2592000}, must-revalidate'
+                               'public, max-age=2592000, must-revalidate'
                            ],
-                           [Header::PRAGMA->value, 'public; maxage={2592000}'],
+                           [Header::PRAGMA->value, 'public; maxage=2592000'],
                            [\SP\Domain\Http\Header::EXPIRES->value, self::anything()],
                            [Header::CONTENT_TYPE->value, 'text/css; charset=UTF-8']
                        )

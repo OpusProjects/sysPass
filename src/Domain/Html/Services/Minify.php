@@ -83,9 +83,9 @@ abstract class Minify implements MinifyService
         $this->response->header(Header::ETAG->value, $etag);
         $this->response->header(
             Header::CACHE_CONTROL->value,
-            sprintf('public, max-age={%d}, must-revalidate', self::OFFSET)
+            sprintf('public, max-age=%d, must-revalidate', self::OFFSET)
         );
-        $this->response->header(Header::PRAGMA->value, sprintf('public; maxage={%d}', self::OFFSET));
+        $this->response->header(Header::PRAGMA->value, sprintf('public; maxage=%d', self::OFFSET));
         $this->response->header(Header::EXPIRES->value, gmdate('D, d M Y H:i:s \G\M\T', time() + self::OFFSET));
         $this->response->header(Header::CONTENT_TYPE->value, $this->getContentTypeHeader());
     }
@@ -137,7 +137,7 @@ abstract class Minify implements MinifyService
      */
     public function addFiles(array $files, bool $minify = true): MinifyService
     {
-        array_walk($files, fn(FileHandlerInterface $fileHandler) => $this->addFile($fileHandler));
+        array_walk($files, fn(FileHandlerInterface $fileHandler) => $this->addFile($fileHandler, $minify));
 
         return $this;
     }

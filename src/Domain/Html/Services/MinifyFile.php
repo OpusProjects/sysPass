@@ -47,7 +47,7 @@ final readonly class MinifyFile
 
     public function needsMinify(): bool
     {
-        return $this->minify === true && !preg_match('/\.min|pack\.css|js/', $this->fileHandler->getName());
+        return $this->minify === true && !preg_match('/(?:\.min|pack)\.(css|js)$/', $this->fileHandler->getName());
     }
 
     public function getName(): string
