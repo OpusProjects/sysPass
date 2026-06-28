@@ -304,7 +304,7 @@ final class Init extends HttpModuleBase
             // Regenerate session's ID frequently to avoid fixation
             if ($sidStartTime === 0) {
                 // Try to set PHP's session lifetime
-                @ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
+                ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
             } elseif (!$inMaintenance
                       && SessionLifecycleHandler::needsRegenerate($sidStartTime)
                       && $this->context->isLoggedIn()
