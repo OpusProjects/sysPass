@@ -49,6 +49,10 @@ final class SaveController extends SimpleControllerBase
         }
 
         if ($proxyEnabled) {
+            if ($configData->isProxyEnabled() === false) {
+                $eventMessage->addDescription(__u('Proxy enabled'));
+            }
+
             $configData->setProxyEnabled(true);
             $configData->setProxyServer($proxyServer);
             $configData->setProxyPort($proxyPort);
@@ -56,10 +60,6 @@ final class SaveController extends SimpleControllerBase
 
             if ($proxyPass !== '***') {
                 $configData->setProxyPass($proxyPass);
-            }
-
-            if ($configData->isProxyEnabled() === false) {
-                $eventMessage->addDescription(__u('Proxy enabled'));
             }
         } elseif ($configData->isProxyEnabled()) {
             $configData->setProxyEnabled(false);

@@ -58,16 +58,16 @@ final class SaveController extends SimpleControllerBase
         }
 
         if ($dokuwikiEnabled) {
+            if ($configData->isDokuwikiEnabled() === false) {
+                $eventMessage->addDescription(__u('DokuWiki enabled'));
+            }
+
             $configData->setDokuwikiEnabled(true);
             $configData->setDokuwikiUrl($dokuwikiUrl);
             $configData->setDokuwikiUrlBase($dokuwikiUrlBase);
             $configData->setDokuwikiUser($dokuwikiUser);
             $configData->setDokuwikiPass($dokuwikiPass);
             $configData->setDokuwikiNamespace($dokuwikiNamespace);
-
-            if ($configData->isDokuwikiEnabled() === false) {
-                $eventMessage->addDescription(__u('DokuWiki enabled'));
-            }
         } elseif ($configData->isDokuwikiEnabled()) {
             $configData->setDokuwikiEnabled(false);
 
