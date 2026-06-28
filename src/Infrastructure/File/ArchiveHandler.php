@@ -81,6 +81,6 @@ class ArchiveHandler implements ArchiveHandlerInterface
         (new FileHandler($file))->delete();
         (new FileHandler($this->archive->getPath()))->delete();
 
-        return $packed->getFileInfo()->getPath();
+        return $packed->getFileInfo()->getPathname();
     }
 }
