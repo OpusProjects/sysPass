@@ -99,10 +99,10 @@ final class UploadController extends ControllerBase
 
             $allowedSize = $this->configData->getFilesAllowedSize();
 
-            if ($file['size'] > ($allowedSize * 1000)) {
+            if ($file['size'] > ($allowedSize * 1024)) {
                 throw SPException::error(
                     __u('File size exceeded'),
-                    sprintf(__u('Maximum size: %f KB'), round($allowedSize / 1000, 2))
+                    sprintf(__u('Maximum size: %d KB'), $allowedSize)
                 );
             }
 
