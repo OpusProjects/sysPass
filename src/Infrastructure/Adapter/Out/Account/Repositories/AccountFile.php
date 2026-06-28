@@ -123,8 +123,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->from(FileModel::TABLE)
             ->where('accountId = :accountId')
             ->bindValues(['accountId' => $id])
-            ->orderBy(['name ASC'])
-            ->limit(1);
+            ->orderBy(['name ASC']);
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, FileModel::class));
     }
