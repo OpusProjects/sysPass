@@ -112,7 +112,7 @@ class CryptPKITest extends UnitaryTestCase
 
     public function testGetMaxDataSize()
     {
-        $this->assertEquals(117, CryptPKI::getMaxDataSize());
+        $this->assertEquals(245, CryptPKI::getMaxDataSize());
     }
 
     /**
