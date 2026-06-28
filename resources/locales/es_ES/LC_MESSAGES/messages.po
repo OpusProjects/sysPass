@@ -7897,6 +7897,25 @@ msgstr "Desbloquear track"
 msgid "Clear the tracks out"
 msgstr "Vaciar tracks"
 
+
+msgid "Installation"
+msgstr "Instalación"
+
+msgid "Install Mode"
+msgstr "Modo de instalación"
+
+msgid "Standard"
+msgstr "Estándar"
+
+msgid "Hosting"
+msgstr "Hosting"
+
+msgid "Creates the database and the DB user with the provided credentials"
+msgstr "Crea la base de datos y el usuario de BD con las credenciales proporcionadas"
+
+msgid "Uses the provided credentials directly — the database must already exist"
+msgstr "Usa las credenciales proporcionadas directamente — la base de datos debe existir previamente"
+
 #~ msgid "Method unavailable"
 #~ msgstr "Método no disponible"
 

@@ -83,6 +83,9 @@ class LanguageTest extends UnitaryTestCase
 
         $this->context->setLocale($locale);
         $this->configData
+            ->method('isInstalled')
+            ->willReturn(true);
+        $this->configData
             ->expects(self::once())
             ->method('getSiteLang')
             ->willReturn(self::$faker->locale());
@@ -110,6 +113,9 @@ class LanguageTest extends UnitaryTestCase
         $this->context->setUserData(new UserDto());
 
         $this->configData
+            ->method('isInstalled')
+            ->willReturn(true);
+        $this->configData
             ->expects(self::once())
             ->method('getSiteLang')
             ->willReturn($appLocale);
@@ -131,6 +137,9 @@ class LanguageTest extends UnitaryTestCase
 
         $this->context->setUserData(new UserDto());
 
+        $this->configData
+            ->method('isInstalled')
+            ->willReturn(true);
         $this->configData
             ->expects(self::once())
             ->method('getSiteLang')

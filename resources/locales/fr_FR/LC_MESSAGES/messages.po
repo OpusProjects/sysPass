@@ -7656,3 +7656,22 @@ msgid ""
 msgstr ""
 "Définit l'URL de l'application lors de l'accès via un proxy inverse ou un "
 "répartiteur de charge."
+
+msgid "Installation"
+msgstr ""
+
+msgid "Install Mode"
+msgstr ""
+
+msgid "Standard"
+msgstr ""
+
+msgid "Hosting"
+msgstr ""
+
+msgid "Creates the database and the DB user with the provided credentials"
+msgstr ""
+
+msgid "Uses the provided credentials directly — the database must already exist"
+msgstr ""
+

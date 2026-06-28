@@ -117,6 +117,14 @@ final class Installer implements InstallerService
             );
         }
 
+        if ($this->installData->getAdminPass() !== $this->installData->getAdminPassRepeat()) {
+            throw new InvalidArgumentException(
+                __u('Passwords do not match'),
+                SPException::ERROR,
+                __u('The admin password and its confirmation must be the same')
+            );
+        }
+
         if (empty($this->installData->getMasterPassword())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the Master Password'),

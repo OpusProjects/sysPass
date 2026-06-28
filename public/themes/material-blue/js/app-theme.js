@@ -187,11 +187,12 @@ sysPass.Theme = function (log) {
                 <li class="mdl-menu__item passComplexity"><i class="material-icons">vpn_key</i>${sysPassApp.config.LANG[29]}</li>
                 <li class="mdl-menu__item reset"><i class="material-icons">refresh</i>${sysPassApp.config.LANG[30]}</li></ul>`;
 
+            $thisParent.after(`<div class="password-strength" id="password-strength-${targetId}" style="display:none"><div class="password-strength-track"><div class="password-strength-bar"></div></div><span class="password-strength-label"></span></div>`);
             $thisParent.after(`<div class="password-actions" />`);
 
             $thisParent.next(".password-actions")
                 .prepend(`<i id='password-level-${targetId}' class="showpass material-icons clip-pass-field password-level" data-clipboard-target='${targetId}' data-level-msg= '' title="${sysPassApp.config.LANG[32]}">remove_red_eye</i>`)
-                .prepend(btnMenu);
+                .append(btnMenu);
 
             $this.on("keyup", function () {
                 sysPassApp.util.password.checkLevel($this);
@@ -251,14 +252,32 @@ sysPass.Theme = function (log) {
         // Crear los iconos de acciones sobre claves (sólo mostrar clave)
         $container.find(".passwordfield__input-show").each(function () {
             const $this = $(this);
-            const $icon = $("<i class=\"showpass material-icons\" title=\"" + sysPassApp.config.LANG[32] + "\">remove_red_eye</i>");
+            const uniqueId = sysPassApp.util.uniqueId();
+            const targetId = $this.attr("id") + "-" + uniqueId;
+
+            $this.attr("data-pass", $this.val());
+
+            const $icon = $("<i id='password-level-" + targetId + "' class=\"showpass material-icons password-level\" data-level-msg='' title=\"" + sysPassApp.config.LANG[32] + "\">remove_red_eye</i>");
+
+            $this.attr("id", targetId);
+
+            $this.parent().after("<div class='password-strength' id='password-strength-" + targetId + "' style='display:none'><div class='password-strength-bar'></div><span class='password-strength-label'></span></div>");
+            $this.parent().after('<div class="password-actions" />');
+
+            const $actions = $this.parent().next(".password-actions");
 
             if ($this.data("clipboard") === 1) {
                 const $clip = $("<i class=\"clip-pass-icon material-icons\" title=\"" + sysPassApp.config.LANG[34] + "\" data-clipboard-target=\"#" + $this.attr("id") + "\">content_paste</i>");
-                $this.parent().after($clip).after($icon);
+                $actions.prepend($icon).prepend($clip);
             } else {
-                $this.parent().after($icon);
+                $actions.prepend($icon);
             }
+
+            $this.on("keyup", function () {
+                sysPassApp.util.password.checkLevel($this);
+
+                this.dataset.pass = $this.val();
+            });
 
             // Crear evento para mostrar clave generada/introducida
             $icon.on("mouseover", function () {

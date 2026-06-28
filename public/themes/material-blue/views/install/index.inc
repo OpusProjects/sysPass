@@ -40,7 +40,7 @@ use function SP\__;
 <div id="actions" class="installer" align="center">
     <div id="page-title">
         <h1><?php
-            printf(__('Installation %s'), $_getvar('app_version')); ?></h1>
+            printf('%s %s — %s', $_getvar('app_name'), $_getvar('app_version'), __('Installation')); ?></h1>
     </div>
 
     <?php
@@ -82,8 +82,18 @@ use function SP\__;
                        class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input"
                        value="" maxlength="255" autocomplete="off">
                 <label class="mdl-textfield__label"
-                       for="adminlogin"><?php
+                       for="adminpass"><?php
                     echo __('Password'); ?></label>
+            </div>
+
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="adminpass_repeat" name="adminpassr" type="password"
+                       required
+                       class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
+                       value="" maxlength="255" autocomplete="off">
+                <label class="mdl-textfield__label"
+                       for="adminpass_repeat"><?php
+                    echo __('Password (repeat)'); ?></label>
             </div>
         </fieldset>
 
@@ -103,7 +113,7 @@ use function SP\__;
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                 <input id="masterpasswordR" name="masterpasswordr"
                        type="password" required
-                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                        value="" maxlength="255" autocomplete="off">
                 <label class="mdl-textfield__label"
                        for="masterpasswordR"><?php
@@ -214,30 +224,34 @@ use function SP\__;
             </div>
 
             <div class="form-field">
-                <label for="hostingmode">
-                    <?php
-                    echo __('Hosting Mode'); ?>
-                    <div id="help-hostingmode"
-                         class="icon material-icons <?php
-                         echo $icons->help()->getClass(); ?>">
-                        <?php
-                        echo $icons->help()->getIcon(); ?>
-                    </div>
-
-                    <div class="mdl-tooltip" for="help-hostingmode">
-                        <?php
-                        echo __('It does not create or verify the user\'s permissions on the DB'); ?>
-                    </div>
-                </label>
-
-                <div>
-                    <label class="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect"
-                           for="hostingmode">
-                        <input type="checkbox" id="hostingmode"
-                               class="mdl-checkbox__input" name="hostingmode">
-                    </label>
-                </div>
+                <label for="hostingmode"><?php echo __('Install Mode'); ?></label>
+                <select name="hostingmode" id="hostingmode" size="1"
+                        class="select-box"
+                        title="<?php echo __('Install Mode'); ?>">
+                    <option value="0" selected><?php echo __('Standard'); ?></option>
+                    <option value="1"><?php echo __('Hosting'); ?></option>
+                </select>
+                <span id="hostingmode-desc" class="form-field-hint"><?php
+                    echo __('Creates the database and the DB user with the provided credentials'); ?></span>
             </div>
+
+            <script type="text/javascript">
+                (function() {
+                    var msgs = {
+                        '0': '<?php echo __('Creates the database and the DB user with the provided credentials'); ?>',
+                        '1': '<?php echo __('Uses the provided credentials directly — the database must already exist'); ?>'
+                    };
+                    var poll = setInterval(function() {
+                        var el = document.getElementById('hostingmode');
+                        if (el && el.selectize) {
+                            clearInterval(poll);
+                            el.selectize.on('change', function(value) {
+                                document.getElementById('hostingmode-desc').textContent = msgs[value] || msgs['0'];
+                            });
+                        }
+                    }, 100);
+                })();
+            </script>
         </fieldset>
 
         <div class="buttons">

@@ -38,6 +38,7 @@ final class InstallDataFactory
         $installData->setSiteLang($request->analyzeString('sitelang', 'en_US'));
         $installData->setAdminLogin($request->analyzeString('adminlogin', 'admin'));
         $installData->setAdminPass($request->analyzeEncrypted('adminpass') ?? '');
+        $installData->setAdminPassRepeat($request->analyzeEncrypted('adminpassr') ?? '');
         $installData->setMasterPassword($request->analyzeEncrypted('masterpassword') ?? '');
         $installData->setDbAdminUser($request->analyzeString('dbuser', 'root'));
         $installData->setDbAdminPass($request->analyzeEncrypted('dbpass') ?? '');

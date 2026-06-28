@@ -24,12 +24,15 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Install;
 
+use SP\Core\Application;
 use SP\Core\Language;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\LanguageInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 
 use function SP\__;
@@ -41,6 +44,14 @@ use function SP\__;
  */
 final class IndexController extends ControllerBase
 {
+    public function __construct(
+        Application $application,
+        WebControllerHelper $webControllerHelper,
+        private readonly LanguageInterface $language,
+    ) {
+        parent::__construct($application, $webControllerHelper);
+    }
+
     #[Action(ResponseType::PLAIN_TEXT)]
     public function indexAction(): ActionResponse
     {
@@ -65,10 +76,16 @@ final class IndexController extends ControllerBase
         }
 
         $this->view->assign('errors', $errors);
+
+        $defaultLang = Language::resolveLanguage(
+            $this->request->getHeader('Accept-Language')
+        );
+        $this->language->setLocales($defaultLang);
+
         $this->view->assign(
             'langs',
             SelectItemAdapter::factory(Language::getAvailableLanguages())
-                ->getItemsFromArraySelected([Language::$globalLang])
+                ->getItemsFromArraySelected([$defaultLang])
         );
 
         return ActionResponse::ok($this->render());

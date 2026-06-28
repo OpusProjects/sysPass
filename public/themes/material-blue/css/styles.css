@@ -82,6 +82,7 @@ i {
 
 form .form-field {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between; }
   form .form-field > label {
     min-width: 12em;
@@ -91,6 +92,31 @@ form .form-field {
   form .form-field > div {
     width: 100%;
     align-self: center; }
+
+.installer .mdl-textfield {
+  padding-top: 30px; }
+
+form .form-field > select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  outline: none;
+  color: #555;
+  margin-top: -10px; }
+
+.form-field-hint {
+  display: block;
+  width: 100%;
+  font-size: 14px;
+  color: #888;
+  margin-top: -6px;
+  line-height: 1.4; }
+
+form .form-field > .selectize-control {
+  margin-top: -16px; }
 
 a {
   text-decoration: none;
@@ -135,7 +161,7 @@ body.userpassreset {
     display: none; }
 
 #box-pub-noheader {
-  background: transparent url("public/images/logo_full_nobg_outline.png") no-repeat top center;
+  background: transparent url("images/logo_full_nobg_outline.png") no-repeat top center;
   background-size: 75% auto;
   width: 40em;
   min-height: 20em;
@@ -979,6 +1005,43 @@ h5.datagrid-header-title {
 .password-level.weak {
   color: #ef5350; }
 
+.password-strength {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  margin-bottom: 4px;
+  height: 16px;
+  max-width: 60%; }
+  .password-strength .password-strength-track {
+    height: 8px;
+    border-radius: 4px;
+    background: #e0e0e0;
+    flex: 1; }
+  .password-strength .password-strength-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.3s ease, background-color 0.3s ease; }
+  .password-strength .password-strength-label {
+    font-size: 11px;
+    margin-left: 0.8em;
+    white-space: nowrap; }
+  .password-strength.weak .password-strength-bar {
+    background-color: #ef5350; }
+  .password-strength.weak .password-strength-label {
+    color: #ef5350; }
+  .password-strength.good .password-strength-bar {
+    background-color: #ffca28; }
+  .password-strength.good .password-strength-label {
+    color: #ffca28; }
+  .password-strength.strong .password-strength-bar {
+    background-color: #2196f3; }
+  .password-strength.strong .password-strength-label {
+    color: #2196f3; }
+  .password-strength.strongest .password-strength-bar {
+    background-color: #26a69a; }
+  .password-strength.strongest .password-strength-label {
+    color: #26a69a; }
+
 #alert #alert-text {
   margin: 15px auto;
   font-size: 14px;
@@ -1060,6 +1123,11 @@ h5.datagrid-header-title {
   width: 12em; }
   .password-actions > span, .password-actions i {
     margin-right: 0.6em; }
+  .password-actions > :first-child {
+    margin-left: 1em; }
+
+.mdl-textfield + .icon {
+  margin-left: 1em; }
 
 .form-control {
   position: relative; }
@@ -1105,7 +1173,7 @@ fieldset.warning {
     margin-bottom: 30px;
     color: #607d8b;
     align-items: center;
-    background: url("public/images/logo_full_bg.png") left no-repeat;
+    background: url("images/logo_full_bg.png") left no-repeat;
     background-size: auto 150px;
     height: 150px; }
   #actions #page-title {

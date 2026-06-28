@@ -95,6 +95,29 @@ final class Language implements LanguageInterface
         return self::$langs;
     }
 
+    public static function resolveLanguage(string $acceptLanguageHeader): string
+    {
+        if ($acceptLanguageHeader === '') {
+            return 'en_US';
+        }
+
+        $lang = str_replace('-', '_', substr($acceptLanguageHeader, 0, 5));
+
+        if (isset(self::$langs[$lang])) {
+            return $lang;
+        }
+
+        $prefix = substr($lang, 0, 2);
+
+        foreach (self::$langs as $code => $name) {
+            if (str_starts_with($code, $prefix)) {
+                return $code;
+            }
+        }
+
+        return 'en_US';
+    }
+
     /**
      * Set the language to use
      *
@@ -134,6 +157,10 @@ final class Language implements LanguageInterface
      */
     private function getGlobalLang(): string
     {
+        if (!$this->configData->isInstalled()) {
+            return $this->getBrowserLang() ?: $this->configData->getSiteLang();
+        }
+
         return $this->configData->getSiteLang() ?: $this->getBrowserLang();
     }
 
@@ -142,11 +169,7 @@ final class Language implements LanguageInterface
      */
     private function getBrowserLang(): string
     {
-        $lang = $this->request->getHeader('Accept-Language');
-
-        return $lang !== ''
-            ? str_replace('-', '_', substr($lang, 0, 5))
-            : 'en_US';
+        return self::resolveLanguage($this->request->getHeader('Accept-Language'));
     }
 
     /**
