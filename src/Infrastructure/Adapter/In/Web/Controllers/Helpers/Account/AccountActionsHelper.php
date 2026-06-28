@@ -31,8 +31,8 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionType;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 

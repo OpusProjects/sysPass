@@ -23,14 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Layout;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 /**
- * Class DataGridHeader for setting the headers of the data array
+ * Class DataGridData for setting the matrix data source
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-final class DataGridHeader extends DataGridHeaderBase
+final class DataGridData extends DataGridDataBase
 {
 
 }

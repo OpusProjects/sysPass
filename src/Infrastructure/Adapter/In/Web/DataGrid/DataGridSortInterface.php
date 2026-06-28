@@ -23,14 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 use SP\Domain\Core\UI\IconInterface;
 
 /**
  * Interface DataGridSortInterface for defining sort fields
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
 interface DataGridSortInterface
 {

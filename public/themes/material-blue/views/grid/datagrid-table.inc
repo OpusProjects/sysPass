@@ -6,9 +6,9 @@
  * @var callable $_getvar
  */
 
-use SP\Html\DataGrid\Action\DataGridAction;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
-use SP\Html\DataGrid\DataGridTab;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 use SP\Mvc\View\Template;
 
 if (!isset($data)) {

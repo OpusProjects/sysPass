@@ -23,14 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 /**
- * Class DataGridTab to create a data matrix for use in tabs
+ * Class DataGrid for creating a data matrix
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-final class DataGridTab extends DataGridBase
+final class DataGrid extends DataGridBase
 {
     /**
      * Tab title
@@ -42,11 +42,10 @@ final class DataGridTab extends DataGridBase
         return $this->title;
     }
 
-    public function setTitle(string $title): DataGridTab
+    public function setTitle(string $title): DataGrid
     {
         $this->title = $title;
 
         return $this;
     }
 }
-    

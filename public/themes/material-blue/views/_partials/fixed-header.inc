@@ -5,7 +5,7 @@
  */
 
 use SP\Html\Assets\IconInterface;
-use SP\Html\DataGrid\Action\DataGridAction;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Mvc\View\TemplateInterface;
 
 use function SP\__;

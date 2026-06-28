@@ -23,22 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Layout;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Layout;
 
 /**
- * Interface DataGridHeader
+ * Class DataGridPager
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-interface DataGridHeaderInterface
+final class DataGridPager extends DataGridPagerBase
 {
-    /**
-     * @param $header string
-     */
-    public function addHeader(string $header): void;
 
-    /**
-     * @return array
-     */
-    public function getHeaders(): array;
 }

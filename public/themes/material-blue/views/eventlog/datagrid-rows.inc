@@ -23,7 +23,7 @@
  */
 
 /**
- * @var SP\Html\DataGrid\DataGridTab $data
+ * @var SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab $data
  * @var ThemeIconsInterface $icons
  * @var ConfigDataInterface $configData
  * @var callable $_getvar

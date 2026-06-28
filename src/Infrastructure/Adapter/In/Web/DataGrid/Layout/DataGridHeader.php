@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 /**
  * sysPass
@@ -24,39 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Layout;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Layout;
 
 /**
- * Class DataGridHeaderBase for setting the headers of the data array
+ * Class DataGridHeader for setting the headers of the data array
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
-abstract class DataGridHeaderBase implements DataGridHeaderInterface
+final class DataGridHeader extends DataGridHeaderBase
 {
-    /**
-     * The headers that identify the data columns
-     */
-    private array $headers = [];
-    /**
-     * The width of the columns
-     */
-    private int $width = 0;
 
-    public function addHeader(string $header): void
-    {
-        $this->headers[] = $header;
-
-        $numHeaders = count($this->headers);
-        $this->width = $numHeaders > 0 ? (int)floor(65 / $numHeaders) : 65;
-    }
-
-    public function getWidth(): int
-    {
-        return $this->width;
-    }
-
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
 }

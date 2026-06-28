@@ -23,12 +23,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Action;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Action;
 
 /**
  * Class DataGridActionSearch for defining a data search action
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
 final class DataGridActionSearch extends DataGridActionBase
 {

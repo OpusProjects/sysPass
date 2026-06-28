@@ -23,14 +23,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Action;
 
 /**
- * Class DataGridData for setting the matrix data source
- *
- * @package SP\Html\DataGrid
+ * Class DataGridAction for creating an action for each item in the data grid
  */
-final class DataGridData extends DataGridDataBase
+final class DataGridAction extends DataGridActionBase
 {
 
 }

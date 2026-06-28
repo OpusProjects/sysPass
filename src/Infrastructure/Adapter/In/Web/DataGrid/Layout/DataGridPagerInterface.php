@@ -23,15 +23,15 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Html\DataGrid\Layout;
+namespace SP\Infrastructure\Adapter\In\Web\DataGrid\Layout;
 
 use SP\Domain\Core\UI\IconInterface;
-use SP\Html\DataGrid\Action\DataGridActionSearch;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 
 /**
  * Interface DataGridPagerInterface for the paginator definition
  *
- * @package SP\Html\DataGrid
+ * @package SP\Infrastructure\Adapter\In\Web\DataGrid
  */
 interface DataGridPagerInterface
 {
