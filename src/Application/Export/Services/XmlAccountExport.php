@@ -77,34 +77,14 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
             }
 
             foreach ($accounts as $account) {
-                $accountName = $this->document->createElement(
-                    'name',
-                    $this->document->createTextNode($account->getName() ?? '')->nodeValue
-                );
+                $accountName = $this->createTextElement('name', $account->getName() ?? '');
                 $accountCustomerId = $this->document->createElement('clientId', (string)$account->getClientId());
                 $accountCategoryId = $this->document->createElement('categoryId', (string)$account->getCategoryId());
-                $accountLogin = $this->document->createElement(
-                    'login',
-                    $this->document->createTextNode($account->getLogin() ?? '')->nodeValue
-                );
-                $accountUrl = $this->document->createElement(
-                    'url',
-                    $this->document->createTextNode(
-                        $account->getUrl() ?? ''
-                    )->nodeValue
-                );
-                $accountNotes = $this->document->createElement(
-                    'notes',
-                    $this->document->createTextNode($account->getNotes() ?? '')->nodeValue
-                );
-                $accountPass = $this->document->createElement(
-                    'pass',
-                    $this->document->createTextNode($account->getPass() ?? '')->nodeValue
-                );
-                $accountIV = $this->document->createElement(
-                    'key',
-                    $this->document->createTextNode($account->getKey() ?? '')->nodeValue
-                );
+                $accountLogin = $this->createTextElement('login', $account->getLogin() ?? '');
+                $accountUrl = $this->createTextElement('url', $account->getUrl() ?? '');
+                $accountNotes = $this->createTextElement('notes', $account->getNotes() ?? '');
+                $accountPass = $this->createTextElement('pass', $account->getPass() ?? '');
+                $accountIV = $this->createTextElement('key', $account->getKey() ?? '');
                 $tags = $this->document->createElement('tags');
 
                 foreach ($this->accountToTagService->getTagsByAccountId($account->getId() ?? 0) as $itemData) {

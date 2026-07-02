@@ -78,18 +78,8 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
                 $nodeClients->appendChild($nodeClient);
 
                 $nodeClient->setAttribute('id', (string)$client->getId());
-                $nodeClient->appendChild(
-                    $this->document->createElement(
-                        'name',
-                        $this->document->createTextNode($client->getName() ?? '')->nodeValue
-                    )
-                );
-                $nodeClient->appendChild(
-                    $this->document->createElement(
-                        'description',
-                        $this->document->createTextNode($client->getDescription() ?? '')->nodeValue
-                    )
-                );
+                $nodeClient->appendChild($this->createTextElement('name', $client->getName() ?? ''));
+                $nodeClient->appendChild($this->createTextElement('description', $client->getDescription() ?? ''));
             }
 
             return $nodeClients;

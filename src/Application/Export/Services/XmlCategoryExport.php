@@ -77,18 +77,8 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
                 $nodeCategories->appendChild($nodeCategory);
 
                 $nodeCategory->setAttribute('id', (string)$category->getId());
-                $nodeCategory->appendChild(
-                    $this->document->createElement(
-                        'name',
-                        $this->document->createTextNode($category->getName() ?? '')->nodeValue
-                    )
-                );
-                $nodeCategory->appendChild(
-                    $this->document->createElement(
-                        'description',
-                        $this->document->createTextNode($category->getDescription() ?? '')->nodeValue
-                    )
-                );
+                $nodeCategory->appendChild($this->createTextElement('name', $category->getName() ?? ''));
+                $nodeCategory->appendChild($this->createTextElement('description', $category->getDescription() ?? ''));
             }
 
             return $nodeCategories;
