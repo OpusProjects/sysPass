@@ -77,9 +77,7 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
                 $nodeTags->appendChild($nodeTag);
 
                 $nodeTag->setAttribute('id', (string)$tag->getId());
-                $nodeTag->appendChild(
-                    $this->document->createElement('name', $this->document->createTextNode($tag->getName() ?? '')->nodeValue)
-                );
+                $nodeTag->appendChild($this->createTextElement('name', $tag->getName() ?? ''));
             }
 
             return $nodeTags;

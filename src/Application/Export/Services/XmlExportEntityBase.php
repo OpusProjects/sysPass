@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\Export\Services;
 
 use DOMDocument;
+use DOMElement;
 use SP\Core\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Application\Export\Ports\XmlExportEntityService;
@@ -43,5 +44,16 @@ abstract class XmlExportEntityBase extends Service implements XmlExportEntitySer
         parent::__construct($application);
 
         $this->document = new DOMDocument('1.0', 'UTF-8');
+    }
+
+    /**
+     * Create an element whose text content is stored as a proper text node,
+     * so special characters such as '&' are correctly escaped on serialization.
+     */
+    protected function createTextElement(string $tag, string $value): DOMElement
+    {
+        $el = $this->document->createElement($tag);
+        $el->appendChild($this->document->createTextNode($value));
+        return $el;
     }
 }
