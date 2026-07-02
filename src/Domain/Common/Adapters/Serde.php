@@ -66,7 +66,13 @@ final class Serde
      */
     public static function deserialize(string $data, ?string $class = null): object|array
     {
-        $value = @unserialize($data, ['allowed_classes' => $class !== null ? [$class] : true]);
+        // Allow Crypt when deserializing Vault, since Vault contains a Crypt instance
+        $allowedClasses = $class !== null ? [$class] : true;
+        if ($class === 'SP\Core\Crypt\Vault') {
+            $allowedClasses = ['SP\Core\Crypt\Vault', 'SP\Core\Crypt\Crypt'];
+        }
+
+        $value = @unserialize($data, ['allowed_classes' => $allowedClasses]);
 
         return match (true) {
             $value === false => throw SPException::error(__u('Couldn\'t deserialize the data')),
