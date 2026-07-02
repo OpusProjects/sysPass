@@ -288,7 +288,7 @@ final class Api extends Service implements ApiService
             /** @var VaultInterface $vault */
             $vault = unserialize($vaultData, ['allowed_classes' => [Vault::class, Crypt::class]]);
 
-            $key = sha1($tokenPass . $this->getParam('authToken'));
+            $key = $tokenPass . $this->getParam('authToken');
 
             if ($vault && ($pass = $vault->getData($key))) {
                 return $pass;

@@ -448,7 +448,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
 
-        $vaultKey = sha1($authToken . $authToken);
+        $vaultKey = $authToken . $authToken;
 
         $vault = Vault::factory(new Crypt())->saveData(self::$faker->password(), $vaultKey);
 
@@ -571,7 +571,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->willReturn($authToken);
 
-        $vaultKey = sha1($authToken . $authToken);
+        $vaultKey = $authToken . $authToken;
 
         $masterPass = self::$faker->password();
 
@@ -634,7 +634,7 @@ class ApiTest extends UnitaryTestCase
                          ->method('get')
                          ->willReturn($authToken);
 
-        $vaultKey = sha1($authToken . $authToken);
+        $vaultKey = $authToken . $authToken;
 
         $masterPass = self::$faker->password();
 
