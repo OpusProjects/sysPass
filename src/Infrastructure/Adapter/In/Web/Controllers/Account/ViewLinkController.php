@@ -38,7 +38,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Core\Crypt\VaultInterface;
+use SP\Core\Crypt\Vault;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -98,7 +98,7 @@ final class ViewLinkController extends AccountControllerBase
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 
-            $vault = Serde::deserialize($publicLink->getData() ?? '', VaultInterface::class);
+            $vault = Serde::deserialize($publicLink->getData() ?? '', Vault::class);
 
             $accountViewDto = AccountViewDto::fromModel(
                 Serde::deserialize(
