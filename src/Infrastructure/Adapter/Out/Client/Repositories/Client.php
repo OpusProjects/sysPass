@@ -318,12 +318,22 @@ final class Client extends BaseRepository implements ClientRepository
      */
     public function getAllForFilter(AccountFilterBuilder $accountFilterUser): QueryResult
     {
-        $query = $accountFilterUser
+        $filterQuery = $accountFilterUser
             ->buildFilter()
+            ->cols(['Account.id']);
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from('Account')
             ->cols(['Client.id', 'Client.name'])
             ->join('right', 'Client', 'Account.clientId = Client.id')
-            ->where('Account.clientId IS NULL')
-            ->orWhere('Client.isGlobal = 1')
+            ->where(
+                sprintf(
+                    '(Account.clientId IS NULL OR Client.isGlobal = 1 OR Account.id IN (%s))',
+                    $filterQuery->getStatement()
+                )
+            )
+            ->bindValues($filterQuery->getBindValues())
             ->groupBy(['id'])
             ->orderBy(['Client.name']);
 
