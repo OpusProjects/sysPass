@@ -403,8 +403,6 @@ class Session extends ContextBase implements SessionContext
         if ($this->getSidStartTime() === 0) {
             $this->setSidStartTime(time());
             $this->setStartActivity(time());
-        } elseif (SessionLifecycleHandler::needsRegenerate($this->getSidStartTime())) {
-            SessionLifecycleHandler::regenerate();
         }
     }
 
