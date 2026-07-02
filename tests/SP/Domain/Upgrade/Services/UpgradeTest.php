@@ -128,7 +128,12 @@ class UpgradeTest extends UnitaryTestCase
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->exactly(2))
                 ->method('apply')
-                ->with('400.00000000', $configData)
+                ->with(
+                    self::callback(
+                        static fn(string $version) => in_array($version, ['400.00000002', '400.00000001'], true)
+                    ),
+                    $configData
+                )
                 ->willReturn(true);
 
         $this->container
@@ -158,7 +163,7 @@ class UpgradeTest extends UnitaryTestCase
         $handler = $this->createMock(UpgradeHandlerService::class);
         $handler->expects($this->once())
                 ->method('apply')
-                ->with('400.00000000', $configData)
+                ->with('400.00000002', $configData)
                 ->willReturn(false);
 
         $this->container

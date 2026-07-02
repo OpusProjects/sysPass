@@ -85,8 +85,8 @@ final class Upgrade extends Service implements UpgradeService
             )
         );
 
-        foreach ($this->getTargetUpgradeHandlers($version) as $upgradeHandler) {
-            if (!$upgradeHandler->apply($version, $configData)) {
+        foreach ($this->getTargetUpgradeHandlers($version) as [$targetVersion, $upgradeHandler]) {
+            if (!$upgradeHandler->apply($targetVersion, $configData)) {
                 throw UpgradeException::critical(
                     __u('Error while applying the update'),
                     __u('Please, check the event log for more details')
@@ -108,7 +108,7 @@ final class Upgrade extends Service implements UpgradeService
     }
 
     /**
-     * @return iterable<UpgradeHandlerService>
+     * @return iterable<array{string, UpgradeHandlerService}>
      * @throws ServiceException
      */
     private function getTargetUpgradeHandlers(string $version): iterable
@@ -121,7 +121,7 @@ final class Upgrade extends Service implements UpgradeService
                     $instance = $attribute->newInstance();
 
                     if (Version::checkVersion($version, $instance->version)) {
-                        yield $this->container->get($class);
+                        yield [$instance->version, $this->container->get($class)];
                     }
                 }
             }
