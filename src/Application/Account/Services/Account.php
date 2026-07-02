@@ -680,13 +680,13 @@ final class Account extends Service implements AccountService
     /**
      * Get the password-related data for all accounts.
      *
-     * @return Simple[]
+     * @return AccountModel[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
     public function getAccountsPassData(): array
     {
-        return $this->accountRepository->getAccountsPassData()->getDataAsArray(Simple::class);
+        return $this->accountRepository->getAccountsPassData()->getDataAsArray(AccountModel::class);
     }
 }

@@ -1374,7 +1374,7 @@ class AccountTest extends UnitaryTestCase
     public function testGetAccountsPassData()
     {
         $this->accountRepository->expects(self::once())->method('getAccountsPassData')
-                                ->willReturn(new QueryResult([new Simple()]));
+                                ->willReturn(new QueryResult([new AccountModel()]));
 
         $this->account->getAccountsPassData();
     }
