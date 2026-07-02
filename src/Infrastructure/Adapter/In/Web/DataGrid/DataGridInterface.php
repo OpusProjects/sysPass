@@ -106,7 +106,7 @@ interface DataGridInterface
     /**
      * Returns the total load time of the DataGrid
      */
-    public function getTime(): int;
+    public function getTime(): float;
 
     /**
      * Sets the total load time of the DataGrid
