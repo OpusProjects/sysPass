@@ -260,7 +260,7 @@ final class User extends BaseRepository implements UserRepository
         }
 
         if (!empty($itemSearchData->getSearchString())) {
-            $query->where(sprintf('%s.name LIKE :name OR %s.login LIKE :login', UserModel::TABLE, UserModel::TABLE));
+            $query->where(sprintf('(%s.name LIKE :name OR %s.login LIKE :login)', UserModel::TABLE, UserModel::TABLE));
 
             $search = '%' . $itemSearchData->getSearchString() . '%';
 
