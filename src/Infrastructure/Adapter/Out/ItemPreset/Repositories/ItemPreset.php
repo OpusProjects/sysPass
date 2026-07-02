@@ -32,7 +32,6 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -45,8 +44,6 @@ use function SP\__u;
  */
 class ItemPreset extends BaseRepository implements ItemPresetRepository
 {
-    use RepositoryItemTrait;
-
     /**
      * Creates an item
      *
@@ -59,7 +56,13 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->newInsert()
             ->into(ItemPresetModel::TABLE)
             ->cols($itemPreset->toArray(null, ['id', 'hash', 'score', 'userName', 'userProfileName', 'userGroupName']))
-            ->col('hash', $this->makeItemHash($itemPreset->getType() ?? ''));
+            ->col('hash', sha1(
+                ($itemPreset->getType() ?? '')
+                . (int)$itemPreset->getUserId()
+                . (int)$itemPreset->getUserGroupId()
+                . (int)$itemPreset->getUserProfileId()
+                . (int)$itemPreset->getPriority()
+            ));
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the permission'));
 
@@ -78,7 +81,13 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->newUpdate()
             ->table(ItemPresetModel::TABLE)
             ->cols($itemPreset->toArray(null, ['id', 'hash', 'score', 'userName', 'userProfileName', 'userGroupName']))
-            ->col('hash', $this->makeItemHash($itemPreset->getType() ?? ''))
+            ->col('hash', sha1(
+                ($itemPreset->getType() ?? '')
+                . (int)$itemPreset->getUserId()
+                . (int)$itemPreset->getUserGroupId()
+                . (int)$itemPreset->getUserProfileId()
+                . (int)$itemPreset->getPriority()
+            ))
             ->where('id = :id')
             ->limit(1)
             ->bindValues(
