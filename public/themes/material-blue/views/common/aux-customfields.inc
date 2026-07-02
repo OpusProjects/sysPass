@@ -79,7 +79,7 @@ foreach ($customFields as $index => $field):?>
                      for="help-<?php
                      echo $field->formId; ?>">
                     <p><?php
-                        echo $field->help; ?></p>
+                        echo htmlspecialchars($field->help ?? '', ENT_QUOTES); ?></p>
                 </div>
             <?php
             endif; ?>
