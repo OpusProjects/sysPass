@@ -33,6 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
+use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config;
 use SP\Infrastructure\Database\QueryData;
@@ -57,7 +58,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
     public function deleteSingle()
     {
         $this->addDatabaseMapperResolver(
-            AccountHistory::class,
+            AccountHistoryView::class,
             new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
         );
 
@@ -111,7 +112,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
                 return new QueryResult([], 1);
             }
 
-            if ($queryData->getMapClassName() === AccountHistory::class) {
+            if ($queryData->getMapClassName() === AccountHistoryView::class) {
                 $accountHistory = AccountDataGenerator::factory()
                                                       ->buildAccountHistoryData()
                                                       ->mutate(
@@ -154,7 +155,7 @@ class AccountHistoryManagerTest extends IntegrationTestCase
                 return new QueryResult([], 1);
             }
 
-            if ($queryData->getMapClassName() === AccountHistory::class) {
+            if ($queryData->getMapClassName() === AccountHistoryView::class) {
                 $accountHistory = AccountDataGenerator::factory()
                                                       ->buildAccountHistoryData()
                                                       ->mutate(

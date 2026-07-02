@@ -65,6 +65,8 @@ final class AccountHistoryDto extends AccountDto
         public readonly ?int    $passDate = null,
         public readonly ?string $dateAdd = null,
         public readonly ?string $dateEdit = null,
+        public readonly ?string $userEditName = null,
+        public readonly ?string $userEditLogin = null,
     ) {
         parent::__construct(
             $id,

@@ -44,6 +44,12 @@ final class AccountHistoryViewDto extends Dto
         public readonly ?int    $categoryId,
         public readonly ?int    $clientId,
         public readonly ?int    $passDate,
+        public readonly ?string $name = null,
+        public readonly ?string $login = null,
+        public readonly ?string $url = null,
+        public readonly ?string $notes = null,
+        public readonly ?string $userEditName = null,
+        public readonly ?string $userEditLogin = null,
     ) {
     }
 }
