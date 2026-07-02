@@ -38,6 +38,7 @@ use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory;
+use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\PublicLink;
@@ -206,7 +207,7 @@ class AccountTest extends IntegrationTestCase
                                                            'userEditLogin' => self::$faker->userName(),
                                                        ]);
         $this->addDatabaseMapperResolver(
-            AccountHistory::class,
+            AccountHistoryView::class,
             new QueryResult([$accountHistory])
         );
 
@@ -340,7 +341,7 @@ class AccountTest extends IntegrationTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
 
         $this->addDatabaseMapperResolver(
-            AccountHistory::class,
+            AccountHistoryView::class,
             new QueryResult([$accountDataGenerator->buildAccountHistoryData()])
         );
 

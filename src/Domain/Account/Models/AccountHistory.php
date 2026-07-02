@@ -31,7 +31,7 @@ use SP\Domain\Common\Models\Model;
 /**
  * Class AccountHistory
  */
-final class AccountHistory extends Model
+class AccountHistory extends Model
 {
     public const TABLE = 'AccountHistory';
 

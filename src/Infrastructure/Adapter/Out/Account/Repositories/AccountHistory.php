@@ -30,6 +30,7 @@ use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
+use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -162,12 +163,17 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->newSelect()
             ->from(AccountHistoryModel::TABLE)
             ->cols(AccountHistoryModel::getColsWithPreffix(AccountHistoryModel::TABLE))
-            ->where('id = :id')
+            ->cols([
+                       'UserEdit.name AS userEditName',
+                       'UserEdit.login AS userEditLogin',
+                   ])
+            ->join('LEFT', 'User AS UserEdit', 'AccountHistory.userEditId = UserEdit.id')
+            ->where('AccountHistory.id = :id')
             ->bindValues(['id' => $id])
             ->limit(1);
 
         $queryData = QueryData::build($query)
-                              ->setMapClassName(AccountHistoryModel::class)
+                              ->setMapClassName(AccountHistoryView::class)
                               ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
 
         return $this->db->runQuery($queryData);
