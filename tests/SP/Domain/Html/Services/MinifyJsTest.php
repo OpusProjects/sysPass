@@ -105,14 +105,9 @@ class MinifyJsTest extends UnitaryTestCase
                       )
                       ->willReturn($etag);
 
-        $this->request->expects(self::once())
-                      ->method('getServer')
-                      ->with('SERVER_PROTOCOL')
-                      ->willReturn('http');
-
         $this->response->expects(self::once())
-                       ->method('header')
-                       ->with('http', '304 Not Modified');
+                       ->method('code')
+                       ->with(304);
 
         $this->response->expects(self::once())
                        ->method('send');
