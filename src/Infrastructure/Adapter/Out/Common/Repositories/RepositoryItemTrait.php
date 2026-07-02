@@ -46,20 +46,4 @@ trait RepositoryItemTrait
             )
         );
     }
-
-    /**
-     * Return a string of parameters for a SQL query built from an array
-     *
-     * @param array $items
-     * @param string $placeholder The string to use for the parameters
-     *
-     * @return string
-     */
-    protected function buildParamsFromArray(array $items, string $placeholder = '?'): string
-    {
-        return implode(
-            ',',
-            array_fill(0, count($items), $placeholder)
-        );
-    }
 }

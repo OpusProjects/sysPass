@@ -84,19 +84,22 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      */
     public function addByType(int $accountId, array $items, bool $isEdit = false): void
     {
-        $values = array_map(static function ($item) use ($accountId, $isEdit) {
-            return [$accountId, (int)$item, (int)$isEdit];
-        }, $items);
+        $rows = [];
+        $bindValues = ['isEdit' => (int)$isEdit];
 
-        $parameters = $this->buildParamsFromArray($values, '(?,?,?)');
+        foreach (array_values($items) as $i => $item) {
+            $rows[] = sprintf('(:accountId_%1$d, :userId_%1$d, :isEdit)', $i);
+            $bindValues['accountId_' . $i] = $accountId;
+            $bindValues['userId_' . $i] = (int)$item;
+        }
 
         $query = /** @lang SQL */
-            'INSERT INTO AccountToUser (accountId, userId, isEdit) 
-              VALUES ' . $parameters . '
-              ON DUPLICATE KEY UPDATE isEdit = ?';
+            'INSERT INTO AccountToUser (accountId, userId, isEdit)
+              VALUES ' . implode(',', $rows) . '
+              ON DUPLICATE KEY UPDATE isEdit = :isEdit';
 
         $queryData = QueryData::build(
-            Query::buildForMySQL($query, array_merge_recursive($values))
+            Query::buildForMySQL($query, $bindValues)
         )->setOnErrorMessage(__u('Error while updating the account users'));
 
         $this->db->runQuery($queryData);

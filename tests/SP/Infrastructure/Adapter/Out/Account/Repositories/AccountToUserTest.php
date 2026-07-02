@@ -131,10 +131,29 @@ class AccountToUserTest extends UnitaryTestCase
      */
     public function testAddByType(): void
     {
-        $userGroups = self::getRandomNumbers(10);
+        $users = self::getRandomNumbers(10);
+        $accountId = self::$faker->randomNumber();
+        $isEdit = self::$faker->boolean();
 
         $callback = new Callback(
-            static fn(QueryData $arg) => !empty($arg->getQuery()->getStatement())
+            static function (QueryData $arg) use ($users, $accountId, $isEdit) {
+                $query = $arg->getQuery();
+                $params = $query->getBindValues();
+                $statement = $query->getStatement();
+
+                foreach (array_values($users) as $i => $user) {
+                    if ($params['accountId_' . $i] !== $accountId
+                        || $params['userId_' . $i] !== $user
+                        || !str_contains($statement, sprintf('(:accountId_%1$d, :userId_%1$d, :isEdit)', $i))
+                    ) {
+                        return false;
+                    }
+                }
+
+                return $params['isEdit'] === (int)$isEdit
+                       && count($params) === count($users) * 2 + 1
+                       && str_contains($statement, 'ON DUPLICATE KEY UPDATE isEdit = :isEdit');
+            }
         );
 
         $this->database
@@ -142,11 +161,7 @@ class AccountToUserTest extends UnitaryTestCase
             ->method('runQuery')
             ->with($callback);
 
-        $this->accountToUser->addByType(
-            self::$faker->randomNumber(),
-            $userGroups,
-            self::$faker->boolean()
-        );
+        $this->accountToUser->addByType($accountId, $users, $isEdit);
     }
 
     /**
