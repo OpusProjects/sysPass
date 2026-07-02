@@ -76,15 +76,15 @@ function logger(mixed $data, string $type = 'DEBUG'): void
                || !@file_put_contents(LOG_FILE, $line, FILE_APPEND)
     );
 
-    if ($useOwn === false) {
-        $line = sprintf(
-            LOG_FORMAT,
-            $type,
-            is_scalar($data) ? $data : print_r($data, true),
-            $caller
+    if ($useOwn === true) {
+        error_log(
+            sprintf(
+                LOG_FORMAT,
+                $type,
+                is_scalar($data) ? $data : print_r($data, true),
+                $caller
+            )
         );
-
-        @file_put_contents(LOG_FILE, $line, FILE_APPEND);
     }
 }
 
