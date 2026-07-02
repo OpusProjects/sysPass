@@ -46,7 +46,7 @@ abstract class DataGridBase implements DataGridInterface
     /**
      * Execution time
      */
-    protected int $time = 0;
+    protected float $time = 0.0;
     /**
      * The matrix id
      */
@@ -322,14 +322,14 @@ abstract class DataGridBase implements DataGridInterface
         return $this;
     }
 
-    public function getTime(): int
+    public function getTime(): float
     {
         return abs($this->time);
     }
 
     public function setTime(int|float $time): DataGridInterface
     {
-        $this->time = (int)$time;
+        $this->time = $time;
 
         return $this;
     }
