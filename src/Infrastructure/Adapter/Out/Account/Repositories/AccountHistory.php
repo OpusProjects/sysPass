@@ -352,7 +352,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->where('BIT_LENGTH(pass) > 0')
             ->orderBy(['id ASC']);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::buildWithMapper($query, AccountHistoryModel::class));
     }
 
     /**

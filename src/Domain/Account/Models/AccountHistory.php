@@ -53,14 +53,15 @@ class AccountHistory extends Model
     protected ?int    $isModify           = null;
     protected ?int    $isDeleted          = null;
     protected ?int    $accountId          = null;
-    protected ?string $name     = null;
-    protected ?string $login    = null;
-    protected ?string $url      = null;
-    protected ?string $pass     = null;
-    protected ?string $key      = null;
-    protected ?string $notes    = null;
-    protected ?string $dateAdd  = null;
-    protected ?string $dateEdit = null;
+    protected ?string $name      = null;
+    protected ?string $login     = null;
+    protected ?string $url       = null;
+    protected ?string $pass      = null;
+    protected ?string $key       = null;
+    protected ?string $notes     = null;
+    protected ?string $mPassHash = null;
+    protected ?string $dateAdd   = null;
+    protected ?string $dateEdit  = null;
 
     public function getAccountId(): ?int
     {
@@ -120,6 +121,11 @@ class AccountHistory extends Model
     public function getKey(): ?string
     {
         return $this->key;
+    }
+
+    public function getMPassHash(): ?string
+    {
+        return $this->mPassHash;
     }
 
     public function getNotes(): ?string

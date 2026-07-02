@@ -113,7 +113,7 @@ final class AccountHistory extends Service implements AccountHistoryService
      */
     public function getAccountsPassData(): array
     {
-        return $this->accountHistoryRepository->getAccountsPassData()->getDataAsArray();
+        return $this->accountHistoryRepository->getAccountsPassData()->getDataAsArray(AccountHistoryModel::class);
     }
 
     /**

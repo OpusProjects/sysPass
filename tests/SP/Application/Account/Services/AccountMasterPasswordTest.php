@@ -155,7 +155,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
             self::$faker->password(),
             self::$faker->sha1()
         );
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountHistoryData(), range(0, 9));
 
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')
@@ -219,7 +219,7 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountHistoryData(), range(0, 9));
 
         $this->accountHistory->expects(self::once())
                              ->method('getAccountsPassData')
