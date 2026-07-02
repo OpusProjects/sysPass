@@ -100,7 +100,7 @@ abstract class Minify implements MinifyService
                  || $this->request->getHeader(Header::CACHE_CONTROL->value) === 'max-age=0'
                  || $this->request->getHeader(Header::PRAGMA->value) === 'no-cache')
         ) {
-            $this->response->header($this->request->getServer('SERVER_PROTOCOL'), '304 Not Modified');
+            $this->response->code(304);
             $this->response->send();
 
             return null;
