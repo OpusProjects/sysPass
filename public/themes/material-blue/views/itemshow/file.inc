@@ -41,8 +41,8 @@ $fileDto = $_getvar('fileData');
 <?php
 if ($_getvar('isImage')): ?>
     <img alt="<?php
-    echo $fileDto->name; ?>" src="data:'<?php
-    echo $fileDto->type; ?>;base64, <?php
+    echo htmlspecialchars($fileDto->name ?? '', ENT_QUOTES); ?>" src="data:<?php
+    echo htmlspecialchars($fileDto->type ?? '', ENT_QUOTES); ?>;base64, <?php
     echo $_getvar('data'); ?>" border="0"/>
     <div class="title"><?php
     echo htmlspecialchars($fileDto->name ?? '', ENT_QUOTES); ?></div><?php
