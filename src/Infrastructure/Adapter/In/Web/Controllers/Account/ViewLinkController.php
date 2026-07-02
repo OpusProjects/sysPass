@@ -128,11 +128,6 @@ final class ViewLinkController extends AccountControllerBase
                     'accountPassImage',
                     $this->imageUtil->convertText($accountViewDto->pass)
                 );
-            } else {
-                $this->view->assign(
-                    'copyPassRoute',
-                    $this->acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW_PASS)
-                );
             }
 
             $this->view->assign('accountData', $accountViewDto);
