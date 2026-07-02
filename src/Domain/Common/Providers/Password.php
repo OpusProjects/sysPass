@@ -36,7 +36,7 @@ use Random\RandomException;
  */
 final class Password
 {
-    private const CHARS                  = 'abcdefghijklmnopqrstuwxyz';
+    private const CHARS                  = 'abcdefghijklmnopqrstuvwxyz';
     private const CHARS_SPECIAL          = '@$%&/()!_:.;{}^-';
     private const CHARS_NUMBER           = '0123456789';
     public const  FLAG_PASSWORD_NUMBER   = 2;
