@@ -61,6 +61,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap\GetEnvironmentControl
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseErrorController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Index\IndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\InstallController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Items\AccountsUserController;
@@ -169,7 +170,7 @@ final class Init extends HttpModuleBase
     {
         logger(__METHOD__);
 
-        $this->isIndex = $controller === 'index';
+        $this->isIndex = $controller === IndexController::class;
 
         $this->context->initialize();
 
