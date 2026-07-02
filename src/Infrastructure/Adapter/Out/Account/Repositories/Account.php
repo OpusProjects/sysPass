@@ -620,7 +620,7 @@ final class Account extends BaseRepository implements AccountRepository
         if ($accountId) {
             $query
                 ->where('Account.id <> :id')
-                ->where('Account.parentId = 0 OR Account.parentId IS NULL')
+                ->where('(Account.parentId = 0 OR Account.parentId IS NULL)')
                 ->bindValues(['id' => $accountId]);
         }
 
