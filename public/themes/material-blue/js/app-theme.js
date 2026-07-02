@@ -363,7 +363,7 @@ sysPass.Theme = function (log) {
             // Search for an input to set the unix timestamp from a localized date
             const $dstUnix = $parent.find("input[name=" + $this.data('dst-unix') + "]");
 
-            if ($this.val() > 0) {
+            if ($this.val() !== "") {
                 $dstUnix.val(getUnixtime($this.val()));
             }
 
