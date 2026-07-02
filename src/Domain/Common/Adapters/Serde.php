@@ -60,19 +60,17 @@ final class Serde
      *
      * @param string $data
      * @param class-string<T>|null $class
+     * @param class-string ...$nestedClasses Additional classes contained within the serialized object graph
      * @return T&object|array
      *
      * @throws SPException
      */
-    public static function deserialize(string $data, ?string $class = null): object|array
+    public static function deserialize(string $data, ?string $class = null, string ...$nestedClasses): object|array
     {
-        // Allow Crypt when deserializing Vault, since Vault contains a Crypt instance
-        $allowedClasses = $class !== null ? [$class] : true;
-        if ($class === 'SP\Core\Crypt\Vault') {
-            $allowedClasses = ['SP\Core\Crypt\Vault', 'SP\Core\Crypt\Crypt'];
-        }
-
-        $value = @unserialize($data, ['allowed_classes' => $allowedClasses]);
+        $value = @unserialize(
+            $data,
+            ['allowed_classes' => $class !== null ? [$class, ...$nestedClasses] : true]
+        );
 
         return match (true) {
             $value === false => throw SPException::error(__u('Couldn\'t deserialize the data')),
