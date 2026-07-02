@@ -185,8 +185,7 @@ $accountView = $_getvar('accountData');
                                 data-clipboard-target="#password"
                                 data-item-id="<?php
                                 echo $accountView->getId(); ?>"
-                                data-history="0"
-                                data-onclick="account/copypass">
+                                data-history="0">
                             <i class="material-icons">content_paste</i>
                         </button>
                     </li>
