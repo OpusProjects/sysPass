@@ -211,7 +211,7 @@ class AccountHistoryTest extends UnitaryTestCase
     {
         $callback = new Callback(
             function (QueryData $arg) {
-                return $arg->getMapClassName() === Simple::class
+                return $arg->getMapClassName() === AccountHistoryModel::class
                        && !empty($arg->getQuery()->getStatement());
             }
         );

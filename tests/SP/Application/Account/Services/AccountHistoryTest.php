@@ -94,7 +94,8 @@ class AccountHistoryTest extends UnitaryTestCase
      */
     public function testGetAccountsPassData()
     {
-        $this->accountHistoryRepository->expects(self::once())->method('getAccountsPassData');
+        $this->accountHistoryRepository->expects(self::once())->method('getAccountsPassData')
+                                       ->willReturn(new QueryResult([new AccountHistoryModel()]));
 
         $this->accountHistory->getAccountsPassData();
     }
@@ -153,6 +154,7 @@ class AccountHistoryTest extends UnitaryTestCase
             'otherUserGroupEdit',
             'otherUserEdit',
             'isModify',
+            'mPassHash',
             'userEditName',
             'userEditLogin',
         ];
