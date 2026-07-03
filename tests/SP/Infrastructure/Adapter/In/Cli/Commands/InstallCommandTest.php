@@ -223,6 +223,40 @@ class InstallCommandTest extends CliTestCase
     }
 
     /**
+     * An unknown language (e.g. the glibc LANGUAGE value "en_US:en" leaking in)
+     * must not be persisted as a broken locale — it falls back to en_US.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws DatabaseException
+     */
+    public function testInstallRejectsUnknownLanguage(): void
+    {
+        $inputData = array_merge(
+            self::$commandInputData,
+            [
+                'databaseHost' => getenv('DB_SERVER'),
+                'databaseUser' => getenv('DB_USER'),
+                '--databasePassword' => getenv('DB_PASS'),
+                '--language' => 'en_US:en',
+                '--forceInstall' => null
+            ]
+        );
+
+        $commandTester = $this->executeCommandTest(InstallCommand::class, $inputData);
+
+        $this->assertStringContainsString('Installation finished', $commandTester->getDisplay());
+
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+
+        $this->assertEquals('en_US', $configData->getSiteLang());
+
+        // Cleanup database
+        DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        self::dropTestUser((string)$configData->getDbUser());
+    }
+
+    /**
      * @throws DependencyException
      * @throws NotFoundException
      * @throws DatabaseException
