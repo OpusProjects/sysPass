@@ -226,9 +226,11 @@ final class Installer implements InstallerService
             $configData->setDbPass($dbPass);
         }
 
-        $this->config->save($configData, false);
-
         try {
+            // Inside the try: setupDbUser() already created the runtime user, so a
+            // failure saving the config must roll it back too
+            $this->config->save($configData, false);
+
             $this->databaseSetup->createDatabase($dbUser);
             $this->databaseSetup->createDBStructure();
             $this->databaseSetup->checkConnection();

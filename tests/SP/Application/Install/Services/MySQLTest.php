@@ -205,6 +205,41 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
+     * A `_`/`%` in the DB name is a LIKE wildcard in a GRANT (even inside
+     * backticks): it must be escaped in the GRANT but left raw in CREATE SCHEMA.
+     *
+     * @throws SPException
+     * @throws Exception
+     */
+    public function testCreateDatabaseEscapesGrantWildcards(): void
+    {
+        $this->installData->setDbName('syspass_prod');
+        $this->configData->setDbUser(self::$faker->userName());
+
+        $execArguments = [
+            [
+                'CREATE SCHEMA `syspass_prod` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci',
+            ],
+            [
+                sprintf(
+                    'GRANT ALL PRIVILEGES ON `syspass\_prod`.* TO %s@%s',
+                    $this->configData->getDbUser(),
+                    $this->installData->getDbAuthHost()
+                ),
+            ],
+            ['FLUSH PRIVILEGES'],
+        ];
+
+        $this->pdo->expects(self::exactly(3))
+                  ->method('exec')
+                  ->with(...self::withConsecutive(...$execArguments));
+
+        $this->pdo->method('quote')->willReturnArgument(0);
+
+        $this->mysqlService->createDatabase($this->configData->getDbUser());
+    }
+
+    /**
      * @throws SPException
      */
     public function testCreateDatabaseIsANoOpInHostingMode(): void

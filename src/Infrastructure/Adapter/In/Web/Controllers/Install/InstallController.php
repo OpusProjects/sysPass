@@ -86,7 +86,7 @@ final class InstallController extends ControllerBase
             }
 
             // Unauthenticated endpoint that opens outbound connections: rate-limit it
-            if (!$this->installThrottle->isAllowed($this->request->getClientAddress())) {
+            if (!$this->installThrottle->check()) {
                 return ActionResponse::error(__u('Attempts exceeded'));
             }
 
