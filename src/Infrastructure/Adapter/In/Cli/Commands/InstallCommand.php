@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Cli\Commands;
 
-use Exception;
 use Psr\Log\LoggerInterface;
 use SP\Core\Language;
 use SP\Application\Config\Ports\ConfigFileService;
@@ -32,7 +31,6 @@ use SP\Domain\Core\Exceptions\InstallError;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
-use SP\Application\Install\Services\Installer;
 use SP\Core\Util\Util;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -41,6 +39,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Throwable;
 
 use function SP\__;
 use function SP\__u;
@@ -69,16 +68,22 @@ final class InstallCommand extends CommandBase
         'forceInstall'     => 'FORCE_INSTALL',
         'install'          => 'INSTALL',
     ];
-    private Installer $installer;
+    private InstallerService $installer;
+    private InstallData $installData;
 
     public function __construct(
         LoggerInterface   $logger,
         ConfigFileService $config,
-        InstallerService $installer
+        InstallerService $installer,
+        InstallData $installData
     ) {
         parent::__construct($logger, $config);
 
         $this->installer = $installer;
+        // The shared DI InstallData instance: the setup services (MysqlSetup,
+        // DatabaseConnectionData) read from it, so the command must fill this
+        // same instance instead of building its own
+        $this->installData = $installData;
     }
 
     protected function configure(): void
@@ -154,16 +159,18 @@ final class InstallCommand extends CommandBase
         $style = new SymfonyStyle($input, $output);
 
         try {
-            $installData = $this->getInstallData($input, $style);
+            // Throws when sysPass is already installed and --forceInstall was not given;
+            // a fresh system installs without the flag
+            $this->checkForceInstall($input);
 
-            $forceInstall = $this->getForceInstall($input);
-
-            if (!$forceInstall || !$this->getInstall($input, $style)) {
+            if (!$this->getInstall($input, $style)) {
                 $this->logger->debug(__u('Installation aborted'));
                 $style->info(__('Installation aborted'));
 
                 return self::FAILURE;
             }
+
+            $installData = $this->getInstallData($input, $style);
 
             $this->installer->run($installData);
 
@@ -180,7 +187,7 @@ final class InstallCommand extends CommandBase
             $this->logger->warning($e->getMessage());
 
             $style->warning(__($e->getMessage()));
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->logger->error($e->getTraceAsString());
             $this->logger->error($e->getMessage());
 
@@ -202,16 +209,20 @@ final class InstallCommand extends CommandBase
         $databasePassword = $this->getDatabasePassword($input, $style);
         $language = $this->getLanguage($input, $style);
         $hostingMode = $this->isHostingMode($input);
-        $adminLogin = self::getEnvVarOrArgument('adminLogin', $input);
-        $databaseUser = self::getEnvVarOrArgument('databaseUser', $input);
-        $databaseName = self::getEnvVarOrArgument('databaseName', $input);
-        $databaseHost = self::getEnvVarOrArgument('databaseHost', $input);
+        // The arguments are optional: coalesce a missing one to '' so checkData()
+        // reports a proper validation error instead of a TypeError
+        $adminLogin = self::getEnvVarOrArgument('adminLogin', $input) ?? '';
+        $databaseUser = self::getEnvVarOrArgument('databaseUser', $input) ?? '';
+        $databaseName = self::getEnvVarOrArgument('databaseName', $input) ?? '';
+        $databaseHost = self::getEnvVarOrArgument('databaseHost', $input) ?? '';
 
-        $installData = new InstallData();
+        $installData = $this->installData;
         $installData->setSiteLang($language);
         $installData->setAdminLogin($adminLogin);
         $installData->setAdminPass($adminPassword);
+        $installData->setAdminPassRepeat($adminPassword);
         $installData->setMasterPassword($masterPassword);
+        $installData->setMasterPasswordRepeat($masterPassword);
         $installData->setDbAdminUser($databaseUser);
         $installData->setDbAdminPass($databasePassword);
         $installData->setDbName($databaseName);
@@ -307,22 +318,20 @@ final class InstallCommand extends CommandBase
         return $password;
     }
 
-    /**
-     * @return array|false|mixed|string
-     */
     private function getDatabasePassword(
         InputInterface $input,
         StyleInterface $style
-    ) {
+    ): string {
         $password = self::getEnvVarOrOption('databasePassword', $input);
 
         if (empty($password)) {
             $this->logger->debug(__u('Ask for database password'));
 
+            // May be null (empty input): passwordless DB admin accounts are allowed
             $password = $style->askHidden(__('Please provide database admin password'));
         }
 
-        return $password;
+        return is_string($password) ? $password : '';
     }
 
     /**
@@ -361,7 +370,7 @@ final class InstallCommand extends CommandBase
     /**
      * @throws InstallError
      */
-    private function getForceInstall(InputInterface $input): bool
+    private function checkForceInstall(InputInterface $input): void
     {
         $option = 'forceInstall';
 
@@ -374,8 +383,6 @@ final class InstallCommand extends CommandBase
         if ($force === false && $this->configData->isInstalled()) {
             throw new InstallError(__u('sysPass is already installed. Use \'--forceInstall\' to install it again.'));
         }
-
-        return $force;
     }
 
     private function getInstall(

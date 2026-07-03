@@ -62,6 +62,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseConnectionControl
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseErrorController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\IndexController as ErrorIndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Index\IndexController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Install\CheckConnectionController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\IndexController as InstallIndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\InstallController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Items\AccountsUserController;
@@ -94,6 +95,7 @@ final class Init extends HttpModuleBase
         JsController::class,
         InstallController::class,
         InstallIndexController::class,
+        CheckConnectionController::class,
         GetEnvironmentController::class,
         CheckNoticesController::class,
         CheckReleaseController::class,
@@ -117,7 +119,11 @@ final class Init extends HttpModuleBase
     /**
      * List of controllers that needs to keep the session opened
      */
-    private const NO_SESSION_CLOSE = [LoginController::class];
+    /*
+     * InstallIndexController persists the wizard's language choice in the
+     * session so bootstrap/getEnvironment serves the JS strings in it.
+     */
+    private const NO_SESSION_CLOSE = [LoginController::class, InstallIndexController::class];
     /**
      * Routes
      */

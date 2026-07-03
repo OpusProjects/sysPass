@@ -7256,3 +7256,87 @@ msgstr "Uses the provided credentials directly — the database must already exi
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Welcome"
+
+msgid "Next"
+msgstr "Next"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Before starting, you will need the following information:"
+
+msgid "The database server address"
+msgstr "The database server address"
+
+msgid "A database user with administrative rights"
+msgstr "A database user with administrative rights"
+
+msgid "The name for the sysPass database"
+msgstr "The name for the sysPass database"
+
+msgid "All set? Press Next to begin."
+msgstr "All set? Press Next to begin."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "The language has been detected from your browser. Changing it will reload this page."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "The Master Password is used to encrypt the accounts passwords."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Please, keep it safe — it cannot be recovered."
+
+msgid "During the installation you will also:"
+msgstr "During the installation you will also:"
+
+msgid "Choose the application language"
+msgstr "Choose the application language"
+
+msgid "Set up the administrator account"
+msgstr "Set up the administrator account"
+
+msgid "Set the Master Password"
+msgstr "Set the Master Password"
+
+msgid "Requirements"
+msgstr "Requirements"
+
+msgid "PHP version"
+msgstr "PHP version"
+
+msgid "PHP extensions"
+msgstr "PHP extensions"
+
+msgid "Configuration directory writable"
+msgstr "Configuration directory writable"
+
+msgid "Test connection"
+msgstr "Test connection"
+
+msgid "Connection successful"
+msgstr "Connection successful"
+
+msgid "The DB user provided by your hosting"
+msgstr "The DB user provided by your hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "You can now log in with your admin account."
+
+msgid "sysPass is already installed"
+msgstr "sysPass is already installed"
+
+msgid "The database already contains sysPass tables"
+msgstr "The database already contains sysPass tables"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Please, use an empty database or remove the existing tables"
+
+msgid "Invalid database port"
+msgstr "Invalid database port"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "The port number must be between 1 and 65535"

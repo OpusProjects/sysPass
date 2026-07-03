@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests;
 
 use PDO;
+use RuntimeException;
 use SP\Infrastructure\Database\DatabaseException;
 
 use function SP\processException;
@@ -62,47 +63,32 @@ trait DatabaseTrait
         }
     }
 
+    /**
+     * @throws DatabaseException
+     */
     protected static function loadFixtures(): void
     {
-        $dbServer = getenv('DB_SERVER');
-        $dbUser = getenv('DB_USER');
-        $dbPass = getenv('DB_PASS');
-        $dbName = getenv('DB_NAME');
+        // No mysql client binary is available in the test container (and the
+        // fixture files live on a vfsStream URL): run them through PDO instead
+        $conn = DatabaseUtil::getConnection();
 
         foreach (FIXTURE_FILES as $file) {
-            if (!empty($dbPass)) {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s -p%s %s < %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbPass,
-                    $dbName,
-                    $file
-                );
-            } else {
-                $cmd = sprintf(
-                    'mysql -h %s -u %s %s < %s',
-                    $dbServer,
-                    $dbUser,
-                    $dbName,
-                    $file
-                );
+            $sql = file_get_contents($file);
+
+            if ($sql === false) {
+                throw new RuntimeException(sprintf('Cannot read fixtures from: %s', $file));
             }
 
-            exec($cmd, $output, $res);
+            // Iterate over every result set so an error in ANY statement of the
+            // multi-statement batch surfaces here, not on the next query
+            $statement = $conn->query($sql);
 
-            if ($res !== 0) {
-                /** @noinspection ForgottenDebugOutputInspection */
-                error_log(sprintf('Cannot load fixtures from: %s', $file));
-                /** @noinspection ForgottenDebugOutputInspection */
-                error_log(sprintf('CMD: %s', $cmd));
-                /** @noinspection ForgottenDebugOutputInspection */
-                error_log(print_r($output, true));
-
-                exit(1);
+            /** @noinspection PhpStatementHasEmptyBodyInspection */
+            while ($statement->nextRowset()) {
+                // drain
             }
 
-            printf('Fixtures loaded from: %s' . PHP_EOL, $file);
+            $statement->closeCursor();
         }
     }
 

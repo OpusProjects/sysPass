@@ -102,7 +102,8 @@ form .form-field {
 
 #actions.installer form {
   width: 90%;
-  max-width: 800px; }
+  /* wide enough for the six stepper nodes */
+  max-width: 960px; }
 
 .installer .mdl-textfield {
   padding-top: 30px; }
@@ -121,12 +122,12 @@ form .form-field {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
   margin: 2.5em 0 1.5em; }
 
 .installer-card-header {
   background: #607d8b;
   color: #fff;
+  border-radius: 8px 8px 0 0;
   padding: 1.4em 6em; }
 
 .installer-card-header h1 {
@@ -149,7 +150,8 @@ form .form-field {
   flex-basis: 100%; }
 
 .installer-section > .mdl-textfield {
-  width: 370px; }
+  /* wide enough that only one field (plus its icons) fits per flex row */
+  width: 480px; }
 
 .installer-section > .icon {
   margin-left: 0.8em;
@@ -227,6 +229,247 @@ form .form-field {
 .installer-footer .mdl-button .material-icons {
   position: relative;
   top: -1px; }
+
+.installer-footer #btnWizardBack {
+  background-color: rgba(83,109,254,.12);
+  color: #536dfe;
+  box-shadow: 0 2px 2px 0 rgba(83,109,254,.14),0 3px 1px -2px rgba(83,109,254,.12),0 1px 5px 0 rgba(83,109,254,.2); }
+
+.installer-footer #btnWizardBack:hover {
+  background-color: rgba(83,109,254,.22); }
+
+.installer-stepper {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 3em 1.2em 1.4em;
+  counter-reset: step; }
+
+.installer-stepper li {
+  position: relative;
+  flex: 1 1 0;
+  max-width: 170px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px; }
+
+.installer-stepper li.is-done {
+  cursor: pointer; }
+
+.installer-stepper li + li::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: calc(-50% + 24px);
+  right: calc(50% + 24px);
+  height: 2px;
+  background: #e0e0e0;
+  transition: background 0.3s; }
+
+.installer-stepper li.is-active + li::before {
+  background: #e0e0e0; }
+
+.installer-stepper li.is-active::before,
+.installer-stepper li.is-done::before {
+  background: #607d8b; }
+
+.installer-stepper .step-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  color: #757575;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 1;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s; }
+
+.installer-stepper li.is-active .step-circle {
+  background: #607d8b;
+  color: #fff;
+  box-shadow: 0 0 0 4px rgba(96, 125, 139, 0.25); }
+
+.installer-stepper li.is-done .step-circle {
+  background: #607d8b;
+  color: #fff;
+  font-size: 0; }
+
+.installer-stepper li.is-done .step-circle::after {
+  content: '✓';
+  font-size: 16px; }
+
+.installer-stepper .step-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9e9e9e;
+  line-height: 1.3;
+  white-space: nowrap; }
+
+.installer-stepper li.is-active .step-label,
+.installer-stepper li.is-done .step-label {
+  color: #607d8b;
+  font-weight: 600; }
+
+.installer-card .installer-step {
+  display: none;
+  align-content: flex-start;
+  padding-bottom: 3em; }
+
+.installer-card .installer-step.is-active {
+  display: flex; }
+
+.installer-welcome {
+  flex-basis: 100%;
+  text-align: left;
+  color: #555;
+  font-size: 15px;
+  line-height: 1.6; }
+
+.installer-welcome p {
+  margin: 0.6em 0; }
+
+.installer-welcome ul {
+  margin: 0.6em 0 0.6em 1.6em;
+  padding: 0;
+  text-align: left; }
+
+.installer-welcome ul li {
+  list-style: disc;
+  margin: 0.3em 0; }
+
+.password-actions .installer-copy-pass {
+  cursor: pointer; }
+
+.installer-step .installer-step-divider {
+  flex-basis: 100%;
+  border: none;
+  border-top: 2px solid #e0e0e0;
+  margin: 2.4em 0; }
+
+.installer-step .form-field-hint--gap {
+  margin-bottom: 2.4em; }
+
+.installer-requirements {
+  flex-basis: 100%;
+  list-style: none;
+  margin: 0.8em 0 0;
+  padding: 0;
+  text-align: left; }
+
+.installer-requirements li {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  margin: 0.7em 0;
+  font-size: 15px;
+  color: #555; }
+
+.installer-requirements li .material-icons {
+  font-size: 20px; }
+
+.installer-requirements li.req-ok .material-icons {
+  color: #4caf50; }
+
+.installer-requirements li.req-fail .material-icons {
+  color: #e53935; }
+
+.installer-requirements li.req-warn .material-icons {
+  color: #fb8c00; }
+
+.installer-requirements li.req-expandable {
+  flex-wrap: wrap; }
+
+.req-expand-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: #555; }
+
+.installer-requirements li .req-expand-btn .material-icons {
+  color: #555; }
+
+.req-expand-btn .material-icons {
+  font-size: 20px;
+  transition: transform 0.2s; }
+
+.req-expand-btn[aria-expanded="true"] .material-icons {
+  transform: rotate(180deg); }
+
+.req-extensions-list {
+  flex-basis: 100%;
+  list-style: none;
+  margin: 0.4em 0 0.2em 2em;
+  padding: 0; }
+
+.req-extensions-list li {
+  display: block;
+  font-size: 13px;
+  color: #777;
+  padding: 0.15em 0;
+  margin: 0; }
+
+.installer-test-connection {
+  flex-basis: 100%;
+  text-align: left;
+  margin-top: 1.8em; }
+
+.installer-test-connection #btnTestDb {
+  font-size: 14px;
+  letter-spacing: 1px;
+  padding: 3px 2em 0;
+  height: 48px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  line-height: 1; }
+
+.installer-test-connection #btnTestDb .material-icons {
+  position: relative;
+  top: -1px; }
+
+.installer-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.5em 6em 3em; }
+
+.installer-success-icon {
+  font-size: 64px;
+  color: #4caf50; }
+
+#content .installer-card .installer-success h2 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #37474f;
+  margin: 0.6em 0 0.2em;
+  padding: 0;
+  border: none;
+  background: none;
+  width: auto;
+  height: auto; }
+
+.installer-success p {
+  color: #666;
+  margin: 0.4em 0 1.8em; }
+
+/* match the visual gap below the hints (2.4em margin + the field's floating-label padding) */
+.installer-step .installer-section-title + .form-field-hint {
+  margin-top: 3.7em; }
+
+.installer-footer {
+  display: flex;
+  justify-content: center;
+  gap: 1.5em; }
 
 form .form-field > select {
   width: 100%;

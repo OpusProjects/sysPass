@@ -116,16 +116,21 @@ class DatabaseConnectionData
 
     public static function getFromInstallData(InstallData $installData): DatabaseConnectionData
     {
-        $self = new self();
-        $self->dbSocket = $installData->getDbSocket();
-        $self->dbHost = $installData->getDbHost();
-        $self->dbPort = $installData->getDbPort();
+        return (new self())->refreshFromInstallData($installData);
+    }
+
+    public function refreshFromInstallData(InstallData $installData): DatabaseConnectionData
+    {
+        $this->dbSocket = $installData->getDbSocket();
+        $this->dbHost = $installData->getDbHost();
+        $this->dbPort = $installData->getDbPort();
         // Don't select the database in the install DSN: in normal mode it doesn't exist yet
         // (it's created during setup). The setup selects it with `USE` once created/confirmed.
-        $self->dbUser = $installData->getDbAdminUser();
-        $self->dbPass = $installData->getDbAdminPass();
+        $this->dbName = null;
+        $this->dbUser = $installData->getDbAdminUser();
+        $this->dbPass = $installData->getDbAdminPass();
 
-        return $self;
+        return $this;
     }
 
     public function refreshFromConfig(ConfigDataInterface $configData): DatabaseConnectionData

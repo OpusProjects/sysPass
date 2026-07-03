@@ -26,34 +26,35 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Install\Services;
-use SP\Domain\Install\Services\DatabaseSetupService;
 
 use Exception;
-use SP\Core\Crypt\Hash;
-use SP\Domain\Common\Providers\Version;
-use SP\Domain\Core\AppInfoInterface;
-use SP\Domain\Config\Models\Config;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
-use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Application\Install\Ports\InstallerService;
+use SP\Application\User\Ports\UserGroupService;
+use SP\Application\User\Ports\UserProfileService;
+use SP\Application\User\Ports\UserService;
+use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Providers\Version;
+use SP\Domain\Config\Models\Config;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Install\Adapters\DatabaseHost;
 use SP\Domain\Install\Adapters\InstallData;
-use SP\Application\Install\Ports\InstallerService;
+use SP\Domain\Install\Services\DatabaseSetupService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
-use SP\Application\User\Ports\UserGroupService;
-use SP\Application\User\Ports\UserProfileService;
-use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\File\FileException;
+use Throwable;
 
 use function SP\__u;
+use function SP\getFromEnv;
 use function SP\processException;
 
 /**
@@ -97,11 +98,19 @@ final class Installer implements InstallerService
     }
 
     /**
+     * empty() would also reject legitimate values like the password "0"
+     */
+    private static function isBlank(?string $value): bool
+    {
+        return $value === null || $value === '';
+    }
+
+    /**
      * @throws InvalidArgumentException
      */
     private function checkData(): void
     {
-        if (empty($this->installData->getAdminLogin())) {
+        if (self::isBlank($this->installData->getAdminLogin())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the admin username'),
                 SPException::ERROR,
@@ -109,7 +118,7 @@ final class Installer implements InstallerService
             );
         }
 
-        if (empty($this->installData->getAdminPass())) {
+        if (self::isBlank($this->installData->getAdminPass())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the admin\'s password'),
                 SPException::ERROR,
@@ -125,7 +134,7 @@ final class Installer implements InstallerService
             );
         }
 
-        if (empty($this->installData->getMasterPassword())) {
+        if (self::isBlank($this->installData->getMasterPassword())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the Master Password'),
                 SPException::ERROR,
@@ -141,7 +150,15 @@ final class Installer implements InstallerService
             );
         }
 
-        if (empty($this->installData->getDbAdminUser())) {
+        if ($this->installData->getMasterPassword() !== $this->installData->getMasterPasswordRepeat()) {
+            throw new InvalidArgumentException(
+                __u('Passwords do not match'),
+                SPException::ERROR,
+                __u('The Master Password and its confirmation must be the same')
+            );
+        }
+
+        if (self::isBlank($this->installData->getDbAdminUser())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database user'),
                 SPException::CRITICAL,
@@ -149,15 +166,10 @@ final class Installer implements InstallerService
             );
         }
 
-        if (empty($this->installData->getDbAdminPass())) {
-            throw new InvalidArgumentException(
-                __u('Please, enter the database password'),
-                SPException::ERROR,
-                __u('Database administrator\'s password')
-            );
-        }
+        // An empty DB admin password is allowed: passwordless admin accounts
+        // are common on development setups
 
-        if (empty($this->installData->getDbName())) {
+        if (self::isBlank($this->installData->getDbName())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database name'),
                 SPException::ERROR,
@@ -165,15 +177,15 @@ final class Installer implements InstallerService
             );
         }
 
-        if (substr_count($this->installData->getDbName(), '.') > 0) {
+        if (!preg_match('/^[0-9a-zA-Z$_\-]+$/', $this->installData->getDbName())) {
             throw new InvalidArgumentException(
-                __u('Database name cannot contain "."'),
+                __u('Database name contains invalid characters'),
                 SPException::CRITICAL,
-                __u('Please, remove dots in database name')
+                __u('Only letters, digits, $, _ and - are allowed in the database name')
             );
         }
 
-        if (empty($this->installData->getDbHost())) {
+        if (self::isBlank($this->installData->getDbHost())) {
             throw new InvalidArgumentException(
                 __u('Please, enter the database server'),
                 SPException::ERROR,
@@ -184,77 +196,131 @@ final class Installer implements InstallerService
 
     /**
      * @throws SPException
-     * @throws ConstraintException
-     * @throws QueryException
      */
     private function install(): void
     {
         $this->setupDbHost();
 
+        // The DI-time DatabaseConnectionData snapshot was taken from the raw,
+        // unparsed host value (and, on CLI, from an InstallData the command
+        // never filled): refresh it now that the host is parsed
+        $this->databaseConnectionData->refreshFromInstallData($this->installData);
+
         $configData = $this->setupConfig();
 
-        $this->setupDb($configData);
-        $this->saveMasterPassword();
-        $this->createAdminAccount();
+        $this->databaseSetup->connectDatabase();
+        // Validate the target before anything is created: a failure here must not
+        // trigger a rollback, which could otherwise touch pre-existing data
+        $this->databaseSetup->checkDatabaseAvailability();
 
-        $this->configService->create(
-            new Config([
-                           'parameter' => 'version',
-                           'value' => Version::getVersionStringNormalized()
-                       ])
-        );
+        $dbUser = null;
 
-        $configData->setInstalled(true);
+        if ($this->installData->isHostingMode()) {
+            // Save DB connection user and pass
+            $configData->setDbUser($this->installData->getDbAdminUser());
+            $configData->setDbPass($this->installData->getDbAdminPass());
+        } else {
+            [$dbUser, $dbPass] = $this->databaseSetup->setupDbUser();
 
-        $this->config->save($configData);
+            $configData->setDbUser($dbUser);
+            $configData->setDbPass($dbPass);
+        }
+
+        $this->config->save($configData, false);
+
+        try {
+            $this->databaseSetup->createDatabase($dbUser);
+            $this->databaseSetup->createDBStructure();
+            $this->databaseSetup->checkConnection();
+
+            // From here on the runtime credentials are used, so they get
+            // verified before the installation is marked as finished
+            $this->databaseConnectionData->refreshFromConfig($configData);
+
+            $this->saveMasterPassword();
+            $this->createAdminAccount();
+
+            $this->configService->create(
+                new Config([
+                               'parameter' => 'version',
+                               'value' => Version::getVersionStringNormalized()
+                           ])
+            );
+
+            $configData->setInstalled(true);
+
+            $this->config->save($configData);
+        } catch (Throwable $e) {
+            // Throwable, not Exception: a TypeError mid-install must also roll back
+            processException($e);
+
+            // The connection data may already point at the runtime user, which
+            // lacks the rights to drop the database and the user itself: roll
+            // back over the admin connection
+            $this->databaseConnectionData->refreshFromInstallData($this->installData);
+
+            $this->databaseSetup->rollback($dbUser);
+
+            throw $e instanceof SPException
+                ? $e
+                : new SPException(
+                    $e->getMessage(),
+                    SPException::CRITICAL,
+                    __u('Warn to developer'),
+                    $e->getCode(),
+                    $e
+                );
+        }
     }
 
     /**
      * Setup database connection data
+     *
+     * @throws InvalidArgumentException
      */
     private function setupDbHost(): void
     {
-        if (preg_match(
-            '/^(?P<host>.*):(?P<port>\d{1,5})|^unix:(?P<socket>.*)/',
-            $this->installData->getDbHost(),
-            $match
-        )
-        ) {
-            if (!empty($match['socket'])) {
-                $this->installData->setDbSocket($match['socket']);
-            } else {
-                $this->installData->setDbHost($match['host']);
-                $this->installData->setDbPort((int)$match['port']);
-            }
-        } else {
-            $this->installData->setDbPort(3306);
+        $target = DatabaseHost::parse($this->installData->getDbHost());
+
+        if ($target->socket !== null) {
+            $this->installData->setDbSocket($target->socket);
+            // A socket connection authenticates as user@localhost
+            $this->installData->setDbAuthHost('localhost');
+
+            return;
         }
 
-        if (!str_contains($this->installData->getDbHost(), 'localhost')
-            && !str_contains($this->installData->getDbHost(), '127.0.0.1')
-        ) {
-            // Use real IP address when unitary testing, because no HTTP request is performed
-            if (defined('SELF_IP_ADDRESS')) {
-                $address = SELF_IP_ADDRESS;
-            } else {
-                $address = $this->request->getServer('SERVER_ADDR');
-            }
+        $this->installData->setDbHost($target->host);
+        $this->installData->setDbPort($target->port ?? 3306);
 
-            // Check whether sysPass is running on docker. Not so accurate,
-            // but avoid some overhead from parsing /proc/self/cgroup
-            if (getenv('SYSPASS_DIR') !== false) {
-                $this->installData->setDbAuthHost('%');
-            } else {
-                $this->installData->setDbAuthHost($address);
-
-                $dnsHostname = gethostbyaddr($address);
-
-                if ($dnsHostname !== false && strlen($dnsHostname) < 60) {
-                    $this->installData->setDbAuthHostDns($dnsHostname);
-                }
-            }
-        } else {
+        if ($target->isLocal()) {
             $this->installData->setDbAuthHost('localhost');
+
+            return;
+        }
+
+        // Use real IP address when unitary testing, because no HTTP request is performed
+        if (defined('SELF_IP_ADDRESS')) {
+            $address = SELF_IP_ADDRESS;
+        } else {
+            $address = $this->request->getServer('SERVER_ADDR');
+        }
+
+        // On Docker (SYSPASS_DIR is set by the official image) the container address
+        // is neither stable nor necessarily routable; likewise when there is no
+        // request address (CLI install). Fall back to a wildcard auth host.
+        if (getFromEnv('SYSPASS_DIR') !== null || empty($address)) {
+            $this->installData->setDbAuthHost('%');
+
+            return;
+        }
+
+        $this->installData->setDbAuthHost($address);
+
+        $dnsHostname = gethostbyaddr($address);
+
+        if ($dnsHostname !== false && strlen($dnsHostname) < 60) {
+            $this->installData->setDbAuthHostDns($dnsHostname);
         }
     }
 
@@ -281,107 +347,59 @@ final class Installer implements InstallerService
     }
 
     /**
-     * @param ConfigDataInterface $configData
-     * @throws FileException
-     */
-    private function setupDb(ConfigDataInterface $configData): void
-    {
-        $user = null;
-
-        $this->databaseSetup->connectDatabase();
-
-        if ($this->installData->isHostingMode()) {
-            // Save DB connection user and pass
-            $configData->setDbUser($this->installData->getDbAdminUser());
-            $configData->setDbPass($this->installData->getDbAdminPass());
-        } else {
-            [$user, $pass] = $this->databaseSetup->setupDbUser();
-
-            $configData->setDbUser($user);
-            $configData->setDbPass($pass);
-        }
-
-        $this->config->save($configData, false);
-
-        $this->databaseSetup->createDatabase($user);
-        $this->databaseSetup->createDBStructure();
-        $this->databaseSetup->checkConnection();
-
-        $this->databaseConnectionData->refreshFromConfig($configData);
-    }
-
-    /**
      * Saves the master password metadata
      *
-     * @throws SPException
+     * Any failure is handled (rollback) by the caller.
+     *
+     * @throws Exception
      */
     private function saveMasterPassword(): void
     {
-        try {
-            $this->configService->create(
-                new Config(
-                    [
-                        'parameter' => 'masterPwd',
-                        'value' => Hash::hashKey($this->installData->getMasterPassword() ?? '')
-                    ]
-                )
-            );
-            $this->configService->create(
-                new Config(['parameter' => 'lastupdatempass', 'value' => (string)time()])
-            );
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
-
-            throw new SPException($e->getMessage(), SPException::CRITICAL, __u('Warn to developer'), $e->getCode(), $e);
-        }
+        $this->configService->create(
+            new Config(
+                [
+                    'parameter' => 'masterPwd',
+                    'value' => Hash::hashKey($this->installData->getMasterPassword() ?? '')
+                ]
+            )
+        );
+        $this->configService->create(
+            new Config(['parameter' => 'lastupdatempass', 'value' => (string)time()])
+        );
     }
 
     /**
-     * @throws SPException
+     * Any failure is handled (rollback) by the caller.
+     *
+     * @throws Exception
      */
     private function createAdminAccount(): void
     {
-        try {
-            $userGroup = new UserGroup(
-                [
-                    'name' => 'Admins',
-                    'description' => 'sysPass Admins'
-                ]
-            );
+        $userGroup = new UserGroup(
+            [
+                'name' => 'Admins',
+                'description' => 'sysPass Admins'
+            ]
+        );
 
-            $userProfile = new UserProfile(['name' => 'Admin', 'profile' => (new ProfileData())->toJson()]);
+        $userProfile = new UserProfile(['name' => 'Admin', 'profile' => (new ProfileData())->toJson()]);
 
-            $userData = new User([
-                                     'userGroupId' => $this->userGroupService->create($userGroup),
-                                     'userProfileId' => $this->userProfileService->create($userProfile),
-                                     'login' => $this->installData->getAdminLogin(),
-                                     'name' => 'sysPass Admin',
-                                     'isAdminApp' => true,
-                                 ]);
+        $userData = new User([
+                                 'userGroupId' => $this->userGroupService->create($userGroup),
+                                 'userProfileId' => $this->userProfileService->create($userProfile),
+                                 'login' => $this->installData->getAdminLogin(),
+                                 'name' => 'sysPass Admin',
+                                 'isAdminApp' => true,
+                             ]);
 
-            $id = $this->userService->createWithMasterPass(
-                $userData,
-                $this->installData->getAdminPass(),
-                $this->installData->getMasterPassword()
-            );
+        $id = $this->userService->createWithMasterPass(
+            $userData,
+            $this->installData->getAdminPass(),
+            $this->installData->getMasterPassword()
+        );
 
-            if ($id === 0) {
-                throw new SPException(__u('Error while creating \'admin\' user'));
-            }
-        } catch (Exception $e) {
-            processException($e);
-
-            $this->databaseSetup->rollback($this->config->getConfigData()->getDbUser());
-
-            throw new SPException(
-                $e->getMessage(),
-                SPException::CRITICAL,
-                __u('Warn to developer'),
-                $e->getCode(),
-                $e
-            );
+        if ($id === 0) {
+            throw new SPException(__u('Error while creating \'admin\' user'));
         }
     }
 }

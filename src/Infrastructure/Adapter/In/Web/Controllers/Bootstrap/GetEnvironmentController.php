@@ -110,7 +110,9 @@ final class GetEnvironmentController extends SimpleControllerBase
     private function getJsLang(): array
     {
         if (!$this->configData->isInstalled()) {
-            $lang = Language::resolveLanguage(
+            // Prefer the language chosen in the install wizard (kept in the session),
+            // falling back to browser detection
+            $lang = $this->session->getLocale() ?: Language::resolveLanguage(
                 $this->request->getHeader('Accept-Language')
             );
             $this->language->setLocales($lang);

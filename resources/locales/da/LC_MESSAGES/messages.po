@@ -7645,25 +7645,23 @@ msgstr "Unlock track"
 msgid "Clear the tracks out"
 msgstr "Clear the tracks out"
 
-#, fuzzy
-
 msgid "Installation"
-msgstr ""
+msgstr "Installation"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Installationstilstand"
 
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Opretter databasen og databasebrugeren med de angivne loginoplysninger"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Bruger de angivne loginoplysninger direkte — databasen skal allerede findes"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" -mappen findes ikke"
@@ -7744,3 +7742,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Velkommen"
+
+msgid "Next"
+msgstr "Næste"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Velkommen til %s! Denne guide fører dig gennem installationen i nogle få enkle trin."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Før du begynder, skal du bruge følgende oplysninger:"
+
+msgid "The database server address"
+msgstr "Databaseserverens adresse"
+
+msgid "A database user with administrative rights"
+msgstr "En databasebruger med administrative rettigheder"
+
+msgid "The name for the sysPass database"
+msgstr "Navnet på sysPass-databasen"
+
+msgid "All set? Press Next to begin."
+msgstr "Klar? Tryk på Næste for at begynde."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "Sproget er registreret ud fra din browser. Ændres det, genindlæses denne side."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "Hoved-kodeordet bruges til at kryptere kontienes kodeord."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Opbevar det et sikkert sted — det kan ikke gendannes."
+
+msgid "During the installation you will also:"
+msgstr "Under installationen skal du også:"
+
+msgid "Choose the application language"
+msgstr "Vælge programmets sprog"
+
+msgid "Set up the administrator account"
+msgstr "Opsætte administratorkontoen"
+
+msgid "Set the Master Password"
+msgstr "Angive hoved-kodeordet"
+
+msgid "Requirements"
+msgstr "Krav"
+
+msgid "PHP version"
+msgstr "PHP-version"
+
+msgid "PHP extensions"
+msgstr "PHP-udvidelser"
+
+msgid "Configuration directory writable"
+msgstr "Konfigurationsmappe skrivbar"
+
+msgid "Test connection"
+msgstr "Test forbindelse"
+
+msgid "Connection successful"
+msgstr "Forbindelse oprettet"
+
+msgid "The DB user provided by your hosting"
+msgstr "Databasebrugeren fra din hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "Du kan nu logge ind med din administratorkonto."
+
+msgid "sysPass is already installed"
+msgstr "sysPass er allerede installeret"
+
+msgid "The database already contains sysPass tables"
+msgstr "Databasen indeholder allerede sysPass-tabeller"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Brug venligst en tom database, eller fjern de eksisterende tabeller"
+
+msgid "Invalid database port"
+msgstr "Ugyldig databaseport"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "Portnummeret skal være mellem 1 og 65535"

@@ -55,7 +55,7 @@
             <directory suffix=".php">./SP/Infrastructure/Adapter/In/Api</directory>
             <directory suffix=".php">./SP/Infrastructure/Adapter/In/Cli</directory>
             <exclude>./SP/Infrastructure/Adapter/In/Api</exclude>
-            <exclude>./SP/Infrastructure/Adapter/In/Cli</exclude>
+            <exclude>./SP/Infrastructure/Adapter/In/Cli/CliTestCase.php</exclude>
         </testsuite>
     </testsuites>
     <logging/>

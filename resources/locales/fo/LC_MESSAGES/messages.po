@@ -7531,22 +7531,22 @@ msgstr ""
 
 
 msgid "Installation"
-msgstr ""
+msgstr "Innlegging"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Innleggingarháttur"
 
 msgid "Standard"
-msgstr ""
+msgstr "Vanligur"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Stovnar dátugrunnin og dátugrunnsbrúkaran við teimum atgongdum, ið eru givnar"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Brúkar tær givnu atgongdirnar beinleiðis — dátugrunnurin má longu vera til"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" mappan er ikki til."
@@ -7578,3 +7578,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Vælkomin"
+
+msgid "Next"
+msgstr "Næsta"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Vælkomin til %s! Hesin vegleiðarin førir teg gjøgnum innleggingina í nøkrum einføldum stigum."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Áðrenn tú byrjar, hevur tú brúk fyri hesum upplýsingum:"
+
+msgid "The database server address"
+msgstr "Adressan hjá dátugrunnsservaranum"
+
+msgid "A database user with administrative rights"
+msgstr "Ein dátugrunnsbrúkari við umsitararættindum"
+
+msgid "The name for the sysPass database"
+msgstr "Navnið á sysPass dátugrunninum"
+
+msgid "All set? Press Next to begin."
+msgstr "Alt klárt? Trýst á Næsta fyri at byrja."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "Málið er funnið út frá kaganum hjá tær. Verður tað broytt, verður henda síðan lesin inn av nýggjum."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "Yvirloyniorðið verður brúkt at brongla loyniorðini hjá kontunum."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Goym tað tryggt — tað kann ikki endurskapast."
+
+msgid "During the installation you will also:"
+msgstr "Undir innleggingini skalt tú eisini:"
+
+msgid "Choose the application language"
+msgstr "Velja mál forritsins"
+
+msgid "Set up the administrator account"
+msgstr "Seta upp umsitarakontuna"
+
+msgid "Set the Master Password"
+msgstr "Áseta Yvirloyniorðið"
+
+msgid "Requirements"
+msgstr "Krøv"
+
+msgid "PHP version"
+msgstr "PHP útgáva"
+
+msgid "PHP extensions"
+msgstr "PHP víðkanir"
+
+msgid "Configuration directory writable"
+msgstr "Skrivast kann í samansetingarskránna"
+
+msgid "Test connection"
+msgstr "Royn sambandið"
+
+msgid "Connection successful"
+msgstr "Sambandið eydnaðist"
+
+msgid "The DB user provided by your hosting"
+msgstr "Dátugrunnsbrúkarin frá tínum hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "Tú kanst nú rita inn við tíni umsitarakontu."
+
+msgid "sysPass is already installed"
+msgstr "sysPass er longu innlagt"
+
+msgid "The database already contains sysPass tables"
+msgstr "Dátugrunnurin inniheldur longu sysPass talvur"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Vinarliga brúka ein tóman dátugrunn ella strika verandi talvur"
+
+msgid "Invalid database port"
+msgstr "Ógyldugur dátugrunnsportur"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "Portnummarið skal vera millum 1 og 65535"

@@ -58,12 +58,20 @@ class DatabaseUtil
         'CustomFieldDefinition',
         'CustomFieldData',
         'EventLog',
+        'ItemPreset',
         'PublicLink',
         'UserPassRecover',
         'UserToUserGroup',
         'Plugin',
+        'PluginData',
         'Track',
         'Notification',
+    ];
+
+    /**
+     * @var array Database views
+     */
+    public const VIEWS = [
         'account_data_v',
         'account_search_v',
     ];
@@ -81,13 +89,15 @@ class DatabaseUtil
     public function checkDatabaseTables(string $dbName): bool
     {
         try {
+            $names = array_merge(self::TABLES, self::VIEWS);
+
             $tables = implode(
                 ',',
                 array_map(
                     static function ($value) {
                         return '\'' . $value . '\'';
                     },
-                    self::TABLES
+                    $names
                 )
             );
 
@@ -106,7 +116,7 @@ class DatabaseUtil
                 ->query($query)
                 ->fetchColumn();
 
-            return (int)$numTables === count(self::TABLES);
+            return (int)$numTables === count($names);
         } catch (Exception $e) {
             processException($e);
         }

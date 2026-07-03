@@ -43,14 +43,13 @@ final class MysqlHandler implements DbStorageHandler
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
     ];
 
-    private ?PDO            $pdo = null;
-    private readonly string $connectionUri;
+    private ?PDO    $pdo = null;
+    private ?string $pdoConnectionKey = null;
 
     public function __construct(
         private readonly DatabaseConnectionData $connectionData,
         private readonly PDOWrapper             $PDOWrapper
     ) {
-        $this->connectionUri = self::getConnectionUri($connectionData);
     }
 
     public static function getConnectionUri(DatabaseConnectionData $connectionData): string
@@ -75,6 +74,27 @@ final class MysqlHandler implements DbStorageHandler
     }
 
     /**
+     * The DSN and credentials the cached PDO was (or would be) built with.
+     *
+     * The shared DatabaseConnectionData is mutable (e.g. the installer refreshes
+     * it with the runtime credentials once the setup is done); a cached
+     * connection built from stale data must not be reused.
+     */
+    private function connectionKey(): string
+    {
+        return implode('|', [
+            self::getConnectionUri($this->connectionData),
+            $this->connectionData->getDbUser() ?? '',
+            $this->connectionData->getDbPass() ?? '',
+        ]);
+    }
+
+    private function needsConnection(): bool
+    {
+        return $this->pdo === null || $this->pdoConnectionKey !== $this->connectionKey();
+    }
+
+    /**
      * Set up a database connection with the given connection data.
      * This method will only set ATTR_EMULATE_PREPARES and ATTR_ERRMODE options.
      *
@@ -82,7 +102,7 @@ final class MysqlHandler implements DbStorageHandler
      */
     public function getConnectionSimple(): PDO
     {
-        if (!$this->pdo) {
+        if ($this->needsConnection()) {
             $this->checkConnectionData();
 
             $opts = [
@@ -90,7 +110,12 @@ final class MysqlHandler implements DbStorageHandler
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ];
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, $opts);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData),
+                $this->connectionData,
+                $opts
+            );
+            $this->pdoConnectionKey = $this->connectionKey();
         }
 
         return $this->pdo;
@@ -133,10 +158,15 @@ final class MysqlHandler implements DbStorageHandler
      */
     public function getConnection(): PDO
     {
-        if (!$this->pdo) {
+        if ($this->needsConnection()) {
             $this->checkConnectionData(true);
 
-            $this->pdo = $this->PDOWrapper->build($this->connectionUri, $this->connectionData, self::PDO_OPTS);
+            $this->pdo = $this->PDOWrapper->build(
+                self::getConnectionUri($this->connectionData),
+                $this->connectionData,
+                self::PDO_OPTS
+            );
+            $this->pdoConnectionKey = $this->connectionKey();
 
             // Set prepared statement emulation depending on server version
             $serverVersion = $this->pdo->getAttribute(PDO::ATTR_SERVER_VERSION);

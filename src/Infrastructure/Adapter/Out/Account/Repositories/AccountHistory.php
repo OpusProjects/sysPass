@@ -345,7 +345,8 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
                     'id',
                     'name',
                     'pass',
-                    'key',
+                    // Table-qualified so Aura quotes it: bare `key` is a reserved word
+                    'AccountHistory.key',
                     'mPassHash',
                 ]
             )

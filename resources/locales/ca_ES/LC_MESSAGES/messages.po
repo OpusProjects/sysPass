@@ -1585,7 +1585,7 @@ msgstr "Veure Actual"
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:55
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:211
 msgid "Back"
-msgstr ""
+msgstr "Enrere"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:196
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:197
@@ -6980,25 +6980,23 @@ msgstr "Resultats de recerca de '%s'"
 msgid "Page"
 msgstr "Pàgina"
 
-#, fuzzy
-
 msgid "Installation"
-msgstr ""
+msgstr "Instal·lació"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Mode d'instal·lació"
 
 msgid "Standard"
-msgstr ""
+msgstr "Estàndard"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Crea la base de dades i l'usuari de BD amb les credencials proporcionades"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Usa les credencials proporcionades directament — la base de dades ha d'existir prèviament"
 
 #~ msgid "There aren't any allowed extensions"
 #~ msgstr "No hi ha extensions permeses"
@@ -7240,3 +7238,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Benvingut"
+
+msgid "Next"
+msgstr "Següent"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Benvingut a %s! Aquest assistent us guiarà a través de la instal·lació en uns pocs passos."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Abans de començar, necessitareu la informació següent:"
+
+msgid "The database server address"
+msgstr "L'adreça del servidor de base de dades"
+
+msgid "A database user with administrative rights"
+msgstr "Un usuari de base de dades amb drets administratius"
+
+msgid "The name for the sysPass database"
+msgstr "El nom per a la base de dades de sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "Tot a punt? Premeu Següent per començar."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "L'idioma s'ha detectat des del vostre navegador. En canviar-lo es recarregarà aquesta pàgina."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "La Clau Mestra s'utilitza per xifrar les claus dels comptes."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Si us plau, guardeu-la en un lloc segur — no es pot recuperar."
+
+msgid "During the installation you will also:"
+msgstr "Durant la instal·lació també:"
+
+msgid "Choose the application language"
+msgstr "Triareu l'idioma de l'aplicació"
+
+msgid "Set up the administrator account"
+msgstr "Configurareu el compte d'administrador"
+
+msgid "Set the Master Password"
+msgstr "Establireu la Clau Mestra"
+
+msgid "Requirements"
+msgstr "Requisits"
+
+msgid "PHP version"
+msgstr "Versió de PHP"
+
+msgid "PHP extensions"
+msgstr "Extensions de PHP"
+
+msgid "Configuration directory writable"
+msgstr "Directori de configuració amb permisos d'escriptura"
+
+msgid "Test connection"
+msgstr "Provar la connexió"
+
+msgid "Connection successful"
+msgstr "Connexió correcta"
+
+msgid "The DB user provided by your hosting"
+msgstr "L'usuari de BD proporcionat pel vostre hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "Ja podeu iniciar sessió amb el vostre compte d'administrador."
+
+msgid "sysPass is already installed"
+msgstr "sysPass ja està instal·lat"
+
+msgid "The database already contains sysPass tables"
+msgstr "La base de dades ja conté taules de sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Si us plau, utilitzeu una base de dades buida o elimineu les taules existents"
+
+msgid "Invalid database port"
+msgstr "Port de base de dades no vàlid"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "El número de port ha d'estar entre 1 i 65535"

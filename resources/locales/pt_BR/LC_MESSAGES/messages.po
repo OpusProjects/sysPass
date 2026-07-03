@@ -1578,7 +1578,7 @@ msgstr "View Current"
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:55
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:211
 msgid "Back"
-msgstr "Back"
+msgstr "Voltar"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:196
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:197
@@ -6884,22 +6884,22 @@ msgstr "Page"
 
 
 msgid "Installation"
-msgstr ""
+msgstr "Instalação"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Modo de instalação"
 
 msgid "Standard"
-msgstr ""
+msgstr "Padrão"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hospedagem"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Cria o banco de dados e o usuário do BD com as credenciais fornecidas"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Usa as credenciais fornecidas diretamente — o banco de dados já deve existir"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" directory does not exist."
@@ -7295,3 +7295,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Bem-vindo"
+
+msgid "Next"
+msgstr "Próximo"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Bem-vindo ao %s! Este assistente irá guiá-lo pela instalação em alguns passos simples."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Antes de começar, você precisará das seguintes informações:"
+
+msgid "The database server address"
+msgstr "O endereço do servidor de banco de dados"
+
+msgid "A database user with administrative rights"
+msgstr "Um usuário de banco de dados com direitos administrativos"
+
+msgid "The name for the sysPass database"
+msgstr "O nome para o banco de dados do sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "Tudo pronto? Clique em Próximo para começar."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "O idioma foi detectado a partir do seu navegador. Ao alterá-lo, esta página será recarregada."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "A Master Password é usada para criptografar as senhas das contas."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Por favor, guarde-a em um local seguro — ela não pode ser recuperada."
+
+msgid "During the installation you will also:"
+msgstr "Durante a instalação você também irá:"
+
+msgid "Choose the application language"
+msgstr "Escolher o idioma da aplicação"
+
+msgid "Set up the administrator account"
+msgstr "Configurar a conta de administrador"
+
+msgid "Set the Master Password"
+msgstr "Definir a Master Password"
+
+msgid "Requirements"
+msgstr "Requisitos"
+
+msgid "PHP version"
+msgstr "Versão do PHP"
+
+msgid "PHP extensions"
+msgstr "Extensões do PHP"
+
+msgid "Configuration directory writable"
+msgstr "Diretório de configuração gravável"
+
+msgid "Test connection"
+msgstr "Testar conexão"
+
+msgid "Connection successful"
+msgstr "Conexão bem-sucedida"
+
+msgid "The DB user provided by your hosting"
+msgstr "O usuário de BD fornecido pela sua hospedagem"
+
+msgid "You can now log in with your admin account."
+msgstr "Agora você pode entrar com sua conta de administrador."
+
+msgid "sysPass is already installed"
+msgstr "sysPass já está instalado"
+
+msgid "The database already contains sysPass tables"
+msgstr "O banco de dados já contém tabelas do sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Por favor, use um banco de dados vazio ou remova as tabelas existentes"
+
+msgid "Invalid database port"
+msgstr "Porta do banco de dados inválida"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "O número da porta deve estar entre 1 e 65535"

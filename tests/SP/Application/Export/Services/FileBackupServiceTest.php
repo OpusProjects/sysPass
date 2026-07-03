@@ -71,7 +71,7 @@ class FileBackupServiceTest extends UnitaryTestCase
     {
         $this->config->getConfigData()->setDbName('a_db');
 
-        $tablesCount = count(DatabaseUtil::TABLES);
+        $tablesCount = count(DatabaseUtil::TABLES) + count(DatabaseUtil::VIEWS);
         $tablesType = ['table', 'view'];
 
         $queryResults = array_map(
@@ -107,8 +107,9 @@ class FileBackupServiceTest extends UnitaryTestCase
             )
             ->willReturnCallback($rows);
 
+        // header + one create statement per table/view + 2 rows per table + footer
         $this->dbFileHandler
-            ->expects($this->exactly(79))
+            ->expects($this->exactly(1 + $tablesCount + count(DatabaseUtil::TABLES) * 2 + 1))
             ->method('write');
 
         $this->dbFileHandler

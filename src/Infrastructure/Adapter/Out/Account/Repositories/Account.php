@@ -667,7 +667,8 @@ final class Account extends BaseRepository implements AccountRepository
                        'id',
                        'name',
                        'pass',
-                       'key',
+                       // Table-qualified so Aura quotes it: bare `key` is a reserved word
+                       'Account.key',
                    ])
             ->where('BIT_LENGTH(pass) > 0');
 

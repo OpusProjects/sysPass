@@ -240,7 +240,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getTables(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') === false);
+        return DatabaseUtil::TABLES;
     }
 
     /**
@@ -248,7 +248,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getViews(): array
     {
-        return array_filter(DatabaseUtil::TABLES, static fn(string $t) => strrpos($t, '_v') !== false);
+        return DatabaseUtil::VIEWS;
     }
 
     /**

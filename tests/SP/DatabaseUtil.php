@@ -59,8 +59,9 @@ class DatabaseUtil
         $conn = self::getConnection();
         $conn->exec(sprintf($query, $database, $user, SELF_IP_ADDRESS, $pass));
 
-        // Long hostname returned on CI/CD tests
-        if (strlen(SELF_HOSTNAME) < 60) {
+        // gethostbyaddr() may fail (false) and CI/CD hosts return long names:
+        // an empty host would make the GRANT fail with "Can't find any matching row"
+        if (is_string(SELF_HOSTNAME) && SELF_HOSTNAME !== '' && strlen(SELF_HOSTNAME) < 60) {
             $conn->exec(sprintf($query, $database, $user, SELF_HOSTNAME, $pass));
         }
 
@@ -73,12 +74,8 @@ class DatabaseUtil
      */
     public static function getConnection(): PDO
     {
-        $data = (new DatabaseConnectionData())
-            ->setDbHost(getenv('DB_SERVER'))
-            ->setDbUser(getenv('DB_USER'))
-            ->setDbPass(getenv('DB_PASS'));
-
-        return getDbHandler($data)->getConnectionSimple();
+        // DatabaseConnectionData has no setters: build it from the DB_* environment
+        return getDbHandler(DatabaseConnectionData::getFromEnvironment())->getConnectionSimple();
     }
 
     /**

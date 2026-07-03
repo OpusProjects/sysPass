@@ -33,6 +33,7 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\Database\PDOWrapper;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\logger;
@@ -84,6 +85,12 @@ define('APP_PATH', $testDirectory->url());
 define('RESOURCE_PATH', $testResources->url());
 define('TMP_PATH', $testDirectory->getChild('tmp')->url());
 
+// Real (non-vfs) directories for the end-to-end CLI harness (CliTestCase):
+// PharData and gzip cannot operate on stream wrappers.
+define('CLI_TEST_ROOT', sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass-cli-tests');
+define('CACHE_PATH', CLI_TEST_ROOT . DIRECTORY_SEPARATOR . 'cache');
+define('CLI_TMP_PATH', CLI_TEST_ROOT . DIRECTORY_SEPARATOR . 'tmp');
+
 define('FIXTURE_FILES', [
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'truncate.sql',
     RESOURCE_PATH . DIRECTORY_SEPARATOR . 'datasets' . DIRECTORY_SEPARATOR . 'syspass.sql',
@@ -120,7 +127,7 @@ function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHand
         $connectionData = DatabaseConnectionData::getFromEnvironment();
     }
 
-    return new MysqlHandler($connectionData);
+    return new MysqlHandler($connectionData, new PDOWrapper());
 }
 
 function getResource(string $dir, string $file): string

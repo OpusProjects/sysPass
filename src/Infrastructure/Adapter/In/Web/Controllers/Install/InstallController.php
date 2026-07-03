@@ -25,16 +25,19 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Install;
 
 
-use Exception;
 use SP\Core\Application;
+use SP\Core\Language;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
+use SP\Application\Install\Services\InstallThrottle;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
+use Throwable;
 
 use function SP\__u;
 use function SP\processException;
@@ -51,7 +54,9 @@ final class InstallController extends ControllerBase
         Application $application,
         WebControllerHelper $webControllerHelper,
         InstallerService $installer,
-        InstallData $installData
+        InstallData $installData,
+        private readonly LanguageInterface $language,
+        private readonly InstallThrottle $installThrottle
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -69,10 +74,28 @@ final class InstallController extends ControllerBase
     public function installAction(): ActionResponse
     {
         try {
+            // Respond in the language chosen in the wizard, not the browser's
+            $lang = $this->installData->getSiteLang();
+
+            if ($lang && array_key_exists($lang, Language::getAvailableLanguages())) {
+                $this->language->setLocales($lang);
+            }
+
+            if ($this->configData->isInstalled()) {
+                return ActionResponse::error(__u('sysPass is already installed'));
+            }
+
+            // Unauthenticated endpoint that opens outbound connections: rate-limit it
+            if (!$this->installThrottle->isAllowed($this->request->getClientAddress())) {
+                return ActionResponse::error(__u('Attempts exceeded'));
+            }
+
             $this->installer->run($this->installData);
 
             return ActionResponse::ok(__u('Installation finished'));
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
+            // Throwable, not Exception: the wizard expects a JSON response
+            // even for a TypeError/Error during the install
             processException($e);
 
             return ActionResponse::error($e->getMessage());
