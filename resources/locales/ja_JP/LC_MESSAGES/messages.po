@@ -7784,3 +7784,21 @@ msgstr "データベースのポートが無効です"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "ポート番号は1から65535の間で指定してください"
+
+msgid "Required PHP extensions (%d)"
+msgstr "必須のPHP拡張機能 (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "オプションのPHP拡張機能 (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "不足している必須のPHP拡張機能 (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "不足しているオプションのPHP拡張機能 (%d)"
+
+msgid "Runtime directories writable"
+msgstr "ランタイムディレクトリが書き込み可能"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode が有効"

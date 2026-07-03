@@ -7379,3 +7379,21 @@ msgstr "Porta do banco de dados inválida"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "O número da porta deve estar entre 1 e 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Extensões PHP necessárias (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Extensões PHP opcionais (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Extensões PHP necessárias ausentes (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Extensões PHP opcionais ausentes (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Diretórios de tempo de execução graváveis"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode ativado"

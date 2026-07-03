@@ -8023,3 +8023,21 @@ msgstr "Érvénytelen adatbázis-port"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "A portszámnak 1 és 65535 között kell lennie"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Kötelező PHP-bővítmények (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Opcionális PHP-bővítmények (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Hiányzó kötelező PHP-bővítmények (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Hiányzó opcionális PHP-bővítmények (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Futásidejű könyvtárak írhatók"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode engedélyezve"

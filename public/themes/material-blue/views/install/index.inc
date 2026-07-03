@@ -166,7 +166,7 @@ use function SP\__;
                     <?php if (!empty($_getvar('availableRequired'))): ?>
                         <li class="req-ok req-expandable">
                             <i class="material-icons">check_circle</i>
-                            <span><?php printf(__('Required extensions (%d)'), count($_getvar('availableRequired'))); ?></span>
+                            <span><?php printf(__('Required PHP extensions (%d)'), count($_getvar('availableRequired'))); ?></span>
                             <button type="button" class="req-expand-btn" aria-expanded="false">
                                 <i class="material-icons">expand_more</i>
                             </button>
@@ -181,7 +181,7 @@ use function SP\__;
                     <?php if (!empty($_getvar('availableOptional'))): ?>
                         <li class="req-ok req-expandable">
                             <i class="material-icons">check_circle</i>
-                            <span><?php printf(__('Optional extensions (%d)'), count($_getvar('availableOptional'))); ?></span>
+                            <span><?php printf(__('Optional PHP extensions (%d)'), count($_getvar('availableOptional'))); ?></span>
                             <button type="button" class="req-expand-btn" aria-expanded="false">
                                 <i class="material-icons">expand_more</i>
                             </button>
@@ -195,7 +195,7 @@ use function SP\__;
                     <?php if (!empty($_getvar('missingRequired'))): ?>
                         <li class="req-fail req-expandable">
                             <i class="material-icons">cancel</i>
-                            <span><?php printf(__('Missing required extensions (%d)'), count($_getvar('missingRequired'))); ?></span>
+                            <span><?php printf(__('Missing required PHP extensions (%d)'), count($_getvar('missingRequired'))); ?></span>
                             <button type="button" class="req-expand-btn" aria-expanded="false">
                                 <i class="material-icons">expand_more</i>
                             </button>
@@ -210,7 +210,7 @@ use function SP\__;
                     <?php if (!empty($_getvar('missingOptional'))): ?>
                         <li class="req-warn req-expandable">
                             <i class="material-icons">warning</i>
-                            <span><?php printf(__('Missing optional extensions (%d)'), count($_getvar('missingOptional'))); ?></span>
+                            <span><?php printf(__('Missing optional PHP extensions (%d)'), count($_getvar('missingOptional'))); ?></span>
                             <button type="button" class="req-expand-btn" aria-expanded="false">
                                 <i class="material-icons">expand_more</i>
                             </button>

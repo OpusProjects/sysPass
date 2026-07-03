@@ -7932,3 +7932,21 @@ msgstr "Nieprawidłowy port bazy danych"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Numer portu musi mieścić się w zakresie od 1 do 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Wymagane rozszerzenia PHP (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Opcjonalne rozszerzenia PHP (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Brakujące wymagane rozszerzenia PHP (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Brakujące opcjonalne rozszerzenia PHP (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Katalogi wykonawcze zapisywalne"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode włączone"

@@ -7826,3 +7826,21 @@ msgstr "Ugyldig databaseport"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Portnummeret skal være mellem 1 og 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Nødvendige PHP-udvidelser (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Valgfrie PHP-udvidelser (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Manglende nødvendige PHP-udvidelser (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Manglende valgfrie PHP-udvidelser (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Runtime-mapper skrivbare"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode aktiveret"

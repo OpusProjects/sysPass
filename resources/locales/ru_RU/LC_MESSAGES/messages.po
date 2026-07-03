@@ -7974,3 +7974,21 @@ msgstr "Неверный порт базы данных"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Номер порта должен быть в диапазоне от 1 до 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Обязательные расширения PHP (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Необязательные расширения PHP (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Отсутствующие обязательные расширения PHP (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Отсутствующие необязательные расширения PHP (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Рабочие каталоги доступны для записи"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode включён"
