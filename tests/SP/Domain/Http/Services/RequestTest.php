@@ -555,6 +555,28 @@ class RequestTest extends UnitaryTestCase
         $this->assertEquals('value_encrypted', $out);
     }
 
+    /**
+     * Scripted (non-PKI) install fallback: the raw value must come back
+     * unmangled — no htmlspecialchars, no trim — so a password with special
+     * chars or edge whitespace hashes to what the browser later sends.
+     */
+    public function testAnalyzeEncryptedFallbackPreservesRawValue()
+    {
+        $this->ensureGet();
+
+        $raw = " p@ss&<>'\"word ";
+        $this->paramsGet->set('test', $raw);
+
+        $this->cryptPKI
+            ->expects(self::once())
+            ->method('decryptRSA')
+            ->willReturn(null);
+
+        $request = new Request($this->symfonyRequest, $this->cryptPKI);
+
+        $this->assertSame($raw, $request->analyzeEncrypted('test'));
+    }
+
     public function testAnalyzeEncryptedWithWrongParam()
     {
         $this->ensureGet();

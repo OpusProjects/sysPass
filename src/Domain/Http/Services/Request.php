@@ -193,11 +193,15 @@ class Request implements RequestService
      */
     public function analyzeEncrypted(string $param): ?string
     {
-        $encryptedData = $this->analyzeString($param);
-
-        if ($encryptedData === null) {
+        if (!$this->params->has($param)) {
             return null;
         }
+
+        // Read the RAW value, not Filter::getString() (htmlspecialchars + trim):
+        // that's harmless for base64 PKI ciphertext but corrupts the scripted-install
+        // fallback below — a raw password with & < > or edge whitespace would be
+        // mangled before hashing, then never match the PKI-decrypted login value.
+        $encryptedData = (string)$this->params->get($param);
 
         try {
             $clearData = $this->cryptPKI->decryptRSA(base64_decode($encryptedData));
