@@ -165,12 +165,16 @@ class DatabaseUtil
     }
 
     /**
-     * Escape a text string using mysqli functions.
+     * Quote a value for inclusion in an SQL statement.
+     *
+     * No trim(): this quotes column values for the SQL backup, including the
+     * varbinary pass/key blobs whose first/last byte is random — trimming would
+     * silently truncate any blob edged by a whitespace byte, corrupting the dump.
      */
     public function escape(string $str): string
     {
         try {
-            return $this->dbStorage->getConnection()->quote(trim($str));
+            return $this->dbStorage->getConnection()->quote($str);
         } catch (Exception $e) {
             processException($e);
         }
