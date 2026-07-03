@@ -84,6 +84,39 @@ class BackupCommandTest extends CliTestCase
     }
 
     /**
+     * --path must control where the backup is written, not just where old
+     * backups are pruned.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testBackupHonorsCustomPath(): void
+    {
+        $this->setupDatabase();
+
+        $customPath = CLI_TEST_ROOT . DIRECTORY_SEPARATOR . 'custom-backup';
+        mkdir($customPath);
+
+        $commandTester = $this->executeCommandTest(BackupCommand::class, ['--path' => $customPath]);
+
+        $this->assertStringContainsString(
+            'Application and database backup completed successfully',
+            $commandTester->getDisplay()
+        );
+
+        // Archives land in the requested path...
+        $custom = glob($customPath . DIRECTORY_SEPARATOR . 'sysPass_*');
+        $this->assertNotEmpty($custom, 'No backup archives in the custom --path');
+        $joined = implode(' ', $custom);
+        $this->assertStringContainsString('sysPass_db-', $joined);
+        $this->assertStringContainsString('sysPass_app-', $joined);
+
+        // ...and NOT in the default backup directory
+        $default = glob($this->getBackupPath() . DIRECTORY_SEPARATOR . 'sysPass_*');
+        $this->assertEmpty($default, 'Backup was written to the default dir instead of --path');
+    }
+
+    /**
      * Without a reachable database the dump must fail
      *
      * @throws DependencyException
