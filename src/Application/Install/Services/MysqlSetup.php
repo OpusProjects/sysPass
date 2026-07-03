@@ -264,11 +264,15 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
         try {
             $query = 'GRANT ALL PRIVILEGES ON `%s`.* TO %s@%s';
+            // In a GRANT database name `_` and `%` are LIKE wildcards, even inside
+            // backticks: an unescaped `syspass_prod` would also grant rights on
+            // `syspassXprod` etc., defeating the least-privilege runtime user
+            $grantDbName = $this->escapeGrantDbName($this->installData->getDbName());
 
             $dbc->exec(
                 sprintf(
                     $query,
-                    $this->installData->getDbName(),
+                    $grantDbName,
                     $dbc->quote($dbUser),
                     $dbc->quote($this->installData->getDbAuthHost() ?? '')
                 )
@@ -280,7 +284,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $dbc->exec(
                     sprintf(
                         $query,
-                        $this->installData->getDbName(),
+                        $grantDbName,
                         $dbc->quote($dbUser),
                         $dbc->quote($this->installData->getDbAuthHostDns() ?? '')
                     )
@@ -297,6 +301,15 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 $e
             );
         }
+    }
+
+    /**
+     * Escape the LIKE wildcards `_` and `%` (and the escape char itself) so the
+     * database name is matched literally in a GRANT statement.
+     */
+    private function escapeGrantDbName(string $dbName): string
+    {
+        return str_replace(['\\', '_', '%'], ['\\\\', '\\_', '\\%'], $dbName);
     }
 
     /**

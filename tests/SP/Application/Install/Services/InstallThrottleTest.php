@@ -32,6 +32,7 @@ use PHPUnit\Framework\TestCase;
 use SP\Application\Install\Services\InstallThrottle;
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class InstallThrottleTest
@@ -92,6 +93,38 @@ class InstallThrottleTest extends TestCase
         $this->assertTrue($this->throttle->isAllowed('192.0.2.1'));
     }
 
+    /**
+     * check() must key on REMOTE_ADDR, not the spoofable Forwarded header that
+     * getClientAddress() trusts — otherwise an attacker rotates the header to
+     * land in a fresh bucket every request and the limit never fires.
+     */
+    public function testCheckKeysOnRemoteAddrAndCannotBeSpoofed(): void
+    {
+        $request = $this->createStub(RequestService::class);
+        $request->method('getServer')->willReturnCallback(
+            static fn(string $key) => $key === 'REMOTE_ADDR' ? '198.51.100.7' : ''
+        );
+
+        $pathsContext = new PathsContext();
+        $pathsContext->addPath(Path::CACHE, $this->cacheDir);
+
+        $throttle = new InstallThrottle($pathsContext, $request);
+
+        for ($i = 0; $i < 10; $i++) {
+            $this->assertTrue($throttle->check());
+        }
+
+        // Same REMOTE_ADDR — over the limit, no matter what a client could forge
+        $this->assertFalse($throttle->check());
+
+        // The stored key is the REMOTE_ADDR, confirming getClientAddress() is not used
+        $stored = json_decode(
+            (string)file_get_contents($this->cacheDir . DIRECTORY_SEPARATOR . 'install_throttle.json'),
+            true
+        );
+        $this->assertSame(['198.51.100.7'], array_keys($stored));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -102,7 +135,7 @@ class InstallThrottleTest extends TestCase
         $pathsContext = new PathsContext();
         $pathsContext->addPath(Path::CACHE, $this->cacheDir);
 
-        $this->throttle = new InstallThrottle($pathsContext);
+        $this->throttle = new InstallThrottle($pathsContext, $this->createStub(RequestService::class));
     }
 
     protected function tearDown(): void

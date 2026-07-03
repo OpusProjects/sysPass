@@ -29,6 +29,7 @@ namespace SP\Application\Install\Services;
 
 use SP\Core\Bootstrap\Path;
 use SP\Core\Bootstrap\PathsContext;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
 use Throwable;
 
@@ -48,8 +49,23 @@ final readonly class InstallThrottle
     private const WINDOW_SECONDS = 60;
     private const STORE_FILE = 'install_throttle.json';
 
-    public function __construct(private PathsContext $pathsContext)
+    public function __construct(
+        private PathsContext   $pathsContext,
+        private RequestService $request
+    ) {
+    }
+
+    /**
+     * Record an attempt for the current request and tell whether it is allowed.
+     *
+     * The address is read from REMOTE_ADDR here, never from getClientAddress():
+     * the latter trusts the client-supplied Forwarded/X-Forwarded-For header,
+     * which an attacker rotates per request to land in a fresh bucket every
+     * time, defeating the limit this class exists to enforce.
+     */
+    public function check(): bool
     {
+        return $this->isAllowed($this->request->getServer('REMOTE_ADDR'));
     }
 
     /**
@@ -63,15 +79,22 @@ final readonly class InstallThrottle
             return true;
         }
 
+        $handle = null;
+
         try {
             $file = FileSystem::buildPath($this->pathsContext[Path::CACHE], self::STORE_FILE);
             $now = time();
 
-            $attempts = [];
+            // Hold one exclusive lock across the whole read-modify-write so
+            // concurrent bursts can't both read the same state and slip past
+            $handle = fopen($file, 'c+');
 
-            if (is_readable($file)) {
-                $attempts = json_decode((string)file_get_contents($file), true) ?: [];
+            if ($handle === false || !flock($handle, LOCK_EX)) {
+                return true;
             }
+
+            $contents = stream_get_contents($handle);
+            $attempts = $contents === '' ? [] : (json_decode($contents, true) ?: []);
 
             // Keep only the attempts within the window
             $attempts = array_filter(
@@ -90,13 +113,20 @@ final readonly class InstallThrottle
 
             $attempts[$address][] = $now;
 
-            file_put_contents($file, json_encode($attempts), LOCK_EX);
+            rewind($handle);
+            ftruncate($handle, 0);
+            fwrite($handle, json_encode($attempts));
 
             return true;
         } catch (Throwable $e) {
             processException($e);
 
             return true;
+        } finally {
+            if (is_resource($handle)) {
+                flock($handle, LOCK_UN);
+                fclose($handle);
+            }
         }
     }
 }
