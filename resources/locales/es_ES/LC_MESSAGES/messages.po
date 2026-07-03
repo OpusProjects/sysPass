@@ -7978,3 +7978,87 @@ msgstr "Usa las credenciales proporcionadas directamente — la base de datos de
 
 msgid "Passwords match"
 msgstr "Las claves coinciden"
+
+msgid "Welcome"
+msgstr "Bienvenido"
+
+msgid "Next"
+msgstr "Siguiente"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "¡Bienvenido a %s! Este asistente le guiará a través de la instalación en unos pocos pasos."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Antes de comenzar, necesitará la siguiente información:"
+
+msgid "The database server address"
+msgstr "La dirección del servidor de base de datos"
+
+msgid "A database user with administrative rights"
+msgstr "Un usuario de base de datos con derechos administrativos"
+
+msgid "The name for the sysPass database"
+msgstr "El nombre para la base de datos de sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "¿Todo listo? Pulse Siguiente para comenzar."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "El idioma ha sido detectado desde su navegador. Al cambiarlo se recargará esta página."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "La Clave Maestra se utiliza para cifrar las claves de las cuentas."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Por favor, guárdela en un lugar seguro — no se puede recuperar."
+
+msgid "During the installation you will also:"
+msgstr "Durante la instalación también:"
+
+msgid "Choose the application language"
+msgstr "Elegirá el idioma de la aplicación"
+
+msgid "Set up the administrator account"
+msgstr "Configurará la cuenta de administrador"
+
+msgid "Set the Master Password"
+msgstr "Establecerá la Clave Maestra"
+
+msgid "Requirements"
+msgstr "Requisitos"
+
+msgid "PHP version"
+msgstr "Versión de PHP"
+
+msgid "PHP extensions"
+msgstr "Extensiones de PHP"
+
+msgid "Configuration directory writable"
+msgstr "Directorio de configuración con permisos de escritura"
+
+msgid "Test connection"
+msgstr "Probar conexión"
+
+msgid "Connection successful"
+msgstr "Conexión correcta"
+
+msgid "The DB user provided by your hosting"
+msgstr "El usuario de BD proporcionado por su hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "Ya puede iniciar sesión con su cuenta de administrador."
+
+msgid "sysPass is already installed"
+msgstr "sysPass ya está instalado"
+
+msgid "The database already contains sysPass tables"
+msgstr "La base de datos ya contiene tablas de sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Por favor, utilice una base de datos vacía o elimine las tablas existentes"
+
+msgid "Invalid database port"
+msgstr "Puerto de base de datos no válido"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "El número de puerto debe estar entre 1 y 65535"

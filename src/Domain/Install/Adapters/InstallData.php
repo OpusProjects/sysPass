@@ -44,7 +44,8 @@ final class InstallData
     private ?string $adminLogin     = null;
     private ?string $adminPass       = null;
     private ?string $adminPassRepeat = null;
-    private ?string $masterPassword  = null;
+    private ?string $masterPassword       = null;
+    private ?string $masterPasswordRepeat = null;
     private bool    $hostingMode    = false;
     private ?string $dbAuthHost     = null;
     private ?string $dbAuthHostDns  = null;
@@ -109,6 +110,16 @@ final class InstallData
     public function setMasterPassword(string $masterPassword): void
     {
         $this->masterPassword = $masterPassword;
+    }
+
+    public function getMasterPasswordRepeat(): ?string
+    {
+        return $this->masterPasswordRepeat;
+    }
+
+    public function setMasterPasswordRepeat(string $masterPasswordRepeat): void
+    {
+        $this->masterPasswordRepeat = $masterPasswordRepeat;
     }
 
     public function isHostingMode(): bool

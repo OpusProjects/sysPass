@@ -3,7 +3,7 @@
 sysPass uses **PHPUnit 13** with two test suites: a fast unit suite that needs no
 external services, and an integration suite backed by a real MariaDB database.
 
-Both suites pass: **2061 unit tests** and **93 integration tests**.
+Both suites pass: **2096 unit tests** and **114 integration tests**.
 
 ## Quick start (Docker)
 
@@ -43,7 +43,10 @@ tests/
 
 The `core` testsuite covers `Core/`, `Domain/`, `Application/`, and `Infrastructure/`
 (excluding the Web/Api/Cli adapter tests). The `modules` testsuite covers the adapter
-integration tests under `Infrastructure/Adapter/In/`.
+integration tests under `Infrastructure/Adapter/In/`: the Web controller tests (mocked
+container via `IntegrationTestCase`) and the end-to-end CLI command tests (real DI
+container + real database via `CliTestCase`, per-test config and runtime dirs under
+`/tmp/syspass-cli-tests`). The Api adapter tests remain excluded.
 
 ## Test groups
 
@@ -111,6 +114,9 @@ re-seed the schema before running them again.
 - Use `UnitaryTestCase` as the base class for unit tests that need common mocks.
 - Integration tests extend `IntegrationTestCase` or `DatabaseTestCase` which handle
   the DI container and database connection.
+- End-to-end CLI command tests extend `CliTestCase`, which builds the real container
+  per test (fresh not-installed config) and runs commands through Symfony's
+  `CommandTester`; tests that create databases/users must drop them again.
 - For classes with DI constructor dependencies, stub the interfaces
   (`$this->createStub(FooInterface::class)`) rather than instantiating real
   implementations.

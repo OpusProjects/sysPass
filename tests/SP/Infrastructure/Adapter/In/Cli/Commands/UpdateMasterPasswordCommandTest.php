@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -27,32 +27,28 @@ namespace SP\Tests\Infrastructure\Adapter\In\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Domain\Core\Exceptions\FileNotFoundException;
+use PHPUnit\Framework\Attributes\Group;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Infrastructure\Adapter\In\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
-use SP\Tests\DatabaseTrait;
+use SP\Infrastructure\Adapter\In\Cli\Commands\InstallCommand;
+use SP\Tests\DatabaseUtil;
 use SP\Tests\Infrastructure\Adapter\In\Cli\CliTestCase;
 
-use function SP\Tests\recreateDir;
-
 /**
+ * End-to-end test of the CLI master password update against a real database.
  *
+ * The state is bootstrapped by running the REAL CLI installer (instead of the
+ * pre-rewrite SQL fixtures, whose schema no longer matches), so this also
+ * exercises two commands sharing one container: the connection created for
+ * the install must be refreshed with the runtime credentials for the update.
  */
+#[Group('integration')]
 class UpdateMasterPasswordCommandTest extends CliTestCase
 {
+    public const CURRENT_MASTERPASS = '12345678900';
+    public const NEW_MASTERPASS = '00123456789';
 
-    use DatabaseTrait;
-
-    /**
-     * @var string
-     */
-    protected static string $currentConfig;
-    /**
-     * @var string[]
-     */
-    protected static array $commandInputData = [
-        '--currentMasterPassword' => 'a_pass',
-        '--masterPassword' => 'a_new_pass'
-    ];
+    private const TEST_DB = 'syspass-test-ump';
 
     /**
      * @throws DependencyException
@@ -61,7 +57,11 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     public function testUpdateAborted(): void
     {
         $commandTester = $this->executeCommandTest(
-            UpdateMasterPasswordCommand::class
+            UpdateMasterPasswordCommand::class,
+            [
+                '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+                '--masterPassword' => self::NEW_MASTERPASS,
+            ]
         );
 
         // the output of the command in the console
@@ -71,29 +71,22 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
 
     /**
      * @throws DependencyException
-     * @throws FileNotFoundException
      * @throws NotFoundException
      */
     public function testUpdateIsSuccessful(): void
     {
-        $inputData = array_merge(
-            self::$commandInputData,
-            [
-                '--update' => null
-            ]
-        );
-
         $commandTester = $this->executeCommandTest(
             UpdateMasterPasswordCommand::class,
-            $inputData
+            [
+                '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+                '--masterPassword' => self::NEW_MASTERPASS,
+                '--update' => null,
+            ]
         );
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Master password updated', $output);
-
-        // Recreate cache directory to avoid unwanted behavior
-        recreateDir(CACHE_PATH);
     }
 
     /**
@@ -119,11 +112,11 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     {
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['currentMasterPassword'],
-                AccountCryptServiceTest::CURRENT_MASTERPASS)
+                self::CURRENT_MASTERPASS)
         );
         putenv(sprintf('%s=%s',
                 UpdateMasterPasswordCommand::$envVarsMapping['masterPassword'],
-                AccountCryptServiceTest::NEW_MASTERPASS)
+                self::NEW_MASTERPASS)
         );
     }
 
@@ -198,15 +191,13 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      */
     public function testSameMasterPassword(): void
     {
-        $inputData = [
-            '--currentMasterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
-            '--masterPassword' => AccountCryptServiceTest::CURRENT_MASTERPASS,
-            '--update' => null
-        ];
-
         $commandTester = $this->executeCommandTest(
             UpdateMasterPasswordCommand::class,
-            $inputData
+            [
+                '--currentMasterPassword' => self::CURRENT_MASTERPASS,
+                '--masterPassword' => self::CURRENT_MASTERPASS,
+                '--update' => null,
+            ]
         );
 
         // the output of the command in the console
@@ -220,15 +211,13 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
      */
     public function testWrongMasterPassword(): void
     {
-        $inputData = [
-            '--currentMasterPassword' => uniqid('', true),
-            '--masterPassword' => AccountCryptServiceTest::NEW_MASTERPASS,
-            '--update' => null
-        ];
-
         $commandTester = $this->executeCommandTest(
             UpdateMasterPasswordCommand::class,
-            $inputData
+            [
+                '--currentMasterPassword' => uniqid('', true),
+                '--masterPassword' => self::NEW_MASTERPASS,
+                '--update' => null,
+            ]
         );
 
         // the output of the command in the console
@@ -236,15 +225,55 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
         $this->assertStringContainsString('The current master password does not match', $output);
     }
 
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
     protected function setUp(): void
     {
         $this->unsetEnvironmentVariables();
 
-        $this->setupDatabase();
-
-        self::loadFixtures();
-
         parent::setUp();
+
+        // Bootstrap an installed sysPass with the current master password
+        $commandTester = $this->executeCommandTest(
+            InstallCommand::class,
+            [
+                'adminLogin' => 'Admin',
+                'databaseHost' => getenv('DB_SERVER'),
+                'databaseName' => self::TEST_DB,
+                'databaseUser' => getenv('DB_USER'),
+                '--databasePassword' => getenv('DB_PASS'),
+                '--adminPassword' => 'admin123',
+                '--masterPassword' => self::CURRENT_MASTERPASS,
+                '--install' => null,
+            ]
+        );
+
+        $this->assertStringContainsString('Installation finished', $commandTester->getDisplay());
+    }
+
+    protected function tearDown(): void
+    {
+        // putenv() state would leak into the next test class
+        $this->unsetEnvironmentVariables();
+
+        $dbUser = (string)self::$dic->get(ConfigFileService::class)->getConfigData()->getDbUser();
+
+        DatabaseUtil::dropDatabase(self::TEST_DB);
+
+        if ($dbUser !== '') {
+            // The DB auth host depends on the environment (wildcard on Docker,
+            // the client address elsewhere)
+            DatabaseUtil::dropUser($dbUser, '%');
+            DatabaseUtil::dropUser($dbUser, SELF_IP_ADDRESS);
+
+            if (is_string(SELF_HOSTNAME) && strlen(SELF_HOSTNAME) < 60) {
+                DatabaseUtil::dropUser($dbUser, SELF_HOSTNAME);
+            }
+        }
+
+        parent::tearDown();
     }
 
     private function unsetEnvironmentVariables(): void

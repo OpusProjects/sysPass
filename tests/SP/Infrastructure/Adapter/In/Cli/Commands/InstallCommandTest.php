@@ -27,26 +27,19 @@ namespace SP\Tests\Infrastructure\Adapter\In\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use Exception;
-use SP\Application\Config\Services\ConfigFile;
+use PHPUnit\Framework\Attributes\Group;
+use SP\Application\Config\Ports\ConfigFileService;
 use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Adapter\In\Cli\Commands\InstallCommand;
 use SP\Tests\DatabaseUtil;
 use SP\Tests\Infrastructure\Adapter\In\Cli\CliTestCase;
 
-use function SP\Tests\getResource;
-use function SP\Tests\recreateDir;
-use function SP\Tests\saveResource;
-
 /**
- *
+ * End-to-end test of the CLI installer against a real database.
  */
+#[Group('integration')]
 class InstallCommandTest extends CliTestCase
 {
-    /**
-     * @var string
-     */
-    protected static string $currentConfig;
     /**
      * @var string[]
      */
@@ -62,38 +55,17 @@ class InstallCommandTest extends CliTestCase
     ];
 
     /**
-     * This method is called before the first test of this test class is run.
-     *
-     * @throws Exception
-     */
-    public static function setUpBeforeClass(): void
-    {
-        // Backup current config file content in a variable
-        self::$currentConfig = getResource('config', 'config.xml');
-
-        parent::setUpBeforeClass();
-    }
-
-    /**
-     * This method is called after the last test of this test class is run.
-     */
-    public static function tearDownAfterClass(): void
-    {
-        // Replace config file with previously saved data
-        saveResource('config', 'config.xml', self::$currentConfig);
-        // Recreate cache directory to avoid unwanted behavior
-        recreateDir(CACHE_PATH);
-
-        parent::tearDownAfterClass();
-    }
-
-    /**
      * @throws DependencyException
      * @throws NotFoundException
      */
     public function testInstallationIsAborted(): void
     {
-        $commandTester = $this->executeCommandTest(InstallCommand::class);
+        // Without --install the non-interactive confirm defaults to "no";
+        // --forceInstall is only required when sysPass is already installed
+        $inputData = self::$commandInputData;
+        unset($inputData['--install']);
+
+        $commandTester = $this->executeCommandTest(InstallCommand::class, $inputData);
 
         // the output of the command in the console
         $output = $commandTester->getDisplay();
@@ -189,11 +161,29 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
-        DatabaseUtil::dropUser($configData->getDbUser(), SELF_IP_ADDRESS);
+        self::dropTestUser((string)$configData->getDbUser());
+    }
+
+    /**
+     * The DB auth host depends on the environment (wildcard on Docker, the
+     * client address elsewhere): try every variant the installer may have used
+     */
+    private static function dropTestUser(string $user): void
+    {
+        if ($user === '') {
+            return;
+        }
+
+        DatabaseUtil::dropUser($user, '%');
+        DatabaseUtil::dropUser($user, SELF_IP_ADDRESS);
+
+        if (is_string(SELF_HOSTNAME) && strlen(SELF_HOSTNAME) < 60) {
+            DatabaseUtil::dropUser($user, SELF_HOSTNAME);
+        }
     }
 
     /**
@@ -223,13 +213,13 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertEquals($configData->getSiteLang(), $inputData['--language']);
 
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
-        DatabaseUtil::dropUser($configData->getDbUser(), SELF_IP_ADDRESS);
+        self::dropTestUser((string)$configData->getDbUser());
     }
 
     /**
@@ -270,13 +260,15 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
 
         $this->assertEquals($configData->getDbUser(), $databaseUser);
         $this->assertEquals($configData->getDbPass(), $databasePassword);
 
-        // Cleanup database
+        // Cleanup database and the hosting user created above
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        self::dropTestUser($databaseUser);
+        DatabaseUtil::dropUser($databaseUser, (string)getenv('DB_SERVER'));
     }
 
     /**
@@ -379,8 +371,11 @@ class InstallCommandTest extends CliTestCase
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Installation finished', $output);
 
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+
         // Cleanup database
         DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        self::dropTestUser((string)$configData->getDbUser());
     }
 
     protected function setUp(): void
@@ -388,6 +383,20 @@ class InstallCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+    }
+
+    /**
+     * @throws DatabaseException
+     */
+    protected function tearDown(): void
+    {
+        // putenv() state would leak into the next test class
+        $this->unsetEnvironmentVariables();
+
+        // A failed test may leave the database behind
+        DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+
+        parent::tearDown();
     }
 
     private function unsetEnvironmentVariables(): void

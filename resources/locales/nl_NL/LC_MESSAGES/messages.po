@@ -7582,22 +7582,22 @@ msgstr "Clear tracks out"
 
 
 msgid "Installation"
-msgstr ""
+msgstr "Installatie"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Installatiemodus"
 
 msgid "Standard"
-msgstr ""
+msgstr "Standaard"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Maakt de database en de databasegebruiker aan met de opgegeven inloggegevens"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Gebruikt de opgegeven inloggegevens rechtstreeks — de database moet al bestaan"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "De \"/config\" map bestaat niet"
@@ -7674,3 +7674,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Welkom"
+
+msgid "Next"
+msgstr "Volgende"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Welkom bij %s! Deze wizard leidt u in een paar eenvoudige stappen door de installatie."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Voordat u begint, heeft u de volgende informatie nodig:"
+
+msgid "The database server address"
+msgstr "Het adres van de databaseserver"
+
+msgid "A database user with administrative rights"
+msgstr "Een databasegebruiker met beheerdersrechten"
+
+msgid "The name for the sysPass database"
+msgstr "De naam voor de sysPass-database"
+
+msgid "All set? Press Next to begin."
+msgstr "Alles klaar? Klik op Volgende om te beginnen."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "De taal is gedetecteerd via uw browser. Als u deze wijzigt, wordt deze pagina opnieuw geladen."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "Het Master wachtwoord wordt gebruikt om de wachtwoorden van de accounts te versleutelen."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Bewaar het op een veilige plek — het kan niet worden hersteld."
+
+msgid "During the installation you will also:"
+msgstr "Tijdens de installatie zult u ook:"
+
+msgid "Choose the application language"
+msgstr "De taal van de applicatie kiezen"
+
+msgid "Set up the administrator account"
+msgstr "Het beheerdersaccount instellen"
+
+msgid "Set the Master Password"
+msgstr "Het Master wachtwoord instellen"
+
+msgid "Requirements"
+msgstr "Vereisten"
+
+msgid "PHP version"
+msgstr "PHP-versie"
+
+msgid "PHP extensions"
+msgstr "PHP-extensies"
+
+msgid "Configuration directory writable"
+msgstr "Configuratiemap beschrijfbaar"
+
+msgid "Test connection"
+msgstr "Verbinding testen"
+
+msgid "Connection successful"
+msgstr "Verbinding geslaagd"
+
+msgid "The DB user provided by your hosting"
+msgstr "De databasegebruiker van uw hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "U kunt nu inloggen met uw beheerdersaccount."
+
+msgid "sysPass is already installed"
+msgstr "sysPass is al geïnstalleerd"
+
+msgid "The database already contains sysPass tables"
+msgstr "De database bevat al sysPass-tabellen"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Gebruik een lege database of verwijder de bestaande tabellen"
+
+msgid "Invalid database port"
+msgstr "Ongeldige databasepoort"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "Het poortnummer moet tussen 1 en 65535 liggen"

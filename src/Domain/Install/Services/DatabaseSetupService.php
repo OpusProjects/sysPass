@@ -36,43 +36,45 @@ interface DatabaseSetupService
      * Check whether the connection to the sysPass database is possible with
      * the provided details.
      */
-    public function connectDatabase();
+    public function connectDatabase(): void;
 
-    public function setupDbUser(): array;
+    /**
+     * Check that the target database can host a fresh installation.
+     *
+     * Must be called before anything is created: it throws when the database
+     * already exists (normal mode) or already contains sysPass objects
+     * (hosting mode), so that no rollback ever touches pre-existing data.
+     */
+    public function checkDatabaseAvailability(): void;
 
     /**
      * Create the user to connect to the database.
-     * This function creates the user used to connect to the database.
      *
-     * @param  string  $user
-     * @param  string  $pass
+     * @return array{0: string, 1: string} The generated user and password
      */
-    public function createDBUser(string $user, string $pass);
+    public function setupDbUser(): array;
 
     /**
      * Create the database
      */
-    public function createDatabase(?string $dbUser = null);
-
-    /**
-     * @return mixed
-     */
-    public function checkDatabaseExists(): mixed;
-
-    /**
-     * Roll back the installation in case of failure.
-     * This function removes the sysPass database and user.
-     */
-    public function rollback(?string $dbUser = null);
+    public function createDatabase(?string $dbUser = null): void;
 
     /**
      * Create the database structure.
      * This function creates the database structure from the dbsctructure.sql file.
      */
-    public function createDBStructure();
+    public function createDBStructure(): void;
 
     /**
      * Check the connection to the database
      */
-    public function checkConnection();
+    public function checkConnection(): void;
+
+    /**
+     * Roll back the installation in case of failure.
+     *
+     * Removes the sysPass database and user. Best-effort: it must never
+     * throw, so it cannot mask the error that triggered it.
+     */
+    public function rollback(?string $dbUser = null): void;
 }

@@ -20,8 +20,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libonig-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Locales the test suite asserts against.
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8 && localedef -i es_ES -f UTF-8 es_ES.UTF-8
+# All locales the app supports (Language::$langs) — without the system locale,
+# setlocale() fails and gettext falls back to English. The test suite asserts
+# against en_US/es_ES. 'da' and 'fo' are defined under the short names the app
+# passes to setlocale().
+RUN for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do \
+        localedef -i "$l" -f UTF-8 "$l.UTF-8"; \
+    done \
+    && localedef -i da_DK -f UTF-8 da.UTF-8 \
+    && localedef -i fo_FO -f UTF-8 fo.UTF-8
 
 # PHP extensions required by composer.json (gd, ldap, gettext, pdo_mysql, zip, intl, mbstring).
 # dom, json, libxml, fileinfo, zlib, curl ship enabled in the base image.

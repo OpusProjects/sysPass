@@ -79,8 +79,27 @@ the web-root path, and the web-server user differ.
 
    - **Standard mode** — the installer creates the database and a restricted DB
      user with the credentials you provide.
-   - **Hosting mode** — the database must already exist; the installer uses the
-     provided credentials directly.
+   - **Hosting mode** — the database must already exist **and contain no sysPass
+     tables**; the installer uses the provided credentials directly.
+
+   The database server field accepts `host`, `host:port`, `[ipv6]:port`, or
+   `unix:/path/to/socket`.
+
+## CLI install
+
+The installer can also run headless:
+
+```bash
+php bin/cli.php sp:install <adminLogin> <databaseHost> <databaseName> <databaseUser> \
+  --databasePassword=... --adminPassword=... --masterPassword=... --install
+```
+
+Options left out are prompted for interactively. Every value can also come from
+environment variables (`ADMIN_LOGIN`, `ADMIN_PASSWORD`, `DATABASE_HOST`,
+`DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD`, `MASTER_PASSWORD`,
+`HOSTING_MODE`, `INSTALL`, `FORCE_INSTALL`), which take precedence over the
+arguments. `--install` skips the confirmation prompt; `--forceInstall` is only
+needed to reinstall over an existing installation.
 
 ---
 

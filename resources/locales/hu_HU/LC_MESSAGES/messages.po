@@ -7838,25 +7838,23 @@ msgstr "Unlock track"
 msgid "Clear the tracks out"
 msgstr "Clear the tracks out"
 
-#, fuzzy
-
 msgid "Installation"
-msgstr ""
+msgstr "Telepítés"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Telepítési mód"
 
 msgid "Standard"
-msgstr ""
+msgstr "Normál"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Tárhely"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Létrehozza az adatbázist és az adatbázis-felhasználót a megadott hitelesítő adatokkal"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Közvetlenül a megadott hitelesítő adatokat használja — az adatbázisnak már léteznie kell"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" mappa nem létezik"
@@ -7941,3 +7939,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Üdvözöljük"
+
+msgid "Next"
+msgstr "Tovább"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Üdvözöljük a %s telepítőjében! Ez a varázsló néhány egyszerű lépésben végigvezeti a telepítésen."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Mielőtt elkezdené, a következő információkra lesz szüksége:"
+
+msgid "The database server address"
+msgstr "Az adatbázis-kiszolgáló címe"
+
+msgid "A database user with administrative rights"
+msgstr "Adminisztrátori jogokkal rendelkező adatbázis-felhasználó"
+
+msgid "The name for the sysPass database"
+msgstr "A sysPass adatbázis neve"
+
+msgid "All set? Press Next to begin."
+msgstr "Minden készen áll? Nyomja meg a Tovább gombot a kezdéshez."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "A nyelvet a böngészője alapján állapítottuk meg. Módosításakor az oldal újratöltődik."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "A Mester jelszó a fiókok jelszavainak titkosítására szolgál."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Kérjük, őrizze biztonságos helyen — nem állítható vissza."
+
+msgid "During the installation you will also:"
+msgstr "A telepítés során továbbá:"
+
+msgid "Choose the application language"
+msgstr "Kiválasztja az alkalmazás nyelvét"
+
+msgid "Set up the administrator account"
+msgstr "Beállítja az adminisztrátori fiókot"
+
+msgid "Set the Master Password"
+msgstr "Megadja a Mester jelszót"
+
+msgid "Requirements"
+msgstr "Követelmények"
+
+msgid "PHP version"
+msgstr "PHP verzió"
+
+msgid "PHP extensions"
+msgstr "PHP kiterjesztések"
+
+msgid "Configuration directory writable"
+msgstr "Írható konfigurációs könyvtár"
+
+msgid "Test connection"
+msgstr "Kapcsolat tesztelése"
+
+msgid "Connection successful"
+msgstr "Sikeres kapcsolódás"
+
+msgid "The DB user provided by your hosting"
+msgstr "A tárhelyszolgáltató által megadott adatbázis-felhasználó"
+
+msgid "You can now log in with your admin account."
+msgstr "Most már bejelentkezhet az adminisztrátori fiókjával."
+
+msgid "sysPass is already installed"
+msgstr "A sysPass már telepítve van"
+
+msgid "The database already contains sysPass tables"
+msgstr "Az adatbázis már tartalmaz sysPass táblákat"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Kérjük, használjon üres adatbázist, vagy távolítsa el a meglévő táblákat"
+
+msgid "Invalid database port"
+msgstr "Érvénytelen adatbázis-port"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "A portszámnak 1 és 65535 között kell lennie"

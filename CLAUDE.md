@@ -91,7 +91,10 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both pass: **2061 unit** + **93 integration**. Test-environment gotchas (the image provides these):
+Both pass: **2096 unit** + **114 integration**. The integration suite includes the
+end-to-end CLI command tests (`tests/SP/Infrastructure/Adapter/In/Cli/`, real DI container +
+real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
+gotchas (the image provides these):
 
 - **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0`; without
   it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.

@@ -94,20 +94,21 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testSetupUserIsSuccessful(): void
     {
-        $query = 'SELECT COUNT(*) FROM mysql.user WHERE `user` = ? AND (`host` = ? OR `host` = ?)';
+        $matcher = self::exactly(2);
 
-        $pdoStatement = $this->createMock(PDOStatement::class);
+        $this->pdo->expects($matcher)
+                  ->method('exec')
+                  ->with(
+                      new Callback(
+                          static function (string $query) use ($matcher) {
+                              return $matcher->numberOfInvocations() === 1
+                                  ? preg_match('/^CREATE USER sp_\w+@.+ IDENTIFIED BY .+$/', $query) === 1
+                                  : $query === 'FLUSH PRIVILEGES';
+                          }
+                      )
+                  );
 
-        $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
-        $pdoStatement->expects(self::once())->method('execute')->with(
-            new Callback(
-                function ($args) {
-                    return str_starts_with($args[0], 'sp_')
-                           && $args[1] === $this->installData->getDbAuthHost()
-                           && $args[2] === null;
-                }
-            )
-        );
+        $this->pdo->method('quote')->willReturnArgument(0);
 
         [$user, $pass] = $this->mysqlService->setupDbUser();
 
@@ -123,7 +124,7 @@ class MySQLTest extends UnitaryTestCase
                         ->willThrowException(new PDOException('test'));
 
         $this->expectException(SPException::class);
-        $this->expectExceptionMessageMatches('/Unable to check the sysPass user \(sp_\w+\)/');
+        $this->expectExceptionMessageMatches('/Error while creating the MySQL connection user \'sp_\w+\'/');
 
         $this->mysqlService->setupDbUser();
     }
@@ -168,24 +169,12 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDatabaseIsSuccessful(): void
     {
-        $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
-
-        $pdoStatement = $this->createMock(PDOStatement::class);
-
-        $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
-        $pdoStatement->expects(self::once())->method('execute')->with(
-            new Callback(
-                fn($args) => $args[0] === $this->installData->getDbName()
-            )
-        );
-        $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
-
         $this->configData->setDbUser(self::$faker->userName());
 
         $execArguments = [
             [
                 sprintf(
-                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci',
                     $this->installData->getDbName()
                 ),
             ],
@@ -218,18 +207,11 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
-    public function testCreateDatabaseIsSuccessfulInHostingMode(): void
+    public function testCreateDatabaseIsANoOpInHostingMode(): void
     {
         $this->installData->setHostingMode(true);
 
-        $this->pdo->expects(self::once())
-                  ->method('exec')
-                  ->with(
-                      sprintf(
-                          'USE `%s`',
-                          $this->installData->getDbName()
-                      )
-                  );
+        $this->pdo->expects(self::never())->method('exec');
 
         $this->mysqlService->createDatabase();
     }
@@ -237,7 +219,7 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
-    public function testCreateDatabaseIsNotSuccessfulWithDuplicateDatabase(): void
+    public function testCheckDatabaseAvailabilityFailsWithDuplicateDatabase(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
@@ -254,14 +236,13 @@ class MySQLTest extends UnitaryTestCase
         $this->expectException(SPException::class);
         $this->expectExceptionMessage('The database already exists');
 
-        $this->mysqlService->createDatabase();
+        $this->mysqlService->checkDatabaseAvailability();
     }
 
     /**
      * @throws SPException
-     * @throws Exception
      */
-    public function testCreateDatabaseIsSuccessfulWithDns(): void
+    public function testCheckDatabaseAvailabilityIsSuccessful(): void
     {
         $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
 
@@ -275,13 +256,110 @@ class MySQLTest extends UnitaryTestCase
         );
         $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
 
+        $this->mysqlService->checkDatabaseAvailability();
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function testCheckDatabaseAvailabilityIsSuccessfulInHostingMode(): void
+    {
+        $this->installData->setHostingMode(true);
+
+        $this->pdo->expects(self::once())
+                  ->method('exec')
+                  ->with(
+                      sprintf(
+                          'USE `%s`',
+                          $this->installData->getDbName()
+                      )
+                  );
+
+        $pdoStatement = $this->createMock(PDOStatement::class);
+
+        $this->pdo->expects(self::once())
+                  ->method('prepare')
+                  ->with(
+                      new Callback(
+                          static fn(string $query) => str_starts_with(
+                              $query,
+                              'SELECT COUNT(*) FROM information_schema.tables WHERE `table_schema` = ? AND `table_name` IN ('
+                          )
+                      )
+                  )
+                  ->willReturn($pdoStatement);
+        $pdoStatement->expects(self::once())->method('execute')->with(
+            new Callback(
+                fn($args) => $args[0] === $this->installData->getDbName()
+                             && count($args) === 1 + count(DatabaseUtil::TABLES) + count(DatabaseUtil::VIEWS)
+            )
+        );
+        $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
+
+        $this->mysqlService->checkDatabaseAvailability();
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function testCheckDatabaseAvailabilityFailsWithExistingTablesInHostingMode(): void
+    {
+        $this->installData->setHostingMode(true);
+
+        $pdoStatement = $this->createMock(PDOStatement::class);
+
+        $this->pdo->expects(self::once())->method('prepare')->willReturn($pdoStatement);
+        $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(5);
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('The database already contains sysPass tables');
+
+        $this->mysqlService->checkDatabaseAvailability();
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function testCheckDatabaseAvailabilityIsNotSuccessfulInHostingMode(): void
+    {
+        $this->installData->setHostingMode(true);
+
+        $pdoException = new PDOException('test');
+
+        $this->pdo->expects(self::once())
+                  ->method('exec')
+                  ->with(
+                      sprintf(
+                          'USE `%s`',
+                          $this->installData->getDbName()
+                      )
+                  )->willThrowException($pdoException);
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                __('Error while selecting \'%s\' database (%s)'),
+                $this->installData->getDbName(),
+                $pdoException->getMessage()
+            )
+        );
+
+        $this->mysqlService->checkDatabaseAvailability();
+    }
+
+    /**
+     * @throws SPException
+     * @throws Exception
+     */
+    public function testCreateDatabaseIsSuccessfulWithDns(): void
+    {
         $this->configData->setDbUser(self::$faker->userName());
         $this->installData->setDbAuthHostDns(self::$faker->domainName());
 
         $execArguments = [
             [
                 sprintf(
-                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci',
                     $this->installData->getDbName()
                 ),
             ],
@@ -326,23 +404,11 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDatabaseIsNotSuccessfulWithCreateError(): void
     {
-        $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
-
-        $pdoStatement = $this->createMock(PDOStatement::class);
-
-        $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
-        $pdoStatement->expects(self::once())->method('execute')->with(
-            new Callback(
-                fn($args) => $args[0] === $this->installData->getDbName()
-            )
-        );
-        $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
-
         $this->pdo->expects(self::once())
                   ->method('exec')
                   ->with(
                       sprintf(
-                          'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                          'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci',
                           $this->installData->getDbName()
                       )
                   )
@@ -360,24 +426,13 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDatabaseIsNotSuccessfulWithPermissionError(): void
     {
-        $query = 'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1';
-
-        $pdoStatement = $this->createMock(PDOStatement::class);
-
-        $this->pdo->expects(self::once())->method('prepare')->with($query)->willReturn($pdoStatement);
-        $pdoStatement->expects(self::once())->method('execute')->with(
-            new Callback(
-                fn($args) => $args[0] === $this->installData->getDbName()
-            )
-        );
-        $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
-
         $this->configData->setDbUser(self::$faker->userName());
 
+        // No rollback here: the caller (Installer) rolls back on failure
         $execArguments = [
             [
                 sprintf(
-                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci',
+                    'CREATE SCHEMA `%s` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci',
                     $this->installData->getDbName()
                 ),
             ],
@@ -389,24 +444,9 @@ class MySQLTest extends UnitaryTestCase
                     $this->installData->getDbAuthHost()
                 ),
             ],
-            [
-                sprintf(
-                    'DROP DATABASE IF EXISTS `%s`',
-                    $this->installData->getDbName()
-                ),
-            ],
-            [
-                sprintf(
-                    'DROP USER IF EXISTS %s@%s',
-                    $this->configData->getDbUser(),
-                    $this->installData->getDbAuthHost()
-                ),
-            ],
         ];
 
-        // atLeastOnce() (not the deprecated any()) keeps with() valid — with() now
-        // requires an expectation — while still exposing numberOfInvocations().
-        $matcher = $this->atLeastOnce();
+        $matcher = $this->exactly(2);
 
         $this->pdo->expects($matcher)
                   ->method('exec')
@@ -427,36 +467,6 @@ class MySQLTest extends UnitaryTestCase
         );
 
         $this->mysqlService->createDatabase($this->configData->getDbUser());
-    }
-
-    /**
-     * @throws SPException
-     */
-    public function testCreateDatabaseIsNotSuccessfulInHostingMode(): void
-    {
-        $this->installData->setHostingMode(true);
-
-        $pdoException = new PDOException('test');
-
-        $this->pdo->expects(self::once())
-                  ->method('exec')
-                  ->with(
-                      sprintf(
-                          'USE `%s`',
-                          $this->installData->getDbName()
-                      )
-                  )->willThrowException($pdoException);
-
-        $this->expectException(SPException::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                __('Error while selecting \'%s\' database (%s)'),
-                $this->installData->getDbName(),
-                $pdoException->getMessage()
-            )
-        );
-
-        $this->mysqlService->createDatabase();
     }
 
     public function testRollbackIsSuccessful(): void
@@ -531,11 +541,33 @@ class MySQLTest extends UnitaryTestCase
     {
         $this->installData->setHostingMode(true);
 
-        $dropRegex = '/DROP TABLE IF EXISTS `'.$this->installData->getDbName().'`\.`\w+`/';
-        $this->pdo->expects(self::exactly(count(DatabaseUtil::TABLES)))
-                  ->method('exec')
-                  ->with($this->callback(fn($arg) => preg_match($dropRegex, $arg) > 0));
+        $dbName = $this->installData->getDbName();
+        $dropTableRegex = '/^DROP TABLE IF EXISTS `' . $dbName . '`\.`\w+`$/';
+        $dropViewRegex = '/^DROP VIEW IF EXISTS `' . $dbName . '`\.`\w+`$/';
 
+        // FK toggle (2) + views + tables — with FK checks off, drop order is irrelevant
+        $expectedCount = 2 + count(DatabaseUtil::VIEWS) + count(DatabaseUtil::TABLES);
+
+        $this->pdo->expects(self::exactly($expectedCount))
+                  ->method('exec')
+                  ->with(
+                      $this->callback(
+                          static fn($arg) => preg_match($dropTableRegex, $arg) > 0
+                                             || preg_match($dropViewRegex, $arg) > 0
+                                             || preg_match('/^SET FOREIGN_KEY_CHECKS = [01]$/', $arg) > 0
+                      )
+                  );
+
+        $this->mysqlService->rollback();
+    }
+
+    public function testRollbackNeverThrows(): void
+    {
+        $this->pdo->expects(self::once())
+                  ->method('exec')
+                  ->willThrowException(new PDOException('test'));
+
+        // Best-effort: a rollback failure must not mask the error that triggered it
         $this->mysqlService->rollback();
     }
 
@@ -593,6 +625,7 @@ class MySQLTest extends UnitaryTestCase
      */
     public function testCreateDBStructureIsNotSuccessfulWithCreateSchemaError(): void
     {
+        // No rollback here: the caller (Installer) rolls back on failure
         $execArguments = [
             [
                 sprintf('USE `%s`', $this->installData->getDbName()),
@@ -600,14 +633,8 @@ class MySQLTest extends UnitaryTestCase
             [
                 'DROP TABLE IF EXISTS `Account`;',
             ],
-            [
-                sprintf(
-                    'DROP DATABASE IF EXISTS `%s`',
-                    $this->installData->getDbName()
-                ),
-            ],
         ];
-        $matcher = $this->exactly(3);
+        $matcher = $this->exactly(2);
 
         $this->pdo->expects($matcher)
                   ->method('exec')
@@ -638,22 +665,10 @@ class MySQLTest extends UnitaryTestCase
     public function testCreateDBStructureIsNotSuccessfulWithParseSchemaError(): void
     {
         $fileException = new FileException("test");
-        $execArguments = [
-            [
-                sprintf('USE `%s`', $this->installData->getDbName()),
-            ],
-            [
-                sprintf(
-                    'DROP DATABASE IF EXISTS `%s`',
-                    $this->installData->getDbName()
-                ),
-            ],
-        ];
-        $matcher = $this->exactly(2);
 
-        $this->pdo->expects($matcher)
+        $this->pdo->expects(self::once())
                   ->method('exec')
-                  ->with(...self::withConsecutive(...$execArguments));
+                  ->with(sprintf('USE `%s`', $this->installData->getDbName()));
 
         $this->databaseFile->expects(self::once())
                            ->method('parse')
@@ -690,18 +705,8 @@ class MySQLTest extends UnitaryTestCase
                            ->with($this->installData->getDbName())
                            ->willReturn(false);
 
-        $execArguments = [
-            [
-                sprintf(
-                    'DROP DATABASE IF EXISTS `%s`',
-                    $this->installData->getDbName()
-                ),
-            ],
-        ];
-
-        $this->pdo->expects(self::once())
-                  ->method('exec')
-                  ->with(...self::withConsecutive(...$execArguments));
+        // No rollback here: the caller (Installer) rolls back on failure
+        $this->pdo->expects(self::never())->method('exec');
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage(__u('Error while checking the database'));
@@ -784,21 +789,6 @@ class MySQLTest extends UnitaryTestCase
     /**
      * @throws SPException
      */
-    public function testCreateDBUserIsSuccessfulWithHostingMode(): void
-    {
-        $this->installData->setHostingMode(true);
-
-        $user = self::$faker->userName();
-        $pass = self::$faker->password();
-
-        $this->pdo->expects(self::exactly(0))->method('exec');
-
-        $this->mysqlService->createDBUser($user, $pass);
-    }
-
-    /**
-     * @throws SPException
-     */
     public function testCreateDBUserIsNotSuccessful(): void
     {
         $user = self::$faker->userName();
@@ -807,6 +797,65 @@ class MySQLTest extends UnitaryTestCase
         $this->pdo->expects(self::once())
                   ->method('exec')
                   ->willThrowException(new PDOException('test'));
+
+        $this->pdo->method('quote')->willReturnArgument(0);
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage(sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user));
+
+        $this->mysqlService->createDBUser($user, $pass);
+    }
+
+    /**
+     * @throws SPException
+     */
+    public function testCreateDBUserDropsFirstVariantWhenDnsVariantFails(): void
+    {
+        $this->installData->setDbAuthHostDns(self::$faker->domainName());
+
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
+
+        $execArguments = [
+            [
+                sprintf(
+                    'CREATE USER %s@%s IDENTIFIED BY %s',
+                    $user,
+                    $this->installData->getDbAuthHost(),
+                    $pass
+                ),
+            ],
+            [
+                sprintf(
+                    'CREATE USER %s@%s IDENTIFIED BY %s',
+                    $user,
+                    $this->installData->getDbAuthHostDns(),
+                    $pass
+                ),
+            ],
+            [
+                sprintf(
+                    'DROP USER IF EXISTS %s@%s',
+                    $user,
+                    $this->installData->getDbAuthHost()
+                ),
+            ],
+        ];
+
+        $matcher = $this->exactly(3);
+
+        $this->pdo->expects($matcher)
+                  ->method('exec')
+                  ->with(...self::withConsecutive(...$execArguments))
+                  ->willReturnCallback(static function () use ($matcher) {
+                      if ($matcher->numberOfInvocations() === 2) {
+                          throw new PDOException('test');
+                      }
+
+                      return 1;
+                  });
+
+        $this->pdo->method('quote')->willReturnArgument(0);
 
         $this->expectException(SPException::class);
         $this->expectExceptionMessage(sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user));

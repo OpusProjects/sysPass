@@ -1585,7 +1585,7 @@ msgstr "現在"
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:55
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:211
 msgid "Back"
-msgstr "Back"
+msgstr "戻る"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:196
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:197
@@ -7680,23 +7680,107 @@ msgstr ""
 "サを用いている場合に必要な設定です。"
 
 msgid "Installation"
-msgstr ""
+msgstr "インストール"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "インストールモード"
 
 msgid "Standard"
-msgstr ""
+msgstr "標準"
 
 msgid "Hosting"
-msgstr ""
+msgstr "ホスティング"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "指定された資格情報でデータベースとDBユーザーを作成します"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "指定された資格情報をそのまま使用します — データベースは既に存在している必要があります"
 
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "ようこそ"
+
+msgid "Next"
+msgstr "次へ"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "%s へようこそ!このウィザードでは、いくつかの簡単なステップでインストールを進めていきます。"
+
+msgid "Before starting, you will need the following information:"
+msgstr "開始する前に、以下の情報が必要です:"
+
+msgid "The database server address"
+msgstr "データベースサーバーのアドレス"
+
+msgid "A database user with administrative rights"
+msgstr "管理者権限を持つデータベースユーザー"
+
+msgid "The name for the sysPass database"
+msgstr "sysPass データベースの名前"
+
+msgid "All set? Press Next to begin."
+msgstr "準備はいいですか?「次へ」を押して開始してください。"
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "言語はブラウザーから検出されました。変更するとこのページが再読み込みされます。"
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "マスターパスワードはアカウントのパスワードを暗号化するために使用されます。"
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "復元できないため、安全に保管してください。"
+
+msgid "During the installation you will also:"
+msgstr "インストール中には、次のことも行います:"
+
+msgid "Choose the application language"
+msgstr "アプリケーションの言語を選択"
+
+msgid "Set up the administrator account"
+msgstr "管理者アカウントを設定"
+
+msgid "Set the Master Password"
+msgstr "マスターパスワードを設定"
+
+msgid "Requirements"
+msgstr "要件"
+
+msgid "PHP version"
+msgstr "PHP バージョン"
+
+msgid "PHP extensions"
+msgstr "PHP 拡張モジュール"
+
+msgid "Configuration directory writable"
+msgstr "設定ディレクトリが書き込み可能"
+
+msgid "Test connection"
+msgstr "接続テスト"
+
+msgid "Connection successful"
+msgstr "接続に成功しました"
+
+msgid "The DB user provided by your hosting"
+msgstr "ホスティング事業者から提供されたDBユーザー"
+
+msgid "You can now log in with your admin account."
+msgstr "管理者アカウントでログインできます。"
+
+msgid "sysPass is already installed"
+msgstr "sysPass は既にインストールされています"
+
+msgid "The database already contains sysPass tables"
+msgstr "データベースには既にsysPassのテーブルが存在します"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "空のデータベースを使用するか、既存のテーブルを削除してください"
+
+msgid "Invalid database port"
+msgstr "データベースのポートが無効です"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "ポート番号は1から65535の間で指定してください"

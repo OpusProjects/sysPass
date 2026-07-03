@@ -34,16 +34,19 @@ final class InstallDataFactory
 {
     public static function buildFromRequest(RequestService $request): InstallData
     {
+        // No silent defaults ('admin', 'root', ...): a missing field must surface
+        // as a validation error, not install with values the user never entered
         $installData = new InstallData();
         $installData->setSiteLang($request->analyzeString('sitelang', 'en_US'));
-        $installData->setAdminLogin($request->analyzeString('adminlogin', 'admin'));
+        $installData->setAdminLogin($request->analyzeString('adminlogin') ?? '');
         $installData->setAdminPass($request->analyzeEncrypted('adminpass') ?? '');
         $installData->setAdminPassRepeat($request->analyzeEncrypted('adminpassr') ?? '');
         $installData->setMasterPassword($request->analyzeEncrypted('masterpassword') ?? '');
-        $installData->setDbAdminUser($request->analyzeString('dbuser', 'root'));
+        $installData->setMasterPasswordRepeat($request->analyzeEncrypted('masterpasswordr') ?? '');
+        $installData->setDbAdminUser($request->analyzeString('dbuser') ?? '');
         $installData->setDbAdminPass($request->analyzeEncrypted('dbpass') ?? '');
-        $installData->setDbName($request->analyzeString('dbname', 'syspass'));
-        $installData->setDbHost($request->analyzeString('dbhost', 'localhost'));
+        $installData->setDbName($request->analyzeString('dbname') ?? '');
+        $installData->setDbHost($request->analyzeString('dbhost') ?? '');
         $installData->setHostingMode($request->analyzeBool('hostingmode', false));
 
         return $installData;

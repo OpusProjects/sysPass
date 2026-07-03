@@ -7792,25 +7792,23 @@ msgstr "Unlock track"
 msgid "Clear the tracks out"
 msgstr "Clear the tracks out"
 
-#, fuzzy
-
 msgid "Installation"
-msgstr ""
+msgstr "Установка"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Режим установки"
 
 msgid "Standard"
-msgstr ""
+msgstr "Стандартный"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Хостинг"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Создаёт базу данных и пользователя БД с указанными учётными данными"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Использует указанные учётные данные напрямую — база данных должна уже существовать"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "Папка \"/config\" не существует."
@@ -7892,3 +7890,87 @@ msgstr ""
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Добро пожаловать"
+
+msgid "Next"
+msgstr "Далее"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Добро пожаловать в %s! Этот мастер проведёт вас через установку за несколько простых шагов."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Перед началом вам понадобится следующая информация:"
+
+msgid "The database server address"
+msgstr "Адрес сервера базы данных"
+
+msgid "A database user with administrative rights"
+msgstr "Пользователь базы данных с правами администратора"
+
+msgid "The name for the sysPass database"
+msgstr "Имя базы данных sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "Всё готово? Нажмите «Далее», чтобы начать."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "Язык был определён из вашего браузера. При его изменении страница будет перезагружена."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "Мастер-пароль используется для шифрования паролей учётных записей."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Пожалуйста, храните его в надёжном месте — его невозможно восстановить."
+
+msgid "During the installation you will also:"
+msgstr "Во время установки вы также:"
+
+msgid "Choose the application language"
+msgstr "Выберете язык приложения"
+
+msgid "Set up the administrator account"
+msgstr "Настроите учётную запись администратора"
+
+msgid "Set the Master Password"
+msgstr "Зададите Мастер-пароль"
+
+msgid "Requirements"
+msgstr "Требования"
+
+msgid "PHP version"
+msgstr "Версия PHP"
+
+msgid "PHP extensions"
+msgstr "Расширения PHP"
+
+msgid "Configuration directory writable"
+msgstr "Каталог конфигурации доступен для записи"
+
+msgid "Test connection"
+msgstr "Проверить подключение"
+
+msgid "Connection successful"
+msgstr "Подключение успешно"
+
+msgid "The DB user provided by your hosting"
+msgstr "Пользователь БД, предоставленный вашим хостингом"
+
+msgid "You can now log in with your admin account."
+msgstr "Теперь вы можете войти под учётной записью администратора."
+
+msgid "sysPass is already installed"
+msgstr "sysPass уже установлен"
+
+msgid "The database already contains sysPass tables"
+msgstr "База данных уже содержит таблицы sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Пожалуйста, используйте пустую базу данных или удалите существующие таблицы"
+
+msgid "Invalid database port"
+msgstr "Неверный порт базы данных"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "Номер порта должен быть в диапазоне от 1 до 65535"

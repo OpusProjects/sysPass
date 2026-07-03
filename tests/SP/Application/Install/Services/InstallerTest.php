@@ -132,7 +132,9 @@ class InstallerTest extends UnitaryTestCase
         $adminPass = self::$faker->password();
         $params->setAdminPass($adminPass);
         $params->setAdminPassRepeat($adminPass);
-        $params->setMasterPassword(self::$faker->password(11));
+        $masterPass = self::$faker->password(11);
+        $params->setMasterPassword($masterPass);
+        $params->setMasterPasswordRepeat($masterPass);
         $params->setSiteLang(self::$faker->languageCode());
 
         return $params;
@@ -179,6 +181,8 @@ class InstallerTest extends UnitaryTestCase
         $this->assertEquals(str_replace('unix:', '', $dbSocket), $configData->getDbSocket());
         $this->assertEquals($dbSocket, $configData->getDbHost());
         $this->assertEquals(0, $configData->getDbPort());
+        // A socket connection authenticates as user@localhost
+        $this->assertEquals('localhost', $params->getDbAuthHost());
     }
 
     /**
@@ -223,6 +227,89 @@ class InstallerTest extends UnitaryTestCase
         $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
         $this->assertEquals('host', $params->getDbHost());
         $this->assertEquals(3307, $params->getDbPort());
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testBareIpv6HostIsNotSplit(): void
+    {
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
+
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        $params = $this->getInstallData();
+        $params->setDbHost('2001:db8::1');
+
+        $installer = $this->getDefaultInstaller();
+
+        $installer->run($params);
+
+        $this->assertEquals('2001:db8::1', $params->getDbHost());
+        $this->assertEquals(3306, $params->getDbPort());
+        $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testBracketedIpv6HostAndPortAreUsed(): void
+    {
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
+
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        $params = $this->getInstallData();
+        $params->setDbHost('[2001:db8::1]:3307');
+
+        $installer = $this->getDefaultInstaller();
+
+        $installer->run($params);
+
+        $this->assertEquals('2001:db8::1', $params->getDbHost());
+        $this->assertEquals(3307, $params->getDbPort());
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testHostNameContainingLocalhostIsRemote(): void
+    {
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
+
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        $params = $this->getInstallData();
+        $params->setDbHost('mylocalhost.example.com');
+
+        $installer = $this->getDefaultInstaller();
+
+        $installer->run($params);
+
+        $this->assertEquals(SELF_IP_ADDRESS, $params->getDbAuthHost());
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testInvalidPortIsRejected(): void
+    {
+        $params = $this->getInstallData();
+        $params->setDbHost('host:99999');
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Invalid database port');
+
+        $installer->run($params);
     }
 
     /**
@@ -391,20 +478,24 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
+     * Passwordless DB admin accounts are common on development setups
+     *
      * @throws InvalidArgumentException
      * @throws SPException
      **/
-    public function testDbAdminPassIsWrong(): void
+    public function testDbAdminPassMayBeEmpty(): void
     {
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
         $params = $this->getInstallData();
         $params->setDbAdminPass('');
+        $params->setHostingMode(true);
 
         $installer = $this->getDefaultInstaller();
 
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Please, enter the database password');
-
         $installer->run($params);
+
+        $this->assertEquals('', $this->config->getConfigData()->getDbPass());
     }
 
     /**
@@ -436,7 +527,7 @@ class InstallerTest extends UnitaryTestCase
         $installer = $this->getDefaultInstaller();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Database name cannot contain "."');
+        $this->expectExceptionMessage('Database name contains invalid characters');
 
         $installer->run($params);
     }
@@ -459,13 +550,19 @@ class InstallerTest extends UnitaryTestCase
     }
 
     private string|false $syspassDir = false;
+    private mixed $syspassDirEnv = null;
+    private mixed $syspassDirServer = null;
 
     protected function setUp(): void
     {
         // These tests assert the non-Docker SELF_IP_ADDRESS branch of the DB-auth-host
-        // detection; unset the Docker signal (SYSPASS_DIR) for the duration.
+        // detection; unset the Docker signal (SYSPASS_DIR) for the duration. The
+        // installer reads it through getFromEnv(), which checks $_ENV/$_SERVER too.
         $this->syspassDir = getenv('SYSPASS_DIR');
+        $this->syspassDirEnv = $_ENV['SYSPASS_DIR'] ?? null;
+        $this->syspassDirServer = $_SERVER['SYSPASS_DIR'] ?? null;
         putenv('SYSPASS_DIR');
+        unset($_ENV['SYSPASS_DIR'], $_SERVER['SYSPASS_DIR']);
 
         $this->databaseSetup = $this->createMock(DatabaseSetupService::class);
         $this->userService = $this->createMock(UserService::class);
@@ -481,6 +578,14 @@ class InstallerTest extends UnitaryTestCase
     {
         if ($this->syspassDir !== false) {
             putenv('SYSPASS_DIR=' . $this->syspassDir);
+        }
+
+        if ($this->syspassDirEnv !== null) {
+            $_ENV['SYSPASS_DIR'] = $this->syspassDirEnv;
+        }
+
+        if ($this->syspassDirServer !== null) {
+            $_SERVER['SYSPASS_DIR'] = $this->syspassDirServer;
         }
 
         parent::tearDown();

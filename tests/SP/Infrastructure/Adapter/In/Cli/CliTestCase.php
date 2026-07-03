@@ -31,18 +31,28 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Definitions\CoreDefinitions;
+use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Infrastructure\File\FileSystem;
 use Symfony\Component\Console\Tester\CommandTester;
 
 use function SP\Tests\getDbHandler;
-
-use const SP\Tests\APP_DEFINITIONS_FILE;
-
-define('APP_MODULE', 'cli');
+use function SP\Tests\getResource;
+use function SP\Tests\recreateDir;
 
 /**
- * Class CliTestCase
+ * Base class for end-to-end CLI command tests.
+ *
+ * Unlike the mocked web harness (IntegrationTestCase), this builds the REAL
+ * container — real config file, real DI wiring and, where the test provides
+ * one, a real database — mirroring what bin/cli.php does. A fresh container
+ * and a pristine, not-installed config are used for every test.
+ *
+ * The runtime directories are real (not vfsStream): PharData & friends cannot
+ * operate on stream wrappers.
  */
 abstract class CliTestCase extends TestCase
 {
@@ -51,26 +61,86 @@ abstract class CliTestCase extends TestCase
      * @var string[]
      */
     protected static array $commandInputData = [];
+    private static ?array  $cliModuleDefinitions = null;
 
     /**
-     * This method is called before the first test of this test class is run.
-     *
      * @throws Exception
      */
-    public static function setUpBeforeClass(): void
+    protected function setUp(): void
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
+
+        // Fresh runtime dirs and a pristine (not installed) config for every test
+        recreateDir(CLI_TEST_ROOT);
+
+        $configPath = FileSystem::buildPath(CLI_TEST_ROOT, 'config');
+
+        foreach ([$configPath, CACHE_PATH, CLI_TMP_PATH, FileSystem::buildPath(CLI_TEST_ROOT, 'backup')] as $dir) {
+            if (!mkdir($dir) && !is_dir($dir)) {
+                throw new Exception(sprintf('Directory "%s" was not created', $dir));
+            }
+        }
+
+        file_put_contents(
+            FileSystem::buildPath($configPath, 'config.xml'),
+            getResource('config', 'config.xml')
+        );
+
+        self::$dic = $this->buildContainer($configPath);
+
+        self::$dic->get(Context::class)->initialize();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function buildContainer(string $configPath): ContainerInterface
+    {
+        // CoreDefinitions computes the paths when called: point the config
+        // (and with it the log file) at the per-test directory
+        $_ENV['CONFIG_PATH'] = $configPath;
+
+        try {
+            $coreDefinitions = CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'cli');
+        } finally {
+            unset($_ENV['CONFIG_PATH']);
+        }
+
+        // Redirect the runtime-writable paths at the per-test directories too,
+        // so tests never touch the working copy's var/ state
+        $coreDefinitions['paths'] = array_map(
+            static fn(array $path) => match ($path[0]) {
+                Path::CACHE => [Path::CACHE, CACHE_PATH],
+                Path::TMP => [Path::TMP, CLI_TMP_PATH],
+                Path::BACKUP => [Path::BACKUP, FileSystem::buildPath(CLI_TEST_ROOT, 'backup')],
+                default => $path,
+            },
+            $coreDefinitions['paths']
+        );
+
+        if (self::$cliModuleDefinitions === null) {
+            // require it only once: the module file declares constants
+            self::$cliModuleDefinitions = FileSystem::require(
+                FileSystem::buildPath(
+                    REAL_APP_ROOT,
+                    'src',
+                    'Infrastructure',
+                    'Adapter',
+                    'In',
+                    'Cli',
+                    'module.php'
+                )
+            );
+        }
 
         $builder = new ContainerBuilder();
         $builder->addDefinitions(
-            APP_DEFINITIONS_FILE,
-            MODULES_PATH.DIRECTORY_SEPARATOR.'Cli'.DIRECTORY_SEPARATOR.'module.php'
+            DomainDefinitions::getDefinitions(),
+            $coreDefinitions,
+            self::$cliModuleDefinitions
         );
 
-        self::$dic = $builder->build();
-
-        $context = self::$dic->get(Context::class);
-        $context->initialize();
+        return $builder->build();
     }
 
     /**

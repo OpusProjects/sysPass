@@ -237,6 +237,58 @@ class MysqlHandlerTest extends UnitaryTestCase
     }
 
     /**
+     * The shared connection data is mutable (the installer refreshes it with the
+     * runtime credentials): a cached connection built from stale data must be
+     * replaced, not reused.
+     *
+     * @throws DatabaseException
+     * @throws Exception
+     */
+    public function testConnectionIsRebuiltWhenConnectionDataChanges()
+    {
+        $configDataInstall = $this->createStub(\SP\Domain\Config\Ports\ConfigDataInterface::class);
+        $configDataInstall->method('getDbHost')->willReturn('localhost');
+        $configDataInstall->method('getDbPort')->willReturn(3306);
+        $configDataInstall->method('getDbUser')->willReturn('admin_user');
+        $configDataInstall->method('getDbPass')->willReturn('admin_password');
+
+        $configDataRuntime = $this->createStub(\SP\Domain\Config\Ports\ConfigDataInterface::class);
+        $configDataRuntime->method('getDbHost')->willReturn('localhost');
+        $configDataRuntime->method('getDbPort')->willReturn(3306);
+        $configDataRuntime->method('getDbName')->willReturn('test');
+        $configDataRuntime->method('getDbUser')->willReturn('sp_user');
+        $configDataRuntime->method('getDbPass')->willReturn('sp_password');
+
+        $connectionData = DatabaseConnectionData::getFromConfig($configDataInstall);
+
+        $pdoWrapper = $this->createMock(PDOWrapper::class);
+        $pdoInstall = $this->createStub(PDO::class);
+        $pdoRuntime = $this->createStub(PDO::class);
+
+        $matcher = $this->exactly(2);
+        $pdoWrapper->expects($matcher)
+                   ->method('build')
+                   ->with(
+                       $this->callback(
+                           static fn(string $dsn) => $matcher->numberOfInvocations() === 1
+                               ? $dsn === 'mysql:charset=utf8;host=localhost;port=3306'
+                               : $dsn === 'mysql:charset=utf8;host=localhost;port=3306;dbname=test'
+                       )
+                   )
+                   ->willReturnOnConsecutiveCalls($pdoInstall, $pdoRuntime);
+
+        $mysqlHandler = new MysqlHandler($connectionData, $pdoWrapper);
+
+        $this->assertSame($pdoInstall, $mysqlHandler->getConnectionSimple());
+        // Unchanged data: the cached connection is reused
+        $this->assertSame($pdoInstall, $mysqlHandler->getConnectionSimple());
+
+        $connectionData->refreshFromConfig($configDataRuntime);
+
+        $this->assertSame($pdoRuntime, $mysqlHandler->getConnectionSimple());
+    }
+
+    /**
      * @throws Exception
      */
     public function testGetDriver()

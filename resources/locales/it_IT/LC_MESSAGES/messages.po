@@ -7625,23 +7625,107 @@ msgstr ""
 "proxy o load balancer."
 
 msgid "Installation"
-msgstr ""
+msgstr "Installazione"
 
 msgid "Install Mode"
-msgstr ""
+msgstr "Modalità di installazione"
 
 msgid "Standard"
-msgstr ""
+msgstr "Standard"
 
 msgid "Hosting"
-msgstr ""
+msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr ""
+msgstr "Crea il database e l'utente del database con le credenziali fornite"
 
 msgid "Uses the provided credentials directly — the database must already exist"
-msgstr ""
+msgstr "Usa direttamente le credenziali fornite — il database deve già esistere"
 
 
 msgid "Passwords match"
 msgstr ""
+
+msgid "Welcome"
+msgstr "Benvenuto"
+
+msgid "Next"
+msgstr "Avanti"
+
+msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
+msgstr "Benvenuto in %s! Questa procedura guidata ti accompagnerà nell'installazione in pochi semplici passaggi."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Prima di iniziare, avrai bisogno delle seguenti informazioni:"
+
+msgid "The database server address"
+msgstr "L'indirizzo del server del database"
+
+msgid "A database user with administrative rights"
+msgstr "Un utente del database con diritti amministrativi"
+
+msgid "The name for the sysPass database"
+msgstr "Il nome per il database di sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "Tutto pronto? Premi Avanti per iniziare."
+
+msgid "The language has been detected from your browser. Changing it will reload this page."
+msgstr "La lingua è stata rilevata dal tuo browser. Cambiandola questa pagina verrà ricaricata."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "La Password principale viene utilizzata per cifrare le password degli account."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Conservala in un luogo sicuro — non può essere recuperata."
+
+msgid "During the installation you will also:"
+msgstr "Durante l'installazione inoltre:"
+
+msgid "Choose the application language"
+msgstr "Sceglierai la lingua dell'applicazione"
+
+msgid "Set up the administrator account"
+msgstr "Configurerai l'account amministratore"
+
+msgid "Set the Master Password"
+msgstr "Imposterai la Password principale"
+
+msgid "Requirements"
+msgstr "Requisiti"
+
+msgid "PHP version"
+msgstr "Versione di PHP"
+
+msgid "PHP extensions"
+msgstr "Estensioni PHP"
+
+msgid "Configuration directory writable"
+msgstr "Directory di configurazione scrivibile"
+
+msgid "Test connection"
+msgstr "Prova la connessione"
+
+msgid "Connection successful"
+msgstr "Connessione riuscita"
+
+msgid "The DB user provided by your hosting"
+msgstr "L'utente del database fornito dal tuo hosting"
+
+msgid "You can now log in with your admin account."
+msgstr "Ora puoi accedere con il tuo account amministratore."
+
+msgid "sysPass is already installed"
+msgstr "sysPass è già installato"
+
+msgid "The database already contains sysPass tables"
+msgstr "Il database contiene già tabelle di sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr "Si prega di utilizzare un database vuoto o rimuovere le tabelle esistenti"
+
+msgid "Invalid database port"
+msgstr "Porta del database non valida"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "Il numero di porta deve essere compreso tra 1 e 65535"

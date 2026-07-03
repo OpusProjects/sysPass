@@ -22,11 +22,6 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
-use Psr\Log\LoggerInterface;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Infrastructure\Adapter\In\Cli\Init;
 use Symfony\Component\Console\Application;
@@ -42,9 +37,9 @@ const MODULE_PATH = __DIR__;
 const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
 
 return [
-    LoggerInterface::class => static fn(Logger $logger, PathsContext $pathsContext) => $logger->pushHandler(
-        new StreamHandler($pathsContext[Path::LOG_FILE])
-    ),
+    // The core LoggerInterface definition already streams to Path::LOG_FILE;
+    // the previous override here injected a bare Monolog\Logger, which the
+    // container cannot construct ($name has no value)
     Application::class => create(Application::class),
     OutputInterface::class => create(ConsoleOutput::class)
         ->constructor(OutputInterface::VERBOSITY_NORMAL, true),

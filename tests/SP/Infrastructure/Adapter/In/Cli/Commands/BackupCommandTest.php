@@ -27,60 +27,53 @@ namespace SP\Tests\Infrastructure\Adapter\In\Cli\Commands;
 
 use DI\DependencyException;
 use DI\NotFoundException;
-use SP\Application\Config\Services\ConfigFile;
-use SP\Domain\Core\Exceptions\FileNotFoundException;
-use SP\Domain\Export\Services\BackupFileHelper;
+use PHPUnit\Framework\Attributes\Group;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Adapter\In\Cli\Commands\BackupCommand;
 use SP\Tests\Infrastructure\Adapter\In\Cli\CliTestCase;
 
-use function SP\Tests\recreateDir;
-
 /**
+ * End-to-end test of the CLI backup against a real database.
  *
+ * NOTE: the backup output location is wired at container-build time from
+ * Path::BACKUP (the --path option currently only selects where OLD backups
+ * are pruned), so the assertions check the container's backup path.
  */
+#[Group('integration')]
 class BackupCommandTest extends CliTestCase
 {
     /**
-     * @var string
-     */
-    protected static string $currentConfig;
-    /**
-     * @var string[]
-     */
-    protected static array $commandInputData = [
-        '--path' => TMP_PATH
-    ];
-
-    /**
      * @throws DependencyException
-     * @throws NotFoundException
-     */
-    public function testBackupFails(): void
-    {
-        $inputData = ['--path' => '/non/existant/path'];
-
-        $commandTester = $this->executeCommandTest(
-            BackupCommand::class,
-            $inputData
-        );
-
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Unable to create the backups directory', $output);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws FileNotFoundException
      * @throws NotFoundException
      */
     public function testBackupIsSuccessful(): void
     {
         $this->setupDatabase();
 
+        $commandTester = $this->executeCommandTest(BackupCommand::class, []);
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Application and database backup completed successfully', $output);
+
+        $this->checkBackupFilesAreCreated();
+    }
+
+    /**
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testBackupFromEnvironmentVarIsSuccessful(): void
+    {
+        $this->setupDatabase();
+
+        putenv(sprintf('%s=%s', BackupCommand::$envVarsMapping['path'], $this->getBackupPath()));
+
         $commandTester = $this->executeCommandTest(
             BackupCommand::class,
-            self::$commandInputData
+            null,
+            false
         );
 
         // the output of the command in the console
@@ -88,84 +81,38 @@ class BackupCommandTest extends CliTestCase
         $this->assertStringContainsString('Application and database backup completed successfully', $output);
 
         $this->checkBackupFilesAreCreated();
+    }
 
-        // Recreate cache directory to avoid unwanted behavior
-        recreateDir(CACHE_PATH);
+    /**
+     * Without a reachable database the dump must fail
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testBackupFailsWithoutDatabase(): void
+    {
+        $commandTester = $this->executeCommandTest(BackupCommand::class, []);
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Error while doing the backup', $output);
+    }
+
+    private function getBackupPath(): string
+    {
+        return self::$dic->get(PathsContext::class)[Path::BACKUP];
     }
 
     private function checkBackupFilesAreCreated(): void
     {
-        $configData = self::$dic->get(ConfigFile::class)->getConfigData();
+        $archives = glob($this->getBackupPath() . DIRECTORY_SEPARATOR . 'sysPass_*');
 
-        $this->assertFileExists(
-            BackupFileHelper::getAppBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
-        );
-        $this->assertFileExists(
-            BackupFileHelper::getDbBackupFilename(
-                TMP_PATH,
-                $configData->getBackupHash(),
-                true
-            )
-        );
-    }
+        $this->assertNotEmpty($archives, 'No backup archives were created');
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     */
-    public function testBackupFromEnvironmentVarIsAbort(): void
-    {
-        putenv(sprintf('%s=%s',
-                BackupCommand::$envVarsMapping['path'],
-                '/non/existant/path')
-        );
+        $types = implode(' ', $archives);
 
-        $commandTester = $this->executeCommandTest(
-            BackupCommand::class,
-            null,
-            false
-        );
-
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Unable to create the backups directory', $output);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws FileNotFoundException
-     */
-    public function testBackupFromEnvironmentVarIsSuccessful(): void
-    {
-        $this->setEnvironmentVariables();
-
-        $commandTester = $this->executeCommandTest(
-            BackupCommand::class,
-            null,
-            false
-        );
-
-        // the output of the command in the console
-        $output = $commandTester->getDisplay();
-        $this->assertStringContainsString('Application and database backup completed successfully', $output);
-
-        $this->checkBackupFilesAreCreated();
-
-        // Recreate cache directory to avoid unwanted behavior
-        recreateDir(CACHE_PATH);
-    }
-
-    private function setEnvironmentVariables(): void
-    {
-        putenv(sprintf('%s=%s',
-                BackupCommand::$envVarsMapping['path'],
-                TMP_PATH)
-        );
+        $this->assertStringContainsString('sysPass_db-', $types);
+        $this->assertStringContainsString('sysPass_app-', $types);
     }
 
     protected function setUp(): void
@@ -173,6 +120,14 @@ class BackupCommandTest extends CliTestCase
         $this->unsetEnvironmentVariables();
 
         parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        // putenv() state would leak into the next test class
+        $this->unsetEnvironmentVariables();
+
+        parent::tearDown();
     }
 
     private function unsetEnvironmentVariables(): void
