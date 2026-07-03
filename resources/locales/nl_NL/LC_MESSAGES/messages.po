@@ -7758,3 +7758,21 @@ msgstr "Ongeldige databasepoort"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Het poortnummer moet tussen 1 en 65535 liggen"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Vereiste PHP-extensies (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Optionele PHP-extensies (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Ontbrekende vereiste PHP-extensies (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Ontbrekende optionele PHP-extensies (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Runtime-mappen beschrijfbaar"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode ingeschakeld"

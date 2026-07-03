@@ -7729,3 +7729,21 @@ msgstr "Porta del database non valida"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Il numero di porta deve essere compreso tra 1 e 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Estensioni PHP richieste (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Estensioni PHP opzionali (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Estensioni PHP richieste mancanti (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Estensioni PHP opzionali mancanti (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Directory di runtime scrivibili"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode abilitato"

@@ -7662,3 +7662,21 @@ msgstr "Ógyldugur dátugrunnsportur"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "Portnummarið skal vera millum 1 og 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Kravdar PHP-víðkanir (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Valfríar PHP-víðkanir (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Vantandi kravdar PHP-víðkanir (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Vantandi valfríar PHP-víðkanir (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Koyritíðar-skrásøvn skrivandi"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode virkin"

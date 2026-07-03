@@ -7340,3 +7340,21 @@ msgstr "Invalid database port"
 
 msgid "The port number must be between 1 and 65535"
 msgstr "The port number must be between 1 and 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Required PHP extensions (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Optional PHP extensions (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Missing required PHP extensions (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Missing optional PHP extensions (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Runtime directories writable"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode enabled"
