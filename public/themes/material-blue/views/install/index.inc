@@ -296,7 +296,8 @@ use function SP\__;
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="dbpass" name="dbpass" type="password" required
+                    <?php // Not required: an empty DB admin password is supported (passwordless dev roots) ?>
+                    <input id="dbpass" name="dbpass" type="password"
                            class="mdl-textfield__input mdl-color-text--indigo-400 passwordfield__input-show"
                            value="" autocomplete="off">
                     <label class="mdl-textfield__label"
@@ -327,10 +328,12 @@ use function SP\__;
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <?php // No pattern: host / host:port / [ipv6] / [ipv6]:port / unix:socket are all
+                          // validated server-side by DatabaseHost::parse(); an HTML pattern here
+                          // rejected every IPv6 form the installer accepts ?>
                     <input id="dbhost" name="dbhost" type="text" required
                            class="mdl-textfield__input mdl-color-text--indigo-400"
-                           value="localhost" autocomplete="off"
-                           pattern="([0-9a-zA-Z._\-]+|([0-9]{1,3}.)+)(:[0-9]{1,5})?|unix:.*">
+                           value="localhost" autocomplete="off">
                     <label class="mdl-textfield__label"
                            for="dbhost"><?php
                         echo __('sysPass database server'), ':'; ?></label>
@@ -588,6 +591,12 @@ use function SP\__;
                 var main = form.querySelector('[name="' + mainName + '"]');
                 var repeat = form.querySelector('[name="' + repeatName + '"]');
 
+                // Clear any stale custom error before re-evaluating: the password
+                // generator fills fields without firing the 'input' event that
+                // would otherwise clear it, so a prior error could wedge submit
+                main.setCustomValidity('');
+                repeat.setCustomValidity('');
+
                 if (minLength && rawPass(main).length < minLength) {
                     if (current !== step) {
                         show(step);
@@ -638,7 +647,10 @@ use function SP\__;
                 });
             });
 
-            // Enter behaves like Next instead of (silently) trying to submit the form
+            // Enter behaves like Next (or Install on the last step) instead of
+            // reaching the app's global password-keypress handler, which submits
+            // directly and bypasses checkPasswords(). preventDefault on keydown
+            // also suppresses that handler's keypress.
             form.addEventListener('keydown', function(e) {
                 if (e.key !== 'Enter') {
                     return;
@@ -648,9 +660,12 @@ use function SP\__;
                     return;
                 }
 
+                e.preventDefault();
+
                 if (current < total) {
-                    e.preventDefault();
                     btnNext.click();
+                } else {
+                    btnInstall.click();
                 }
             });
 

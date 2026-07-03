@@ -57,7 +57,13 @@ final class IndexController extends ControllerBase
     #[Action(ResponseType::PLAIN_TEXT)]
     public function indexAction(): ActionResponse
     {
-        $skipInstalled = $this->request->analyzeBool('skipInstalled', false);
+        // skipInstalled is a dev/testing override — honor it only under DEBUG.
+        // On an installed instance it would otherwise render the requirements page
+        // (PHP version, absolute paths, extension inventory) to an anonymous
+        // visitor; the install/checkConnection actions already refuse when
+        // installed, so it never enabled any actual action anyway.
+        $skipInstalled = (defined('DEBUG') && DEBUG === true)
+                         && $this->request->analyzeBool('skipInstalled', false);
 
         if ($skipInstalled === false && $this->configData->isInstalled()) {
             $this->router->response()->redirect('index.php?r=login')->send();
