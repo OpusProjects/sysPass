@@ -164,6 +164,22 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
+     * Runs before anything is created (outside the install rollback), so a driver
+     * error must surface as SPException, not a raw PDOException.
+     */
+    public function testCheckDatabaseExistsWrapsDriverError(): void
+    {
+        $this->pdo->expects(self::once())
+                  ->method('prepare')
+                  ->willThrowException(new PDOException('driver down'));
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage(__u('Error while checking the database'));
+
+        $this->mysqlService->checkDatabaseExists();
+    }
+
+    /**
      * @throws SPException
      * @throws Exception
      */

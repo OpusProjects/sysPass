@@ -35,7 +35,6 @@ use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\DatabaseSetupService;
-use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 
@@ -313,18 +312,33 @@ final readonly class MysqlSetup implements DatabaseSetupService
     }
 
     /**
-     * @throws DatabaseException
+     * @throws SPException
      */
     public function checkDatabaseExists(): bool
     {
-        $sth = $this->dbStorage
-            ->getConnectionSimple()
-            ->prepare(
-                'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1'
-            );
-        $sth->execute([$this->installData->getDbName()]);
+        try {
+            $sth = $this->dbStorage
+                ->getConnectionSimple()
+                ->prepare(
+                    'SELECT COUNT(*) FROM information_schema.schemata WHERE `schema_name` = ? LIMIT 1'
+                );
+            $sth->execute([$this->installData->getDbName()]);
 
-        return (int)$sth->fetchColumn() === 1;
+            return (int)$sth->fetchColumn() === 1;
+        } catch (PDOException $e) {
+            // Runs outside the install try/rollback (before anything is created),
+            // so wrap it: a raw PDOException would break Installer::run()'s
+            // SPException contract with an untranslated driver message
+            processException($e);
+
+            throw new SPException(
+                __u('Error while checking the database'),
+                SPException::CRITICAL,
+                __u('Please, check the DB connection user rights'),
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**

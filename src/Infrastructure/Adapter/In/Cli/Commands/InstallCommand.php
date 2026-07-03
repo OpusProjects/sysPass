@@ -64,7 +64,10 @@ final class InstallCommand extends CommandBase
         'databasePassword' => 'DATABASE_PASSWORD',
         'masterPassword'   => 'MASTER_PASSWORD',
         'hostingMode'      => 'HOSTING_MODE',
-        'language'         => 'LANGUAGE',
+        // SYSPASS_LANGUAGE, not LANGUAGE: the latter is the standard glibc/gettext
+        // locale variable (exported on most desktops/WSL), which would silently
+        // override --language and get persisted as a broken locale
+        'language'         => 'SYSPASS_LANGUAGE',
         'forceInstall'     => 'FORCE_INSTALL',
         'install'          => 'INSTALL',
     ];
@@ -340,20 +343,23 @@ final class InstallCommand extends CommandBase
     private function getLanguage(
         InputInterface $input,
         StyleInterface $style
-    ) {
+    ): string {
+        $available = array_keys(Language::getAvailableLanguages());
         $language = self::getEnvVarOrOption('language', $input);
 
-        if (empty($language)) {
-            $this->logger->debug(__u('Ask for language'));
-
-            $language = $style->choice(
-                __('Language'),
-                array_keys(Language::getAvailableLanguages()),
-                'en_US'
-            );
+        // Never persist an unknown language: it would leave the app with a broken
+        // locale. Fall through to the interactive choice (default en_US).
+        if (!empty($language) && in_array($language, $available, true)) {
+            return $language;
         }
 
-        return $language;
+        if (!empty($language)) {
+            $this->logger->warning(sprintf('Ignoring unknown language: %s', $language));
+        }
+
+        $this->logger->debug(__u('Ask for language'));
+
+        return $style->choice(__('Language'), $available, 'en_US');
     }
 
     private function isHostingMode(InputInterface $input): bool

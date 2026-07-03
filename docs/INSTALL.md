@@ -97,9 +97,9 @@ php bin/cli.php sp:install <adminLogin> <databaseHost> <databaseName> <databaseU
 Options left out are prompted for interactively. Every value can also come from
 environment variables (`ADMIN_LOGIN`, `ADMIN_PASSWORD`, `DATABASE_HOST`,
 `DATABASE_NAME`, `DATABASE_USER`, `DATABASE_PASSWORD`, `MASTER_PASSWORD`,
-`HOSTING_MODE`, `INSTALL`, `FORCE_INSTALL`), which take precedence over the
-arguments. `--install` skips the confirmation prompt; `--forceInstall` is only
-needed to reinstall over an existing installation.
+`SYSPASS_LANGUAGE`, `HOSTING_MODE`, `INSTALL`, `FORCE_INSTALL`), which take
+precedence over the arguments. `--install` skips the confirmation prompt;
+`--forceInstall` is only needed to reinstall over an existing installation.
 
 ---
 
