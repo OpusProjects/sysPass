@@ -130,6 +130,7 @@ final class DomainDefinitions
         'SP\Application\User\Ports\UserProfileService' => 'SP\Application\User\Services\UserProfile',
         'SP\Application\User\Ports\UserToUserGroupService' => 'SP\Application\User\Services\UserToUserGroup',
         'SP\Application\Export\Ports\BackupFileService' => 'SP\Application\Export\Services\BackupFile',
+        'SP\Application\Export\Ports\BackupHandlersFactory' => 'SP\Infrastructure\File\FileBackupHandlersFactory',
         'SP\Application\Export\Ports\XmlAccountExportService' => 'SP\Application\Export\Services\XmlAccountExport',
         'SP\Application\Export\Ports\XmlCategoryExportService' => 'SP\Application\Export\Services\XmlCategoryExport',
         'SP\Application\Export\Ports\XmlClientExportService' => 'SP\Application\Export\Services\XmlClientExport',

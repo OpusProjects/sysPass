@@ -40,8 +40,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Application\Export\Ports\BackupFileService;
-use SP\Domain\File\Ports\ArchiveHandlerInterface;
-use SP\Domain\File\Ports\FileHandlerInterface;
+use SP\Application\Export\Ports\BackupHandlersFactory;
+use SP\Domain\Export\Dtos\BackupHandlers;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\Query;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
@@ -60,12 +60,10 @@ final class BackupFile extends Service implements BackupFileService
     private const        BACKUP_PREFIX        = 'sysPassBackup';
 
     public function __construct(
-        Application                              $application,
-        private readonly DatabaseInterface       $database,
-        private readonly DatabaseUtil            $databaseUtil,
-        private readonly FileHandlerInterface    $dbBackupFile,
-        private readonly ArchiveHandlerInterface $dbArchiveHandler,
-        private readonly ArchiveHandlerInterface $appArchiveHandler,
+        Application                            $application,
+        private readonly DatabaseInterface     $database,
+        private readonly DatabaseUtil          $databaseUtil,
+        private readonly BackupHandlersFactory $backupHandlersFactory,
     ) {
         parent::__construct($application);
     }
@@ -87,10 +85,15 @@ final class BackupFile extends Service implements BackupFileService
 
             $configData = $this->config->getConfigData();
 
-            $this->backupTables($configData->getDbName() ?? '');
-            $this->backupApp($applicationPath);
+            // One hash per run, used for both the archive filenames and the
+            // stored backupHash, so the output lands in $backupPath
+            $hash = $this->buildHash();
+            $handlers = $this->backupHandlersFactory->build($backupPath, $hash);
 
-            $this->config->save($configData->setBackupHash($this->buildHash()));
+            $this->backupTables($configData->getDbName() ?? '', $handlers);
+            $this->backupApp($applicationPath, $handlers);
+
+            $this->config->save($configData->setBackupHash($hash));
         } catch (Exception $e) {
             $this->eventDispatcher->notify(new Event('exception', $e));
 
@@ -121,9 +124,11 @@ final class BackupFile extends Service implements BackupFileService
      * @throws QueryException
      * @throws SPException
      */
-    private function backupTables(string $dbName): void
+    private function backupTables(string $dbName, BackupHandlers $handlers): void
     {
-        $this->eventDispatcher->notify(new Event('run.backup.process', 
+        $dbBackupFile = $handlers->dbFile;
+
+        $this->eventDispatcher->notify(new Event('run.backup.process',
                 $this,
                 EventMessage::build()->addDescription(__u('Copying database'))
             )
@@ -145,7 +150,7 @@ final class BackupFile extends Service implements BackupFileService
             ''
         ];
 
-        $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
+        $dbBackupFile->write(implode(PHP_EOL, $sqlOut));
 
         $tables = $this->getTables();
         $views = $this->getViews();
@@ -164,7 +169,7 @@ final class BackupFile extends Service implements BackupFileService
                 ''
             ];
 
-            $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
+            $dbBackupFile->write(implode(PHP_EOL, $sqlOut));
         }
 
         foreach ($views as $view) {
@@ -181,7 +186,7 @@ final class BackupFile extends Service implements BackupFileService
                 ''
             ];
 
-            $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
+            $dbBackupFile->write(implode(PHP_EOL, $sqlOut));
         }
 
         // Save tables' values
@@ -210,7 +215,7 @@ final class BackupFile extends Service implements BackupFileService
                     $row
                 );
 
-                $this->dbBackupFile->write(
+                $dbBackupFile->write(
                     sprintf('INSERT INTO `%s` VALUES(%s);' . PHP_EOL, $table, implode(',', $values))
                 );
             }
@@ -228,11 +233,11 @@ final class BackupFile extends Service implements BackupFileService
             '-- '
         ];
 
-        $this->dbBackupFile->write(implode(PHP_EOL, $sqlOut));
+        $dbBackupFile->write(implode(PHP_EOL, $sqlOut));
 
-        $this->dbArchiveHandler->compressFile($this->dbBackupFile->getFile());
+        $handlers->dbArchive->compressFile($dbBackupFile->getFile());
 
-        $this->dbBackupFile->delete();
+        $dbBackupFile->delete();
     }
 
     /**
@@ -254,15 +259,14 @@ final class BackupFile extends Service implements BackupFileService
     /**
      * Perform a backup of the application and compress it.
      *
-     * @param string $directory
      * @throws FileException
      */
-    private function backupApp(string $directory): void
+    private function backupApp(string $directory, BackupHandlers $handlers): void
     {
         $this->eventDispatcher->notify(new Event('run.backup.process', $this, EventMessage::build()->addDescription(__u('Copying application')))
         );
 
-        $this->appArchiveHandler->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
+        $handlers->appArchive->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
     }
 
     /**

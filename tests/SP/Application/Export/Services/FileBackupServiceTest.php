@@ -38,7 +38,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Export\Ports\BackupFileHelperService;
+use SP\Application\Export\Ports\BackupHandlersFactory;
 use SP\Application\Export\Services\BackupFile;
+use SP\Domain\Export\Dtos\BackupHandlers;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -62,6 +64,8 @@ class FileBackupServiceTest extends UnitaryTestCase
     private MockObject|FileHandlerInterface    $dbFileHandler;
     private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
     private ArchiveHandlerInterface|MockObject $appArchiveHandler;
+    private BackupHandlersFactory|MockObject   $backupHandlersFactory;
+    private ?string                            $builtPath = null;
 
     /**
      * @throws ServiceException
@@ -134,6 +138,10 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->with(APP_PATH, BackupFile::BACKUP_INCLUDE_REGEX);
 
         $this->fileBackupService->doBackup(TMP_PATH, APP_PATH);
+
+        // The output handlers were built for the requested path — this is the
+        // guarantee that --path is honored rather than ignored
+        $this->assertSame(TMP_PATH, $this->builtPath);
     }
 
     private function buildCreateResult(string $type): QueryResult
@@ -191,14 +199,27 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
         $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
+        $this->backupHandlersFactory = $this->createMock(BackupHandlersFactory::class);
+
+        // The factory yields the mock handlers; capture the path it was built
+        // for so a test can assert --path is honored
+        $this->backupHandlersFactory
+            ->method('build')
+            ->willReturnCallback(function (string $path) {
+                $this->builtPath = $path;
+
+                return new BackupHandlers(
+                    $this->dbFileHandler,
+                    $this->dbArchiveHandler,
+                    $this->appArchiveHandler
+                );
+            });
 
         $this->fileBackupService = new BackupFile(
             $this->application,
             $this->database,
             $this->createStub(DatabaseUtil::class),
-            $this->dbFileHandler,
-            $this->dbArchiveHandler,
-            $this->appArchiveHandler
+            $this->backupHandlersFactory
         );
     }
 }

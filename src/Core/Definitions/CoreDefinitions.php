@@ -128,7 +128,6 @@ use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
-use SP\Infrastructure\File\ArchiveHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
@@ -372,37 +371,9 @@ final class CoreDefinitions
 
                 return new BackupFiles($appBackupFile, $dbBackupFile);
             }),
-            'backup.dbArchiveHandler' => autowire(ArchiveHandler::class)
-                ->constructorParameter(
-                    'archive',
-                    factory(
-                        static fn(BackupFiles $backupFiles) => (string)$backupFiles->getDbBackupFile()
-                    )
-                ),
-            'backup.appArchiveHandler' => autowire(ArchiveHandler::class)
-                ->constructorParameter(
-                    'archive',
-                    factory(
-                        static fn(BackupFiles $backupFiles) => (string)$backupFiles->getAppBackupFile()
-                    )
-                )
-            ,
-            BackupFileService::class => autowire(BackupFile::class)
-                ->constructorParameter(
-                    'dbBackupFile',
-                    create(FileHandler::class)
-                        ->constructor(
-                            factory(
-                                static fn(PathsContext $pathsContext) => FileSystem::buildPath(
-                                    $pathsContext[Path::BACKUP],
-                                    'database.sql'
-                                )
-                            ),
-                            'wb+'
-                        )
-                )
-                ->constructorParameter('dbArchiveHandler', get('backup.dbArchiveHandler'))
-                ->constructorParameter('appArchiveHandler', get('backup.appArchiveHandler')),
+            // The backup output handlers are built per-run from the target path
+            // (BackupHandlersFactory), so a backup can be written to any directory
+            BackupFileService::class => autowire(BackupFile::class),
             RouteContextData::class => factory(static function (SymfonyRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->query->get('r', 'index/index')));
             }),
