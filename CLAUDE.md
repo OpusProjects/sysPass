@@ -37,10 +37,12 @@ This is a PHP project; runtime dependencies live in **Composer** files at the re
 - **`composer.lock`** — fully-resolved pinned versions of every package + transitive dep, what
   `composer install` reproduces. (≈ `package-lock.json`.)
 - **`vendor/`** — installed packages, **gitignored** (≈ `node_modules`).
-- **Front-end libraries are *vendored*** (committed under `public/vendor/`, `public/js/`; no
-  build step, nothing to install to run the app). A root **`package.json`** exists for **dev
-  tooling only** — the Playwright end-to-end suite (`npm run test:e2e`, run on the host against
-  the Docker app); `node_modules/` is gitignored.
+- **Front-end libraries are *vendored*** (committed `*.min.js` under `public/vendor/`, `public/js/`;
+  no build step, nothing to install to run the app). A root **`package.json`** (dev/build-only,
+  `node_modules/` gitignored) manages them: bump a version there → `npm install` → `npm run vendor`
+  (recopies dist `*.min.js` into `public/vendor/js/` per `scripts/vendor-assets.mjs`) → commit. The
+  served bundle order lives in `JsController::JS_MIN_FILES`. Same `package.json` also holds the
+  Playwright E2E suite (`npm run test:e2e`, host-run against the Docker app).
 
 A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock` (run
 `composer update <pkg> -W` in the container), plus any code changes, validated by both suites.

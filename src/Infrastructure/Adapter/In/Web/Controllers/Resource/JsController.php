@@ -40,7 +40,7 @@ final class JsController extends ResourceBase
 {
 
     private const JS_MIN_FILES = [
-        'jquery-3.3.1.min.js',
+        'jquery.min.js',
         'jquery.fileDownload.min.js',
         'clipboard.min.js',
         'selectize.min.js',
