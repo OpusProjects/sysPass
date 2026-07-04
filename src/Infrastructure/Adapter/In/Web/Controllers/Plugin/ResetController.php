@@ -32,6 +32,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -74,6 +75,10 @@ final class ResetController extends ControllerBase
     public function resetAction(int $id): ActionResponse
     {
         try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_RESET)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
             $this->pluginDataService->delete($this->pluginService->getById($id)->getName() ?? '');
 
             $this->eventDispatcher->notify(new Event('edit.plugin.reset', $this, EventMessage::build()->addDescription(__u('Plugin reset')))
