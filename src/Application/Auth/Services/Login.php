@@ -143,6 +143,12 @@ final class Login extends LoginBase implements LoginService
 //            $this->context->setTrasientKey('user_master_pass_last_update', time());
 //        }
 
+            // Regenerate the session ID as the user becomes authenticated to prevent
+            // session fixation. Guarded so CLI/test contexts (no active session) are a no-op.
+            if (session_status() === PHP_SESSION_ACTIVE) {
+                session_regenerate_id(true);
+            }
+
             $this->context->setUserData($userDataDto);
             $this->context->setUserProfile(
                 $this->userProfileService
