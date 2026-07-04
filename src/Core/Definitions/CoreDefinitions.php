@@ -115,6 +115,7 @@ use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Adapters\InstallDataFactory;
 use SP\Domain\Install\Services\DatabaseSetupService;
 use SP\Application\Install\Services\MysqlSetup;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Log\Providers\DatabaseHandler;
 use SP\Domain\Log\Providers\LogHandler;
 use SP\Domain\Notification\Ports\MailerInterface;
@@ -123,6 +124,8 @@ use SP\Application\Notification\Services\MailEvent;
 use SP\Application\Notification\Services\NotificationEvent;
 use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Upgrade\Ports\UpgradeService;
+use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -422,6 +425,11 @@ final class CoreDefinitions
             ),
             OutputHandlerInterface::class => create(OutputHandler::class),
             TemplateResolverInterface::class => autowire(TemplateResolver::class),
+            // LogHandler writes to the log file (via the injected LoggerInterface/StreamHandler)
+            // and satisfies FileHandlerProvider, which the Upgrade service attaches as an event
+            // observer to capture upgrade progress in the log.
+            FileHandlerProvider::class => autowire(LogHandler::class),
+            UpgradeService::class => autowire(Upgrade::class),
             UpgradeDatabase::class => autowire(UpgradeDatabase::class)
                 ->constructorParameter(
                     'sqlPath',

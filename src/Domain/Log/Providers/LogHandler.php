@@ -26,9 +26,14 @@ declare(strict_types=1);
 
 namespace SP\Domain\Log\Providers;
 
+use SP\Domain\Log\Ports\FileHandlerProvider;
+
 /**
  * Class LogHandler
+ *
+ * Implements FileHandlerProvider so it can be injected wherever a file-backed
+ * event-log observer is required (e.g. the Upgrade service).
  */
-final class LogHandler extends LoggerBase
+final class LogHandler extends LoggerBase implements FileHandlerProvider
 {
 }
