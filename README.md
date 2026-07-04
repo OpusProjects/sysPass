@@ -44,17 +44,20 @@ This fork exists to keep sysPass alive. It started on **20 June 2026** from the 
 
 This fork carries **[@nuxsmin](https://github.com/nuxsmin)**'s planned [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring) forward to keep evolving the project.
 
-Current stack:
+Tech stack:
 
 - **PHP 8.4+** — language runtime
 - **Symfony 8** — HTTP, routing & console components
-- **Hexagonal architecture** — ports & adapters
-- **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
 - **PHP-DI** — dependency-injection container
 - **Composer** — dependency management
 - **Docker** — containerised dev stack
 - **MariaDB / MySQL** — database
 - **PHPUnit 13** — test suite
+
+Architecture & design:
+
+- **Hexagonal architecture** — ports & adapters
+- **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
 
 ---
 
@@ -64,6 +67,7 @@ Project documentation lives in the [`docs/`](docs) folder:
 
 - [`docs/API.md`](docs/API.md) — REST API reference, authentication, and [Swagger UI](/api/docs/) interactive docs.
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — hexagonal layer map, request lifecycle, DI container, and dependency rules.
+- [`docs/CLI.md`](docs/CLI.md) — command-line tool (`bin/cli.php`): install, backup, and master-password commands, their arguments, options, and environment variables.
 - [`docs/INSTALL.md`](docs/INSTALL.md) — requirements and installation (Docker and manual, multi-distro).
 - [`docs/TESTING.md`](docs/TESTING.md) — running the test suites, test layout, environment requirements, and writing new tests.
 

@@ -213,7 +213,8 @@ form .form-field {
   padding: 1.8em 0 1em;
   text-align: center; }
 
-.installer-footer .mdl-button {
+.installer-footer .mdl-button,
+.installer-success .mdl-button {
   min-width: 180px;
   font-size: 14px;
   letter-spacing: 1px;
@@ -226,7 +227,8 @@ form .form-field {
   gap: 0.7em;
   line-height: 1; }
 
-.installer-footer .mdl-button .material-icons {
+.installer-footer .mdl-button .material-icons,
+.installer-success .mdl-button .material-icons {
   position: relative;
   top: -1px; }
 
@@ -463,6 +465,7 @@ form .form-field {
 
 .installer-success p {
   color: #666;
+  font-size: 15px;
   margin: 0.4em 0 1.8em; }
 
 /* match the visual gap below the hints (2.4em margin + the field's floating-label padding) */
