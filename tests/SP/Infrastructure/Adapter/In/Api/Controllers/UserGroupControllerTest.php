@@ -69,9 +69,9 @@ class UserGroupControllerTest extends ApiTestCase
 
         $r = $this->createUserGroup($params);
 
-        // The transaction wrapper reports the FK violation as a rollback
+        // The FK violation (nonexistent user) surfaces as an integrity constraint
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Rollback', $r->body->error->message);
+        $this->assertSame('Integrity constraint', $r->body->error->message);
     }
 
     public function testCreateActionRequiredParameters(): void
@@ -93,9 +93,9 @@ class UserGroupControllerTest extends ApiTestCase
 
         $r = $this->createUserGroup($params);
 
-        // The transaction wrapper reports the duplicate as a rollback
+        // The duplicate name surfaces its specific error, not a generic rollback
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Rollback', $r->body->error->message);
+        $this->assertSame('Duplicated group name', $r->body->error->message);
     }
 
     public function testViewAction(): void
@@ -157,9 +157,9 @@ class UserGroupControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::GROUP_EDIT, $params);
 
-        // The transaction wrapper reports the FK violation as a rollback
+        // The FK violation (nonexistent user) surfaces as an integrity constraint
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Rollback', $r->body->error->message);
+        $this->assertSame('Integrity constraint', $r->body->error->message);
     }
 
     public function testEditActionRequiredParameters(): void
