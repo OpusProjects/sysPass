@@ -18,6 +18,9 @@ final class DeleteController extends AccountFileBase
 
         $fileId = $this->apiService->getParamInt('fileId', true);
         $fileData = $this->accountFileService->getById($fileId);
+
+        $this->accountFileAcl->requireEdit($fileData->accountId ?? 0);
+
         $this->accountFileService->delete($fileId);
 
         $this->eventDispatcher->notify(new Event('delete.accountFile',

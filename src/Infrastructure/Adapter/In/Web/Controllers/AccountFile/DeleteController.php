@@ -61,6 +61,12 @@ final class DeleteController extends AccountFileBase
                 return ActionResponse::error(__u('No items selected'));
             }
 
+            foreach ($ids as $fileId) {
+                $this->accountFileAcl->requireEdit(
+                    $this->accountFileService->getById((int)$fileId)->accountId ?? 0
+                );
+            }
+
             $this->accountFileService->deleteByIdBatch($ids);
 
             $this->eventDispatcher->notify(new Event('delete.accountFile.selection', $this, EventMessage::build()->addDescription(__u('Files deleted')))
@@ -68,6 +74,8 @@ final class DeleteController extends AccountFileBase
 
             return ActionResponse::ok(__u('Files deleted'));
         }
+
+        $this->accountFileAcl->requireEdit($this->accountFileService->getById($id)->accountId ?? 0);
 
         $this->accountFileService->delete($id);
 

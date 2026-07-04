@@ -58,6 +58,8 @@ final class ViewController extends AccountFileBase
     {
         $fileDto = $this->accountFileService->getById($id);
 
+        $this->accountFileAcl->requireView($fileDto->accountId ?? 0);
+
         $this->view->addTemplate('file', 'itemshow');
 
         if (FileSystem::isImage($fileDto->type ?? '')) {

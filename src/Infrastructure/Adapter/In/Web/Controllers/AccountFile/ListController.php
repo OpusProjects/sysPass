@@ -58,6 +58,8 @@ final class ListController extends AccountFileBase
             return ActionResponse::ok(__('Files management disabled'));
         }
 
+        $this->accountFileAcl->requireView($accountId);
+
         $this->view->addTemplate('files-list', 'account');
 
         $files = $this->accountFileService->getByAccountId($accountId);

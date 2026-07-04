@@ -30,6 +30,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
 use SP\Application\Account\Ports\AccountFileService;
 use SP\Application\Account\Ports\AccountService;
+use SP\Application\Account\Services\AccountFileAcl;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -60,7 +61,8 @@ final class UploadController extends ControllerBase
         Application                         $application,
         WebControllerHelper                 $webControllerHelper,
         private readonly AccountFileService $accountFileService,
-        private readonly AccountService     $accountService
+        private readonly AccountService     $accountService,
+        private readonly AccountFileAcl     $accountFileAcl
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -83,6 +85,8 @@ final class UploadController extends ControllerBase
         if ($accountId === 0 || null === $file) {
             throw new SPException(__u('INVALID QUERY'), SPException::ERROR);
         }
+
+        $this->accountFileAcl->requireEdit($accountId);
 
         $filesAllowedMime = $this->configData->getFilesAllowedMime();
 
