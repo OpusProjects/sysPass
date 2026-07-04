@@ -34,6 +34,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountAclEnforcer;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
@@ -50,7 +51,8 @@ final class SaveDeleteController extends AccountControllerBase
         Application                             $application,
         WebControllerHelper                     $webControllerHelper,
         private readonly AccountService         $accountService,
-        private readonly CustomFieldDataService $customFieldService
+        private readonly CustomFieldDataService $customFieldService,
+        private readonly AccountAclEnforcer     $accountAclEnforcer
     ) {
         parent::__construct($application, $webControllerHelper);
     }
@@ -66,6 +68,8 @@ final class SaveDeleteController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveDeleteAction(int $id): ActionResponse
     {
+        $this->accountAclEnforcer->checkAccountAccess(AclActionsInterface::ACCOUNT_DELETE, $id);
+
         $accountDetails = $this->accountService->getByIdEnriched($id);
 
         $this->accountService->delete($id);

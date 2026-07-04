@@ -34,6 +34,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountAclEnforcer;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__u;
@@ -47,7 +48,8 @@ final class SaveEditRestoreController extends AccountControllerBase
         Application                            $application,
         WebControllerHelper                    $webControllerHelper,
         private readonly AccountService        $accountService,
-        private readonly AccountHistoryService $accountHistoryService
+        private readonly AccountHistoryService $accountHistoryService,
+        private readonly AccountAclEnforcer    $accountAclEnforcer
     ) {
         parent::__construct(
             $application,
@@ -67,6 +69,8 @@ final class SaveEditRestoreController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveEditRestoreAction(int $historyId, int $id): ActionResponse
     {
+        $this->accountAclEnforcer->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT_RESTORE, $id);
+
         $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
         $this->eventDispatcher->notify(new Event('edit.account.restore', 
