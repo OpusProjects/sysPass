@@ -54,6 +54,8 @@
     "ext-zlib": "*",
     "ext-libxml": "*",
     "ext-mbstring": "*",
+    "ext-phar": "*",
+    "ext-ctype": "*",
     "league/fractal": "^0.21",
     "symfony/console": "^8.1",
     "symfony/lock": "^8.1",
