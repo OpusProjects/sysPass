@@ -73,12 +73,20 @@ details on test layout, groups, and writing new tests.
 ## Dependencies
 
 PHP dependencies are managed with **Composer** (`composer.json` / `composer.lock`).
-Front-end libraries are vendored under `public/vendor/` (committed, no build step).
-**npm** is used only for tooling — currently the Playwright end-to-end tests
-(`package.json`, dev-only); it is not required to run the app.
+The root **`package.json`** (dev/build-only; `node_modules/` gitignored, not needed
+at runtime) covers the front-end libraries and the Playwright E2E suite.
 
-A dependency-bump PR edits `composer.json` (the constraint) and `composer.lock`
+A PHP dependency-bump PR edits `composer.json` (the constraint) and `composer.lock`
 (run `composer update <pkg> -W` in the container), plus any code changes needed.
+
+Front-end libraries are **vendored** under `public/vendor/js/` (committed, no build
+step). To update one: bump its version in `package.json`, then
+
+```bash
+npm install
+npm run vendor   # recopies the dist *.min.js into public/vendor/js/
+npm run test:e2e # validate the browser flows still work
+```
 
 ## License
 

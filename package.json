@@ -2,9 +2,13 @@
   "name": "syspass",
   "version": "1.0.0",
   "private": true,
-  "description": "E2E test tooling for sysPass (Playwright; runtime is PHP/Docker)",
+  "description": "Front-end vendoring + E2E test tooling for sysPass (build-only; runtime is PHP/Docker)",
   "scripts": {
+    "vendor": "node scripts/vendor-assets.mjs",
     "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "jquery": "^3.7.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.1"
