@@ -14,6 +14,8 @@ final class SearchController extends AccountFileBase
 
         $accountId = $this->apiService->getParamInt('id', true);
 
+        $this->accountFileAcl->requireView($accountId);
+
         $this->eventDispatcher->notify(new Event('search.accountFile', $this));
 
         return ApiResponse::makeSuccess(

@@ -18,6 +18,8 @@ final class ViewController extends AccountFileBase
         $fileId = $this->apiService->getParamInt('fileId', true);
         $fileData = $this->accountFileService->getById($fileId);
 
+        $this->accountFileAcl->requireView($fileData->accountId ?? 0);
+
         $this->eventDispatcher->notify(new Event('show.accountFile',
             $this, EventMessage::build()
                 ->addDescription(__u('File displayed'))

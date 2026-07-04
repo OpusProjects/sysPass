@@ -20,6 +20,8 @@ final class UploadController extends AccountFileBase
         $accountId = $this->apiService->getParamInt('id', true);
         $content = $this->apiService->getParamRaw('content', true);
 
+        $this->accountFileAcl->requireEdit($accountId);
+
         $fileData = new File([
             'accountId' => $accountId,
             'name'      => $this->apiService->getParamString('name', true),

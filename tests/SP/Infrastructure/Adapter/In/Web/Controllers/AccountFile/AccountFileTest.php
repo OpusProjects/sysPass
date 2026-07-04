@@ -31,11 +31,13 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Models\FileList;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\BodyChecker;
+use SP\Tests\Generators\AccountDataGenerator;
 use SP\Tests\Generators\FileDataGenerator;
 use SP\Tests\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -54,6 +56,20 @@ class AccountFileTest extends IntegrationTestCase
     #[Test]
     public function deleteSingleFile()
     {
+        // The delete guard calls getById to resolve the owning accountId, then checks
+        // account-level edit access via getByIdEnriched. Provide both mocks so the
+        // guard's authorized path is exercised (AccountAclService is already stubbed to
+        // grant access unconditionally in IntegrationTestCase).
+        $this->addDatabaseMapperResolver(
+            FileList::class,
+            new QueryResult([FileList::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())])
+        );
+
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'accountFile/delete/100'])
         );
@@ -71,10 +87,21 @@ class AccountFileTest extends IntegrationTestCase
     #[Test]
     public function deleteMultipleFiles()
     {
+        // The bulk-delete guard calls getById for each fileId (to resolve accountId) and then
+        // checks account-level edit access via getByIdEnriched for each. Extend the query
+        // resolver to satisfy those lookups so the guard's authorized path is exercised.
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
             /** @noinspection SqlWithoutWhere */
             if (str_starts_with($queryData->getQuery()->getStatement(), 'DELETE FROM `AccountFile`')) {
                 return new QueryResult([], 3);
+            }
+
+            if ($queryData->getMapClassName() === FileList::class) {
+                return new QueryResult([FileList::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())]);
+            }
+
+            if ($queryData->getMapClassName() === AccountView::class) {
+                return new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()]);
             }
 
             return new QueryResult();
@@ -112,6 +139,13 @@ class AccountFileTest extends IntegrationTestCase
             )
         );
 
+        // The download guard checks account-level view access via getByIdEnriched on the
+        // file's owning account. AccountAclService is stubbed to grant access unconditionally.
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountFile/download/100'])
         );
@@ -132,6 +166,13 @@ class AccountFileTest extends IntegrationTestCase
     public function listFiles()
     {
         $fileDataGenerator = FileDataGenerator::factory();
+
+        // The list guard checks account-level view access via getByIdEnriched before
+        // returning the file list. AccountAclService is stubbed to grant access unconditionally.
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
 
         $this->addDatabaseMapperResolver(
             File::class,
@@ -190,6 +231,13 @@ class AccountFileTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerUpload')]
     public function upload()
     {
+        // The upload guard checks account-level edit access via getByIdEnriched before
+        // saving the file. AccountAclService is stubbed to grant access unconditionally.
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
+        );
+
         $file = sprintf('%s.txt', self::$faker->filePath());
 
         file_put_contents($file, self::$faker->text());
@@ -225,6 +273,13 @@ class AccountFileTest extends IntegrationTestCase
         $this->addDatabaseMapperResolver(
             FileList::class,
             new QueryResult([FileList::buildFromSimpleModel($fileDataGenerator->buildFileData())])
+        );
+
+        // The view guard checks account-level view access via getByIdEnriched on the
+        // file's owning account. AccountAclService is stubbed to grant access unconditionally.
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
         );
 
         $container = $this->buildContainer(
