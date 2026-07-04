@@ -139,7 +139,7 @@ final class XmlExport extends Service implements XmlExportService
      */
     private function buildAndSaveHashForFile(): string
     {
-        $hash = sha1(uniqid('sysPassExport', true));
+        $hash = bin2hex(random_bytes(20));
         $this->configData->setExportHash($hash);
         $this->config->save($this->configData);
 

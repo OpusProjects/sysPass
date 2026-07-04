@@ -67,7 +67,7 @@ class CsrfTest extends UnitaryTestCase
             ->willReturn(true);
 
         $this->sessionContext
-            ->expects(self::exactly(2))
+            ->expects(self::once())
             ->method('getCSRF')
             ->willReturn(null);
 
