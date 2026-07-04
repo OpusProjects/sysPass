@@ -76,6 +76,11 @@ class Session
     /**
      * Regenerate the session key
      *
+     * Uses session_regenerate_id(true) rather than a commit+restart cycle so
+     * that $_SESSION (and the context reference that aliases it) stays intact
+     * throughout the operation.  The vault is then re-encrypted under the new
+     * seed (new session ID + updated sidStartTime).
+     *
      * @throws CryptException
      * @throws SPException
      */
@@ -85,7 +90,10 @@ class Session
 
         $oldSeed = self::getKey($sessionContext);
 
-        SessionLifecycleHandler::regenerate();
+        // Ensure a session is running, then regenerate its ID while keeping
+        // the existing $_SESSION data (and therefore the vault reference) alive.
+        SessionLifecycleHandler::start();
+        session_regenerate_id(true);
 
         $newSeed = self::buildSeed(session_id(), (string)$sessionContext->setSidStartTime(time()));
 

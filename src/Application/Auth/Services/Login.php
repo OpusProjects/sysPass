@@ -43,6 +43,9 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Core\Crypt\Session as CryptSession;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
@@ -54,6 +57,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 
 use function SP\__u;
+use function SP\logger;
 
 /**
  * Class Login
@@ -145,8 +149,20 @@ final class Login extends LoginBase implements LoginService
 
             // Regenerate the session ID as the user becomes authenticated to prevent
             // session fixation. Guarded so CLI/test contexts (no active session) are a no-op.
+            // CryptSession::reKey() regenerates the ID while keeping $_SESSION intact and
+            // re-encrypting the vault under the new seed; fall back to the bare PHP call
+            // if the context is not a SessionContext or the vault has not been set yet.
             if (session_status() === PHP_SESSION_ACTIVE) {
-                session_regenerate_id(true);
+                if ($this->context instanceof SessionContext) {
+                    try {
+                        CryptSession::reKey($this->context);
+                    } catch (CryptException $e) {
+                        logger($e->getMessage());
+                        session_regenerate_id(true);
+                    }
+                } else {
+                    session_regenerate_id(true);
+                }
             }
 
             $this->context->setUserData($userDataDto);
