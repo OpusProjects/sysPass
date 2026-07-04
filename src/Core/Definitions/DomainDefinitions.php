@@ -96,7 +96,10 @@ final class DomainDefinitions
         'SP\Application\Account\Ports\AccountToUserGroupService' => 'SP\Application\Account\Services\AccountToUserGroup',
         'SP\Application\Account\Ports\PublicLinkService' => 'SP\Application\Account\Services\PublicLink',
         'SP\Application\Api\Ports\ApiService' => 'SP\Application\Api\Services\Api',
-        'SP\Application\Api\Ports\ApiRequestService' => 'SP\Application\Api\Services\ApiRequest',
+        // ApiRequestService is NOT bound here: RestApiRequest has a non-instantiable constructor
+        // and is provided via factory() in the Api module's module.php, which overrides this map
+        // for the only module that needs it. An autowire entry here would fail to compile for the
+        // web and cli modules (php-di compiles ALL definitions, not just the active module's).
         'SP\Application\Auth\Ports\AuthTokenService' => 'SP\Application\Auth\Services\AuthToken',
         'SP\Application\Auth\Ports\AuthTokenActionService' => 'SP\Application\Auth\Services\AuthTokenAction',
         'SP\Application\Auth\Ports\LdapCheckService' => 'SP\Application\Auth\Services\LdapCheck',
