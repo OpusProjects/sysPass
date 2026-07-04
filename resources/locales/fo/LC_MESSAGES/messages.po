@@ -7065,23 +7065,23 @@ msgstr "Tú átti at goymt fyri at uppsetingin verður sett í virki"
 
 #: app/resources/strings.js.inc:32
 msgid "Generated Password"
-msgstr ""
+msgstr "Framleitt loyniorð"
 
 #: app/resources/strings.js.inc:33
 msgid "High level"
-msgstr ""
+msgstr "Høgt stig"
 
 #: app/resources/strings.js.inc:34
 msgid "Average level"
-msgstr ""
+msgstr "Miðal stig"
 
 #: app/resources/strings.js.inc:35
 msgid "Low level"
-msgstr ""
+msgstr "Lágt stig"
 
 #: app/resources/strings.js.inc:36
 msgid "Very High level"
-msgstr ""
+msgstr "Sera høgt stig"
 
 #: app/resources/strings.js.inc:37
 msgid "You should use at least 8 characters"
@@ -7689,3 +7689,6 @@ msgstr "Teigurin er í brúki"
 
 msgid "Referenced record not found"
 msgstr "Umrødd teigur ikki funnin"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Høvuðsloyniorðið og váttanin mugu vera tey somu"

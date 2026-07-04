@@ -299,7 +299,7 @@ msgstr "Send details in the response"
 #: app/modules/web/themes/material-blue/views/login/index.inc:98
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:29
 msgid "Password"
-msgstr "Password"
+msgstr "パスワード"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:70
 #: app/modules/api/Controllers/Help/AccountHelp.php:91
@@ -4829,20 +4829,19 @@ msgstr "パスワードを生成"
 
 #: app/resources/strings.js.inc:33
 msgid "High level"
-msgstr "High level"
+msgstr "高レベル"
 
 #: app/resources/strings.js.inc:34
-#, fuzzy
 msgid "Average level"
-msgstr "Average level"
+msgstr "中レベル"
 
 #: app/resources/strings.js.inc:35
 msgid "Low level"
-msgstr "Low level"
+msgstr "低レベル"
 
 #: app/resources/strings.js.inc:36
 msgid "Very High level"
-msgstr "Very High level"
+msgstr "非常に高いレベル"
 
 #: app/resources/strings.js.inc:37
 msgid "You should use at least 8 characters"
@@ -5219,7 +5218,7 @@ msgstr "該当するものはありません"
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:66
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:41
 msgid "Password (repeat)"
-msgstr "Password (repeat)"
+msgstr "パスワード（再入力）"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
@@ -7811,3 +7810,6 @@ msgstr "レコードは使用中です"
 
 msgid "Referenced record not found"
 msgstr "参照先のレコードが見つかりません"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "マスターパスワードとその確認は同じでなければなりません"

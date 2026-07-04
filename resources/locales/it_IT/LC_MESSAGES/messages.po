@@ -7756,3 +7756,6 @@ msgstr "Il record è in uso"
 
 msgid "Referenced record not found"
 msgstr "Record di riferimento non trovato"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "La password principale e la sua conferma devono essere identiche"

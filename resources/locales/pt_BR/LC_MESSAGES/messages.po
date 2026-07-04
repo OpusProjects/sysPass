@@ -4181,7 +4181,7 @@ msgstr "Admin user to log into the application"
 
 #: lib/SP/Services/Install/Installer.php:112
 msgid "Please, enter the admin's password"
-msgstr "Please, enter the admin's password"
+msgstr "Por favor, insira a senha do administrador"
 
 #: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
@@ -4189,19 +4189,19 @@ msgstr "Application administrator's password"
 
 #: lib/SP/Services/Install/Installer.php:119
 msgid "Please, enter the Master Password"
-msgstr "Please, enter the Master Password"
+msgstr "Por favor, insira a senha mestra"
 
 #: lib/SP/Services/Install/Installer.php:121
 msgid "Master password to encrypt the passwords"
-msgstr "Master password to encrypt the passwords"
+msgstr "Senha mestra para criptografar as senhas"
 
 #: lib/SP/Services/Install/Installer.php:126
 msgid "Master password too short"
-msgstr "Master password too short"
+msgstr "Senha mestra muito curta"
 
 #: lib/SP/Services/Install/Installer.php:128
 msgid "The Master Password length need to be at least 11 characters"
-msgstr "The Master Password length need to be at least 11 characters"
+msgstr "A senha mestra deve ter pelo menos 11 caracteres"
 
 #: lib/SP/Services/Install/Installer.php:133
 msgid "Please, enter the database user"
@@ -4810,7 +4810,7 @@ msgstr "No records found"
 #: app/modules/web/themes/material-blue/views/itemshow/user_pass.inc:66
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:41
 msgid "Password (repeat)"
-msgstr "Password (repeat)"
+msgstr "Senha (repetir)"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:109
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:147
@@ -6931,23 +6931,23 @@ msgstr "Usa as credenciais fornecidas diretamente — o banco de dados já deve 
 #~ msgid "You should save configuration in order to take effect"
 #~ msgstr "You should save configuration in order to take effect"
 
-#~ msgid "Generated Password"
-#~ msgstr "Generated Password"
+msgid "Generated Password"
+msgstr "Senha gerada"
 
-#~ msgid "High level"
-#~ msgstr "High level"
+msgid "High level"
+msgstr "Nível alto"
 
-#~ msgid "Average level"
-#~ msgstr "Average level"
+msgid "Average level"
+msgstr "Nível médio"
 
-#~ msgid "Low level"
-#~ msgstr "Low level"
+msgid "Low level"
+msgstr "Nível baixo"
 
-#~ msgid "Very High level"
-#~ msgstr "Very High level"
+msgid "Very High level"
+msgstr "Nível muito alto"
 
-#~ msgid "You should use at least 8 characters"
-#~ msgstr "You should use at least 8 characters"
+msgid "You should use at least 8 characters"
+msgstr "Você deve usar pelo menos 8 caracteres"
 
 #~ msgid "Delete item?"
 #~ msgstr "Delete item?"
@@ -7406,3 +7406,6 @@ msgstr "O registro está em uso"
 
 msgid "Referenced record not found"
 msgstr "Registro referenciado não encontrado"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "A senha mestra e sua confirmação devem ser iguais"

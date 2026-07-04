@@ -7789,3 +7789,6 @@ msgstr "L'enregistrement est utilisé"
 
 msgid "Referenced record not found"
 msgstr "Enregistrement référencé introuvable"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Le mot de passe maître et sa confirmation doivent être identiques"
