@@ -79,14 +79,26 @@ at runtime) covers the front-end libraries and the Playwright E2E suite.
 A PHP dependency-bump PR edits `composer.json` (the constraint) and `composer.lock`
 (run `composer update <pkg> -W` in the container), plus any code changes needed.
 
-Front-end libraries are **vendored** under `public/vendor/js/` (committed, no build
-step). To update one: bump its version in `package.json`, then
+Front-end libraries are **vendored** under `public/vendor/js/` (committed). To
+update one: bump its version in `package.json`, then
 
 ```bash
 npm install
 npm run vendor   # recopies the dist *.min.js into public/vendor/js/
 npm run test:e2e # validate the browser flows still work
 ```
+
+**Theme CSS** is served pre-minified: the `resource/css` route concatenates the
+committed `*.min.css` files without minifying. After editing a `*.css` source
+under `public/themes/material-blue/css/`, regenerate its `*.min.css` so they don't
+drift out of sync:
+
+```bash
+npm run build:css   # minifies each theme *.css -> *.min.css via esbuild
+```
+
+The app's own JavaScript (`public/js/app-*.min.js`) is authored directly — there
+is no `*.js` source and no JS build step.
 
 ## License
 
