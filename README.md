@@ -73,6 +73,12 @@ Project documentation lives in the [`docs/`](docs) folder:
 
 ---
 
+## 🤝 Contributing
+
+See [`CONTRIBUTING.md`](CONTRIBUTING.md) for dev setup, PR workflow, coding conventions, and tests.
+
+---
+
 ## ⚖️ License
 
 This software is published under the **[GNU GPLv3](LICENSE)** license, unchanged from the original project.
