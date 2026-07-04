@@ -35,6 +35,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountAclEnforcer;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__u;
@@ -47,10 +48,11 @@ final class SaveEditPassController extends AccountControllerBase
     private AccountForm $accountForm;
 
     public function __construct(
-        Application                     $application,
-        WebControllerHelper             $webControllerHelper,
-        private readonly AccountService $accountService,
-        AccountPresetService            $accountPresetService
+        Application                        $application,
+        WebControllerHelper                $webControllerHelper,
+        private readonly AccountService    $accountService,
+        AccountPresetService               $accountPresetService,
+        private readonly AccountAclEnforcer $accountAclEnforcer
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -68,6 +70,8 @@ final class SaveEditPassController extends AccountControllerBase
     #[Action(ResponseType::JSON)]
     public function saveEditPassAction(int $id): ActionResponse
     {
+        $this->accountAclEnforcer->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT_PASS, $id);
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT_PASS, $id);
 
         $this->accountService->editPassword($id, $this->accountForm->getItemData());

@@ -24,13 +24,19 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
+use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Application\Account\Ports\AccountPresetService;
+use SP\Application\Account\Ports\AccountService;
+use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountAclEnforcer;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__u;
 
@@ -39,6 +45,23 @@ use function SP\__u;
  */
 final class SaveEditController extends AccountSaveBase
 {
+    public function __construct(
+        Application                        $application,
+        WebControllerHelper                $webControllerHelper,
+        AccountService                     $accountService,
+        AccountPresetService               $accountPresetService,
+        CustomFieldDataService             $customFieldService,
+        private readonly AccountAclEnforcer $accountAclEnforcer
+    ) {
+        parent::__construct(
+            $application,
+            $webControllerHelper,
+            $accountService,
+            $accountPresetService,
+            $customFieldService
+        );
+    }
+
     /**
      * Saves edit action
      *
@@ -50,6 +73,8 @@ final class SaveEditController extends AccountSaveBase
     #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
+        $this->accountAclEnforcer->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT, $id);
+
         $this->accountForm->validateFor(AclActionsInterface::ACCOUNT_EDIT, $id);
 
         $this->accountService->update($id, $this->accountForm->getItemData());

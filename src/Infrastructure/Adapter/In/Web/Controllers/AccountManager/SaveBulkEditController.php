@@ -84,6 +84,10 @@ final class SaveBulkEditController extends ControllerBase
     #[Action(ResponseType::JSON)]
     public function saveBulkEditAction(): ActionResponse
     {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNTMGR)) {
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        }
+
         $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
 
         $accountBulkDto = new AccountUpdateBulkDto(
