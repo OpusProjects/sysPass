@@ -43,6 +43,12 @@ This is a PHP project; runtime dependencies live in **Composer** files at the re
   (recopies dist `*.min.js` into `public/vendor/js/` per `scripts/vendor-assets.mjs`) → commit. The
   served bundle order lives in `JsController::JS_MIN_FILES`. Same `package.json` also holds the
   Playwright E2E suite (`npm run test:e2e`, host-run against the Docker app).
+- **Theme CSS is served *pre-minified***: the `resource/css` route (`CssController` + the
+  `Minify` service) only *concatenates* the committed `*.min.css` — it does **not** minify at
+  runtime (`MinifyCss::minify()` just joins files with a `/* FILE */` header). So after editing a
+  `*.css` source under `public/themes/material-blue/css/`, run `npm run build:css` (esbuild,
+  `scripts/build-css.mjs`) to regenerate its `*.min.css`, or it ships stale/unminified. The app's
+  own JS (`public/js/app-*.min.js`) is authored directly — no `*.js` source, no JS build step.
 
 A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock` (run
 `composer update <pkg> -W` in the container), plus any code changes, validated by both suites.

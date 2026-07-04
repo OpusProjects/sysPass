@@ -5,7 +5,8 @@
   "description": "Front-end vendoring + E2E test tooling for sysPass (build-only; runtime is PHP/Docker)",
   "scripts": {
     "vendor": "node scripts/vendor-assets.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:css": "node scripts/build-css.mjs"
   },
   "dependencies": {
     "@selectize/selectize": "^0.15.2",
@@ -20,6 +21,7 @@
     "zxcvbn": "^4.4.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.53.1"
+    "@playwright/test": "^1.53.1",
+    "esbuild": "^0.28.1"
   }
 }
