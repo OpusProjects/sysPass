@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Adapter\Out\Client\Repositories;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -337,6 +338,6 @@ final class Client extends BaseRepository implements ClientRepository
             ->groupBy(['id'])
             ->orderBy(['Client.name']);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
     }
 }
