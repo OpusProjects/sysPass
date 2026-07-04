@@ -37,11 +37,11 @@ use function SP\processException;
 use function SP\__;
 
 /**
- * Class PublicLinkController
+ * Class ViewController
  *
- * @package SP\Infrastructure\Adapter\In\Web\Controllers
+ * @package SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink
  */
-final class PublicLinkController extends PublicLinkViewBase
+final class ViewController extends PublicLinkViewBase
 {
 
     /**
