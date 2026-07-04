@@ -59,7 +59,7 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 | Runtime-writable | `var/{cache,temp,backup}` |
 | Resources (locales, templates) | `resources/` |
 | DB schema | `schemas/dbstructure.sql` |
-| Tests (PHPUnit 11) — mirrors src | `tests/SP/{Domain,Application,Infrastructure,Core}/` |
+| Tests (PHPUnit 13) — mirrors src | `tests/SP/{Domain,Application,Infrastructure,Core}/` |
 | Entry points | `public/index.php` (web), `public/api.php` (api), `bin/cli.php` (cli) → require `src/Base.php` |
 
 **UI unchanged from 3.2** — same `material-blue` theme; the front-end diff is plumbing
@@ -91,7 +91,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 ```
 
-Both pass: **2100 unit** + **234 integration**. The integration suite includes the
+Both pass: **2108 unit** + **234 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/SP/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -210,7 +210,7 @@ Key constraints:
 
 - **PHP 8.5** — `config.platform`, Docker image, and CI. Constraint `~8.4 || ~8.5`; `Environment`
   allows `>= 8.4 < 8.6`.
-- **Symfony 8.0** — HTTP foundation, routing, console, DomCrawler.
+- **Symfony 8.1** — HTTP foundation, routing, console, DomCrawler.
 - **Key libraries:** `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
   (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
   abandoned `klein/klein` router — the HTTP layer goes through

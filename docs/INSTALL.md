@@ -43,18 +43,21 @@ the web-root path, and the web-server user differ.
 
    - **Debian / Ubuntu:**
      ```bash
-     apt install apache2 libapache2-mod-php php php-mysql php-gd php-curl php-json \
-       php-xml php-mbstring php-intl php-gettext php-ldap mariadb-server composer
+     apt install apache2 libapache2-mod-php php php-mysql php-gd php-curl \
+       php-xml php-mbstring php-intl php-ldap mariadb-server composer
      ```
    - **RHEL / CentOS / Rocky / AlmaLinux:**
      ```bash
-     dnf install httpd php php-mysqlnd php-gd php-curl php-json php-xml \
-       php-mbstring php-intl php-gettext php-ldap mariadb-server composer
+     dnf install httpd php php-mysqlnd php-gd php-curl php-xml \
+       php-mbstring php-intl php-ldap mariadb-server composer
      ```
    - **Arch Linux:**
      ```bash
      pacman -S apache php php-gd php-intl php-ldap mariadb composer
      ```
+
+   The `gettext` and `json` extensions are bundled with the core PHP packages on
+   these distributions — no separate package exists (or is needed) for them.
 
    For Nginx, use PHP-FPM instead of the Apache PHP module.
 
