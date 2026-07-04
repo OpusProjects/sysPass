@@ -306,9 +306,9 @@ class AccountControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT, $params);
 
-        // The transaction wrapper reports the missing account as a rollback
+        // The missing account surfaces its specific error, not a generic rollback
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Rollback', $r->body->error->message);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
     public function testDeleteAction(): void

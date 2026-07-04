@@ -85,7 +85,15 @@ abstract class BaseRepository implements Repository
                 );
                 $this->eventDispatcher->notify(new Event('exception', $e));
 
-                throw new ServiceException(__u('Rollback'), SPException::ERROR, null, $e->getCode(), $e);
+                // Surface the underlying error (integrity constraint, missing row, ...)
+                // instead of masking every rollback with a generic "Rollback" message.
+                throw new ServiceException(
+                    $e->getMessage(),
+                    SPException::ERROR,
+                    $e instanceof SPException ? $e->getHint() : null,
+                    $e->getCode(),
+                    $e
+                );
             }
         } else {
             throw new ServiceException(__u('Unable to start a transaction'));
