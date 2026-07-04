@@ -219,6 +219,17 @@ Key constraints:
   these are library-internal (not PHP-level), suppressed by `display_errors=0` in `phpunit.xml`.
   `session.sid_bits_per_character` was removed from `SessionLifecycleHandler::SESSION_OPTIONS`.
 
+## Known non-issues — audited, do NOT "fix"
+
+- **`SP\Domain\Plugin\Ports\PluginDataStorage` has no implementation in `src/` — intentional.**
+  It is the `#[Hydratable]` target for `PluginData.data`; the concrete classes ship with the
+  plugins themselves (core cannot know plugin data shapes). Do not implement it in core and do
+  not delete it — either breaks the plugin contract.
+- **The CLI module binds no `BootstrapInterface` — the absence is correct.** `bin/cli.php` only
+  requests `ModuleInterface`. Do not add an unused binding "for consistency": every explicit DI
+  definition must stay compilable forever, and an unused-but-broken binding is exactly what once
+  fatally broke prod container compilation (the phantom `ApiRequestService` entry).
+
 ## Conventions
 
 - One logical change per PR; clear title (`old → new` + why) and body.
