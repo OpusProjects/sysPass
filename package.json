@@ -10,6 +10,7 @@
   "dependencies": {
     "clipboard": "^2.0.11",
     "jquery": "^3.7.1",
+    "jsencrypt": "^3.3.2",
     "magnific-popup": "^1.2.0",
     "moment": "^2.30.1",
     "moment-timezone": "^0.5.48",

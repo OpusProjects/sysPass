@@ -15,6 +15,7 @@ const dest = join(root, 'public', 'vendor', 'js');
 const MAP = {
   'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
+  'jsencrypt.min.js': 'jsencrypt/bin/jsencrypt.min.js',
   'moment.min.js': 'moment/min/moment-with-locales.min.js',
   // with-data 10-year rolling range — matches the data-bearing build we shipped
   'moment-timezone.min.js': 'moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js',
