@@ -33,9 +33,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use function DI\autowire;
 use function DI\create;
 
-const MODULE_PATH = __DIR__;
-const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
-
 return [
     // The core LoggerInterface definition already streams to Path::LOG_FILE;
     // the previous override here injected a bare Monolog\Logger, which the

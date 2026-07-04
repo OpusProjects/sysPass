@@ -61,7 +61,9 @@ final readonly class DirectoryHandler implements DirectoryHandlerService
 
     public function create(int $permissions = 0750): bool
     {
-        return mkdir($this->path, $permissions, true);
+        // Failure is handled by the caller via the return value (it throws a
+        // CheckException); silence the native warning for an unusable path.
+        return @mkdir($this->path, $permissions, true) || is_dir($this->path);
     }
 
     public function isWritable(): bool

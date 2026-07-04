@@ -33,9 +33,6 @@ use SP\Infrastructure\Adapter\In\Api\Init;
 use function DI\autowire;
 use function DI\factory;
 
-const MODULE_PATH = __DIR__;
-const PLUGINS_PATH = MODULE_PATH . DIRECTORY_SEPARATOR . 'plugins';
-
 return [
     ApiRequestService::class => factory(function (Router $router) {
         return RestApiRequest::buildFromSymfonyRequest($router->request());
