@@ -115,12 +115,15 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult
     {
+        // The ACL access filter and the favorites filter are always ANDed — they
+        // constrain what the user may see and must never be relaxed by the operator.
         $this->accountFilterUser->buildFilter($accountSearchFilter->getGlobalSearch(), $this->query);
-        $this->filterByText($accountSearchFilter);
-        $this->filterByCategory($accountSearchFilter);
-        $this->filterByClient($accountSearchFilter);
         $this->filterByFavorite($accountSearchFilter);
-        $this->filterByTags($accountSearchFilter);
+
+        // The user's search dimensions (text, category, client, tags) are chained
+        // with the chosen operator: AND (default) — match all — or OR — match any.
+        $this->filterByDimensions($accountSearchFilter);
+
         $this->setOrder($accountSearchFilter);
 
         if ($accountSearchFilter->getLimitCount() > 0) {
@@ -135,62 +138,94 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
+     * Combine the search-dimension filters with the filter operator (AND/OR).
+     */
+    private function filterByDimensions(AccountSearchFilterDto $accountSearchFilter): void
+    {
+        $conditions = array_filter([
+            $this->buildTextFilter($accountSearchFilter),
+            $this->buildCategoryFilter($accountSearchFilter),
+            $this->buildClientFilter($accountSearchFilter),
+            $this->buildTagsFilter($accountSearchFilter),
+        ]);
+
+        if (empty($conditions)) {
+            return;
+        }
+
+        // Pick the glue from the constants (never the raw value) so it can't inject
+        $glue = AccountSearchConstants::FILTER_CHAIN_OR === $accountSearchFilter->getFilterOperator()
+            ? AccountSearchConstants::FILTER_CHAIN_OR
+            : AccountSearchConstants::FILTER_CHAIN_AND;
+
+        $sql = [];
+        $params = [];
+
+        foreach ($conditions as [$condition, $conditionParams]) {
+            $sql[] = $condition;
+            $params += $conditionParams;
+        }
+
+        $this->query->where(sprintf('(%s)', implode(sprintf(' %s ', $glue), $sql)), $params);
+    }
+
+    /**
      * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
-    private function filterByText(AccountSearchFilterDto $accountSearchFilter): void
+    /**
+     * @return array{0: string, 1: array}|null
+     */
+    private function buildTextFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
         // Sets the search text depending on whether special search filters are being used
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
-        if (!empty($searchText)) {
-            $searchTextLike = '%' . $searchText . '%';
-
-            $this->query
-                ->where(
-                    '(Account.name LIKE :name OR Account.login LIKE :login OR Account.url LIKE :url OR Account.notes LIKE :notes)',
-                    [
-                        'name' => $searchTextLike,
-                        'login' => $searchTextLike,
-                        'url' => $searchTextLike,
-                        'notes' => $searchTextLike,
-                    ]
-                );
+        if (empty($searchText)) {
+            return null;
         }
+
+        $searchTextLike = '%' . $searchText . '%';
+
+        return [
+            '(Account.name LIKE :name OR Account.login LIKE :login OR Account.url LIKE :url OR Account.notes LIKE :notes)',
+            [
+                'name' => $searchTextLike,
+                'login' => $searchTextLike,
+                'url' => $searchTextLike,
+                'notes' => $searchTextLike,
+            ],
+        ];
     }
 
     /**
-     * @param AccountSearchFilterDto $accountSearchFilter
-     * @return void
+     * @return array{0: string, 1: array}|null
      */
-    private function filterByCategory(AccountSearchFilterDto $accountSearchFilter): void
+    private function buildCategoryFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
-        if ($accountSearchFilter->getCategoryId() !== null) {
-            $this->query
-                ->where(
-                    'Account.categoryId = :categoryId',
-                    [
-                        'categoryId' => $accountSearchFilter->getCategoryId(),
-                    ]
-                );
+        if ($accountSearchFilter->getCategoryId() === null) {
+            return null;
         }
+
+        return [
+            'Account.categoryId = :categoryId',
+            ['categoryId' => $accountSearchFilter->getCategoryId()],
+        ];
     }
 
     /**
-     * @param AccountSearchFilterDto $accountSearchFilter
-     * @return void
+     * @return array{0: string, 1: array}|null
      */
-    private function filterByClient(AccountSearchFilterDto $accountSearchFilter): void
+    private function buildClientFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
-        if ($accountSearchFilter->getClientId() !== null) {
-            $this->query
-                ->where(
-                    'Account.clientId = :clientId',
-                    [
-                        'clientId' => $accountSearchFilter->getClientId(),
-                    ]
-                );
+        if ($accountSearchFilter->getClientId() === null) {
+            return null;
         }
+
+        return [
+            'Account.clientId = :clientId',
+            ['clientId' => $accountSearchFilter->getClientId()],
+        ];
     }
 
     /**
@@ -216,34 +251,34 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
      * @param AccountSearchFilterDto $accountSearchFilter
      * @return void
      */
-    private function filterByTags(AccountSearchFilterDto $accountSearchFilter): void
+    /**
+     * A correlated subquery (not a JOIN) so the tag match is a single boolean that
+     * can be OR-combined with the other dimensions. AND requires all of the tags;
+     * OR requires any of them.
+     *
+     * @return array{0: string, 1: array}|null
+     */
+    private function buildTagsFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
-        if ($accountSearchFilter->hasTags()) {
-            $this->query->join(
-                'INNER',
-                'AccountToTag',
-                'AccountToTag.accountId = Account.id'
-            );
-
-            $this->query
-                ->where(
-                    'AccountToTag.tagId IN (:tagId)',
-                    [
-                        'tagId' => $accountSearchFilter->getTagsId(),
-                    ]
-                );
-
-            if (AccountSearchConstants::FILTER_CHAIN_AND === $accountSearchFilter->getFilterOperator()) {
-                $this->query
-                    ->groupBy(['Account.id'])
-                    ->having(
-                        'COUNT(DISTINCT AccountToTag.tagId) = :tagsCount',
-                        [
-                            'tagsCount' => count($accountSearchFilter->getTagsId()),
-                        ]
-                    );
-            }
+        if (!$accountSearchFilter->hasTags()) {
+            return null;
         }
+
+        $tagsId = $accountSearchFilter->getTagsId();
+
+        if (AccountSearchConstants::FILTER_CHAIN_AND === $accountSearchFilter->getFilterOperator()) {
+            return [
+                '(SELECT COUNT(DISTINCT AccountToTag.tagId) FROM AccountToTag'
+                . ' WHERE AccountToTag.accountId = Account.id AND AccountToTag.tagId IN (:tagId)) = :tagsCount',
+                ['tagId' => $tagsId, 'tagsCount' => count($tagsId)],
+            ];
+        }
+
+        return [
+            'EXISTS (SELECT 1 FROM AccountToTag'
+            . ' WHERE AccountToTag.accountId = Account.id AND AccountToTag.tagId IN (:tagId))',
+            ['tagId' => $tagsId],
+        ];
     }
 
     /**
