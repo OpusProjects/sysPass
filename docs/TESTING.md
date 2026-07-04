@@ -71,6 +71,26 @@ vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
 vendor/bin/phpunit -c tests/phpunit.xml --no-coverage
 ```
 
+## End-to-end tests (Playwright)
+
+Browser-level tests live in [`e2e/`](../e2e) and run with
+[Playwright](https://playwright.dev/) — **on the host** (Node), driving the
+Dockerised app on `http://localhost:8090`. They cover the runtime web flows the
+PHPUnit suites can't reach (the install wizard, login).
+
+```bash
+npm ci                            # installs @playwright/test (dev tooling)
+npx playwright install chromium   # one-time browser download (~180 MB, cached)
+npm run test:e2e                  # runs everything under e2e/
+```
+
+Prerequisites: Node/npm on the host, and the Docker stack up (`docker compose up -d`).
+
+> **The suite resets app state** — the install-wizard spec drops the `syspass`
+> database and removes `config.xml` to reach a not-installed state, then installs
+> fresh. Never run it against an instance whose data you want to keep. `npm` and
+> `node_modules/` are dev-only; nothing here is needed to run the application.
+
 ## Environment requirements
 
 The Docker image provides all of these. If running tests outside Docker, ensure:

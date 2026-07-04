@@ -1,0 +1,12 @@
+{
+  "name": "syspass",
+  "version": "1.0.0",
+  "private": true,
+  "description": "E2E test tooling for sysPass (Playwright; runtime is PHP/Docker)",
+  "scripts": {
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.1"
+  }
+}

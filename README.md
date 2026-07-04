@@ -53,6 +53,7 @@ Tech stack:
 - **Docker** — containerised dev stack
 - **MariaDB / MySQL** — database
 - **PHPUnit 13** — test suite
+- **npm / Node** — build & test tooling (Playwright E2E; not needed at runtime)
 
 Architecture & design:
 
