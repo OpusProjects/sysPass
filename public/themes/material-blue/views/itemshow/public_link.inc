@@ -135,7 +135,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('User'); ?></div>
 
                         <?php
-                        echo $publicLink->getUserLogin(); ?>
+                        echo htmlspecialchars($publicLink->getUserLogin() ?? '', ENT_QUOTES); ?>
                     </td>
                 </tr>
                 <tr>
@@ -192,7 +192,7 @@ $publicLink = $_getvar('publicLink');
                                     <?php
                                     printf(
                                         '%s - %s',
-                                        $_getvar('isDemo') ? '*.*.*.*' : $useInfo['who'],
+                                        $_getvar('isDemo') ? '*.*.*.*' : htmlspecialchars($useInfo['who'] ?? '', ENT_QUOTES),
                                         date('Y-m-d H:i', $useInfo['time'])
                                     ); ?>
                                 </span>
