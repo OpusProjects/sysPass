@@ -52,9 +52,16 @@ docker compose exec \
   -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PASS=syspass -e DB_PORT=3306 \
   -w /var/www/html app \
   vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
+
+# End-to-end (Playwright, headless browser — runs on the host, drives the Docker
+# app on :8090 and RESETS its DB/config, so don't run it against an instance you
+# want to keep)
+npm ci
+npx playwright install chromium
+npm run test:e2e
 ```
 
-Both suites must pass before merging. See [`docs/TESTING.md`](docs/TESTING.md) for
+All test suites must pass before merging. See [`docs/TESTING.md`](docs/TESTING.md) for
 details on test layout, groups, and writing new tests.
 
 ## Commit messages
@@ -65,8 +72,10 @@ details on test layout, groups, and writing new tests.
 
 ## Dependencies
 
-Dependencies are managed with **Composer** (`composer.json` / `composer.lock`).
-Front-end libraries are vendored under `public/vendor/` — there is no npm.
+PHP dependencies are managed with **Composer** (`composer.json` / `composer.lock`).
+Front-end libraries are vendored under `public/vendor/` (committed, no build step).
+**npm** is used only for tooling — currently the Playwright end-to-end tests
+(`package.json`, dev-only); it is not required to run the app.
 
 A dependency-bump PR edits `composer.json` (the constraint) and `composer.lock`
 (run `composer update <pkg> -W` in the container), plus any code changes needed.

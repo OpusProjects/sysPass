@@ -28,17 +28,19 @@ gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch   # we self
 - **Git identity** is set repo-locally (`blaipr` / `blaipr@hotmail.com`) — plain `git commit` works.
 - `gh pr edit` can silently no-op on this repo (classic-Projects GraphQL field); if a body edit doesn't apply, PATCH via `gh api -X PATCH repos/OpusProjects/sysPass/pulls/<n> -F body=@file`.
 
-## Dependencies — Composer (no npm / requirements.txt)
+## Dependencies — Composer (PHP); npm for dev tooling only
 
-This is a PHP project; dependencies live in **Composer** files at the repo root:
+This is a PHP project; runtime dependencies live in **Composer** files at the repo root:
 
 - **`composer.json`** — declared deps. `require` (runtime) + `require-dev` (test/dev tools),
   PSR-4 autoload, and the `~8.4 || ~8.5` PHP constraint. (≈ `package.json` / `requirements.txt`.)
 - **`composer.lock`** — fully-resolved pinned versions of every package + transitive dep, what
   `composer install` reproduces. (≈ `package-lock.json`.)
 - **`vendor/`** — installed packages, **gitignored** (≈ `node_modules`).
-- **Front-end has no npm manifest** — JS/CSS libraries are *vendored* (committed under
-  `public/vendor/`, `public/js/`). Nothing to install for the front-end.
+- **Front-end libraries are *vendored*** (committed under `public/vendor/`, `public/js/`; no
+  build step, nothing to install to run the app). A root **`package.json`** exists for **dev
+  tooling only** — the Playwright end-to-end suite (`npm run test:e2e`, run on the host against
+  the Docker app); `node_modules/` is gitignored.
 
 A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock` (run
 `composer update <pkg> -W` in the container), plus any code changes, validated by both suites.

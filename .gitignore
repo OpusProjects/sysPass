@@ -68,3 +68,10 @@ composer.phar
 !.blank
 # PHPUnit result cache
 tests/.phpunit.cache/
+
+# Playwright / npm
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
