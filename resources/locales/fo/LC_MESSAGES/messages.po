@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -9,16 +10,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
 msgid "Account displayed"
@@ -1243,12 +1243,12 @@ msgstr "Núverandi yvirloyniorðið samsvarar ikki"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
-msgstr ""
+msgstr "Umsitingarstøða ikki virkjað"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
-msgstr ""
+msgstr "Virkja tað fyri at koma undan óvuntiðari ávirkan frá øðrum setum"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
@@ -3312,11 +3312,11 @@ msgstr "Nýtt ískoytisforrit"
 
 #: lib/SP/Plugin/PluginManager.php:392
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "Dagfør ískoytisforrit"
 
 #: lib/SP/Plugin/PluginManager.php:409
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "Ískoytisforrit dagfort"
 
 #: lib/SP/Plugin/PluginManager.php:418
 #, php-format
@@ -3401,7 +3401,7 @@ msgstr "Brúkarin eigur ikki at verða í deildini"
 #: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
-msgstr ""
+msgstr "Hendur: %s"
 
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
@@ -3657,17 +3657,17 @@ msgstr "Feilur hendi ímeðan fráboðanirnar vórðu heintaðar"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "Feilur við at leggja til ískoytisforritsgongn"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "Feilur við at dagføra ískoytisforritsgongn"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "Feilur við at strika ískoytisforritsgongn"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3923,7 +3923,8 @@ msgstr "Yvirloyniorð ikki sett"
 msgid "The account doesn't exist"
 msgstr "Kontan er ikki til"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Ógildug dáta"
@@ -4081,7 +4082,7 @@ msgstr "Feilur hendi ímeðan fyribilsloybiorðið varð kannað"
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
 #, php-format
 msgid "%s Master Password"
-msgstr ""
+msgstr "%s yvirloyniorð"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
@@ -4102,7 +4103,8 @@ msgid "This password will be valid until: %s"
 msgstr "Loyniorðið er í gildi inntil: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr ""
 "Vinarliga gloym ikki at rita inn skjótast gjørligt fyri at goyma "
 "broytingarnar."
@@ -4434,7 +4436,8 @@ msgstr "Kanna dátugrunnarbrúkaraloyvisstillingarnar"
 #: lib/SP/Services/Install/MySQL.php:237
 #, php-format
 msgid "Error while setting the database permissions ('%s')"
-msgstr "Feilur hendi ímeðan dátugrunnarloyvisstillingarnir vórðu settir ('%s')"
+msgstr ""
+"Feilur hendi ímeðan dátugrunnarloyvisstillingarnir vórðu settir ('%s')"
 
 #: lib/SP/Services/Install/MySQL.php:251
 msgid "The database does not exist"
@@ -4442,7 +4445,7 @@ msgstr "Dátugrunnur er ikki til"
 
 #: lib/SP/Services/Install/MySQL.php:253
 msgid "You need to create it and assign the needed permissions"
-msgstr ""
+msgstr "Tú hevur brúk fyri at ger tað og útnevna neyðugu rættindini"
 
 #: lib/SP/Services/Install/MySQL.php:309
 #, php-format
@@ -4506,7 +4509,7 @@ msgstr "Fráboðanin ikki funnin"
 #: lib/SP/Services/Plugin/PluginDataService.php:165
 #: lib/SP/Services/Plugin/PluginDataService.php:183
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "Gongn ískoytisforritins ikki funnin"
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4574,7 +4577,7 @@ msgstr "Spor ikki funnið"
 #: lib/SP/Services/Track/TrackService.php:162
 #, php-format
 msgid "Attempts exceeded (%d/%d)"
-msgstr ""
+msgstr "Royndir umfar mork (%d/%d)"
 
 #: lib/SP/Services/Track/TrackService.php:163
 msgid "Seconds"
@@ -4665,7 +4668,7 @@ msgstr "Feilur hendi ímeðan dátugrunnurin varð dagførdur"
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:157
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:159
 msgid "Update file does not contain data"
-msgstr ""
+msgstr "Dagføringsfíla inniheldur eingin gongn"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:190
 msgid "Database updating was completed successfully."
@@ -4705,11 +4708,11 @@ msgstr "Feilur hendi ímeðan deildirnar vórðu strikaðar"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:66
 msgid "A request for changing your user password has been done."
-msgstr ""
+msgstr "Ein beiðni um at broyta loyniorð brúkarins er gjørd."
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:68
 msgid "In order to complete the process, please go to this URL:"
-msgstr ""
+msgstr "Fyri at fullføra tilgongdina, farer til hesa URL:"
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:72
 msgid "If you have not requested this action, please dismiss this message."
@@ -4744,7 +4747,7 @@ msgstr "Blankur fyrispurningur"
 
 #: lib/SP/Storage/Database/Database.php:248
 msgid "Integrity constraint"
-msgstr ""
+msgstr "Heildarskilyrði"
 
 #: lib/SP/Storage/Database/MySQLHandler.php:100
 #: lib/SP/Storage/Database/MySQLHandler.php:167
@@ -4804,7 +4807,7 @@ msgstr "Kann ikki skriva í fíluna (%s)"
 #: lib/SP/Storage/File/FileHandler.php:276
 #, php-format
 msgid "File not found (%s)"
-msgstr ""
+msgstr "Fíla ikki funnin (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
@@ -4817,9 +4820,10 @@ msgstr "Kann ikki lesa/skriva fílu (%s)"
 msgid "Unable to delete file (%s)"
 msgstr "Kann ikki strika fílu (%s)"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
-msgstr ""
+msgstr "XML-hnúttur er ikki til"
 
 #: lib/SP/Storage/File/XmlHandler.php:167
 msgid "There aren't any items to save"
@@ -4847,7 +4851,7 @@ msgstr "Ógildig mynd"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
 msgid "Javascript is needed in order to run correctly"
-msgstr ""
+msgstr "Javascript er neyðugt fyri at virka rétt"
 
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:70
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:127
@@ -4925,7 +4929,7 @@ msgstr "Leita eftir kontur eftir bólkanavni"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:23
 msgid "Returns the account for the given ID"
-msgstr ""
+msgstr "Skilar kontu fyri geva ID"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:24
 msgid "Search for accounts with expired password"
@@ -4942,7 +4946,7 @@ msgstr "Avgreiðsla til serviðurskifti"
 #: app/modules/web/themes/material-blue/views/_partials/no_records_found.inc:10
 #: app/modules/web/themes/material-blue/views/account/search-index.inc:19
 msgid "No records found"
-msgstr ""
+msgstr "Eingin skráseting funnin"
 
 #: app/modules/web/themes/material-blue/views/account/account-editpass.inc:85
 #: app/modules/web/themes/material-blue/views/account/account.inc:180
@@ -5140,16 +5144,16 @@ msgstr "Loyniorðsdato"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:37
 msgid "Drop files here (max. 5) or click to select"
-msgstr ""
+msgstr "Sleppt fílur her (mest 5) ella smætt at velja"
 
 #: app/modules/web/themes/material-blue/views/account/files.inc:39
 #, php-format
 msgid "Maximum file size: %d MB"
-msgstr ""
+msgstr "Mesta fílustødd: %d MB"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:35
 msgid "Search in Wiki"
-msgstr ""
+msgstr "Leita í Wiki"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:84
 #, php-format
@@ -5158,7 +5162,7 @@ msgstr "Opna leinkja til: %s"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:111
 msgid "Password Expired"
-msgstr ""
+msgstr "Loyniorð runnið út"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:125
 msgid "Private Account (Group)"
@@ -5168,17 +5172,17 @@ msgstr "Privat konta (Deild)"
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:150
 #: app/resources/strings.js.inc:75 app/resources/actions.xml:253
 msgid "Delete Favorite"
-msgstr ""
+msgstr "Strika úr upptekin"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:160
 #: app/resources/strings.js.inc:74 app/resources/actions.xml:247
 msgid "Mark as Favorite"
-msgstr ""
+msgstr "Merk sum upptikin"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:182
 msgid "Attachments"
-msgstr ""
+msgstr "Viðheft"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:209
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:220
@@ -5187,29 +5191,29 @@ msgstr "Leinkja til Wiki"
 
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:212
 msgid "View at Wiki"
-msgstr ""
+msgstr "Sjá í Wiki"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:60
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:230
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:231
 msgid "Global search"
-msgstr ""
+msgstr "Altmun leit"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
 #: app/resources/strings.js.inc:78
 msgid "Display All"
-msgstr ""
+msgstr "Vís alt"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:81
 #: app/resources/strings.js.inc:77 app/resources/actions.xml:241
 msgid "Show Favorites"
-msgstr ""
+msgstr "Vís upptekin"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:86
 msgid "Favorites Filtering"
-msgstr ""
+msgstr "Sía upptekin"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:101
 msgid "Accounts per page"
@@ -5217,7 +5221,7 @@ msgstr "Kontur pr- síðu"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:109
 msgid "More Filters"
-msgstr ""
+msgstr "Fleiri flötur"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:114
 msgid "Select Tag"
@@ -5254,11 +5258,11 @@ msgstr "'%s'-víðkanin er ikki tøk"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:16
 msgid "This extension is needed to display passwords as images"
-msgstr ""
+msgstr "Henda víðkáning er neyðug til at vísa loyniorð sum myndir"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:29
 msgid "Searching"
-msgstr ""
+msgstr "Leitar"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:35
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:51
@@ -5279,15 +5283,15 @@ msgstr "Kontuloyniorðsógildardato"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:70
 msgid "Enables the accounts password expiry date."
-msgstr ""
+msgstr "Virkjar renningardagsett av kontuloyniorðum."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:78
 msgid "Password expiry time"
-msgstr ""
+msgstr "Renningartíð loyniorðs"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:83
 msgid "Number of days for account's password expiry date."
-msgstr ""
+msgstr "Tal av dagar til renningardagsett kontuloyniorðs."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:93
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:38
@@ -5302,11 +5306,12 @@ msgstr "Kontunavn eins og leinkju"
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
 msgid "Enables to use the account name as a link to account details."
-msgstr "Ger tað møguligt at brúka kontunavnið sum leinkju til kontuupplýsingar"
+msgstr ""
+"Ger tað møguligt at brúka kontunavnið sum leinkju til kontuupplýsingar"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:127
 msgid "Global searches"
-msgstr ""
+msgstr "Altmun leitir"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:128
 msgid ""
@@ -5356,8 +5361,8 @@ msgid ""
 "By default, user in a secondary group is granted if the secondary group is "
 "set as user's main group."
 msgstr ""
-"Sum sjálvsett, ein brúkari í einari undirdeild er játtað, um undirdeildin er "
-"settur sum høvuðsdeild brúkarans."
+"Sum sjálvsett, ein brúkari í einari undirdeild er játtað, um undirdeildin er"
+" settur sum høvuðsdeild brúkarans."
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:196
@@ -5371,12 +5376,13 @@ msgid "Enable Public Links"
 msgstr "Virka almennar leinkjur"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
-msgstr ""
+msgid ""
+"Enables the ability to create public links to view an account's details"
+msgstr "Loyvur at gera almennar leinkjur til at sía kontufrágreiðing"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:218
 msgid "Linked accounts will be visible by anyone that have the link."
-msgstr ""
+msgstr "Bundnar kontur eru sjónligar fyri øllum sum hava leinkjuna."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:220
 msgid ""
@@ -5386,42 +5392,42 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:236
 msgid "Use an image for password"
-msgstr ""
+msgstr "Nýt mynd fyri loyniorð"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:238
 msgid "The account password is shown as image."
-msgstr ""
+msgstr "Kontuloyniorðið er vísað sum mynd."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:247
 msgid "Expire time"
-msgstr ""
+msgstr "Renningartíð"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:256
 msgid "Expire time (minutes)"
-msgstr ""
+msgstr "Renningartíð (mínuttir)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271
 msgid "Maximum visits"
-msgstr ""
+msgstr "Mesta vitjanir"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:297
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:411
 msgid "Files management"
-msgstr ""
+msgstr "Fílustýring"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:298
 msgid "Enables the uploading and downloading of accounts files."
-msgstr ""
+msgstr "Loyvur upphlaðing og niðurtak av kontufílum."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:306
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:319
 msgid "Allowed MIME types"
-msgstr ""
+msgstr "Loyvdar MIME-slag"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:311
 msgid "Allowed file MIME types for uploading."
-msgstr ""
+msgstr "Loyvdar MIME-slag til upphlaðing."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:314
 msgid ""
@@ -5431,19 +5437,19 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
-msgstr ""
+msgstr "Mesta fílustødd"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:339
 msgid "Sets the maximum file size for uploading."
-msgstr ""
+msgstr "Setur mesta fílustødd til upphlaðing."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:343
 msgid "Absolute maximum is 16MB."
-msgstr ""
+msgstr "Mesta leyfdir er 16 MB."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:354
 msgid "Maximum file size in kilobytes"
-msgstr ""
+msgstr "Mesta fílustødd í kilobytes"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:17
 msgid "This extension is needed to build the application's backup files"
@@ -5476,8 +5482,8 @@ msgid ""
 "The backup allows you to save and download sysPass database and application "
 "files including its configuration."
 msgstr ""
-"Trydgaravritini gera tað møguligt at goyma og niðurtaka sysPass-dátugrunnin, "
-"forritsfílurnar harímillum uppsetanina."
+"Trydgaravritini gera tað møguligt at goyma og niðurtaka sysPass-dátugrunnin,"
+" forritsfílurnar harímillum uppsetanina."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:83
 msgid ""
@@ -5576,8 +5582,9 @@ msgstr "Brúkarir skulu skriva nýggja yvirloyniorðið."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
-msgid "It will be updated %s accounts. This process could take some time long."
-msgstr ""
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
+msgstr "Tað verða dagførd %s kontur. Henda ferðin kann taka nakrar stundir."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
@@ -5631,7 +5638,7 @@ msgstr "Fyribilsloyniorð"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:219
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:234
 msgid "Not generated"
-msgstr ""
+msgstr "Ikki gjørd"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:224
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:227
@@ -5659,8 +5666,8 @@ msgstr "Sendir ein teldupost til allar brúkarar ella bara valdar deildir."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
 "Fyribilsyvirloyniorðið er brúkt sum eitt yvirloyniorð til brúkaran ið skal "
 "skriva tað tá innritað verður. Soleiðis noyðast tey ikki at vita verðuliga "
@@ -5668,7 +5675,7 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
-msgstr ""
+msgstr "Gera"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:30
 msgid "Use Auth Basic"
@@ -5814,18 +5821,19 @@ msgstr "Mál"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr ""
 "Setur heiltaka forritamálið. Tú kanst seta eitt \"pr. brúkara\" mál í "
 "stilllingarnar"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"Fyri at betra ella gera umsetingar, kanst tú vera við her: https://poeditor."
-"com/join/project/fmlsBuugyv"
+"Fyri at betra ella gera umsetingar, kanst tú vera við her: "
+"https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -5850,7 +5858,7 @@ msgstr "Setuavbróting (s)"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:117
 msgid "Application URL"
-msgstr ""
+msgstr "URL forritið"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:106
 msgid ""
@@ -5882,8 +5890,8 @@ msgstr "Umsitingarsøða"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr ""
 "Í hesari støðu, kann eingin rita seg inn í forritið. Fyri at sløkkja, skal "
 "tú annaðhvørt broyta stillingarfíluna ella óseta í síðuteiginum."
@@ -5930,11 +5938,11 @@ msgstr "CSV/XML-innflyting"
 #: app/modules/web/themes/material-blue/views/config/import.inc:18
 #: app/modules/web/themes/material-blue/views/config/import.inc:28
 msgid "Default User"
-msgstr ""
+msgstr "Vanligur brúkari"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:23
 msgid "Sets the default user for the accounts imported."
-msgstr ""
+msgstr "Setur vanliga brúkara fyri innfluttar kontur."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:50
 msgid "Sets the default group for the accounts imported."
@@ -5942,7 +5950,7 @@ msgstr "Setur sjálvsettu deild innfluttu kontanna."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:75
 msgid "Drop files here or click to select"
-msgstr ""
+msgstr "Sleppt fílur her ella smætt at velja"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:105
 msgid ""
@@ -5956,7 +5964,7 @@ msgstr "Stuðlaðu XML-fílusniðini eru: sysPass, KeePass og KeePassX"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:109
 msgid "Drag & Drop the file into the import zone or click over the arrow."
-msgstr ""
+msgstr "Drag & drop fílina inn í innflyttingarsvæðið ella smætt á ørvin."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:111
 msgid ""
@@ -5968,23 +5976,19 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:113
 msgid "The CSV import file requires the following format:"
-msgstr ""
+msgstr "CSV-innflyttingarfílan krevur fylgjandi snið:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"kontunavn\";\"viðskifti\";\"bólkur\";\"url\";\"brúkari\";\"loyniorð\";"
-"\"upprit\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"kontunavn\";\"viðskifti\";\"bólkur\";\"url\";\"brúkari\";\"loyniorð\";\"upprit\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid ""
 "In all cases, if the client or category do not exist they will be created "
 "automatically."
 msgstr ""
-"Í øllum tilfellum, um ein viðskifti ella bólkur ikki er til, verða tey sjálv "
-"skapað."
+"Í øllum tilfellum, um ein viðskifti ella bólkur ikki er til, verða tey sjálv"
+" skapað."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:125
 msgid "XML"
@@ -6014,7 +6018,7 @@ msgstr "CSV"
 #: app/modules/web/themes/material-blue/views/config/import.inc:180
 #: app/modules/web/themes/material-blue/views/config/import.inc:195
 msgid "CSV delimiter"
-msgstr ""
+msgstr "CSV-skilar"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:185
 msgid "It's only needed for CSV files."
@@ -6049,15 +6053,15 @@ msgstr "Ótøkur víðkanir"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:65
 msgid "Used Memory"
-msgstr ""
+msgstr "Nýtt minni"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:69
 msgid "Download rate"
-msgstr ""
+msgstr "Niðurtakstiðminni"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:72
 msgid "OP Cache"
-msgstr ""
+msgstr "OP-goymsla"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:91
 #: app/modules/web/themes/material-blue/views/config/info.inc:94
@@ -6068,17 +6072,19 @@ msgstr "Uppsetanartrygdaravrit"
 #: app/modules/web/themes/material-blue/views/config/info.inc:186
 #, php-format
 msgid "Download %s"
-msgstr ""
+msgstr "Tak niður %s"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:118
 msgid "Tells whether the language is available or not."
-msgstr ""
+msgstr "Vísur um málið er tøkt ella ikki."
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:122
 msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 msgstr ""
+"Um tað er ikki innlagt, þarftu at innleggja rættar stýrikernisstøður. Meiri "
+"frágreiðing á Wiki."
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:134
 #: app/modules/web/themes/material-blue/views/config/info.inc:144
@@ -6092,20 +6098,20 @@ msgstr "Sigur hvørt setudáta er bronglað á ambætaran ella ikki"
 #: app/modules/web/themes/material-blue/views/config/info.inc:151
 #: app/modules/web/themes/material-blue/views/config/info.inc:154
 msgid "Loaded Plugins"
-msgstr ""
+msgstr "Hladdir ískoytisforrit"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:177
 #: app/modules/web/themes/material-blue/views/config/info.inc:180
 msgid "Log file"
-msgstr ""
+msgstr "Skrásetingarfíla"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:16
 msgid "This extension is needed to connect to the LDAP server"
-msgstr ""
+msgstr "Henda víðkáning er neyðug til at samskipa LDAP-ambætaran"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:46
 msgid "Enable LDAP"
-msgstr ""
+msgstr "Virkja LDAP"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:48
 msgid "Enables authentication against an LDAP server."
@@ -6117,13 +6123,13 @@ msgstr "Háttalagið brúkar MySQL sum neyðloysn"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables the connection over TLS"
-msgstr ""
+msgstr "Virkjar samband við TLS"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:76
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:78
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:82
 msgid "Server Type"
-msgstr ""
+msgstr "Ambætaraslag"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
 msgid "Hostname or IP address of LDAP server."
@@ -6135,23 +6141,23 @@ msgstr "Hýsunavn ella IP-atsetur á LDAP-ambætara."
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:228
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:119
 msgid "Examples:"
-msgstr ""
+msgstr "Dæmi:"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:124
 msgid "Bind User"
-msgstr ""
+msgstr "Bindibrúkari"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:129
 msgid "User to connect to LDAP service."
-msgstr ""
+msgstr "Brúkari til samband við LDAP-tænastu."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:154
 msgid "Bind Password"
-msgstr ""
+msgstr "Bindiloyniorð"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:159
 msgid "LDAP connection user's password"
-msgstr ""
+msgstr "Loyniorð LDAP-sambandbrúkarans"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:177
 msgid ""
@@ -6164,7 +6170,7 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:185
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:209
 msgid "Search base"
-msgstr ""
+msgstr "Leitargrunnur"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:190
 msgid "LDAP base to perform the LDAP users search."
@@ -6185,7 +6191,7 @@ msgstr "Setur sjálvsettu deild brúkaranna hjá nýgjørdum LDAP-brúkarum."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:278
 msgid "Sets the default profile for the newly created LDAP users."
-msgstr ""
+msgstr "Setur vanliga vanga fyri nýggjir LDAP-brúkarar."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:330
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:494
@@ -6204,11 +6210,11 @@ msgstr "Lýsir eginleikan til innriting brúkarans tá innflutt verður."
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:359
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:369
 msgid "Name Attribute"
-msgstr ""
+msgstr "Navnahátritt"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:364
 msgid "Defines the attribute for the user's name when importing."
-msgstr ""
+msgstr "Skilgreinir hátributtin fyri navn brúkarans við innflytting."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:394
 msgid "Import Groups"
@@ -6243,7 +6249,7 @@ msgstr "Virka teldupostarfráboðanir"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:48
 msgid "Enable requests by email"
-msgstr ""
+msgstr "Virkja beiðnir við teldubræv"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:50
 msgid ""
@@ -6315,24 +6321,24 @@ msgstr "Dømi:"
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:88
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:110
 msgid "Base URL"
-msgstr ""
+msgstr "Grundar-URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:93
 msgid "DokuWiki base URL"
-msgstr ""
+msgstr "DokuWiki grundar-URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:121
 msgid "User for connecting to the DokuWiki API."
-msgstr ""
+msgstr "Brúkari til samband við DokuWiki API."
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:149
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:165
 msgid "Namespace"
-msgstr ""
+msgstr "Navnarønd"
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:154
 msgid "Namespace used to search pages."
-msgstr ""
+msgstr "Navnarønd brúkt til at leita síður."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:35
 msgid "Enable Wiki links"
@@ -6346,11 +6352,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:44
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:71
 msgid "Wiki search URL"
-msgstr ""
+msgstr "URL til Wiki-leit"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:49
 msgid "URL that Wiki uses for making an entry searching."
-msgstr ""
+msgstr "URL sum Wiki nýtir til at leita innslátt."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:53
 msgid "The client's name is used as parameter."
@@ -6359,11 +6365,11 @@ msgstr "Navn viðskiftans er brúkt sum viðurskifti."
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:77
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:104
 msgid "Wiki page URL"
-msgstr ""
+msgstr "URL á Wiki-síðu"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:82
 msgid "URL that Wiki uses for accessing to the entry details."
-msgstr ""
+msgstr "URL sum Wiki nýtir til at lesa frágreiðing innsláttarins."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:86
 msgid "Account's name is used as parameter of Wiki search variable."
@@ -6372,11 +6378,11 @@ msgstr "Navn kontunnar er brúkt sum viðurskifti til Wiki-leitubrygdil."
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:110
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:124
 msgid "Account name prefix"
-msgstr ""
+msgstr "Fyrirrennari á kontunavn"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:115
 msgid "Prefix to determine which accounts have a link to the Wiki."
-msgstr ""
+msgstr "Fyrirrennari til at ávísa hvaðar kontur hava leinkju til Wiki."
 
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:17
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:19
@@ -6396,11 +6402,11 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:21
 msgid "sysPass Admin"
-msgstr ""
+msgstr "sysPass fyrisitari"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:29
 msgid "sysPass admin user"
-msgstr ""
+msgstr "sysPass fyrisitarabrúkari"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:37
 msgid "sysPass administrator's login"
@@ -6412,15 +6418,15 @@ msgstr "Dátugrunnaruppsetan"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:79
 msgid "DB access user"
-msgstr ""
+msgstr "DB atgongsbrúkari"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:87
 msgid "An user with MySQL admin rights"
-msgstr ""
+msgstr "Ein brúkari við MySQL umsitararættindum"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:95
 msgid "DB access password"
-msgstr ""
+msgstr "DB atgongsloyniorð"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:104
 #: app/modules/web/themes/material-blue/views/install/index.inc:112
@@ -6441,7 +6447,7 @@ msgstr "Hýsingarstøða"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:156
 msgid "It does not create or verify the user's permissions on the DB"
-msgstr ""
+msgstr "Tað gevur ikki ella kannar rættindi brúkarans í DB"
 
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:22
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:28
@@ -6651,12 +6657,12 @@ msgstr "Noyð broyting av loyniorð"
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:273
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:275
 msgid "Entries"
-msgstr ""
+msgstr "Innsláttir"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:282
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:284
 msgid "Last Access"
-msgstr ""
+msgstr "Seinasta atgongd"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:300
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:302
@@ -6735,7 +6741,7 @@ msgstr "Deil leinkju til kontu"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:183
 msgid "Create private account"
-msgstr ""
+msgstr "Ger privata kontu"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:199
 msgid "Create private account for group"
@@ -6743,11 +6749,11 @@ msgstr "Gerð privatkontu fyri deild"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:215
 msgid "Assign permissions"
-msgstr ""
+msgstr "Útnevna rættindi"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:251
 msgid "Users management"
-msgstr ""
+msgstr "Brúkarastýring"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:267
 msgid "Groups management"
@@ -6755,7 +6761,7 @@ msgstr "Deildarleiðsla"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:283
 msgid "Profiles management"
-msgstr ""
+msgstr "Vangastýring"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:299
 msgid "Categories management"
@@ -6775,7 +6781,7 @@ msgstr "Leiðsla av tillagað reinum"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:363
 msgid "API authorizations management"
-msgstr ""
+msgstr "API-heimildastýring"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:379
 msgid "Links management"
@@ -6787,11 +6793,11 @@ msgstr "Kontuleiðsla"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:426
 msgid "Default Values"
-msgstr ""
+msgstr "Sjálvvaldnar virðir"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:427
 msgid "Default Values Management"
-msgstr ""
+msgstr "Stýring av sjálvvaldnum virðum"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
@@ -6809,7 +6815,7 @@ msgstr "Ger eitt trygdaravrit og útflyt"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:495
 msgid "Make accounts import"
-msgstr ""
+msgstr "Gera kontuinnflytting"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:515
 msgid "View event log"
@@ -6817,7 +6823,7 @@ msgstr "Vís hendingarskrá"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:541
 msgid "Profile name"
-msgstr ""
+msgstr "Vanganavn"
 
 #: app/modules/web/themes/material-blue/views/login/index.inc:46
 msgid "Previous Password"
@@ -6834,7 +6840,7 @@ msgstr "Gloymt loyniorðið?"
 #: app/modules/web/themes/material-blue/views/main/update.inc:30
 #: app/resources/strings.js.inc:93
 msgid "Updated"
-msgstr ""
+msgstr "Dagfort"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:36
 #: app/resources/strings.js.inc:94
@@ -6844,7 +6850,7 @@ msgstr "Feilur hendi ímeðan kannað varð eftir dagføringum"
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
 #, php-format
 msgid "Update %s"
-msgstr ""
+msgstr "Dagfør %s"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:20
 msgid "DB Update"
@@ -6860,19 +6866,18 @@ msgid "Security Code"
 msgstr "Trygdarkota"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr "Kotan er sett í sysPassuppsetingarfíluna, merka sum \"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
 msgid "If items IDs are not set, they will be created."
-msgstr ""
+msgstr "Um ID-tøl á hlutum eru ikki sett, verða tey gjørd."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:74
 msgid "Enter a valid user ID for the accounts"
@@ -6892,7 +6897,7 @@ msgstr "Skriva eitt gildugt deildareyðmerki til brúkaran"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:118
 msgid "Enter a valid profile ID for the users"
-msgstr ""
+msgstr "Skriva gildug vanga-ID fyri brúkarar"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:128
 msgid ""
@@ -6914,7 +6919,7 @@ msgstr "Eg havi gjørt eitt fullkomi sysPass-avrit"
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:176
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:41
 msgid "Please, wait while the process is running"
-msgstr ""
+msgstr "Bíðget meðan tilgongdin koyrir"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:186
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:51
@@ -6960,16 +6965,16 @@ msgstr "Forritið skal dagførast"
 
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:16
 msgid "Please enter the security code to start the upgrade"
-msgstr ""
+msgstr "Skriva trygdarkóðan at byrja dagfering"
 
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:6
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:13
 msgid "Request Password Change"
-msgstr ""
+msgstr "Biðj um at broyta loyniorð"
 
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:30
 msgid "User's Email"
-msgstr ""
+msgstr "Teldubræv brúkarans"
 
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:41
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:54
@@ -6983,19 +6988,19 @@ msgstr "Broyt"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:107
 msgid "Sort search results by views"
-msgstr ""
+msgstr "Raðset leituúrslit eftir sjóningum"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:109
 msgid "Sorts accounts search results by the number of account's views"
-msgstr ""
+msgstr "Raðsetur kontuúrslit eftir sjóningatali"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:124
 msgid "Navigation bar on top"
-msgstr ""
+msgstr "Navigatiónsstrika uppi"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
 msgid "Displays a navigation bar on top of the search results."
-msgstr ""
+msgstr "Vísur navigatiónsstrika yvir leituúrslitum."
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
@@ -7011,7 +7016,7 @@ msgstr "Fráboðanir í forritinum"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:177
 msgid "Enables the active In-App notifications polling"
-msgstr ""
+msgstr "Virkjar virknar fráboðanir í forritinum"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:192
 msgid "Show Filters"
@@ -7019,13 +7024,13 @@ msgstr "Vís sílur"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:194
 msgid "Displays the additional filters selection on the accounts search."
-msgstr ""
+msgstr "Vísur tilleggsflötur á kontuleit."
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:16
 #: app/resources/actions.xml:277
 msgid "View Wiki"
-msgstr ""
+msgstr "Sjá Wiki"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:22
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:31
@@ -7036,12 +7041,12 @@ msgstr "Síða ikki funnin"
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:24
 #, php-format
 msgid "Search results of '%s'"
-msgstr ""
+msgstr "Leituúrslit av '%s'"
 
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:27
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:37
 msgid "Page"
-msgstr ""
+msgstr "Síða"
 
 #: app/resources/strings.js.inc:27
 msgid "There was an error"
@@ -7053,11 +7058,11 @@ msgstr "Setan liguð"
 
 #: app/resources/strings.js.inc:29
 msgid "Delete account?"
-msgstr ""
+msgstr "Strika kontu?"
 
 #: app/resources/strings.js.inc:30
 msgid "Delete user?"
-msgstr ""
+msgstr "Strika brúkara?"
 
 #: app/resources/strings.js.inc:31
 msgid "You should save configuration in order to take effect"
@@ -7089,7 +7094,7 @@ msgstr "Tú átti brúkt í minsta lagið 8 tekn"
 
 #: app/resources/strings.js.inc:38
 msgid "Delete item?"
-msgstr ""
+msgstr "Strika tað?"
 
 #: app/resources/strings.js.inc:41
 msgid "Delete file?"
@@ -7109,7 +7114,7 @@ msgstr "Fílystødd ikki loyvd"
 
 #: app/resources/strings.js.inc:45
 msgid "MIME type not allowed"
-msgstr ""
+msgstr "MIME-slag ikki leyft"
 
 #: app/resources/strings.js.inc:46
 msgid "Clear the event log out?"
@@ -7121,7 +7126,7 @@ msgstr "Einki úrslit"
 
 #: app/resources/strings.js.inc:53
 msgid "Password options"
-msgstr ""
+msgstr "Loyniorðsmøguleikar"
 
 #: app/resources/strings.js.inc:54
 msgid "Generate random password"
@@ -7129,7 +7134,7 @@ msgstr "Ger tilvildarligt loyniorð"
 
 #: app/resources/strings.js.inc:55
 msgid "Complexity"
-msgstr ""
+msgstr "Flíkni"
 
 #: app/resources/strings.js.inc:56
 msgid "Reset"
@@ -7137,7 +7142,7 @@ msgstr "Endurset"
 
 #: app/resources/strings.js.inc:57
 msgid "Password strength level"
-msgstr ""
+msgstr "Styrkleiki loyniorðs"
 
 #: app/resources/strings.js.inc:58
 msgid "Show Password"
@@ -7161,30 +7166,31 @@ msgstr "Feilur hendi ímeðan avritað varð í setiborðinum"
 
 #: app/resources/strings.js.inc:73
 msgid "Send notifies?"
-msgstr ""
+msgstr "Senda fráboðanir?"
 
 #: app/resources/strings.js.inc:76
 msgid "Clear Selection"
-msgstr ""
+msgstr "Strika úrval"
 
 #: app/resources/strings.js.inc:81
 msgid "Now"
-msgstr ""
+msgstr "Nú"
 
 #: app/resources/strings.js.inc:82
 msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
-msgstr ""
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
+msgstr "Henda ferðin flytur inn fundar LDAP-brúkarar. Vilt tú halda fram?"
 
 #: app/resources/strings.js.inc:83
 msgid "This action will reset all plugin data. Do you want to continue?"
 msgstr ""
-"Hesin gerningurin endursetur øll dáta frá ískoytingarforritum. Vilt tú halda "
-"á fram?"
+"Hesin gerningurin endursetur øll dáta frá ískoytingarforritum. Vilt tú halda"
+" á fram?"
 
 #: app/resources/strings.js.inc:84
 msgid "This process could take some time long. Do you wish to continue?"
-msgstr ""
+msgstr "Henda ferðin kann taka nakra tíð. Ynskir tú at halda fram?"
 
 #: app/resources/strings.js.inc:87
 msgid "Performing task. Please, do not close browser's window/tab."
@@ -7204,15 +7210,15 @@ msgstr "Avrikar sjálvinnritan"
 
 #: app/resources/strings.js.inc:92
 msgid "There is a more recent version of {0} plugin ({1})"
-msgstr ""
+msgstr "Tað er nýggjari útgáva av {0} ískoytisforrit ({1})"
 
 #: app/resources/strings.js.inc:95
 msgid "sysPass Notices"
-msgstr ""
+msgstr "sysPass fráboðanir"
 
 #: app/resources/strings.js.inc:96
 msgid "Clear the tracks out?"
-msgstr ""
+msgstr "Strika sporin?"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:7
@@ -7529,7 +7535,6 @@ msgstr ""
 msgid "Clear the tracks out"
 msgstr ""
 
-
 msgid "Installation"
 msgstr "Innlegging"
 
@@ -7543,41 +7548,17 @@ msgid "Hosting"
 msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Stovnar dátugrunnin og dátugrunnsbrúkaran við teimum atgongdum, ið eru givnar"
+msgstr ""
+"Stovnar dátugrunnin og dátugrunnsbrúkaran við teimum atgongdum, ið eru "
+"givnar"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Brúkar tær givnu atgongdirnar beinleiðis — dátugrunnurin má longu vera til"
-
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "\"/config\" mappan er ikki til."
-
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "Kann ikki skriva inni í \"/config\" mappuna"
-
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "Loyvisstillingarnar eru skeivar í \"/config\" mappuna"
-
-#~ msgid "Master Password %s"
-#~ msgstr "Yvirloyniorð %s"
-
-#~ msgid "Mail service unavailable"
-#~ msgstr "Teldupostartænastan er ikki til taks"
-
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Virkar Active Directory LDAP-sambindingarstøðu."
-
-#~ msgid "Recipient email address"
-#~ msgstr "Teldupostbústaður móttakarans"
-
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Skriva víðkingina og trýst á Enter fyri at skoyta uppí. Minst til at "
-#~ "goyma uppsetanina."
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Brúkar tær givnu atgongdirnar beinleiðis — dátugrunnurin má longu vera til"
 
 msgid "Passwords match"
-msgstr ""
+msgstr "Loyniorð stemma"
 
 msgid "Welcome"
 msgstr "Vælkomin"
@@ -7585,8 +7566,12 @@ msgstr "Vælkomin"
 msgid "Next"
 msgstr "Næsta"
 
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Vælkomin til %s! Hesin vegleiðarin førir teg gjøgnum innleggingina í nøkrum einføldum stigum."
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Vælkomin til %s! Hesin vegleiðarin førir teg gjøgnum innleggingina í nøkrum "
+"einføldum stigum."
 
 msgid "Before starting, you will need the following information:"
 msgstr "Áðrenn tú byrjar, hevur tú brúk fyri hesum upplýsingum:"
@@ -7603,8 +7588,12 @@ msgstr "Navnið á sysPass dátugrunninum"
 msgid "All set? Press Next to begin."
 msgstr "Alt klárt? Trýst á Næsta fyri at byrja."
 
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "Málið er funnið út frá kaganum hjá tær. Verður tað broytt, verður henda síðan lesin inn av nýggjum."
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"Málið er funnið út frá kaganum hjá tær. Verður tað broytt, verður henda "
+"síðan lesin inn av nýggjum."
 
 msgid "The Master Password is used to encrypt the accounts passwords."
 msgstr "Yvirloyniorðið verður brúkt at brongla loyniorðini hjá kontunum."
@@ -7692,3 +7681,537 @@ msgstr "Umrødd teigur ikki funnin"
 
 msgid "The Master Password and its confirmation must be the same"
 msgstr "Høvuðsloyniorðið og váttanin mugu vera tey somu"
+
+msgid "%s cannot be blank"
+msgstr "%s má ikki vera tomt"
+
+msgid "'/config' directory does not exist."
+msgstr "Mappin '/config' er ikki til."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "Rættindi á mappuni '/config' eru rang"
+
+msgid "A client is needed"
+msgstr "Ein viðskifti manglar"
+
+msgid "A target is needed"
+msgstr "Eitt mál manglar"
+
+msgid "API not initialized"
+msgstr "API ikki sett í gongd"
+
+msgid "Advanced Settings"
+msgstr "Avrindi stillingar"
+
+msgid "App"
+msgstr "Forrit"
+
+msgid "Application"
+msgstr "Forrit"
+
+msgid "Ask for admin password"
+msgstr "Beiðst fyrisitaraloyniorð"
+
+msgid "Ask for current master password"
+msgstr "Beiðst núverandi yvirloyniorð"
+
+msgid "Ask for database password"
+msgstr "Beiðst dátugrunn-loyniorð"
+
+msgid "Ask for language"
+msgstr "Beiðst mál"
+
+msgid "Ask for master password"
+msgstr "Beiðst yvirloyniorð"
+
+msgid "Ask for path"
+msgstr "Beiðst slóð"
+
+msgid "Authentication already initialized"
+msgstr "Samgildi er longu sett í gongd"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr "Heimildargeva skilaði ikki gongnum brúkarans"
+
+msgid "Authorization already exist"
+msgstr "Heimild er longu til"
+
+msgid "Authorization displayed"
+msgstr "Heimild víst"
+
+msgid "Authorization removed"
+msgstr "Heimild strikað"
+
+msgid "Available"
+msgstr "Tøkt"
+
+msgid "Backup actions"
+msgstr "Trygdarvritingarhandlingar"
+
+msgid "Backup path set to: %s"
+msgstr "Trygdarvritingarslóð sett til: %s"
+
+msgid "Clear Tracks"
+msgstr "Strika spor"
+
+msgid "Config"
+msgstr "Stillingar"
+
+msgid "Couldn't deserialize the data"
+msgstr "Góðist ikki at afserialzera gongn"
+
+msgid "Custom field added"
+msgstr "Tillagaður reinur lagdur til"
+
+msgid "Custom field displayed"
+msgstr "Tillagaður reinur víst"
+
+msgid "Custom field removed"
+msgstr "Tillagaður reinur strikað"
+
+msgid "Custom field updated"
+msgstr "Tillagaður reinur dagførdur"
+
+msgid "DB"
+msgstr "DB"
+
+msgid "Data"
+msgstr "Gongn"
+
+msgid "Database name contains invalid characters"
+msgstr "Dátugrunnsnavn inniheldur ógild stavi"
+
+msgid "Downloads"
+msgstr "Niðurtøk"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr "Klasan er ikki til ella fílugongn kunnu ikki afserialzerast í: %s"
+
+msgid "Error executing the query"
+msgstr "Feilur við at keyra spurnalið"
+
+msgid "Error loading XML data"
+msgstr "Feilur við at hlaða XML-gongn"
+
+msgid "Error while adding the event log"
+msgstr "Feilur við at leggja til hendursskráning"
+
+msgid "Error while applying the update"
+msgstr "Feilur við at leggja til dagføring"
+
+msgid "Error while clearing the tracks out"
+msgstr "Feilur við at strika spor"
+
+msgid "Error while deleting the permission"
+msgstr "Feilur við at strika rættindi"
+
+msgid "Error while deleting the tags"
+msgstr "Feilur við at strika merki"
+
+msgid "Error while reading the CSV file file"
+msgstr "Feilur við at lesa CSV-fíluna"
+
+msgid "Error while renewing the link"
+msgstr "Feilur við at endurnýggja leinkju"
+
+msgid "Expiry Date"
+msgstr "Renningardagsett"
+
+msgid "File displayed"
+msgstr "Fíla víst"
+
+msgid "File not found: %s"
+msgstr "Fíla ikki funnin: %s"
+
+msgid "File removed"
+msgstr "Fíla strikað"
+
+msgid "File uploaded"
+msgstr "Fíla hikladd upp"
+
+msgid "Force sysPass installation"
+msgstr "Ger sysPass innleggjing skylduga"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Tak tillagaðar reinir fyri kontu í svarinum"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Tak tillagaðar reinir fyri bólk í svarinum"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Tak tillagaðar reinir fyri viðskifti í svarinum"
+
+msgid "Group Attributes"
+msgstr "Deildarháttrittar"
+
+msgid "Group Filter"
+msgstr "Deildarflötur"
+
+msgid "Group data not set"
+msgstr "Deildargongn ikki sett"
+
+msgid "Insecure connection"
+msgstr "Ótryggt samband"
+
+msgid "Install sysPass"
+msgstr "Innlegg sysPass"
+
+msgid "Install sysPass?"
+msgstr "Innlegg sysPass?"
+
+msgid "Installation aborted"
+msgstr "Innleggjing avvend"
+
+msgid "Invalid class for loaded file data"
+msgstr "Ógild klasa fyri hladdar fílugongn"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Ógilt gongnaslag. Vantað: %s"
+
+msgid "Invalid query type for count"
+msgstr "Ógilt spurnaliðslag fyri teljing"
+
+msgid "Invalid route"
+msgstr "Ógild slóð"
+
+msgid "Invalid target class"
+msgstr "Ógild málklasa"
+
+msgid "LDAP connection error"
+msgstr "LDAP-sambandsfeilur"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "LDAP-flötur fyri uppslag av deildahlutum."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "LDAP-flötur fyri uppslag av brúkarahlutum."
+
+msgid "Log"
+msgstr "Skráning"
+
+msgid "Logs"
+msgstr "Skráningar"
+
+msgid "Maintenance"
+msgstr "Umsiting"
+
+msgid "Master password loaded"
+msgstr "Yvirloyniorð hikladd"
+
+msgid "Master password to encrypt the data"
+msgstr "Yvirloyniorð til at dulmáls gongn"
+
+msgid "Master password update aborted"
+msgstr "Dagføring av yvirloyniorði avvend"
+
+msgid "Missing Proxy parameters"
+msgstr "Proxy-viðurskifti mangla"
+
+msgid "No accounts updated, only hash"
+msgstr "Eingin kontur dagførdar, bert hash"
+
+msgid "No backup available"
+msgstr "Eingin trygdardavrit til taks"
+
+msgid "No items selected"
+msgstr "Eingin hlutir valdir"
+
+msgid "No lines read from the file"
+msgstr "Eingin línur lesnar úr fíluni"
+
+msgid "No plugins loaded"
+msgstr "Eingin ískoytisforrit hladdir"
+
+msgid "Non authoritative auth"
+msgstr "Ikki-heimildargeva samgildi"
+
+msgid "Notification added"
+msgstr "Fráboðan lögð til"
+
+msgid "Notification displayed"
+msgstr "Fráboðan víst"
+
+msgid "Notification marked as read"
+msgstr "Fráboðan merkt sum lisin"
+
+msgid "Notification removed"
+msgstr "Fráboðan strikað"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr "Bert bókstavir, tøl, $, _ og - eru loyvdar í dátugrunnsnavn"
+
+msgid "Path is needed"
+msgstr "Slóð manglar"
+
+msgid "Path where to store the backup files"
+msgstr "Slóð til at goyma trygdarvritingarfílur"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Skriva slóðina til at goyma trygdarvritingarfílur"
+
+msgid "Please provide database admin password"
+msgstr "Uppgeva dátugrunn-fyrisitaraloyniorð"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Uppgeva sysPass-fyrisitaraloyniorð"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Uppgeva sysPass-fyrisitaraloyniorð aftur"
+
+msgid "Please provide sysPass master password"
+msgstr "Uppgeva sysPass-yvirloyniorð"
+
+msgid "Please provide sysPass master password again"
+msgstr "Uppgeva sysPass-yvirloyniorð aftur"
+
+msgid "Please provide the current master password"
+msgstr "Uppgeva núverandi yvirloyniorð"
+
+msgid "Please provide the current master password again"
+msgstr "Uppgeva núverandi yvirloyniorð aftur"
+
+msgid "Please provide the new master password"
+msgstr "Uppgeva nýtt yvirloyniorð"
+
+msgid "Please provide the new master password again"
+msgstr "Uppgeva nýtt yvirloyniorð aftur"
+
+msgid "Please run setup method before"
+msgstr "Koyra uppsetingarmetodan fyrst"
+
+msgid "Please, check the directory permissions"
+msgstr "Eftirkanna rættindi á mappuni"
+
+msgid "Please, press any key to continue"
+msgstr "Trýst á nakran tast at halda fram"
+
+msgid "Please, restart any browser session to update it"
+msgstr "Endurræs hvørja vafrasetu at dagføra"
+
+msgid "Please, restart the session to update it"
+msgstr "Endurræs setuna at dagføra"
+
+msgid "Plugin already registered"
+msgstr "Ískoytisforrit longu skrásett"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Ískoytisforrit ikki hikladd (sløkt)"
+
+msgid "Plugin not registered"
+msgstr "Ískoytisforrit ikki skrásett"
+
+msgid "Plugin not registered yet"
+msgstr "Ískoytisforrit enn ikki skrásett"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Ískoytisforrit útgáva samsvarandi (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Fyristillingur ikki gildugur fyri henda kannarann"
+
+msgid "Profile data not set"
+msgstr "Vangagongn ikki sett"
+
+msgid "Profile displayed"
+msgstr "Vangi víst"
+
+msgid "Profile removed"
+msgstr "Vangi strikað"
+
+msgid "Public link added"
+msgstr "Almenn leinkja lögð til"
+
+msgid "Public link displayed"
+msgstr "Almenn leinkja víst"
+
+msgid "Public link hash not set"
+msgstr "Hash almennar leinkju ikki sett"
+
+msgid "Public link refreshed"
+msgstr "Almenn leinkja endurnýggjað"
+
+msgid "Public link removed"
+msgstr "Almenn leinkja strikað"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Leita eftir kontunavn við reglulegu tjóðna"
+
+msgid "Secure connection"
+msgstr "Tryggt samband"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Setur altmun forritsmál. Tú kanst seta mál fyri hvønn brúkara í stillingunum"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Slepptu at biðja um staðfesting av innleggjing"
+
+msgid "Skip asking to confirm the update"
+msgstr "Slepptu at biðja um staðfesting av dagføring"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr "Fyrisitaraloyniorðið og staðfestingin skulu vera eins"
+
+msgid "The command is already running in another process"
+msgstr "Boðin keyrir longu í øðrum ferli"
+
+msgid "The current master password"
+msgstr "Núverandi yvirloyniorð"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr "Fílan var útflutt við gamlari útgávu av sysPass (<= 2.10)."
+
+msgid "The new master password to encrypt the data"
+msgstr "Nýtt yvirloyniorð til at dulmáls gongn"
+
+msgid "There are no accounts for processing"
+msgstr "Eingin kontur til at vinna við"
+
+msgid "This command installs sysPass"
+msgstr "Hetta boð innleggur sysPass"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Hetta boð ger fílugrundaðar trygdarvritingu av sysPass dátugrunn og forrit"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr "Hetta boð dagfør sysPass yvirloyniorð fyri øll dulmált gongn"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "Hetta er ein veigamikil ferð, loyst ikki CLI"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr "Loyniorð tokens tá tillagaðar reinir eru tiknar"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Kann ikki gera mappu (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Kann ikki gera mynd"
+
+msgid "Unable to create node"
+msgstr "Kann ikki gera hnútt"
+
+msgid "Unable to import account"
+msgstr "Kann ikki innflyta kontu"
+
+msgid "Unable to import categories"
+msgstr "Kann ikki innflyta bólkar"
+
+msgid "Unable to import clients"
+msgstr "Kann ikki innflyta viðskifti"
+
+msgid "Unable to import tags"
+msgstr "Kann ikki innflyta merki"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Kann ikki opna mappu (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Kann ikki vinna hendur fyri brúkara"
+
+msgid "Unable to process event for user group"
+msgstr "Kann ikki vinna hendur fyri brúkaradeild"
+
+msgid "Unable to process event for user profile"
+msgstr "Kann ikki vinna hendur fyri brúkaravanga"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Kann ikki sleppa lás (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Kann ikki heinta stillingar"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Kann ikki seta rættindi fyri fílu (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Kann ikki skriva í mappuna '/config'"
+
+msgid "Unknown magic method"
+msgstr "Ókennd magic-metoda"
+
+msgid "Unlock Track"
+msgstr "Opna spor"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr "Dagfør yvirloyniorð? (Henna ferð kann ikki takast aftur)"
+
+msgid "Update sysPass master password"
+msgstr "Dagfør sysPass yvirloyniorð"
+
+msgid "Updates"
+msgstr "Dagføringar"
+
+msgid "User Attributes"
+msgstr "Brúkaraháttrittar"
+
+msgid "User Filter"
+msgstr "Brúkaraflötur"
+
+msgid "User data not set"
+msgstr "Brúkaragongn ikki sett"
+
+msgid "User displayed"
+msgstr "Brúkari víst"
+
+msgid "User group Id"
+msgstr "Deild-ID"
+
+msgid "User group description"
+msgstr "Deildarfrágreiðing"
+
+msgid "User group name"
+msgstr "Deildarnavnið"
+
+msgid "User removed"
+msgstr "Brúkari strikað"
+
+msgid "Users Id's to add"
+msgstr "Brúkara-ID-tøl at leggja til"
+
+msgid "Value cannot be blank"
+msgstr "Virðið má ikki vera tomt"
+
+msgid "Web Server"
+msgstr "Vevambætari"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass er longu innlagt. Nýt '--forceInstall' at innleggja tað aftur."
+
+msgid "sysPass is not installed"
+msgstr "sysPass er ikki innlagt"
+
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "\"/config\" mappan er ikki til."
+
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Kann ikki skriva inni í \"/config\" mappuna"
+
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "Loyvisstillingarnar eru skeivar í \"/config\" mappuna"
+
+#~ msgid "Master Password %s"
+#~ msgstr "Yvirloyniorð %s"
+
+#~ msgid "Mail service unavailable"
+#~ msgstr "Teldupostartænastan er ikki til taks"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Virkar Active Directory LDAP-sambindingarstøðu."
+
+#~ msgid "Recipient email address"
+#~ msgstr "Teldupostbústaður móttakarans"
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Skriva víðkingina og trýst á Enter fyri at skoyta uppí. Minst til at goyma "
+#~ "uppsetanina."

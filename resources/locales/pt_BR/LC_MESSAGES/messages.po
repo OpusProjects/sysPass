@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -9,17 +10,15 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Contributors: JAndre Gonzalez, Cristiano Isaac, Eduardo, Felipe, Henrique Claus, JozafaSoares, Keven de Oliveira, Marcelo Baptista, Matiello, Wagner Pinheiro\n"
 "X-Generator: Poedit 1.8.11\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Contributors: JAndre Gonzalez, Cristiano Isaac, Eduardo, Felipe, Henrique "
-"Claus, JozafaSoares, Keven de Oliveira, Marcelo Baptista, Matiello, Wagner "
-"Pinheiro\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
 msgid "Account displayed"
@@ -1217,12 +1216,13 @@ msgstr "The current master password does not match"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
-msgstr ""
+msgstr "Modo de manutenção não habilitado"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
+"Por favor, ative-o para evitar comportamento indesejado de outras sessões"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
@@ -3167,11 +3167,11 @@ msgstr "New Plugin"
 
 #: lib/SP/Plugin/PluginManager.php:392
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "Atualizando plugin"
 
 #: lib/SP/Plugin/PluginManager.php:409
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "Plugin atualizado"
 
 #: lib/SP/Plugin/PluginManager.php:418
 #, php-format
@@ -3256,7 +3256,7 @@ msgstr "User does not belong to the group"
 #: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
-msgstr ""
+msgstr "Evento: %s"
 
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
@@ -3512,17 +3512,17 @@ msgstr "Error while retrieving the notifications"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "Erro ao adicionar dados do plugin"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "Erro ao atualizar dados do plugin"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "Erro ao excluir dados do plugin"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3778,7 +3778,8 @@ msgstr "Master password not set"
 msgid "The account doesn't exist"
 msgstr "The account doesn't exist"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Invalid data"
@@ -3936,7 +3937,7 @@ msgstr "Error while checking the temporary password"
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
 #, php-format
 msgid "%s Master Password"
-msgstr ""
+msgstr "%s Senha Mestra"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
@@ -3957,7 +3958,8 @@ msgid "This password will be valid until: %s"
 msgstr "This password will be valid until: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
 
@@ -4361,7 +4363,7 @@ msgstr "Notification not found"
 #: lib/SP/Services/Plugin/PluginDataService.php:165
 #: lib/SP/Services/Plugin/PluginDataService.php:183
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "Dados do plugin não encontrados"
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4671,7 +4673,8 @@ msgstr "Unable to read/write file (%s)"
 msgid "Unable to delete file (%s)"
 msgstr "Unable to delete file (%s)"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
 msgstr "XML node does not exist"
 
@@ -5212,7 +5215,8 @@ msgid "Enable Public Links"
 msgstr "Enable Public Links"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
+msgid ""
+"Enables the ability to create public links to view an account's details"
 msgstr ""
 "Enables the ability to create public links to view an account's details"
 
@@ -5272,8 +5276,8 @@ msgid ""
 "In order to add more MIME types, you need to add them into mime.xml file "
 "within the config directory."
 msgstr ""
-"Para adicionar mais MIME types, você precisa adicioná-los no arquivo mime."
-"xml dentro da pasta de configuração"
+"Para adicionar mais MIME types, você precisa adicioná-los no arquivo "
+"mime.xml dentro da pasta de configuração"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
@@ -5423,7 +5427,8 @@ msgstr "Users will need to enter the new Master Password."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
-msgid "It will be updated %s accounts. This process could take some time long."
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
 msgstr ""
 "It will be updated %s accounts. This process could take some time long."
 
@@ -5509,12 +5514,12 @@ msgstr "Sends an email to all users or only to those whose group is selected."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
@@ -5664,17 +5669,19 @@ msgstr "Language"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -5699,7 +5706,7 @@ msgstr "Session timeout (s)"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:117
 msgid "Application URL"
-msgstr ""
+msgstr "URL da Aplicação"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:106
 msgid ""
@@ -5731,11 +5738,11 @@ msgstr "Maintenance mode"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:184
 msgid "Check for updates"
@@ -5822,12 +5829,8 @@ msgid "The CSV import file requires the following format:"
 msgstr "The CSV import file requires the following format:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid ""
@@ -5940,7 +5943,8 @@ msgstr "Encrypted Session"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:139
 msgid "Tells whether the session data are encrypted in the server side or not"
-msgstr "Tells whether the session data are encrypted in the server side or not"
+msgstr ""
+"Tells whether the session data are encrypted in the server side or not"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:151
 #: app/modules/web/themes/material-blue/views/config/info.inc:154
@@ -6699,18 +6703,17 @@ msgid "Security Code"
 msgstr "Security Code"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr ""
 "This code is set in sysPass config file within the tag name \"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
 msgid "If items IDs are not set, they will be created."
@@ -6882,7 +6885,6 @@ msgstr "Search results of '%s'"
 msgid "Page"
 msgstr "Page"
 
-
 msgid "Installation"
 msgstr "Instalação"
 
@@ -6898,38 +6900,25 @@ msgstr "Hospedagem"
 msgid "Creates the database and the DB user with the provided credentials"
 msgstr "Cria o banco de dados e o usuário do BD com as credenciais fornecidas"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Usa as credenciais fornecidas diretamente — o banco de dados já deve existir"
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Usa as credenciais fornecidas diretamente — o banco de dados já deve existir"
 
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "\"/config\" directory does not exist."
+msgid "There was an error"
+msgstr "Ocorreu um erro"
 
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "Unable to write into \"/config\" directory"
+msgid "Session finished"
+msgstr "Sessão encerrada"
 
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "\"/config\" directory permissions are wrong"
+msgid "Delete account?"
+msgstr "Excluir conta?"
 
-#~ msgid "Master Password %s"
-#~ msgstr "Master Password %s"
+msgid "Delete user?"
+msgstr "Excluir usuário?"
 
-#~ msgid "Mail service unavailable"
-#~ msgstr "Mail service unavailable"
-
-#~ msgid "There was an error"
-#~ msgstr "There was an error"
-
-#~ msgid "Session finished"
-#~ msgstr "Session finished"
-
-#~ msgid "Delete account?"
-#~ msgstr "Delete account?"
-
-#~ msgid "Delete user?"
-#~ msgstr "Delete user?"
-
-#~ msgid "You should save configuration in order to take effect"
-#~ msgstr "You should save configuration in order to take effect"
+msgid "You should save configuration in order to take effect"
+msgstr "Você deve salvar a configuração para que ela entre em vigor"
 
 msgid "Generated Password"
 msgstr "Senha gerada"
@@ -6949,102 +6938,756 @@ msgstr "Nível muito alto"
 msgid "You should use at least 8 characters"
 msgstr "Você deve usar pelo menos 8 caracteres"
 
-#~ msgid "Delete item?"
-#~ msgstr "Delete item?"
+msgid "Delete item?"
+msgstr "Excluir item?"
 
-#~ msgid "Delete file?"
-#~ msgstr "Delete file?"
+msgid "Delete file?"
+msgstr "Excluir arquivo?"
 
-#~ msgid "Your browser does not support HTML5 file uploads"
-#~ msgstr "Your browser does not support HTML5 file uploads"
+msgid "Your browser does not support HTML5 file uploads"
+msgstr "Seu navegador não suporta uploads de arquivos HTML5"
 
-#~ msgid "Too many files"
-#~ msgstr "Too many files"
+msgid "Too many files"
+msgstr "Muitos arquivos"
 
-#~ msgid "File size not allowed"
-#~ msgstr "File size not allowed"
+msgid "File size not allowed"
+msgstr "Tamanho de arquivo não permitido"
 
-#~ msgid "MIME type not allowed"
-#~ msgstr "MIME type não permitido"
+msgid "MIME type not allowed"
+msgstr "Tipo MIME não permitido"
 
-#~ msgid "Clear the event log out?"
-#~ msgstr "Clear the event log out?"
+msgid "Clear the event log out?"
+msgstr "Limpar o log de eventos?"
 
-#~ msgid "No results"
-#~ msgstr "No results"
+msgid "No results"
+msgstr "Sem resultados"
 
-#~ msgid "Password options"
-#~ msgstr "Password options"
+msgid "Password options"
+msgstr "Opções de senha"
 
-#~ msgid "Generate random password"
-#~ msgstr "Generate random password"
+msgid "Generate random password"
+msgstr "Gerar senha aleatória"
 
-#~ msgid "Complexity"
-#~ msgstr "Complexity"
+msgid "Complexity"
+msgstr "Complexidade"
 
-#~ msgid "Reset"
-#~ msgstr "Reset"
+msgid "Reset"
+msgstr "Redefinir"
 
-#~ msgid "Password strength level"
-#~ msgstr "Password strength level"
+msgid "Password strength level"
+msgstr "Nível de força da senha"
 
-#~ msgid "Show Password"
-#~ msgstr "Show Password"
+msgid "Show Password"
+msgstr "Mostrar senha"
 
-#~ msgid "Accept"
-#~ msgstr "Accept"
+msgid "Accept"
+msgstr "Aceitar"
 
-#~ msgid "Cancel"
-#~ msgstr "Cancel"
+msgid "Cancel"
+msgstr "Cancelar"
 
-#~ msgid "Password Copied into Clipboard"
-#~ msgstr "Password Copied into Clipboard"
+msgid "Password Copied into Clipboard"
+msgstr "Senha copiada para a área de transferência"
 
-#~ msgid "Error while copying to clipboard"
-#~ msgstr "Error while copying to clipboard"
+msgid "Error while copying to clipboard"
+msgstr "Erro ao copiar para a área de transferência"
 
-#~ msgid "Send notifies?"
-#~ msgstr "Send notifies?"
+msgid "Send notifies?"
+msgstr "Enviar notificações?"
 
-#~ msgid "Clear Selection"
-#~ msgstr "Clear Selection"
+msgid "Clear Selection"
+msgstr "Limpar Seleção"
 
-#~ msgid "Now"
-#~ msgstr "Now"
+msgid "Now"
+msgstr "Agora"
 
-#~ msgid ""
-#~ "This process will import the detected LDAP users. Would you like to "
-#~ "continue?"
-#~ msgstr ""
-#~ "This process will import the detected LDAP users. Would you like to "
-#~ "continue?"
+msgid ""
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
+msgstr ""
+"Este processo irá importar os usuários LDAP detectados. Gostaria de "
+"continuar?"
 
-#~ msgid "This action will reset all plugin data. Do you want to continue?"
-#~ msgstr "This action will reset all plugin data. Do you want to continue?"
+msgid "This action will reset all plugin data. Do you want to continue?"
+msgstr "Esta ação irá redefinir todos os dados do plugin. Deseja continuar?"
 
-#~ msgid "This process could take some time long. Do you wish to continue?"
-#~ msgstr "This process could take some time long. Do you wish to continue?"
+msgid "This process could take some time long. Do you wish to continue?"
+msgstr "Este processo pode demorar algum tempo. Deseja continuar?"
 
-#~ msgid "Performing task. Please, do not close browser's window/tab."
-#~ msgstr "Performing task. Please, do not close browser's window/tab."
+msgid "Performing task. Please, do not close browser's window/tab."
+msgstr "Executando tarefa. Por favor, não feche a janela/aba do navegador."
 
-#~ msgid "Cookies disabled. Application won't work properly."
-#~ msgstr "Cookies disabled. Application won't work properly."
+msgid "Cookies disabled. Application won't work properly."
+msgstr "Cookies desativados. O aplicativo não funcionará corretamente."
 
-#~ msgid "Clipboard not supported by your browser."
-#~ msgstr "Clipboard not supported by your browser."
+msgid "Clipboard not supported by your browser."
+msgstr "Área de transferência não suportada pelo seu navegador."
 
-#~ msgid "Performing auto-login"
-#~ msgstr "Performing auto-login"
+msgid "Performing auto-login"
+msgstr "Realizando login automático"
 
-#~ msgid "There is a more recent version of {0} plugin ({1})"
-#~ msgstr "There is a more recent version of {0} plugin ({1})"
+msgid "There is a more recent version of {0} plugin ({1})"
+msgstr "Existe uma versão mais recente do plugin {0} ({1})"
 
-#~ msgid "sysPass Notices"
-#~ msgstr "sysPass Notices"
+msgid "sysPass Notices"
+msgstr "Avisos do sysPass"
 
-#~ msgid "Clear the tracks out?"
-#~ msgstr "Clear the tracks out?"
+msgid "Clear the tracks out?"
+msgstr "Limpar os rastros?"
+
+msgid "Passwords match"
+msgstr "Senhas conferem"
+
+msgid "Welcome"
+msgstr "Bem-vindo"
+
+msgid "Next"
+msgstr "Próximo"
+
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Bem-vindo ao %s! Este assistente irá guiá-lo pela instalação em alguns "
+"passos simples."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Antes de começar, você precisará das seguintes informações:"
+
+msgid "The database server address"
+msgstr "O endereço do servidor de banco de dados"
+
+msgid "A database user with administrative rights"
+msgstr "Um usuário de banco de dados com direitos administrativos"
+
+msgid "The name for the sysPass database"
+msgstr "O nome para o banco de dados do sysPass"
+
+msgid "All set? Press Next to begin."
+msgstr "Tudo pronto? Clique em Próximo para começar."
+
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"O idioma foi detectado a partir do seu navegador. Ao alterá-lo, esta página "
+"será recarregada."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "A Master Password é usada para criptografar as senhas das contas."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Por favor, guarde-a em um local seguro — ela não pode ser recuperada."
+
+msgid "During the installation you will also:"
+msgstr "Durante a instalação você também irá:"
+
+msgid "Choose the application language"
+msgstr "Escolher o idioma da aplicação"
+
+msgid "Set up the administrator account"
+msgstr "Configurar a conta de administrador"
+
+msgid "Set the Master Password"
+msgstr "Definir a Master Password"
+
+msgid "Requirements"
+msgstr "Requisitos"
+
+msgid "PHP version"
+msgstr "Versão do PHP"
+
+msgid "PHP extensions"
+msgstr "Extensões do PHP"
+
+msgid "Configuration directory writable"
+msgstr "Diretório de configuração gravável"
+
+msgid "Test connection"
+msgstr "Testar conexão"
+
+msgid "Connection successful"
+msgstr "Conexão bem-sucedida"
+
+msgid "The DB user provided by your hosting"
+msgstr "O usuário de BD fornecido pela sua hospedagem"
+
+msgid "You can now log in with your admin account."
+msgstr "Agora você pode entrar com sua conta de administrador."
+
+msgid "sysPass is already installed"
+msgstr "sysPass já está instalado"
+
+msgid "The database already contains sysPass tables"
+msgstr "O banco de dados já contém tabelas do sysPass"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr ""
+"Por favor, use um banco de dados vazio ou remova as tabelas existentes"
+
+msgid "Invalid database port"
+msgstr "Porta do banco de dados inválida"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "O número da porta deve estar entre 1 e 65535"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Extensões PHP necessárias (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Extensões PHP opcionais (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Extensões PHP necessárias ausentes (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Extensões PHP opcionais ausentes (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Diretórios de tempo de execução graváveis"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode ativado"
+
+msgid "Duplicate entry"
+msgstr "Entrada duplicada"
+
+msgid "The record is in use"
+msgstr "O registro está em uso"
+
+msgid "Referenced record not found"
+msgstr "Registro referenciado não encontrado"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "A senha mestra e sua confirmação devem ser iguais"
+
+msgid "%s cannot be blank"
+msgstr "%s não pode estar em branco"
+
+msgid "'/config' directory does not exist."
+msgstr "O diretório '/config' não existe."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "As permissões do diretório '/config' estão incorretas"
+
+msgid "A client is needed"
+msgstr "Um cliente é necessário"
+
+msgid "A target is needed"
+msgstr "Um destino é necessário"
+
+msgid "API not initialized"
+msgstr "API não inicializada"
+
+msgid "Advanced Settings"
+msgstr "Configurações Avançadas"
+
+msgid "App"
+msgstr "App"
+
+msgid "Application"
+msgstr "Aplicação"
+
+msgid "Ask for admin password"
+msgstr "Solicitar senha do administrador"
+
+msgid "Ask for current master password"
+msgstr "Solicitar senha mestra atual"
+
+msgid "Ask for database password"
+msgstr "Solicitar senha do banco de dados"
+
+msgid "Ask for language"
+msgstr "Solicitar idioma"
+
+msgid "Ask for master password"
+msgstr "Solicitar senha mestra"
+
+msgid "Ask for path"
+msgstr "Solicitar caminho"
+
+msgid "Authentication already initialized"
+msgstr "Autenticação já inicializada"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr "O provedor autoritativo não retornou os dados do usuário"
+
+msgid "Authorization already exist"
+msgstr "Autorização já existe"
+
+msgid "Authorization displayed"
+msgstr "Autorização exibida"
+
+msgid "Authorization removed"
+msgstr "Autorização removida"
+
+msgid "Available"
+msgstr "Disponível"
+
+msgid "Backup actions"
+msgstr "Ações de backup"
+
+msgid "Backup path set to: %s"
+msgstr "Caminho de backup definido para: %s"
+
+msgid "Clear Tracks"
+msgstr "Limpar rastros"
+
+msgid "Config"
+msgstr "Configuração"
+
+msgid "Couldn't deserialize the data"
+msgstr "Não foi possível desserializar os dados"
+
+msgid "Custom field added"
+msgstr "Campo personalizado adicionado"
+
+msgid "Custom field displayed"
+msgstr "Campo personalizado exibido"
+
+msgid "Custom field removed"
+msgstr "Campo personalizado removido"
+
+msgid "Custom field updated"
+msgstr "Campo personalizado atualizado"
+
+msgid "DB"
+msgstr "BD"
+
+msgid "Data"
+msgstr "Dados"
+
+msgid "Database name contains invalid characters"
+msgstr "O nome do banco de dados contém caracteres inválidos"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr ""
+"A classe não existe ou os dados do arquivo não podem ser desserializados em:"
+" %s"
+
+msgid "Error executing the query"
+msgstr "Erro ao executar a consulta"
+
+msgid "Error loading XML data"
+msgstr "Erro ao carregar dados XML"
+
+msgid "Error while adding the event log"
+msgstr "Erro ao adicionar entrada no log de eventos"
+
+msgid "Error while applying the update"
+msgstr "Erro ao aplicar a atualização"
+
+msgid "Error while clearing the tracks out"
+msgstr "Erro ao limpar os rastros"
+
+msgid "Error while deleting the permission"
+msgstr "Erro ao excluir a permissão"
+
+msgid "Error while deleting the tags"
+msgstr "Erro ao excluir as tags"
+
+msgid "Error while reading the CSV file file"
+msgstr "Erro ao ler o arquivo CSV"
+
+msgid "Error while renewing the link"
+msgstr "Erro ao renovar o link"
+
+msgid "Expiry Date"
+msgstr "Data de Validade"
+
+msgid "File displayed"
+msgstr "Arquivo exibido"
+
+msgid "File not found: %s"
+msgstr "Arquivo não encontrado: %s"
+
+msgid "File removed"
+msgstr "Arquivo removido"
+
+msgid "File uploaded"
+msgstr "Arquivo enviado"
+
+msgid "Force sysPass installation"
+msgstr "Forçar instalação do sysPass"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Obter campos personalizados da conta na resposta"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Obter campos personalizados da categoria na resposta"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Obter campos personalizados do cliente na resposta"
+
+msgid "Group Attributes"
+msgstr "Atributos do Grupo"
+
+msgid "Group Filter"
+msgstr "Filtro de Grupo"
+
+msgid "Group data not set"
+msgstr "Dados do grupo não definidos"
+
+msgid "Insecure connection"
+msgstr "Conexão insegura"
+
+msgid "Install sysPass"
+msgstr "Instalar sysPass"
+
+msgid "Install sysPass?"
+msgstr "Instalar sysPass?"
+
+msgid "Installation aborted"
+msgstr "Instalação cancelada"
+
+msgid "Invalid class for loaded file data"
+msgstr "Classe inválida para os dados do arquivo carregado"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Tipo de dados inválido. Esperado: %s"
+
+msgid "Invalid query type for count"
+msgstr "Tipo de consulta inválido para contagem"
+
+msgid "Invalid route"
+msgstr "Rota inválida"
+
+msgid "Invalid target class"
+msgstr "Classe de destino inválida"
+
+msgid "LDAP connection error"
+msgstr "Erro de conexão LDAP"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "Filtro LDAP para pesquisa de objetos de grupo."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "Filtro LDAP para pesquisa de objetos de usuário."
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Logs"
+msgstr "Logs"
+
+msgid "Maintenance"
+msgstr "Manutenção"
+
+msgid "Master password loaded"
+msgstr "Senha mestra carregada"
+
+msgid "Master password to encrypt the data"
+msgstr "Senha mestra para criptografar os dados"
+
+msgid "Master password update aborted"
+msgstr "Atualização da senha mestra cancelada"
+
+msgid "Missing Proxy parameters"
+msgstr "Parâmetros de proxy ausentes"
+
+msgid "No accounts updated, only hash"
+msgstr "Nenhuma conta atualizada, apenas hash"
+
+msgid "No backup available"
+msgstr "Nenhum backup disponível"
+
+msgid "No items selected"
+msgstr "Nenhum item selecionado"
+
+msgid "No lines read from the file"
+msgstr "Nenhuma linha lida do arquivo"
+
+msgid "No plugins loaded"
+msgstr "Nenhum plugin carregado"
+
+msgid "Non authoritative auth"
+msgstr "Autenticação não autoritativa"
+
+msgid "Notification added"
+msgstr "Notificação adicionada"
+
+msgid "Notification displayed"
+msgstr "Notificação exibida"
+
+msgid "Notification marked as read"
+msgstr "Notificação marcada como lida"
+
+msgid "Notification removed"
+msgstr "Notificação removida"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr ""
+"Apenas letras, dígitos, $, _ e - são permitidos no nome do banco de dados"
+
+msgid "Path is needed"
+msgstr "Um caminho é necessário"
+
+msgid "Path where to store the backup files"
+msgstr "Caminho para armazenar os arquivos de backup"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Insira o caminho para armazenar os arquivos de backup"
+
+msgid "Please provide database admin password"
+msgstr "Forneça a senha do administrador do banco de dados"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Forneça a senha do administrador do sysPass"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Forneça novamente a senha do administrador do sysPass"
+
+msgid "Please provide sysPass master password"
+msgstr "Forneça a senha mestra do sysPass"
+
+msgid "Please provide sysPass master password again"
+msgstr "Forneça novamente a senha mestra do sysPass"
+
+msgid "Please provide the current master password"
+msgstr "Forneça a senha mestra atual"
+
+msgid "Please provide the current master password again"
+msgstr "Forneça novamente a senha mestra atual"
+
+msgid "Please provide the new master password"
+msgstr "Forneça a nova senha mestra"
+
+msgid "Please provide the new master password again"
+msgstr "Forneça novamente a nova senha mestra"
+
+msgid "Please run setup method before"
+msgstr "Execute o método de configuração antes"
+
+msgid "Please, check the directory permissions"
+msgstr "Verifique as permissões do diretório"
+
+msgid "Please, press any key to continue"
+msgstr "Pressione qualquer tecla para continuar"
+
+msgid "Please, restart any browser session to update it"
+msgstr "Reinicie qualquer sessão do navegador para atualizá-la"
+
+msgid "Please, restart the session to update it"
+msgstr "Reinicie a sessão para atualizá-la"
+
+msgid "Plugin already registered"
+msgstr "Plugin já registrado"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Plugin não carregado (desabilitado)"
+
+msgid "Plugin not registered"
+msgstr "Plugin não registrado"
+
+msgid "Plugin not registered yet"
+msgstr "Plugin ainda não registrado"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Versão do plugin compatível (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Predefinição não válida para este validador"
+
+msgid "Profile data not set"
+msgstr "Dados do perfil não definidos"
+
+msgid "Profile displayed"
+msgstr "Perfil exibido"
+
+msgid "Profile removed"
+msgstr "Perfil removido"
+
+msgid "Public link added"
+msgstr "Link público adicionado"
+
+msgid "Public link displayed"
+msgstr "Link público exibido"
+
+msgid "Public link hash not set"
+msgstr "Hash do link público não definido"
+
+msgid "Public link refreshed"
+msgstr "Link público renovado"
+
+msgid "Public link removed"
+msgstr "Link público removido"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Pesquisar nome de conta por expressão regular"
+
+msgid "Secure connection"
+msgstr "Conexão segura"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Define o idioma global do aplicativo. Você pode definir um idioma por "
+"usuário nas preferências"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Pular confirmação da instalação"
+
+msgid "Skip asking to confirm the update"
+msgstr "Pular confirmação da atualização"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr "A senha do administrador e sua confirmação devem ser iguais"
+
+msgid "The command is already running in another process"
+msgstr "O comando já está sendo executado em outro processo"
+
+msgid "The current master password"
+msgstr "A senha mestra atual"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr "O arquivo foi exportado com uma versão antiga do sysPass (<= 2.10)."
+
+msgid "The new master password to encrypt the data"
+msgstr "A nova senha mestra para criptografar os dados"
+
+msgid "There are no accounts for processing"
+msgstr "Não há contas para processar"
+
+msgid "This command installs sysPass"
+msgstr "Este comando instala o sysPass"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Este comando realiza um backup baseado em arquivo do banco de dados e "
+"aplicação sysPass"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr ""
+"Este comando atualiza a senha mestra do sysPass para todos os dados "
+"criptografados"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "Este é um processo crítico, não cancele/feche esta CLI"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr "Senha do token ao recuperar campos personalizados"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Não é possível criar o diretório (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Não é possível criar imagem"
+
+msgid "Unable to create node"
+msgstr "Não é possível criar nó"
+
+msgid "Unable to import account"
+msgstr "Não é possível importar conta"
+
+msgid "Unable to import categories"
+msgstr "Não é possível importar categorias"
+
+msgid "Unable to import clients"
+msgstr "Não é possível importar clientes"
+
+msgid "Unable to import tags"
+msgstr "Não é possível importar tags"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Não é possível abrir o diretório (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Não é possível processar evento para o usuário"
+
+msgid "Unable to process event for user group"
+msgstr "Não é possível processar evento para o grupo de usuários"
+
+msgid "Unable to process event for user profile"
+msgstr "Não é possível processar evento para o perfil de usuário"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Não é possível liberar o bloqueio (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Não é possível recuperar a configuração"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Não é possível definir permissões para o arquivo (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Não é possível gravar no diretório '/config'"
+
+msgid "Unknown magic method"
+msgstr "Método mágico desconhecido"
+
+msgid "Unlock Track"
+msgstr "Desbloquear rastro"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr "Atualizar senha mestra? (Este processo não pode ser desfeito)"
+
+msgid "Update sysPass master password"
+msgstr "Atualizar senha mestra do sysPass"
+
+msgid "Updates"
+msgstr "Atualizações"
+
+msgid "User Attributes"
+msgstr "Atributos do Usuário"
+
+msgid "User Filter"
+msgstr "Filtro de Usuário"
+
+msgid "User data not set"
+msgstr "Dados do usuário não definidos"
+
+msgid "User displayed"
+msgstr "Usuário exibido"
+
+msgid "User group Id"
+msgstr "ID do grupo de usuários"
+
+msgid "User group description"
+msgstr "Descrição do grupo de usuários"
+
+msgid "User group name"
+msgstr "Nome do grupo de usuários"
+
+msgid "User removed"
+msgstr "Usuário removido"
+
+msgid "Users Id's to add"
+msgstr "IDs de usuários a adicionar"
+
+msgid "Value cannot be blank"
+msgstr "O valor não pode estar em branco"
+
+msgid "Web Server"
+msgstr "Servidor web"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass já está instalado. Use '--forceInstall' para instalá-lo novamente."
+
+msgid "sysPass is not installed"
+msgstr "sysPass não está instalado"
+
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "\"/config\" directory does not exist."
+
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Unable to write into \"/config\" directory"
+
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "\"/config\" directory permissions are wrong"
+
+#~ msgid "Master Password %s"
+#~ msgstr "Master Password %s"
+
+#~ msgid "Mail service unavailable"
+#~ msgstr "Mail service unavailable"
 
 #~ msgid "Active Directory"
 #~ msgstr "Active Directory"
@@ -7292,120 +7935,3 @@ msgstr "Você deve usar pelo menos 8 caracteres"
 #~ msgstr ""
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
-
-msgid "Passwords match"
-msgstr ""
-
-msgid "Welcome"
-msgstr "Bem-vindo"
-
-msgid "Next"
-msgstr "Próximo"
-
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Bem-vindo ao %s! Este assistente irá guiá-lo pela instalação em alguns passos simples."
-
-msgid "Before starting, you will need the following information:"
-msgstr "Antes de começar, você precisará das seguintes informações:"
-
-msgid "The database server address"
-msgstr "O endereço do servidor de banco de dados"
-
-msgid "A database user with administrative rights"
-msgstr "Um usuário de banco de dados com direitos administrativos"
-
-msgid "The name for the sysPass database"
-msgstr "O nome para o banco de dados do sysPass"
-
-msgid "All set? Press Next to begin."
-msgstr "Tudo pronto? Clique em Próximo para começar."
-
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "O idioma foi detectado a partir do seu navegador. Ao alterá-lo, esta página será recarregada."
-
-msgid "The Master Password is used to encrypt the accounts passwords."
-msgstr "A Master Password é usada para criptografar as senhas das contas."
-
-msgid "Please, keep it safe — it cannot be recovered."
-msgstr "Por favor, guarde-a em um local seguro — ela não pode ser recuperada."
-
-msgid "During the installation you will also:"
-msgstr "Durante a instalação você também irá:"
-
-msgid "Choose the application language"
-msgstr "Escolher o idioma da aplicação"
-
-msgid "Set up the administrator account"
-msgstr "Configurar a conta de administrador"
-
-msgid "Set the Master Password"
-msgstr "Definir a Master Password"
-
-msgid "Requirements"
-msgstr "Requisitos"
-
-msgid "PHP version"
-msgstr "Versão do PHP"
-
-msgid "PHP extensions"
-msgstr "Extensões do PHP"
-
-msgid "Configuration directory writable"
-msgstr "Diretório de configuração gravável"
-
-msgid "Test connection"
-msgstr "Testar conexão"
-
-msgid "Connection successful"
-msgstr "Conexão bem-sucedida"
-
-msgid "The DB user provided by your hosting"
-msgstr "O usuário de BD fornecido pela sua hospedagem"
-
-msgid "You can now log in with your admin account."
-msgstr "Agora você pode entrar com sua conta de administrador."
-
-msgid "sysPass is already installed"
-msgstr "sysPass já está instalado"
-
-msgid "The database already contains sysPass tables"
-msgstr "O banco de dados já contém tabelas do sysPass"
-
-msgid "Please, use an empty database or remove the existing tables"
-msgstr "Por favor, use um banco de dados vazio ou remova as tabelas existentes"
-
-msgid "Invalid database port"
-msgstr "Porta do banco de dados inválida"
-
-msgid "The port number must be between 1 and 65535"
-msgstr "O número da porta deve estar entre 1 e 65535"
-
-msgid "Required PHP extensions (%d)"
-msgstr "Extensões PHP necessárias (%d)"
-
-msgid "Optional PHP extensions (%d)"
-msgstr "Extensões PHP opcionais (%d)"
-
-msgid "Missing required PHP extensions (%d)"
-msgstr "Extensões PHP necessárias ausentes (%d)"
-
-msgid "Missing optional PHP extensions (%d)"
-msgstr "Extensões PHP opcionais ausentes (%d)"
-
-msgid "Runtime directories writable"
-msgstr "Diretórios de tempo de execução graváveis"
-
-msgid "session.use_strict_mode enabled"
-msgstr "session.use_strict_mode ativado"
-
-msgid "Duplicate entry"
-msgstr "Entrada duplicada"
-
-msgid "The record is in use"
-msgstr "O registro está em uso"
-
-msgid "Referenced record not found"
-msgstr "Registro referenciado não encontrado"
-
-msgid "The Master Password and its confirmation must be the same"
-msgstr "A senha mestra e sua confirmação devem ser iguais"

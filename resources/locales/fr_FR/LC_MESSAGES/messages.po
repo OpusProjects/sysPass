@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -10,17 +11,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Contributors: Akirohs, Aurelien, Fabian Rodriguez, Fabien, Jérémy Donas\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Contributors: Akirohs, Aurelien, Fabian Rodriguez, Fabien, Jérémy Donas\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
 msgid "Account displayed"
@@ -3869,7 +3869,8 @@ msgstr "Master password not set"
 msgid "The account doesn't exist"
 msgstr "Le compte n'existe pas"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Donnée invalide"
@@ -4043,7 +4044,8 @@ msgid "This password will be valid until: %s"
 msgstr "Ce mot de passe sera valid jusqu'au: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr "N'oubliez pas de vous reconnecter pour enregistrer les changements"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:68
@@ -4290,7 +4292,8 @@ msgstr "Saisir l'utilisateur de la base de données"
 
 #: lib/SP/Services/Install/Installer.php:135
 msgid "An user with database administrative rights"
-msgstr "Un utilisateur avec des droits d'administration sur la base de données"
+msgstr ""
+"Un utilisateur avec des droits d'administration sur la base de données"
 
 #: lib/SP/Services/Install/Installer.php:140
 msgid "Please, enter the database password"
@@ -4732,7 +4735,8 @@ msgstr "Impossible de lire/écrire le fichier (%s)"
 msgid "Unable to delete file (%s)"
 msgstr "Unable to delete file (%s)"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
 msgstr "XML node does not exist"
 
@@ -5003,7 +5007,8 @@ msgstr "Maintenant"
 
 #: app/resources/strings.js.inc:82
 msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
 msgstr ""
 "Cette action va importer les utilisateurs LDAP détectés. Souhaitez-vous "
 "continuer ?"
@@ -5092,8 +5097,8 @@ msgstr "Indique si la connexion utilise le protocol HTTPS."
 msgid ""
 "Passwords sent from forms are encrypted using PKI, the remain data don't."
 msgstr ""
-"Les mots de passe envoyés à partir du formulaire sont chiffrés avec PKI, les "
-"autres données ne le sont pas."
+"Les mots de passe envoyés à partir du formulaire sont chiffrés avec PKI, les"
+" autres données ne le sont pas."
 
 #: app/modules/web/themes/material-blue/views/_partials/footer.inc:66
 msgid "Help :: FAQ :: Changelog"
@@ -5521,7 +5526,8 @@ msgid "Enable Public Links"
 msgstr "Activer les Liens Publique"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
+msgid ""
+"Enables the ability to create public links to view an account's details"
 msgstr ""
 "Activé la possibilité de créer des liens publique pour voir le détail des "
 "comptes."
@@ -5580,8 +5586,8 @@ msgid ""
 "In order to add more MIME types, you need to add them into mime.xml file "
 "within the config directory."
 msgstr ""
-"Pour ajouter plus de types MIME, vous devez les ajouter dans le fichier mime."
-"xml contenu dans le répertoire config"
+"Pour ajouter plus de types MIME, vous devez les ajouter dans le fichier "
+"mime.xml contenu dans le répertoire config"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
@@ -5663,8 +5669,8 @@ msgid ""
 "The accounts export allows you to save the accounts and their data in XML "
 "format to be imported in another sysPass instance."
 msgstr ""
-"L'exportation des comptes permet de sauvegarder ces derniers ainsi que leurs "
-"données au format XML afin de les importer dans une autre instance sysPass."
+"L'exportation des comptes permet de sauvegarder ces derniers ainsi que leurs"
+" données au format XML afin de les importer dans une autre instance sysPass."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:190
 msgid "Exported items are accounts, clients, categories and tags."
@@ -5733,8 +5739,10 @@ msgstr "Les utilisateurs devront saisir un nouveau Mot de Passe Maître."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
-msgid "It will be updated %s accounts. This process could take some time long."
-msgstr "Cette action va mettre à jour %s comptes. Ceci peut prendre longtemps."
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
+msgstr ""
+"Cette action va mettre à jour %s comptes. Ceci peut prendre longtemps."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:121
 msgid "Do not modify accounts"
@@ -5822,12 +5830,13 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
 "Le mot de passe temporaire est utilisé comme Mot de Passe Maître pour les "
-"utilisateurs qui ont besoin de le saisir pendant le login. De cette manière, "
-"il n'est pas nécessaire de leur communiquer le véritable Mot de Passe Maître."
+"utilisateurs qui ont besoin de le saisir pendant le login. De cette manière,"
+" il n'est pas nécessaire de leur communiquer le véritable Mot de Passe "
+"Maître."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
@@ -5979,18 +5988,19 @@ msgstr "Langage"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr ""
-"Définit la langue globale de l'application. Vous pouvez également définir la "
-"langue dans les préférences utilisateurs."
+"Définit la langue globale de l'application. Vous pouvez également définir la"
+" langue dans les préférences utilisateurs."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"Pour améliorer la traduction, vous pouvez aller sur https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"Pour améliorer la traduction, vous pouvez aller sur "
+"https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -6037,8 +6047,8 @@ msgstr "Mode maintenance"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr ""
 "Dans ce mode, personne ne peut accéder à l'application. Pour le désactiver, "
 "vous devez modifier le fichier de configuration."
@@ -6134,13 +6144,8 @@ msgid "The CSV import file requires the following format:"
 msgstr "L'importation des archives CSV nécessite les formats suivants :"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-#, fuzzy
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"account_name\";\"customer\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid ""
@@ -6803,9 +6808,8 @@ msgid "Used by"
 msgstr "Utilisé par"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:108
-#, fuzzy
 msgid "(*) Listed in group"
-msgstr "(*) Listed in group"
+msgstr "(*) Répertorié dans le groupe"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:26
 msgid "Management"
@@ -6977,16 +6981,15 @@ msgid "Security Code"
 msgstr "Code de Sécurité"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr ""
 "Le code est paramétré dans le fichier de configuration de sysPass sous la "
 "clé \"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
 "Des objets orphelins ont été trouvé. Modifiez ces objets ou saisissez leurs "
 "un ID par défaut."
@@ -7670,14 +7673,17 @@ msgid "Hosting"
 msgstr "Hébergement"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Crée la base de données et l'utilisateur de BD avec les identifiants fournis"
+msgstr ""
+"Crée la base de données et l'utilisateur de BD avec les identifiants fournis"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Utilise directement les identifiants fournis — la base de données doit déjà exister"
-
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Utilise directement les identifiants fournis — la base de données doit déjà "
+"exister"
 
 msgid "Passwords match"
-msgstr ""
+msgstr "Les mots de passe correspondent"
 
 msgid "Welcome"
 msgstr "Bienvenue"
@@ -7685,8 +7691,12 @@ msgstr "Bienvenue"
 msgid "Next"
 msgstr "Suivant"
 
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Bienvenue sur %s ! Cet assistant vous guidera à travers l'installation en quelques étapes simples."
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Bienvenue sur %s ! Cet assistant vous guidera à travers l'installation en "
+"quelques étapes simples."
 
 msgid "Before starting, you will need the following information:"
 msgstr "Avant de commencer, vous aurez besoin des informations suivantes :"
@@ -7703,11 +7713,17 @@ msgstr "Le nom de la base de données sysPass"
 msgid "All set? Press Next to begin."
 msgstr "Tout est prêt ? Cliquez sur Suivant pour commencer."
 
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "La langue a été détectée depuis votre navigateur. La changer rechargera cette page."
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"La langue a été détectée depuis votre navigateur. La changer rechargera "
+"cette page."
 
 msgid "The Master Password is used to encrypt the accounts passwords."
-msgstr "Le Mot de Passe Maître est utilisé pour chiffrer les mots de passe des comptes."
+msgstr ""
+"Le Mot de Passe Maître est utilisé pour chiffrer les mots de passe des "
+"comptes."
 
 msgid "Please, keep it safe — it cannot be recovered."
 msgstr "Veuillez le conserver en lieu sûr — il ne peut pas être récupéré."
@@ -7746,7 +7762,8 @@ msgid "The DB user provided by your hosting"
 msgstr "L'utilisateur de BD fourni par votre hébergeur"
 
 msgid "You can now log in with your admin account."
-msgstr "Vous pouvez maintenant vous connecter avec votre compte administrateur."
+msgstr ""
+"Vous pouvez maintenant vous connecter avec votre compte administrateur."
 
 msgid "sysPass is already installed"
 msgstr "sysPass est déjà installé"
@@ -7755,7 +7772,9 @@ msgid "The database already contains sysPass tables"
 msgstr "La base de données contient déjà des tables sysPass"
 
 msgid "Please, use an empty database or remove the existing tables"
-msgstr "Veuillez utiliser une base de données vide ou supprimer les tables existantes"
+msgstr ""
+"Veuillez utiliser une base de données vide ou supprimer les tables "
+"existantes"
 
 msgid "Invalid database port"
 msgstr "Port de base de données non valide"
@@ -7792,3 +7811,523 @@ msgstr "Enregistrement référencé introuvable"
 
 msgid "The Master Password and its confirmation must be the same"
 msgstr "Le mot de passe maître et sa confirmation doivent être identiques"
+
+msgid "%s cannot be blank"
+msgstr "%s ne peut pas être vide"
+
+msgid "'/config' directory does not exist."
+msgstr "Le répertoire '/config' n'existe pas."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "Les permissions du répertoire '/config' sont incorrectes"
+
+msgid "A client is needed"
+msgstr "Un client est nécessaire"
+
+msgid "A target is needed"
+msgstr "Une cible est nécessaire"
+
+msgid "API not initialized"
+msgstr "API non initialisée"
+
+msgid "Advanced Settings"
+msgstr "Paramètres avancés"
+
+msgid "App"
+msgstr "App"
+
+msgid "Application"
+msgstr "Application"
+
+msgid "Ask for admin password"
+msgstr "Demander le mot de passe administrateur"
+
+msgid "Ask for current master password"
+msgstr "Demander le mot de passe maître actuel"
+
+msgid "Ask for database password"
+msgstr "Demander le mot de passe de la base de données"
+
+msgid "Ask for language"
+msgstr "Demander la langue"
+
+msgid "Ask for master password"
+msgstr "Demander le mot de passe maître"
+
+msgid "Ask for path"
+msgstr "Demander le chemin"
+
+msgid "Authentication already initialized"
+msgstr "Authentification déjà initialisée"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr ""
+"Le fournisseur autoritatif n'a pas retourné les données de l'utilisateur"
+
+msgid "Authorization already exist"
+msgstr "L'autorisation existe déjà"
+
+msgid "Authorization displayed"
+msgstr "Autorisation affichée"
+
+msgid "Authorization removed"
+msgstr "Autorisation supprimée"
+
+msgid "Available"
+msgstr "Disponible"
+
+msgid "Backup actions"
+msgstr "Actions de sauvegarde"
+
+msgid "Backup path set to: %s"
+msgstr "Chemin de sauvegarde défini à : %s"
+
+msgid "Clear Tracks"
+msgstr "Effacer les traces"
+
+msgid "Config"
+msgstr "Configuration"
+
+msgid "Couldn't deserialize the data"
+msgstr "Impossible de désérialiser les données"
+
+msgid "Custom field added"
+msgstr "Champ personnalisé ajouté"
+
+msgid "Custom field displayed"
+msgstr "Champ personnalisé affiché"
+
+msgid "Custom field removed"
+msgstr "Champ personnalisé supprimé"
+
+msgid "Custom field updated"
+msgstr "Champ personnalisé mis à jour"
+
+msgid "DB"
+msgstr "BD"
+
+msgid "Data"
+msgstr "Données"
+
+msgid "Database name contains invalid characters"
+msgstr "Le nom de la base de données contient des caractères non valides"
+
+msgid "Downloads"
+msgstr "Téléchargements"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr ""
+"La classe n'existe pas ou les données du fichier ne peuvent pas être "
+"désérialisées en : %s"
+
+msgid "Error executing the query"
+msgstr "Erreur lors de l'exécution de la requête"
+
+msgid "Error loading XML data"
+msgstr "Erreur lors du chargement des données XML"
+
+msgid "Error while adding the event log"
+msgstr "Erreur lors de l'ajout de l'entrée du journal d'événements"
+
+msgid "Error while applying the update"
+msgstr "Erreur lors de l'application de la mise à jour"
+
+msgid "Error while clearing the tracks out"
+msgstr "Erreur lors de la suppression des traces"
+
+msgid "Error while deleting the permission"
+msgstr "Erreur lors de la suppression de la permission"
+
+msgid "Error while deleting the tags"
+msgstr "Erreur lors de la suppression des tags"
+
+msgid "Error while reading the CSV file file"
+msgstr "Erreur lors de la lecture du fichier CSV"
+
+msgid "Error while renewing the link"
+msgstr "Erreur lors du renouvellement du lien"
+
+msgid "Expiry Date"
+msgstr "Date d'expiration"
+
+msgid "File displayed"
+msgstr "Fichier affiché"
+
+msgid "File not found: %s"
+msgstr "Fichier non trouvé : %s"
+
+msgid "File removed"
+msgstr "Fichier supprimé"
+
+msgid "File uploaded"
+msgstr "Fichier téléversé"
+
+msgid "Force sysPass installation"
+msgstr "Forcer l'installation de sysPass"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Récupérer les champs personnalisés du compte dans la réponse"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Récupérer les champs personnalisés de la catégorie dans la réponse"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Récupérer les champs personnalisés du client dans la réponse"
+
+msgid "Group Attributes"
+msgstr "Attributs du groupe"
+
+msgid "Group Filter"
+msgstr "Filtre de groupe"
+
+msgid "Group data not set"
+msgstr "Données du groupe non définies"
+
+msgid "Insecure connection"
+msgstr "Connexion non sécurisée"
+
+msgid "Install sysPass"
+msgstr "Installer sysPass"
+
+msgid "Install sysPass?"
+msgstr "Installer sysPass ?"
+
+msgid "Installation aborted"
+msgstr "Installation annulée"
+
+msgid "Invalid class for loaded file data"
+msgstr "Classe invalide pour les données du fichier chargé"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Type de données invalide. Attendu : %s"
+
+msgid "Invalid query type for count"
+msgstr "Type de requête invalide pour le comptage"
+
+msgid "Invalid route"
+msgstr "Route invalide"
+
+msgid "Invalid target class"
+msgstr "Classe cible invalide"
+
+msgid "LDAP connection error"
+msgstr "Erreur de connexion LDAP"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "Filtre LDAP pour la recherche des objets groupe."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "Filtre LDAP pour la recherche des objets utilisateur."
+
+msgid "Log"
+msgstr "Journal"
+
+msgid "Logs"
+msgstr "Journaux"
+
+msgid "Maintenance"
+msgstr "Maintenance"
+
+msgid "Master password loaded"
+msgstr "Mot de passe maître chargé"
+
+msgid "Master password to encrypt the data"
+msgstr "Mot de passe maître pour chiffrer les données"
+
+msgid "Master password update aborted"
+msgstr "Mise à jour du mot de passe maître annulée"
+
+msgid "Missing Proxy parameters"
+msgstr "Paramètres proxy manquants"
+
+msgid "No accounts updated, only hash"
+msgstr "Aucun compte mis à jour, seulement le hash"
+
+msgid "No backup available"
+msgstr "Aucune sauvegarde disponible"
+
+msgid "No items selected"
+msgstr "Aucun élément sélectionné"
+
+msgid "No lines read from the file"
+msgstr "Aucune ligne lue dans le fichier"
+
+msgid "No plugins loaded"
+msgstr "Aucun plugin chargé"
+
+msgid "Non authoritative auth"
+msgstr "Authentification non autoritaire"
+
+msgid "Notification added"
+msgstr "Notification ajoutée"
+
+msgid "Notification displayed"
+msgstr "Notification affichée"
+
+msgid "Notification marked as read"
+msgstr "Notification marquée comme lue"
+
+msgid "Notification removed"
+msgstr "Notification supprimée"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr ""
+"Seuls les lettres, chiffres, $, _ et - sont autorisés dans le nom de la base"
+" de données"
+
+msgid "Path is needed"
+msgstr "Un chemin est nécessaire"
+
+msgid "Path where to store the backup files"
+msgstr "Chemin où stocker les fichiers de sauvegarde"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Veuillez entrer le chemin où stocker les fichiers de sauvegarde"
+
+msgid "Please provide database admin password"
+msgstr "Veuillez fournir le mot de passe administrateur de la base de données"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Veuillez fournir le mot de passe administrateur de sysPass"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Veuillez fournir à nouveau le mot de passe administrateur de sysPass"
+
+msgid "Please provide sysPass master password"
+msgstr "Veuillez fournir le mot de passe maître de sysPass"
+
+msgid "Please provide sysPass master password again"
+msgstr "Veuillez fournir à nouveau le mot de passe maître de sysPass"
+
+msgid "Please provide the current master password"
+msgstr "Veuillez fournir le mot de passe maître actuel"
+
+msgid "Please provide the current master password again"
+msgstr "Veuillez fournir à nouveau le mot de passe maître actuel"
+
+msgid "Please provide the new master password"
+msgstr "Veuillez fournir le nouveau mot de passe maître"
+
+msgid "Please provide the new master password again"
+msgstr "Veuillez fournir à nouveau le nouveau mot de passe maître"
+
+msgid "Please run setup method before"
+msgstr "Veuillez exécuter la méthode de configuration au préalable"
+
+msgid "Please, check the directory permissions"
+msgstr "Veuillez vérifier les permissions du répertoire"
+
+msgid "Please, press any key to continue"
+msgstr "Veuillez appuyer sur une touche pour continuer"
+
+msgid "Please, restart any browser session to update it"
+msgstr ""
+"Veuillez redémarrer toutes les sessions de navigateur pour les mettre à jour"
+
+msgid "Please, restart the session to update it"
+msgstr "Veuillez redémarrer la session pour la mettre à jour"
+
+msgid "Plugin already registered"
+msgstr "Plugin déjà enregistré"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Plugin non chargé (désactivé)"
+
+msgid "Plugin not registered"
+msgstr "Plugin non enregistré"
+
+msgid "Plugin not registered yet"
+msgstr "Plugin pas encore enregistré"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Version du plugin compatible (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Préréglage non valide pour ce validateur"
+
+msgid "Profile data not set"
+msgstr "Données du profil non définies"
+
+msgid "Profile displayed"
+msgstr "Profil affiché"
+
+msgid "Profile removed"
+msgstr "Profil supprimé"
+
+msgid "Public link added"
+msgstr "Lien public ajouté"
+
+msgid "Public link displayed"
+msgstr "Lien public affiché"
+
+msgid "Public link hash not set"
+msgstr "Hash du lien public non défini"
+
+msgid "Public link refreshed"
+msgstr "Lien public renouvelé"
+
+msgid "Public link removed"
+msgstr "Lien public supprimé"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Rechercher des noms de comptes par expression régulière"
+
+msgid "Secure connection"
+msgstr "Connexion sécurisée"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Définit la langue globale de l'application. Vous pouvez définir une langue "
+"par utilisateur dans les préférences"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Ne pas demander de confirmation pour l'installation"
+
+msgid "Skip asking to confirm the update"
+msgstr "Ne pas demander de confirmation pour la mise à jour"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr ""
+"Le mot de passe administrateur et sa confirmation doivent être identiques"
+
+msgid "The command is already running in another process"
+msgstr "La commande est déjà en cours dans un autre processus"
+
+msgid "The current master password"
+msgstr "Le mot de passe maître actuel"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr ""
+"Le fichier a été exporté avec une ancienne version de sysPass (<= 2.10)."
+
+msgid "The new master password to encrypt the data"
+msgstr "Le nouveau mot de passe maître pour chiffrer les données"
+
+msgid "There are no accounts for processing"
+msgstr "Il n'y a pas de comptes à traiter"
+
+msgid "This command installs sysPass"
+msgstr "Cette commande installe sysPass"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Cette commande effectue une sauvegarde basée sur des fichiers de la base de "
+"données et de l'application sysPass"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr ""
+"Cette commande met à jour le mot de passe maître de sysPass pour toutes les "
+"données chiffrées"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "C'est un processus critique, veuillez ne pas annuler/fermer ce CLI"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr ""
+"Mot de passe du token lors de la récupération des champs personnalisés"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Impossible de créer le répertoire (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Impossible de créer l'image"
+
+msgid "Unable to create node"
+msgstr "Impossible de créer le nœud"
+
+msgid "Unable to import account"
+msgstr "Impossible d'importer le compte"
+
+msgid "Unable to import categories"
+msgstr "Impossible d'importer les catégories"
+
+msgid "Unable to import clients"
+msgstr "Impossible d'importer les clients"
+
+msgid "Unable to import tags"
+msgstr "Impossible d'importer les tags"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Impossible d'ouvrir le répertoire (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Impossible de traiter l'événement pour l'utilisateur"
+
+msgid "Unable to process event for user group"
+msgstr "Impossible de traiter l'événement pour le groupe d'utilisateurs"
+
+msgid "Unable to process event for user profile"
+msgstr "Impossible de traiter l'événement pour le profil utilisateur"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Impossible de libérer le verrou (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Impossible de récupérer la configuration"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Impossible de définir les permissions pour le fichier (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Impossible d'écrire dans le répertoire '/config'"
+
+msgid "Unknown magic method"
+msgstr "Méthode magique inconnue"
+
+msgid "Unlock Track"
+msgstr "Déverrouiller la trace"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr ""
+"Mettre à jour le mot de passe maître ? (Ce processus est irréversible)"
+
+msgid "Update sysPass master password"
+msgstr "Mettre à jour le mot de passe maître de sysPass"
+
+msgid "Updates"
+msgstr "Mises à jour"
+
+msgid "User Attributes"
+msgstr "Attributs utilisateur"
+
+msgid "User Filter"
+msgstr "Filtre utilisateur"
+
+msgid "User data not set"
+msgstr "Données utilisateur non définies"
+
+msgid "User displayed"
+msgstr "Utilisateur affiché"
+
+msgid "User group Id"
+msgstr "ID du groupe d'utilisateurs"
+
+msgid "User group description"
+msgstr "Description du groupe d'utilisateurs"
+
+msgid "User group name"
+msgstr "Nom du groupe d'utilisateurs"
+
+msgid "User removed"
+msgstr "Utilisateur supprimé"
+
+msgid "Users Id's to add"
+msgstr "IDs d'utilisateurs à ajouter"
+
+msgid "Value cannot be blank"
+msgstr "La valeur ne peut pas être vide"
+
+msgid "Web Server"
+msgstr "Serveur web"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass est déjà installé. Utilisez '--forceInstall' pour le réinstaller."
+
+msgid "sysPass is not installed"
+msgstr "sysPass n'est pas installé"

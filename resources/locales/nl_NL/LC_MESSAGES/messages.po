@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -9,19 +10,17 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.11\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
-#, fuzzy
 msgid "Account displayed"
 msgstr "Account weergegeven"
 
@@ -168,9 +167,8 @@ msgid "Account removed"
 msgstr "Account verwijderd"
 
 #: app/modules/api/Controllers/CategoryController.php:62
-#, fuzzy
 msgid "Category displayed"
-msgstr "Category displayed"
+msgstr "Categorie weergegeven"
 
 #: app/modules/api/Controllers/CategoryController.php:91
 #: app/modules/api/Controllers/CategoryController.php:96
@@ -194,7 +192,6 @@ msgid "Category deleted"
 msgstr "Categorie verwijderd"
 
 #: app/modules/api/Controllers/ClientController.php:63
-#, fuzzy
 msgid "Client displayed"
 msgstr "Klant weergegeven"
 
@@ -239,9 +236,8 @@ msgstr "Backup proces afgerond"
 
 #: app/modules/api/Controllers/ConfigController.php:82
 #: app/modules/web/Controllers/ConfigBackupController.php:96
-#, fuzzy
 msgid "sysPass XML export"
-msgstr "sysPass XML export"
+msgstr "sysPass XML-export"
 
 #: app/modules/api/Controllers/ConfigController.php:91
 #: app/modules/api/Controllers/ConfigController.php:94
@@ -432,9 +428,8 @@ msgid "Array with tags id for filtering"
 msgstr "Array met tags id voor filteren"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:133
-#, fuzzy
 msgid "Filtering operator"
-msgstr "Filter operator"
+msgstr "Filteroperator"
 
 #: app/modules/api/Controllers/Help/CategoryHelp.php:54
 #: app/modules/api/Controllers/Help/CategoryHelp.php:67
@@ -558,9 +553,8 @@ msgstr "Bijwerken nodig"
 #: app/modules/web/Controllers/Helpers/Grid/AccountGrid.php:165
 #: app/modules/web/themes/material-blue/views/account/linkedAccounts.inc:28
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:58
-#, fuzzy
 msgid "Account Details"
-msgstr "Account details"
+msgstr "Accountdetails"
 
 #: app/modules/web/Controllers/AccountController.php:251
 msgid "Link viewed"
@@ -785,9 +779,9 @@ msgid "File size exceeded"
 msgstr "Bestandsgrootte overschreden"
 
 #: app/modules/web/Controllers/AccountFileController.php:225
-#, fuzzy, php-format
+#, php-format
 msgid "Maximum size: %d KB"
-msgstr "Maximum size: %d KB"
+msgstr "Maximale grootte: %d KB"
 
 #: app/modules/web/Controllers/AccountFileController.php:231
 #: lib/SP/Services/Import/FileImport.php:106
@@ -814,7 +808,6 @@ msgstr "Bestand opgeslagen"
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:37
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:23
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:30
-#, fuzzy
 msgid "Type"
 msgstr "Type"
 
@@ -830,9 +823,9 @@ msgstr "Bestandstype niet toegestaan"
 
 #: app/modules/web/Controllers/AccountFileController.php:288
 #: lib/SP/Services/Import/FileImport.php:97
-#, fuzzy, php-format
+#, php-format
 msgid "MIME type: %s"
-msgstr "MIME type: %s"
+msgstr "MIME-type: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:307
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:64
@@ -1250,12 +1243,12 @@ msgstr "Het huidige master wachtwoord matched niet"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
-msgstr ""
+msgstr "Onderhoudsmodus niet ingeschakeld"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
-msgstr ""
+msgstr "Schakel dit in om ongewenst gedrag van andere sessies te voorkomen"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
@@ -1273,9 +1266,8 @@ msgstr "Fout tijdens het bijwerken van de hash van het hoofdwachtwoord."
 #: app/modules/web/Controllers/ConfigEncryptionController.php:233
 #: app/modules/web/Controllers/ConfigEncryptionController.php:243
 #: app/modules/web/Controllers/ConfigEncryptionController.php:249
-#, fuzzy
 msgid "Temporary password generated"
-msgstr "Temporary password generated"
+msgstr "Tijdelijk wachtwoord aangemaakt"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:234
 #: app/modules/web/Controllers/ConfigMailController.php:161
@@ -1385,9 +1377,8 @@ msgid "Objects found: %d"
 msgstr "Voorwerpen gevonden: %d"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:260
-#, fuzzy
 msgid "LDAP Import"
-msgstr "LDAP Import"
+msgstr "LDAP-import"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:279
 msgid "There aren't any objects to synchronize"
@@ -1864,7 +1855,6 @@ msgstr "Datum"
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:108
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:131
 #: app/modules/web/Controllers/Helpers/Grid/PluginGrid.php:109
-#, fuzzy
 msgid "Status"
 msgstr "Status"
 
@@ -1954,7 +1944,6 @@ msgstr "Aangepaste velden"
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:108
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:51
-#, fuzzy
 msgid "Module"
 msgstr "Module"
 
@@ -1977,9 +1966,8 @@ msgstr "Verwijder Veld"
 #: app/modules/web/themes/material-blue/views/eventlog/index.inc:1
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:514
 #: app/resources/actions.xml:133
-#, fuzzy
 msgid "Event Log"
-msgstr "Event Log"
+msgstr "Gebeurtenissenlog"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:99
 #: app/modules/web/Controllers/ItemPresetController.php:295
@@ -2386,7 +2374,6 @@ msgid "Delete Tag"
 msgstr "Verwijder Label"
 
 #: app/modules/web/Controllers/Helpers/Grid/TrackGrid.php:88
-#, fuzzy
 msgid "Tracks"
 msgstr "Tracks"
 
@@ -3326,11 +3313,11 @@ msgstr "Nieuwe Plugin"
 
 #: lib/SP/Plugin/PluginManager.php:392
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "Plugin bijwerken"
 
 #: lib/SP/Plugin/PluginManager.php:409
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "Plugin bijgewerkt"
 
 #: lib/SP/Plugin/PluginManager.php:418
 #, php-format
@@ -3415,7 +3402,7 @@ msgstr "De gebruiker behoort niet tot deze groep"
 #: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
-msgstr ""
+msgstr "Gebeurtenis: %s"
 
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
@@ -3424,9 +3411,9 @@ msgid "Performed by: %s (%s)"
 msgstr "Uitgevoerd door: %s (%s)"
 
 #: lib/SP/Providers/Mail/MailHandler.php:162
-#, fuzzy, php-format
+#, php-format
 msgid "IP Address: %s"
-msgstr "IP Adres /%"
+msgstr "IP-adres: %s"
 
 #: lib/SP/Providers/Mail/MailProvider.php:91
 msgid "Unable to initialize"
@@ -3671,17 +3658,17 @@ msgstr "Fout bij het ophalen van de notificaties"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "Fout bij het toevoegen van plugingegevens"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "Fout bij het bijwerken van plugingegevens"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "Fout bij het verwijderen van plugingegevens"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3764,9 +3751,8 @@ msgid "Error while removing the track"
 msgstr "Fout bij  het verwijderen van de track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:102
-#, fuzzy
 msgid "Error while updating the track"
-msgstr "Fout bij het updaten van de track"
+msgstr "Fout bij het bijwerken van de track"
 
 #: lib/SP/Repositories/Track/TrackRepository.php:118
 msgid "Error while clearing tracks out"
@@ -3939,7 +3925,8 @@ msgstr "Master password niet gevuld"
 msgid "The account doesn't exist"
 msgstr "Het account bestaat niet"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Ongeldige Data"
@@ -4097,15 +4084,15 @@ msgstr "Fout bij controleren tijdelijk wachtwoord"
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
 #, php-format
 msgid "%s Master Password"
-msgstr ""
+msgstr "%s Hoofdwachtwoord"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
 "A new sysPass master password has been generated, so next time you log into "
 "the application it will be requested."
 msgstr ""
-"Er is een nieuw Master wachtwoord gemaakt voor sysPass. De volgende keer dat "
-"u zich aanmeldt wordt het gevraagd."
+"Er is een nieuw Master wachtwoord gemaakt voor sysPass. De volgende keer dat"
+" u zich aanmeldt wordt het gevraagd."
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:234
 #, php-format
@@ -4118,7 +4105,8 @@ msgid "This password will be valid until: %s"
 msgstr "Dit wachtwoord is geldig tot: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr "U dient zo snel mogelijk in te loggen om uw wijzigingen te behouden."
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:68
@@ -4519,7 +4507,7 @@ msgstr "Bericht niet gevonden"
 #: lib/SP/Services/Plugin/PluginDataService.php:165
 #: lib/SP/Services/Plugin/PluginDataService.php:183
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "Plugingegevens niet gevonden"
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4581,9 +4569,8 @@ msgstr "Wachten op voortgang van bijwerken"
 #: lib/SP/Services/Track/TrackService.php:87
 #: lib/SP/Services/Track/TrackService.php:101
 #: lib/SP/Services/Track/TrackService.php:128
-#, fuzzy
 msgid "Track not found"
-msgstr "Track not found"
+msgstr "Track niet gevonden"
 
 #: lib/SP/Services/Track/TrackService.php:162
 #, php-format
@@ -4831,7 +4818,8 @@ msgstr "Het bestand (%s) kan niet gelezen/beschreven worden"
 msgid "Unable to delete file (%s)"
 msgstr "Het bestand (%s) kan niet verwijderd worden"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
 msgstr "XML node bestaat niet"
 
@@ -4908,8 +4896,8 @@ msgid ""
 "You could use either one or several special parameters separated by blank "
 "spaces"
 msgstr ""
-"U kunt één of meerder parameters gebruiken welke gescheiden moeten zijn door "
-"spaties"
+"U kunt één of meerder parameters gebruiken welke gescheiden moeten zijn door"
+" spaties"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:16
 msgid "Search for accounts which 'login' has access rights"
@@ -5330,8 +5318,8 @@ msgid ""
 "Allows the users to do searches that includes all accounts, they won't be "
 "able to display the account details if they don't have permission."
 msgstr ""
-"Laat toe dat gebruikers kunnen zoeken, zodra zij geen rechten hebben zal het "
-"niet worden weergegeven."
+"Laat toe dat gebruikers kunnen zoeken, zodra zij geen rechten hebben zal het"
+" niet worden weergegeven."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:143
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:154
@@ -5341,7 +5329,8 @@ msgstr "Afbeelding om wachtwoord te tonen"
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:145
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:156
 msgid "Generate an image with a text of the account password."
-msgstr "Genereerd een plaatje met de tekst van het wachtwoord van je account. "
+msgstr ""
+"Genereerd een plaatje met de tekst van het wachtwoord van je account. "
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:147
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:158
@@ -5361,8 +5350,8 @@ msgstr "Resultaat zoals Kaarten"
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
 msgid "Displays account's search results on a card like format."
 msgstr ""
-"Maakt het mogelijk rekening te houden met de zoekresultaten als een kaart te "
-"laten zien."
+"Maakt het mogelijk rekening te houden met de zoekresultaten als een kaart te"
+" laten zien."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:181
 msgid "Secondary Groups Access"
@@ -5392,7 +5381,8 @@ msgid "Enable Public Links"
 msgstr "Publieke links inschakelen"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
+msgid ""
+"Enables the ability to create public links to view an account's details"
 msgstr ""
 "Schakelt de mogelijkheid om openbare links te maken om de details van een "
 "account te bekijken"
@@ -5454,8 +5444,8 @@ msgid ""
 "In order to add more MIME types, you need to add them into mime.xml file "
 "within the config directory."
 msgstr ""
-"Om meer MIME types toe te kunnen voegen, dienen deze toegevoegd te worden in "
-"de mime.xml in de config map"
+"Om meer MIME types toe te kunnen voegen, dienen deze toegevoegd te worden in"
+" de mime.xml in de config map"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:334
 msgid "Maximum file size"
@@ -5504,8 +5494,8 @@ msgid ""
 "The backup allows you to save and download sysPass database and application "
 "files including its configuration."
 msgstr ""
-"Met de back-up kunt u de sysPass-database en toepassingsbestanden, inclusief "
-"de configuratie, opslaan en downloaden."
+"Met de back-up kunt u de sysPass-database en toepassingsbestanden, inclusief"
+" de configuratie, opslaan en downloaden."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:83
 msgid ""
@@ -5605,7 +5595,8 @@ msgstr "Gebruikers moeten het nieuwe master wachtwoord invoeren."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
-msgid "It will be updated %s accounts. This process could take some time long."
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
 msgstr "%s Accounts worden aangepast. Dit kan even duren."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:121
@@ -5692,8 +5683,8 @@ msgstr "Stuur een email naar alle gebruikers of naar geselecteerde groep"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
 "Het tijdelijke wachtwoord wordt gebruikt als een Master wachtwoord voor de "
 "gebruikers die dit moeten invoeren bij het inloggen. Hierdoor is het niet "
@@ -5709,7 +5700,8 @@ msgstr "Gebruik Auth Basic"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:31
 msgid "Use Auth Basic for authorizing accesses to the application"
-msgstr "Gebruik Auth Basic voor het autoriseren van toegang voor de applicatie"
+msgstr ""
+"Gebruik Auth Basic voor het autoriseren van toegang voor de applicatie"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:45
 msgid "Use Auth Basic SSO"
@@ -5806,9 +5798,8 @@ msgid "Use Proxy"
 msgstr "Gebruik Proxy"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:31
-#, fuzzy
 msgid "Use a proxy server for checking out for updates and notifications."
-msgstr "Use a proxy server for checking out for updates and notifications."
+msgstr "Gebruik een proxyserver voor het controleren op updates en meldingen."
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:47
 msgid "Proxy server"
@@ -5827,9 +5818,9 @@ msgid "Proxy server password"
 msgstr "Proxy server wachtwoord"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:17
-#, fuzzy
 msgid "This extension is needed to check for sysPass updates and notices"
-msgstr "This extension is needed to check for sysPass updates and notices"
+msgstr ""
+"Deze extensie is nodig om sysPass-updates en -meldingen te controleren"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:25
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:15
@@ -5849,16 +5840,17 @@ msgstr "Taal"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr "Stel de standaard taal in. Dit is per gebruiker aan te passen."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"Om de vertaling te verbeteren kun je ons op https://poeditor.com/join/"
-"project/fmlsBuugyv helpen"
+"Om de vertaling te verbeteren kun je ons op "
+"https://poeditor.com/join/project/fmlsBuugyv helpen"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -5881,7 +5873,7 @@ msgstr "Sessie Timeout(s)"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:117
 msgid "Application URL"
-msgstr ""
+msgstr "Applicatie-URL"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:106
 msgid ""
@@ -5912,8 +5904,8 @@ msgstr "Onderhoudsmode"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr "In deze modus kan niemand inloggen. Sla de configuratie wel op."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:184
@@ -5983,8 +5975,8 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/import.inc:107
 msgid "Supported XML file formats are: sysPass, KeePass and KeePassX"
 msgstr ""
-"Hiermee kunt u de accounts, categorieën en klanten importeren uit XML of CSV "
-"-bestanden."
+"Hiermee kunt u de accounts, categorieën en klanten importeren uit XML of CSV"
+" -bestanden."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:109
 msgid "Drag & Drop the file into the import zone or click over the arrow."
@@ -5995,20 +5987,16 @@ msgid ""
 "For KeePass or KeePassX files, client name will be KeePass or KeePassX and "
 "category name like groups name."
 msgstr ""
-"Voor KeePass of KeePassX bestanden, zal de naam van de klant zijn KeePass of "
-"KeePassX en de categorie naam als de groepsnamen ."
+"Voor KeePass of KeePassX bestanden, zal de naam van de klant zijn KeePass of"
+" KeePassX en de categorie naam als de groepsnamen ."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:113
 msgid "The CSV import file requires the following format:"
 msgstr "Het CSV -bestand importeren moet aan het volgende format doen:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"Account_naam\";\"client\";\"categorie\";\"url\";\"gebruiker\";\"wachtwoord"
-"\";\"notities\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"Account_naam\";\"client\";\"categorie\";\"url\";\"gebruiker\";\"wachtwoord\";\"notities\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid ""
@@ -6111,8 +6099,8 @@ msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 msgstr ""
-"Wanneer dit niet geïnstalleerd is, dien je de juiste besturingssysteem-talen "
-"te installeren. Meer info kun je vinden in de Wiki."
+"Wanneer dit niet geïnstalleerd is, dien je de juiste besturingssysteem-talen"
+" te installeren. Meer info kun je vinden in de Wiki."
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:134
 #: app/modules/web/themes/material-blue/views/config/info.inc:144
@@ -6587,15 +6575,13 @@ msgid "Include Lowercase"
 msgstr "Include Lowercase"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:31
-#, fuzzy
 msgid "Accounts will be only visible by the user."
-msgstr "Accounts will be only visible by the user."
+msgstr "Accounts zijn alleen zichtbaar voor de gebruiker."
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:33
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:52
-#, fuzzy
 msgid "Administrators won't be able to display the accounts."
-msgstr "Administrators won't be able to display the accounts."
+msgstr "Beheerders kunnen de accounts niet weergeven."
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:50
 msgid ""
@@ -6826,9 +6812,8 @@ msgid "Accounts management"
 msgstr "Accountbeheer"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:426
-#, fuzzy
 msgid "Default Values"
-msgstr "Default Values"
+msgstr "Standaardwaarden"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:427
 msgid "Default Values Management"
@@ -6901,16 +6886,15 @@ msgid "Security Code"
 msgstr "Beveilingscode"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr ""
 "Deze code is ingesteld in het sysPass config bestand in de tag naam "
 "\"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
 "Er zijn verweesde items. Wijzig dez items a.u.b of geef een standaard-ID "
 "voor ze."
@@ -7004,9 +6988,8 @@ msgid "The application needs to be updated"
 msgstr "De applicatie dient bijgewerkt te worden"
 
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:16
-#, fuzzy
 msgid "Please enter the security code to start the upgrade"
-msgstr "Please enter the security code to start the upgrade"
+msgstr "Voer de beveiligingscode in om de upgrade te starten"
 
 #: app/modules/web/themes/material-blue/views/userpassreset/request.inc:6
 #: app/modules/web/themes/material-blue/views/userpassreset/reset.inc:13
@@ -7108,7 +7091,8 @@ msgstr "Verwijder Gebruiker"
 
 #: app/resources/strings.js.inc:31
 msgid "You should save configuration in order to take effect"
-msgstr "Je moet de configuratie opslaan voordat de wijzigingen gebruikt worden"
+msgstr ""
+"Je moet de configuratie opslaan voordat de wijzigingen gebruikt worden"
 
 #: app/resources/strings.js.inc:32
 msgid "Generated Password"
@@ -7220,14 +7204,16 @@ msgstr "Nu"
 
 #: app/resources/strings.js.inc:82
 msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
 msgstr ""
 "Dit proces importeert de gedetecteerde LDAP gebruikers. wil je verder gaan?"
 
 #: app/resources/strings.js.inc:83
 msgid "This action will reset all plugin data. Do you want to continue?"
 msgstr ""
-"Met deze actie worden alle plugingegevens opnieuw ingesteld. Wil je doorgaan?"
+"Met deze actie worden alle plugingegevens opnieuw ingesteld. Wil je "
+"doorgaan?"
 
 #: app/resources/strings.js.inc:84
 msgid "This process could take some time long. Do you wish to continue?"
@@ -7258,9 +7244,8 @@ msgid "sysPass Notices"
 msgstr "sysPass Mededelingen"
 
 #: app/resources/strings.js.inc:96
-#, fuzzy
 msgid "Clear the tracks out?"
-msgstr "Clear tracks out?"
+msgstr "Tracks wissen?"
 
 #. (itstool) path: action/text
 #: app/resources/actions.xml:7
@@ -7580,7 +7565,6 @@ msgstr "Unlock track"
 msgid "Clear the tracks out"
 msgstr "Clear tracks out"
 
-
 msgid "Installation"
 msgstr "Installatie"
 
@@ -7594,86 +7578,17 @@ msgid "Hosting"
 msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Maakt de database en de databasegebruiker aan met de opgegeven inloggegevens"
+msgstr ""
+"Maakt de database en de databasegebruiker aan met de opgegeven inloggegevens"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Gebruikt de opgegeven inloggegevens rechtstreeks — de database moet al bestaan"
-
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "De \"/config\" map bestaat niet"
-
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "Niet mogelijk om naar \"/config\" te schrijven"
-
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "De \"/config\" map permissies zijn incorrect"
-
-#~ msgid "Master Password %s"
-#~ msgstr "Master wachtwoord %s"
-
-#~ msgid "Mail service unavailable"
-#~ msgstr "Mail service niet beschikbaar"
-
-#~ msgid "Active Directory"
-#~ msgstr "Active Directory"
-
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Activeer Active Directory LDAP connectie mode"
-
-#~ msgid "Recipient email address"
-#~ msgstr "Emailadres ontvanger"
-
-#~ msgid "Dysplays a navigation bar on top of the search results."
-#~ msgstr "Toont een navigatie bar in de top van de zoek resultaten"
-
-#~ msgid "Color"
-#~ msgstr "Kleur"
-
-#~ msgid "Number"
-#~ msgstr "Nummer"
-
-#~ msgid "Phone"
-#~ msgstr "Telefoon"
-
-#~ msgid "Text Area"
-#~ msgstr "Tekstinvoer"
-
-#~ msgid "Text"
-#~ msgstr "Tekst"
-
-#~ msgid "There aren't any allowed extensions"
-#~ msgstr "Er zijn geen toegestande extensies"
-
-#~ msgid "Extension: %s"
-#~ msgstr "Extensie: %s"
-
-#~ msgid "Maximum size: %s"
-#~ msgstr "Maximale grootte: %s"
-
-#~ msgid "Please, check the file extension"
-#~ msgstr "Check a.u.b de bestandsextensie"
-
-#~ msgid "Data not loaded"
-#~ msgstr "Data niet geladen"
-
-#~ msgid "Extension not allowed"
-#~ msgstr "Extensie niet toegestaan"
-
-#~ msgid "Allowed file extensions"
-#~ msgstr "Bestands extensies toegestaan"
-
-#~ msgid "Allowed file extensions for uploading."
-#~ msgstr "Extensies welke zijn toegestaan om te uploaden."
-
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Typ de extensie en druk op enter. Vergeet hierna niet de configuratie op "
-#~ "te slaan."
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Gebruikt de opgegeven inloggegevens rechtstreeks — de database moet al "
+"bestaan"
 
 msgid "Passwords match"
-msgstr ""
+msgstr "Wachtwoorden komen overeen"
 
 msgid "Welcome"
 msgstr "Welkom"
@@ -7681,8 +7596,12 @@ msgstr "Welkom"
 msgid "Next"
 msgstr "Volgende"
 
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Welkom bij %s! Deze wizard leidt u in een paar eenvoudige stappen door de installatie."
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Welkom bij %s! Deze wizard leidt u in een paar eenvoudige stappen door de "
+"installatie."
 
 msgid "Before starting, you will need the following information:"
 msgstr "Voordat u begint, heeft u de volgende informatie nodig:"
@@ -7699,11 +7618,17 @@ msgstr "De naam voor de sysPass-database"
 msgid "All set? Press Next to begin."
 msgstr "Alles klaar? Klik op Volgende om te beginnen."
 
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "De taal is gedetecteerd via uw browser. Als u deze wijzigt, wordt deze pagina opnieuw geladen."
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"De taal is gedetecteerd via uw browser. Als u deze wijzigt, wordt deze "
+"pagina opnieuw geladen."
 
 msgid "The Master Password is used to encrypt the accounts passwords."
-msgstr "Het Master wachtwoord wordt gebruikt om de wachtwoorden van de accounts te versleutelen."
+msgstr ""
+"Het Master wachtwoord wordt gebruikt om de wachtwoorden van de accounts te "
+"versleutelen."
 
 msgid "Please, keep it safe — it cannot be recovered."
 msgstr "Bewaar het op een veilige plek — het kan niet worden hersteld."
@@ -7788,3 +7713,592 @@ msgstr "Verwezen record niet gevonden"
 
 msgid "The Master Password and its confirmation must be the same"
 msgstr "Het masterwachtwoord en de bevestiging moeten hetzelfde zijn"
+
+msgid "%s cannot be blank"
+msgstr "%s mag niet leeg zijn"
+
+msgid "'/config' directory does not exist."
+msgstr "De map '/config' bestaat niet."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "De machtigingen van de map '/config' zijn onjuist"
+
+msgid "A client is needed"
+msgstr "Een klant is vereist"
+
+msgid "A target is needed"
+msgstr "Een doel is vereist"
+
+msgid "API not initialized"
+msgstr "API niet geïnitialiseerd"
+
+msgid "Advanced Settings"
+msgstr "Geavanceerde instellingen"
+
+msgid "App"
+msgstr "App"
+
+msgid "Application"
+msgstr "Applicatie"
+
+msgid "Ask for admin password"
+msgstr "Vraag om beheerderswachtwoord"
+
+msgid "Ask for current master password"
+msgstr "Vraag om huidig hoofdwachtwoord"
+
+msgid "Ask for database password"
+msgstr "Vraag om databasewachtwoord"
+
+msgid "Ask for language"
+msgstr "Vraag om taal"
+
+msgid "Ask for master password"
+msgstr "Vraag om hoofdwachtwoord"
+
+msgid "Ask for path"
+msgstr "Vraag om pad"
+
+msgid "Authentication already initialized"
+msgstr "Authenticatie al geïnitialiseerd"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr ""
+"De gezaghebbende provider heeft de gebruikersgegevens niet geretourneerd"
+
+msgid "Authorization already exist"
+msgstr "Autorisatie bestaat al"
+
+msgid "Authorization displayed"
+msgstr "Autorisatie weergegeven"
+
+msgid "Authorization removed"
+msgstr "Autorisatie verwijderd"
+
+msgid "Available"
+msgstr "Beschikbaar"
+
+msgid "Backup actions"
+msgstr "Backupacties"
+
+msgid "Backup path set to: %s"
+msgstr "Backuppad ingesteld op: %s"
+
+msgid "Clear Tracks"
+msgstr "Tracks wissen"
+
+msgid "Config"
+msgstr "Configuratie"
+
+msgid "Couldn't deserialize the data"
+msgstr "Gegevens konden niet worden gedeserialiseerd"
+
+msgid "Custom field added"
+msgstr "Aangepast veld toegevoegd"
+
+msgid "Custom field displayed"
+msgstr "Aangepast veld weergegeven"
+
+msgid "Custom field removed"
+msgstr "Aangepast veld verwijderd"
+
+msgid "Custom field updated"
+msgstr "Aangepast veld bijgewerkt"
+
+msgid "DB"
+msgstr "DB"
+
+msgid "Data"
+msgstr "Gegevens"
+
+msgid "Database name contains invalid characters"
+msgstr "Databasenaam bevat ongeldige tekens"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr ""
+"Klasse bestaat niet of bestandsgegevens kunnen niet worden gedeserialiseerd "
+"naar: %s"
+
+msgid "Error executing the query"
+msgstr "Fout bij uitvoeren van query"
+
+msgid "Error loading XML data"
+msgstr "Fout bij laden van XML-gegevens"
+
+msgid "Error while adding the event log"
+msgstr "Fout bij toevoegen van gebeurtenislogvermelding"
+
+msgid "Error while applying the update"
+msgstr "Fout bij toepassen van update"
+
+msgid "Error while clearing the tracks out"
+msgstr "Fout bij wissen van tracks"
+
+msgid "Error while deleting the permission"
+msgstr "Fout bij verwijderen van machtiging"
+
+msgid "Error while deleting the tags"
+msgstr "Fout bij verwijderen van tags"
+
+msgid "Error while reading the CSV file file"
+msgstr "Fout bij lezen van CSV-bestand"
+
+msgid "Error while renewing the link"
+msgstr "Fout bij vernieuwen van link"
+
+msgid "Expiry Date"
+msgstr "Vervaldatum"
+
+msgid "File displayed"
+msgstr "Bestand weergegeven"
+
+msgid "File not found: %s"
+msgstr "Bestand niet gevonden: %s"
+
+msgid "File removed"
+msgstr "Bestand verwijderd"
+
+msgid "File uploaded"
+msgstr "Bestand geüpload"
+
+msgid "Force sysPass installation"
+msgstr "sysPass-installatie forceren"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Haal aangepaste velden op voor het account in de respons"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Haal aangepaste velden op voor de categorie in de respons"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Haal aangepaste velden op voor de klant in de respons"
+
+msgid "Group Attributes"
+msgstr "Groepsattributen"
+
+msgid "Group Filter"
+msgstr "Groepsfilter"
+
+msgid "Group data not set"
+msgstr "Groepsgegevens niet ingesteld"
+
+msgid "Insecure connection"
+msgstr "Onveilige verbinding"
+
+msgid "Install sysPass"
+msgstr "sysPass installeren"
+
+msgid "Install sysPass?"
+msgstr "sysPass installeren?"
+
+msgid "Installation aborted"
+msgstr "Installatie afgebroken"
+
+msgid "Invalid class for loaded file data"
+msgstr "Ongeldige klasse voor geladen bestandsgegevens"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Ongeldig gegevenstype. Verwacht: %s"
+
+msgid "Invalid query type for count"
+msgstr "Ongeldig querytype voor telling"
+
+msgid "Invalid route"
+msgstr "Ongeldig pad"
+
+msgid "Invalid target class"
+msgstr "Ongeldige doelklasse"
+
+msgid "LDAP connection error"
+msgstr "LDAP-verbindingsfout"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "LDAP-filter voor opzoeken van groepsobjecten."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "LDAP-filter voor opzoeken van gebruikersobjecten."
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Logs"
+msgstr "Logs"
+
+msgid "Maintenance"
+msgstr "Onderhoud"
+
+msgid "Master password loaded"
+msgstr "Hoofdwachtwoord geladen"
+
+msgid "Master password to encrypt the data"
+msgstr "Hoofdwachtwoord voor het versleutelen van gegevens"
+
+msgid "Master password update aborted"
+msgstr "Bijwerken van hoofdwachtwoord afgebroken"
+
+msgid "Missing Proxy parameters"
+msgstr "Ontbrekende proxyparameters"
+
+msgid "No accounts updated, only hash"
+msgstr "Geen accounts bijgewerkt, alleen hash"
+
+msgid "No backup available"
+msgstr "Geen backup beschikbaar"
+
+msgid "No items selected"
+msgstr "Geen items geselecteerd"
+
+msgid "No lines read from the file"
+msgstr "Geen regels gelezen uit het bestand"
+
+msgid "No plugins loaded"
+msgstr "Geen plugins geladen"
+
+msgid "Non authoritative auth"
+msgstr "Niet-gezaghebbende authenticatie"
+
+msgid "Notification added"
+msgstr "Melding toegevoegd"
+
+msgid "Notification displayed"
+msgstr "Melding weergegeven"
+
+msgid "Notification marked as read"
+msgstr "Melding gemarkeerd als gelezen"
+
+msgid "Notification removed"
+msgstr "Melding verwijderd"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr "Alleen letters, cijfers, $, _ en - zijn toegestaan in de databasenaam"
+
+msgid "Path is needed"
+msgstr "Een pad is vereist"
+
+msgid "Path where to store the backup files"
+msgstr "Pad voor het opslaan van backupbestanden"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Voer het pad in voor het opslaan van backupbestanden"
+
+msgid "Please provide database admin password"
+msgstr "Geef het wachtwoord van de databasebeheerder op"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Geef het wachtwoord van de sysPass-beheerder op"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Geef het wachtwoord van de sysPass-beheerder opnieuw op"
+
+msgid "Please provide sysPass master password"
+msgstr "Geef het sysPass-hoofdwachtwoord op"
+
+msgid "Please provide sysPass master password again"
+msgstr "Geef het sysPass-hoofdwachtwoord opnieuw op"
+
+msgid "Please provide the current master password"
+msgstr "Geef het huidige hoofdwachtwoord op"
+
+msgid "Please provide the current master password again"
+msgstr "Geef het huidige hoofdwachtwoord opnieuw op"
+
+msgid "Please provide the new master password"
+msgstr "Geef het nieuwe hoofdwachtwoord op"
+
+msgid "Please provide the new master password again"
+msgstr "Geef het nieuwe hoofdwachtwoord opnieuw op"
+
+msgid "Please run setup method before"
+msgstr "Voer eerst de setupmethode uit"
+
+msgid "Please, check the directory permissions"
+msgstr "Controleer de mapmachtigingen"
+
+msgid "Please, press any key to continue"
+msgstr "Druk op een toets om door te gaan"
+
+msgid "Please, restart any browser session to update it"
+msgstr "Start alle browsersessies opnieuw om ze bij te werken"
+
+msgid "Please, restart the session to update it"
+msgstr "Start de sessie opnieuw om deze bij te werken"
+
+msgid "Plugin already registered"
+msgstr "Plugin al geregistreerd"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Plugin niet geladen (uitgeschakeld)"
+
+msgid "Plugin not registered"
+msgstr "Plugin niet geregistreerd"
+
+msgid "Plugin not registered yet"
+msgstr "Plugin nog niet geregistreerd"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Pluginversie compatibel (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Voorinstelling niet geldig voor deze validator"
+
+msgid "Profile data not set"
+msgstr "Profielgegevens niet ingesteld"
+
+msgid "Profile displayed"
+msgstr "Profiel weergegeven"
+
+msgid "Profile removed"
+msgstr "Profiel verwijderd"
+
+msgid "Public link added"
+msgstr "Openbare link toegevoegd"
+
+msgid "Public link displayed"
+msgstr "Openbare link weergegeven"
+
+msgid "Public link hash not set"
+msgstr "Hash van openbare link niet ingesteld"
+
+msgid "Public link refreshed"
+msgstr "Openbare link vernieuwd"
+
+msgid "Public link removed"
+msgstr "Openbare link verwijderd"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Zoek accountnaam op reguliere expressie"
+
+msgid "Secure connection"
+msgstr "Beveiligde verbinding"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Stelt de globale applicatietaal in. U kunt een taal per gebruiker instellen "
+"in de voorkeuren"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Bevestiging van installatie overslaan"
+
+msgid "Skip asking to confirm the update"
+msgstr "Bevestiging van update overslaan"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr "Het beheerderswachtwoord en de bevestiging moeten hetzelfde zijn"
+
+msgid "The command is already running in another process"
+msgstr "De opdracht wordt al uitgevoerd in een ander proces"
+
+msgid "The current master password"
+msgstr "Het huidige hoofdwachtwoord"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr ""
+"Het bestand is geëxporteerd met een oude versie van sysPass (<= 2.10)."
+
+msgid "The new master password to encrypt the data"
+msgstr "Het nieuwe hoofdwachtwoord voor het versleutelen van gegevens"
+
+msgid "There are no accounts for processing"
+msgstr "Er zijn geen accounts om te verwerken"
+
+msgid "This command installs sysPass"
+msgstr "Met deze opdracht wordt sysPass geïnstalleerd"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Met deze opdracht wordt een bestandsgebaseerde backup gemaakt van de "
+"sysPass-database en -applicatie"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr ""
+"Met deze opdracht wordt het sysPass-hoofdwachtwoord bijgewerkt voor alle "
+"versleutelde gegevens"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "Dit is een kritiek proces, sluit de CLI niet af"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr "Tokenwachtwoord bij ophalen van aangepaste velden"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Kan map niet aanmaken (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Kan afbeelding niet aanmaken"
+
+msgid "Unable to create node"
+msgstr "Kan knooppunt niet aanmaken"
+
+msgid "Unable to import account"
+msgstr "Kan account niet importeren"
+
+msgid "Unable to import categories"
+msgstr "Kan categorieën niet importeren"
+
+msgid "Unable to import clients"
+msgstr "Kan klanten niet importeren"
+
+msgid "Unable to import tags"
+msgstr "Kan tags niet importeren"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Kan map niet openen (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Kan gebeurtenis voor gebruiker niet verwerken"
+
+msgid "Unable to process event for user group"
+msgstr "Kan gebeurtenis voor gebruikersgroep niet verwerken"
+
+msgid "Unable to process event for user profile"
+msgstr "Kan gebeurtenis voor gebruikersprofiel niet verwerken"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Kan vergrendeling niet vrijgeven (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Kan configuratie niet ophalen"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Kan machtigingen voor bestand niet instellen (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Kan niet schrijven naar map '/config'"
+
+msgid "Unknown magic method"
+msgstr "Onbekende magic-methode"
+
+msgid "Unlock Track"
+msgstr "Track ontgrendelen"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr ""
+"Hoofdwachtwoord bijwerken? (Dit proces kan niet ongedaan worden gemaakt)"
+
+msgid "Update sysPass master password"
+msgstr "sysPass-hoofdwachtwoord bijwerken"
+
+msgid "Updates"
+msgstr "Updates"
+
+msgid "User Attributes"
+msgstr "Gebruikersattributen"
+
+msgid "User Filter"
+msgstr "Gebruikersfilter"
+
+msgid "User data not set"
+msgstr "Gebruikersgegevens niet ingesteld"
+
+msgid "User displayed"
+msgstr "Gebruiker weergegeven"
+
+msgid "User group Id"
+msgstr "Gebruikersgroep-ID"
+
+msgid "User group description"
+msgstr "Gebruikersgroepbeschrijving"
+
+msgid "User group name"
+msgstr "Naam van gebruikersgroep"
+
+msgid "User removed"
+msgstr "Gebruiker verwijderd"
+
+msgid "Users Id's to add"
+msgstr "Toe te voegen gebruikers-ID's"
+
+msgid "Value cannot be blank"
+msgstr "Waarde mag niet leeg zijn"
+
+msgid "Web Server"
+msgstr "Webserver"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass is al geïnstalleerd. Gebruik '--forceInstall' om het opnieuw te "
+"installeren."
+
+msgid "sysPass is not installed"
+msgstr "sysPass is niet geïnstalleerd"
+
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "De \"/config\" map bestaat niet"
+
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Niet mogelijk om naar \"/config\" te schrijven"
+
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "De \"/config\" map permissies zijn incorrect"
+
+#~ msgid "Master Password %s"
+#~ msgstr "Master wachtwoord %s"
+
+#~ msgid "Mail service unavailable"
+#~ msgstr "Mail service niet beschikbaar"
+
+#~ msgid "Active Directory"
+#~ msgstr "Active Directory"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Activeer Active Directory LDAP connectie mode"
+
+#~ msgid "Recipient email address"
+#~ msgstr "Emailadres ontvanger"
+
+#~ msgid "Dysplays a navigation bar on top of the search results."
+#~ msgstr "Toont een navigatie bar in de top van de zoek resultaten"
+
+#~ msgid "Color"
+#~ msgstr "Kleur"
+
+#~ msgid "Number"
+#~ msgstr "Nummer"
+
+#~ msgid "Phone"
+#~ msgstr "Telefoon"
+
+#~ msgid "Text Area"
+#~ msgstr "Tekstinvoer"
+
+#~ msgid "Text"
+#~ msgstr "Tekst"
+
+#~ msgid "There aren't any allowed extensions"
+#~ msgstr "Er zijn geen toegestande extensies"
+
+#~ msgid "Extension: %s"
+#~ msgstr "Extensie: %s"
+
+#~ msgid "Maximum size: %s"
+#~ msgstr "Maximale grootte: %s"
+
+#~ msgid "Please, check the file extension"
+#~ msgstr "Check a.u.b de bestandsextensie"
+
+#~ msgid "Data not loaded"
+#~ msgstr "Data niet geladen"
+
+#~ msgid "Extension not allowed"
+#~ msgstr "Extensie niet toegestaan"
+
+#~ msgid "Allowed file extensions"
+#~ msgstr "Bestands extensies toegestaan"
+
+#~ msgid "Allowed file extensions for uploading."
+#~ msgstr "Extensies welke zijn toegestaan om te uploaden."
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Typ de extensie en druk op enter. Vergeet hierna niet de configuratie op te "
+#~ "slaan."
