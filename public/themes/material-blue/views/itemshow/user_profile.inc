@@ -758,7 +758,7 @@ $profileData = $_getvar('profileData');
                                         <span class="mdl-list__item-primary-content">
                                         <i class="material-icons mdl-list__item-icon">person</i>
                                             <?php
-                                            echo $user->login; ?>
+                                            echo htmlspecialchars($user->login ?? '', ENT_QUOTES); ?>
                                         </span>
                                     </li>
                                 <?php

@@ -163,8 +163,10 @@ class Request implements RequestService
                 PREG_SPLIT_NO_EMPTY
             );
 
-            if (!empty($matches)) {
-                return $matches;
+            $filtered = preg_grep('/^[\w.:]+$/', $matches ?: []);
+
+            if (!empty($filtered)) {
+                return array_values($filtered);
             }
         }
 
