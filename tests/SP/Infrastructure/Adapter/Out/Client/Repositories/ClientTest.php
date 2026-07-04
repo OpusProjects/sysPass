@@ -36,6 +36,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -312,7 +313,7 @@ class ClientTest extends UnitaryTestCase
         $callback = new Callback(
             static function (QueryData $arg) {
                 $query = $arg->getQuery();
-                return $arg->getMapClassName() === Simple::class
+                return $arg->getMapClassName() === Item::class
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }
