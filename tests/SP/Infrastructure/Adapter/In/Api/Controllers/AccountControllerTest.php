@@ -358,8 +358,10 @@ class AccountControllerTest extends ApiTestCase
             [['tagsId' => [10]], 0],
             [['categoryId' => 1, 'clientId' => 1], 1],
             [['categoryId' => 2, 'clientId' => 1], 0],
-            // 'op' applies to the tag filter; category + client are always ANDed
-            [['categoryId' => 2, 'clientId' => 1, 'op' => 'or'], 0],
+            // op=or ORs every dimension: category 2 (Apple) OR client 1 (Google) → both
+            [['categoryId' => 2, 'clientId' => 1, 'op' => 'or'], 2],
+            // op=or across a dimension and tags: category 1 (Google) OR tag 3 (Apple) → both
+            [['categoryId' => 1, 'tagsId' => [3], 'op' => 'or'], 2],
         ];
     }
 
