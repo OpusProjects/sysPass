@@ -224,6 +224,6 @@ This makes the CLI safe to use in shell scripts (`set -e`) and CI pipelines.
 
 ## Logging
 
-All commands log to the application log (`var/log`, configured by the core
-`LoggerInterface`). Use `-v`/`-vv`/`-vvv` to also surface progress/debug output on
-the console.
+All commands log to the application log — `config/syspass.log` by default,
+overridable with the `LOG_FILE` environment variable. Use `-v`/`-vv`/`-vvv` to also
+surface progress/debug output on the console.

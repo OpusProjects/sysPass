@@ -15,6 +15,10 @@ http://<your-host>/api/docs/
 From there you can browse every endpoint, see request/response schemas, and use
 **Try it out** to make live calls.
 
+> The Docker stack maps this URL via an Apache alias (`Alias /api/docs` →
+> `public/api`, see `docker/apache/syspass.conf`). On a manual install, add an
+> equivalent alias to your web server config — otherwise `/api/docs/` returns 404.
+
 ## Base URL
 
 All endpoints are under `/api/v1/`:
@@ -227,4 +231,5 @@ curl -X DELETE http://localhost:8090/api/v1/tags/5 \
   -H 'Authorization: Bearer your_token_here'
 ```
 
-For full parameter details on every endpoint, see the [Swagger UI](/api/docs/).
+For full parameter details on every endpoint, see the Swagger UI at
+`/api/docs/` on a running instance.
