@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -9,22 +10,20 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
 "X-Contributors: \n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
 msgid "Account displayed"
-msgstr ""
+msgstr "Fiók megjelenítve"
 
 #: app/modules/api/Controllers/AccountController.php:71
 #: app/modules/api/Controllers/AccountController.php:103
@@ -170,7 +169,7 @@ msgstr "Fiók törölve"
 
 #: app/modules/api/Controllers/CategoryController.php:62
 msgid "Category displayed"
-msgstr ""
+msgstr "Kategória megjelenítve"
 
 #: app/modules/api/Controllers/CategoryController.php:91
 #: app/modules/api/Controllers/CategoryController.php:96
@@ -195,7 +194,7 @@ msgstr "Kategória törölve"
 
 #: app/modules/api/Controllers/ClientController.php:63
 msgid "Client displayed"
-msgstr ""
+msgstr "Ügyfél megjelenítve"
 
 #: app/modules/api/Controllers/ClientController.php:93
 #: app/modules/api/Controllers/ClientController.php:98
@@ -260,17 +259,17 @@ msgstr "Belépés megtagadva"
 #: app/modules/api/Controllers/Help/AccountHelp.php:105
 #: app/modules/api/Controllers/Help/AccountHelp.php:144
 msgid "Account Id"
-msgstr ""
+msgstr "Fiók azonosítója"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:55
 #: app/modules/api/Controllers/Help/AccountHelp.php:68
 #: app/modules/api/Controllers/Help/AccountHelp.php:81
 msgid "Token's password"
-msgstr ""
+msgstr "Token jelszava"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:56
 msgid "Send details in the response"
-msgstr ""
+msgstr "Részletek küldése a válaszban"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:69
 #: app/modules/api/Controllers/Help/AccountHelp.php:85
@@ -333,7 +332,7 @@ msgstr "Fiók név"
 #: app/modules/api/Controllers/Help/CategoryHelp.php:66
 #: app/modules/api/Controllers/Help/CategoryHelp.php:91
 msgid "Category Id"
-msgstr ""
+msgstr "Kategória azonosítója"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:84
 #: app/modules/api/Controllers/Help/AccountHelp.php:108
@@ -341,7 +340,7 @@ msgstr ""
 #: app/modules/api/Controllers/Help/ClientHelp.php:67
 #: app/modules/api/Controllers/Help/ClientHelp.php:93
 msgid "Client Id"
-msgstr ""
+msgstr "Ügyfél azonosítója"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:86
 #: app/modules/api/Controllers/Help/AccountHelp.php:109
@@ -370,41 +369,36 @@ msgstr "Jegyzetek a fiókokról"
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:220
 #: app/modules/web/themes/material-blue/views/account/search-rows.inc:119
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:29
-#, fuzzy
 msgid "Private Account"
-msgstr "Private Account"
+msgstr "Privát fiók"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:90
 #: app/modules/api/Controllers/Help/AccountHelp.php:113
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:238
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-private.inc:48
-#, fuzzy
 msgid "Private Account for Group"
-msgstr "Private Account for Group"
+msgstr "Privát fiók a csoport számára"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:92
 #: app/modules/api/Controllers/Help/AccountHelp.php:115
 #: app/modules/web/themes/material-blue/views/account/account.inc:277
 #: app/modules/web/themes/material-blue/views/account/account.inc:279
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:13
-#, fuzzy
 msgid "Linked Account"
-msgstr "Linked Account"
+msgstr "Kapcsolt fiók"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:93
 #: app/modules/api/Controllers/Help/AccountHelp.php:116
-#, fuzzy
 msgid "Array with tags id"
-msgstr "Array with tags id"
+msgstr "Tömbök tag azonosítókkal"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:94
 #: app/modules/api/Controllers/Help/AccountHelp.php:117
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:43
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:67
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:93
-#, fuzzy
 msgid "Group Id"
-msgstr "Group Id"
+msgstr "Csoport azonosítója"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:128
 #: app/modules/api/Controllers/Help/CategoryHelp.php:79
@@ -412,9 +406,8 @@ msgstr "Group Id"
 #: app/modules/api/Controllers/Help/TagHelp.php:77
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:81
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:27
-#, fuzzy
 msgid "Text to search for"
-msgstr "Keresendõ szöveg"
+msgstr "Keresendő szöveg"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:129
 #: app/modules/api/Controllers/Help/CategoryHelp.php:80
@@ -425,24 +418,20 @@ msgid "Number of results to display"
 msgstr "Number of results to display"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:130
-#, fuzzy
 msgid "Category Id to filter on"
-msgstr "Category Id to filter on"
+msgstr "Kategória azonosító szűréshez"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:131
-#, fuzzy
 msgid "Client Id to filter on"
-msgstr "Client Id to filter on"
+msgstr "Ügyfél azonosító szűréshez"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:132
-#, fuzzy
 msgid "Array with tags id for filtering"
-msgstr "Array with tags id for filtering"
+msgstr "Tömbök tag azonosítókkal szűréshez"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:133
-#, fuzzy
 msgid "Filtering operator"
-msgstr "Filtering operator"
+msgstr "Szűrési operátor"
 
 #: app/modules/api/Controllers/Help/CategoryHelp.php:54
 #: app/modules/api/Controllers/Help/CategoryHelp.php:67
@@ -459,16 +448,14 @@ msgstr "Kategória leírás"
 #: app/modules/api/Controllers/Help/ClientHelp.php:54
 #: app/modules/api/Controllers/Help/ClientHelp.php:68
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:30
-#, fuzzy
 msgid "Client name"
-msgstr "Ügyfél név"
+msgstr "Ügyfél neve"
 
 #: app/modules/api/Controllers/Help/ClientHelp.php:55
 #: app/modules/api/Controllers/Help/ClientHelp.php:69
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:43
-#, fuzzy
 msgid "Client description"
-msgstr "Ügyfél leírás"
+msgstr "Ügyfél leírása"
 
 #: app/modules/api/Controllers/Help/ClientHelp.php:56
 #: app/modules/api/Controllers/Help/ClientHelp.php:70
@@ -476,23 +463,20 @@ msgstr "Ügyfél leírás"
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:155
 #: app/modules/web/themes/material-blue/views/itemshow/client.inc:66
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:105
-#, fuzzy
 msgid "Global"
-msgstr "Global"
+msgstr "Globális"
 
 #: app/modules/api/Controllers/Help/TagHelp.php:43
 #: app/modules/api/Controllers/Help/TagHelp.php:65
 #: app/modules/api/Controllers/Help/TagHelp.php:89
-#, fuzzy
 msgid "Tag Id"
-msgstr "Tag Id"
+msgstr "Tag azonosítója"
 
 #: app/modules/api/Controllers/Help/TagHelp.php:54
 #: app/modules/api/Controllers/Help/TagHelp.php:66
 #: app/modules/web/themes/material-blue/views/itemshow/tag.inc:29
-#, fuzzy
 msgid "Tag name"
-msgstr "Tag name"
+msgstr "Tag neve"
 
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:54
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:68
@@ -513,35 +497,30 @@ msgid "Array with users Id"
 msgstr "Array with users Id"
 
 #: app/modules/api/Controllers/TagController.php:61
-#, fuzzy
 msgid "Tag displayed"
-msgstr "Tag displayed"
+msgstr "Tag megjelenítve"
 
 #: app/modules/api/Controllers/TagController.php:89
 #: app/modules/api/Controllers/TagController.php:94
 #: app/modules/web/Controllers/TagController.php:249
-#, fuzzy
 msgid "Tag added"
-msgstr "Tag added"
+msgstr "Tag hozzáadva"
 
 #: app/modules/api/Controllers/TagController.php:118
 #: app/modules/api/Controllers/TagController.php:123
 #: app/modules/web/Controllers/TagController.php:284
-#, fuzzy
 msgid "Tag updated"
-msgstr "Tag updated"
+msgstr "Tag frissítve"
 
 #: app/modules/api/Controllers/TagController.php:147
 #: app/modules/api/Controllers/TagController.php:152
 #: app/modules/web/Controllers/TagController.php:219
-#, fuzzy
 msgid "Tag removed"
-msgstr "Tag removed"
+msgstr "Tag eltávolítva"
 
 #: app/modules/api/Controllers/UserGroupController.php:61
-#, fuzzy
 msgid "Group viewed"
-msgstr "Group viewed"
+msgstr "Csoport megtekintve"
 
 #: app/modules/api/Controllers/UserGroupController.php:91
 #: app/modules/api/Controllers/UserGroupController.php:96
@@ -609,9 +588,8 @@ msgid "Account"
 msgstr "Fiók"
 
 #: app/modules/web/Controllers/AccountController.php:254
-#, fuzzy
 msgid "Agent"
-msgstr "Agent"
+msgstr "Ügynök"
 
 #: app/modules/web/Controllers/AccountController.php:255
 msgid "HTTPS"
@@ -620,15 +598,13 @@ msgstr "HTTPS"
 #: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
 #: lib/SP/Providers/Auth/Ldap/LdapConnection.php:215
-#, fuzzy
 msgid "ON"
-msgstr "ON"
+msgstr "BE"
 
 #: app/modules/web/Controllers/AccountController.php:255
 #: app/modules/web/Controllers/Helpers/Grid/PublicLinkGrid.php:133
-#, fuzzy
 msgid "OFF"
-msgstr "OFF"
+msgstr "KI"
 
 #: app/modules/web/Controllers/AccountController.php:256
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:104
@@ -669,9 +645,8 @@ msgstr "Fiók módosítás"
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:178
 #: app/resources/actions.xml:169 app/resources/actions.xml:487
 #: app/resources/actions.xml:799
-#, fuzzy
 msgid "Remove Account"
-msgstr "Fiók törlése"
+msgstr "Fiók eltávolítása"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/AccountController.php:504
@@ -683,9 +658,8 @@ msgstr "Fiók jelszavának szerkesztése"
 
 #: app/modules/web/Controllers/AccountController.php:760
 #: app/modules/web/Controllers/AccountController.php:797
-#, fuzzy
 msgid "Password copied"
-msgstr "Password copied"
+msgstr "Jelszó másolva"
 
 #: app/modules/web/Controllers/AccountController.php:968
 #: app/modules/web/Controllers/AccountController.php:979
@@ -700,9 +674,8 @@ msgstr "Fiók restaurált"
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:111
 #: app/modules/web/Controllers/AccountManagerController.php:135
 #: app/modules/web/Controllers/AccountManagerController.php:138
-#, fuzzy
 msgid "Accounts removed"
-msgstr "Accounts removed"
+msgstr "Fiókok eltávolítva"
 
 #: app/modules/web/Controllers/AccountController.php:1052
 #: app/modules/web/Forms/NotificationForm.php:106
@@ -794,7 +767,7 @@ msgstr "Érvénytelen lekérdezés"
 
 #: app/modules/web/Controllers/AccountFileController.php:194
 msgid "There aren't any allowed MIME types"
-msgstr ""
+msgstr "Nincsenek engedélyezett MIME-típusok"
 
 #: app/modules/web/Controllers/AccountFileController.php:209
 msgid "Invalid file"
@@ -806,20 +779,18 @@ msgid "File: %s"
 msgstr "File: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:223
-#, fuzzy
 msgid "File size exceeded"
-msgstr "File size exceeded"
+msgstr "Fájlméret túllépve"
 
 #: app/modules/web/Controllers/AccountFileController.php:225
-#, fuzzy, php-format
+#, php-format
 msgid "Maximum size: %d KB"
-msgstr "Maximum size: %d KB"
+msgstr "Maximális méret: %d KB"
 
 #: app/modules/web/Controllers/AccountFileController.php:231
 #: lib/SP/Services/Import/FileImport.php:106
-#, fuzzy
 msgid "Internal error while reading the file"
-msgstr "Belsõ hiba a fájl olvasása közben"
+msgstr "Belső hiba a fájl olvasása közben"
 
 #: app/modules/web/Controllers/AccountFileController.php:243
 #: app/modules/web/Controllers/AccountFileController.php:252
@@ -858,7 +829,7 @@ msgstr "Fájltípus nem engedélyezett"
 #: lib/SP/Services/Import/FileImport.php:97
 #, php-format
 msgid "MIME type: %s"
-msgstr ""
+msgstr "MIME-típus: %s"
 
 #: app/modules/web/Controllers/AccountFileController.php:307
 #: app/modules/web/Controllers/AccountHistoryManagerController.php:64
@@ -977,7 +948,6 @@ msgstr "There are no linked files for the account"
 #: app/modules/web/Controllers/AccountManagerController.php:191
 #: app/modules/web/Controllers/AccountManagerController.php:194
 #: lib/SP/Services/Account/AccountCryptService.php:195
-#, fuzzy
 msgid "Accounts updated"
 msgstr "Fiókok frissítve"
 
@@ -992,16 +962,14 @@ msgstr "Bulk Update"
 #: app/modules/web/Controllers/AuthTokenController.php:114
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:155
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:156
-#, fuzzy
 msgid "New Authorization"
-msgstr "Új Kategória"
+msgstr "Új felhatalmazás"
 
 #: app/modules/web/Controllers/AuthTokenController.php:181
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:191
-#, fuzzy
 msgid "Edit Authorization"
-msgstr "Módosítás"
+msgstr "Felhatalmazás szerkesztése"
 
 #: app/modules/web/Controllers/AuthTokenController.php:224
 #: app/modules/web/Controllers/AuthTokenController.php:227
@@ -1010,9 +978,8 @@ msgstr "Authorizations deleted"
 
 #: app/modules/web/Controllers/AuthTokenController.php:237
 #: app/modules/web/Controllers/AuthTokenController.php:241
-#, fuzzy
 msgid "Authorization deleted"
-msgstr "Fiók törölve"
+msgstr "Felhatalmazás törölve"
 
 #: app/modules/web/Controllers/AuthTokenController.php:238
 #: app/modules/web/Controllers/AuthTokenController.php:314
@@ -1023,22 +990,19 @@ msgid "Authorization"
 msgstr "Authorization"
 
 #: app/modules/web/Controllers/AuthTokenController.php:275
-#, fuzzy
 msgid "Authorization added"
-msgstr "Fiók hozzáadva"
+msgstr "Felhatalmazás hozzáadva"
 
 #: app/modules/web/Controllers/AuthTokenController.php:313
 #: app/modules/web/Controllers/AuthTokenController.php:322
 #: app/modules/web/Controllers/AuthTokenController.php:329
 #: lib/SP/Services/Upgrade/UpgradeAuthToken.php:70
-#, fuzzy
 msgid "Authorization updated"
-msgstr "Fiók frissítve"
+msgstr "Felhatalmazás frissítve"
 
 #: app/modules/web/Controllers/AuthTokenController.php:357
-#, fuzzy
 msgid "View Authorization"
-msgstr "Nézet"
+msgstr "Felhatalmazás megtekintése"
 
 #: app/modules/web/Controllers/AuthTokenController.php:365
 msgid "Authorization viewed"
@@ -1088,9 +1052,8 @@ msgstr "Kategória"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/CategoryController.php:345
 #: app/resources/actions.xml:301
-#, fuzzy
 msgid "View Category"
-msgstr "Nézet"
+msgstr "Kategória megtekintése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:110
@@ -1098,7 +1061,6 @@ msgstr "Nézet"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:156
 #: app/modules/web/themes/material-blue/views/account/account.inc:103
 #: app/resources/actions.xml:337
-#, fuzzy
 msgid "New Client"
 msgstr "Új ügyfél"
 
@@ -1107,9 +1069,8 @@ msgstr "Új ügyfél"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:174
 #: app/resources/actions.xml:343
-#, fuzzy
 msgid "Edit Client"
-msgstr "Ügyfél módosítás"
+msgstr "Ügyfél szerkesztése"
 
 #: app/modules/web/Controllers/ClientController.php:217
 #: app/modules/web/Controllers/ClientController.php:220
@@ -1119,14 +1080,12 @@ msgstr "Clients deleted"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ClientController.php:336
 #: app/resources/actions.xml:331
-#, fuzzy
 msgid "View Client"
-msgstr "Nézet"
+msgstr "Ügyfél megtekintése"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:73
-#, fuzzy
 msgid "Maximum size per file is 16MB"
-msgstr "Maximálisan feltölthetõ fájl mérete 16MB"
+msgstr "Maximális fájlméret 16 MB"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:81
 msgid "Files enabled"
@@ -1216,9 +1175,8 @@ msgstr "Fiókok"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:93
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:76
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:330
-#, fuzzy
 msgid "Clients"
-msgstr "Ügyfél"
+msgstr "Ügyfelek"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:126
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:94
@@ -1255,37 +1213,32 @@ msgstr "DokuWiki disabled"
 #: lib/SP/Services/Auth/LoginService.php:343
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:164
-#, fuzzy
 msgid "Master password updated"
-msgstr "A mester jelszó frissítve"
+msgstr "Főjelszó frissítve"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:75
 #: app/modules/web/Controllers/ConfigEncryptionController.php:175
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:118
 #: lib/SP/Services/User/UpdatedMasterPassException.php:45
 #: lib/SP/Util/ErrorUtil.php:165
-#, fuzzy
 msgid "Please, restart the session for update it"
-msgstr "Indítsa újra a munkamenetot a frissítéshez"
+msgstr "Indítsa újra a munkamenetet a frissítéshez"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:82
-#, fuzzy
 msgid "Master password not entered"
-msgstr "Mester jelszó szükséges"
+msgstr "A főjelszó nincs megadva"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:89
 msgid "The password update must be confirmed"
 msgstr "A jelszó frissítéshez megerõsítés szükséges"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:96
-#, fuzzy
 msgid "Passwords are the same"
-msgstr "A jelszó megegyezik"
+msgstr "A jelszavak egyeznek"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:103
-#, fuzzy
 msgid "Master passwords do not match"
-msgstr "A mester jelszó nem egyezik"
+msgstr "A főjelszavak nem egyeznek"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:110
 msgid "The current master password does not match"
@@ -1294,12 +1247,14 @@ msgstr "A jelenlegi mester jelszó nem egyezik"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:117
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Maintenance mode not enabled"
-msgstr ""
+msgstr "Karbantartási mód nincs engedélyezve"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
 msgstr ""
+"Engedélyezze, hogy elkerülje a más munkamenetekből származó nemkívánatos "
+"viselkedést"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 #, fuzzy
@@ -1352,14 +1307,12 @@ msgid "Missing Proxy parameters "
 msgstr "Hiányzó Wiki paraméter"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:139
-#, fuzzy
 msgid "Proxy enabled"
-msgstr "Felhasználó letiltva"
+msgstr "Proxy engedélyezve"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:144
-#, fuzzy
 msgid "Proxy disabled"
-msgstr "Felhasználó letiltva"
+msgstr "Proxy letiltva"
 
 #: app/modules/web/Controllers/ConfigGeneralController.php:163
 msgid "Auth Basic enabled"
@@ -1382,9 +1335,8 @@ msgstr "Importálás kész"
 #: app/modules/web/Controllers/ConfigImportController.php:92
 #: lib/SP/Services/Backup/FileBackupService.php:120
 #: lib/SP/Services/Export/XmlExportService.php:201
-#, fuzzy
 msgid "Please check out the event log for more details"
-msgstr "Részletes leírást az esemény naplóban olvashat"
+msgstr "Részletekért tekintse meg az eseménynaplót"
 
 #: app/modules/web/Controllers/ConfigImportController.php:91
 msgid "No accounts were imported"
@@ -1397,14 +1349,12 @@ msgid "Missing LDAP parameters"
 msgstr "Hiányzó LDAP paraméter"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:91
-#, fuzzy
 msgid "LDAP enabled"
-msgstr "Inaktív"
+msgstr "LDAP engedélyezve"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:96
-#, fuzzy
 msgid "LDAP disabled"
-msgstr "Inaktív"
+msgstr "LDAP letiltva"
 
 #: app/modules/web/Controllers/ConfigLdapController.php:98
 #: app/modules/web/Controllers/ConfigMailController.php:111
@@ -1462,14 +1412,12 @@ msgid "Missing Mail parameters"
 msgstr "Hiányzó mail paraméter"
 
 #: app/modules/web/Controllers/ConfigMailController.php:102
-#, fuzzy
 msgid "Mail enabled"
-msgstr "Email elküldve"
+msgstr "E-mail engedélyezve"
 
 #: app/modules/web/Controllers/ConfigMailController.php:109
-#, fuzzy
 msgid "Mail disabled"
-msgstr "Felhasználó letiltva"
+msgstr "E-mail letiltva"
 
 #: app/modules/web/Controllers/ConfigMailController.php:162
 #: lib/SP/Services/Mail/MailService.php:150
@@ -1506,21 +1454,18 @@ msgstr "Mail"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:301
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:462
-#, fuzzy
 msgid "Encryption"
-msgstr "A Crypto modul nem tölthetõ be"
+msgstr "Titkosítás"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:329
 #: app/modules/web/themes/material-blue/views/config/backup.inc:62
-#, fuzzy
 msgid "There aren't any backups available"
-msgstr "Nincsenek elérhetõ Archívumok"
+msgstr "Nem érhető el biztonsági mentés"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:339
 #: app/modules/web/themes/material-blue/views/config/backup.inc:133
-#, fuzzy
 msgid "No export file found"
-msgstr "Nem lehet a konfigurációs fájlba írni"
+msgstr "Nem található exportfájl"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/ConfigManagerController.php:342
@@ -1541,37 +1486,32 @@ msgstr "Not installed"
 
 #: app/modules/web/Controllers/ConfigManagerController.php:397
 #: app/modules/web/themes/material-blue/inc/Icons.php:63
-#, fuzzy
 msgid "Information"
-msgstr "Mutat néhány információt az alkalmazásról és a teljesítményrõl"
+msgstr "Információ"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:63
 msgid "Missing Wiki parameters"
 msgstr "Hiányzó Wiki paraméter"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:73
-#, fuzzy
 msgid "Wiki enabled"
-msgstr "Inaktív"
+msgstr "Wiki engedélyezve"
 
 #: app/modules/web/Controllers/ConfigWikiController.php:78
-#, fuzzy
 msgid "Wiki disabled"
-msgstr "Inaktív"
+msgstr "Wiki letiltva"
 
 #: app/modules/web/Controllers/CustomFieldController.php:111
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:159
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:160
-#, fuzzy
 msgid "New Field"
-msgstr "Új felhasználó"
+msgstr "Új mező"
 
 #: app/modules/web/Controllers/CustomFieldController.php:175
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:177
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:178
-#, fuzzy
 msgid "Edit Field"
-msgstr "Módosítás"
+msgstr "Mező szerkesztése"
 
 #: app/modules/web/Controllers/CustomFieldController.php:213
 #: app/modules/web/Controllers/CustomFieldController.php:216
@@ -1579,15 +1519,13 @@ msgid "Fields deleted"
 msgstr "Fields deleted"
 
 #: app/modules/web/Controllers/CustomFieldController.php:222
-#, fuzzy
 msgid "Field deleted"
-msgstr "Felhasználó törölve"
+msgstr "Mező törölve"
 
 #: app/modules/web/Controllers/CustomFieldController.php:254
 #: app/modules/web/Controllers/CustomFieldController.php:258
-#, fuzzy
 msgid "Field added"
-msgstr "Felhasználó hozzáadva"
+msgstr "Mező hozzáadva"
 
 #: app/modules/web/Controllers/CustomFieldController.php:255
 #: app/modules/web/Controllers/CustomFieldController.php:296
@@ -1601,18 +1539,16 @@ msgstr "Field"
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldData.php:74
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:96
 #: lib/SP/Services/Upgrade/UpgradeCustomFieldDefinition.php:187
-#, fuzzy
 msgid "Field updated"
-msgstr "Frissítve"
+msgstr "Mező frissítve"
 
 #: app/modules/web/Controllers/CustomFieldController.php:327
 msgid "View Field"
 msgstr "View Field"
 
 #: app/modules/web/Controllers/ErrorController.php:107
-#, fuzzy
 msgid "Application on maintenance"
-msgstr "Az alkalmazás fut"
+msgstr "Az alkalmazás karbantartás alatt áll"
 
 #: app/modules/web/Controllers/ErrorController.php:108
 msgid "It will be running shortly"
@@ -1642,9 +1578,8 @@ msgstr "Kérem, keresse a rendszergazdát"
 #: lib/SP/Storage/Database/MySQLHandler.php:118
 #: lib/SP/Storage/Database/MySQLHandler.php:165
 #: lib/SP/Storage/Database/MySQLHandler.php:177
-#, fuzzy
 msgid "Unable to connect to DB"
-msgstr "Csatlakozás a DB-hez meghiusúlt"
+msgstr "Nem lehet csatlakozni az adatbázishoz"
 
 #: app/modules/web/Controllers/EventlogController.php:127
 #: app/modules/web/Controllers/EventlogController.php:130
@@ -1737,9 +1672,8 @@ msgstr "Jelszó"
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:441
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:485
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:486
-#, fuzzy
 msgid "Copy Password to Clipboard"
-msgstr "A jelszó nem lehet üres"
+msgstr "Jelszó másolása a vágólapra"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Account/AccountActionsHelper.php:508
@@ -1750,16 +1684,14 @@ msgstr "Fiók másolása"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:69
 #: app/resources/strings.js.inc:72
-#, fuzzy
 msgid "Account Password"
-msgstr "Fiók jelszavának szerkesztése"
+msgstr "Fiók jelszava"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:96
 #: lib/SP/Core/Acl/AccountPermissionException.php:45
 #: lib/SP/Util/ErrorUtil.php:152
-#, fuzzy
 msgid "You don't have permission to access this account"
-msgstr "Nincs jogosultságod belépni ebbe a fiókba"
+msgstr "Nincs jogosultsága ehhez a fiókhoz hozzáférni"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:181
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:182
@@ -1767,9 +1699,8 @@ msgid "More Actions"
 msgstr "Több akció"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:238
-#, fuzzy
 msgid "Sort by Client"
-msgstr "Rendezés Ügyfél szerint"
+msgstr "Rendezés ügyfél szerint"
 
 #: app/modules/web/Controllers/Helpers/Account/AccountSearchHelper.php:245
 msgid "Sort by Name"
@@ -1926,9 +1857,8 @@ msgstr "Accounts (H)"
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:48
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:55
 #: app/modules/web/themes/material-blue/views/wiki/wikipage.inc:38
-#, fuzzy
 msgid "Date"
-msgstr "Dátum hozzáadva"
+msgstr "Dátum"
 
 #: app/modules/web/Controllers/Helpers/Grid/AccountHistoryGrid.php:108
 #: app/modules/web/Controllers/Helpers/Grid/NotificationGrid.php:131
@@ -1969,15 +1899,13 @@ msgstr "Search for Token"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:173
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:174
-#, fuzzy
 msgid "View Authorization token"
-msgstr "Felhasználó részletek"
+msgstr "Felhatalmazási token megtekintése"
 
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:207
 #: app/modules/web/Controllers/Helpers/Grid/AuthTokenGrid.php:208
-#, fuzzy
 msgid "Delete Authorization"
-msgstr "Profil törlése"
+msgstr "Felhatalmazás törlése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/CategoryGrid.php:137
@@ -2012,7 +1940,6 @@ msgstr "Search for Client"
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:190
 #: app/modules/web/Controllers/Helpers/Grid/ClientGrid.php:191
 #: app/resources/actions.xml:349
-#, fuzzy
 msgid "Delete Client"
 msgstr "Ügyfél törlése"
 
@@ -2025,9 +1952,8 @@ msgstr "Custom Fields"
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:108
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:49
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:51
-#, fuzzy
 msgid "Module"
-msgstr "Modul nem elérhetõ"
+msgstr "Modul"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:110
 #: app/modules/web/Controllers/Helpers/Grid/UserGrid.php:112
@@ -2040,9 +1966,8 @@ msgstr "Search for Field"
 
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:194
 #: app/modules/web/Controllers/Helpers/Grid/CustomFieldGrid.php:195
-#, fuzzy
 msgid "Delete Field"
-msgstr "Profil törlése"
+msgstr "Mező törlése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:87
@@ -2095,9 +2020,8 @@ msgstr "Refresh"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
-#, fuzzy
 msgid "Clear the event log out"
-msgstr "Esemény napló törlése"
+msgstr "Eseménynapló törlése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/FileGrid.php:94
@@ -2557,9 +2481,8 @@ msgstr "Új csoport"
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:172
 #: app/modules/web/Controllers/UserGroupController.php:356
 #: app/resources/actions.xml:613
-#, fuzzy
 msgid "View Group"
-msgstr "Nézet"
+msgstr "Csoport megtekintése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserGroupGrid.php:188
@@ -2597,9 +2520,8 @@ msgstr "Új profil"
 
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:169
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:170
-#, fuzzy
 msgid "View Profile Details"
-msgstr "Felhasználó részletek"
+msgstr "Profil részleteinek megtekintése"
 
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/Helpers/Grid/UserProfileGrid.php:186
@@ -2892,9 +2814,8 @@ msgstr "Felhasználó frissítve"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserController.php:477
 #: app/resources/actions.xml:577
-#, fuzzy
 msgid "View User"
-msgstr "Felhasználó részletek"
+msgstr "Felhasználó megtekintése"
 
 #: app/modules/web/Controllers/UserGroupController.php:230
 #: app/modules/web/Controllers/UserGroupController.php:233
@@ -2961,23 +2882,20 @@ msgstr "Profil frissítve"
 #. (itstool) path: action/text
 #: app/modules/web/Controllers/UserProfileController.php:347
 #: app/resources/actions.xml:643
-#, fuzzy
 msgid "View Profile"
-msgstr "Nézet"
+msgstr "Profil megtekintése"
 
 #: app/modules/web/Controllers/UserSettingsGeneralController.php:75
-#, fuzzy
 msgid "Preferences updated"
-msgstr "Fiókok frissítve"
+msgstr "Beállítások frissítve"
 
 #: app/modules/web/Controllers/UserSettingsManagerController.php:94
 msgid "Preferences"
 msgstr "Beállítások"
 
 #: app/modules/web/Forms/AccountForm.php:129
-#, fuzzy
 msgid "A key is needed"
-msgstr "Jelszó szükséges"
+msgstr "Kulcs szükséges"
 
 #: app/modules/web/Forms/AccountForm.php:169
 msgid "An account name needed"
@@ -2985,14 +2903,12 @@ msgstr "Fiók név szükséges"
 
 #: app/modules/web/Forms/AccountForm.php:173
 #: app/modules/web/Forms/ClientForm.php:84
-#, fuzzy
 msgid "A client name needed"
-msgstr "Ügyfél név szükséges"
+msgstr "Ügyfél neve szükséges"
 
 #: app/modules/web/Forms/AccountForm.php:177
-#, fuzzy
 msgid "A category is needed"
-msgstr "Jelszó szükséges"
+msgstr "Kategória szükséges"
 
 #: app/modules/web/Forms/AuthTokenForm.php:91
 msgid "User not set"
@@ -3007,14 +2923,12 @@ msgid "A category name needed"
 msgstr "Kategória név szükséges"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:87
-#, fuzzy
 msgid "Field name not set"
-msgstr "Ügyfél név"
+msgstr "Mező neve nincs megadva"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:91
-#, fuzzy
 msgid "Field type not set"
-msgstr "Fájltípus nem engedélyezett"
+msgstr "Mező típusa nincs megadva"
 
 #: app/modules/web/Forms/CustomFieldDefForm.php:95
 msgid "Field module not set"
@@ -3057,7 +2971,6 @@ msgid "A tag name is needed"
 msgstr "A tag name is needed"
 
 #: app/modules/web/Forms/UserForm.php:111
-#, fuzzy
 msgid "An username is needed"
 msgstr "Felhasználónév szükséges"
 
@@ -3118,14 +3031,12 @@ msgstr "Módosítás"
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:184
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:206
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:134
-#, fuzzy
 msgid "Delete"
-msgstr "Profil törlése"
+msgstr "Törlés"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:37
-#, fuzzy
 msgid "Change Password"
-msgstr "Változtatsd meg a jelszót"
+msgstr "Jelszó módosítása"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:38
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:200
@@ -3134,9 +3045,8 @@ msgstr "Admin alkalmazás"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:39
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:218
-#, fuzzy
 msgid "Accounts Admin"
-msgstr "Admin Fiók"
+msgstr "Fiókok adminisztrátora"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:40
 msgid "LDAP User"
@@ -3155,9 +3065,8 @@ msgstr "Enabled"
 #: app/modules/web/themes/material-blue/inc/Icons.php:43
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:184
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:49
-#, fuzzy
 msgid "Update"
-msgstr "Frissítés Számla"
+msgstr "Frissítés"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:44
 msgid "Copy"
@@ -3174,18 +3083,16 @@ msgstr "Restore"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:52
 #: app/resources/strings.js.inc:79
-#, fuzzy
 msgid "Help"
-msgstr "Segítség :: GYIK :: Változások Listája"
+msgstr "Súgó"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:53
 msgid "Clear"
 msgstr "Tiszta"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:54
-#, fuzzy
 msgid "Perform"
-msgstr "Archívum készítés"
+msgstr "Végrehajtás"
 
 #: app/modules/web/themes/material-blue/inc/Icons.php:55
 msgid "Download"
@@ -3226,9 +3133,8 @@ msgid "Required PHP version >= %s <= %s"
 msgstr "Required PHP version >= %s <= %s"
 
 #: lib/SP/Bootstrap.php:292
-#, fuzzy
 msgid "Please update the PHP version to run sysPass"
-msgstr "Kérem, frissítse a PHP verziót, hogy a sysPass biztonságos legyen"
+msgstr "Frissítse a PHP-verziót a sysPass futtatásához"
 
 #: lib/SP/Config/ConfigUtil.php:102
 msgid "'/app/config' directory does not exist."
@@ -3307,9 +3213,9 @@ msgid "Invalid icons class"
 msgstr "Invalid icons class"
 
 #: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
-msgstr "Ügyfél létrehozása meghiusúlt"
+msgstr "A(z) \"%s\" sablon lekérése nem lehetséges: %s"
 
 #: lib/SP/Http/Address.php:49 lib/SP/Http/Address.php:51
 #: lib/SP/Http/Address.php:68 lib/SP/Http/Address.php:70
@@ -3416,11 +3322,11 @@ msgstr "New Plugin"
 
 #: lib/SP/Plugin/PluginManager.php:392
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "Bővítmény frissítése"
 
 #: lib/SP/Plugin/PluginManager.php:409
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "Bővítmény frissítve"
 
 #: lib/SP/Plugin/PluginManager.php:418
 #, php-format
@@ -3441,15 +3347,13 @@ msgstr ""
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:121
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:128
-#, fuzzy
 msgid "Error while searching the group RDN"
 msgstr "Hiba az RDN csoport keresése közben"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:226
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:231
-#, fuzzy
 msgid "Error while searching the user on LDAP"
-msgstr "Hiba az LDAP felhasználók keresése közben"
+msgstr "Hiba az LDAP-felhasználó keresése közben"
 
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:281
 #: lib/SP/Providers/Auth/Ldap/LdapActions.php:287
@@ -3497,21 +3401,19 @@ msgstr "Error while disconnecting from LDAP server"
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:112
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:154
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:110
-#, fuzzy
 msgid "User in group verified"
-msgstr "Csoportot használja a:"
+msgstr "Felhasználó csoporttagsága ellenőrizve"
 
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:143
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:144
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
-#, fuzzy
 msgid "User does not belong to the group"
-msgstr "a felhasználó nincs csoporthoz társítva"
+msgstr "A felhasználó nem tartozik a csoporthoz"
 
 #: lib/SP/Providers/Mail/MailHandler.php:149
 #, php-format
 msgid "Event: %s"
-msgstr ""
+msgstr "Esemény: %s"
 
 #: lib/SP/Providers/Mail/MailHandler.php:157
 #: lib/SP/Providers/Mail/MailHandler.php:159
@@ -3533,9 +3435,8 @@ msgid "Error while saving file"
 msgstr "Hiba a fájl mentése közben"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:279
-#, fuzzy
 msgid "Error while deleting the file"
-msgstr "Hiba a fájlok törlése közben"
+msgstr "Hiba a fájl törlése közben"
 
 #: lib/SP/Repositories/Account/AccountFileRepository.php:302
 #: lib/SP/Services/Account/AccountFileService.php:145
@@ -3549,7 +3450,6 @@ msgstr "Hiba az elõzmények frissítése közben"
 #: lib/SP/Repositories/Account/AccountHistoryRepository.php:162
 #: lib/SP/Repositories/Account/AccountRepository.php:321
 #: lib/SP/Services/Account/AccountHistoryService.php:192
-#, fuzzy
 msgid "Error while deleting the account"
 msgstr "Hiba a fiók törlése közben"
 
@@ -3566,33 +3466,28 @@ msgstr "Error while deleting the accounts"
 #: lib/SP/Repositories/User/UserRepository.php:165
 #: lib/SP/Services/Account/AccountHistoryService.php:233
 #: lib/SP/Services/User/UserService.php:331
-#, fuzzy
 msgid "Error while updating the password"
 msgstr "Hiba a jelszó frissítése közben"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:200
-#, fuzzy
 msgid "Error while creating the account"
 msgstr "Hiba a fiók létrehozása közben"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:301
 #: lib/SP/Services/Account/AccountService.php:606
-#, fuzzy
 msgid "Error on restoring the account"
-msgstr "Hiba történt helyreállítása számla"
+msgstr "Hiba a fiók visszaállítása közben"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:382
 #: lib/SP/Repositories/Account/AccountRepository.php:431
-#, fuzzy
 msgid "Error while updating the account"
 msgstr "Hiba a fiók frissítése közben"
 
 #: lib/SP/Repositories/Account/AccountRepository.php:451
 #: lib/SP/Repositories/Account/AccountRepository.php:623
 #: lib/SP/Services/Account/AccountHistoryService.php:75
-#, fuzzy
 msgid "Error while retrieving account's data"
-msgstr "Hiba a fiókok jelszavainak betöltése közben"
+msgstr "Hiba a fiók adatainak lekérése közben"
 
 #: lib/SP/Repositories/Account/AccountToFavoriteRepository.php:71
 msgid "Error while adding favorite"
@@ -3613,23 +3508,19 @@ msgstr "Error while adding the account's tags"
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:106
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:139
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:191
-#, fuzzy
 msgid "Error while deleting the account's groups"
-msgstr "Hiba a felhasználó csoportok törlése közben"
+msgstr "Hiba a fiók csoportjainak törlése közben"
 
 #: lib/SP/Repositories/Account/AccountToUserGroupRepository.php:164
-#, fuzzy
 msgid "Error while updating the secondary groups"
 msgstr "Hiba a másodlagos csoportok frissítése közben"
 
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:76
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:132
-#, fuzzy
 msgid "Error while deleting the account users"
-msgstr "Hiba a fiók felhasználók törlése közben"
+msgstr "Hiba a fiók felhasználóinak törlése közben"
 
 #: lib/SP/Repositories/Account/AccountToUserRepository.php:103
-#, fuzzy
 msgid "Error while updating the account users"
 msgstr "Hiba a fiók felhasználóinak frissítése közben"
 
@@ -3644,7 +3535,6 @@ msgid "Duplicated category"
 msgstr "Duplicated category"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:68
-#, fuzzy
 msgid "Error while creating the category"
 msgstr "Hiba a kategória létrehozása közben"
 
@@ -3653,7 +3543,6 @@ msgid "Duplicated category name"
 msgstr "Kategória neve duplázva"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:125
-#, fuzzy
 msgid "Error while updating the category"
 msgstr "Hiba a kategória frissítése közben"
 
@@ -3662,23 +3551,19 @@ msgid "Error while deleting the categories"
 msgstr "Error while deleting the categories"
 
 #: lib/SP/Repositories/Category/CategoryRepository.php:275
-#, fuzzy
 msgid "Error while deleting the category"
 msgstr "Hiba a kategória törlése közben"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:62
 #: lib/SP/Repositories/Client/ClientRepository.php:116
-#, fuzzy
 msgid "Duplicated client"
-msgstr "Kettõzött ügyfél"
+msgstr "Duplikált ügyfél"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:80
-#, fuzzy
 msgid "Error while creating the client"
 msgstr "Hiba az ügyfél létrehozása közben"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:136
-#, fuzzy
 msgid "Error while updating the client"
 msgstr "Hiba az ügyfél frissítése közben"
 
@@ -3688,7 +3573,6 @@ msgid "Error while deleting the clients"
 msgstr "Error while deleting the clients"
 
 #: lib/SP/Repositories/Client/ClientRepository.php:283
-#, fuzzy
 msgid "Error while deleting the client"
 msgstr "Hiba az ügyfél törlése közben"
 
@@ -3732,9 +3616,8 @@ msgid "Error while deleting the field type"
 msgstr "Error while deleting the field type"
 
 #: lib/SP/Repositories/EventLog/EventlogRepository.php:53
-#, fuzzy
 msgid "Error while clearing the event log out"
-msgstr "Hiba az esemény napló törlése közben"
+msgstr "Hiba az eseménynapló törlése közben"
 
 #: lib/SP/Repositories/ItemPreset/ItemPresetRepository.php:76
 msgid "Error while creating the permission"
@@ -3787,17 +3670,17 @@ msgstr "Error while retrieving the notifications"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "Hiba a bővítmény adatainak hozzáadása közben"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "Hiba a bővítmény adatainak frissítése közben"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "Hiba a bővítmény adatainak törlése közben"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3911,12 +3794,10 @@ msgstr "Duplicated user login/email"
 #: lib/SP/Repositories/User/UserRepository.php:100
 #: lib/SP/Repositories/User/UserRepository.php:677
 #: lib/SP/Services/User/UserService.php:310
-#, fuzzy
 msgid "Error while updating the user"
 msgstr "Hiba a felhasználó frissítése közben"
 
 #: lib/SP/Repositories/User/UserRepository.php:184
-#, fuzzy
 msgid "Error while deleting the user"
 msgstr "Hiba a felhasználó törlése közben"
 
@@ -3931,7 +3812,6 @@ msgid "Error while deleting the users"
 msgstr "Error while deleting the users"
 
 #: lib/SP/Repositories/User/UserRepository.php:474
-#, fuzzy
 msgid "Error while creating the user"
 msgstr "Hiba a felhasználó létrehozása közben"
 
@@ -3941,7 +3821,6 @@ msgid "Error while updating the preferences"
 msgstr "Hiba a jelszó frissítése közben"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:62
-#, fuzzy
 msgid "Error while deleting the group"
 msgstr "Hiba a csoport törlése közben"
 
@@ -3951,19 +3830,16 @@ msgid "Duplicated group name"
 msgstr "Kettõzött csoport név"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:315
-#, fuzzy
 msgid "Error while creating the group"
 msgstr "Hiba a csoport létrehozása közben"
 
 #: lib/SP/Repositories/UserGroup/UserGroupRepository.php:361
-#, fuzzy
 msgid "Error while updating the group"
 msgstr "Hiba a csoport frissítése közben"
 
 #: lib/SP/Repositories/UserGroup/UserToUserGroupRepository.php:108
-#, fuzzy
 msgid "Error while deleting the group users"
-msgstr "Hiba a felhasználó törlése közben"
+msgstr "Hiba a csoport felhasználóinak törlése közben"
 
 #: lib/SP/Repositories/UserGroup/UserToUserGroupRepository.php:140
 msgid "Error while setting users in the group"
@@ -4003,7 +3879,6 @@ msgid "Update Master Password"
 msgstr "Frissítse a mester jelszót"
 
 #: lib/SP/Services/Account/AccountCryptService.php:91
-#, fuzzy
 msgid "Error while updating the accounts' passwords"
 msgstr "Hiba a fiókok jelszavainak frissítése közben"
 
@@ -4028,7 +3903,6 @@ msgstr "A rekord mester jelszava nem egyezik"
 
 #: lib/SP/Services/Account/AccountCryptService.php:185
 #: lib/SP/Services/Account/AccountCryptService.php:190
-#, fuzzy
 msgid "Error while updating the account's password"
 msgstr "Hiba a fiók jelszavának frissítése közben"
 
@@ -4042,9 +3916,8 @@ msgid "Update Master Password (H)"
 msgstr "Frissítse a mester jelszót (H)"
 
 #: lib/SP/Services/Account/AccountCryptService.php:237
-#, fuzzy
 msgid "Error while updating the accounts' passwords in history"
-msgstr "Hiba a fiókok jelszavainak frissítése közben"
+msgstr "Hiba a fiókok jelszavainak előzményekben való frissítése közben"
 
 #: lib/SP/Services/Account/AccountFileService.php:164
 msgid "File not found"
@@ -4065,7 +3938,8 @@ msgstr "Master password not set"
 msgid "The account doesn't exist"
 msgstr "The account doesn't exist"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Invalid data"
@@ -4075,9 +3949,8 @@ msgid "Invalid format"
 msgstr "Invalid format"
 
 #: lib/SP/Services/Api/ApiService.php:152
-#, fuzzy
 msgid "Wrong parameters"
-msgstr "Helytelen paraméter"
+msgstr "Helytelen paraméterek"
 
 #: lib/SP/Services/Auth/LoginService.php:161
 #: lib/SP/Services/Auth/LoginService.php:487
@@ -4086,9 +3959,8 @@ msgstr "Helytelen paraméter"
 #: lib/SP/Services/Auth/LoginService.php:625
 #: lib/SP/Services/Auth/LoginService.php:667
 #: lib/SP/Services/Auth/LoginService.php:675
-#, fuzzy
 msgid "Wrong login"
-msgstr "Hibás felhasználónév vagy jelszó"
+msgstr "Hibás bejelentkezési adatok"
 
 #: lib/SP/Services/Auth/LoginService.php:229
 #: lib/SP/Services/Auth/LoginService.php:236
@@ -4103,18 +3975,16 @@ msgstr "Using temporary password"
 #: lib/SP/Services/Auth/LoginService.php:307
 #: lib/SP/Services/Auth/LoginService.php:327
 #: lib/SP/Services/Auth/LoginService.php:333
-#, fuzzy
 msgid "Wrong master password"
-msgstr "Érvénytelen mester jelszó"
+msgstr "Érvénytelen főjelszó"
 
 #: lib/SP/Services/Auth/LoginService.php:349
 msgid "Your previous password is needed"
 msgstr "Your previous password is needed"
 
 #: lib/SP/Services/Auth/LoginService.php:361
-#, fuzzy
 msgid "The Master Password either is not saved or is wrong"
-msgstr "A mester jelszó nem lett elmentve, vagy helytelen"
+msgstr "A főjelszó vagy nincs elmentve, vagy helytelen"
 
 #: lib/SP/Services/Auth/LoginService.php:483
 #: lib/SP/Services/Auth/LoginService.php:561
@@ -4123,21 +3993,18 @@ msgstr "LDAP Server"
 
 #: lib/SP/Services/Auth/LoginService.php:505
 #: lib/SP/Services/Auth/LoginService.php:513
-#, fuzzy
 msgid "Account expired"
-msgstr "Fiók"
+msgstr "Fiók lejárt"
 
 #: lib/SP/Services/Auth/LoginService.php:521
 #: lib/SP/Services/Auth/LoginService.php:529
-#, fuzzy
 msgid "User has no associated groups"
-msgstr "a felhasználó nincs csoporthoz társítva"
+msgstr "A felhasználóhoz nem tartoznak csoportok"
 
 #: lib/SP/Services/Auth/LoginService.php:657
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:12
-#, fuzzy
 msgid "Authentication"
-msgstr "Engedélyezése Hitelesítés"
+msgstr "Hitelesítés"
 
 #: lib/SP/Services/AuthToken/AuthTokenService.php:139
 #: lib/SP/Services/AuthToken/AuthTokenService.php:277
@@ -4159,9 +4026,8 @@ msgid "Error while doing the backup in compatibility mode"
 msgstr "Error while doing backup in compatibility mode"
 
 #: lib/SP/Services/Backup/FileBackupService.php:118
-#, fuzzy
 msgid "Error while doing the backup"
-msgstr "Hiba Archiválás közben"
+msgstr "Hiba az archiválás közben"
 
 #: lib/SP/Services/Backup/FileBackupService.php:139
 #, php-format
@@ -4199,9 +4065,8 @@ msgstr "Error while deleting categories"
 #: lib/SP/Services/Client/ClientService.php:76
 #: lib/SP/Services/Client/ClientService.php:95
 #: lib/SP/Services/Client/ClientService.php:110
-#, fuzzy
 msgid "Client not found"
-msgstr "Nincs ügyfél találat"
+msgstr "Ügyfél nem található"
 
 #: lib/SP/Services/Config/ConfigBackupService.php:115
 #: lib/SP/Services/Config/ConfigBackupService.php:122
@@ -4219,9 +4084,8 @@ msgid "Generate temporary password"
 msgstr "Generate temporary password"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:110
-#, fuzzy
 msgid "Error while generating the temporary password"
-msgstr "Generate Temporary Password"
+msgstr "Hiba az ideiglenes jelszó generálása közben"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:131
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:181
@@ -4235,7 +4099,7 @@ msgstr "Error while checking the temporary password"
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:232
 #, php-format
 msgid "%s Master Password"
-msgstr ""
+msgstr "%s főjelszó"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:233
 msgid ""
@@ -4256,7 +4120,8 @@ msgid "This password will be valid until: %s"
 msgstr "This password will be valid until: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr ""
 "Please, don't forget to log in as soon as possible to save the changes."
 
@@ -4270,19 +4135,16 @@ msgid "Updating encrypted data"
 msgstr "Updating encrypted data"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:109
-#, fuzzy
 msgid "Records updated"
 msgstr "Rekordok frissítve"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:110
-#, fuzzy
 msgid "Records not updated"
-msgstr "Rekordok frissítve"
+msgstr "Rekordok nem frissítve"
 
 #: lib/SP/Services/CustomField/CustomFieldCryptService.php:136
-#, fuzzy
 msgid "Error while updating the custom fields data"
-msgstr "Hiba a fiókok jelszavainak frissítése közben"
+msgstr "Hiba az egyéni mezők adatainak frissítése közben"
 
 #: lib/SP/Services/CustomField/CustomFieldDefService.php:109
 msgid "Field not found"
@@ -4303,9 +4165,8 @@ msgid "Unable to create the directory (%s)"
 msgstr "Unable to create the directory (%s)"
 
 #: lib/SP/Services/Export/XmlExportService.php:199
-#, fuzzy
 msgid "Error while exporting"
-msgstr "Hiba Archiválás közben"
+msgstr "Hiba az exportálás közben"
 
 #: lib/SP/Services/Export/XmlExportService.php:266
 msgid "Exporting categories"
@@ -4324,15 +4185,13 @@ msgid "Exporting accounts"
 msgstr "Exporting accounts"
 
 #: lib/SP/Services/Export/XmlExportService.php:578
-#, fuzzy
 msgid "Error while creating the XML file"
-msgstr "Hiba az ügyfél létrehozása közben"
+msgstr "Hiba az XML fájl létrehozása közben"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:110
 #: lib/SP/Services/Import/XmlFileImport.php:81
-#, fuzzy
 msgid "Unable to process the XML file"
-msgstr "Nem lehet a konfigurációs fájlba írni"
+msgstr "Az XML fájl feldolgozása nem lehetséges"
 
 #: lib/SP/Services/Export/XmlVerifyService.php:181
 #: lib/SP/Services/Import/SyspassImport.php:177
@@ -4353,15 +4212,15 @@ msgstr "Detected format: %s"
 
 #: lib/SP/Services/Import/CsvImportBase.php:130
 #: lib/SP/Services/Import/CsvImportBase.php:180
-#, fuzzy, php-format
+#, php-format
 msgid "Wrong number of fields (%d)"
-msgstr "A mezõk száma helytelen"
+msgstr "Helytelen mezőszám (%d)"
 
 #: lib/SP/Services/Import/CsvImportBase.php:132
 #: lib/SP/Services/Import/CsvImportBase.php:182
-#, fuzzy, php-format
+#, php-format
 msgid "Please, check the CSV file format in line %s"
-msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
+msgstr "Ellenőrizze a CSV-fájl formátumát a(z) %s. sorban"
 
 #: lib/SP/Services/Import/CsvImportBase.php:162
 #: lib/SP/Services/Import/KeepassImport.php:103
@@ -4370,7 +4229,6 @@ msgid "Account imported"
 msgstr "Account imported"
 
 #: lib/SP/Services/Import/CsvImportBase.php:170
-#, fuzzy
 msgid "Error while importing the account"
 msgstr "Hiba a fiók importálása közben"
 
@@ -4383,14 +4241,12 @@ msgid "File successfully uploaded"
 msgstr "A fájl feltöltése sikeres"
 
 #: lib/SP/Services/Import/FileImport.php:85
-#, fuzzy
 msgid "Please check the web server user permissions"
-msgstr "Kérem, ellenõrizze az webszerver felhasználójának jogosultságait"
+msgstr "Ellenőrizze a webszerver-felhasználó jogosultságait"
 
 #: lib/SP/Services/Import/FileImport.php:108
-#, fuzzy
 msgid "Please, check PHP configuration for upload files"
-msgstr "Kérem, tekintse meg a PHP konfigurációt fájlok feltötése elõtt"
+msgstr "Ellenőrizze a PHP-konfigurációt a fájlfeltöltéshez"
 
 #: lib/SP/Services/Import/ImportService.php:96
 #, php-format
@@ -4398,9 +4254,8 @@ msgid "Mime type not supported (\"%s\")"
 msgstr "Mime type not supported (\"%s\")"
 
 #: lib/SP/Services/Import/ImportService.php:98
-#, fuzzy
 msgid "Please, check the file format"
-msgstr "Kérem, ellenõrizze a CSV fájl kiterjesztését"
+msgstr "Ellenőrizze a fájlformátumot"
 
 #: lib/SP/Services/Import/ImportTrait.php:107
 msgid "Category Id not set. Unable to import account."
@@ -4449,14 +4304,13 @@ msgid "Tag imported"
 msgstr "Tag imported"
 
 #: lib/SP/Services/Import/XmlFileImport.php:105
-#, fuzzy
 msgid "XML file not supported"
-msgstr "Fájltípus nem engedélyezett"
+msgstr "XML fájl nem támogatott"
 
 #: lib/SP/Services/Import/XmlFileImport.php:107
-#, fuzzy
 msgid "Unable to guess the application which data was exported from"
-msgstr "Unable to detect the application the data was exported from"
+msgstr ""
+"Nem lehet meghatározni az alkalmazást, amelyből az adatok exportálva lettek"
 
 #: lib/SP/Services/Import/XmlImport.php:98
 msgid "Format not detected"
@@ -4484,14 +4338,12 @@ msgid "\"%s\" node doesn't exist"
 msgstr "\"%s\" node doesn't exist"
 
 #: lib/SP/Services/Install/Installer.php:105
-#, fuzzy
 msgid "Please, enter the admin username"
-msgstr "Írd be az admin felhasználó nevét"
+msgstr "Adja meg az admin felhasználó nevét"
 
 #: lib/SP/Services/Install/Installer.php:107
-#, fuzzy
 msgid "Admin user to log into the application"
-msgstr "Rendszergazda felhasználó bejelentkezés"
+msgstr "Admin felhasználó az alkalmazásba való bejelentkezéshez"
 
 #: lib/SP/Services/Install/Installer.php:112
 msgid "Please, enter the admin's password"
@@ -4518,14 +4370,12 @@ msgid "The Master Password length need to be at least 11 characters"
 msgstr "A mester jelszó legaláb 11 karakterbõl kell, hogy álljon"
 
 #: lib/SP/Services/Install/Installer.php:133
-#, fuzzy
 msgid "Please, enter the database user"
-msgstr "Írd be az adatbázis felhasználót"
+msgstr "Adja meg az adatbázis-felhasználót"
 
 #: lib/SP/Services/Install/Installer.php:135
-#, fuzzy
 msgid "An user with database administrative rights"
-msgstr "Adatbázis rendszergazdai jogokkal rendelkezõ felhasználó"
+msgstr "Felhasználó adatbázis-rendszergazdai jogosultságokkal"
 
 #: lib/SP/Services/Install/Installer.php:140
 msgid "Please, enter the database password"
@@ -4536,9 +4386,8 @@ msgid "Database administrator's password"
 msgstr "Database administrator's password"
 
 #: lib/SP/Services/Install/Installer.php:147
-#, fuzzy
 msgid "Please, enter the database name"
-msgstr "Írd be az adatbázis nevét"
+msgstr "Adja meg az adatbázis nevét"
 
 #: lib/SP/Services/Install/Installer.php:149
 msgid "Application database name. eg. syspass"
@@ -4554,9 +4403,8 @@ msgid "Please, remove dots in database name"
 msgstr "Kérem, törölje a pontokat az adatbázis nevébõl"
 
 #: lib/SP/Services/Install/Installer.php:161
-#, fuzzy
 msgid "Please, enter the database server"
-msgstr "Írd be az adatbázis szervert"
+msgstr "Adja meg az adatbázis-szervert"
 
 #: lib/SP/Services/Install/Installer.php:163
 msgid "Server where the database will be installed"
@@ -4577,9 +4425,8 @@ msgid "Unable to check the sysPass user (%s)"
 msgstr "Unable to check the sysPass user (%s)"
 
 #: lib/SP/Services/Install/MySQL.php:137
-#, fuzzy
 msgid "Please, check the DB connection user rights"
-msgstr "Kérem, ellenõrizze a 'config' mappa jogosultságait"
+msgstr "Ellenőrizze az adatbázis-kapcsolat felhasználójának jogait"
 
 #: lib/SP/Services/Install/MySQL.php:181
 #, php-format
@@ -4591,9 +4438,8 @@ msgid "The database already exists"
 msgstr "Az adatbázis már létezik"
 
 #: lib/SP/Services/Install/MySQL.php:203
-#, fuzzy
 msgid "Please, enter a new database or delete the existing one"
-msgstr "Írd be az új adatbázist, vagy töröld a jelenlegit"
+msgstr "Adjon meg egy új adatbázist, vagy törölje a meglévőt"
 
 #: lib/SP/Services/Install/MySQL.php:213 lib/SP/Services/Install/MySQL.php:329
 #: lib/SP/Services/Install/MySQL.php:341
@@ -4602,9 +4448,8 @@ msgid "Error while creating the DB ('%s')"
 msgstr "Error while creating the DB ('%s')"
 
 #: lib/SP/Services/Install/MySQL.php:215 lib/SP/Services/Install/MySQL.php:239
-#, fuzzy
 msgid "Please check the database user permissions"
-msgstr "Kérem, ellenõrizze az adatbázis felhasználó jogosultságait"
+msgstr "Ellenőrizze az adatbázis-felhasználó jogosultságait"
 
 #: lib/SP/Services/Install/MySQL.php:237
 #, php-format
@@ -4684,7 +4529,7 @@ msgstr "Notification not found"
 #: lib/SP/Services/Plugin/PluginDataService.php:165
 #: lib/SP/Services/Plugin/PluginDataService.php:183
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "Bővítmény adatai nem találhatók"
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4838,7 +4683,6 @@ msgstr "Hiba az adatbázis frissítése közben"
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:109
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:180
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:184
-#, fuzzy
 msgid "Error while updating the database"
 msgstr "Hiba az adatbázis frissítése közben"
 
@@ -4927,14 +4771,12 @@ msgstr "Integrity constraint"
 
 #: lib/SP/Storage/Database/MySQLHandler.php:100
 #: lib/SP/Storage/Database/MySQLHandler.php:167
-#, fuzzy
 msgid "Please, check the connection parameters"
-msgstr "Please, check connection parameters"
+msgstr "Ellenőrizze a kapcsolati paramétereket"
 
 #: lib/SP/Storage/Database/QueryData.php:338 app/resources/strings.js.inc:26
-#, fuzzy
 msgid "Error while querying"
-msgstr "Lekérdezési hiba"
+msgstr "Hiba a lekérdezés közben"
 
 #: lib/SP/Storage/File/FileCachePacked.php:45
 #, php-format
@@ -4964,7 +4806,7 @@ msgstr "Unable to open the file (%s)"
 #: lib/SP/Storage/File/FileHandler.php:119
 #, php-format
 msgid "Unable to obtain a lock (%s)"
-msgstr ""
+msgstr "Nem lehet zárolást szerezni (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:134
 #: lib/SP/Storage/File/FileHandler.php:148
@@ -4998,7 +4840,8 @@ msgstr "Unable to read/write file (%s)"
 msgid "Unable to delete file (%s)"
 msgstr "Unable to delete file (%s)"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
 msgstr "XML node does not exist"
 
@@ -5027,15 +4870,13 @@ msgid "Invalid image"
 msgstr "Invalid image"
 
 #: app/modules/web/themes/material-blue/views/_layouts/main.inc:21
-#, fuzzy
 msgid "Javascript is needed in order to run correctly"
-msgstr "Java szkript szükséges a megfelelõ mûködéshez"
+msgstr "A helyes működéshez JavaScript szükséges"
 
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:70
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:127
-#, fuzzy
 msgid "User preferences"
-msgstr "Dupla felhasználó bejelentkezés"
+msgstr "Felhasználói beállítások"
 
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:74
 #: app/modules/web/themes/material-blue/views/_partials/fixed-header.inc:77
@@ -5147,7 +4988,7 @@ msgstr "Jelszó (ismét)"
 #: app/modules/web/themes/material-blue/views/account/account.inc:305
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:254
 msgid "Select date"
-msgstr ""
+msgstr "Dátum kiválasztása"
 
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:19
 #: app/modules/web/themes/material-blue/views/account/account-history.inc:140
@@ -5229,9 +5070,8 @@ msgstr "Select Groups"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset.inc:37
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:87
 #: app/resources/strings.js.inc:48
-#, fuzzy
 msgid "Select User"
-msgstr "Válassz dátumot"
+msgstr "Felhasználó kiválasztása"
 
 #: app/modules/web/themes/material-blue/views/account/account-permissions.inc:204
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:301
@@ -5260,9 +5100,8 @@ msgid "Request Account Modification"
 msgstr "Kérés fiók módosítás"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:52
-#, fuzzy
 msgid "Request description"
-msgstr "Kérés leírás"
+msgstr "Kérés leírása"
 
 #: app/modules/web/themes/material-blue/views/account/account-request.inc:74
 msgid "Send"
@@ -5279,9 +5118,8 @@ msgstr "Jofosultságok"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:35
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:39
 #: app/resources/strings.js.inc:50
-#, fuzzy
 msgid "Select Client"
-msgstr "Válassz ügyfelet"
+msgstr "Ügyfél kiválasztása"
 
 #: app/modules/web/themes/material-blue/views/account/account.inc:239
 #: app/modules/web/themes/material-blue/views/itemshow/account_bulkedit.inc:98
@@ -5381,7 +5219,6 @@ msgstr "View at Wiki"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:230
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:231
-#, fuzzy
 msgid "Global search"
 msgstr "Globális keresés"
 
@@ -5414,17 +5251,15 @@ msgstr "Select Tag"
 
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:24
 #: app/resources/strings.js.inc:59
-#, fuzzy
 msgid "Copy Username"
-msgstr "Fiók másolása"
+msgstr "Felhasználónév másolása"
 
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/account/viewpass.inc:41
 #: app/resources/strings.js.inc:60 app/resources/actions.xml:199
 #: app/resources/actions.xml:271
-#, fuzzy
 msgid "Copy Password"
-msgstr "Fiók másolása"
+msgstr "Jelszó másolása"
 
 #: app/modules/web/themes/material-blue/views/common/aux-customfields.inc:22
 msgid "Data will be encrypted after saving"
@@ -5460,9 +5295,8 @@ msgstr "Eredmény / oldal"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:61
-#, fuzzy
 msgid "Number of results per page to display when performing a search."
-msgstr "Keresési találok száma oldalanként"
+msgstr "Oldalanként megjelenítendő keresési találatok száma."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:69
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:30
@@ -5493,9 +5327,10 @@ msgstr "Fiók neve linkként"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
-#, fuzzy
 msgid "Enables to use the account name as a link to account details."
-msgstr "Fiók nevére való keresés engedélyezése"
+msgstr ""
+"A fiók nevének fiókrészletekre mutató hivatkozásként való használatának "
+"engedélyezése."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:127
 msgid "Global searches"
@@ -5511,15 +5346,13 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:143
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:154
-#, fuzzy
 msgid "Image to show password"
-msgstr "Mester jelszó szükséges a jelszavak titkosításához"
+msgstr "Kép a jelszó megjelenítéséhez"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:145
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:156
-#, fuzzy
 msgid "Generate an image with a text of the account password."
-msgstr "Hiba a fiókok jelszavainak betöltése közben"
+msgstr "Kép generálása a fiók jelszavával."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:147
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:158
@@ -5532,15 +5365,13 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:163
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:158
-#, fuzzy
 msgid "Results like Cards"
-msgstr "Nincsenek eredmények"
+msgstr "Eredmények kártyaszerű megjelenítése"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:165
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
-#, fuzzy
 msgid "Displays account's search results on a card like format."
-msgstr "Enables to show account's search results like a card format."
+msgstr "A fiókok keresési eredményeit kártyaszerű formátumban jeleníti meg."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:181
 msgid "Secondary Groups Access"
@@ -5570,7 +5401,8 @@ msgid "Enable Public Links"
 msgstr "Enable Public Links"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
+msgid ""
+"Enables the ability to create public links to view an account's details"
 msgstr ""
 "Enables the ability to create public links to view an account's details"
 
@@ -5600,7 +5432,7 @@ msgstr "Expire time"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:256
 msgid "Expire time (minutes)"
-msgstr ""
+msgstr "Lejárati idő (perc)"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:262
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:271
@@ -5613,18 +5445,17 @@ msgid "Files management"
 msgstr "Fájl menedzsment"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:298
-#, fuzzy
 msgid "Enables the uploading and downloading of accounts files."
-msgstr "Fájlok Fel/Letöltésének engedélyezése"
+msgstr "Fiókok fájljainak feltöltésének és letöltésének engedélyezése."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:306
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:319
 msgid "Allowed MIME types"
-msgstr ""
+msgstr "Engedélyezett MIME-típusok"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:311
 msgid "Allowed file MIME types for uploading."
-msgstr ""
+msgstr "Feltöltéshez engedélyezett MIME-típusok."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:314
 msgid ""
@@ -5637,14 +5468,12 @@ msgid "Maximum file size"
 msgstr "Maximális fájl méret"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:339
-#, fuzzy
 msgid "Sets the maximum file size for uploading."
-msgstr "A feltölthetõ fájlméret maximális értékének beállítása"
+msgstr "A feltölthető maximális fájlméret megadása."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:343
-#, fuzzy
 msgid "Absolute maximum is 16MB."
-msgstr "A maximum 16MB"
+msgstr "Abszolút maximum 16 MB."
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:354
 msgid "Maximum file size in kilobytes"
@@ -5694,21 +5523,18 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:102
 #: app/modules/web/themes/material-blue/views/config/backup.inc:186
-#, fuzzy
 msgid "Export Accounts"
-msgstr "Fiókok"
+msgstr "Fiókok exportálása"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:140
 #: app/modules/web/themes/material-blue/views/config/backup.inc:148
-#, fuzzy
 msgid "Export Password"
-msgstr "Változás felhasználói jelszó"
+msgstr "Exportálási jelszó"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:154
 #: app/modules/web/themes/material-blue/views/config/backup.inc:162
-#, fuzzy
 msgid "Export Password (repeat)"
-msgstr "Jelszó (ismét)"
+msgstr "Exportálási jelszó (ismét)"
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:188
 msgid ""
@@ -5751,9 +5577,8 @@ msgstr "Mester jelszó"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:29
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:214
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:217
-#, fuzzy
 msgid "Last change"
-msgstr "Utolsó változtatás"
+msgstr "Utolsó módosítás"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:37
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:46
@@ -5786,7 +5611,8 @@ msgstr "Minden felhasználónak úrja be kell írnia az új mester jelszót"
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
 #, php-format
-msgid "It will be updated %s accounts. This process could take some time long."
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
 msgstr ""
 "It will be updated %s accounts. This process could take some time long."
 
@@ -5799,9 +5625,8 @@ msgid "Sets a new Master Password without re-encrypting the accounts."
 msgstr "Új mester jelszó beállítása a fiók újratitkosítása nélkül"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:140
-#, fuzzy
 msgid "Confirm change"
-msgstr "Változás megerõsítése"
+msgstr "Változtatás megerősítése"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:142
 msgid ""
@@ -5839,15 +5664,13 @@ msgstr "Update master password hash"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:204
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:344
-#, fuzzy
 msgid "Temporary Password"
-msgstr "Generate Temporary Password"
+msgstr "Ideiglenes jelszó"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:219
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:234
-#, fuzzy
 msgid "Not generated"
-msgstr "Generált Jelszó"
+msgstr "Nem generált"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:224
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:227
@@ -5861,9 +5684,8 @@ msgstr "Attempts"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:250
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:262
-#, fuzzy
 msgid "Life (s)"
-msgstr "Munkamenet idõ"
+msgstr "Élettartam (mp)"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:282
 msgid "Send email"
@@ -5876,17 +5698,16 @@ msgstr "Sends an email to all users or only to those whose group is selected."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:353
-#, fuzzy
 msgid "Generate"
-msgstr "Generate Temporary Password"
+msgstr "Generálás"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:30
 msgid "Use Auth Basic"
@@ -5926,9 +5747,8 @@ msgstr "Domain name"
 #: app/modules/web/themes/material-blue/views/config/import.inc:55
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:248
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:258
-#, fuzzy
 msgid "Default Group"
-msgstr "Csoportot használja a:"
+msgstr "Alapértelmezett csoport"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:80
 msgid "Sets the default users group for newly created SSO users"
@@ -5938,9 +5758,8 @@ msgstr "Sets the default users group for newly created SSO users"
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:110
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:273
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:283
-#, fuzzy
 msgid "Default Profile"
-msgstr "A profilt használja:"
+msgstr "Alapértelmezett profil"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:105
 msgid "Sets the default profile for the newly created SSO users."
@@ -5961,9 +5780,8 @@ msgid "Enable event log"
 msgstr "Esemény napló engedélyezése"
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:31
-#, fuzzy
 msgid "Saves the actions done by the application."
-msgstr "Ez elmenti az akciók kimenetét"
+msgstr "Az alkalmazás által elvégzett műveletek mentése."
 
 #: app/modules/web/themes/material-blue/views/config/general-events.inc:45
 msgid "Enable Syslog"
@@ -5998,18 +5816,16 @@ msgid "Use a proxy server for checking out for updates and notifications."
 msgstr "Use a proxy server for checking out for updates and notifications."
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:47
-#, fuzzy
 msgid "Proxy server"
-msgstr "Szerver"
+msgstr "Proxy szerver"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:61
 msgid "Proxy server port"
 msgstr "Proxy server port"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:75
-#, fuzzy
 msgid "Proxy server user"
-msgstr "Felhasználó elérése"
+msgstr "Proxy szerver felhasználója"
 
 #: app/modules/web/themes/material-blue/views/config/general-proxy.inc:89
 msgid "Proxy server password"
@@ -6037,17 +5853,19 @@ msgstr "Nyelv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -6072,7 +5890,7 @@ msgstr "Munkamenet idõ"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:117
 msgid "Application URL"
-msgstr ""
+msgstr "Alkalmazás URL-je"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:106
 msgid ""
@@ -6105,8 +5923,8 @@ msgstr "Fenntartás mód"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 #, fuzzy
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr ""
 "Ezen a módon nem tudsz bejelentkezni az alkalmazásba. Hogy kikapcsold, "
 "módosítanod kell a konfigurációs fájlt"
@@ -6116,14 +5934,12 @@ msgid "Check for updates"
 msgstr "Frissítések keresése"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:185
-#, fuzzy
 msgid "Check for application updates (only for administrators)."
-msgstr "Azlkalmazás frissítések keresése (csak rendszergazda esetén)"
+msgstr "Alkalmazásfrissítések keresése (csak rendszergazdáknak)."
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:200
-#, fuzzy
 msgid "Check for notifications"
-msgstr "Ellenõrzés"
+msgstr "Értesítések keresése"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:201
 #, fuzzy
@@ -6150,25 +5966,21 @@ msgstr ""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:12
 #: app/modules/web/themes/material-blue/views/config/import.inc:103
-#, fuzzy
 msgid "CSV/XML Import"
-msgstr "Import CSV/XML"
+msgstr "CSV/XML import"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:18
 #: app/modules/web/themes/material-blue/views/config/import.inc:28
-#, fuzzy
 msgid "Default User"
-msgstr "Rendezés Felhasználónév szerint"
+msgstr "Alapértelmezett felhasználó"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:23
-#, fuzzy
 msgid "Sets the default user for the accounts imported."
-msgstr "Define the default users profile for new LDAP users"
+msgstr "Az importált fiókok alapértelmezett felhasználójának megadása."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:50
-#, fuzzy
 msgid "Sets the default group for the accounts imported."
-msgstr "Define the default users group for new LDAP users"
+msgstr "Az importált fiókok alapértelmezett csoportjának megadása."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:75
 msgid "Drop files here or click to select"
@@ -6198,17 +6010,12 @@ msgstr ""
 "KeePassX."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:113
-#, fuzzy
 msgid "The CSV import file requires the following format:"
-msgstr "Forma importálása a CSV fájl formátumával együtt"
+msgstr "A CSV importfájlnak a következő formátumúnak kell lennie:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 #, fuzzy
@@ -6225,9 +6032,8 @@ msgstr "XML"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:131
 #: app/modules/web/themes/material-blue/views/config/import.inc:146
-#, fuzzy
 msgid "Import Password"
-msgstr "Fiók importálás megerõsítése"
+msgstr "Importálási jelszó"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:136
 msgid "It's only needed for sysPass XML files that have been encrypted."
@@ -6267,9 +6073,8 @@ msgstr "Verzió"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:36
 #: app/modules/web/themes/material-blue/views/config/info.inc:39
-#, fuzzy
 msgid "Database"
-msgstr "Az adatbázis frissítése nem szükséges"
+msgstr "Adatbázis"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:50
 #: app/modules/web/themes/material-blue/views/config/info.inc:53
@@ -6278,9 +6083,8 @@ msgid "PHP"
 msgstr "Kérem, tekintse meg a PHP konfigurációt fájlok feltötése elõtt"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:57
-#, fuzzy
 msgid "Extensions"
-msgstr "Tiltott kiterjesztések"
+msgstr "Kiterjesztések"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:61
 msgid "Unavailable extensions"
@@ -6328,7 +6132,8 @@ msgstr "Encrypted Session"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:139
 msgid "Tells whether the session data are encrypted in the server side or not"
-msgstr "Tells whether the session data are encrypted in the server side or not"
+msgstr ""
+"Tells whether the session data are encrypted in the server side or not"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:151
 #: app/modules/web/themes/material-blue/views/config/info.inc:154
@@ -6349,14 +6154,12 @@ msgid "Enable LDAP"
 msgstr "LDAP engedélyezése"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:48
-#, fuzzy
 msgid "Enables authentication against an LDAP server."
-msgstr "LDAP hitelesítés engedélyezése"
+msgstr "LDAP-szerveren való hitelesítés engedélyezése."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:50
-#, fuzzy
 msgid "This method will use MySQL as fallback."
-msgstr "Ez a metódus hibát okoz a MySQL-ben"
+msgstr "Ez a módszer MySQL-t használ tartalékként."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:67
 msgid "Enables the connection over TLS"
@@ -6366,39 +6169,35 @@ msgstr "Enables the connection over TLS"
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:78
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:82
 msgid "Server Type"
-msgstr ""
+msgstr "Szerver típusa"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
-#, fuzzy
 msgid "Hostname or IP address of LDAP server."
-msgstr "LDAP szerver hosztnév vagy IP cím"
+msgstr "LDAP-szerver hosztneve vagy IP-címe."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:102
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:133
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:194
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:228
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:119
-#, fuzzy
 msgid "Examples:"
-msgstr "Példák"
+msgstr "Példák:"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:124
 msgid "Bind User"
 msgstr "Bind felhasználó"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:129
-#, fuzzy
 msgid "User to connect to LDAP service."
-msgstr "Felhasználó az LDAP szerverhez való kapcsolódáshoz"
+msgstr "Felhasználó az LDAP-szolgáltatáshoz való kapcsolódáshoz."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:154
 msgid "Bind Password"
 msgstr "Bind jelszó"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:159
-#, fuzzy
 msgid "LDAP connection user's password"
-msgstr "LDAP bind felhasználói jelszó"
+msgstr "LDAP-kapcsolat felhasználójának jelszava"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:177
 msgid ""
@@ -6412,28 +6211,29 @@ msgid "Search base"
 msgstr "Keresés"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:190
-#, fuzzy
 msgid "LDAP base to perform the LDAP users search."
-msgstr "LDAP bázis a felhasználó keresésekhez"
+msgstr "LDAP-alap az LDAP-felhasználók kereséséhez."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:220
-#, fuzzy
 msgid "LDAP group which user must belong to for granting to log in."
-msgstr "LDAP csoport felhasználóinak belépési jgosultságia"
+msgstr ""
+"LDAP-csoport, amelyhez a felhasználónak tartoznia kell a bejelentkezéshez."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:224
 msgid "This group needs to be placed in the LDAP search base."
 msgstr "This group needs to be placed in the LDAP search base."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:253
-#, fuzzy
 msgid "Sets the default users group for newly created LDAP users"
-msgstr "Define the default users group for new LDAP users"
+msgstr ""
+"Az újonnan létrehozott LDAP-felhasználók alapértelmezett csoportjának "
+"megadása"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:278
-#, fuzzy
 msgid "Sets the default profile for the newly created LDAP users."
-msgstr "Define the default users profile for new LDAP users"
+msgstr ""
+"Az újonnan létrehozott LDAP-felhasználók alapértelmezett profiljának "
+"megadása."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:330
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:494
@@ -6513,7 +6313,7 @@ msgstr "Biztonság"
 #: app/modules/web/themes/material-blue/views/config/mail.inc:148
 #: app/modules/web/themes/material-blue/views/config/mail.inc:156
 msgid "Sender email address"
-msgstr ""
+msgstr "Feladó e-mail cím"
 
 #: app/modules/web/themes/material-blue/views/config/mail.inc:162
 #: app/modules/web/themes/material-blue/views/config/mail.inc:165
@@ -6557,9 +6357,8 @@ msgstr "DokuWiki API URL"
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:97
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:57
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:90
-#, fuzzy
 msgid "Example:"
-msgstr "Példa"
+msgstr "Példa:"
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:88
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:110
@@ -6599,14 +6398,12 @@ msgid "Wiki search URL"
 msgstr "Wiki keresés URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:49
-#, fuzzy
 msgid "URL that Wiki uses for making an entry searching."
-msgstr "Wiki oldal keresõje"
+msgstr "URL, amelyet a Wiki a bejegyzések kereséséhez használ."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:53
-#, fuzzy
 msgid "The client's name is used as parameter."
-msgstr "Az ügyfelet paraméterként használja"
+msgstr "Az ügyfél neve paraméterként van használva."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:77
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:104
@@ -6614,14 +6411,12 @@ msgid "Wiki page URL"
 msgstr "Wiki oldal URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:82
-#, fuzzy
 msgid "URL that Wiki uses for accessing to the entry details."
-msgstr "Wiki oldal adatainak elérése"
+msgstr "URL, amelyet a Wiki a bejegyzés részleteinek eléréséhez használ."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:86
-#, fuzzy
 msgid "Account's name is used as parameter of Wiki search variable."
-msgstr "A fiók neve wiki keresési paraméterként való használata"
+msgstr "A fiók neve Wiki-keresési paraméterként van használva."
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:110
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:124
@@ -6629,9 +6424,9 @@ msgid "Account name prefix"
 msgstr "Fiók név elõtag"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:115
-#, fuzzy
 msgid "Prefix to determine which accounts have a link to the Wiki."
-msgstr "Elõtag választás a fiókok tartalmaznak-e wiki linket"
+msgstr ""
+"Előtag annak meghatározásához, hogy melyik fiókoknak van Wiki-hivatkozásuk."
 
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:17
 #: app/modules/web/themes/material-blue/views/error/error-database.inc:19
@@ -6654,48 +6449,41 @@ msgid "sysPass Admin"
 msgstr "sysPass Admin"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:29
-#, fuzzy
 msgid "sysPass admin user"
-msgstr "sysPass administrator's login"
+msgstr "sysPass adminisztrátor felhasználó"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:37
-#, fuzzy
 msgid "sysPass administrator's login"
-msgstr "sysPass administrator's login"
+msgstr "sysPass adminisztrátor bejelentkezése"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:69
 msgid "DB Configuration"
 msgstr "Adatbázis beállítások"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:79
-#, fuzzy
 msgid "DB access user"
-msgstr "Felhasználó elérése"
+msgstr "Adatbázis-hozzáférési felhasználó"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:87
-#, fuzzy
 msgid "An user with MySQL admin rights"
-msgstr "User login with with database administrative rights"
+msgstr "Felhasználó MySQL rendszergazdai jogosultságokkal"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:95
-#, fuzzy
 msgid "DB access password"
-msgstr "Adatbázis jelszó"
+msgstr "Adatbázis-hozzáférési jelszó"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:104
 #: app/modules/web/themes/material-blue/views/install/index.inc:112
 msgid "sysPass database name"
-msgstr ""
+msgstr "sysPass adatbázis neve"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:121
-#, fuzzy
 msgid "sysPass database server"
-msgstr "DB szerver"
+msgstr "sysPass adatbázis szerver"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:129
-#, fuzzy
 msgid "Server name to install sysPass database"
-msgstr "sysPass database server name"
+msgstr "Szerver neve a sysPass adatbázis telepítéséhez"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:149
 msgid "Hosting Mode"
@@ -6722,9 +6510,8 @@ msgstr "Delete History"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:42
 #: app/resources/strings.js.inc:65
-#, fuzzy
 msgid "Select Action"
-msgstr "Akció"
+msgstr "Művelet kiválasztása"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user.inc:19
@@ -6734,9 +6521,8 @@ msgstr "Beállítások"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:67
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:71
-#, fuzzy
 msgid "Refresh Authorization"
-msgstr "Start Update"
+msgstr "Felhatalmazás frissítése"
 
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:77
 #: app/modules/web/themes/material-blue/views/itemshow/auth_token.inc:79
@@ -6756,19 +6542,16 @@ msgstr ""
 "are granted to access to the accounts."
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:30
-#, fuzzy
 msgid "Field name"
-msgstr "Ügyfél név"
+msgstr "Mező neve"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:63
-#, fuzzy
 msgid "Help Text"
-msgstr "Keresendõ szöveg"
+msgstr "Súgó szövege"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:69
-#, fuzzy
 msgid "Field's help"
-msgstr "Segítség :: GYIK :: Változások Listája"
+msgstr "Mező súgója"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:80
 msgid "Required"
@@ -6777,9 +6560,8 @@ msgstr "Kötelező"
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:16
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:24
 #: app/resources/strings.js.inc:64
-#, fuzzy
 msgid "Length"
-msgstr "A mester jelszó legaláb 11 karakterbõl kell, hogy álljon"
+msgstr "Hossz"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:44
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:52
@@ -6939,9 +6721,8 @@ msgstr "Used in"
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:89
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:548
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:550
-#, fuzzy
 msgid "Used by"
-msgstr "által"
+msgstr "Által használt"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_group.inc:108
 msgid "(*) Listed in group"
@@ -6952,9 +6733,8 @@ msgid "Management"
 msgstr "Menedzsment"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:37
-#, fuzzy
 msgid "Create new account"
-msgstr "Új fiók"
+msgstr "Új fiók létrehozása"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:54
 msgid "View account details"
@@ -6987,9 +6767,8 @@ msgid "Edit account password"
 msgstr "fiók jelszavának módosításe"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:135
-#, fuzzy
 msgid "Remove account"
-msgstr "Fiók törlése"
+msgstr "Fiók eltávolítása"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:151
 msgid "View account files"
@@ -7036,19 +6815,16 @@ msgid "Tags management"
 msgstr "Tags management"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:331
-#, fuzzy
 msgid "Customers management"
-msgstr "Ügyfél Menedzsment"
+msgstr "Ügyfélkezelés"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:347
-#, fuzzy
 msgid "Custom fields management"
-msgstr "A mezõk száma helytelen"
+msgstr "Egyéni mezők kezelése"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:363
-#, fuzzy
 msgid "API authorizations management"
-msgstr "Fálj menedzsment inaktív"
+msgstr "API-felhatalmazások kezelése"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:379
 msgid "Links management"
@@ -7069,24 +6845,20 @@ msgstr "Default Values Management"
 #. (itstool) path: action/text
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:447
 #: app/resources/actions.xml:697
-#, fuzzy
 msgid "General Configuration"
-msgstr "Általános beállítások"
+msgstr "Általános konfiguráció"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:463
-#, fuzzy
 msgid "Encryption options"
-msgstr "Beállítások"
+msgstr "Titkosítási beállítások"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:479
-#, fuzzy
 msgid "Make a backup and export"
-msgstr "archívum készítés"
+msgstr "Biztonsági mentés és exportálás"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:495
-#, fuzzy
 msgid "Make accounts import"
-msgstr "Fiók importálás megerõsítése"
+msgstr "Fiókok importálása"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:515
 msgid "View event log"
@@ -7105,9 +6877,8 @@ msgid "Sign in"
 msgstr "Belépés"
 
 #: app/modules/web/themes/material-blue/views/login/index.inc:82
-#, fuzzy
 msgid "Forgot password?"
-msgstr "Elvesztette jelszavát?"
+msgstr "Elfelejtette jelszavát?"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:30
 #: app/resources/strings.js.inc:93
@@ -7116,9 +6887,8 @@ msgstr "Frissítve"
 
 #: app/modules/web/themes/material-blue/views/main/update.inc:36
 #: app/resources/strings.js.inc:94
-#, fuzzy
 msgid "Error while checking for updates"
-msgstr "Frissítések keresése"
+msgstr "Hiba a frissítések keresése közben"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:14
 #, php-format
@@ -7126,9 +6896,8 @@ msgid "Update %s"
 msgstr "Update %s"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:20
-#, fuzzy
 msgid "DB Update"
-msgstr "Verzió frissítés kész"
+msgstr "Adatbázis frissítése"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:22
 msgid "Application Update"
@@ -7136,23 +6905,21 @@ msgstr "Application Update"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:29
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:28
-#, fuzzy
 msgid "Security Code"
-msgstr "Archiválás"
+msgstr "Biztonsági kód"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr ""
 "This code is set in sysPass config file within the tag name \"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
 msgid "If items IDs are not set, they will be created."
@@ -7202,9 +6969,8 @@ msgstr "Please, wait while the process is running"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:186
 #: app/modules/web/themes/material-blue/views/upgrade/index.inc:51
-#, fuzzy
 msgid "Start Update"
-msgstr "Start"
+msgstr "Frissítés indítása"
 
 #: app/modules/web/themes/material-blue/views/notification/notification.inc:101
 msgid "Global notification"
@@ -7267,14 +7033,12 @@ msgid "Change"
 msgstr "Változtatás"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:107
-#, fuzzy
 msgid "Sort search results by views"
-msgstr "Keresési találok száma oldalanként"
+msgstr "Keresési eredmények rendezése megtekintések szerint"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:109
-#, fuzzy
 msgid "Sorts accounts search results by the number of account's views"
-msgstr "Enables to show account's search results like a card format."
+msgstr "A fiókkeresési eredmények rendezése a megtekintések száma szerint"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:124
 msgid "Navigation bar on top"
@@ -7282,7 +7046,7 @@ msgstr "Navigation bar on top"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:126
 msgid "Displays a navigation bar on top of the search results."
-msgstr ""
+msgstr "Navigációs sávot jelenít meg a keresési eredmények felett."
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:141
 msgid "Show Hidden Actions"
@@ -7391,27 +7155,24 @@ msgid "Too many files"
 msgstr "Túl sok fájl"
 
 #: app/resources/strings.js.inc:44
-#, fuzzy
 msgid "File size not allowed"
-msgstr "Fájltípus nem engedélyezett"
+msgstr "Fájlméret nem engedélyezett"
 
 #: app/resources/strings.js.inc:45
 msgid "MIME type not allowed"
-msgstr ""
+msgstr "MIME-típus nem engedélyezett"
 
 #: app/resources/strings.js.inc:46
-#, fuzzy
 msgid "Clear the event log out?"
-msgstr "Törlöd az esemény naplót?"
+msgstr "Törlöd az eseménynaplót?"
 
 #: app/resources/strings.js.inc:52
 msgid "No results"
 msgstr "Nincsenek eredmények"
 
 #: app/resources/strings.js.inc:53
-#, fuzzy
 msgid "Password options"
-msgstr "Beállítások"
+msgstr "Jelszó opciók"
 
 #: app/resources/strings.js.inc:54
 msgid "Generate random password"
@@ -7430,9 +7191,8 @@ msgid "Password strength level"
 msgstr "Jelszó erõssége"
 
 #: app/resources/strings.js.inc:58
-#, fuzzy
 msgid "Show Password"
-msgstr "Show Password"
+msgstr "Jelszó megjelenítése"
 
 #: app/resources/strings.js.inc:68
 msgid "Accept"
@@ -7443,14 +7203,12 @@ msgid "Cancel"
 msgstr "Mégsem"
 
 #: app/resources/strings.js.inc:70
-#, fuzzy
 msgid "Password Copied into Clipboard"
-msgstr "Hiba a jelszó frissítése közben"
+msgstr "Jelszó a vágólapra másolva"
 
 #: app/resources/strings.js.inc:71
-#, fuzzy
 msgid "Error while copying to clipboard"
-msgstr "Hiba a jelszó frissítése közben"
+msgstr "Hiba a vágólapra másolás közben"
 
 #: app/resources/strings.js.inc:73
 msgid "Send notifies?"
@@ -7466,9 +7224,11 @@ msgstr "Now"
 
 #: app/resources/strings.js.inc:82
 msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
 msgstr ""
-"This process will import the detected LDAP users. Would you like to continue?"
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
 
 #: app/resources/strings.js.inc:83
 msgid "This action will reset all plugin data. Do you want to continue?"
@@ -7846,10 +7606,653 @@ msgid "Hosting"
 msgstr "Tárhely"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Létrehozza az adatbázist és az adatbázis-felhasználót a megadott hitelesítő adatokkal"
+msgstr ""
+"Létrehozza az adatbázist és az adatbázis-felhasználót a megadott hitelesítő "
+"adatokkal"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Közvetlenül a megadott hitelesítő adatokat használja — az adatbázisnak már léteznie kell"
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Közvetlenül a megadott hitelesítő adatokat használja — az adatbázisnak már "
+"léteznie kell"
+
+msgid "Passwords match"
+msgstr "A jelszavak egyeznek"
+
+msgid "Welcome"
+msgstr "Üdvözöljük"
+
+msgid "Next"
+msgstr "Tovább"
+
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Üdvözöljük a %s telepítőjében! Ez a varázsló néhány egyszerű lépésben "
+"végigvezeti a telepítésen."
+
+msgid "Before starting, you will need the following information:"
+msgstr "Mielőtt elkezdené, a következő információkra lesz szüksége:"
+
+msgid "The database server address"
+msgstr "Az adatbázis-kiszolgáló címe"
+
+msgid "A database user with administrative rights"
+msgstr "Adminisztrátori jogokkal rendelkező adatbázis-felhasználó"
+
+msgid "The name for the sysPass database"
+msgstr "A sysPass adatbázis neve"
+
+msgid "All set? Press Next to begin."
+msgstr "Minden készen áll? Nyomja meg a Tovább gombot a kezdéshez."
+
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"A nyelvet a böngészője alapján állapítottuk meg. Módosításakor az oldal "
+"újratöltődik."
+
+msgid "The Master Password is used to encrypt the accounts passwords."
+msgstr "A Mester jelszó a fiókok jelszavainak titkosítására szolgál."
+
+msgid "Please, keep it safe — it cannot be recovered."
+msgstr "Kérjük, őrizze biztonságos helyen — nem állítható vissza."
+
+msgid "During the installation you will also:"
+msgstr "A telepítés során továbbá:"
+
+msgid "Choose the application language"
+msgstr "Kiválasztja az alkalmazás nyelvét"
+
+msgid "Set up the administrator account"
+msgstr "Beállítja az adminisztrátori fiókot"
+
+msgid "Set the Master Password"
+msgstr "Megadja a Mester jelszót"
+
+msgid "Requirements"
+msgstr "Követelmények"
+
+msgid "PHP version"
+msgstr "PHP verzió"
+
+msgid "PHP extensions"
+msgstr "PHP kiterjesztések"
+
+msgid "Configuration directory writable"
+msgstr "Írható konfigurációs könyvtár"
+
+msgid "Test connection"
+msgstr "Kapcsolat tesztelése"
+
+msgid "Connection successful"
+msgstr "Sikeres kapcsolódás"
+
+msgid "The DB user provided by your hosting"
+msgstr "A tárhelyszolgáltató által megadott adatbázis-felhasználó"
+
+msgid "You can now log in with your admin account."
+msgstr "Most már bejelentkezhet az adminisztrátori fiókjával."
+
+msgid "sysPass is already installed"
+msgstr "A sysPass már telepítve van"
+
+msgid "The database already contains sysPass tables"
+msgstr "Az adatbázis már tartalmaz sysPass táblákat"
+
+msgid "Please, use an empty database or remove the existing tables"
+msgstr ""
+"Kérjük, használjon üres adatbázist, vagy távolítsa el a meglévő táblákat"
+
+msgid "Invalid database port"
+msgstr "Érvénytelen adatbázis-port"
+
+msgid "The port number must be between 1 and 65535"
+msgstr "A portszámnak 1 és 65535 között kell lennie"
+
+msgid "Required PHP extensions (%d)"
+msgstr "Kötelező PHP-bővítmények (%d)"
+
+msgid "Optional PHP extensions (%d)"
+msgstr "Opcionális PHP-bővítmények (%d)"
+
+msgid "Missing required PHP extensions (%d)"
+msgstr "Hiányzó kötelező PHP-bővítmények (%d)"
+
+msgid "Missing optional PHP extensions (%d)"
+msgstr "Hiányzó opcionális PHP-bővítmények (%d)"
+
+msgid "Runtime directories writable"
+msgstr "Futásidejű könyvtárak írhatók"
+
+msgid "session.use_strict_mode enabled"
+msgstr "session.use_strict_mode engedélyezve"
+
+msgid "Duplicate entry"
+msgstr "Duplikált bejegyzés"
+
+msgid "The record is in use"
+msgstr "A rekord használatban van"
+
+msgid "Referenced record not found"
+msgstr "A hivatkozott rekord nem található"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "A mesterjelszónak és a megerősítésének egyeznie kell"
+
+msgid "%s cannot be blank"
+msgstr "%s nem lehet üres"
+
+msgid "'/config' directory does not exist."
+msgstr "A '/config' könyvtár nem létezik."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "A '/config' könyvtár jogosultságai helytelenek"
+
+msgid "A client is needed"
+msgstr "Ügyfél szükséges"
+
+msgid "A target is needed"
+msgstr "Cél szükséges"
+
+msgid "API not initialized"
+msgstr "API nincs inicializálva"
+
+msgid "Advanced Settings"
+msgstr "Speciális beállítások"
+
+msgid "App"
+msgstr "Alkalmazás"
+
+msgid "Application"
+msgstr "Alkalmazás"
+
+msgid "Ask for admin password"
+msgstr "Admin jelszó kérése"
+
+msgid "Ask for current master password"
+msgstr "Jelenlegi főjelszó kérése"
+
+msgid "Ask for database password"
+msgstr "Adatbázis jelszó kérése"
+
+msgid "Ask for language"
+msgstr "Nyelv kérése"
+
+msgid "Ask for master password"
+msgstr "Főjelszó kérése"
+
+msgid "Ask for path"
+msgstr "Elérési út kérése"
+
+msgid "Authentication already initialized"
+msgstr "Hitelesítés már inicializálva"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr "A hiteles szolgáltató nem adta vissza a felhasználó adatait"
+
+msgid "Authorization already exist"
+msgstr "Felhatalmazás már létezik"
+
+msgid "Authorization displayed"
+msgstr "Felhatalmazás megjelenítve"
+
+msgid "Authorization removed"
+msgstr "Felhatalmazás eltávolítva"
+
+msgid "Available"
+msgstr "Elérhető"
+
+msgid "Backup actions"
+msgstr "Biztonsági mentési műveletek"
+
+msgid "Backup path set to: %s"
+msgstr "Biztonsági mentés elérési útja beállítva: %s"
+
+msgid "Clear Tracks"
+msgstr "Nyomok törlése"
+
+msgid "Config"
+msgstr "Konfiguráció"
+
+msgid "Couldn't deserialize the data"
+msgstr "Az adatokat nem sikerült deszializálni"
+
+msgid "Custom field added"
+msgstr "Egyéni mező hozzáadva"
+
+msgid "Custom field displayed"
+msgstr "Egyéni mező megjelenítve"
+
+msgid "Custom field removed"
+msgstr "Egyéni mező eltávolítva"
+
+msgid "Custom field updated"
+msgstr "Egyéni mező frissítve"
+
+msgid "DB"
+msgstr "AB"
+
+msgid "Data"
+msgstr "Adatok"
+
+msgid "Database name contains invalid characters"
+msgstr "Az adatbázis neve érvénytelen karaktereket tartalmaz"
+
+msgid "Downloads"
+msgstr "Letöltések"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr ""
+"Az osztály nem létezik, vagy a fájladatok nem szializálhatók vissza a "
+"következőbe: %s"
+
+msgid "Error executing the query"
+msgstr "Hiba a lekérdezés végrehajtása közben"
+
+msgid "Error loading XML data"
+msgstr "Hiba az XML adatok betöltése közben"
+
+msgid "Error while adding the event log"
+msgstr "Hiba az eseménynapló bejegyzés hozzáadása közben"
+
+msgid "Error while applying the update"
+msgstr "Hiba a frissítés alkalmazása közben"
+
+msgid "Error while clearing the tracks out"
+msgstr "Hiba a nyomok törlése közben"
+
+msgid "Error while deleting the permission"
+msgstr "Hiba az engedély törlése közben"
+
+msgid "Error while deleting the tags"
+msgstr "Hiba a tagek törlése közben"
+
+msgid "Error while reading the CSV file file"
+msgstr "Hiba a CSV fájl olvasása közben"
+
+msgid "Error while renewing the link"
+msgstr "Hiba a hivatkozás megújítása közben"
+
+msgid "Expiry Date"
+msgstr "Lejárati dátum"
+
+msgid "File displayed"
+msgstr "Fájl megjelenítve"
+
+msgid "File not found: %s"
+msgstr "Fájl nem található: %s"
+
+msgid "File removed"
+msgstr "Fájl eltávolítva"
+
+msgid "File uploaded"
+msgstr "Fájl feltöltve"
+
+msgid "Force sysPass installation"
+msgstr "sysPass telepítésének kényszerítése"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Egyéni mezők lekérése a fiókhoz a válaszban"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Egyéni mezők lekérése a kategóriához a válaszban"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Egyéni mezők lekérése az ügyfélhez a válaszban"
+
+msgid "Group Attributes"
+msgstr "Csoport attribútumai"
+
+msgid "Group Filter"
+msgstr "Csoportszűrő"
+
+msgid "Group data not set"
+msgstr "Csoportadatok nincsenek megadva"
+
+msgid "Insecure connection"
+msgstr "Nem biztonságos kapcsolat"
+
+msgid "Install sysPass"
+msgstr "sysPass telepítése"
+
+msgid "Install sysPass?"
+msgstr "Telepíti a sysPass-t?"
+
+msgid "Installation aborted"
+msgstr "Telepítés megszakítva"
+
+msgid "Invalid class for loaded file data"
+msgstr "Érvénytelen osztály a betöltött fájladatokhoz"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Érvénytelen adattípus. Várt: %s"
+
+msgid "Invalid query type for count"
+msgstr "Érvénytelen lekérdezéstípus számláláshoz"
+
+msgid "Invalid route"
+msgstr "Érvénytelen útvonal"
+
+msgid "Invalid target class"
+msgstr "Érvénytelen célosztály"
+
+msgid "LDAP connection error"
+msgstr "LDAP-kapcsolati hiba"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "LDAP-szűrő csoportobjektumok kereséséhez."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "LDAP-szűrő felhasználói objektumok kereséséhez."
+
+msgid "Log"
+msgstr "Napló"
+
+msgid "Logs"
+msgstr "Naplók"
+
+msgid "Maintenance"
+msgstr "Karbantartás"
+
+msgid "Master password loaded"
+msgstr "Főjelszó betöltve"
+
+msgid "Master password to encrypt the data"
+msgstr "Főjelszó az adatok titkosításához"
+
+msgid "Master password update aborted"
+msgstr "Főjelszó frissítése megszakítva"
+
+msgid "Missing Proxy parameters"
+msgstr "Hiányzó proxy paraméterek"
+
+msgid "No accounts updated, only hash"
+msgstr "Nincsenek frissített fiókok, csak hash"
+
+msgid "No backup available"
+msgstr "Nincs elérhető biztonsági mentés"
+
+msgid "No items selected"
+msgstr "Nincsenek kijelölt elemek"
+
+msgid "No lines read from the file"
+msgstr "Nem olvashatók sorok a fájlból"
+
+msgid "No plugins loaded"
+msgstr "Nincsenek betöltött bővítmények"
+
+msgid "Non authoritative auth"
+msgstr "Nem hiteles hitelesítés"
+
+msgid "Notification added"
+msgstr "Értesítés hozzáadva"
+
+msgid "Notification displayed"
+msgstr "Értesítés megjelenítve"
+
+msgid "Notification marked as read"
+msgstr "Értesítés olvasottnak jelölve"
+
+msgid "Notification removed"
+msgstr "Értesítés eltávolítva"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr "Az adatbázis nevében csak betűk, számjegyek, $, _ és - megengedett"
+
+msgid "Path is needed"
+msgstr "Elérési út szükséges"
+
+msgid "Path where to store the backup files"
+msgstr "A biztonsági mentési fájlok tárolási helye"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Adja meg a biztonsági mentési fájlok tárolási helyét"
+
+msgid "Please provide database admin password"
+msgstr "Adja meg az adatbázis admin jelszavát"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Adja meg a sysPass admin jelszavát"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Adja meg ismét a sysPass admin jelszavát"
+
+msgid "Please provide sysPass master password"
+msgstr "Adja meg a sysPass főjelszavát"
+
+msgid "Please provide sysPass master password again"
+msgstr "Adja meg ismét a sysPass főjelszavát"
+
+msgid "Please provide the current master password"
+msgstr "Adja meg a jelenlegi főjelszót"
+
+msgid "Please provide the current master password again"
+msgstr "Adja meg ismét a jelenlegi főjelszót"
+
+msgid "Please provide the new master password"
+msgstr "Adja meg az új főjelszót"
+
+msgid "Please provide the new master password again"
+msgstr "Adja meg ismét az új főjelszót"
+
+msgid "Please run setup method before"
+msgstr "Kérjük, futtassa előbb a beállítási metódust"
+
+msgid "Please, check the directory permissions"
+msgstr "Ellenőrizze a könyvtár jogosultságait"
+
+msgid "Please, press any key to continue"
+msgstr "Nyomjon meg egy tetszőleges billentyűt a folytatáshoz"
+
+msgid "Please, restart any browser session to update it"
+msgstr "Indítsa újra a böngészős munkameneteket a frissítéshez"
+
+msgid "Please, restart the session to update it"
+msgstr "Indítsa újra a munkamenetet a frissítéshez"
+
+msgid "Plugin already registered"
+msgstr "Bővítmény már regisztrálva"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Bővítmény nincs betöltve (letiltva)"
+
+msgid "Plugin not registered"
+msgstr "Bővítmény nincs regisztrálva"
+
+msgid "Plugin not registered yet"
+msgstr "Bővítmény még nincs regisztrálva"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Bővítmény verziója kompatibilis (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Az előbeállítás érvénytelen ehhez az érvényesítőhöz"
+
+msgid "Profile data not set"
+msgstr "Profiladatok nincsenek megadva"
+
+msgid "Profile displayed"
+msgstr "Profil megjelenítve"
+
+msgid "Profile removed"
+msgstr "Profil eltávolítva"
+
+msgid "Public link added"
+msgstr "Nyilvános hivatkozás hozzáadva"
+
+msgid "Public link displayed"
+msgstr "Nyilvános hivatkozás megjelenítve"
+
+msgid "Public link hash not set"
+msgstr "Nyilvános hivatkozás hash-e nincs megadva"
+
+msgid "Public link refreshed"
+msgstr "Nyilvános hivatkozás megújítva"
+
+msgid "Public link removed"
+msgstr "Nyilvános hivatkozás eltávolítva"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Fióknév keresése reguláris kifejezéssel"
+
+msgid "Secure connection"
+msgstr "Biztonságos kapcsolat"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Beállítja az alkalmazás globális nyelvét. Felhasználónkénti nyelvet a "
+"beállításokban adhat meg"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Telepítés megerősítésének kihagyása"
+
+msgid "Skip asking to confirm the update"
+msgstr "Frissítés megerősítésének kihagyása"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr "Az admin jelszónak és megerősítésének egyeznie kell"
+
+msgid "The command is already running in another process"
+msgstr "A parancs már fut egy másik folyamatban"
+
+msgid "The current master password"
+msgstr "A jelenlegi főjelszó"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr "A fájl egy régi sysPass verzióval (<= 2.10) lett exportálva."
+
+msgid "The new master password to encrypt the data"
+msgstr "Az adatok titkosításához szükséges új főjelszó"
+
+msgid "There are no accounts for processing"
+msgstr "Nincsenek feldolgozandó fiókok"
+
+msgid "This command installs sysPass"
+msgstr "Ez a parancs telepíti a sysPass-t"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Ez a parancs fájlalapú biztonsági mentést készít a sysPass adatbázisából és "
+"alkalmazásából"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr ""
+"Ez a parancs frissíti a sysPass főjelszavát az összes titkosított adathoz"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "Ez egy kritikus folyamat, kérjük ne szakítsa meg/zárja be a CLI-t"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr "Token jelszava az egyéni mezők lekérésekor"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Nem lehet létrehozni a könyvtárat (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Nem lehet képet létrehozni"
+
+msgid "Unable to create node"
+msgstr "Nem lehet csomópontot létrehozni"
+
+msgid "Unable to import account"
+msgstr "Nem lehet importálni a fiókot"
+
+msgid "Unable to import categories"
+msgstr "Nem lehet importálni a kategóriákat"
+
+msgid "Unable to import clients"
+msgstr "Nem lehet importálni az ügyfeleket"
+
+msgid "Unable to import tags"
+msgstr "Nem lehet importálni a tageket"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Nem lehet megnyitni a könyvtárat (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Nem lehet feldolgozni az eseményt a felhasználóhoz"
+
+msgid "Unable to process event for user group"
+msgstr "Nem lehet feldolgozni az eseményt a felhasználói csoporthoz"
+
+msgid "Unable to process event for user profile"
+msgstr "Nem lehet feldolgozni az eseményt a felhasználói profilhoz"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Nem lehet feloldani a zárolást (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Nem lehet lekérni a konfigurációt"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Nem lehet jogosultságokat beállítani a fájlhoz (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Nem lehet írni a '/config' könyvtárba"
+
+msgid "Unknown magic method"
+msgstr "Ismeretlen mágikus metódus"
+
+msgid "Unlock Track"
+msgstr "Nyom feloldása"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr "Frissíti a főjelszót? (Ez a folyamat nem vonható vissza)"
+
+msgid "Update sysPass master password"
+msgstr "sysPass főjelszó frissítése"
+
+msgid "Updates"
+msgstr "Frissítések"
+
+msgid "User Attributes"
+msgstr "Felhasználói attribútumai"
+
+msgid "User Filter"
+msgstr "Felhasználószűrő"
+
+msgid "User data not set"
+msgstr "Felhasználói adatok nincsenek megadva"
+
+msgid "User displayed"
+msgstr "Felhasználó megjelenítve"
+
+msgid "User group Id"
+msgstr "Felhasználói csoport azonosítója"
+
+msgid "User group description"
+msgstr "Felhasználói csoport leírása"
+
+msgid "User group name"
+msgstr "Felhasználói csoport neve"
+
+msgid "User removed"
+msgstr "Felhasználó eltávolítva"
+
+msgid "Users Id's to add"
+msgstr "Hozzáadandó felhasználói azonosítók"
+
+msgid "Value cannot be blank"
+msgstr "Az érték nem lehet üres"
+
+msgid "Web Server"
+msgstr "Webkiszolgáló"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass már telepítve van. Használja a '--forceInstall' kapcsolót az "
+"újratelepítéshez."
+
+msgid "sysPass is not installed"
+msgstr "sysPass nincs telepítve"
 
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" mappa nem létezik"
@@ -7931,120 +8334,3 @@ msgstr "Közvetlenül a megadott hitelesítő adatokat használja — az adatbá
 #~ "Write the extension and press enter to add. Remember to save the "
 #~ "configuration."
 #~ msgstr "Írj kiterjesztést, majd nyomj entert a hozzáadáshoz"
-
-msgid "Passwords match"
-msgstr ""
-
-msgid "Welcome"
-msgstr "Üdvözöljük"
-
-msgid "Next"
-msgstr "Tovább"
-
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Üdvözöljük a %s telepítőjében! Ez a varázsló néhány egyszerű lépésben végigvezeti a telepítésen."
-
-msgid "Before starting, you will need the following information:"
-msgstr "Mielőtt elkezdené, a következő információkra lesz szüksége:"
-
-msgid "The database server address"
-msgstr "Az adatbázis-kiszolgáló címe"
-
-msgid "A database user with administrative rights"
-msgstr "Adminisztrátori jogokkal rendelkező adatbázis-felhasználó"
-
-msgid "The name for the sysPass database"
-msgstr "A sysPass adatbázis neve"
-
-msgid "All set? Press Next to begin."
-msgstr "Minden készen áll? Nyomja meg a Tovább gombot a kezdéshez."
-
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "A nyelvet a böngészője alapján állapítottuk meg. Módosításakor az oldal újratöltődik."
-
-msgid "The Master Password is used to encrypt the accounts passwords."
-msgstr "A Mester jelszó a fiókok jelszavainak titkosítására szolgál."
-
-msgid "Please, keep it safe — it cannot be recovered."
-msgstr "Kérjük, őrizze biztonságos helyen — nem állítható vissza."
-
-msgid "During the installation you will also:"
-msgstr "A telepítés során továbbá:"
-
-msgid "Choose the application language"
-msgstr "Kiválasztja az alkalmazás nyelvét"
-
-msgid "Set up the administrator account"
-msgstr "Beállítja az adminisztrátori fiókot"
-
-msgid "Set the Master Password"
-msgstr "Megadja a Mester jelszót"
-
-msgid "Requirements"
-msgstr "Követelmények"
-
-msgid "PHP version"
-msgstr "PHP verzió"
-
-msgid "PHP extensions"
-msgstr "PHP kiterjesztések"
-
-msgid "Configuration directory writable"
-msgstr "Írható konfigurációs könyvtár"
-
-msgid "Test connection"
-msgstr "Kapcsolat tesztelése"
-
-msgid "Connection successful"
-msgstr "Sikeres kapcsolódás"
-
-msgid "The DB user provided by your hosting"
-msgstr "A tárhelyszolgáltató által megadott adatbázis-felhasználó"
-
-msgid "You can now log in with your admin account."
-msgstr "Most már bejelentkezhet az adminisztrátori fiókjával."
-
-msgid "sysPass is already installed"
-msgstr "A sysPass már telepítve van"
-
-msgid "The database already contains sysPass tables"
-msgstr "Az adatbázis már tartalmaz sysPass táblákat"
-
-msgid "Please, use an empty database or remove the existing tables"
-msgstr "Kérjük, használjon üres adatbázist, vagy távolítsa el a meglévő táblákat"
-
-msgid "Invalid database port"
-msgstr "Érvénytelen adatbázis-port"
-
-msgid "The port number must be between 1 and 65535"
-msgstr "A portszámnak 1 és 65535 között kell lennie"
-
-msgid "Required PHP extensions (%d)"
-msgstr "Kötelező PHP-bővítmények (%d)"
-
-msgid "Optional PHP extensions (%d)"
-msgstr "Opcionális PHP-bővítmények (%d)"
-
-msgid "Missing required PHP extensions (%d)"
-msgstr "Hiányzó kötelező PHP-bővítmények (%d)"
-
-msgid "Missing optional PHP extensions (%d)"
-msgstr "Hiányzó opcionális PHP-bővítmények (%d)"
-
-msgid "Runtime directories writable"
-msgstr "Futásidejű könyvtárak írhatók"
-
-msgid "session.use_strict_mode enabled"
-msgstr "session.use_strict_mode engedélyezve"
-
-msgid "Duplicate entry"
-msgstr "Duplikált bejegyzés"
-
-msgid "The record is in use"
-msgstr "A rekord használatban van"
-
-msgid "Referenced record not found"
-msgstr "A hivatkozott rekord nem található"
-
-msgid "The Master Password and its confirmation must be the same"
-msgstr "A mesterjelszónak és a megerősítésének egyeznie kell"

@@ -1,3 +1,4 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: sysPass\n"
@@ -9,17 +10,16 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.11\n"
-"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
-"X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.6.10\n"
-"X-Contributors: Tony Albers, Martin Lindemann Frederiksen\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Contributors: Tony Albers, Martin Lindemann Frederiksen\n"
+"X-Generator: Poedit 1.6.10\n"
 "X-Poedit-Basepath: ../../../..\n"
+"X-Poedit-KeywordsList: _;__;__u;gettext;gettext_noop\n"
 "X-Poedit-SearchPath-0: app/modules\n"
 "X-Poedit-SearchPath-1: lib\n"
 "X-Poedit-SearchPath-2: app/resources\n"
 "X-Poedit-SearchPathExcluded-0: app/modules/**/plugins\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #: app/modules/api/Controllers/AccountController.php:70
 msgid "Account displayed"
@@ -388,7 +388,6 @@ msgstr "Forbundet konto"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:93
 #: app/modules/api/Controllers/Help/AccountHelp.php:116
-#, fuzzy
 msgid "Array with tags id"
 msgstr "Liste med mærke ID'er"
 
@@ -406,7 +405,6 @@ msgstr "Group Id"
 #: app/modules/api/Controllers/Help/TagHelp.php:77
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:81
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:27
-#, fuzzy
 msgid "Text to search for"
 msgstr "Søgetekst"
 
@@ -415,7 +413,6 @@ msgstr "Søgetekst"
 #: app/modules/api/Controllers/Help/ClientHelp.php:82
 #: app/modules/api/Controllers/Help/TagHelp.php:78
 #: app/modules/api/Controllers/Help/UserGroupHelp.php:82
-#, fuzzy
 msgid "Number of results to display"
 msgstr "Antal resultater der vises"
 
@@ -428,7 +425,6 @@ msgid "Client Id to filter on"
 msgstr "Klient-ID der skal filtreres efter"
 
 #: app/modules/api/Controllers/Help/AccountHelp.php:132
-#, fuzzy
 msgid "Array with tags id for filtering"
 msgstr "Liste med mærke ID'er til filtrering"
 
@@ -1086,7 +1082,6 @@ msgid "View Client"
 msgstr "Se klient"
 
 #: app/modules/web/Controllers/ConfigAccountController.php:73
-#, fuzzy
 msgid "Maximum size per file is 16MB"
 msgstr "Maksimal tilladt filstørrelse er 16MB"
 
@@ -1228,7 +1223,6 @@ msgid "Please, restart the session for update it"
 msgstr "Genstart venligst sessionen for at genindlæse den"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:82
-#, fuzzy
 msgid "Master password not entered"
 msgstr "Hoved-kodeord skal angives"
 
@@ -1237,12 +1231,10 @@ msgid "The password update must be confirmed"
 msgstr "Opdateringen af kodeordet skal bekræftes"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:96
-#, fuzzy
 msgid "Passwords are the same"
 msgstr "Kodeordene er identiske"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:103
-#, fuzzy
 msgid "Master passwords do not match"
 msgstr "Hoved-kodeordene er ikke identiske"
 
@@ -1258,7 +1250,8 @@ msgstr "Vedligeholdelsestilstand ikke aktiveret"
 #: app/modules/web/Controllers/ConfigEncryptionController.php:118
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:86
 msgid "Please, enable it to avoid unwanted behavior from other sessions"
-msgstr "Aktivér den venligst for ikke at få uønsket opførsel i andre sessioner"
+msgstr ""
+"Aktivér den venligst for ikke at få uønsket opførsel i andre sessioner"
 
 #: app/modules/web/Controllers/ConfigEncryptionController.php:168
 msgid "Error while saving the Master Password's hash"
@@ -1549,7 +1542,6 @@ msgid "View Field"
 msgstr "Vis felt"
 
 #: app/modules/web/Controllers/ErrorController.php:107
-#, fuzzy
 msgid "Application on maintenance"
 msgstr "Applikationen er i vedligeholdelsestilstand"
 
@@ -1581,7 +1573,6 @@ msgstr "Kontakt venligst administratoren"
 #: lib/SP/Storage/Database/MySQLHandler.php:118
 #: lib/SP/Storage/Database/MySQLHandler.php:165
 #: lib/SP/Storage/Database/MySQLHandler.php:177
-#, fuzzy
 msgid "Unable to connect to DB"
 msgstr "Kan ikke forbinde til databasen"
 
@@ -1694,7 +1685,6 @@ msgstr "Kontoens kodeord"
 #: app/modules/web/Controllers/Helpers/Account/AccountPasswordHelper.php:96
 #: lib/SP/Core/Acl/AccountPermissionException.php:45
 #: lib/SP/Util/ErrorUtil.php:152
-#, fuzzy
 msgid "You don't have permission to access this account"
 msgstr "Du har ikke tilladelser til at tilgå denne konto"
 
@@ -2025,7 +2015,6 @@ msgstr "Genindlæs"
 
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:200
 #: app/modules/web/Controllers/Helpers/Grid/EventlogGrid.php:201
-#, fuzzy
 msgid "Clear the event log out"
 msgstr "Ryd hændelsesloggen"
 
@@ -2977,7 +2966,6 @@ msgid "A tag name is needed"
 msgstr "Et mærkenavn er påkrævet"
 
 #: app/modules/web/Forms/UserForm.php:111
-#, fuzzy
 msgid "An username is needed"
 msgstr "Et brugernavn er påkrævet"
 
@@ -3219,7 +3207,7 @@ msgid "Invalid icons class"
 msgstr "Ugyldig ikonklasse"
 
 #: lib/SP/Html/DataGrid/DataGridBase.php:302 lib/SP/Mvc/View/Template.php:128
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to retrieve \"%s\" template: %s"
 msgstr "Kan ikke indlæse \"%s\" skabelonen: %s"
 
@@ -3327,11 +3315,11 @@ msgstr "Ny plugin"
 
 #: lib/SP/Plugin/PluginManager.php:392
 msgid "Upgrading plugin"
-msgstr ""
+msgstr "Opgraderer plugin"
 
 #: lib/SP/Plugin/PluginManager.php:409
 msgid "Plugin upgraded"
-msgstr ""
+msgstr "Plugin opgraderet"
 
 #: lib/SP/Plugin/PluginManager.php:418
 #, php-format
@@ -3412,7 +3400,6 @@ msgstr "Bruger verificeret som tilhørende gruppen"
 #: lib/SP/Providers/Auth/Ldap/LdapMsAds.php:143
 #: lib/SP/Providers/Auth/Ldap/LdapMsAzureAd.php:144
 #: lib/SP/Providers/Auth/Ldap/LdapStd.php:142
-#, fuzzy
 msgid "User does not belong to the group"
 msgstr "Brugeren tilhører ikke gruppen"
 
@@ -3492,7 +3479,6 @@ msgstr "Fejl i opdateringen af kontoen"
 #: lib/SP/Repositories/Account/AccountRepository.php:451
 #: lib/SP/Repositories/Account/AccountRepository.php:623
 #: lib/SP/Services/Account/AccountHistoryService.php:75
-#, fuzzy
 msgid "Error while retrieving account's data"
 msgstr "Fejl under indlæsning af kontodata"
 
@@ -3622,7 +3608,6 @@ msgid "Error while deleting the field type"
 msgstr "Fejl under sletning af felttypen"
 
 #: lib/SP/Repositories/EventLog/EventlogRepository.php:53
-#, fuzzy
 msgid "Error while clearing the event log out"
 msgstr "Fejl under rydning af hændelsesloggen"
 
@@ -3677,17 +3662,17 @@ msgstr "Fejl under indlæsning af notifikationerne"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:67
 msgid "Error while adding plugin's data"
-msgstr ""
+msgstr "Fejl under tilføjelse af plugin-data"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:96
 msgid "Error while updating plugin's data"
-msgstr ""
+msgstr "Fejl under opdatering af plugin-data"
 
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:115
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:135
 #: lib/SP/Repositories/Plugin/PluginDataRepository.php:241
 msgid "Error while deleting plugin's data"
-msgstr ""
+msgstr "Fejl under sletning af plugin-data"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:69
 msgid "Error while adding the plugin"
@@ -3704,7 +3689,6 @@ msgstr "Fejl under opdatering af plugin"
 
 #: lib/SP/Repositories/Plugin/PluginRepository.php:216
 #: lib/SP/Services/Plugin/PluginService.php:137
-#, fuzzy
 msgid "Error while deleting the plugins"
 msgstr "Fejl under sletningen af plugins"
 
@@ -3944,7 +3928,8 @@ msgstr "Hoved-kodeord ikke angivet"
 msgid "The account doesn't exist"
 msgstr "Kontoen findes ikke"
 
-#: lib/SP/Services/Api/ApiRequest.php:79 lib/SP/Services/Api/ApiRequest.php:113
+#: lib/SP/Services/Api/ApiRequest.php:79
+#: lib/SP/Services/Api/ApiRequest.php:113
 #: lib/SP/Services/Api/ApiService.php:231
 msgid "Invalid data"
 msgstr "Ugyldige data"
@@ -4003,7 +3988,6 @@ msgstr "Konto udløbet"
 
 #: lib/SP/Services/Auth/LoginService.php:521
 #: lib/SP/Services/Auth/LoginService.php:529
-#, fuzzy
 msgid "User has no associated groups"
 msgstr "Brugeren er ikke associeret med nogle grupper"
 
@@ -4112,8 +4096,8 @@ msgid ""
 "A new sysPass master password has been generated, so next time you log into "
 "the application it will be requested."
 msgstr ""
-"Et nyt sysPass Hoved-kodeord er genereret, så næste gang du logger på vil du "
-"blive bedt om det."
+"Et nyt sysPass Hoved-kodeord er genereret, så næste gang du logger på vil du"
+" blive bedt om det."
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:234
 #, php-format
@@ -4126,7 +4110,8 @@ msgid "This password will be valid until: %s"
 msgstr "Kodeordet er gyldigt til: %s"
 
 #: lib/SP/Services/Crypt/TemporaryMasterPassService.php:236
-msgid "Please, don't forget to log in as soon as possible to save the changes."
+msgid ""
+"Please, don't forget to log in as soon as possible to save the changes."
 msgstr ""
 "Glem venligst ikke at logge på så snart som muligt for at gemme ændringerne."
 
@@ -4263,12 +4248,10 @@ msgid "Please, check the file format"
 msgstr "Kontroller venligst filformatet"
 
 #: lib/SP/Services/Import/ImportTrait.php:107
-#, fuzzy
 msgid "Category Id not set. Unable to import account."
 msgstr "Kategi-ID er ikke valgt. Kontoen kan ikke importeres."
 
 #: lib/SP/Services/Import/ImportTrait.php:111
-#, fuzzy
 msgid "Client Id not set. Unable to import account."
 msgstr "Klient-ID er ikke valgt. Kontoen kan ikke importeres."
 
@@ -4315,7 +4298,6 @@ msgid "XML file not supported"
 msgstr "XML-filen er ikke understøttet"
 
 #: lib/SP/Services/Import/XmlFileImport.php:107
-#, fuzzy
 msgid "Unable to guess the application which data was exported from"
 msgstr "Kan ikke udlede hvilken applikation den stammer fra"
 
@@ -4380,7 +4362,6 @@ msgid "Please, enter the database user"
 msgstr "Indtast venligst database-brugernavnet"
 
 #: lib/SP/Services/Install/Installer.php:135
-#, fuzzy
 msgid "An user with database administrative rights"
 msgstr "En bruger med administrationsrettigheder på databasen"
 
@@ -4472,7 +4453,7 @@ msgid "You need to create it and assign the needed permissions"
 msgstr "Du skal oprette den og tilføje de nødvendige rettigheder"
 
 #: lib/SP/Services/Install/MySQL.php:309
-#, fuzzy, php-format
+#, php-format
 msgid "Error while selecting '%s' database (%s)"
 msgstr "Fejl under valg af databasen '%s' (%s)"
 
@@ -4482,8 +4463,8 @@ msgid ""
 "Unable to use the database to create the structure. Please check the "
 "permissions and it does not exist."
 msgstr ""
-"Kan ikke åbne databasen for at oprette strukturen. Kontroller rettigheder og "
-"at den ikke allerede er oprettet."
+"Kan ikke åbne databasen for at oprette strukturen. Kontroller rettigheder og"
+" at den ikke allerede er oprettet."
 
 #: lib/SP/Services/Install/MySQL.php:331
 msgid "Error while creating database structure."
@@ -4536,7 +4517,7 @@ msgstr "Notifikation ikke fundet"
 #: lib/SP/Services/Plugin/PluginDataService.php:165
 #: lib/SP/Services/Plugin/PluginDataService.php:183
 msgid "Plugin's data not found"
-msgstr ""
+msgstr "Plugin-data ikke fundet"
 
 #: lib/SP/Services/Plugin/PluginService.php:92
 #: lib/SP/Services/Plugin/PluginService.php:153
@@ -4694,7 +4675,6 @@ msgstr "Fejl under opdateringen af databasen"
 
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:157
 #: lib/SP/Services/Upgrade/UpgradeDatabaseService.php:159
-#, fuzzy
 msgid "Update file does not contain data"
 msgstr "Opdateringsfilen indeholder ingen data"
 
@@ -4716,7 +4696,6 @@ msgstr "Opdatering af offentlige links"
 #: lib/SP/Services/User/UserService.php:123
 #: lib/SP/Services/User/UserService.php:154
 #: lib/SP/Services/User/UserService.php:173
-#, fuzzy
 msgid "User does not exist"
 msgstr "Brugeren findes ikke"
 
@@ -4746,7 +4725,8 @@ msgstr "For at færdiggøre processen skal du gå ind på denne side:"
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:72
 msgid "If you have not requested this action, please dismiss this message."
 msgstr ""
-"Hvis du ikke har anmodet om denne aktivitet skal du blot slette denne besked."
+"Hvis du ikke har anmodet om denne aktivitet skal du blot slette denne "
+"besked."
 
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:87
 #: lib/SP/Services/UserPassRecover/UserPassRecoverService.php:155
@@ -4840,7 +4820,7 @@ msgstr "Fil ikke fundet (%s)"
 
 #: lib/SP/Storage/File/FileHandler.php:301
 #: lib/SP/Storage/File/FileHandler.php:356
-#, fuzzy, php-format
+#, php-format
 msgid "Unable to read/write file (%s)"
 msgstr "Kan ikke læse/skrive filen (%s)"
 
@@ -4849,8 +4829,8 @@ msgstr "Kan ikke læse/skrive filen (%s)"
 msgid "Unable to delete file (%s)"
 msgstr "Kan ikke slette filen (%s)"
 
-#: lib/SP/Storage/File/XmlHandler.php:89 lib/SP/Storage/File/XmlHandler.php:309
-#, fuzzy
+#: lib/SP/Storage/File/XmlHandler.php:89
+#: lib/SP/Storage/File/XmlHandler.php:309
 msgid "XML node does not exist"
 msgstr "XML-noden findes ikke"
 
@@ -4935,7 +4915,6 @@ msgid "Search for accounts which 'login' has access rights"
 msgstr "Søg efter konti hvis 'bruger' har adgang"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:17
-#, fuzzy
 msgid "Get the accounts in which user login \"login\" is the owner"
 msgstr "Find de konti hvor brugeren \"bruger\" er ejer"
 
@@ -4944,12 +4923,10 @@ msgid "Search for accounts which 'group_name' has access rights"
 msgstr "Søg efter konti hvis 'gruppenavn' har adgang"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:19
-#, fuzzy
 msgid "Get the accounts in which main group \"group_name\" is set"
 msgstr "Find de konti hvor hovedgruppen er \"gruppenavn\""
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:20
-#, fuzzy
 msgid "Search for accounts which contain a file with the name 'file_name'"
 msgstr "Søg efter konti der indeholder en fil med navnet 'filnavn'"
 
@@ -4970,7 +4947,6 @@ msgid "Search for accounts with expired password"
 msgstr "Søg efter konti med udløbet kodeord"
 
 #: app/modules/web/themes/material-blue/views/_partials/help_account_search.inc:25
-#, fuzzy
 msgid "Get private accounts for current user"
 msgstr "Find private konti for den nuværende bruger"
 
@@ -5232,13 +5208,11 @@ msgstr "Vis i Wiki"
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:64
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:230
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:231
-#, fuzzy
 msgid "Global search"
 msgstr "Global søgning"
 
 #: app/modules/web/themes/material-blue/views/account/search-searchbox.inc:75
 #: app/resources/strings.js.inc:78
-#, fuzzy
 msgid "Display All"
 msgstr "Vis alle"
 
@@ -5310,7 +5284,6 @@ msgstr "Antal resultater pr. side"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:40
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:61
-#, fuzzy
 msgid "Number of results per page to display when performing a search."
 msgstr "Antal resultater pr. side ved søgning."
 
@@ -5328,7 +5301,6 @@ msgid "Password expiry time"
 msgstr "Udløbsdato for kodeord"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:83
-#, fuzzy
 msgid "Number of days for account's password expiry date."
 msgstr "Antal dage før kontoen udløber"
 
@@ -5344,7 +5316,6 @@ msgstr "Kontonavn som link"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:112
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:92
-#, fuzzy
 msgid "Enables to use the account name as a link to account details."
 msgstr "Aktiverer at kontonavnet fungerer som et link til kontodetaljer"
 
@@ -5387,7 +5358,6 @@ msgstr "Resultater som kort"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:165
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:160
-#, fuzzy
 msgid "Displays account's search results on a card like format."
 msgstr "Aktiverer at søgeresultater vises som kartotekskort"
 
@@ -5396,7 +5366,6 @@ msgid "Secondary Groups Access"
 msgstr "Adgang for sekundærgrupper"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:183
-#, fuzzy
 msgid "Grants access to users that are included in secondary groups."
 msgstr ""
 "Giver adgang til de brugere der er medlem af den sekundære brugergruppe."
@@ -5422,13 +5391,13 @@ msgid "Enable Public Links"
 msgstr "Aktivér offentlige links"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:216
-msgid "Enables the ability to create public links to view an account's details"
+msgid ""
+"Enables the ability to create public links to view an account's details"
 msgstr ""
 "Giver mulighed for at oprette offentlige links der kan vise en kontos "
 "detaljer"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:218
-#, fuzzy
 msgid "Linked accounts will be visible by anyone that have the link."
 msgstr "De forbundne konti kan ses af alle der har linket."
 
@@ -5492,12 +5461,10 @@ msgid "Maximum file size"
 msgstr "Max filstørrelse"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:339
-#, fuzzy
 msgid "Sets the maximum file size for uploading."
 msgstr "Indstil den maksimale filstørrelse ved upload"
 
 #: app/modules/web/themes/material-blue/views/config/accounts.inc:343
-#, fuzzy
 msgid "Absolute maximum is 16MB."
 msgstr "Det absolutte maximum er 16MB"
 
@@ -5573,12 +5540,10 @@ msgstr ""
 "importeres i en anden sysPass installation."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:190
-#, fuzzy
 msgid "Exported items are accounts, clients, categories and tags."
 msgstr "De eksporterede elementer er Konti, Klienter, Kategorier og Mærker."
 
 #: app/modules/web/themes/material-blue/views/config/backup.inc:192
-#, fuzzy
 msgid ""
 "Accounts' password are exported in an encrypted way for better security."
 msgstr "Konto-kodeordene er eksporteret krypteret for højere sikkerhed."
@@ -5640,8 +5605,9 @@ msgstr "Brugere vil blive afkrævet det nye Hoved-kodeord"
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:103
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:130
-#, fuzzy, php-format
-msgid "It will be updated %s accounts. This process could take some time long."
+#, php-format
+msgid ""
+"It will be updated %s accounts. This process could take some time long."
 msgstr "Der vil opdateres %s konti, Denne proces kan tage nogen tid."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:121
@@ -5726,12 +5692,12 @@ msgstr "Sender en E-mail til alle brugere eller kun de hvis gruppe er valgt."
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:346
 msgid ""
 "The temporary password is used as a Master Password for the users that need "
-"to enter it during login. By this way there is no need to tell them the real "
-"Master Password."
+"to enter it during login. By this way there is no need to tell them the real"
+" Master Password."
 msgstr ""
-"Det midlertidige kodeord anvendes som Hoved-kodeord af de brugere der bliver "
-"bedt om at indtaste det under login. Når man gør det, er der intet behov for "
-"at give dem Hoved-kodeordet."
+"Det midlertidige kodeord anvendes som Hoved-kodeord af de brugere der bliver"
+" bedt om at indtaste det under login. Når man gør det, er der intet behov "
+"for at give dem Hoved-kodeordet."
 
 #: app/modules/web/themes/material-blue/views/config/encryption.inc:353
 msgid "Generate"
@@ -5742,7 +5708,6 @@ msgid "Use Auth Basic"
 msgstr "Basal brugerautentificering"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:31
-#, fuzzy
 msgid "Use Auth Basic for authorizing accesses to the application"
 msgstr "Brug basal autentifikation til at autorisere adgang til applikationen"
 
@@ -5781,7 +5746,6 @@ msgid "Default Group"
 msgstr "Standardgruppe"
 
 #: app/modules/web/themes/material-blue/views/config/general-auth.inc:80
-#, fuzzy
 msgid "Sets the default users group for newly created SSO users"
 msgstr "Angiver standard-brugergruppen for nyoprettede SSO-brugere"
 
@@ -5886,9 +5850,9 @@ msgid "Language"
 msgstr "Sprog"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:36
-#, fuzzy
 msgid ""
-"Sets the global app language. You can set a per user language on preferences."
+"Sets the global app language. You can set a per user language on "
+"preferences."
 msgstr ""
 "Indstil globalt applikationssprog. Du kan indstille et sprog pr. bruger "
 "under brugerindstillinger."
@@ -5896,11 +5860,11 @@ msgstr ""
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:40
 #, fuzzy
 msgid ""
-"To improve/add translations, you can get involved at https://poeditor.com/"
-"join/project/fmlsBuugyv"
+"To improve/add translations, you can get involved at "
+"https://poeditor.com/join/project/fmlsBuugyv"
 msgstr ""
-"For at forbedre/tilføje oversættelser kan du engagere dig her: https://"
-"poeditor.com/join/project/fmlsBuugyv"
+"For at forbedre/tilføje oversættelser kan du engagere dig her: "
+"https://poeditor.com/join/project/fmlsBuugyv"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:59
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:69
@@ -5925,7 +5889,7 @@ msgstr "Sessions-udløb (s)"
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:101
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:117
 msgid "Application URL"
-msgstr ""
+msgstr "Applikations-URL"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:106
 msgid ""
@@ -5957,8 +5921,8 @@ msgstr "Vedligeholdelsestilstand"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:169
 msgid ""
-"In this mode nobody can log into the application. To disable it, you need to "
-"either modify the configuration file or unset on the site tab."
+"In this mode nobody can log into the application. To disable it, you need to"
+" either modify the configuration file or unset on the site tab."
 msgstr ""
 "I denne tilstand kan man ikke logge ind i applikationen. For at slå "
 "vedligeholdesestilstand fra skal man rette i konfigurationsfilen eller slå "
@@ -5973,7 +5937,6 @@ msgid "Check for application updates (only for administrators)."
 msgstr "Søger efter applikationsopdateringer (kun administratorer)"
 
 #: app/modules/web/themes/material-blue/views/config/general-site.inc:200
-#, fuzzy
 msgid "Check for notifications"
 msgstr "Søg efter notofikationer"
 
@@ -6024,14 +5987,12 @@ msgid "Drop files here or click to select"
 msgstr "Slip filer her eller klik for at vælge"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:105
-#, fuzzy
 msgid ""
 "Allows to import Accounts, Categories and Clients from XML or CSV files."
 msgstr ""
 "Mulliggør import af Konti, Kategorier og Klienter fra XML eller CSV filer."
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:107
-#, fuzzy
 msgid "Supported XML file formats are: sysPass, KeePass and KeePassX"
 msgstr "Understøttede filformater er: sysPass, KeePass og KeePassX"
 
@@ -6053,12 +6014,8 @@ msgid "The CSV import file requires the following format:"
 msgstr "CSV importfilen skal anvende følgende format:"
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:115
-msgid ""
-"\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";"
-"\"notes\""
-msgstr ""
-"\"kontonavn\";\"klient\";\"kategori\";\"url\";\"bruger\";\"kodeord\";\"noter"
-"\""
+msgid "\"account_name\";\"client\";\"category\";\"url\";\"user\";\"password\";\"notes\""
+msgstr "\"kontonavn\";\"klient\";\"kategori\";\"url\";\"bruger\";\"kodeord\";\"noter\""
 
 #: app/modules/web/themes/material-blue/views/config/import.inc:117
 msgid ""
@@ -6162,8 +6119,8 @@ msgid ""
 "If it is not installed, you would need install the right operating system "
 "locales. More info at Wiki."
 msgstr ""
-"Hvis det ikke er installeret, skal du installere den korrekte operativsystem-"
-"lokalisation. Du kan læse mere i Wiki'en."
+"Hvis det ikke er installeret, skal du installere den korrekte "
+"operativsystem-lokalisation. Du kan læse mere i Wiki'en."
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:134
 #: app/modules/web/themes/material-blue/views/config/info.inc:144
@@ -6171,7 +6128,6 @@ msgid "Encrypted Session"
 msgstr "Krypteret session"
 
 #: app/modules/web/themes/material-blue/views/config/info.inc:139
-#, fuzzy
 msgid "Tells whether the session data are encrypted in the server side or not"
 msgstr "Angiver hvorvidt sessionsdata er krypterede eller ej"
 
@@ -6212,7 +6168,6 @@ msgid "Server Type"
 msgstr "Servertype"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:98
-#, fuzzy
 msgid "Hostname or IP address of LDAP server."
 msgstr "Hostnavn eller IP-adresse på LDAP serveren"
 
@@ -6229,7 +6184,6 @@ msgid "Bind User"
 msgstr "Bindings-bruger"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:129
-#, fuzzy
 msgid "User to connect to LDAP service."
 msgstr "Brugeren der anvendes til at forbinde til LDAP-tjenesten."
 
@@ -6238,7 +6192,6 @@ msgid "Bind Password"
 msgstr "Bind-kodeord"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:159
-#, fuzzy
 msgid "LDAP connection user's password"
 msgstr "LDAP forbindelses-brugers kodeord"
 
@@ -6256,12 +6209,10 @@ msgid "Search base"
 msgstr "Søgebase"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:190
-#, fuzzy
 msgid "LDAP base to perform the LDAP users search."
 msgstr "Det basis i LDAP hvorfra søgninger vil udgå."
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:220
-#, fuzzy
 msgid "LDAP group which user must belong to for granting to log in."
 msgstr "LDAP-gruppen som brugeren skal tilhøre for at måtte logge ind."
 
@@ -6270,7 +6221,6 @@ msgid "This group needs to be placed in the LDAP search base."
 msgstr "Denne gruppe skal findes i LDAP Søgebasen"
 
 #: app/modules/web/themes/material-blue/views/config/ldap.inc:253
-#, fuzzy
 msgid "Sets the default users group for newly created LDAP users"
 msgstr "Indstil standard-brugergruppen for nyoprettede LDAP-brugere"
 
@@ -6415,7 +6365,6 @@ msgid "DokuWiki base URL"
 msgstr "DokuWiki basis URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki-dokuwiki.inc:121
-#, fuzzy
 msgid "User for connecting to the DokuWiki API."
 msgstr "Bruger der anvendes til at forbinde til DokuWiki API"
 
@@ -6443,12 +6392,10 @@ msgid "Wiki search URL"
 msgstr "Wiki søge-URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:49
-#, fuzzy
 msgid "URL that Wiki uses for making an entry searching."
 msgstr "Den URL som wikien anvender til søgning"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:53
-#, fuzzy
 msgid "The client's name is used as parameter."
 msgstr "Klientnavnet anvendes som parameter"
 
@@ -6458,14 +6405,12 @@ msgid "Wiki page URL"
 msgstr "Wiki URL"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:82
-#, fuzzy
 msgid "URL that Wiki uses for accessing to the entry details."
 msgstr "Den URL som wikien anvender til adgang til sidedetaljer"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:86
-#, fuzzy
 msgid "Account's name is used as parameter of Wiki search variable."
-msgstr "Kontonavnet anvendes som en en wiki-søgeparameter"
+msgstr "Kontonavnet anvendes som en wiki-søgeparameter"
 
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:110
 #: app/modules/web/themes/material-blue/views/config/wiki.inc:124
@@ -6513,7 +6458,6 @@ msgid "DB access user"
 msgstr "Databasebruger"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:87
-#, fuzzy
 msgid "An user with MySQL admin rights"
 msgstr "En bruger med MySQL administratorrettigheder"
 
@@ -6531,7 +6475,6 @@ msgid "sysPass database server"
 msgstr "sysPass databaseserver"
 
 #: app/modules/web/themes/material-blue/views/install/index.inc:129
-#, fuzzy
 msgid "Server name to install sysPass database"
 msgstr "Navnet på serveren hvor sysPass-databasen skal installeres"
 
@@ -6601,7 +6544,6 @@ msgid "Help Text"
 msgstr "Hjælpetekst"
 
 #: app/modules/web/themes/material-blue/views/itemshow/custom_field.inc:69
-#, fuzzy
 msgid "Field's help"
 msgstr "Hjælp til felter"
 
@@ -6637,7 +6579,6 @@ msgstr "Inkludér bogstaver"
 
 #: app/modules/web/themes/material-blue/views/itemshow/item_preset-password.inc:112
 #: app/resources/strings.js.inc:63
-#, fuzzy
 msgid "Include Symbols"
 msgstr "Inkluder specialtegn"
 
@@ -6786,7 +6727,6 @@ msgid "Management"
 msgstr "Administration"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:37
-#, fuzzy
 msgid "Create new account"
 msgstr "Tilføj ny konto"
 
@@ -6869,7 +6809,6 @@ msgid "Tags management"
 msgstr "Mærkeadministration"
 
 #: app/modules/web/themes/material-blue/views/itemshow/user_profile.inc:331
-#, fuzzy
 msgid "Customers management"
 msgstr "Klientadministration"
 
@@ -6964,21 +6903,18 @@ msgid "Security Code"
 msgstr "Sikkerhedskode"
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:37
-#, fuzzy
-msgid ""
-"This code is set in sysPass config file within the tag name \"upgradekey\""
+msgid "This code is set in sysPass config file within the tag name \"upgradekey\""
 msgstr "Denne kode findes i sysPass config-filen, markeret som \"upgradekey\""
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:47
 msgid ""
-"Some orphaned items have been found. Please, modify those items or enter the "
-"default IDs for them."
+"Some orphaned items have been found. Please, modify those items or enter the"
+" default IDs for them."
 msgstr ""
 "Visse forældreløse emner er fundet. Tilret dem venligst eller indtast et "
 "standard-ID for dem."
 
 #: app/modules/web/themes/material-blue/views/main/upgrade.inc:49
-#, fuzzy
 msgid "If items IDs are not set, they will be created."
 msgstr "Hvis elementernes ID ikke er angivet, vil de blive genereret."
 
@@ -7094,7 +7030,6 @@ msgid "Sort search results by views"
 msgstr "Sortér søgeresultater efter antal visninger"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:109
-#, fuzzy
 msgid "Sorts accounts search results by the number of account's views"
 msgstr "Sortér konti efter antal kontovisninger"
 
@@ -7111,7 +7046,6 @@ msgid "Show Hidden Actions"
 msgstr "Vis skjulte handlinger"
 
 #: app/modules/web/themes/material-blue/views/usersettings/general.inc:143
-#, fuzzy
 msgid "Always display hidden actions on the accounts search page."
 msgstr "Viser altid de skjulte handlinger på konto-søgesiden."
 
@@ -7222,7 +7156,6 @@ msgid "MIME type not allowed"
 msgstr "MIME-type ikke tilladt"
 
 #: app/resources/strings.js.inc:46
-#, fuzzy
 msgid "Clear the event log out?"
 msgstr "Ryd hændelsesloggen?"
 
@@ -7263,7 +7196,6 @@ msgid "Cancel"
 msgstr "Fortryd"
 
 #: app/resources/strings.js.inc:70
-#, fuzzy
 msgid "Password Copied into Clipboard"
 msgstr "Kodeord kopieret til udklipsholder"
 
@@ -7285,7 +7217,8 @@ msgstr "Nu"
 
 #: app/resources/strings.js.inc:82
 msgid ""
-"This process will import the detected LDAP users. Would you like to continue?"
+"This process will import the detected LDAP users. Would you like to "
+"continue?"
 msgstr "Dette vil importere de fundne LDAP-brugere. Vil du fortsætte?"
 
 #: app/resources/strings.js.inc:83
@@ -7293,17 +7226,14 @@ msgid "This action will reset all plugin data. Do you want to continue?"
 msgstr "Dette vil nulstille alle plugin-data. Vil du fortsætte?"
 
 #: app/resources/strings.js.inc:84
-#, fuzzy
 msgid "This process could take some time long. Do you wish to continue?"
 msgstr "Denne proces kan tage noget tid. Vil du fortsætte?"
 
 #: app/resources/strings.js.inc:87
-#, fuzzy
 msgid "Performing task. Please, do not close browser's window/tab."
 msgstr "Proces er i gang, luk venligst ikke browser-vinduet eller fanebladet."
 
 #: app/resources/strings.js.inc:89
-#, fuzzy
 msgid "Cookies disabled. Application won't work properly."
 msgstr "Cookies er slået fra. Applikationen vil ikke fungere korrekt."
 
@@ -7657,90 +7587,16 @@ msgid "Hosting"
 msgstr "Hosting"
 
 msgid "Creates the database and the DB user with the provided credentials"
-msgstr "Opretter databasen og databasebrugeren med de angivne loginoplysninger"
+msgstr ""
+"Opretter databasen og databasebrugeren med de angivne loginoplysninger"
 
-msgid "Uses the provided credentials directly — the database must already exist"
-msgstr "Bruger de angivne loginoplysninger direkte — databasen skal allerede findes"
-
-#~ msgid "\"/config\" directory does not exist."
-#~ msgstr "\"/config\" -mappen findes ikke"
-
-#, fuzzy
-#~ msgid "Unable to write into \"/config\" directory"
-#~ msgstr "Kan ikke skrive i \"/config\" -mappen"
-
-#, fuzzy
-#~ msgid "\"/config\" directory permissions are wrong"
-#~ msgstr "Rettighederne på \"/config\" -mappen er forkerte"
-
-#~ msgid "Master Password %s"
-#~ msgstr "Hoved-kodeord %s"
-
-#~ msgid "Mail service unavailable"
-#~ msgstr "E-mail-tjenesten er ikke tilgængelig"
-
-#~ msgid "Active Directory"
-#~ msgstr "Active Directory"
-
-#~ msgid "Enables Active Directory LDAP connection mode."
-#~ msgstr "Aktiverer Active Directory LDAP-forbindelsestilstand"
-
-#, fuzzy
-#~ msgid "Recipient email address"
-#~ msgstr "Afsenderens E-mail adresse"
-
-#, fuzzy
-#~ msgid "Dysplays a navigation bar on top of the search results."
-#~ msgstr "Viser en navigationsbjælke over søgeresultaterne."
-
-#~ msgid "Color"
-#~ msgstr "Farve"
-
-#~ msgid "Number"
-#~ msgstr "Nummer"
-
-#~ msgid "Phone"
-#~ msgstr "Telefon"
-
-#~ msgid "Text Area"
-#~ msgstr "Tekstfelt"
-
-#~ msgid "Text"
-#~ msgstr "Tekst"
-
-#~ msgid "There aren't any allowed extensions"
-#~ msgstr "Der findes ingen tilladte filtype-angivelser(endelser)"
-
-#~ msgid "Extension: %s"
-#~ msgstr "Udvidelse: %s"
-
-#~ msgid "Maximum size: %s"
-#~ msgstr "Maks. størrelse: %s"
-
-#~ msgid "Please, check the file extension"
-#~ msgstr "Kontroller venligst fil-endelsen"
-
-#~ msgid "Data not loaded"
-#~ msgstr "Data ikke indlæst"
-
-#~ msgid "Extension not allowed"
-#~ msgstr "Fil-endelse er ikke tilladt "
-
-#~ msgid "Allowed file extensions"
-#~ msgstr "Tilladte filendelser"
-
-#~ msgid "Allowed file extensions for uploading."
-#~ msgstr "Tilladte filendelser ved upload"
-
-#~ msgid ""
-#~ "Write the extension and press enter to add. Remember to save the "
-#~ "configuration."
-#~ msgstr ""
-#~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
-#~ "konfigurationen."
+msgid ""
+"Uses the provided credentials directly — the database must already exist"
+msgstr ""
+"Bruger de angivne loginoplysninger direkte — databasen skal allerede findes"
 
 msgid "Passwords match"
-msgstr ""
+msgstr "Kodeordene matcher"
 
 msgid "Welcome"
 msgstr "Velkommen"
@@ -7748,8 +7604,12 @@ msgstr "Velkommen"
 msgid "Next"
 msgstr "Næste"
 
-msgid "Welcome to %s! This wizard will guide you through the installation in a few simple steps."
-msgstr "Velkommen til %s! Denne guide fører dig gennem installationen i nogle få enkle trin."
+msgid ""
+"Welcome to %s! This wizard will guide you through the installation in a few "
+"simple steps."
+msgstr ""
+"Velkommen til %s! Denne guide fører dig gennem installationen i nogle få "
+"enkle trin."
 
 msgid "Before starting, you will need the following information:"
 msgstr "Før du begynder, skal du bruge følgende oplysninger:"
@@ -7766,8 +7626,12 @@ msgstr "Navnet på sysPass-databasen"
 msgid "All set? Press Next to begin."
 msgstr "Klar? Tryk på Næste for at begynde."
 
-msgid "The language has been detected from your browser. Changing it will reload this page."
-msgstr "Sproget er registreret ud fra din browser. Ændres det, genindlæses denne side."
+msgid ""
+"The language has been detected from your browser. Changing it will reload "
+"this page."
+msgstr ""
+"Sproget er registreret ud fra din browser. Ændres det, genindlæses denne "
+"side."
 
 msgid "The Master Password is used to encrypt the accounts passwords."
 msgstr "Hoved-kodeordet bruges til at kryptere kontienes kodeord."
@@ -7855,3 +7719,590 @@ msgstr "Refereret post ikke fundet"
 
 msgid "The Master Password and its confirmation must be the same"
 msgstr "Masteradgangskoden og dens bekræftelse skal være ens"
+
+msgid "%s cannot be blank"
+msgstr "%s må ikke være tomt"
+
+msgid "'/config' directory does not exist."
+msgstr "Mappen '/config' eksisterer ikke."
+
+msgid "'/config' directory permissions are wrong"
+msgstr "Tilladelserne til mappen '/config' er forkerte"
+
+msgid "A client is needed"
+msgstr "En klient er påkrævet"
+
+msgid "A target is needed"
+msgstr "Et mål er påkrævet"
+
+msgid "API not initialized"
+msgstr "API ikke initialiseret"
+
+msgid "Advanced Settings"
+msgstr "Avancerede indstillinger"
+
+msgid "App"
+msgstr "App"
+
+msgid "Application"
+msgstr "Applikation"
+
+msgid "Ask for admin password"
+msgstr "Anmod om admin-kodeord"
+
+msgid "Ask for current master password"
+msgstr "Anmod om nuværende hoved-kodeord"
+
+msgid "Ask for database password"
+msgstr "Anmod om database-kodeord"
+
+msgid "Ask for language"
+msgstr "Anmod om sprog"
+
+msgid "Ask for master password"
+msgstr "Anmod om hoved-kodeord"
+
+msgid "Ask for path"
+msgstr "Anmod om sti"
+
+msgid "Authentication already initialized"
+msgstr "Autentifikation allerede initialiseret"
+
+msgid "Authoritative provider didn't return the user's data"
+msgstr "Den autoritative udbyder returnerede ikke brugerens data"
+
+msgid "Authorization already exist"
+msgstr "Autorisation eksisterer allerede"
+
+msgid "Authorization displayed"
+msgstr "Autorisation vist"
+
+msgid "Authorization removed"
+msgstr "Autorisation fjernet"
+
+msgid "Available"
+msgstr "Tilgængelig"
+
+msgid "Backup actions"
+msgstr "Backup-handlinger"
+
+msgid "Backup path set to: %s"
+msgstr "Backup-sti angivet til: %s"
+
+msgid "Clear Tracks"
+msgstr "Ryd spor"
+
+msgid "Config"
+msgstr "Konfiguration"
+
+msgid "Couldn't deserialize the data"
+msgstr "Kunne ikke deserialisere data"
+
+msgid "Custom field added"
+msgstr "Brugerdefineret felt tilføjet"
+
+msgid "Custom field displayed"
+msgstr "Brugerdefineret felt vist"
+
+msgid "Custom field removed"
+msgstr "Brugerdefineret felt fjernet"
+
+msgid "Custom field updated"
+msgstr "Brugerdefineret felt opdateret"
+
+msgid "DB"
+msgstr "DB"
+
+msgid "Data"
+msgstr "Data"
+
+msgid "Database name contains invalid characters"
+msgstr "Databasenavnet indeholder ugyldige tegn"
+
+msgid "Downloads"
+msgstr "Downloads"
+
+msgid "Either class does not exist or file data cannot unserialized into: %s"
+msgstr "Klassen eksisterer ikke eller fildata kan ikke deserialiseres til: %s"
+
+msgid "Error executing the query"
+msgstr "Fejl under udførelse af forespørgsel"
+
+msgid "Error loading XML data"
+msgstr "Fejl under indlæsning af XML-data"
+
+msgid "Error while adding the event log"
+msgstr "Fejl under tilføjelse af hændelseslogpost"
+
+msgid "Error while applying the update"
+msgstr "Fejl under anvendelse af opdatering"
+
+msgid "Error while clearing the tracks out"
+msgstr "Fejl under rydning af spor"
+
+msgid "Error while deleting the permission"
+msgstr "Fejl under sletning af tilladelse"
+
+msgid "Error while deleting the tags"
+msgstr "Fejl under sletning af mærker"
+
+msgid "Error while reading the CSV file file"
+msgstr "Fejl under læsning af CSV-filen"
+
+msgid "Error while renewing the link"
+msgstr "Fejl under fornyelse af linket"
+
+msgid "Expiry Date"
+msgstr "Udløbsdato"
+
+msgid "File displayed"
+msgstr "Fil vist"
+
+msgid "File not found: %s"
+msgstr "Fil ikke fundet: %s"
+
+msgid "File removed"
+msgstr "Fil fjernet"
+
+msgid "File uploaded"
+msgstr "Fil uploadet"
+
+msgid "Force sysPass installation"
+msgstr "Gennemtving sysPass-installation"
+
+msgid "Get custom fields for the account within the response"
+msgstr "Hent brugerdefinerede felter for kontoen i svaret"
+
+msgid "Get custom fields for the category within the response"
+msgstr "Hent brugerdefinerede felter for kategorien i svaret"
+
+msgid "Get custom fields for the client within the response"
+msgstr "Hent brugerdefinerede felter for klienten i svaret"
+
+msgid "Group Attributes"
+msgstr "Gruppeattributter"
+
+msgid "Group Filter"
+msgstr "Gruppefilter"
+
+msgid "Group data not set"
+msgstr "Gruppedata ikke angivet"
+
+msgid "Insecure connection"
+msgstr "Usikker forbindelse"
+
+msgid "Install sysPass"
+msgstr "Installer sysPass"
+
+msgid "Install sysPass?"
+msgstr "Installere sysPass?"
+
+msgid "Installation aborted"
+msgstr "Installation afbrudt"
+
+msgid "Invalid class for loaded file data"
+msgstr "Ugyldig klasse for indlæst fildata"
+
+msgid "Invalid data's type. Expected: %s"
+msgstr "Ugyldigt datatype. Forventet: %s"
+
+msgid "Invalid query type for count"
+msgstr "Ugyldig forespørgselstype for optælling"
+
+msgid "Invalid route"
+msgstr "Ugyldig rute"
+
+msgid "Invalid target class"
+msgstr "Ugyldig målklasse"
+
+msgid "LDAP connection error"
+msgstr "LDAP-forbindelsesfejl"
+
+msgid "LDAP filter for group objects lookup."
+msgstr "LDAP-filter til opslag af gruppeobjekter."
+
+msgid "LDAP filter for user objects lookup."
+msgstr "LDAP-filter til opslag af brugerobjekter."
+
+msgid "Log"
+msgstr "Log"
+
+msgid "Logs"
+msgstr "Logs"
+
+msgid "Maintenance"
+msgstr "Vedligeholdelse"
+
+msgid "Master password loaded"
+msgstr "Hoved-kodeord indlæst"
+
+msgid "Master password to encrypt the data"
+msgstr "Hoved-kodeord til kryptering af data"
+
+msgid "Master password update aborted"
+msgstr "Opdatering af hoved-kodeord afbrudt"
+
+msgid "Missing Proxy parameters"
+msgstr "Manglende proxy-parametre"
+
+msgid "No accounts updated, only hash"
+msgstr "Ingen konti opdateret, kun hash"
+
+msgid "No backup available"
+msgstr "Ingen backup tilgængelig"
+
+msgid "No items selected"
+msgstr "Ingen elementer valgt"
+
+msgid "No lines read from the file"
+msgstr "Ingen linjer læst fra filen"
+
+msgid "No plugins loaded"
+msgstr "Ingen plugins indlæst"
+
+msgid "Non authoritative auth"
+msgstr "Ikke-autoritativ autentifikation"
+
+msgid "Notification added"
+msgstr "Notifikation tilføjet"
+
+msgid "Notification displayed"
+msgstr "Notifikation vist"
+
+msgid "Notification marked as read"
+msgstr "Notifikation markeret som læst"
+
+msgid "Notification removed"
+msgstr "Notifikation fjernet"
+
+msgid "Only letters, digits, $, _ and - are allowed in the database name"
+msgstr "Kun bogstaver, cifre, $, _ og - er tilladt i databasenavnet"
+
+msgid "Path is needed"
+msgstr "En sti er påkrævet"
+
+msgid "Path where to store the backup files"
+msgstr "Sti til lagring af backup-filer"
+
+msgid "Please enter the path where to store the backup files"
+msgstr "Angiv stien til lagring af backup-filer"
+
+msgid "Please provide database admin password"
+msgstr "Angiv database-admin-kodeord"
+
+msgid "Please provide sysPass admin's password"
+msgstr "Angiv sysPass admin-kodeord"
+
+msgid "Please provide sysPass admin's password again"
+msgstr "Angiv sysPass admin-kodeord igen"
+
+msgid "Please provide sysPass master password"
+msgstr "Angiv sysPass hoved-kodeord"
+
+msgid "Please provide sysPass master password again"
+msgstr "Angiv sysPass hoved-kodeord igen"
+
+msgid "Please provide the current master password"
+msgstr "Angiv det nuværende hoved-kodeord"
+
+msgid "Please provide the current master password again"
+msgstr "Angiv det nuværende hoved-kodeord igen"
+
+msgid "Please provide the new master password"
+msgstr "Angiv det nye hoved-kodeord"
+
+msgid "Please provide the new master password again"
+msgstr "Angiv det nye hoved-kodeord igen"
+
+msgid "Please run setup method before"
+msgstr "Kør venligst setup-metoden først"
+
+msgid "Please, check the directory permissions"
+msgstr "Kontroller venligst mappetilladelserne"
+
+msgid "Please, press any key to continue"
+msgstr "Tryk på en vilkårlig tast for at fortsætte"
+
+msgid "Please, restart any browser session to update it"
+msgstr "Genstart alle browsersessioner for at opdatere"
+
+msgid "Please, restart the session to update it"
+msgstr "Genstart sessionen for at opdatere"
+
+msgid "Plugin already registered"
+msgstr "Plugin allerede registreret"
+
+msgid "Plugin not loaded (disabled)"
+msgstr "Plugin ikke indlæst (deaktiveret)"
+
+msgid "Plugin not registered"
+msgstr "Plugin ikke registreret"
+
+msgid "Plugin not registered yet"
+msgstr "Plugin endnu ikke registreret"
+
+msgid "Plugin version compatible (%s)"
+msgstr "Plugin-version kompatibel (%s)"
+
+msgid "Preset not valid for this validator"
+msgstr "Forudindstilling ikke gyldig for denne validator"
+
+msgid "Profile data not set"
+msgstr "Profildata ikke angivet"
+
+msgid "Profile displayed"
+msgstr "Profil vist"
+
+msgid "Profile removed"
+msgstr "Profil fjernet"
+
+msgid "Public link added"
+msgstr "Offentligt link tilføjet"
+
+msgid "Public link displayed"
+msgstr "Offentligt link vist"
+
+msgid "Public link hash not set"
+msgstr "Hash for offentligt link ikke angivet"
+
+msgid "Public link refreshed"
+msgstr "Offentligt link fornyet"
+
+msgid "Public link removed"
+msgstr "Offentligt link fjernet"
+
+msgid "Search for accounts name by regular expression"
+msgstr "Søg efter kontonavn med regulært udtryk"
+
+msgid "Secure connection"
+msgstr "Sikker forbindelse"
+
+msgid ""
+"Sets the global app language. You can set a per user language on preferences"
+msgstr ""
+"Angiver det globale applikationssprog. Du kan angive et sprog pr. bruger "
+"under brugerindstillinger"
+
+msgid "Skip asking to confirm the installation"
+msgstr "Spring bekræftelse af installation over"
+
+msgid "Skip asking to confirm the update"
+msgstr "Spring bekræftelse af opdatering over"
+
+msgid "The admin password and its confirmation must be the same"
+msgstr "Admin-kodeord og dets bekræftelse skal være identiske"
+
+msgid "The command is already running in another process"
+msgstr "Kommandoen kører allerede i en anden proces"
+
+msgid "The current master password"
+msgstr "Det nuværende hoved-kodeord"
+
+msgid "The file was exported with an old sysPass version (<= 2.10)."
+msgstr "Filen blev eksporteret med en ældre version af sysPass (<= 2.10)."
+
+msgid "The new master password to encrypt the data"
+msgstr "Det nye hoved-kodeord til kryptering af data"
+
+msgid "There are no accounts for processing"
+msgstr "Der er ingen konti til behandling"
+
+msgid "This command installs sysPass"
+msgstr "Denne kommando installerer sysPass"
+
+msgid ""
+"This command performs a file based backup from sysPass database and "
+"application"
+msgstr ""
+"Denne kommando udfører en filbaseret backup af sysPass-databasen og "
+"applikationen"
+
+msgid ""
+"This command updates sysPass master password for all the encrypted data"
+msgstr ""
+"Denne kommando opdaterer sysPass hoved-kodeord for alle krypterede data"
+
+msgid "This is a critical process, please do not cancel/close this CLI"
+msgstr "Dette er en kritisk proces, luk venligst ikke CLI'en"
+
+msgid "Token's password when custom fields are retrieved"
+msgstr "Token-kodeord ved hentning af brugerdefinerede felter"
+
+msgid "Unable to create directory (\"%s\")"
+msgstr "Kan ikke oprette mappen (\"%s\")"
+
+msgid "Unable to create image"
+msgstr "Kan ikke oprette billede"
+
+msgid "Unable to create node"
+msgstr "Kan ikke oprette node"
+
+msgid "Unable to import account"
+msgstr "Kan ikke importere konto"
+
+msgid "Unable to import categories"
+msgstr "Kan ikke importere kategorier"
+
+msgid "Unable to import clients"
+msgstr "Kan ikke importere klienter"
+
+msgid "Unable to import tags"
+msgstr "Kan ikke importere mærker"
+
+msgid "Unable to open directory (\"%s\")"
+msgstr "Kan ikke åbne mappen (\"%s\")"
+
+msgid "Unable to process event for user"
+msgstr "Kan ikke behandle hændelse for bruger"
+
+msgid "Unable to process event for user group"
+msgstr "Kan ikke behandle hændelse for brugergruppe"
+
+msgid "Unable to process event for user profile"
+msgstr "Kan ikke behandle hændelse for brugerprofil"
+
+msgid "Unable to release a lock (%s)"
+msgstr "Kan ikke frigive lås (%s)"
+
+msgid "Unable to retrieve the configuration"
+msgstr "Kan ikke hente konfiguration"
+
+msgid "Unable to set permissions for file (%s)"
+msgstr "Kan ikke angive tilladelser for filen (%s)"
+
+msgid "Unable to write into '/config' directory"
+msgstr "Kan ikke skrive til mappen '/config'"
+
+msgid "Unknown magic method"
+msgstr "Ukendt magic-metode"
+
+msgid "Unlock Track"
+msgstr "Lås spor op"
+
+msgid "Update master password? (This process cannot be undone)"
+msgstr "Opdatere hoved-kodeord? (Denne proces kan ikke fortrydes)"
+
+msgid "Update sysPass master password"
+msgstr "Opdater sysPass hoved-kodeord"
+
+msgid "Updates"
+msgstr "Opdateringer"
+
+msgid "User Attributes"
+msgstr "Brugerattributter"
+
+msgid "User Filter"
+msgstr "Brugerfilter"
+
+msgid "User data not set"
+msgstr "Brugerdata ikke angivet"
+
+msgid "User displayed"
+msgstr "Bruger vist"
+
+msgid "User group Id"
+msgstr "Brugergruppe-ID"
+
+msgid "User group description"
+msgstr "Brugergruppebeskrivelse"
+
+msgid "User group name"
+msgstr "Brugergruppens navn"
+
+msgid "User removed"
+msgstr "Bruger fjernet"
+
+msgid "Users Id's to add"
+msgstr "Bruger-ID'er der skal tilføjes"
+
+msgid "Value cannot be blank"
+msgstr "Værdien må ikke være tom"
+
+msgid "Web Server"
+msgstr "Webserver"
+
+msgid ""
+"sysPass is already installed. Use '--forceInstall' to install it again."
+msgstr ""
+"sysPass er allerede installeret. Brug '--forceInstall' for at installere det"
+" igen."
+
+msgid "sysPass is not installed"
+msgstr "sysPass er ikke installeret"
+
+#~ msgid "\"/config\" directory does not exist."
+#~ msgstr "\"/config\" -mappen findes ikke"
+
+#, fuzzy
+#~ msgid "Unable to write into \"/config\" directory"
+#~ msgstr "Kan ikke skrive i \"/config\" -mappen"
+
+#, fuzzy
+#~ msgid "\"/config\" directory permissions are wrong"
+#~ msgstr "Rettighederne på \"/config\" -mappen er forkerte"
+
+#~ msgid "Master Password %s"
+#~ msgstr "Hoved-kodeord %s"
+
+#~ msgid "Mail service unavailable"
+#~ msgstr "E-mail-tjenesten er ikke tilgængelig"
+
+#~ msgid "Active Directory"
+#~ msgstr "Active Directory"
+
+#~ msgid "Enables Active Directory LDAP connection mode."
+#~ msgstr "Aktiverer Active Directory LDAP-forbindelsestilstand"
+
+#, fuzzy
+#~ msgid "Recipient email address"
+#~ msgstr "Afsenderens E-mail adresse"
+
+#, fuzzy
+#~ msgid "Dysplays a navigation bar on top of the search results."
+#~ msgstr "Viser en navigationsbjælke over søgeresultaterne."
+
+#~ msgid "Color"
+#~ msgstr "Farve"
+
+#~ msgid "Number"
+#~ msgstr "Nummer"
+
+#~ msgid "Phone"
+#~ msgstr "Telefon"
+
+#~ msgid "Text Area"
+#~ msgstr "Tekstfelt"
+
+#~ msgid "Text"
+#~ msgstr "Tekst"
+
+#~ msgid "There aren't any allowed extensions"
+#~ msgstr "Der findes ingen tilladte filtype-angivelser(endelser)"
+
+#~ msgid "Extension: %s"
+#~ msgstr "Udvidelse: %s"
+
+#~ msgid "Maximum size: %s"
+#~ msgstr "Maks. størrelse: %s"
+
+#~ msgid "Please, check the file extension"
+#~ msgstr "Kontroller venligst fil-endelsen"
+
+#~ msgid "Data not loaded"
+#~ msgstr "Data ikke indlæst"
+
+#~ msgid "Extension not allowed"
+#~ msgstr "Fil-endelse er ikke tilladt "
+
+#~ msgid "Allowed file extensions"
+#~ msgstr "Tilladte filendelser"
+
+#~ msgid "Allowed file extensions for uploading."
+#~ msgstr "Tilladte filendelser ved upload"
+
+#~ msgid ""
+#~ "Write the extension and press enter to add. Remember to save the "
+#~ "configuration."
+#~ msgstr ""
+#~ "Indtast filendelsen og tryk [Enter] for at tilføje. Husk at gemme "
+#~ "konfigurationen."
