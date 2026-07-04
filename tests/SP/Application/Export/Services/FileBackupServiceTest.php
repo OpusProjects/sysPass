@@ -37,7 +37,6 @@ use SP\Core\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Domain\Export\Ports\BackupFileHelperService;
 use SP\Application\Export\Ports\BackupHandlersFactory;
 use SP\Application\Export\Services\BackupFile;
 use SP\Domain\Export\Dtos\BackupHandlers;
@@ -59,7 +58,6 @@ use stdClass;
 class FileBackupServiceTest extends UnitaryTestCase
 {
     private BackupFile                         $fileBackupService;
-    private BackupFileHelperService|MockObject $backupFiles;
     private DatabaseInterface|MockObject       $database;
     private MockObject|FileHandlerInterface    $dbFileHandler;
     private ArchiveHandlerInterface|MockObject $dbArchiveHandler;
@@ -195,7 +193,6 @@ class FileBackupServiceTest extends UnitaryTestCase
         parent::setUp();
 
         $this->database = $this->createMock(DatabaseInterface::class);
-        $this->backupFiles = $this->createStub(BackupFileHelperService::class);
         $this->dbFileHandler = $this->createMock(FileHandlerInterface::class);
         $this->dbArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
         $this->appArchiveHandler = $this->createMock(ArchiveHandlerInterface::class);
