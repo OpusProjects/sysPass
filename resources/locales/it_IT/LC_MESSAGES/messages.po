@@ -7747,3 +7747,12 @@ msgstr "Directory di runtime scrivibili"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode abilitato"
+
+msgid "Duplicate entry"
+msgstr "Voce duplicata"
+
+msgid "The record is in use"
+msgstr "Il record è in uso"
+
+msgid "Referenced record not found"
+msgstr "Record di riferimento non trovato"

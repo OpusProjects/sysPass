@@ -7358,3 +7358,12 @@ msgstr "Runtime directories writable"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode enabled"
+
+msgid "Duplicate entry"
+msgstr "Duplicate entry"
+
+msgid "The record is in use"
+msgstr "The record is in use"
+
+msgid "Referenced record not found"
+msgstr "Referenced record not found"

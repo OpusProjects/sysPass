@@ -7844,3 +7844,12 @@ msgstr "Runtime-mapper skrivbare"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode aktiveret"
+
+msgid "Duplicate entry"
+msgstr "Dublet post"
+
+msgid "The record is in use"
+msgstr "Posten er i brug"
+
+msgid "Referenced record not found"
+msgstr "Refereret post ikke fundet"

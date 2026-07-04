@@ -7397,3 +7397,12 @@ msgstr "Diretórios de tempo de execução graváveis"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode ativado"
+
+msgid "Duplicate entry"
+msgstr "Entrada duplicada"
+
+msgid "The record is in use"
+msgstr "O registro está em uso"
+
+msgid "Referenced record not found"
+msgstr "Registro referenciado não encontrado"

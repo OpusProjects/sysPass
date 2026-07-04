@@ -8041,3 +8041,12 @@ msgstr "Futásidejű könyvtárak írhatók"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode engedélyezve"
+
+msgid "Duplicate entry"
+msgstr "Duplikált bejegyzés"
+
+msgid "The record is in use"
+msgstr "A rekord használatban van"
+
+msgid "Referenced record not found"
+msgstr "A hivatkozott rekord nem található"

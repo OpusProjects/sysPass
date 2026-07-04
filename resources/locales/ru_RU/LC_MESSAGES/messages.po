@@ -7992,3 +7992,12 @@ msgstr "Рабочие каталоги доступны для записи"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode включён"
+
+msgid "Duplicate entry"
+msgstr "Дублирующаяся запись"
+
+msgid "The record is in use"
+msgstr "Запись используется"
+
+msgid "Referenced record not found"
+msgstr "Указанная запись не найдена"

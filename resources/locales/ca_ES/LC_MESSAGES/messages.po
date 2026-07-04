@@ -7340,3 +7340,12 @@ msgstr "Directoris d'execució amb permisos d'escriptura"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode activat"
+
+msgid "Duplicate entry"
+msgstr "Entrada duplicada"
+
+msgid "The record is in use"
+msgstr "El registre està en ús"
+
+msgid "Referenced record not found"
+msgstr "No s'ha trobat el registre referenciat"
