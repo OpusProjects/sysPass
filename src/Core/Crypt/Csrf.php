@@ -65,7 +65,7 @@ final readonly class Csrf implements CsrfHandler
             if (empty($token)
                 || !Hash::checkMessage($this->getKey(), $this->configData->getPasswordSalt() ?? '', $token)
             ) {
-                logger(sprintf('Invalid CSRF token: %s', $token), 'ERROR');
+                logger('Invalid CSRF token', 'ERROR');
 
                 return false;
             }
@@ -96,7 +96,7 @@ final readonly class Csrf implements CsrfHandler
 
             $this->context->setCSRF($key);
 
-            logger(sprintf('CSRF key (set): %s', $this->context->getCSRF() ?? ''));
+            logger('CSRF key set');
         }
     }
 }

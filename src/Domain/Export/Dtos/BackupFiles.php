@@ -31,15 +31,13 @@ namespace SP\Domain\Export\Dtos;
  */
 final readonly class BackupFiles
 {
-    private const        BACKUP_PREFIX = 'sysPassBackup';
-
     public function __construct(private BackupFile $appBackupFile, private BackupFile $dbBackupFile)
     {
     }
 
     public static function buildHash(): string
     {
-        return sha1(uniqid(self::BACKUP_PREFIX, true));
+        return bin2hex(random_bytes(20));
     }
 
     public function getAppBackupFile(): BackupFile

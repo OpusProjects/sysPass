@@ -57,7 +57,6 @@ final class BackupFile extends Service implements BackupFileService
 {
     public const         BACKUP_INCLUDE_REGEX = /** @lang RegExp */
         '#^(?:[A-Z]:)?(?:/(?!(\.git|backup|cache|temp|vendor|tests))[^/]+)+/[^/]+\.\w+$#Di';
-    private const        BACKUP_PREFIX        = 'sysPassBackup';
 
     public function __construct(
         Application                            $application,
@@ -274,6 +273,6 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function buildHash(): string
     {
-        return sha1(uniqid(self::BACKUP_PREFIX, true));
+        return bin2hex(random_bytes(20));
     }
 }
