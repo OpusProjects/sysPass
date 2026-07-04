@@ -13,6 +13,7 @@ const dest = join(root, 'public', 'vendor', 'js');
 // target filename in public/vendor/js  ->  source path within node_modules
 // (extended as more libraries are brought under npm management)
 const MAP = {
+  'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
   'moment.min.js': 'moment/min/moment-with-locales.min.js',
   // with-data 10-year rolling range — matches the data-bearing build we shipped
