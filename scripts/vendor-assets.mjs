@@ -16,6 +16,7 @@ const MAP = {
   'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
   'jsencrypt.min.js': 'jsencrypt/bin/jsencrypt.min.js',
+  'selectize.min.js': '@selectize/selectize/dist/js/selectize.min.js',
   'moment.min.js': 'moment/min/moment-with-locales.min.js',
   // with-data 10-year rolling range — matches the data-bearing build we shipped
   'moment-timezone.min.js': 'moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js',
@@ -27,7 +28,8 @@ const MAP = {
 
 for (const [target, src] of Object.entries(MAP)) {
   copyFileSync(join(nm, src), join(dest, target));
-  const pkg = src.split('/')[0];
+  const parts = src.split('/');
+  const pkg = parts[0].startsWith('@') ? `${parts[0]}/${parts[1]}` : parts[0];
   const ver = JSON.parse(readFileSync(join(nm, pkg, 'package.json'), 'utf8')).version;
   console.log(`vendored ${pkg}@${ver} -> public/vendor/js/${target}`);
 }
