@@ -25,233 +25,305 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api;
 
-use Defuse\Crypto\Exception\CryptoException;
-use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use DI\ContainerBuilder;
-use DI\DependencyException;
-use DI\NotFoundException;
 use Exception;
-use JsonException;
-use SP\Core\Bootstrap\Router;
-use SP\Domain\Http\Ports\ResponseService;
-use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use RuntimeException;
-use SP\Application\Api\Ports\ApiRequestService;
-use SP\Application\Api\Services\RestApiRequest;
-use SP\Domain\Auth\Models\AuthToken;
-use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Application\Config\Ports\ConfigFileService;
+use SP\Application\User\Ports\UserService;
+use SP\Core\Bootstrap\Path;
+use SP\Core\Definitions\CoreDefinitions;
+use SP\Core\Definitions\DomainDefinitions;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
+use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Core\Exceptions\ConstraintException;
-use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Domain\Http\Ports\ResponseService;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
+use SP\Infrastructure\Adapter\In\Api\Bootstrap;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\MysqlHandler;
+use SP\Infrastructure\File\FileSystem;
 use SP\Tests\DatabaseTrait;
 use stdClass;
+use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 
-use function DI\create;
-
-if (!defined('APP_MODULE')) {
-    define('APP_MODULE', 'api');
-}
+use function SP\Tests\getDbHandler;
+use function SP\Tests\getResource;
 
 /**
- * Class ApiTestCase
+ * Base class for the REST API controller tests.
+ *
+ * Builds the REAL container (like CliTestCase) against a REAL database seeded
+ * with the fixtures, and drives the real REST Bootstrap dispatch — exactly what
+ * public/api.php does. Each call authenticates with a real, crypto-backed auth
+ * token created through AuthTokenService.
+ *
+ * The REST envelope the product emits: success => HTTP 200/201 with
+ * {data, message?, count?, itemId?}; error => 4xx with {error:{message, detail?}}.
  */
 abstract class ApiTestCase extends TestCase
 {
-    private const AUTH_TOKEN_PASS = 123456;
-
     use DatabaseTrait;
 
-    private const METHOD_ACTION_MAP = [
-        AclActionsInterface::ACCOUNT_CREATE    => 'account/create',
-        AclActionsInterface::ACCOUNT_VIEW      => 'account/view',
-        AclActionsInterface::ACCOUNT_VIEW_PASS => 'account/viewPass',
-        AclActionsInterface::ACCOUNT_EDIT_PASS => 'account/editPass',
-        AclActionsInterface::ACCOUNT_EDIT      => 'account/edit',
-        AclActionsInterface::ACCOUNT_SEARCH    => 'account/search',
-        AclActionsInterface::ACCOUNT_DELETE    => 'account/delete',
-        AclActionsInterface::CATEGORY_VIEW     => 'category/view',
-        AclActionsInterface::CATEGORY_CREATE   => 'category/create',
-        AclActionsInterface::CATEGORY_EDIT     => 'category/edit',
-        AclActionsInterface::CATEGORY_DELETE   => 'category/delete',
-        AclActionsInterface::CATEGORY_SEARCH   => 'category/search',
-        AclActionsInterface::CLIENT_VIEW => 'clientService/view',
-        AclActionsInterface::CLIENT_CREATE => 'clientService/create',
-        AclActionsInterface::CLIENT_EDIT => 'clientService/edit',
-        AclActionsInterface::CLIENT_DELETE => 'clientService/delete',
-        AclActionsInterface::CLIENT_SEARCH => 'clientService/search',
-        AclActionsInterface::TAG_VIEW          => 'tag/view',
-        AclActionsInterface::TAG_CREATE        => 'tag/create',
-        AclActionsInterface::TAG_EDIT          => 'tag/edit',
-        AclActionsInterface::TAG_DELETE        => 'tag/delete',
-        AclActionsInterface::TAG_SEARCH        => 'tag/search',
-        AclActionsInterface::GROUP_VIEW        => 'userGroup/view',
-        AclActionsInterface::GROUP_CREATE      => 'userGroup/create',
-        AclActionsInterface::GROUP_EDIT        => 'userGroup/edit',
-        AclActionsInterface::GROUP_DELETE      => 'userGroup/delete',
-        AclActionsInterface::GROUP_SEARCH      => 'userGroup/search',
-        AclActionsInterface::CONFIG_BACKUP_RUN => 'config/backup',
-        AclActionsInterface::CONFIG_EXPORT_RUN => 'config/export',
+    /** The token password. */
+    protected const AUTH_TOKEN_PASS = '123456';
+    /** The master password stored in the fixture DB. */
+    private const MASTER_PASS = '12345678900';
+    private const ADMIN_USER_ID = 1;
+
+    /** actionId => [HTTP method, REST path template]. */
+    private const REST_ROUTES = [
+        AclActionsInterface::ACCOUNT_SEARCH    => ['GET', '/api/v1/accounts'],
+        AclActionsInterface::ACCOUNT_CREATE    => ['POST', '/api/v1/accounts'],
+        AclActionsInterface::ACCOUNT_VIEW      => ['GET', '/api/v1/accounts/{id}'],
+        AclActionsInterface::ACCOUNT_EDIT      => ['PUT', '/api/v1/accounts/{id}'],
+        AclActionsInterface::ACCOUNT_DELETE    => ['DELETE', '/api/v1/accounts/{id}'],
+        AclActionsInterface::ACCOUNT_VIEW_PASS => ['POST', '/api/v1/accounts/{id}/password'],
+        AclActionsInterface::ACCOUNT_EDIT_PASS => ['PUT', '/api/v1/accounts/{id}/password'],
+        AclActionsInterface::CATEGORY_SEARCH   => ['GET', '/api/v1/categories'],
+        AclActionsInterface::CATEGORY_CREATE   => ['POST', '/api/v1/categories'],
+        AclActionsInterface::CATEGORY_VIEW     => ['GET', '/api/v1/categories/{id}'],
+        AclActionsInterface::CATEGORY_EDIT     => ['PUT', '/api/v1/categories/{id}'],
+        AclActionsInterface::CATEGORY_DELETE   => ['DELETE', '/api/v1/categories/{id}'],
+        AclActionsInterface::CLIENT_SEARCH     => ['GET', '/api/v1/clients'],
+        AclActionsInterface::CLIENT_CREATE     => ['POST', '/api/v1/clients'],
+        AclActionsInterface::CLIENT_VIEW       => ['GET', '/api/v1/clients/{id}'],
+        AclActionsInterface::CLIENT_EDIT       => ['PUT', '/api/v1/clients/{id}'],
+        AclActionsInterface::CLIENT_DELETE     => ['DELETE', '/api/v1/clients/{id}'],
+        AclActionsInterface::TAG_SEARCH        => ['GET', '/api/v1/tags'],
+        AclActionsInterface::TAG_CREATE        => ['POST', '/api/v1/tags'],
+        AclActionsInterface::TAG_VIEW          => ['GET', '/api/v1/tags/{id}'],
+        AclActionsInterface::TAG_EDIT          => ['PUT', '/api/v1/tags/{id}'],
+        AclActionsInterface::TAG_DELETE        => ['DELETE', '/api/v1/tags/{id}'],
+        AclActionsInterface::GROUP_SEARCH      => ['GET', '/api/v1/user-groups'],
+        AclActionsInterface::GROUP_CREATE      => ['POST', '/api/v1/user-groups'],
+        AclActionsInterface::GROUP_VIEW        => ['GET', '/api/v1/user-groups/{id}'],
+        AclActionsInterface::GROUP_EDIT        => ['PUT', '/api/v1/user-groups/{id}'],
+        AclActionsInterface::GROUP_DELETE      => ['DELETE', '/api/v1/user-groups/{id}'],
+        AclActionsInterface::CONFIG_BACKUP_RUN => ['POST', '/api/v1/config/backup'],
+        AclActionsInterface::CONFIG_EXPORT_RUN => ['POST', '/api/v1/config/export'],
     ];
-    protected static ?ConfigDataInterface $configData = null;
 
-    /**
-     * @throws JsonException
-     */
-    protected static function processJsonResponse(
-        ResponseService $response,
-        bool $exceptionOnError = true
-    ): stdClass {
-        if ($exceptionOnError && $response->getResponse()->getStatusCode() !== 200) {
-            throw new RuntimeException('HTTP ' . $response->getResponse()->getStatusCode());
-        }
-
-        return json_decode(
-            $response->getBody(),
-            false,
-            512,
-            JSON_THROW_ON_ERROR
-        );
-    }
+    private static ?array $apiModuleDefinitions = null;
+    private string        $configPath;
 
     protected function setUp(): void
     {
-        self::loadFixtures();
+        parent::setUp();
 
+        self::loadFixtures();
         self::truncateTable('AuthToken');
 
-        parent::setUp();
+        // The fixture's serialized User.preferences / UserProfile.profile use the
+        // pre-rewrite SP\DataModel namespace, which the current hydrators reject.
+        // These API tests authenticate as the admin user (id 1, ACL bypassed) and
+        // never assert this data, so replace it with values the hydrators accept:
+        // NULL preferences, and a serialized empty (current) ProfileData.
+        $conn = getDbHandler()->getConnection();
+        $conn->exec('UPDATE `User` SET `preferences` = NULL');
+        $profile = $conn->prepare('UPDATE `UserProfile` SET `profile` = ?');
+        $profile->execute([serialize(new ProfileData())]);
+
+        // Real (non-vfs) dirs: config for an installed config.xml, and
+        // cache/tmp/backup because PharData (backup/export) cannot use vfsStream
+        $this->cleanApiTestRoot();
+
+        $this->configPath = FileSystem::buildPath(self::apiTestRoot(), 'config');
+
+        foreach ([$this->configPath, self::cachePath(), self::tmpPath(), self::backupPath()] as $dir) {
+            if (!is_dir($dir) && !mkdir($dir, 0777, true) && !is_dir($dir)) {
+                throw new Exception(sprintf('Directory "%s" was not created', $dir));
+            }
+        }
+
+        // The fixture config.xml is not "installed" and has no DB name; patch it so
+        // Init's checkInstalled / checkDatabaseTables pass (the actual DB connection
+        // is the real getDbHandler() override, so the creds here are not used).
+        $dbConn = DatabaseConnectionData::getFromEnvironment();
+        $config = getResource('config', 'config.xml');
+        $config = preg_replace('#<installed>.*?</installed>#', '<installed>1</installed>', $config);
+        $config = preg_replace('#<dbName>.*?</dbName>#', '<dbName>' . $dbConn->getDbName() . '</dbName>', $config);
+        $config = preg_replace('#<dbHost>.*?</dbHost>#', '<dbHost>' . $dbConn->getDbHost() . '</dbHost>', $config);
+
+        file_put_contents(FileSystem::buildPath($this->configPath, 'config.xml'), $config);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->cleanApiTestRoot();
+
+        parent::tearDown();
+    }
+
+    private function cleanApiTestRoot(): void
+    {
+        if (is_dir(self::apiTestRoot())) {
+            FileSystem::rmdirRecursive(self::apiTestRoot());
+        }
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
+     * Call an API action and return the decoded REST response.
+     *
+     * @return stdClass {status:int, body:stdClass}
      * @throws Exception
      */
-    final protected function callApi(int $actionId, array $params): ResponseService
+    final protected function callApi(int $actionId, array $params): stdClass
     {
-        $databaseConnectionData = DatabaseConnectionData::getFromEnvironment();
+        // Create the auth token first (in its own container) — it persists in the
+        // shared real DB for the dispatch container's lookup
+        $token = $this->createToken($actionId);
 
-        $dic = (new ContainerBuilder())
-            ->addDefinitions(
-                APP_DEFINITIONS_FILE,
-                [
-                    ApiRequestService::class => function (ContainerInterface $c) use ($actionId, $params) {
-                        $token = self::createApiToken(
-                            $c->get(AuthToken::class),
-                            $actionId
-                        );
+        $request = $this->buildRestRequest($actionId, $token, $params);
 
-                        $method = self::METHOD_ACTION_MAP[$actionId];
+        $dic = $this->buildContainer($request);
 
-                        $allParams = array_merge(
-                            [
-                                'authToken' => $token->getToken(),
-                                'tokenPass' => self::AUTH_TOKEN_PASS,
-                            ],
-                            $params
-                        );
+        Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
 
-                        $request = new SymfonyRequest(
-                            [],
-                            [],
-                            ['_rest_method' => $method],
-                            [],
-                            [],
-                            ['HTTP_AUTHORIZATION' => 'Bearer ' . $token->getToken()],
-                            json_encode($params, JSON_THROW_ON_ERROR)
-                        );
+        $response = $dic->get(ResponseService::class)->getResponse();
 
-                        foreach ($allParams as $key => $value) {
-                            if (!str_starts_with($key, '_')) {
-                                $request->attributes->set($key, $value);
-                            }
-                        }
+        return (object)[
+            'status' => $response->getStatusCode(),
+            'body' => json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR),
+        ];
+    }
 
-                        return RestApiRequest::buildFromSymfonyRequest($request);
-                    },
-                    DbStorageHandler::class => create(MysqlHandler::class)
-                        ->constructor($databaseConnectionData),
-                    ConfigDataInterface::class => static function (ConfigFileService $config) use (
-                        $databaseConnectionData
-                    ) {
-                        $configData = $config->getConfigData()
-                            ->setDbHost($databaseConnectionData->getDbHost())
-                            ->setDbName($databaseConnectionData->getDbName())
-                            ->setDbUser($databaseConnectionData->getDbUser())
-                            ->setDbPass($databaseConnectionData->getDbPass())
-                            ->setInstalled(true);
+    /**
+     * @throws Exception
+     */
+    private function createToken(int $actionId): string
+    {
+        // One token per call; a repeated action would otherwise duplicate-key
+        self::truncateTable('AuthToken');
 
-                        // Update ConfigData instance
-                        $config->update($configData);
-
-                        return $configData;
-                    },
-                ]
-            )
-            ->build();
+        $dic = $this->buildContainer();
 
         $context = $dic->get(Context::class);
         $context->initialize();
-        $context->setTrasientKey('_masterpass', '12345678900');
+        $context->setUserData(
+            UserDto::fromModel($dic->get(UserService::class)->getById(self::ADMIN_USER_ID))
+        );
+        // Needed to build the secure-token vault (getMasterKeyFromContext)
+        $context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::MASTER_PASS);
 
-        self::$configData = $dic->get(ConfigDataInterface::class);
+        $authTokenService = $dic->get(AuthTokenService::class);
 
-        new SymfonyRequest(
-            [],
-            [],
-            [],
-            [],
-            [],
-            [
-                'HTTP_HOST'            => 'localhost:8080',
-                'HTTP_ACCEPT'          => 'application/json, text/javascript, */*; q=0.01',
-                'HTTP_USER_AGENT'      => 'Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0',
-                'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.5',
-                'HTTP_ACCEPT_ENCODING' => 'gzip, deflate',
-                'REQUEST_URI'          => '/api.php',
-                'REQUEST_METHOD'       => 'POST',
-                'HTTP_CONTENT_TYPE'    => 'application/json',
-            ],
-            null
+        $id = $authTokenService->create(
+            new AuthTokenModel([
+                'actionId' => $actionId,
+                'userId' => self::ADMIN_USER_ID,
+                'hash' => self::AUTH_TOKEN_PASS,
+                'createdBy' => self::ADMIN_USER_ID,
+            ])
         );
 
-        $router = $dic->get(Router::class);
-        $request = $dic->get(\SP\Domain\Http\Services\Request::class);
+        return $authTokenService->getById($id)->getToken();
+    }
 
-        $bs = new BootstrapApi(self::$configData, $router, $request);
-        $router->dispatch($request->getRequest(), null, false);
+    private function buildRestRequest(int $actionId, string $token, array $params): SymfonyRequest
+    {
+        [$method, $pathTemplate] = self::REST_ROUTES[$actionId];
 
-        return $router->response();
+        $id = $params['id'] ?? null;
+        unset($params['id']);
+
+        $path = str_replace('{id}', (string)($id ?? 0), $pathTemplate);
+
+        // RestApiRequest reads params from the query string and the JSON body (and
+        // route attributes for {id}); the auth token comes from the Authorization
+        // header. For GET everything goes in the query; for write methods it must
+        // go in the JSON body (Symfony's Request::create routes the 3rd arg into
+        // the request bag for non-GET, which RestApiRequest does not read).
+        $params['tokenPass'] = self::AUTH_TOKEN_PASS;
+
+        if ($method === 'GET') {
+            $request = SymfonyRequest::create($path, $method, $params);
+        } else {
+            $request = SymfonyRequest::create(
+                $path,
+                $method,
+                [],
+                [],
+                [],
+                [],
+                json_encode($params, JSON_THROW_ON_ERROR)
+            );
+        }
+
+        $request->headers->set('Authorization', 'Bearer ' . $token);
+        $request->headers->set('Content-Type', 'application/json');
+
+        return $request;
     }
 
     /**
-     * @throws QueryException
-     * @throws ConstraintException
-     * @throws CryptoException
-     * @throws EnvironmentIsBrokenException
-     * @throws SPException
+     * @throws Exception
      */
-    private static function createApiToken(
-        AuthToken $service,
-        int       $actionId
-    ): AuthToken
+    private function buildContainer(?SymfonyRequest $request = null): ContainerInterface
     {
-        $data = new AuthToken();
-        $data->setActionId($actionId);
-        $data->setCreatedBy(1);
-        $data->setHash(self::AUTH_TOKEN_PASS);
-        $data->setUserId(1);
+        $_ENV['CONFIG_PATH'] = $this->configPath;
 
-        $service->create($data);
+        try {
+            $coreDefinitions = CoreDefinitions::getDefinitions(REAL_APP_ROOT, 'api');
+        } finally {
+            unset($_ENV['CONFIG_PATH']);
+        }
 
-        return $data;
+        // Real runtime dirs (avoid the repo's var/ and vfsStream)
+        $coreDefinitions['paths'] = array_map(
+            static fn(array $path) => match ($path[0]) {
+                Path::CACHE => [Path::CACHE, self::cachePath()],
+                Path::TMP => [Path::TMP, self::tmpPath()],
+                Path::BACKUP => [Path::BACKUP, self::backupPath()],
+                default => $path,
+            },
+            $coreDefinitions['paths']
+        );
+
+        if (self::$apiModuleDefinitions === null) {
+            self::$apiModuleDefinitions = FileSystem::require(
+                FileSystem::buildPath(REAL_APP_ROOT, 'src', 'Infrastructure', 'Adapter', 'In', 'Api', 'module.php')
+            );
+        }
+
+        $overrides = [DbStorageHandler::class => getDbHandler()];
+
+        if ($request !== null) {
+            $overrides[SymfonyRequest::class] = $request;
+        }
+
+        $builder = new ContainerBuilder();
+        $builder->addDefinitions(
+            DomainDefinitions::getDefinitions(),
+            $coreDefinitions,
+            self::$apiModuleDefinitions,
+            $overrides
+        );
+
+        return $builder->build();
+    }
+
+    private static function apiTestRoot(): string
+    {
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'syspass-api-tests';
+    }
+
+    protected static function cachePath(): string
+    {
+        return FileSystem::buildPath(self::apiTestRoot(), 'cache');
+    }
+
+    protected static function tmpPath(): string
+    {
+        return FileSystem::buildPath(self::apiTestRoot(), 'tmp');
+    }
+
+    protected static function backupPath(): string
+    {
+        return FileSystem::buildPath(self::apiTestRoot(), 'backup');
     }
 }

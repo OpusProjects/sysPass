@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,360 +25,159 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
 
 /**
- * Class TagControllerTest
- *
- * @package SP\Tests\Infrastructure\Adapter\In\Api\Controllers
+ * REST API tests for the Tag controllers.
  */
+#[Group('integration')]
 class TagControllerTest extends ApiTestCase
 {
-    private const PARAMS = [
-        'name' => 'API Tag'
-    ];
+    private const PARAMS = ['name' => 'API Tag'];
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateAction(): void
     {
-        $response = $this->createTag(self::PARAMS);
+        $r = $this->createTag(self::PARAMS);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNull($response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(4, $response->result->itemId);
-        $this->assertEquals('Tag added', $response->result->resultMessage);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($response->result->itemId, $resultItem->id);
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        $this->assertSame(201, $r->status);
+        $this->assertSame(4, $r->body->itemId);
+        $this->assertSame('Tag added', $r->body->message);
+        $this->assertSame($r->body->itemId, $r->body->data->id);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->name);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     private function createTag(?array $params = null): stdClass
     {
-        $api = $this->callApi(
-            AclActionsInterface::TAG_CREATE,
-            $params ?? self::PARAMS
-        );
-
-        return self::processJsonResponse($api);
+        return $this->callApi(AclActionsInterface::TAG_CREATE, $params ?? self::PARAMS);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionDuplicated(): void
     {
-        $response = $this->createTag(['name' => 'linux']);
+        $r = $this->createTag(['name' => 'linux']);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated tag', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated tag', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionRequiredParameters(): void
     {
-        $response = $this->createTag([]);
+        $r = $this->createTag([]);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewAction(): void
     {
-        $response = $this->createTag(self::PARAMS);
+        $id = $this->createTag(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::TAG_VIEW, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::TAG_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
+        // Tag has no adapter/transformer, so the item is returned directly
+        $this->assertSame(200, $r->status);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->name);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::TAG_VIEW,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::TAG_VIEW, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Tag not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Tag not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditAction(): void
     {
-        $response = $this->createTag(self::PARAMS);
+        $id = $this->createTag(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::TAG_EDIT, ['id' => $id, 'name' => 'API test edit']);
 
-        $params = [
-            'id' => $id,
-            'name' => 'API test edit'
-        ];
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Tag updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
 
-        $api = $this->callApi(
-            AclActionsInterface::TAG_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Tag updated', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $api = $this->callApi(
-            AclActionsInterface::TAG_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($params['name'], $resultItem->name);
+        $view = $this->callApi(AclActionsInterface::TAG_VIEW, ['id' => $id]);
+        $this->assertSame('API test edit', $view->body->data->name);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionDuplicated(): void
     {
-        $response = $this->createTag(self::PARAMS);
+        $id = $this->createTag(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::TAG_EDIT, ['id' => $id, 'name' => 'linux']);
 
-        $params = [
-            'id' => $id,
-            'name' => 'linux'
-        ];
-
-        $api = $this->callApi(
-            AclActionsInterface::TAG_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated tag', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated tag', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionWrongParameters(): void
     {
-        $response = $this->createTag(self::PARAMS);
+        $id = $this->createTag(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::TAG_EDIT, ['id' => $id]);
 
-        $params = [
-            'id' => $id
-        ];
-
-        $api = $this->callApi(
-            AclActionsInterface::TAG_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionNonExistant(): void
     {
-        $params = [
-            'id' => 10,
-            'name' => 'API test edit'
-        ];
+        $r = $this->callApi(AclActionsInterface::TAG_EDIT, ['id' => 10, 'name' => 'API test edit']);
 
-        $api = $this->callApi(
-            AclActionsInterface::TAG_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(0, $response->result->count);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Tag updated', $r->body->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::TAG_SEARCH,
-            $filter
-        );
+        $r = $this->callApi(AclActionsInterface::TAG_SEARCH, $filter);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals($resultsCount, $response->result->count);
-        $this->assertCount($resultsCount, $response->result->result);
+        $this->assertSame(200, $r->status);
+        $this->assertSame($resultsCount, $r->body->count);
+        $this->assertCount($resultsCount, $r->body->data);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteAction(): void
     {
-        $response = $this->createTag();
+        $id = $this->createTag()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::TAG_DELETE, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::TAG_DELETE,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Tag removed', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Tag removed', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::TAG_DELETE,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::TAG_DELETE, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Tag not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Tag not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testDeleteActionRequiredParameters(): void
+    public function testDeleteActionWithoutId(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::TAG_DELETE,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::TAG_DELETE, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(404, $r->status);
+        $this->assertSame('Tag not found', $r->body->error->message);
     }
 
     public static function searchProvider(): array
     {
         return [
-            [
-                [],
-                3
-            ],
-            [
-                ['count' => 1],
-                1
-            ],
-            [
-                ['text' => 'Linux'],
-                1
-            ],
-            [
-                ['text' => 'Google'],
-                0
-            ]
+            [[], 3],
+            [['count' => 1], 1],
+            [['text' => 'Linux'], 1],
+            [['text' => 'Google'], 0],
         ];
     }
 }

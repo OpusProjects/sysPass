@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
-use SP\Domain\Account\Dtos\AccountRequest;
+use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -46,13 +46,13 @@ final class CreateController extends AccountBase
     {
         $this->setupApi(AclActionsInterface::ACCOUNT_CREATE);
 
-        $accountRequest = $this->buildAccountRequest();
+        $accountCreateDto = $this->buildAccountCreateDto();
 
-        $this->accountPresetService->checkPasswordPreset($accountRequest);
+        $accountCreateDto = $this->accountPresetService->checkPasswordPreset($accountCreateDto);
 
-        $accountId = $this->accountService->create($accountRequest);
+        $accountId = $this->accountService->create($accountCreateDto);
 
-        $accountDetails = $this->accountService->getByIdEnriched($accountId)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($accountId);
 
         $this->eventDispatcher->notify(new Event('create.account', 
                 $this,
@@ -68,33 +68,27 @@ final class CreateController extends AccountBase
     }
 
     /**
-     * @return AccountRequest
      * @throws ServiceException
      */
-    private function buildAccountRequest(): AccountRequest
+    private function buildAccountCreateDto(): AccountCreateDto
     {
         $userData = $this->context->getUserData();
 
-        $accountRequest = new AccountRequest();
-        $accountRequest->name = $this->apiService->getParamString('name', true);
-        $accountRequest->clientId = $this->apiService->getParamInt('clientId', true);
-        $accountRequest->categoryId = $this->apiService->getParamInt('categoryId', true);
-        $accountRequest->login = $this->apiService->getParamString('login');
-        $accountRequest->url = $this->apiService->getParamString('url');
-        $accountRequest->notes = $this->apiService->getParamString('notes');
-        $accountRequest->isPrivate = $this->apiService->getParamInt('private');
-        $accountRequest->isPrivateGroup = $this->apiService->getParamInt('privateGroup');
-        $accountRequest->passDateChange = $this->apiService->getParamInt('expireDate');
-        $accountRequest->parentId = $this->apiService->getParamInt('parentId');
-        $accountRequest->userId = $this->apiService->getParamInt('userId', false, $userData->getId());
-        $accountRequest->userGroupId =
-            $this->apiService->getParamInt('userGroupId', false, $userData->getUserGroupId());
-        $accountRequest->tags = array_map(
-            intval(...),
-            $this->apiService->getParamArray('tagsId', false, [])
+        return new AccountCreateDto(
+            clientId: $this->apiService->getParamInt('clientId', true),
+            categoryId: $this->apiService->getParamInt('categoryId', true),
+            userId: $this->apiService->getParamInt('userId', false, $userData->id),
+            userGroupId: $this->apiService->getParamInt('userGroupId', false, $userData->userGroupId),
+            parentId: $this->apiService->getParamInt('parentId'),
+            passDateChange: $this->apiService->getParamInt('expireDate'),
+            name: $this->apiService->getParamString('name', true),
+            login: $this->apiService->getParamString('login'),
+            pass: $this->apiService->getParamRaw('pass', true),
+            url: $this->apiService->getParamString('url'),
+            notes: $this->apiService->getParamString('notes'),
+            isPrivate: (bool)$this->apiService->getParamInt('private'),
+            isPrivateGroup: (bool)$this->apiService->getParamInt('privateGroup'),
+            tags: array_map(intval(...), $this->apiService->getParamArray('tagsId', false, [])),
         );
-        $accountRequest->pass = $this->apiService->getParamRaw('pass', true);
-
-        return $accountRequest;
     }
 }

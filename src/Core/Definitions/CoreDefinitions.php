@@ -374,6 +374,19 @@ final class CoreDefinitions
             // The backup output handlers are built per-run from the target path
             // (BackupHandlersFactory), so a backup can be written to any directory
             BackupFileService::class => autowire(BackupFile::class),
+            // The domain adapters (Fractal transformers the controllers inject) need
+            // a base URL for the self-links they build; the generic Ports->Adapters
+            // autowiring can't supply the string $baseUrl. Sub-adapters (CustomField,
+            // Account*) are built internally from the parent's baseUrl.
+            \SP\Domain\Category\Ports\CategoryAdapter::class =>
+                autowire(\SP\Domain\Category\Adapters\Category::class)
+                    ->constructorParameter('baseUrl', factory([self::class, 'adapterBaseUrl'])),
+            \SP\Domain\Client\Ports\ClientAdapter::class =>
+                autowire(\SP\Domain\Client\Adapters\Client::class)
+                    ->constructorParameter('baseUrl', factory([self::class, 'adapterBaseUrl'])),
+            \SP\Domain\Account\Ports\AccountAdapter::class =>
+                autowire(\SP\Domain\Account\Adapters\Account::class)
+                    ->constructorParameter('baseUrl', factory([self::class, 'adapterBaseUrl'])),
             RouteContextData::class => factory(static function (SymfonyRequest $request) {
                 return RouteContext::getRouteContextData(Filter::getString($request->query->get('r', 'index/index')));
             }),
@@ -419,6 +432,15 @@ final class CoreDefinitions
                     factory(static fn(PathsContext $p) => FileSystem::buildPath($p[Path::CONFIG], '.lock'))
                 )
         ];
+    }
+
+    /**
+     * The base URL the domain adapters prepend to the self-links they build:
+     * the configured application URL, falling back to the current web URI.
+     */
+    public static function adapterBaseUrl(ConfigDataInterface $configData, UriContextInterface $uriContext): string
+    {
+        return $configData->getApplicationUrl() ?: $uriContext->getWebUri();
     }
 
     private static function getPaths(string $rootPath): array

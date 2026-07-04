@@ -76,7 +76,7 @@ final class BackupController extends ControllerBase
 
         $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-        $this->fileBackupService->doBackup($path);
+        $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
         $this->eventDispatcher->notify(new Event('run.backup.end', 
                 $this,

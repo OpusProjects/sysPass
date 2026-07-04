@@ -3,7 +3,7 @@
 sysPass uses **PHPUnit 13** with two test suites: a fast unit suite that needs no
 external services, and an integration suite backed by a real MariaDB database.
 
-Both suites pass: **2100 unit tests** and **123 integration tests**.
+Both suites pass: **2100 unit tests** and **233 integration tests**.
 
 ## Quick start (Docker)
 
@@ -44,9 +44,10 @@ tests/
 The `core` testsuite covers `Core/`, `Domain/`, `Application/`, and `Infrastructure/`
 (excluding the Web/Api/Cli adapter tests). The `modules` testsuite covers the adapter
 integration tests under `Infrastructure/Adapter/In/`: the Web controller tests (mocked
-container via `IntegrationTestCase`) and the end-to-end CLI command tests (real DI
+container via `IntegrationTestCase`), the end-to-end CLI command tests (real DI
 container + real database via `CliTestCase`, per-test config and runtime dirs under
-`/tmp/syspass-cli-tests`). The Api adapter tests remain excluded.
+`/tmp/syspass-cli-tests`), and the end-to-end REST API tests (real container + real DB
+via `ApiTestCase`, driving the real Bootstrap dispatch with crypto-backed auth tokens).
 
 ## Test groups
 

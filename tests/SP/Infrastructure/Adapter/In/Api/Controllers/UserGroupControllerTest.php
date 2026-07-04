@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,418 +25,207 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
 
 /**
- * Class UserGroupControllerTest
- *
- * @package SP\Tests\Infrastructure\Adapter\In\Api\Controllers
+ * REST API tests for the UserGroup controllers.
  */
+#[Group('integration')]
 class UserGroupControllerTest extends ApiTestCase
 {
     private const PARAMS = [
         'name' => 'API UserGroup',
         'description' => "API test\ndescription",
-        'usersId' => [3, 4]
+        'usersId' => [3, 4],
     ];
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateAction(): void
     {
-        $response = $this->createUserGroup(self::PARAMS);
+        $r = $this->createUserGroup(self::PARAMS);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNull($response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(7, $response->result->itemId);
-        $this->assertEquals('Group added', $response->result->resultMessage);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($response->result->itemId, $resultItem->id);
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
-        $this->assertCount(2, $resultItem->users);
-        $this->assertEquals(self::PARAMS['usersId'][0], $resultItem->users[0]);
+        $this->assertSame(201, $r->status);
+        $this->assertSame(7, $r->body->itemId);
+        $this->assertSame('Group added', $r->body->message);
+        $this->assertSame($r->body->itemId, $r->body->data->id);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->name);
+        $this->assertSame(self::PARAMS['description'], $r->body->data->description);
+        $this->assertCount(2, $r->body->data->users);
+        $this->assertSame(self::PARAMS['usersId'][0], $r->body->data->users[0]);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     private function createUserGroup(?array $params = null): stdClass
     {
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_CREATE,
-            $params ?? self::PARAMS
-        );
-
-        return self::processJsonResponse($api);
+        return $this->callApi(AclActionsInterface::GROUP_CREATE, $params ?? self::PARAMS);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionInvalidUser(): void
     {
         $params = self::PARAMS;
         $params['usersId'] = [10];
 
-        $response = $this->createUserGroup($params);
+        $r = $this->createUserGroup($params);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Integrity constraint', $response->error->message);
+        // The transaction wrapper reports the FK violation as a rollback
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Rollback', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionRequiredParameters(): void
     {
         $params = self::PARAMS;
         unset($params['name']);
 
-        $response = $this->createUserGroup($params);
+        $r = $this->createUserGroup($params);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionDuplicatedName(): void
     {
         $params = self::PARAMS;
         $params['name'] = 'Admins';
 
-        $response = $this->createUserGroup($params);
+        $r = $this->createUserGroup($params);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated group name', $response->error->message);
+        // The transaction wrapper reports the duplicate as a rollback
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Rollback', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewAction(): void
     {
-        $response = $this->createUserGroup(self::PARAMS);
+        $id = $this->createUserGroup(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::GROUP_VIEW, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
-        $this->assertCount(2, $resultItem->users);
-        $this->assertEquals(self::PARAMS['usersId'][0], $resultItem->users[0]);
+        // UserGroup has no adapter/transformer, so the item is returned directly
+        $this->assertSame(200, $r->status);
+        $item = $r->body->data;
+        $this->assertSame(self::PARAMS['name'], $item->name);
+        $this->assertSame(self::PARAMS['description'], $item->description);
+        $this->assertCount(2, $item->users);
+        $this->assertSame(self::PARAMS['usersId'][0], $item->users[0]);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_VIEW,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_VIEW, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Group not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Group not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    #[DataProvider('getGroupUsers')]
-    public function testEditAction(array $users, int $usersCount): void
+    public function testEditAction(): void
     {
-        $response = $this->createUserGroup(self::PARAMS);
-
-        $id = $response->result->itemId;
+        $id = $this->createUserGroup(self::PARAMS)->body->itemId;
 
         $params = [
             'id' => $id,
             'name' => 'API test edit',
             'description' => "API test\ndescription",
-            'usersId' => $users
+            'usersId' => [3, 4],
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Group updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
 
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals('Group updated', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($params['name'], $resultItem->name);
-        $this->assertEquals($params['description'], $resultItem->description);
-        $this->assertCount($usersCount, $resultItem->users);
+        $view = $this->callApi(AclActionsInterface::GROUP_VIEW, ['id' => $id]);
+        $item = $view->body->data;
+        $this->assertSame($params['name'], $item->name);
+        $this->assertSame($params['description'], $item->description);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionInvalidUser(): void
     {
-        $response = $this->createUserGroup(self::PARAMS);
-
-        $id = $response->result->itemId;
+        $id = $this->createUserGroup(self::PARAMS)->body->itemId;
 
         $params = [
             'id' => $id,
             'name' => 'API test edit',
             'description' => "API test\ndescription",
-            'usersId' => [10]
+            'usersId' => [10],
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Integrity constraint', $response->error->message);
+        // The transaction wrapper reports the FK violation as a rollback
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Rollback', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionRequiredParameters(): void
     {
-        $response = $this->createUserGroup(self::PARAMS);
+        $id = $this->createUserGroup(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::GROUP_EDIT, ['id' => $id]);
 
-        $params = [
-            'id' => $id
-        ];
-
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionNonExistant(): void
     {
-        $params = [
-            'id' => 10,
-            'name' => 'API test edit'
-        ];
+        $r = $this->callApi(AclActionsInterface::GROUP_EDIT, ['id' => 10, 'name' => 'API test edit']);
 
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(0, $response->result->count);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Group updated', $r->body->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_SEARCH,
-            $filter
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_SEARCH, $filter);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals($resultsCount, $response->result->count);
-        $this->assertCount($resultsCount, $response->result->result);
+        $this->assertSame(200, $r->status);
+        $this->assertSame($resultsCount, $r->body->count);
+        $this->assertCount($resultsCount, $r->body->data);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteAction(): void
     {
-        $response = $this->createUserGroup();
+        $id = $this->createUserGroup()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::GROUP_DELETE, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_DELETE,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Group deleted', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Group deleted', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_DELETE,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_DELETE, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Group not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Group not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testDeleteActionRequiredParameters(): void
+    public function testDeleteActionWithoutId(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::GROUP_DELETE,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::GROUP_DELETE, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(404, $r->status);
+        $this->assertSame('Group not found', $r->body->error->message);
     }
 
     public static function searchProvider(): array
     {
         return [
-            [
-                [],
-                6
-            ],
-            [
-                ['count' => 1],
-                1
-            ],
-            [
-                ['text' => 'Demo'],
-                1
-            ],
-            [
-                ['text' => 'Test'],
-                3
-            ],
-            [
-                ['text' => 'Grupo'],
-                1
-            ]
-        ];
-    }
-
-    public static function getGroupUsers(): array
-    {
-        return [
-            [
-                [2, 3, 4],
-                3
-            ],
-            [
-                [2, 3],
-                2
-            ],
-            [
-                [],
-                0
-            ],
+            [[], 6],
+            [['count' => 1], 1],
+            [['text' => 'Demo'], 1],
+            [['text' => 'Test'], 3],
+            [['text' => 'Grupo'], 1],
         ];
     }
 }

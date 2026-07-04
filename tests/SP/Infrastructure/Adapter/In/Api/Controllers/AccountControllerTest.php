@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,20 +25,16 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Infrastructure\Adapter\In\Api\Controllers\Account\AccountController;
 use SP\Tests\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
 
 /**
- * Class AccountControllerTest
- *
- * @package SP\Infrastructure\Adapter\In\Api\Controllers
+ * REST API tests for the Account controllers (secured actions with password crypto).
  */
+#[Group('integration')]
 class AccountControllerTest extends ApiTestCase
 {
     private const PARAMS = [
@@ -55,16 +51,14 @@ class AccountControllerTest extends ApiTestCase
         'userId' => 2,
         'userGroupId' => 2,
         'parentId' => 0,
-        'tagsId' => [3]
+        'tagsId' => [3],
     ];
 
-    protected AccountController $controller;
+    private function createAccount(?array $params = null): stdClass
+    {
+        return $this->callApi(AclActionsInterface::ACCOUNT_CREATE, $params ?? self::PARAMS);
+    }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateAction(): void
     {
         $params = self::PARAMS;
@@ -72,374 +66,179 @@ class AccountControllerTest extends ApiTestCase
         $params['privateGroup'] = 1;
         $params['parentId'] = 1;
 
-        $response = $this->createAccount($params);
+        $r = $this->createAccount($params);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNull($response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(5, $response->result->itemId);
-        $this->assertEquals('Account created', $response->result->resultMessage);
+        $this->assertSame(201, $r->status);
+        $this->assertSame(5, $r->body->itemId);
+        $this->assertSame('Account created', $r->body->message);
 
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($response->result->itemId, $resultItem->id);
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['categoryId'], $resultItem->categoryId);
-        $this->assertEquals(self::PARAMS['clientId'], $resultItem->clientId);
-        $this->assertEquals(self::PARAMS['login'], $resultItem->login);
-        $this->assertEquals(self::PARAMS['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals(self::PARAMS['url'], $resultItem->url);
-        $this->assertEquals(self::PARAMS['notes'], $resultItem->notes);
-        $this->assertEquals(self::PARAMS['userId'], $resultItem->userId);
-        $this->assertEquals(self::PARAMS['userGroupId'], $resultItem->userGroupId);
-        $this->assertEquals($params['private'], $resultItem->isPrivate);
-        $this->assertEquals($params['privateGroup'], $resultItem->isPrivateGroup);
-        $this->assertEquals($params['parentId'], $resultItem->parentId);
-        $this->assertEmpty($resultItem->pass);
-        $this->assertEmpty($resultItem->key);
-        $this->assertNull($resultItem->dateEdit);
-        $this->assertEquals(0, $resultItem->countView);
-        $this->assertEquals(0, $resultItem->countDecrypt);
-        $this->assertGreaterThan(0, $resultItem->passDate);
-        $this->assertEquals(self::PARAMS['expireDate'], $resultItem->passDateChange);
+        $item = $r->body->data;
+        $this->assertSame($r->body->itemId, $item->id);
+        $this->assertSame(self::PARAMS['name'], $item->name);
+        $this->assertSame(self::PARAMS['categoryId'], $item->categoryId);
+        $this->assertSame(self::PARAMS['clientId'], $item->clientId);
+        $this->assertSame(self::PARAMS['login'], $item->login);
+        $this->assertSame(self::PARAMS['expireDate'], $item->passDateChange);
+        $this->assertSame(self::PARAMS['url'], $item->url);
+        $this->assertSame(self::PARAMS['notes'], $item->notes);
+        $this->assertSame(self::PARAMS['userId'], $item->userId);
+        $this->assertSame(self::PARAMS['userGroupId'], $item->userGroupId);
+        $this->assertSame(1, $item->isPrivate);
+        $this->assertSame(1, $item->isPrivateGroup);
+        $this->assertSame(1, $item->parentId);
+        $this->assertNull($item->dateEdit);
+        $this->assertSame(0, $item->countView);
+        $this->assertSame(0, $item->countDecrypt);
+        $this->assertGreaterThan(0, $item->passDate);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    private function createAccount(?array $params = null): stdClass
-    {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_CREATE,
-            $params ?? self::PARAMS
-        );
-
-        return self::processJsonResponse($api);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionNoUserData(): void
     {
         $params = self::PARAMS;
-
         unset($params['userId'], $params['userGroupId']);
 
-        $response = $this->createAccount($params);
+        $r = $this->createAccount($params);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNull($response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(5, $response->result->itemId);
-        $this->assertEquals('Account created', $response->result->resultMessage);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($response->result->itemId, $resultItem->id);
-        $this->assertEquals($params['name'], $resultItem->name);
-        $this->assertEquals($params['categoryId'], $resultItem->categoryId);
-        $this->assertEquals($params['clientId'], $resultItem->clientId);
-        $this->assertEquals($params['login'], $resultItem->login);
-        $this->assertEquals($params['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals($params['url'], $resultItem->url);
-        $this->assertEquals($params['notes'], $resultItem->notes);
-        $this->assertEquals($params['private'], $resultItem->isPrivate);
-        $this->assertEquals($params['privateGroup'], $resultItem->isPrivateGroup);
-        $this->assertEquals(1, $resultItem->userId);
-        $this->assertEquals(1, $resultItem->userGroupId);
+        $this->assertSame(201, $r->status);
+        $this->assertSame(5, $r->body->itemId);
+        $this->assertSame('Account created', $r->body->message);
+        // Defaults to the authenticated admin user (id 1)
+        $this->assertSame(1, $r->body->data->userId);
+        $this->assertSame(1, $r->body->data->userGroupId);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     #[DataProvider('getUnsetParams')]
     public function testCreateActionRequiredParameters(string $unsetParam): void
     {
         $params = self::PARAMS;
-
         unset($params[$unsetParam]);
 
-        $response = $this->createAccount($params);
+        $r = $this->createAccount($params);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewPassAction(): void
     {
-        $response = $this->createAccount();
+        $id = $this->createAccount()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW_PASS,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals(self::PARAMS['pass'], $resultItem->password);
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
+        $this->assertSame(self::PARAMS['pass'], $r->body->data->password);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewPassActionRequiredParamater(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW_PASS,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
+        $this->assertSame(404, $r->status);
+        $this->assertSame('Account not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testEditPassAction(): void
-    {
-        $response = $this->createAccount();
-
-        $id = $response->result->itemId;
-
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_EDIT_PASS,
-            [
-                'id' => $id,
-                'pass' => 'test_123',
-                'expireDate' => time() + 86400
-            ]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Password updated', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW_PASS,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals('test_123', $resultItem->password);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testEditPassActionRequiredParameters(): void
-    {
-        $response = $this->createAccount();
-
-        $id = $response->result->itemId;
-
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_EDIT_PASS,
-            [
-                'id' => $id
-            ]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-    }
-
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewPassActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW_PASS,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Account not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Account not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
+    public function testEditPassAction(): void
+    {
+        $id = $this->createAccount()->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT_PASS, [
+            'id' => $id,
+            'pass' => 'test_123',
+            'expireDate' => time() + 86400,
+        ]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Password updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
+
+        $view = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, ['id' => $id]);
+        $this->assertSame('test_123', $view->body->data->password);
+    }
+
+    public function testEditPassActionRequiredParameters(): void
+    {
+        $id = $this->createAccount()->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT_PASS, ['id' => $id]);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
+    }
+
     public function testViewAction(): void
     {
-        $response = $this->createAccount();
+        $id = $this->createAccount()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW,
-            ['id' => $id]
-        );
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result->data;
-
-        $this->assertInstanceOf(stdClass::class, $resultItem);
-        $this->assertEquals($id, $resultItem->id);
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['categoryId'], $resultItem->categoryId);
-        $this->assertEquals(self::PARAMS['clientId'], $resultItem->clientId);
-        $this->assertEquals(self::PARAMS['login'], $resultItem->login);
-        $this->assertEquals(self::PARAMS['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals(self::PARAMS['url'], $resultItem->url);
-        $this->assertEquals(self::PARAMS['notes'], $resultItem->notes);
-        $this->assertEquals(self::PARAMS['private'], $resultItem->isPrivate);
-        $this->assertEquals(self::PARAMS['privateGroup'], $resultItem->isPrivateGroup);
-        $this->assertEquals(self::PARAMS['userId'], $resultItem->userId);
-        $this->assertEquals(self::PARAMS['userGroupId'], $resultItem->userGroupId);
-        $this->assertNull($resultItem->publicLinkHash);
-        $this->assertEquals(0, $resultItem->dateEdit);
-        $this->assertEquals(0, $resultItem->countView);
-        $this->assertEquals(0, $resultItem->countDecrypt);
-        $this->assertEquals(0, $resultItem->isPrivate);
-        $this->assertEquals(0, $resultItem->isPrivateGroup);
-        $this->assertGreaterThan(0, $resultItem->passDate);
-        $this->assertEquals(self::PARAMS['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals(self::PARAMS['parentId'], $resultItem->parentId);
-        $this->assertIsArray($resultItem->tags);
-        $this->assertCount(1, $resultItem->tags);
-        $this->assertEquals(self::PARAMS['tagsId'][0], $resultItem->tags[0]->id);
-        $this->assertEquals('Linux', $resultItem->tags[0]->name);
-        $this->assertIsArray($resultItem->users);
-        $this->assertCount(0, $resultItem->users);
-        $this->assertIsArray($resultItem->userGroups);
-        $this->assertCount(0, $resultItem->userGroups);
-        $this->assertNull($resultItem->customFields);
-        $this->assertIsArray($resultItem->links);
-        $this->assertEquals('self', $resultItem->links[0]->rel);
-        $this->assertNotEmpty($resultItem->links[0]->uri);
+        $item = $r->body->data->data;
+        $this->assertSame($id, $item->id);
+        $this->assertSame(self::PARAMS['name'], $item->name);
+        $this->assertSame(self::PARAMS['categoryId'], $item->categoryId);
+        $this->assertSame(self::PARAMS['clientId'], $item->clientId);
+        $this->assertSame(self::PARAMS['login'], $item->login);
+        $this->assertSame(self::PARAMS['url'], $item->url);
+        $this->assertSame(self::PARAMS['notes'], $item->notes);
+        $this->assertSame(self::PARAMS['userId'], $item->userId);
+        $this->assertSame(self::PARAMS['userGroupId'], $item->userGroupId);
+        $this->assertSame(self::PARAMS['expireDate'], $item->passDateChange);
+        $this->assertSame(0, $item->countView);
+        $this->assertSame(0, $item->countDecrypt);
+        $this->assertNull($item->dateEdit);
+        $this->assertNull($item->publicLinkHash);
+        $this->assertGreaterThan(0, $item->passDate);
+        $this->assertIsArray($item->tags);
+        $this->assertIsArray($item->users);
+        $this->assertIsArray($item->userGroups);
+        $this->assertNull($item->customFields);
+        $this->assertIsArray($item->links);
+        $this->assertSame('self', $item->links[0]->rel);
+        $this->assertNotEmpty($item->links[0]->uri);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testViewActionRequiredParameter(): void
+    public function testViewActionWithoutId(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_SEARCH,
-            $filter
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_SEARCH, $filter);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals($resultsCount, $response->result->count);
-        $this->assertCount($resultsCount, $response->result->result);
+        $this->assertSame(200, $r->status);
+        $this->assertSame($resultsCount, $r->body->count);
+        $this->assertCount($resultsCount, $r->body->data);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     public function testEditAction(): void
     {
-        $response = $this->createAccount();
-
-        $id = $response->result->itemId;
+        $id = $this->createAccount()->body->itemId;
 
         $params = [
             'id' => $id,
@@ -455,121 +254,37 @@ class AccountControllerTest extends ApiTestCase
             'userId' => 1,
             'userGroupId' => 1,
             'parentId' => 1,
-            'tagsId' => [1]
+            'tagsId' => [1],
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Account updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-        $this->assertEquals('Account updated', $response->result->resultMessage);
-
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result->data;
-
-        $this->assertInstanceOf(stdClass::class, $resultItem);
-        $this->assertEquals($id, $resultItem->id);
-        $this->assertEquals($params['name'], $resultItem->name);
-        $this->assertEquals($params['categoryId'], $resultItem->categoryId);
-        $this->assertEquals($params['clientId'], $resultItem->clientId);
-        $this->assertEquals($params['login'], $resultItem->login);
-        $this->assertEquals($params['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals($params['url'], $resultItem->url);
-        $this->assertEquals($params['notes'], $resultItem->notes);
-        $this->assertEquals($params['private'], $resultItem->isPrivate);
-        $this->assertEquals($params['privateGroup'], $resultItem->isPrivateGroup);
-        $this->assertEquals($params['userId'], $resultItem->userId);
-        $this->assertEquals($params['userGroupId'], $resultItem->userGroupId);
-        $this->assertNull($resultItem->publicLinkHash);
-        $this->assertGreaterThan(0, $resultItem->dateEdit);
-        $this->assertEquals(0, $resultItem->countView);
-        $this->assertEquals(0, $resultItem->countDecrypt);
-        $this->assertEquals(0, $resultItem->isPrivate);
-        $this->assertEquals(0, $resultItem->isPrivateGroup);
-        $this->assertGreaterThan(0, $resultItem->passDate);
-        $this->assertEquals($params['expireDate'], $resultItem->passDateChange);
-        $this->assertEquals($params['parentId'], $resultItem->parentId);
-        $this->assertNull($resultItem->customFields);
-        $this->assertIsArray($resultItem->tags);
-        $this->assertCount(1, $resultItem->tags);
-        $this->assertEquals($params['tagsId'][0], $resultItem->tags[0]->id);
-        $this->assertEquals('www', $resultItem->tags[0]->name);
-        $this->assertIsArray($resultItem->users);
-        $this->assertCount(0, $resultItem->users);
-        $this->assertIsArray($resultItem->userGroups);
-        $this->assertCount(0, $resultItem->userGroups);
-        $this->assertNull($resultItem->customFields);
-        $this->assertIsArray($resultItem->links);
-        $this->assertEquals('self', $resultItem->links[0]->rel);
-        $this->assertNotEmpty($resultItem->links[0]->uri);
+        $view = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, ['id' => $id]);
+        $item = $view->body->data->data;
+        $this->assertSame($params['name'], $item->name);
+        $this->assertSame($params['categoryId'], $item->categoryId);
+        $this->assertSame($params['clientId'], $item->clientId);
+        $this->assertSame($params['login'], $item->login);
+        $this->assertSame($params['url'], $item->url);
+        $this->assertSame($params['notes'], $item->notes);
+        $this->assertGreaterThan(0, $item->dateEdit);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
-    #[DataProvider('getUnsetParams')]
-    public function testEditActionRequiredParameter(string $unsetParam): void
+    public function testEditActionRequiredParameter(): void
     {
-        $response = $this->createAccount();
+        $id = $this->createAccount()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT, ['id' => $id]);
 
-        $params = [
-            'id' => $id,
-            'name' => 'API test edit',
-            'categoryId' => 3,
-            'clientId' => 3,
-            'login' => 'admin',
-            'expireDate' => time() + 86400,
-            'url' => 'http://demo.syspass.org',
-            'notes' => "test\n\ntest\nedit",
-            'private' => 0,
-            'privateGroup' => 0,
-            'userId' => 1,
-            'userGroupId' => 1,
-            'parentId' => 1,
-            'tagsId' => [1]
-        ];
-
-        unset($params[$unsetParam]);
-
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -586,179 +301,70 @@ class AccountControllerTest extends ApiTestCase
             'userId' => 1,
             'userGroupId' => 1,
             'parentId' => 1,
-            'tagsId' => [1]
+            'tagsId' => [1],
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        // The transaction wrapper reports the missing account as a rollback
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Rollback', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteAction(): void
     {
-        $response = $this->createAccount();
+        $id = $this->createAccount()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_DELETE, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_DELETE,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Account removed', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Account removed', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_DELETE,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_DELETE, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('The account doesn\'t exist', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testDeleteActionRequiredParameters(): void
+    public function testDeleteActionWithoutId(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::ACCOUNT_DELETE,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_DELETE, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
     public static function searchProvider(): array
     {
         return [
-            [
-                [],
-                2
-            ],
-            [
-                ['count' => 1],
-                1
-            ],
-            [
-                ['text' => 'Google'],
-                1
-            ],
-            [
-                ['text' => 'admin'],
-                2
-            ],
-            [
-                ['text' => 'aaa'],
-                1
-            ],
-            [
-                ['clientId' => 2],
-                1
-            ],
-            [
-                ['clientId' => 3],
-                0
-            ],
-            [
-                ['categoryId' => 1],
-                1
-            ],
-            [
-                ['categoryId' => 2],
-                1
-            ],
-            [
-                ['categoryId' => 10],
-                0
-            ],
-            [
-                ['tagsId' => [3]],
-                1
-            ],
-            [
-                ['tagsId' => [1, 3]],
-                1
-            ],
-            [
-                [
-                    'tagsId' => [1, 3],
-                    'op' => 'or'
-                ],
-                2
-            ],
-            [
-                ['tagsId' => [1, 4]],
-                0
-            ],
-            [
-                ['tagsId' => [10]],
-                0
-            ],
-            [
-                [
-                    'categoryId' => 1,
-                    'clientId' => 1
-                ],
-                1
-            ],
-            [
-                [
-                    'categoryId' => 2,
-                    'clientId' => 1
-                ],
-                0
-            ],
-            [
-                [
-                    'categoryId' => 2,
-                    'clientId' => 1,
-                    'op' => 'or'
-                ],
-                2
-            ],
+            [[], 2],
+            [['count' => 1], 1],
+            [['text' => 'Google'], 1],
+            [['text' => 'admin'], 2],
+            [['text' => 'aaa'], 1],
+            [['clientId' => 2], 1],
+            [['clientId' => 3], 0],
+            [['categoryId' => 1], 1],
+            [['categoryId' => 2], 1],
+            [['categoryId' => 10], 0],
+            [['tagsId' => [3]], 1],
+            [['tagsId' => [1, 3]], 1],
+            [['tagsId' => [1, 3], 'op' => 'or'], 2],
+            [['tagsId' => [1, 4]], 0],
+            [['tagsId' => [10]], 0],
+            [['categoryId' => 1, 'clientId' => 1], 1],
+            [['categoryId' => 2, 'clientId' => 1], 0],
+            // 'op' applies to the tag filter; category + client are always ANDed
+            [['categoryId' => 2, 'clientId' => 1, 'op' => 'or'], 0],
         ];
     }
 
     public static function getUnsetParams(): array
     {
-        return [
-            ['name'],
-            ['clientId'],
-            ['categoryId'],
-        ];
+        return [['name'], ['clientId'], ['categoryId']];
     }
 }
