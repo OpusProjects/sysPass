@@ -32,6 +32,7 @@ use Exception;
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
@@ -70,6 +71,10 @@ final class DisableController extends ControllerBase
     public function disableAction(int $id): ActionResponse
     {
         try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_DISABLE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
             $this->pluginService->toggleEnabled($id, false);
 
             $this->eventDispatcher->notify(new Event('edit.plugin.disable', $this, EventMessage::build()->addDescription(__u('Plugin disabled')))

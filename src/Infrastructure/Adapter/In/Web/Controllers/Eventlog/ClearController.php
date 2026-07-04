@@ -33,6 +33,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Auth\Services\AuthException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Application\Security\Ports\EventlogService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -73,6 +74,10 @@ final class ClearController extends ControllerBase
     public function clearAction(): ActionResponse
     {
         try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::EVENTLOG_CLEAR)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
             $this->eventlogService->clear();
 
             $this->eventDispatcher->notify(new Event('clear.eventlog', $this, EventMessage::build()->addDescription(__u('Event log cleared')))
