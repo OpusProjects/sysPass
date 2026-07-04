@@ -7785,3 +7785,6 @@ msgstr "De record is in gebruik"
 
 msgid "Referenced record not found"
 msgstr "Verwezen record niet gevonden"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Het masterwachtwoord en de bevestiging moeten hetzelfde zijn"

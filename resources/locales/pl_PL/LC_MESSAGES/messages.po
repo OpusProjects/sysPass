@@ -1137,9 +1137,8 @@ msgstr "UWAGA - to jest demo!!"
 #: app/modules/web/Controllers/UserPassResetController.php:197
 #: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
-#, fuzzy
 msgid "Passwords do not match"
-msgstr "Hasła nie pasują do siebie"
+msgstr "Hasła nie są zgodne"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:121
 msgid "Verification of exported data finished"
@@ -4452,28 +4451,24 @@ msgid "Admin user to log into the application"
 msgstr "Użytkownik administracyjny do zalogowania się w aplikacji"
 
 #: lib/SP/Services/Install/Installer.php:112
-#, fuzzy
 msgid "Please, enter the admin's password"
-msgstr "Podaj hasło administratora"
+msgstr "Wprowadź hasło administratora"
 
 #: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
 msgstr "Hasło administratora aplikacji"
 
 #: lib/SP/Services/Install/Installer.php:119
-#, fuzzy
 msgid "Please, enter the Master Password"
-msgstr "Hasło główne"
+msgstr "Wprowadź hasło główne"
 
 #: lib/SP/Services/Install/Installer.php:121
-#, fuzzy
 msgid "Master password to encrypt the passwords"
-msgstr "Hasło główne do szyfrowania"
+msgstr "Hasło główne do szyfrowania haseł"
 
 #: lib/SP/Services/Install/Installer.php:126
-#, fuzzy
 msgid "Master password too short"
-msgstr "Hasło główne jest zbyt krótkie"
+msgstr "Hasło główne jest za krótkie"
 
 #: lib/SP/Services/Install/Installer.php:128
 msgid "The Master Password length need to be at least 11 characters"
@@ -7959,3 +7954,6 @@ msgstr "Rekord jest w użyciu"
 
 msgid "Referenced record not found"
 msgstr "Nie znaleziono wskazywanego rekordu"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Hasło główne i jego potwierdzenie muszą być takie same"

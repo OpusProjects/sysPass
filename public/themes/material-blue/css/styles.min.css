@@ -253,7 +253,7 @@ form .form-field {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 7px; }
+  gap: 16px; }
 
 .installer-stepper li.is-done {
   cursor: pointer; }
@@ -276,15 +276,15 @@ form .form-field {
   background: #607d8b; }
 
 .installer-stepper .step-circle {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: #e0e0e0;
   color: #757575;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
   z-index: 1;
   transition: background 0.3s, color 0.3s, box-shadow 0.3s; }
@@ -301,10 +301,10 @@ form .form-field {
 
 .installer-stepper li.is-done .step-circle::after {
   content: '✓';
-  font-size: 16px; }
+  font-size: 20px; }
 
 .installer-stepper .step-label {
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #9e9e9e;
@@ -324,24 +324,24 @@ form .form-field {
 .installer-card .installer-step.is-active {
   display: flex; }
 
-.installer-welcome {
-  flex-basis: 100%;
-  text-align: left;
-  color: #555;
-  font-size: 15px;
-  line-height: 1.6; }
+#welcome .form-field {
+  margin-top: 12px; }
 
-.installer-welcome p {
-  margin: 0.6em 0; }
+#welcome .form-field > .selectize-control,
+#databaseField .form-field > .selectize-control {
+  margin: 0;
+  padding: 20px 0; }
 
-.installer-welcome ul {
-  margin: 0.6em 0 0.6em 1.6em;
-  padding: 0;
-  text-align: left; }
+#welcome .form-field > .form-field-hint:last-child,
+#databaseField .form-field > .form-field-hint:last-child {
+  margin-top: 0; }
 
-.installer-welcome ul li {
-  list-style: disc;
-  margin: 0.3em 0; }
+#databaseField .form-field > .form-field-hint:first-child {
+  margin-top: 0; }
+
+.installer-step .installer-section-title + .mdl-textfield {
+  margin-top: -6px;
+  padding-top: 30px; }
 
 .password-actions .installer-copy-pass {
   cursor: pointer; }
@@ -358,7 +358,7 @@ form .form-field {
 .installer-requirements {
   flex-basis: 100%;
   list-style: none;
-  margin: 0.8em 0 0;
+  margin: 0;
   padding: 0;
   text-align: left; }
 
@@ -369,6 +369,9 @@ form .form-field {
   margin: 0.7em 0;
   font-size: 15px;
   color: #555; }
+
+.installer-requirements li:first-child {
+  margin-top: 0; }
 
 .installer-requirements li .material-icons {
   font-size: 20px; }
@@ -464,7 +467,7 @@ form .form-field {
 
 /* match the visual gap below the hints (2.4em margin + the field's floating-label padding) */
 .installer-step .installer-section-title + .form-field-hint {
-  margin-top: 3.7em; }
+  margin-top: 0; }
 
 .installer-footer {
   display: flex;

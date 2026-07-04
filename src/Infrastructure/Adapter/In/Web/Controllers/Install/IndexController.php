@@ -132,8 +132,9 @@ final class IndexController extends ControllerBase
             SelectItemAdapter::factory(Language::getAvailableLanguages())
                 ->getItemsFromArraySelected([$lang])
         );
-        // After a language switch the page reloads — resume the wizard on the language step
-        $this->view->assign('startStep', $langChanged ? 2 : 1);
+        // The language selector lives on the first step, so a language-switch reload
+        // resumes there — same as a fresh start.
+        $this->view->assign('startStep', 1);
 
         return ActionResponse::ok($this->render());
     }

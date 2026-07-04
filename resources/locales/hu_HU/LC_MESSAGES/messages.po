@@ -1164,9 +1164,8 @@ msgstr "Aj, ez egy próbaverzió"
 #: app/modules/web/Controllers/UserPassResetController.php:197
 #: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
-#, fuzzy
 msgid "Passwords do not match"
-msgstr "A jelszó nem egyezik"
+msgstr "A jelszavak nem egyeznek"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:121
 msgid "Verification of exported data finished"
@@ -4495,28 +4494,24 @@ msgid "Admin user to log into the application"
 msgstr "Rendszergazda felhasználó bejelentkezés"
 
 #: lib/SP/Services/Install/Installer.php:112
-#, fuzzy
 msgid "Please, enter the admin's password"
-msgstr "Írd be az admin jelszót"
+msgstr "Kérjük, adja meg az adminisztrátor jelszavát"
 
 #: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
 msgstr "Az alkalmazás rendszergazdai jelszava"
 
 #: lib/SP/Services/Install/Installer.php:119
-#, fuzzy
 msgid "Please, enter the Master Password"
-msgstr "Írd be a mester jelszót"
+msgstr "Kérjük, adja meg a mesterjelszót"
 
 #: lib/SP/Services/Install/Installer.php:121
-#, fuzzy
 msgid "Master password to encrypt the passwords"
-msgstr "Mester jelszó szükséges a jelszavak titkosításához"
+msgstr "Mesterjelszó a jelszavak titkosításához"
 
 #: lib/SP/Services/Install/Installer.php:126
-#, fuzzy
 msgid "Master password too short"
-msgstr "Túl rövid a mester jelszó"
+msgstr "A mesterjelszó túl rövid"
 
 #: lib/SP/Services/Install/Installer.php:128
 msgid "The Master Password length need to be at least 11 characters"
@@ -8050,3 +8045,6 @@ msgstr "A rekord használatban van"
 
 msgid "Referenced record not found"
 msgstr "A hivatkozott rekord nem található"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "A mesterjelszónak és a megerősítésének egyeznie kell"

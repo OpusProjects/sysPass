@@ -4238,18 +4238,16 @@ msgid "Admin user to log into the application"
 msgstr "Usuari admin per a accés a l'aplicació"
 
 #: lib/SP/Services/Install/Installer.php:112
-#, fuzzy
 msgid "Please, enter the admin's password"
-msgstr "Indicar la clau de admin"
+msgstr "Introduïu la contrasenya de l'administrador"
 
 #: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
 msgstr "Clau de l'usuari admin de l'aplicació"
 
 #: lib/SP/Services/Install/Installer.php:119
-#, fuzzy
 msgid "Please, enter the Master Password"
-msgstr "Indicar la clau mestra"
+msgstr "Introduïu la contrasenya mestra"
 
 #: lib/SP/Services/Install/Installer.php:121
 msgid "Master password to encrypt the passwords"
@@ -7033,23 +7031,23 @@ msgstr "Usa les credencials proporcionades directament — la base de dades ha d
 #~ msgid "You should save configuration in order to take effect"
 #~ msgstr "Guardi la configuració perquè sigui efectiva"
 
-#~ msgid "Generated Password"
-#~ msgstr "Clau Generada"
+msgid "Generated Password"
+msgstr "Contrasenya generada"
 
-#~ msgid "High level"
-#~ msgstr "Nivell alt"
+msgid "High level"
+msgstr "Nivell alt"
 
-#~ msgid "Average level"
-#~ msgstr "Nivell mitjà"
+msgid "Average level"
+msgstr "Nivell mitjà"
 
-#~ msgid "Low level"
-#~ msgstr "Nivell baix"
+msgid "Low level"
+msgstr "Nivell baix"
 
-#~ msgid "Very High level"
-#~ msgstr "Nivell molt alt"
+msgid "Very High level"
+msgstr "Nivell molt alt"
 
-#~ msgid "You should use at least 8 characters"
-#~ msgstr "Utilitzar almenys 8 caràcters"
+msgid "You should use at least 8 characters"
+msgstr "Hauríeu d'utilitzar almenys 8 caràcters"
 
 #~ msgid "Delete item?"
 #~ msgstr "Esborrar element?"
@@ -7349,3 +7347,6 @@ msgstr "El registre està en ús"
 
 msgid "Referenced record not found"
 msgstr "No s'ha trobat el registre referenciat"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "La contrasenya mestra i la seva confirmació han de ser iguals"

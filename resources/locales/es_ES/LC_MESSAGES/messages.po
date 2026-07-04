@@ -8089,3 +8089,6 @@ msgstr "El registro está en uso"
 
 msgid "Referenced record not found"
 msgstr "No se encontró el registro referenciado"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "La contraseña maestra y su confirmación deben ser iguales"

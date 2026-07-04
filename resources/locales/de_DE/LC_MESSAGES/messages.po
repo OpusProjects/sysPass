@@ -7773,3 +7773,6 @@ msgstr "Der Datensatz wird verwendet"
 
 msgid "Referenced record not found"
 msgstr "Referenzierter Datensatz nicht gefunden"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Das Master-Passwort und seine Bestätigung müssen übereinstimmen"

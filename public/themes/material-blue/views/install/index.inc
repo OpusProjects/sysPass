@@ -60,22 +60,18 @@ use function SP\__;
                 </li>
                 <li data-step="2">
                     <span class="step-circle">2</span>
-                    <span class="step-label"><?php echo __('Language'); ?></span>
+                    <span class="step-label"><?php echo __('Requirements'); ?></span>
                 </li>
                 <li data-step="3">
                     <span class="step-circle">3</span>
-                    <span class="step-label"><?php echo __('Requirements'); ?></span>
+                    <span class="step-label"><?php echo __('Database'); ?></span>
                 </li>
                 <li data-step="4">
                     <span class="step-circle">4</span>
-                    <span class="step-label"><?php echo __('Database'); ?></span>
+                    <span class="step-label"><?php echo __('sysPass Admin'); ?></span>
                 </li>
                 <li data-step="5">
                     <span class="step-circle">5</span>
-                    <span class="step-label"><?php echo __('sysPass Admin'); ?></span>
-                </li>
-                <li data-step="6">
-                    <span class="step-circle">6</span>
                     <span class="step-label"><?php echo __('Master Password'); ?></span>
                 </li>
             </ol>
@@ -89,49 +85,15 @@ use function SP\__;
                 <h2 class="installer-section-title"><?php
                     echo __('Welcome'); ?></h2>
 
-                <div class="installer-welcome">
-                    <p><?php
-                        printf(
-                            __('Welcome to %s! This wizard will guide you through the installation in a few simple steps.'),
-                            $_getvar('app_name')
-                        ); ?></p>
-
-                    <p><?php
-                        echo __('Before starting, you will need the following information:'); ?></p>
-
-                    <ul>
-                        <li><?php
-                            echo __('The database server address'); ?></li>
-                        <li><?php
-                            echo __('A database user with administrative rights'); ?></li>
-                        <li><?php
-                            echo __('The name for the sysPass database'); ?></li>
-                    </ul>
-
-                    <p><?php
-                        echo __('During the installation you will also:'); ?></p>
-
-                    <ul>
-                        <li><?php
-                            echo __('Choose the application language'); ?></li>
-                        <li><?php
-                            echo __('Set up the administrator account'); ?></li>
-                        <li><?php
-                            echo __('Set the Master Password'); ?></li>
-                    </ul>
-
-                    <p><?php
-                        echo __('All set? Press Next to begin.'); ?></p>
-                </div>
-            </div>
-
-            <div class="installer-section installer-step" data-step="2" id="site">
-                <h2 class="installer-section-title"><?php
-                    echo __('Language'); ?></h2>
+                <span class="form-field-hint"><?php
+                    printf(
+                        __('Welcome to %s! This wizard will guide you through the installation in a few simple steps.'),
+                        $_getvar('app_name')
+                    ); ?></span>
 
                 <div class="form-field">
-                    <label for="sel-sitelang"><?php
-                        echo __('Language'); ?>:</label>
+                    <span class="form-field-hint"><?php
+                        echo __('Language'); ?>:</span>
                     <select name="sitelang" id="sel-sitelang" size="1"
                             class="select-box"
                             title="<?php
@@ -151,7 +113,7 @@ use function SP\__;
                 </div>
             </div>
 
-            <div class="installer-section installer-step" data-step="3" id="requirements">
+            <div class="installer-section installer-step" data-step="2" id="requirements">
                 <h2 class="installer-section-title"><?php
                     echo __('Requirements'); ?></h2>
 
@@ -256,12 +218,12 @@ use function SP\__;
                 </ul>
             </div>
 
-            <div class="installer-section installer-step" data-step="4" id="databaseField">
+            <div class="installer-section installer-step" data-step="3" id="databaseField">
                 <h2 class="installer-section-title"><?php
                     echo __('DB Configuration'), ' (MySQL)'; ?></h2>
 
                 <div class="form-field">
-                    <label for="hostingmode"><?php echo __('Install Mode'); ?>:</label>
+                    <span class="form-field-hint"><?php echo __('Install Mode'); ?>:</span>
                     <select name="hostingmode" id="hostingmode" size="1"
                             class="select-box"
                             title="<?php echo __('Install Mode'); ?>">
@@ -361,7 +323,7 @@ use function SP\__;
                 </div>
             </div>
 
-            <div class="installer-section installer-step" data-step="5" id="adminaccount">
+            <div class="installer-section installer-step" data-step="4" id="adminaccount">
                 <h2 class="installer-section-title"><?php
                     echo __('sysPass Admin'); ?></h2>
 
@@ -407,7 +369,7 @@ use function SP\__;
                 </div>
             </div>
 
-            <div class="installer-section installer-step" data-step="6" id="masterpwd">
+            <div class="installer-section installer-step" data-step="5" id="masterpwd">
                 <h2 class="installer-section-title"><?php
                     echo __('Master Password'); ?></h2>
 
@@ -493,9 +455,9 @@ use function SP\__;
             var current = parseInt(form.getAttribute('data-start-step'), 10) || 1;
             var finished = false;
 
-            // ?lang= is a one-shot signal (resume on the language step right after
-            // a switch): strip it from the URL so a later reload starts on the
-            // welcome step again. The chosen language is kept in the session.
+            // ?lang= is a one-shot signal from a language switch: strip it from the
+            // URL so a later reload starts clean on the first step. The chosen
+            // language is kept in the session.
             if (window.history && window.history.replaceState
                 && /[?&]lang=/.test(window.location.search)) {
                 var cleanParams = new URLSearchParams(window.location.search);
@@ -581,6 +543,13 @@ use function SP\__;
                     this.dataset.pass = this.value;
                     this.setCustomValidity('');
                 });
+            });
+
+            // Grey out the Next/Install button until the current step's required
+            // fields are filled — re-check on every field edit, not just on step change
+            form.querySelectorAll('input, select').forEach(function(el) {
+                el.addEventListener('input', updateNextBtn);
+                el.addEventListener('change', updateNextBtn);
             });
 
             function rawPass(input) {
@@ -783,12 +752,16 @@ use function SP\__;
                         var btn = this;
                         btn.disabled = true;
 
-                        // Encrypt a copy of the password like the install submit does;
-                        // the server falls back to the raw value if encryption fails
-                        var dbpass = form.querySelector('[name="dbpass"]').value;
+                        // The app's blur handler already PKI-encrypts the field in place
+                        // (marking it via data-length); clicking this button blurs it, so
+                        // only encrypt when it isn't already — re-encrypting would double
+                        // it and reach the DB as garbage. The server accepts raw or encrypted.
+                        var dbField = form.querySelector('[name="dbpass"]');
+                        var dbpass = dbField.value;
+                        var alreadyEncrypted = parseInt(dbField.getAttribute('data-length'), 10) === dbpass.length;
                         try {
-                            if (dbpass !== ''
-                                && sysPassApp.config.PKI
+                            if (dbpass !== '' && !alreadyEncrypted
+                                && sysPassApp.config.PKI && sysPassApp.config.PKI.CRYPTO
                                 && dbpass.length <= sysPassApp.config.PKI.MAX_SIZE) {
                                 dbpass = sysPassApp.config.PKI.CRYPTO.encrypt(dbpass);
                             }

@@ -1140,9 +1140,8 @@ msgstr "Эй, это DEMO!!"
 #: app/modules/web/Controllers/UserPassResetController.php:197
 #: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
-#, fuzzy
 msgid "Passwords do not match"
-msgstr "Пароль и подтверждение не совпадают"
+msgstr "Пароли не совпадают"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:121
 msgid "Verification of exported data finished"
@@ -4454,28 +4453,24 @@ msgid "Admin user to log into the application"
 msgstr "Пользователь администратора для входа в программу"
 
 #: lib/SP/Services/Install/Installer.php:112
-#, fuzzy
 msgid "Please, enter the admin's password"
-msgstr "Введите административный пароль"
+msgstr "Пожалуйста, введите пароль администратора"
 
 #: lib/SP/Services/Install/Installer.php:114
 msgid "Application administrator's password"
 msgstr "Пароль администратора программы"
 
 #: lib/SP/Services/Install/Installer.php:119
-#, fuzzy
 msgid "Please, enter the Master Password"
-msgstr "Введите мастер-пароль"
+msgstr "Пожалуйста, введите мастер-пароль"
 
 #: lib/SP/Services/Install/Installer.php:121
-#, fuzzy
 msgid "Master password to encrypt the passwords"
-msgstr "Матер-пароль для шифрования паролей "
+msgstr "Мастер-пароль для шифрования паролей"
 
 #: lib/SP/Services/Install/Installer.php:126
-#, fuzzy
 msgid "Master password too short"
-msgstr "Длина мастер-пароля мала"
+msgstr "Мастер-пароль слишком короткий"
 
 #: lib/SP/Services/Install/Installer.php:128
 msgid "The Master Password length need to be at least 11 characters"
@@ -8001,3 +7996,6 @@ msgstr "Запись используется"
 
 msgid "Referenced record not found"
 msgstr "Указанная запись не найдена"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Мастер-пароль и его подтверждение должны совпадать"

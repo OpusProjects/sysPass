@@ -1126,9 +1126,8 @@ msgstr "Øj, dette er en DEMO-version!!"
 #: app/modules/web/Controllers/UserPassResetController.php:197
 #: app/modules/web/Forms/AccountForm.php:133
 #: app/modules/web/Forms/UserForm.php:161
-#, fuzzy
 msgid "Passwords do not match"
-msgstr "Kodeordene er ikke identiske"
+msgstr "Adgangskoderne stemmer ikke overens"
 
 #: app/modules/web/Controllers/ConfigBackupController.php:121
 msgid "Verification of exported data finished"
@@ -7853,3 +7852,6 @@ msgstr "Posten er i brug"
 
 msgid "Referenced record not found"
 msgstr "Refereret post ikke fundet"
+
+msgid "The Master Password and its confirmation must be the same"
+msgstr "Masteradgangskoden og dens bekræftelse skal være ens"
