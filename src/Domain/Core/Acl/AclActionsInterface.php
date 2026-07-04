@@ -130,7 +130,6 @@ interface AclActionsInterface
     public const PLUGIN_RESET               = 1107;
     public const PLUGIN_DELETE              = 1108;
     public const WIKI                       = 1201;
-    public const WIKI_SEARCH                = 1202;
     public const WIKI_VIEW                  = 1203;
     public const WIKI_CREATE                = 1204;
     public const WIKI_EDIT                  = 1205;
@@ -142,7 +141,6 @@ interface AclActionsInterface
     public const ACCOUNTMGR_BULK_EDIT       = 1305;
     public const ACCOUNTMGR_HISTORY         = 1311;
     public const ACCOUNTMGR_HISTORY_SEARCH  = 1312;
-    public const ACCOUNTMGR_HISTORY_VIEW    = 1313;
     public const ACCOUNTMGR_HISTORY_DELETE  = 1314;
     public const ACCOUNTMGR_HISTORY_RESTORE = 1315;
     public const NOTIFICATION               = 1401;
