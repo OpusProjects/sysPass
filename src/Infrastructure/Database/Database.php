@@ -52,6 +52,7 @@ use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use Exception;
 use PDO;
+use PDOException;
 use PDOStatement;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
@@ -216,11 +217,32 @@ final class Database implements DatabaseInterface
             processException($e);
 
             if ((int)$e->getCode() === 23000) {
-                throw ConstraintException::error(__u('Integrity constraint'), $e->getMessage(), (int)$e->getCode(), $e);
+                throw ConstraintException::error(
+                    self::constraintMessage($e),
+                    $e->getMessage(),
+                    (int)$e->getCode(),
+                    $e
+                );
             }
 
             throw QueryException::critical($e->getMessage(), (string)$e->getCode(), (int)$e->getCode(), $e);
         }
+    }
+
+    /**
+     * A friendlier message per MySQL constraint (SQLSTATE 23000). The raw driver
+     * detail is kept as the exception hint; a non-PDO error keeps the generic one.
+     */
+    private static function constraintMessage(Exception $e): string
+    {
+        $driverCode = $e instanceof PDOException ? ($e->errorInfo[1] ?? null) : null;
+
+        return match ($driverCode) {
+            1062 => __u('Duplicate entry'),
+            1451 => __u('The record is in use'),
+            1452 => __u('Referenced record not found'),
+            default => __u('Integrity constraint'),
+        };
     }
 
     private function fetch(PDOStatement $stmt, ?string $class = null): array

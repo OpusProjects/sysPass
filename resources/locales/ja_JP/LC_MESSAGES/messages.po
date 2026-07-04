@@ -7802,3 +7802,12 @@ msgstr "ランタイムディレクトリが書き込み可能"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode が有効"
+
+msgid "Duplicate entry"
+msgstr "重複するエントリ"
+
+msgid "The record is in use"
+msgstr "レコードは使用中です"
+
+msgid "Referenced record not found"
+msgstr "参照先のレコードが見つかりません"

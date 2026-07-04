@@ -7776,3 +7776,12 @@ msgstr "Runtime-mappen beschrijfbaar"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode ingeschakeld"
+
+msgid "Duplicate entry"
+msgstr "Dubbele invoer"
+
+msgid "The record is in use"
+msgstr "De record is in gebruik"
+
+msgid "Referenced record not found"
+msgstr "Verwezen record niet gevonden"

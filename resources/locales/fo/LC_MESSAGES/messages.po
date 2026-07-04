@@ -7680,3 +7680,12 @@ msgstr "Koyritíðar-skrásøvn skrivandi"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode virkin"
+
+msgid "Duplicate entry"
+msgstr "Tvífaldur teigur"
+
+msgid "The record is in use"
+msgstr "Teigurin er í brúki"
+
+msgid "Referenced record not found"
+msgstr "Umrødd teigur ikki funnin"

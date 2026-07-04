@@ -7950,3 +7950,12 @@ msgstr "Katalogi wykonawcze zapisywalne"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode włączone"
+
+msgid "Duplicate entry"
+msgstr "Zduplikowany wpis"
+
+msgid "The record is in use"
+msgstr "Rekord jest w użyciu"
+
+msgid "Referenced record not found"
+msgstr "Nie znaleziono wskazywanego rekordu"

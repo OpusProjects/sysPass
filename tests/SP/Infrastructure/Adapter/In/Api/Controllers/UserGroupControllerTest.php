@@ -69,9 +69,9 @@ class UserGroupControllerTest extends ApiTestCase
 
         $r = $this->createUserGroup($params);
 
-        // The FK violation (nonexistent user) surfaces as an integrity constraint
+        // The FK violation (nonexistent user) surfaces as a missing reference
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Integrity constraint', $r->body->error->message);
+        $this->assertSame('Referenced record not found', $r->body->error->message);
     }
 
     public function testCreateActionRequiredParameters(): void
@@ -157,9 +157,9 @@ class UserGroupControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::GROUP_EDIT, $params);
 
-        // The FK violation (nonexistent user) surfaces as an integrity constraint
+        // The FK violation (nonexistent user) surfaces as a missing reference
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Integrity constraint', $r->body->error->message);
+        $this->assertSame('Referenced record not found', $r->body->error->message);
     }
 
     public function testEditActionRequiredParameters(): void

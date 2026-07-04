@@ -8080,3 +8080,12 @@ msgstr "Directorios de tiempo de ejecución con permisos de escritura"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode activado"
+
+msgid "Duplicate entry"
+msgstr "Entrada duplicada"
+
+msgid "The record is in use"
+msgstr "El registro está en uso"
+
+msgid "Referenced record not found"
+msgstr "No se encontró el registro referenciado"

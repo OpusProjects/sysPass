@@ -7764,3 +7764,12 @@ msgstr "Laufzeitverzeichnisse beschreibbar"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode aktiviert"
+
+msgid "Duplicate entry"
+msgstr "Doppelter Eintrag"
+
+msgid "The record is in use"
+msgstr "Der Datensatz wird verwendet"
+
+msgid "Referenced record not found"
+msgstr "Referenzierter Datensatz nicht gefunden"

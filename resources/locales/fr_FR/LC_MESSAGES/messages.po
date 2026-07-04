@@ -7780,3 +7780,12 @@ msgstr "Répertoires d'exécution accessibles en écriture"
 
 msgid "session.use_strict_mode enabled"
 msgstr "session.use_strict_mode activé"
+
+msgid "Duplicate entry"
+msgstr "Entrée en double"
+
+msgid "The record is in use"
+msgstr "L'enregistrement est utilisé"
+
+msgid "Referenced record not found"
+msgstr "Enregistrement référencé introuvable"
