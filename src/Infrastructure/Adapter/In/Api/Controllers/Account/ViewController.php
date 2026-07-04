@@ -54,7 +54,7 @@ final class ViewController extends AccountBase
             $this->apiService->requireMasterPass();
         }
 
-        $accountDetails = $this->accountService->getByIdEnriched($id)->getAccountVData();
+        $accountDetails = $this->accountService->getByIdEnriched($id);
 
         $this->accountService->incrementViewCounter($id);
 

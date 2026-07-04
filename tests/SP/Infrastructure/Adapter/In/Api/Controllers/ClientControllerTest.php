@@ -25,386 +25,188 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use JsonException;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
 
 /**
- * Class ClientControllerTest
- *
- * @package SP\Tests\Infrastructure\Adapter\In\Api\Controllers
+ * REST API tests for the Client controllers.
  */
+#[Group('integration')]
 class ClientControllerTest extends ApiTestCase
 {
     private const PARAMS = [
         'name' => 'API Client',
         'description' => "API test\ndescription",
-        'global' => 1
     ];
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateAction(): void
     {
-        $response = $this->createClient(self::PARAMS);
+        $r = $this->createClient(self::PARAMS);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNull($response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals(5, $response->result->itemId);
-        $this->assertEquals('Client added', $response->result->resultMessage);
-
-        $resultItem = $response->result->result;
-
-        $this->assertEquals($response->result->itemId, $resultItem->id);
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
-        $this->assertEquals(self::PARAMS['global'], $resultItem->isGlobal);
+        $this->assertSame(201, $r->status);
+        $this->assertSame(5, $r->body->itemId);
+        $this->assertSame('Client added', $r->body->message);
+        $this->assertSame($r->body->itemId, $r->body->data->id);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->name);
+        $this->assertSame(self::PARAMS['description'], $r->body->data->description);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     private function createClient(?array $params = null): stdClass
     {
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_CREATE,
-            $params ?? self::PARAMS
-        );
-
-        return self::processJsonResponse($api);
+        return $this->callApi(AclActionsInterface::CLIENT_CREATE, $params ?? self::PARAMS);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testCreateActionDuplicated(): void
     {
-        $response = $this->createClient(['name' => 'Google']);
+        $r = $this->createClient(['name' => 'Google']);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated client', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testCreateActionRequiredParameters(): void
+    public function testCreateActionRequiredParameter(): void
     {
         $params = self::PARAMS;
         unset($params['name']);
 
-        $response = $this->createClient($params);
+        $r = $this->createClient($params);
 
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewAction(): void
     {
-        $response = $this->createClient(self::PARAMS);
+        $id = $this->createClient(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::CLIENT_VIEW, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_VIEW,
-            ['id' => $id]
-        );
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result->data;
-
-        $this->assertEquals(self::PARAMS['name'], $resultItem->name);
-        $this->assertEquals(self::PARAMS['description'], $resultItem->description);
-        $this->assertEquals(self::PARAMS['global'], $resultItem->isGlobal);
-        $this->assertNull($resultItem->customFields);
-        $this->assertIsArray($resultItem->links);
-        $this->assertEquals('self', $resultItem->links[0]->rel);
-        $this->assertNotEmpty($resultItem->links[0]->uri);
+        $item = $r->body->data->data;
+        $this->assertSame(self::PARAMS['name'], $item->name);
+        $this->assertSame(self::PARAMS['description'], $item->description);
+        $this->assertNull($item->customFields);
+        $this->assertIsArray($item->links);
+        $this->assertSame('self', $item->links[0]->rel);
+        $this->assertNotEmpty($item->links[0]->uri);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testViewActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_VIEW,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_VIEW, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Client not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Client not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditAction(): void
     {
-        $response = $this->createClient(self::PARAMS);
-
-        $id = $response->result->itemId;
+        $id = $this->createClient(self::PARAMS)->body->itemId;
 
         $params = [
             'id' => $id,
             'name' => 'API Client edit',
             'description' => "API test\ndescription\nedit",
-            'global' => 0
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Client updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Client updated', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_VIEW,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals($id, $response->result->itemId);
-
-        $resultItem = $response->result->result->data;
-
-        $this->assertEquals($params['name'], $resultItem->name);
-        $this->assertEquals($params['description'], $resultItem->description);
-        $this->assertEquals($params['global'], $resultItem->isGlobal);
-        $this->assertNull($resultItem->customFields);
+        $view = $this->callApi(AclActionsInterface::CLIENT_VIEW, ['id' => $id]);
+        $item = $view->body->data->data;
+        $this->assertSame($params['name'], $item->name);
+        $this->assertSame($params['description'], $item->description);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionDuplicated(): void
     {
-        $response = $this->createClient(self::PARAMS);
+        $id = $this->createClient(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::CLIENT_EDIT, ['id' => $id, 'name' => 'Google']);
 
-        $params = [
-            'id' => $id,
-            'name' => 'Google'
-        ];
-
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Duplicated clientService', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated client', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionRequiredParameters(): void
     {
-        $response = $this->createClient(self::PARAMS);
+        $id = $this->createClient(self::PARAMS)->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::CLIENT_EDIT, ['id' => $id]);
 
-        $params = [
-            'id' => $id
-        ];
-
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_EDIT,
-            $params
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testEditActionNonExistant(): void
     {
         $params = [
             'id' => 10,
             'name' => 'API Client edit',
             'description' => "API test\ndescription\nedit",
-            'global' => 0
         ];
 
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_EDIT,
-            $params
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_EDIT, $params);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(0, $response->result->count);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Client updated', $r->body->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws JsonException
-     * @throws NotFoundException
-     */
     #[DataProvider('searchProvider')]
     public function testSearchActionByFilter(array $filter, int $resultsCount): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_SEARCH,
-            $filter
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_SEARCH, $filter);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals($resultsCount, $response->result->count);
-        $this->assertCount($resultsCount, $response->result->result);
+        $this->assertSame(200, $r->status);
+        $this->assertSame($resultsCount, $r->body->count);
+        $this->assertCount($resultsCount, $r->body->data);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteAction(): void
     {
-        $response = $this->createClient();
+        $id = $this->createClient()->body->itemId;
 
-        $id = $response->result->itemId;
+        $r = $this->callApi(AclActionsInterface::CLIENT_DELETE, ['id' => $id]);
 
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_DELETE,
-            ['id' => $id]
-        );
-
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertInstanceOf(stdClass::class, $response->result);
-        $this->assertEquals('Client deleted', $response->result->resultMessage);
-        $this->assertEquals($id, $response->result->itemId);
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Client deleted', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testDeleteActionNonExistant(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_DELETE,
-            ['id' => 10]
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_DELETE, ['id' => 10]);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Client not found', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Client not found', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
-    public function testDeleteActionRequiredParameters(): void
+    public function testDeleteActionWithoutId(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CLIENT_DELETE,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::CLIENT_DELETE, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertEquals('Wrong parameters', $response->error->message);
-        $this->assertInstanceOf(stdClass::class, $response->error->data);
-        $this->assertIsArray($response->error->data->help);
-
+        $this->assertSame(404, $r->status);
+        $this->assertSame('Client not found', $r->body->error->message);
     }
 
     public static function searchProvider(): array
     {
         return [
-            [
-                [],
-                4
-            ],
-            [
-                ['count' => 1],
-                1
-            ],
-            [
-                ['text' => 'Google'],
-                1
-            ],
-            [
-                ['text' => 'Inc'],
-                3
-            ],
-            [
-                ['text' => 'Spotify'],
-                0
-            ]
+            [[], 4],
+            [['count' => 1], 1],
+            [['text' => 'Google'], 1],
+            [['text' => 'Inc'], 3],
+            [['text' => 'Spotify'], 0],
         ];
     }
 }

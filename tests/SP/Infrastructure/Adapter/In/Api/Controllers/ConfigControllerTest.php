@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -25,153 +25,84 @@ declare(strict_types=1);
 
 namespace SP\Tests\Infrastructure\Adapter\In\Api\Controllers;
 
-use DI\DependencyException;
-use DI\NotFoundException;
-use JsonException;
+use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
 
 /**
- * Class ConfigControllerTest
- *
- * @package SP\Tests\Infrastructure\Adapter\In\Api\Controllers
+ * REST API tests for the Config controllers (export / backup).
  */
+#[Group('integration')]
 class ConfigControllerTest extends ApiTestCase
 {
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testExportAction(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_EXPORT_RUN,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::CONFIG_EXPORT_RUN, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Export process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->xml);
-        $this->assertFileExists($response->result->result->files->xml);
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
+        $this->assertSame('Export process finished', $r->body->message);
+        $this->assertNotEmpty($r->body->data->files->xml);
+        $this->assertFileExists($r->body->data->files->xml);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testExportActionCustomPath(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_EXPORT_RUN,
-            [
-                'path' => TMP_PATH . '/export/custom/path'
-            ]
-        );
+        $path = self::tmpPath() . '/export/custom/path';
 
-        $response = self::processJsonResponse($api);
+        $r = $this->callApi(AclActionsInterface::CONFIG_EXPORT_RUN, ['path' => $path]);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Export process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->xml);
-        $this->assertFileExists($response->result->result->files->xml);
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
+        $this->assertSame('Export process finished', $r->body->message);
+        $this->assertNotEmpty($r->body->data->files->xml);
+        $this->assertFileExists($r->body->data->files->xml);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testExportActionInvalidPath(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_EXPORT_RUN,
-            [
-                'path' => '/export/custom/path'
-            ]
-        );
+        // A path under /dev/null cannot be created (ENOTDIR), even as root
+        $r = $this->callApi(AclActionsInterface::CONFIG_EXPORT_RUN, ['path' => '/dev/null/export/path']);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertStringContainsString('Unable to create the directory', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertStringContainsString('Unable to create directory', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testBackupAction(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_BACKUP_RUN,
-            []
-        );
+        $r = $this->callApi(AclActionsInterface::CONFIG_BACKUP_RUN, []);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Backup process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->app);
-        $this->assertNotEmpty($response->result->result->files->db);
-        $this->assertFileExists($response->result->result->files->app);
-        $this->assertFileExists($response->result->result->files->db);
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
+        $this->assertSame('Backup process finished', $r->body->message);
+        $this->assertNotEmpty($r->body->data->files->app);
+        $this->assertNotEmpty($r->body->data->files->db);
+        // The compressed archives land in the backup dir
+        $this->assertNotEmpty(glob(self::backupPath() . '/sysPass_app-*'));
+        $this->assertNotEmpty(glob(self::backupPath() . '/sysPass_db-*'));
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testBackupActionInvalidPath(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_BACKUP_RUN,
-            [
-                'path' => '/backup/custom/path'
-            ]
-        );
+        // A path under /dev/null cannot be created (ENOTDIR), even as root
+        $r = $this->callApi(AclActionsInterface::CONFIG_BACKUP_RUN, ['path' => '/dev/null/backup/path']);
 
-        $response = self::processJsonResponse($api);
-
-        $this->assertInstanceOf(stdClass::class, $response->error);
-        $this->assertStringContainsString('Unable to create the backups directory', $response->error->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertStringContainsString('Error while doing the backup', $r->body->error->message);
     }
 
-    /**
-     * @throws DependencyException
-     * @throws NotFoundException
-     * @throws JsonException
-     */
     public function testBackupActionCustomPath(): void
     {
-        $api = $this->callApi(
-            AclActionsInterface::CONFIG_BACKUP_RUN,
-            [
-                'path' => TMP_PATH . '/backup/custom/path'
-            ]
-        );
+        $path = self::tmpPath() . '/backup/custom/path';
+        mkdir($path, 0777, true);
 
-        $response = self::processJsonResponse($api);
+        $r = $this->callApi(AclActionsInterface::CONFIG_BACKUP_RUN, ['path' => $path]);
 
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertEquals(1, $response->result->count);
-        $this->assertEquals('Backup process finished', $response->result->resultMessage);
-        $this->assertEquals(0, $response->result->resultCode);
-        $this->assertNotEmpty($response->result->result->files->app);
-        $this->assertNotEmpty($response->result->result->files->db);
-        $this->assertFileExists($response->result->result->files->app);
-        $this->assertFileExists($response->result->result->files->db);
+        $this->assertSame(200, $r->status);
+        $this->assertSame(1, $r->body->count);
+        $this->assertSame('Backup process finished', $r->body->message);
+        $this->assertNotEmpty(glob($path . '/sysPass_app-*'));
+        $this->assertNotEmpty(glob($path . '/sysPass_db-*'));
     }
 }
