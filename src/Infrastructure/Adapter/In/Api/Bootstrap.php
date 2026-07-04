@@ -270,7 +270,16 @@ final class Bootstrap extends BootstrapBase
             return Code::NOT_FOUND->value;
         }
 
-        $code = $e->getCode();
+        // PDO exceptions carry string SQLSTATE codes (e.g. "42S02", "40001").
+        // In PHP 8, a string-vs-int comparison converts the int to string, so a
+        // non-numeric SQLSTATE can pass the 400–599 range check and the method
+        // would return a string, causing a TypeError (strict_types=1 return type int).
+        // Only treat the code as an HTTP status when it is an integer (or a digit-only
+        // string that casts cleanly) in the valid HTTP error range.
+        $raw = $e->getCode();
+        $code = is_int($raw)
+            ? $raw
+            : (is_string($raw) && ctype_digit($raw) ? (int)$raw : 0);
 
         if ($code >= 400 && $code < 600) {
             return $code;
