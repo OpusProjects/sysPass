@@ -245,9 +245,15 @@ class TrackTest extends UnitaryTestCase
      */
     public function testBuildTrackRequest()
     {
+        // Must key on the unspoofable REMOTE_ADDR, never the client-controlled
+        // getClientAddress() (Forwarded / X-Forwarded-For).
+        $this->request
+            ->expects($this->never())
+            ->method('getClientAddress');
         $this->request
             ->expects($this->once())
-            ->method('getClientAddress')
+            ->method('getServer')
+            ->with('REMOTE_ADDR')
             ->willReturn(self::$faker->ipv4());
 
         $out = $this->track->buildTrackRequest('test');
