@@ -18,8 +18,10 @@ final class ViewController extends ProfileBase
         $id = $this->apiService->getParamInt('id', true);
         $profileData = $this->profileService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.profile',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.profile',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Profile displayed'))
                 ->addDetail(__u('Name'), $profileData->getName())
                 ->addDetail('ID', $id)

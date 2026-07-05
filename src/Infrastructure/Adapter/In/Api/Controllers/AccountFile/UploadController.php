@@ -72,7 +72,8 @@ final class UploadController extends AccountFileBase
 
         $id = $this->accountFileService->create($fileData);
 
-        $this->eventDispatcher->notify(new Event('upload.accountFile',
+        $this->eventDispatcher->notify(new Event(
+            'upload.accountFile',
             $this,
             EventMessage::build()
                 ->addDescription(__u('File uploaded'))

@@ -20,7 +20,8 @@ final class DeleteController extends ProfileBase
         $profileData = $this->profileService->getById($id);
         $this->profileService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.profile',
+        $this->eventDispatcher->notify(new Event(
+            'delete.profile',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Profile removed'))

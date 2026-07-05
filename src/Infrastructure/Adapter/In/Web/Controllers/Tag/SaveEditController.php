@@ -54,8 +54,7 @@ final class SaveEditController extends TagSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::TAG_EDIT, $id);

@@ -19,7 +19,8 @@ final class CheckController extends NotificationBase
         $id = $this->apiService->getParamInt('id', true);
         $this->notificationService->setCheckedById($id);
 
-        $this->eventDispatcher->notify(new Event('check.notification',
+        $this->eventDispatcher->notify(new Event(
+            'check.notification',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Notification marked as read'))

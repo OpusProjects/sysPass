@@ -51,8 +51,7 @@ final class SaveCreateController extends CustomFieldSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::CUSTOMFIELD_CREATE);
@@ -61,16 +60,15 @@ final class SaveCreateController extends CustomFieldSaveBase
 
             $this->customFieldDefService->create($itemData);
 
-            $this->eventDispatcher->notify(new Event('create.customField', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'create.customField',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Field added'))
                         ->addDetail(__u('Field'), $itemData->getName())
-                )
-            );
+            ));
 
-            return ActionResponse::ok(__u('Field added')
-            );
+            return ActionResponse::ok(__u('Field added'));
         } catch (ValidationException $e) {
             return ActionResponse::error($e->getMessage());
         } catch (Exception $e) {

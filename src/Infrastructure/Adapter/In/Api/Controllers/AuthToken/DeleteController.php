@@ -20,7 +20,8 @@ final class DeleteController extends AuthTokenBase
         $tokenData = $this->authTokenService->getById($id);
         $this->authTokenService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.authToken',
+        $this->eventDispatcher->notify(new Event(
+            'delete.authToken',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Authorization removed'))

@@ -20,7 +20,8 @@ final class DeleteController extends NotificationBase
         $notification = $this->notificationService->getById($id);
         $this->notificationService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.notification',
+        $this->eventDispatcher->notify(new Event(
+            'delete.notification',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Notification removed'))

@@ -65,11 +65,11 @@ final class SaveEditController extends CategorySaveBase
 
         $this->categoryService->update($itemData);
 
-        $this->eventDispatcher->notify(new Event('edit.category', 
-                $this,
-                EventMessage::build(__u('Category updated'))->addDetail(__u('Category'), $itemData->getName())
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'edit.category',
+            $this,
+            EventMessage::build(__u('Category updated'))->addDetail(__u('Category'), $itemData->getName())
+        ));
 
         $this->updateCustomFieldsForItem(
             AclActionsInterface::CATEGORY,

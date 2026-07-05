@@ -25,6 +25,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Import\Services;
+
 use SP\Domain\Import\Services\ImportException;
 
 use CallbackFilterIterator;
@@ -66,8 +67,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
         try {
-            $this->eventDispatcher->notify(new Event('run.import.syspass', $this, EventMessage::build()->addDescription(__u('sysPass XML Import')))
-            );
+            $this->eventDispatcher->notify(new Event('run.import.syspass', $this, EventMessage::build()->addDescription(__u('sysPass XML Import'))));
 
             $this->version = $this->getXmlVersion();
 
@@ -171,8 +171,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             $nodeData->parentNode->removeChild($nodeData);
         }
 
-        $this->eventDispatcher->notify(new Event('run.import.syspass.process.decryption', $this, EventMessage::build()->addDescription(__u('Data unencrypted')))
-        );
+        $this->eventDispatcher->notify(new Event('run.import.syspass.process.decryption', $this, EventMessage::build()->addDescription(__u('Data unencrypted'))));
     }
 
     /**
@@ -183,17 +182,17 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
         $key = $importParams->getPassword() ?: sha1($this->configData->getPasswordSalt() ?? '');
 
         if (!XmlVerify::checkXmlHash($this->document, $key)) {
-            $this->eventDispatcher->notify(new Event('run.import.syspass.process.verify', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'run.import.syspass.process.verify',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Error while checking integrity hash'))
                         ->addDescription(
                             __u(
                                 'If you are importing an exported file from the same origin, the data could be compromised.'
                             )
                         )
-                )
-            );
+            ));
         }
     }
 
@@ -219,19 +218,19 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addCategory(new Category($data));
 
-                $this->eventDispatcher->notify(new Event('run.import.syspass.process.category', 
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'run.import.syspass.process.category',
+                    $this,
+                    EventMessage::build()
                                     ->addDetail(__u('Category imported'), $data['name'])
-                    )
-                );
+                ));
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(new Event('exception', 
-                    $e,
-                    EventMessage::build()->addDescription(__('Unable to import categories'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'exception',
+                $e,
+                EventMessage::build()->addDescription(__('Unable to import categories'))
+            ));
 
             throw ImportException::from($e);
         }
@@ -259,19 +258,19 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addClient(new Client($data));
 
-                $this->eventDispatcher->notify(new Event('run.import.syspass.process.client', 
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'run.import.syspass.process.client',
+                    $this,
+                    EventMessage::build()
                                     ->addDetail(__u('Client imported'), $data['name'])
-                    )
-                );
+                ));
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(new Event('exception', 
-                    $e,
-                    EventMessage::build()->addDescription(__('Unable to import clients'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'exception',
+                $e,
+                EventMessage::build()->addDescription(__('Unable to import clients'))
+            ));
 
             throw ImportException::from($e);
         }
@@ -300,18 +299,18 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addTag(new Tag($data));
 
-                $this->eventDispatcher->notify(new Event('run.import.syspass.process.tag', 
-                        $this,
-                        EventMessage::build()->addDetail(__u('Tag imported'), $data['name'])
-                    )
-                );
+                $this->eventDispatcher->notify(new Event(
+                    'run.import.syspass.process.tag',
+                    $this,
+                    EventMessage::build()->addDetail(__u('Tag imported'), $data['name'])
+                ));
             }
         } catch (Exception $e) {
-            $this->eventDispatcher->notify(new Event('exception', 
-                    $e,
-                    EventMessage::build()->addDescription(__('Unable to import tags'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'exception',
+                $e,
+                EventMessage::build()->addDescription(__('Unable to import tags'))
+            ));
 
             throw ImportException::from($e);
         }
@@ -353,19 +352,19 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addAccount($dtoWithTags, $importParams, true);
 
-                $this->eventDispatcher->notify(new Event('run.import.syspass.process.account',
-                        $this,
-                        EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
-                    )
-                );
+                $this->eventDispatcher->notify(new Event(
+                    'run.import.syspass.process.account',
+                    $this,
+                    EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
+                ));
             } catch (ImportException $e) {
                 throw $e;
             } catch (Exception $e) {
-                $this->eventDispatcher->notify(new Event('exception',
-                        $e,
-                        EventMessage::build()->addDescription(__('Unable to import account'))
-                    )
-                );
+                $this->eventDispatcher->notify(new Event(
+                    'exception',
+                    $e,
+                    EventMessage::build()->addDescription(__('Unable to import account'))
+                ));
 
                 $this->eventDispatcher->notify(new Event('exception', $e));
             }

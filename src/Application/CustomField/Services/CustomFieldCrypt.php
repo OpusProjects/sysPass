@@ -105,24 +105,24 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
         $customFieldsData = $this->customFieldService->getAllEncrypted();
 
         if (empty($customFieldsData)) {
-            $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData',
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'update.masterPassword.customFieldsData',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
                                 ->addDescription(__u('There aren\'t any data from custom fields'))
-                )
-            );
+            ));
 
             return 0;
         }
 
-        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.start',
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'update.masterPassword.customFieldsData.start',
+            $this,
+            EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
                             ->addDescription(__u('Updating encrypted data'))
-            )
-        );
+        ));
 
         $errors = [];
         $success = [];
@@ -144,14 +144,14 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             }
         }
 
-        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.end',
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'update.masterPassword.customFieldsData.end',
+            $this,
+            EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
                             ->addDetail(__u('Records updated'), implode(',', $success))
                             ->addDetail(__u('Records not updated'), implode(',', $errors))
-            )
-        );
+        ));
 
         return count($errors);
     }

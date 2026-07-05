@@ -25,7 +25,8 @@ final class EditController extends ProfileBase
 
         $this->profileService->update($profileData);
 
-        $this->eventDispatcher->notify(new Event('edit.profile',
+        $this->eventDispatcher->notify(new Event(
+            'edit.profile',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Profile updated'))

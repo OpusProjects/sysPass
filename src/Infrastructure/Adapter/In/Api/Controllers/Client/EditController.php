@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,14 +50,14 @@ final class EditController extends ClientBase
 
         $this->clientService->update($clientData);
 
-        $this->eventDispatcher->notify(new Event('edit.client', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.client',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Client updated'))
                     ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $clientData->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($clientData, __('Client updated'), $clientData->getId());
     }

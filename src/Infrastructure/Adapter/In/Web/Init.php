@@ -148,7 +148,6 @@ final class Init extends HttpModuleBase
         private readonly DatabaseUtil        $databaseUtil,
         private readonly UserProfileService  $userProfileService,
         private readonly UriContextInterface $uriContext,
-
     ) {
         parent::__construct(
             $application,

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Plugin;
 
-
 use JsonException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -52,8 +51,7 @@ final class SearchController extends PluginSearchBase
     public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_SEARCH)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation')
-            );
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');

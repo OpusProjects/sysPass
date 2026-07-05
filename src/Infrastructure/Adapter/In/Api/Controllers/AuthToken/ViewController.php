@@ -18,8 +18,10 @@ final class ViewController extends AuthTokenBase
         $id = $this->apiService->getParamInt('id', true);
         $tokenData = $this->authTokenService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.authToken',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.authToken',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Authorization displayed'))
                 ->addDetail('ID', $id)
         ));

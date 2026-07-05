@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,15 +50,15 @@ final class DeleteController extends AccountBase
 
         $this->accountService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.account', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'delete.account',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Account removed'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($accountDetails, __('Account removed'), $id);
     }

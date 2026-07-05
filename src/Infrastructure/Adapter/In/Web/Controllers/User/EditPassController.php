@@ -56,8 +56,7 @@ final class EditPassController extends UserViewBase
         try {
             // Check whether the user to modify is different from the session user
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->addTemplate('user_pass', 'itemshow');

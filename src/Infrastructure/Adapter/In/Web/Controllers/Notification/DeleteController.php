@@ -72,8 +72,7 @@ final class DeleteController extends NotificationSaveBase
                     $this->notificationService->deleteByIdBatch($ids);
                 }
 
-                $this->eventDispatcher->notify(new Event('delete.notification.selection', $this, EventMessage::build()->addDescription(__u('Notifications deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.notification.selection', $this, EventMessage::build()->addDescription(__u('Notifications deleted'))));
 
                 return ActionResponse::ok(__u('Notifications deleted'));
             }
@@ -84,13 +83,13 @@ final class DeleteController extends NotificationSaveBase
                 $this->notificationService->delete($id);
             }
 
-            $this->eventDispatcher->notify(new Event('delete.notification', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'delete.notification',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Notification deleted'))
                         ->addDetail(__u('Notification'), $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Notification deleted'));
         } catch (Exception $e) {

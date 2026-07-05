@@ -53,8 +53,7 @@ final class SaveCreateController extends UserGroupSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::GROUP_CREATE);
@@ -63,13 +62,13 @@ final class SaveCreateController extends UserGroupSaveBase
 
             $id = $this->userGroupService->create($groupData);
 
-            $this->eventDispatcher->notify(new Event('create.userGroup', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'create.userGroup',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Group added'))
                         ->addDetail(__u('Name'), $groupData->getName())
-                )
-            );
+            ));
 
             $this->addCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->request, $this->customFieldService);
 

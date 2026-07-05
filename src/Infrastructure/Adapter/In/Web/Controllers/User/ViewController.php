@@ -56,8 +56,7 @@ final class ViewController extends UserViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_VIEW)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('View User'));

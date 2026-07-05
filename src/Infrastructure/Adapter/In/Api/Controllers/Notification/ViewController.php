@@ -18,8 +18,10 @@ final class ViewController extends NotificationBase
         $id = $this->apiService->getParamInt('id', true);
         $notification = $this->notificationService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.notification',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.notification',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Notification displayed'))
                 ->addDetail('ID', $id)
         ));

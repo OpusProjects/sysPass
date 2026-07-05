@@ -27,7 +27,8 @@ final class CreateController extends PublicLinkBase
         $id = $this->publicLinkService->create($linkData);
         $linkData = $linkData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.publicLink',
+        $this->eventDispatcher->notify(new Event(
+            'create.publicLink',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Public link added'))

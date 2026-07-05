@@ -150,9 +150,10 @@ final class ViewLinkController extends AccountControllerBase
                 )
             );
 
-            $this->eventDispatcher->notify(new Event('show.account.link', 
-                    $this,
-                    EventMessage::build(__u('Link viewed'))
+            $this->eventDispatcher->notify(new Event(
+                'show.account.link',
+                $this,
+                EventMessage::build(__u('Link viewed'))
                                 ->addDetail(__u('Account'), $accountViewDto->getName())
                                 ->addDetail(__u('Client'), $accountViewDto->getClientName())
                                 ->addDetail(__u('Agent'), $this->request->getHeader('User-Agent'))
@@ -164,8 +165,7 @@ final class ViewLinkController extends AccountControllerBase
                                 )
                                 ->addExtra('userId', $publicLink->getUserId())
                                 ->addExtra('notify', $publicLink->isNotify())
-                )
-            );
+            ));
         } else {
             ErrorUtil::showErrorInView(
                 $this->view,

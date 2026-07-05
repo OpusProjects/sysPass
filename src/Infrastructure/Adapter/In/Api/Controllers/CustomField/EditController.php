@@ -30,7 +30,8 @@ final class EditController extends CustomFieldBase
 
         $this->customFieldService->update($fieldData);
 
-        $this->eventDispatcher->notify(new Event('edit.customField',
+        $this->eventDispatcher->notify(new Event(
+            'edit.customField',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Custom field updated'))

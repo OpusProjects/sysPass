@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,15 +50,15 @@ final class DeleteController extends UserGroupBase
 
         $this->userGroupService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.userGroup', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'delete.userGroup',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Group deleted'))
                     ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $id)
                     ->addExtra('userGroupId', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($userGroupData, __('Group deleted'), $id);
     }

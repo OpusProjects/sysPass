@@ -57,8 +57,7 @@ final class SaveEditController extends CustomFieldSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::CUSTOMFIELD_EDIT, $id);
@@ -73,13 +72,13 @@ final class SaveEditController extends CustomFieldSaveBase
                 $this->customFieldDefService->update($itemData);
             }
 
-            $this->eventDispatcher->notify(new Event('edit.customField', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.customField',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Field updated'))
                         ->addDetail(__u('Field'), $itemData->getName())
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Field updated'));
         } catch (ValidationException $e) {

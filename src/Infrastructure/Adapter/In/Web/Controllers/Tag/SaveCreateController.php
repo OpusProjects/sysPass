@@ -50,8 +50,7 @@ final class SaveCreateController extends TagSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::TAG_CREATE);

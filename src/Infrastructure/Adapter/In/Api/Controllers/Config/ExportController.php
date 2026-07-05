@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Config;
 
-
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
@@ -76,18 +75,17 @@ final class ExportController extends ControllerBase
         $password = $this->apiService->getParamString('password');
         $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
-        $this->eventDispatcher->notify(new Event('run.export.start', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'run.export.start',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('sysPass XML export'))
                     ->addDetail(__u('Path'), $path)
-            )
-        );
+        ));
 
         $file = $this->xmlExportService->export(new DirectoryHandler($path), $password);
 
-        $this->eventDispatcher->notify(new Event('run.export.end', $this, EventMessage::build()->addDescription(__u('Export process finished')))
-        );
+        $this->eventDispatcher->notify(new Event('run.export.end', $this, EventMessage::build()->addDescription(__u('Export process finished'))));
 
         $exportFiles = ['files' => ['xml' => $file]];
 

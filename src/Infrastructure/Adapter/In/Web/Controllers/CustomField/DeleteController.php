@@ -56,8 +56,7 @@ final class DeleteController extends CustomFieldSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -69,8 +68,7 @@ final class DeleteController extends CustomFieldSaveBase
 
                 $this->customFieldDefService->deleteByIdBatch($ids);
 
-                $this->eventDispatcher->notify(new Event('delete.customField.selection', $this, EventMessage::build()->addDescription(__u('Fields deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.customField.selection', $this, EventMessage::build()->addDescription(__u('Fields deleted'))));
 
                 return ActionResponse::ok(__u('Fields deleted'));
             }

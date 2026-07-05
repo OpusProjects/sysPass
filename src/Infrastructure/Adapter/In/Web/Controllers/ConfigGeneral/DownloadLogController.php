@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigGeneral;
 
-
 use SP\Domain\Http\Ports\ResponseService;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
@@ -71,11 +70,11 @@ final class DownloadLogController extends SimpleControllerBase
 
         $file = new FileHandler($this->pathsContext[Path::LOG_FILE]);
 
-        $this->eventDispatcher->notify(new Event('download.logFile', 
-                $this,
-                EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), $file->getName())
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'download.logFile',
+            $this,
+            EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), $file->getName())
+        ));
 
         return new ActionResponse(
             ResponseStatus::OK,

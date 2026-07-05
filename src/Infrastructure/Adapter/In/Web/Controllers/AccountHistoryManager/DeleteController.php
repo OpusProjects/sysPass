@@ -89,11 +89,11 @@ final class DeleteController extends ControllerBase
 
             $this->accountHistoryService->deleteByIdBatch($ids);
 
-            $this->eventDispatcher->notify(new Event('delete.accountHistory.selection', 
-                    $this,
-                    EventMessage::build(__u('Accounts removed'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'delete.accountHistory.selection',
+                $this,
+                EventMessage::build(__u('Accounts removed'))
+            ));
 
             return ActionResponse::ok(__u('Accounts removed'));
         }
@@ -102,12 +102,12 @@ final class DeleteController extends ControllerBase
 
         $this->accountHistoryService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.accountHistory', 
-                $this,
-                EventMessage::build(__u('Account removed'))
+        $this->eventDispatcher->notify(new Event(
+            'delete.accountHistory',
+            $this,
+            EventMessage::build(__u('Account removed'))
                             ->addDetail(__u('Data'), (string)$accountHistoryDto)
-            )
-        );
+        ));
 
         return ActionResponse::ok(__u('Account removed'));
     }
