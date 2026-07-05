@@ -69,15 +69,17 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
      */
     public function updateMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
+        $errorCount = 0;
+
         try {
-            $this->eventDispatcher->notify(new Event('update.masterPassword.accounts.start', 
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accounts.start',
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
                 )
             );
 
-            $eventMessage = $this->processAccounts(
+            [$eventMessage, $errorCount] = $this->processAccounts(
                 $this->accountService->getAccountsPassData(),
                 function (int $accountId, EncryptedPassword $encryptedPassword) {
                     $this->accountService->updatePasswordMasterPass($accountId, $encryptedPassword);
@@ -97,6 +99,15 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 $e
             );
         }
+
+        if ($errorCount > 0) {
+            throw ServiceException::error(
+                sprintf(
+                    __u('%d account(s) could not be re-encrypted; rotation aborted, master password unchanged'),
+                    $errorCount
+                )
+            );
+        }
     }
 
     /**
@@ -104,13 +115,13 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
      * @param callable $passUpdater
      * @param UpdateMasterPassRequest $updateMasterPassRequest
      *
-     * @return EventMessage
+     * @return array{0: EventMessage, 1: int} Tuple of [eventMessage, errorCount]
      */
     private function processAccounts(
         array                   $accounts,
         callable                $passUpdater,
         UpdateMasterPassRequest $updateMasterPassRequest
-    ): EventMessage {
+    ): array {
         set_time_limit(0);
 
         $accountsOk = [];
@@ -126,7 +137,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             $eventMessage->addDetail(__u('Accounts updated'), __u('N/A'));
             $eventMessage->addDetail(__u('Errors'), 0);
 
-            return $eventMessage;
+            return [$eventMessage, 0];
         }
 
         $configData = $this->config->getConfigData();
@@ -189,7 +200,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
         $eventMessage->addDetail(__u('Accounts updated'), implode(',', $accountsOk));
         $eventMessage->addDetail(__u('Errors'), $errorCount);
 
-        return $eventMessage;
+        return [$eventMessage, $errorCount];
     }
 
     /**
@@ -216,15 +227,17 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
      */
     public function updateHistoryMasterPassword(UpdateMasterPassRequest $updateMasterPassRequest): void
     {
+        $errorCount = 0;
+
         try {
-            $this->eventDispatcher->notify(new Event('update.masterPassword.accountsHistory.start', 
+            $this->eventDispatcher->notify(new Event('update.masterPassword.accountsHistory.start',
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password (H)'))
                 )
             );
 
-            $eventMessage = $this->processAccounts(
+            [$eventMessage, $errorCount] = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),
                 function (int $accountId, EncryptedPassword $encryptedPassword) {
                     $this->accountHistoryService->updatePasswordMasterPass($accountId, $encryptedPassword);
@@ -242,6 +255,15 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
                 null,
                 $e->getCode(),
                 $e
+            );
+        }
+
+        if ($errorCount > 0) {
+            throw ServiceException::error(
+                sprintf(
+                    __u('%d account(s) could not be re-encrypted; rotation aborted, master password unchanged'),
+                    $errorCount
+                )
             );
         }
     }
