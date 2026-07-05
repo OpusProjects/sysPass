@@ -3,7 +3,7 @@
 sysPass uses **PHPUnit 13** with two test suites: a fast unit suite that needs no
 external services, and an integration suite backed by a real MariaDB database.
 
-Both suites pass: **2124 unit tests** and **246 integration tests**.
+Both suites pass: **2124 unit tests** and **247 integration tests**.
 
 ## Quick start (Docker)
 

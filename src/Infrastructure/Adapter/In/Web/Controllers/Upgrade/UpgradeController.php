@@ -91,7 +91,15 @@ final class UpgradeController extends ControllerBase
             throw new ValidationException(__u('The updating need to be confirmed'));
         }
 
-        if ($this->request->analyzeString('key') !== $this->configData->getUpgradeKey()) {
+        $upgradeKey = $this->configData->getUpgradeKey();
+        $providedKey = $this->request->analyzeString('key');
+
+        // An empty stored key (the production default is null) means the upgrade
+        // endpoint is not enabled — reject rather than letting an absent 'key' param
+        // satisfy the check (null !== null is false: an unauthenticated bypass of a
+        // privileged, state-changing action). Compare in constant time once both
+        // sides are known non-empty.
+        if (empty($upgradeKey) || $providedKey === null || !hash_equals($upgradeKey, $providedKey)) {
             throw new ValidationException(__u('Wrong security code'));
         }
     }
