@@ -9,7 +9,6 @@ sysPass is a self-hosted, open-source web password manager for business and pers
 The original sysPass was created and maintained by **Rubén Domínguez
 ([@nuxsmin](https://github.com/nuxsmin))**, who released the last upstream version
 (**[3.2.11](https://github.com/nuxsmin/sysPass/releases/tag/3.2.11)**) in July 2022.
-
 In May 2026, he confirmed he no longer had the time to keep evolving it
 ([nuxsmin/sysPass#1954](https://github.com/nuxsmin/sysPass/issues/1954#issuecomment-4382203218))
 and called for someone to fork it.
@@ -17,7 +16,8 @@ and called for someone to fork it.
 This repository is that fork — started by [OpusProjects](https://github.com/OpusProjects)
 in June 2026, picking up [@nuxsmin](https://github.com/nuxsmin)'s own planned
 [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring)
-as the new baseline. All original copyright and the GNU GPLv3 license are retained.
+as the new baseline, built on PHP 8, Symfony, and a full REST API.
+All original copyright and the GNU GPLv3 license are retained.
 
 ---
 
