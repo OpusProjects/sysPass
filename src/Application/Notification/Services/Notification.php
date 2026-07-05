@@ -178,7 +178,10 @@ final class Notification extends Service implements NotificationService
             throw NoSuchItemException::info(__u('Notification not found'));
         }
 
-        return $result->getData(NotificationModel::class);
+        $notification = $result->getData(NotificationModel::class);
+        $this->checkUserAccess($notification);
+
+        return $notification;
     }
 
     /**
@@ -202,7 +205,26 @@ final class Notification extends Service implements NotificationService
      */
     public function setCheckedById(int $id): void
     {
+        $this->checkUserAccess($this->getById($id));
+
         if ($this->notificationRepository->setCheckedById($id) === 0) {
+            throw NoSuchItemException::info(__u('Notification not found'));
+        }
+    }
+
+    /**
+     * Verifies that the current user may access the given notification.
+     *
+     * Admins may access any notification; regular users only their own.
+     * A non-owned id is reported as "not found" to avoid id enumeration.
+     *
+     * @throws NoSuchItemException
+     */
+    private function checkUserAccess(NotificationModel $notification): void
+    {
+        $userData = $this->context->getUserData();
+
+        if (!$userData->isAdminApp && $notification->getUserId() !== ($userData->id ?? 0)) {
             throw NoSuchItemException::info(__u('Notification not found'));
         }
     }

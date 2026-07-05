@@ -132,9 +132,23 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
+     * @throws Exception
      */
     public function testSetCheckedById()
     {
+        $userId = $this->context->getUserData()->id;
+        $ownedNotification = new NotificationModel(['userId' => $userId]);
+
+        $getByIdResult = $this->createMock(QueryResult::class);
+        $getByIdResult->expects($this->once())->method('getNumRows')->willReturn(1);
+        $getByIdResult->expects($this->once())->method('getData')->with(NotificationModel::class)->willReturn($ownedNotification);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(100)
+            ->willReturn($getByIdResult);
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('setCheckedById')
@@ -148,14 +162,61 @@ class NotificationTest extends UnitaryTestCase
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException
+     * @throws Exception
      */
     public function testSetCheckedByIdWithException()
     {
+        $userId = $this->context->getUserData()->id;
+        $ownedNotification = new NotificationModel(['userId' => $userId]);
+
+        $getByIdResult = $this->createMock(QueryResult::class);
+        $getByIdResult->expects($this->once())->method('getNumRows')->willReturn(1);
+        $getByIdResult->expects($this->once())->method('getData')->with(NotificationModel::class)->willReturn($ownedNotification);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(100)
+            ->willReturn($getByIdResult);
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('setCheckedById')
             ->with(100)
             ->willReturn(0);
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Notification not found');
+
+        $this->notification->setCheckedById(100);
+    }
+
+    /**
+     * Non-admin user calling setCheckedById for a notification they do not own
+     * must receive NoSuchItemException (not a permission error, to prevent id enumeration).
+     *
+     * @throws Exception
+     */
+    public function testSetCheckedByIdDeniedForNonOwner()
+    {
+        // Default context user is non-admin. Use a notification owned by a different user.
+        $userId = $this->context->getUserData()->id;
+        $otherUserId = ($userId ?? 0) + 1;
+        $foreignNotification = new NotificationModel(['userId' => $otherUserId]);
+
+        $getByIdResult = $this->createMock(QueryResult::class);
+        $getByIdResult->expects($this->once())->method('getNumRows')->willReturn(1);
+        $getByIdResult->expects($this->once())->method('getData')->with(NotificationModel::class)->willReturn($foreignNotification);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(100)
+            ->willReturn($getByIdResult);
+
+        $this->notificationRepository
+            ->expects($this->never())
+            ->method('setCheckedById');
 
         $this->expectException(NoSuchItemException::class);
         $this->expectExceptionMessage('Notification not found');
@@ -372,7 +433,8 @@ class NotificationTest extends UnitaryTestCase
                     ->method('getNumRows')
                     ->willReturn(1);
 
-        $notification = new NotificationModel();
+        // Notification must be owned by the context user for the ownership check to pass.
+        $notification = new NotificationModel(['userId' => $this->context->getUserData()->id]);
 
         $queryResult->expects($this->once())
                     ->method('getData')
@@ -388,6 +450,34 @@ class NotificationTest extends UnitaryTestCase
         $out = $this->notification->getById(100);
 
         $this->assertEquals($notification, $out);
+    }
+
+    /**
+     * Non-admin user calling getById for a notification they do not own must receive
+     * NoSuchItemException — same message as "not found" to prevent id enumeration.
+     *
+     * @throws Exception
+     */
+    public function testGetByIdDeniedForNonOwner()
+    {
+        $userId = $this->context->getUserData()->id;
+        $otherUserId = ($userId ?? 0) + 1;
+        $foreignNotification = new NotificationModel(['userId' => $otherUserId]);
+
+        $queryResult = $this->createMock(QueryResult::class);
+        $queryResult->expects($this->once())->method('getNumRows')->willReturn(1);
+        $queryResult->expects($this->once())->method('getData')->with(NotificationModel::class)->willReturn($foreignNotification);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(100)
+            ->willReturn($queryResult);
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Notification not found');
+
+        $this->notification->getById(100);
     }
 
     /**
