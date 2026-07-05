@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Application\Api\Ports\ApiService;
@@ -60,6 +59,5 @@ abstract class ClientBase extends ControllerBase
         $this->clientAdapter = $clientAdapter;
 
         $this->apiService->setHelpClass(ClientHelp::class);
-
     }
 }

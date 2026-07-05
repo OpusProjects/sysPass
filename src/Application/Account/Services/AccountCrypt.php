@@ -80,6 +80,4 @@ final class AccountCrypt extends Service implements AccountCryptService
             throw ServiceException::error(__u('Internal error'), null, $e->getCode(), $e);
         }
     }
-
-
 }

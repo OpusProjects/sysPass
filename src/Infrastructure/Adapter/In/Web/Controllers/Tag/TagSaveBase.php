@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Tag;
 
-
 use SP\Core\Application;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\Tag\Ports\TagService;

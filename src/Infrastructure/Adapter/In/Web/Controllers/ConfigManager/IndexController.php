@@ -162,8 +162,7 @@ final class IndexController extends ControllerBase
         }
 
 
-        $this->eventDispatcher->notify(new Event('show.config', $this)
-        );
+        $this->eventDispatcher->notify(new Event('show.config', $this));
 
         $this->tabsHelper->renderTabs(
             $this->acl->getRouteFor(AclActionsInterface::CONFIG),

@@ -56,8 +56,7 @@ final class DeleteController extends PublicLinkSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -70,19 +69,18 @@ final class DeleteController extends PublicLinkSaveBase
                 $this->publicLinkService->deleteByIdBatch($ids);
 
 
-                $this->eventDispatcher->notify(new Event('delete.publicLink.selection', $this, EventMessage::build()->addDescription(__u('Links deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.publicLink.selection', $this, EventMessage::build()->addDescription(__u('Links deleted'))));
 
                 return ActionResponse::ok(__u('Links deleted'));
             }
 
             $this->publicLinkService->delete($id);
 
-            $this->eventDispatcher->notify(new Event('delete.publicLink', 
-                    $this,
-                    EventMessage::build()->addDescription(__u('Link deleted'))->addDetail(__u('Link'), $id)
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'delete.publicLink',
+                $this,
+                EventMessage::build()->addDescription(__u('Link deleted'))->addDetail(__u('Link'), $id)
+            ));
 
             return ActionResponse::ok(__u('Link deleted'));
         } catch (Exception $e) {

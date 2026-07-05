@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
-
 use SP\Core\Application;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Application\Account\Ports\AccountService;

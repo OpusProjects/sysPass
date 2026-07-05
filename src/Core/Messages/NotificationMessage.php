@@ -63,8 +63,7 @@ final class NotificationMessage extends MessageBase
     public function getDescription(
         FormatterInterface $formatter,
         bool               $translate = true
-    ): string
-    {
+    ): string {
         return $formatter->formatDescription($this->description, $translate);
     }
 

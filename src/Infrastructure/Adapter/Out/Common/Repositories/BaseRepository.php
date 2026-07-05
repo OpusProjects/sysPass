@@ -81,8 +81,7 @@ abstract class BaseRepository implements Repository
 
                 logger('Transaction:Rollback');
 
-                $this->eventDispatcher->notify(new Event('database.rollback', $this, EventMessage::build()->addDescription(__u('Rollback')))
-                );
+                $this->eventDispatcher->notify(new Event('database.rollback', $this, EventMessage::build()->addDescription(__u('Rollback'))));
                 $this->eventDispatcher->notify(new Event('exception', $e));
 
                 // Surface the underlying error (integrity constraint, missing row, ...)

@@ -83,8 +83,8 @@ final class SearchController extends ControllerBase
                                         )
                                         ->setLimitCount($this->apiService->getParamInt('count', false, 50))
                                         ->setSortOrder(
-                $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
-            );
+                                            $this->apiService->getParamInt('order', false, AccountSearchConstants::SORT_DEFAULT)
+                                        );
 
         $op = $this->apiService->getParamString('op', false, AccountSearchConstants::FILTER_CHAIN_AND);
 

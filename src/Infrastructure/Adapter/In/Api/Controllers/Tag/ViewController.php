@@ -48,13 +48,14 @@ final class ViewController extends TagBase
         $id = $this->apiService->getParamInt('id', true);
         $tagData = $this->tagService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.tag', 
-                $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.tag',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Tag displayed'))
                 ->addDetail(__u('Name'), $tagData->getName())
                 ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($tagData);
     }

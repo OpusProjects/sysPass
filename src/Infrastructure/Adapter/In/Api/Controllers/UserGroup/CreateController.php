@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -53,13 +52,14 @@ final class CreateController extends UserGroupBase
 
         $userGroupData = $userGroupData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.userGroup', 
-                $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'create.userGroup',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Group added'))
                 ->addDetail(__u('Name'), $userGroupData->getName())
                 ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($userGroupData, __('Group added'), $id);
     }

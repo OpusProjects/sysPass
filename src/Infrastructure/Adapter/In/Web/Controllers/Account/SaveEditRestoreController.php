@@ -73,17 +73,17 @@ final class SaveEditRestoreController extends AccountControllerBase
 
         $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
 
-        $this->eventDispatcher->notify(new Event('edit.account.restore', 
-                $this,
-                function () use ($id) {
-                    $accountDetails = $this->accountService->getByIdEnriched($id);
+        $this->eventDispatcher->notify(new Event(
+            'edit.account.restore',
+            $this,
+            function () use ($id) {
+                $accountDetails = $this->accountService->getByIdEnriched($id);
 
-                    return EventMessage::build(__u('Account restored'))
-                                       ->addDetail(__u('Account'), $accountDetails->getName())
-                                       ->addDetail(__u('Client'), $accountDetails->getClientName());
-                }
-            )
-        );
+                return EventMessage::build(__u('Account restored'))
+                                   ->addDetail(__u('Account'), $accountDetails->getName())
+                                   ->addDetail(__u('Client'), $accountDetails->getClientName());
+            }
+        ));
 
         return ActionResponse::ok(
             __u('Account restored'),

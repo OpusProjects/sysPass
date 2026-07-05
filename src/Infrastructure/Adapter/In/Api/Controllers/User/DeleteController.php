@@ -20,7 +20,8 @@ final class DeleteController extends UserBase
         $userData = $this->userService->getById($id);
         $this->userService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.user',
+        $this->eventDispatcher->notify(new Event(
+            'delete.user',
             $this,
             EventMessage::build()
                 ->addDescription(__u('User removed'))

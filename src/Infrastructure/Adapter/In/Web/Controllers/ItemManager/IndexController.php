@@ -180,8 +180,7 @@ final class IndexController extends ControllerBase
             $this->tabsGridHelper->addTab($this->getItemPresetList());
         }
 
-        $this->eventDispatcher->notify(new Event('show.itemlist.items', $this)
-        );
+        $this->eventDispatcher->notify(new Event('show.itemlist.items', $this));
 
         $this->tabsGridHelper->renderTabs(
             $this->acl->getRouteFor(AclActionsInterface::ITEMS_MANAGE),

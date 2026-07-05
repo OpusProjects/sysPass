@@ -62,8 +62,7 @@ final class MailMessage extends MessageBase
     public function getDescription(
         FormatterInterface $formatter,
         bool               $translate
-    ): string
-    {
+    ): string {
         return $formatter->formatDescription($this->description, $translate);
     }
 

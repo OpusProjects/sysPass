@@ -19,7 +19,8 @@ final class RefreshController extends PublicLinkBase
         $id = $this->apiService->getParamInt('id', true);
         $this->publicLinkService->refresh($id);
 
-        $this->eventDispatcher->notify(new Event('refresh.publicLink',
+        $this->eventDispatcher->notify(new Event(
+            'refresh.publicLink',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Public link refreshed'))

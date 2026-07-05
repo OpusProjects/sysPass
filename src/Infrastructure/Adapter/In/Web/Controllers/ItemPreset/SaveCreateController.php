@@ -51,8 +51,7 @@ final class SaveCreateController extends ItemPresetSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::ITEMPRESET_CREATE);
@@ -61,14 +60,14 @@ final class SaveCreateController extends ItemPresetSaveBase
 
             $id = $this->itemPresetService->create($itemData->getItemPreset());
 
-            $this->eventDispatcher->notify(new Event('create.itemPreset', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'create.itemPreset',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Value created'))
                         ->addDetail(__u('Type'), $itemData->getItemPreset()->getType())
                         ->addDetail(__u('ID'), $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Value created'));
         } catch (ValidationException $e) {

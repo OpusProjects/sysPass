@@ -100,5 +100,4 @@ trait ControllerTrait
     {
         exit('<script>sysPassApp.actions.main.logout();</script>');
     }
-
 }

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -53,14 +52,14 @@ final class CreateController extends TagBase
 
         $tagData = $tagData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.tag', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'create.tag',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Tag added'))
                     ->addDetail(__u('Name'), $tagData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($tagData, __('Tag added'), $id);
     }

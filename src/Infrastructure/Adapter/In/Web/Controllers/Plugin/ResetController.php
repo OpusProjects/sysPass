@@ -81,8 +81,7 @@ final class ResetController extends ControllerBase
 
             $this->pluginDataService->delete($this->pluginService->getById($id)->getName() ?? '');
 
-            $this->eventDispatcher->notify(new Event('edit.plugin.reset', $this, EventMessage::build()->addDescription(__u('Plugin reset')))
-            );
+            $this->eventDispatcher->notify(new Event('edit.plugin.reset', $this, EventMessage::build()->addDescription(__u('Plugin reset'))));
 
             return ActionResponse::ok(__u('Plugin reset'));
         } catch (Exception $e) {

@@ -81,12 +81,12 @@ final class CopyPassHistoryController extends AccountControllerBase
             'accpass' => $this->accountPasswordHelper->getPasswordClear($account),
         ];
 
-        $this->eventDispatcher->notify(new Event('copy.account.pass.history', 
-                $this,
-                EventMessage::build(__u('Password copied'))
+        $this->eventDispatcher->notify(new Event(
+            'copy.account.pass.history',
+            $this,
+            EventMessage::build(__u('Password copied'))
                             ->addDetail(__u('Account'), $account->getName())
-            )
-        );
+        ));
 
         return ActionResponse::ok(__u('Password copied'), $data);
     }
