@@ -75,6 +75,30 @@ class LdapConnectionTest extends UnitaryTestCase
     }
 
     /**
+     * A provided-but-empty user password must be passed verbatim, never replaced
+     * with the service-account bind password (which would let an empty password
+     * authenticate a user).
+     *
+     * @throws LdapException
+     */
+    public function testConnectWithEmptyUserPasswordDoesNotUseServicePassword(): void
+    {
+        $userDn = self::$faker->userName();
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('bind')
+            ->with($userDn, '');
+
+        $this->eventDispatcher
+            ->expects(once())
+            ->method('notify')
+            ->with(self::callback(fn(Event $e) => $e->getName() === 'ldap.check.connection'));
+
+        $this->ldapConnection->connect($this->ldapParams, $userDn, '');
+    }
+
+    /**
      * @throws LdapException
      */
     public function testCheckConnectionError(): void

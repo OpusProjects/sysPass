@@ -68,7 +68,12 @@ final class LdapConnection implements LdapConnectionHandler
         }
 
         try {
-            $this->ldap->bind($username ?: $ldapParams->getBindDn(), $password ?: $ldapParams->getBindPass());
+            // Use ?? (not ?:): a not-provided (null) username/password is the
+            // service/search bind and legitimately uses the configured bind DN and
+            // password. But a *provided-but-empty* user password must be passed
+            // verbatim so the bind fails — never fall back to the service-account
+            // password (which would let an empty password authenticate a user).
+            $this->ldap->bind($username ?? $ldapParams->getBindDn(), $password ?? $ldapParams->getBindPass());
 
             $this->eventDispatcher->notify(new Event('ldap.check.connection', $this, EventMessage::build(__u('LDAP connection OK')))
             );
