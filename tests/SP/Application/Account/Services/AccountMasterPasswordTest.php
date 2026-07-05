@@ -110,9 +110,13 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
+     * A partial re-key failure (some accounts' decrypt/re-encrypt throws) must cause
+     * updateMasterPassword to throw ServiceException so the transaction rolls back and
+     * the config master-pass hash is never advanced.
+     *
      * @throws ServiceException
      */
-    public function testUpdateMasterPasswordDoesNotThrowException(): void
+    public function testUpdateMasterPasswordThrowsServiceExceptionOnPartialError(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
@@ -123,6 +127,47 @@ class AccountMasterPasswordTest extends UnitaryTestCase
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessageMatches('/could not be re-encrypted/');
+
+        $this->accountMasterPassword->updateMasterPassword($request);
+    }
+
+    /**
+     * Regression: mixed success/failure — 5 accounts re-encrypt fine, 5 fail.
+     * The method must throw ServiceException (so the transaction rolls back)
+     * and must NOT silently swallow errors and return normally.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateMasterPasswordAbortedOnPartialError(): void
+    {
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
+
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willReturn($accountData);
+
+        // First 5 succeed, last 5 fail
+        $this->crypt->expects(self::exactly(10))
+                    ->method('decrypt')
+                    ->willReturnCallback(static function () {
+                        static $call = 0;
+                        $call++;
+                        if ($call > 5) {
+                            throw new SPException('decrypt failed');
+                        }
+                        return 'decrypted';
+                    });
+
+        $this->accountCrypt->expects(self::exactly(5))
+                           ->method('getPasswordEncrypted')
+                           ->willReturn(new EncryptedPassword('a_password', 'a_key'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessageMatches('/could not be re-encrypted/');
 
         $this->accountMasterPassword->updateMasterPassword($request);
     }
@@ -214,9 +259,12 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
+     * A partial re-key failure in history accounts must cause updateHistoryMasterPassword
+     * to throw ServiceException so the transaction rolls back.
+     *
      * @throws ServiceException
      */
-    public function testUpdateHistoryMasterPasswordDoesNotThrowException(): void
+    public function testUpdateHistoryMasterPasswordThrowsServiceExceptionOnPartialError(): void
     {
         $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
         $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccountHistoryData(), range(0, 9));
@@ -227,6 +275,9 @@ class AccountMasterPasswordTest extends UnitaryTestCase
         $this->crypt->expects(self::exactly(10))
                     ->method('decrypt')
                     ->willThrowException(new SPException('test'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessageMatches('/could not be re-encrypted/');
 
         $this->accountMasterPassword->updateHistoryMasterPassword($request);
     }

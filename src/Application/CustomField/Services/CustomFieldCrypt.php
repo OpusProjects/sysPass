@@ -59,8 +59,10 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
      */
     public function updateMasterPassword(UpdateMasterPassRequest $request): void
     {
+        $errorCount = 0;
+
         try {
-            $this->processUpdateMasterPassword(
+            $errorCount = $this->processUpdateMasterPassword(
                 $request,
                 function (CustomFieldDataModel $customFieldData) use ($request) {
                     return $this->crypt->decrypt(
@@ -80,19 +82,30 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                 $e
             );
         }
+
+        if ($errorCount > 0) {
+            throw ServiceException::error(
+                sprintf(
+                    __u('%d custom field record(s) could not be re-encrypted; rotation aborted, master password unchanged'),
+                    $errorCount
+                )
+            );
+        }
     }
 
     /**
+     * Re-encrypts all custom field data under the new master password.
+     *
      * @param UpdateMasterPassRequest $request
      * @param callable $decryptor
-     * @throws ServiceException
+     * @return int Number of records that failed to re-encrypt
      */
-    private function processUpdateMasterPassword(UpdateMasterPassRequest $request, callable $decryptor): void
+    private function processUpdateMasterPassword(UpdateMasterPassRequest $request, callable $decryptor): int
     {
         $customFieldsData = $this->customFieldService->getAllEncrypted();
 
         if (empty($customFieldsData)) {
-            $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData', 
+            $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData',
                     $this,
                     EventMessage::build()
                                 ->addDescription(__u('Update Master Password'))
@@ -100,10 +113,10 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                 )
             );
 
-            return;
+            return 0;
         }
 
-        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.start', 
+        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.start',
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
@@ -131,7 +144,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
             }
         }
 
-        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.end', 
+        $this->eventDispatcher->notify(new Event('update.masterPassword.customFieldsData.end',
                 $this,
                 EventMessage::build()
                             ->addDescription(__u('Update Master Password'))
@@ -139,5 +152,7 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                             ->addDetail(__u('Records not updated'), implode(',', $errors))
             )
         );
+
+        return count($errors);
     }
 }

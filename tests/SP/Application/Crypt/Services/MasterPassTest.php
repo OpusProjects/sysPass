@@ -198,6 +198,40 @@ class MasterPassTest extends UnitaryTestCase
     }
 
     /**
+     * Regression: when one of the re-key sub-services throws (simulating a partial
+     * re-key failure), changeMasterPassword must propagate the exception and must NOT
+     * advance the stored master-pass hash (i.e. configService->save must never be called).
+     *
+     * @throws Exception
+     */
+    public function testChangeMasterPasswordAbortedOnError(): void
+    {
+        $hash = self::$faker->sha1();
+
+        $this->repository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->with(self::withResolveCallableCallback());
+
+        $request = new UpdateMasterPassRequest('123', '456', $hash);
+
+        $this->accountMasterPasswordService
+            ->expects(self::once())
+            ->method('updateMasterPassword')
+            ->with($request)
+            ->willThrowException(ServiceException::error('5 account(s) could not be re-encrypted; rotation aborted, master password unchanged'));
+
+        // The config hash must NOT be written when re-keying fails
+        $this->configService
+            ->expects(self::never())
+            ->method('save');
+
+        $this->expectException(ServiceException::class);
+
+        $this->masterPass->changeMasterPassword($request);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      */

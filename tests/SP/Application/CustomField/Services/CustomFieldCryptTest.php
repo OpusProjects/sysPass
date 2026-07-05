@@ -148,6 +148,10 @@ class CustomFieldCryptTest extends UnitaryTestCase
     }
 
     /**
+     * A decrypt failure for any custom field record must cause updateMasterPassword to
+     * throw ServiceException so the transaction rolls back and the config hash is never
+     * advanced. Previously this was silently swallowed — that was the bug.
+     *
      * @throws ServiceException
      */
     public function testUpdateMasterPasswordWithCryptError()
@@ -169,6 +173,9 @@ class CustomFieldCryptTest extends UnitaryTestCase
         $this->customFieldService
             ->expects(self::never())
             ->method('updateMasterPass');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessageMatches('/could not be re-encrypted/');
 
         $this->customFieldCrypt->updateMasterPassword($request);
     }
