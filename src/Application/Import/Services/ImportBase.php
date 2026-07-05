@@ -121,26 +121,36 @@ abstract class ImportBase extends Service implements ImportService
             ['userId' => $importParams->getDefaultUser(), 'userGroupId' => $importParams->getDefaultGroup()]
         );
 
-        if ($useEncryption) {
+        // An encrypted account (non-empty key) MUST be decrypted before it is
+        // stored: accountService->create() encrypts whatever pass it is given, so
+        // handing it the still-encrypted blob would re-encrypt ciphertext as if it
+        // were plaintext and permanently, silently corrupt the password. If it
+        // can't be decrypted (no/invalid master password), abort loudly instead of
+        // storing garbage. Plaintext accounts (empty key) are stored as-is.
+        if ($useEncryption && !empty($accountCreateDto->key)) {
             $hasValidHash = $this->getOrSetCache(
                 self::ITEM_MASTER_PASS_HASH,
                 'current',
                 fn() => $this->validateHash($importParams)
             );
 
-            if ($hasValidHash === true && !empty($importParams->getMasterPassword())) {
-                if ($this->version >= 210) {
-                    $pass = $this->crypt->decrypt(
-                        $accountCreateDto->pass,
-                        $accountCreateDto->key,
-                        $importParams->getMasterPassword()
-                    );
-
-                    $dto = $dto->mutate(['pass' => $pass, 'key' => '']);
-                } else {
-                    throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
-                }
+            if ($hasValidHash !== true || empty($importParams->getMasterPassword())) {
+                throw ImportException::error(
+                    __u('A valid master password is required to import encrypted accounts.')
+                );
             }
+
+            if ($this->version < 210) {
+                throw ImportException::error(__u('The file was exported with an old sysPass version (<= 2.10).'));
+            }
+
+            $pass = $this->crypt->decrypt(
+                $accountCreateDto->pass ?? '',
+                $accountCreateDto->key,
+                $importParams->getMasterPassword()
+            );
+
+            $dto = $dto->mutate(['pass' => $pass, 'key' => '']);
         }
 
         $this->accountService->create($dto);
