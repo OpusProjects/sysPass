@@ -18,8 +18,10 @@ final class ViewController extends PublicLinkBase
         $id = $this->apiService->getParamInt('id', true);
         $linkData = $this->publicLinkService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.publicLink',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.publicLink',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Public link displayed'))
                 ->addDetail('ID', $id)
         ));

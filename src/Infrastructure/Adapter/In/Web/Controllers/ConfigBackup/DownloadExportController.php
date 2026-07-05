@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigBackup;
 
-
 use SP\Domain\Http\Ports\ResponseService;
 use SP\Core\Application;
 use SP\Core\Bootstrap\Path;
@@ -74,12 +73,12 @@ final class DownloadExportController extends SimpleControllerBase
 
         $file = new FileHandler($filePath);
 
-        $this->eventDispatcher->notify(new Event('download.exportFile', 
-                $this,
-                EventMessage::build(__u('File downloaded'))
+        $this->eventDispatcher->notify(new Event(
+            'download.exportFile',
+            $this,
+            EventMessage::build(__u('File downloaded'))
                             ->addDetail(__u('File'), str_replace(APP_ROOT, '', $file->getFile()))
-            )
-        );
+        ));
 
         return new ActionResponse(
             ResponseStatus::OK,

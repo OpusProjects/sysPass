@@ -106,8 +106,7 @@ final class SaveBulkEditController extends ControllerBase
 
         $this->accountService->updateBulk($accountBulkDto);
 
-        $this->eventDispatcher->notify(new Event('edit.account.bulk', $this, EventMessage::build(__u('Accounts updated')))
-        );
+        $this->eventDispatcher->notify(new Event('edit.account.bulk', $this, EventMessage::build(__u('Accounts updated'))));
 
         return ActionResponse::ok(__u('Accounts updated'));
     }

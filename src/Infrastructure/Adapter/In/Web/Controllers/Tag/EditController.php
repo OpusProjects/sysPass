@@ -54,8 +54,7 @@ final class EditController extends TagViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('Edit Tag'));

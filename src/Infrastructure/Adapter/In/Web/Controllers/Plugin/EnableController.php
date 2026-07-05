@@ -77,8 +77,7 @@ final class EnableController extends ControllerBase
 
             $this->pluginService->toggleEnabled($id, true);
 
-            $this->eventDispatcher->notify(new Event('edit.plugin.enable', $this, EventMessage::build()->addDescription(__u('Plugin enabled')))
-            );
+            $this->eventDispatcher->notify(new Event('edit.plugin.enable', $this, EventMessage::build()->addDescription(__u('Plugin enabled'))));
 
             return ActionResponse::ok(__u('Plugin enabled'));
         } catch (Exception $e) {

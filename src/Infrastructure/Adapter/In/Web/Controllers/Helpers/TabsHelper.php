@@ -67,5 +67,4 @@ final class TabsHelper extends HelperBase
     {
         $this->tabs[] = $tab;
     }
-
 }

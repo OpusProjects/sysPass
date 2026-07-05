@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * sysPass
  *
@@ -25,9 +26,9 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Auth\Services;
+
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
-
 use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -70,15 +71,15 @@ final class Login extends LoginBase implements LoginService
      * @throws InvalidArgumentException
      */
     public function __construct(
-        Application                              $application,
-        TrackService                             $trackService,
+        Application $application,
+        TrackService $trackService,
         RequestService $request,
-        private readonly AuthProviderService     $authProviderService,
-        private readonly LanguageInterface       $language,
-        private readonly UserService             $userService,
-        private readonly LoginUserService        $loginUserService,
-        private readonly LoginMasterPassService  $loginMasterPassService,
-        private readonly UserProfileService      $userProfileService,
+        private readonly AuthProviderService $authProviderService,
+        private readonly LanguageInterface $language,
+        private readonly UserService $userService,
+        private readonly LoginUserService $loginUserService,
+        private readonly LoginMasterPassService $loginMasterPassService,
+        private readonly UserProfileService $userProfileService,
         private readonly LoginAuthHandlerService $loginAuthHandlerService
     ) {
         parent::__construct($application, $trackService, $request);
@@ -173,9 +174,8 @@ final class Login extends LoginBase implements LoginService
             );
             $this->context->setLocale($userDataDto->preferences?->getLang() ?? 'en_US');
 
-            $this->eventDispatcher->notify(new Event('login.session.load', $this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login))
-            );
-        } catch (ConstraintException|NoSuchItemException|QueryException $e) {
+            $this->eventDispatcher->notify(new Event('login.session.load', $this, EventMessage::build()->addDetail(__u('User'), $userDataDto->login)));
+        } catch (ConstraintException | NoSuchItemException | QueryException $e) {
             throw ServiceException::from($e);
         }
     }

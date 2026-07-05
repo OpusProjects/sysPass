@@ -73,11 +73,11 @@ final class ImportController extends SimpleControllerBase
 
         $counter = $this->importService->doImport($this->getImportParams())->getCounter();
 
-        $this->eventDispatcher->notify(new Event('run.import.end', 
-                $this,
-                EventMessage::build(__u('Accounts imported'))->addDetail(__u('Accounts imported'), $counter)
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'run.import.end',
+            $this,
+            EventMessage::build(__u('Accounts imported'))->addDetail(__u('Accounts imported'), $counter)
+        ));
 
         if ($counter > 0) {
             return ActionResponse::ok(

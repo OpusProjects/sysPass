@@ -29,7 +29,8 @@ final class EditController extends NotificationBase
 
         $this->notificationService->update($notification);
 
-        $this->eventDispatcher->notify(new Event('edit.notification',
+        $this->eventDispatcher->notify(new Event(
+            'edit.notification',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Notification updated'))

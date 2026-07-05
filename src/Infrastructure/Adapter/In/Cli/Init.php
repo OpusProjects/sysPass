@@ -70,7 +70,6 @@ final class Init extends ModuleBase
             $application,
             $providersHelper
         );
-
     }
 
     /**

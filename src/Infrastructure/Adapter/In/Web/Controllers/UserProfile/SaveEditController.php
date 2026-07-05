@@ -57,8 +57,7 @@ final class SaveEditController extends UserProfileSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::PROFILE_EDIT, $id);
@@ -67,14 +66,14 @@ final class SaveEditController extends UserProfileSaveBase
 
             $this->userProfileService->update($profileData);
 
-            $this->eventDispatcher->notify(new Event('edit.userProfile', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.userProfile',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Profile updated'))
                         ->addDetail(__u('Name'), $profileData->getName())
                         ->addExtra('userProfileId', $id)
-                )
-            );
+            ));
 
             $this->updateCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
 

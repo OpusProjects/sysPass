@@ -156,9 +156,10 @@ final class Mail extends Service implements MailService
         try {
             $this->mailer->send();
 
-            $this->eventDispatcher->notify(new Event('send.mail', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'send.mail',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Email sent'))
                         ->addDetail(
                             __u('Recipient'),
@@ -170,8 +171,7 @@ final class Mail extends Service implements MailService
                                 )
                             )
                         )
-                )
-            );
+            ));
         } catch (Exception $e) {
             processException($e);
 

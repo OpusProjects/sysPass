@@ -51,19 +51,18 @@ final class CheckController extends NotificationSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CHECK)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->notificationService->setCheckedById($id);
 
-            $this->eventDispatcher->notify(new Event('check.notification', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'check.notification',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Notification read'))
                         ->addDetail(__u('Notification'), $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Notification read'));
         } catch (Exception $e) {

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Cli;
 
-
 use SP\Infrastructure\Adapter\In\Cli\Commands\BackupCommand;
 use SP\Infrastructure\Adapter\In\Cli\Commands\CommandBase;
 use SP\Infrastructure\Adapter\In\Cli\Commands\Crypt\UpdateMasterPasswordCommand;

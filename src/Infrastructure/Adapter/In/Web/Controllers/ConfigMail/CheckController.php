@@ -77,11 +77,11 @@ final class CheckController extends SimpleControllerBase
 
         $this->mailService->check($mailParams, $mailRecipients[0]);
 
-        $this->eventDispatcher->notify(new Event('send.mail.check', 
-                $this,
-                EventMessage::build(__u('Email sent'))->addDetail(__u('Recipient'), $mailRecipients[0])
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'send.mail.check',
+            $this,
+            EventMessage::build(__u('Email sent'))->addDetail(__u('Recipient'), $mailRecipients[0])
+        ));
 
         return ActionResponse::ok(__u('Email sent'), [__u('Please, check your inbox')]);
     }

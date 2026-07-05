@@ -72,13 +72,13 @@ final class SaveRequestController extends UserPassResetSaveBase
 
             $hash = $this->userPassRecoverService->requestForUserId($userData->getId());
 
-            $this->eventDispatcher->notify(new Event('request.user.passReset', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'request.user.passReset',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Password Recovery'))
                         ->addDetail(__u('Requested for'), sprintf('%s (%s)', $login, $email))
-                )
-            );
+            ));
 
             $this->mailService->send(
                 __('Password Change'),
@@ -86,7 +86,8 @@ final class SaveRequestController extends UserPassResetSaveBase
                 UserPassRecover::getMailMessage($hash, $this->uriContext->getWebUri())
             );
 
-            return ActionResponse::ok(__u('Request sent'),
+            return ActionResponse::ok(
+                __u('Request sent'),
                 [__u('You will receive an email to complete the request shortly.')]
             );
         } catch (Exception $e) {

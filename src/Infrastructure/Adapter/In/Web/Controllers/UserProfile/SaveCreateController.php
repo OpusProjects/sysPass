@@ -53,8 +53,7 @@ final class SaveCreateController extends UserProfileSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::PROFILE_CREATE);
@@ -63,13 +62,13 @@ final class SaveCreateController extends UserProfileSaveBase
 
             $id = $this->userProfileService->create($profileData);
 
-            $this->eventDispatcher->notify(new Event('create.userProfile', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'create.userProfile',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Profile added'))
                         ->addDetail(__u('Name'), $profileData->getName())
-                )
-            );
+            ));
 
             $this->addCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->request, $this->customFieldService);
 

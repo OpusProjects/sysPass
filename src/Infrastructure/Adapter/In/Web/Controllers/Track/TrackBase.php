@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Track;
 
-
 use SP\Core\Application;
 use SP\Application\Security\Ports\TrackService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -48,5 +47,4 @@ abstract class TrackBase extends ControllerBase
 
         $this->trackService = $trackService;
     }
-
 }

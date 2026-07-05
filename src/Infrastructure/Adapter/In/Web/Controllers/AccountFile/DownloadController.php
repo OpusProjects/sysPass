@@ -57,12 +57,12 @@ final class DownloadController extends AccountFileBase
 
         $this->accountFileAcl->requireView($fileDto->accountId ?? 0);
 
-        $this->eventDispatcher->notify(new Event('download.accountFile',
-                $this,
-                EventMessage::build(__u('File downloaded'))
+        $this->eventDispatcher->notify(new Event(
+            'download.accountFile',
+            $this,
+            EventMessage::build(__u('File downloaded'))
                             ->addDetail(__u('File'), $fileDto->name)
-            )
-        );
+        ));
 
         $response = $this->router->response();
         $response->header('Content-Length', (string)($fileDto->size ?? 0));

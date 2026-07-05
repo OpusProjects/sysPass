@@ -40,8 +40,8 @@ final class AccountActionsDto
     public function __construct(
         ?int $accountId,
         ?int $accountHistoryId = null,
-        ?int $accountParentId = null)
-    {
+        ?int $accountParentId = null
+    ) {
         $this->accountId = $accountId;
         $this->accountHistoryId = $accountHistoryId;
         $this->accountParentId = $accountParentId;

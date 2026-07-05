@@ -116,11 +116,11 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             // Store the temporary key until the session ends
             $this->context->setTemporaryMasterPass($randomKey);
 
-            $this->eventDispatcher->notify(new Event('create.tempMasterPassword', 
-                    $this,
-                    EventMessage::build()->addDescription(__u('Generate temporary password'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'create.tempMasterPassword',
+                $this,
+                EventMessage::build()->addDescription(__u('Generate temporary password'))
+            ));
 
             return $randomKey;
         } catch (Exception $e) {
@@ -145,12 +145,12 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
             // Check whether the validity time or the number of attempts has been exceeded
             if ($passMaxTime === 0) {
-                $this->eventDispatcher->notify(new Event('check.tempMasterPassword', 
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'check.tempMasterPassword',
+                    $this,
+                    EventMessage::build()
                             ->addDescription(__u('Temporary password expired'))
-                    )
-                );
+                ));
 
                 return false;
             }
@@ -200,11 +200,11 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
         $this->configService->saveBatch($configRequest);
 
-        $this->eventDispatcher->notify(new Event('expire.tempMasterPassword', 
-                $this,
-                EventMessage::build()->addDescription(__u('Temporary password expired'))
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'expire.tempMasterPassword',
+            $this,
+            EventMessage::build()->addDescription(__u('Temporary password expired'))
+        ));
     }
 
     /**

@@ -67,13 +67,13 @@ final class ViewController extends AccountFileBase
             $this->view->assign('fileData', $fileDto);
             $this->view->assign('isImage', 1);
 
-            $this->eventDispatcher->notify(new Event('show.accountFile', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'show.accountFile',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('File viewed'))
                                 ->addDetail(__u('File'), $fileDto->name)
-                )
-            );
+            ));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         }
@@ -84,13 +84,13 @@ final class ViewController extends AccountFileBase
             $this->view->assign('mime', $type);
             $this->view->assign('data', htmlentities($fileDto->content ?? ''));
 
-            $this->eventDispatcher->notify(new Event('show.accountFile', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'show.accountFile',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('File viewed'))
                                 ->addDetail(__u('File'), $fileDto->name)
-                )
-            );
+            ));
 
             return ActionResponse::ok('', ['html' => $this->render()]);
         }

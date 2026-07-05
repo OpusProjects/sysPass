@@ -25,6 +25,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Export\Services;
+
 use SP\Domain\Export\Services\XmlTrait;
 use SP\Domain\Export\Services\VerifyResult;
 

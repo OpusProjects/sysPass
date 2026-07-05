@@ -20,7 +20,8 @@ final class DeleteController extends PublicLinkBase
         $linkData = $this->publicLinkService->getById($id);
         $this->publicLinkService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.publicLink',
+        $this->eventDispatcher->notify(new Event(
+            'delete.publicLink',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Public link removed'))

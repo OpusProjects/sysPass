@@ -76,8 +76,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $importResults = new LdapImportResultsDto($objects->getCount());
 
-        $this->eventDispatcher->notify(new Event('import.ldap.groups', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
-        );
+        $this->eventDispatcher->notify(new Event('import.ldap.groups', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount())));
 
         $iterator = $objects->getIterator();
 
@@ -92,12 +91,12 @@ final class LdapImport extends Service implements LdapImportService
                 try {
                     $this->userGroupService->create(new UserGroup($userGroup));
 
-                    $this->eventDispatcher->notify(new Event('import.ldap.progress.groups', 
-                            $this,
-                            EventMessage::build()
+                    $this->eventDispatcher->notify(new Event(
+                        'import.ldap.progress.groups',
+                        $this,
+                        EventMessage::build()
                                         ->addDetail(__u('Group'), sprintf('%s', $userGroup['name']))
-                        )
-                    );
+                    ));
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {
@@ -167,8 +166,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $importResults = new LdapImportResultsDto($objects->getCount());
 
-        $this->eventDispatcher->notify(new Event('import.ldap.users', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount()))
-        );
+        $this->eventDispatcher->notify(new Event('import.ldap.users', $this, EventMessage::build()->addDetail(__u('Objects found'), $objects->getCount())));
 
         $iterator = $objects->getIterator();
 
@@ -189,15 +187,15 @@ final class LdapImport extends Service implements LdapImportService
                 try {
                     $this->userService->create(new User($user));
 
-                    $this->eventDispatcher->notify(new Event('import.ldap.progress.users', 
-                            $this,
-                            EventMessage::build()
+                    $this->eventDispatcher->notify(new Event(
+                        'import.ldap.progress.users',
+                        $this,
+                        EventMessage::build()
                                         ->addDetail(
                                             __u('User'),
                                             sprintf('%s (%s)', $user['name'], $user['login'])
                                         )
-                        )
-                    );
+                    ));
 
                     $importResults->addSyncedObject();
                 } catch (Exception $e) {

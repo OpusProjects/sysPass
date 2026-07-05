@@ -24,6 +24,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Import\Services;
+
 use SP\Domain\Import\Services\XmlFormat;
 use SP\Domain\Import\Services\ImportException;
 

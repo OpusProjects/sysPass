@@ -98,5 +98,4 @@ final readonly class WebControllerHelper
     {
         return $this->simpleControllerHelper->getRouteContextData();
     }
-
 }

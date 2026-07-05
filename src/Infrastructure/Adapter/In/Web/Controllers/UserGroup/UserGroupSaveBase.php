@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserGroup;
 
-
 use SP\Core\Application;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserGroupService;
@@ -55,5 +54,4 @@ abstract class UserGroupSaveBase extends ControllerBase
         $this->customFieldService = $customFieldService;
         $this->form = new UserGroupForm($application, $this->request);
     }
-
 }

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
-
 use SP\Core\Application;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -51,5 +50,4 @@ abstract class NotificationSaveBase extends ControllerBase
         $this->notificationService = $notificationService;
         $this->form = new NotificationForm($application, $this->request);
     }
-
 }

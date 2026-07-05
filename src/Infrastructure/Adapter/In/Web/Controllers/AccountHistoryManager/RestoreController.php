@@ -87,12 +87,12 @@ final class RestoreController extends ControllerBase
             $this->accountService->restoreRemoved($accountHistoryDto);
         }
 
-        $this->eventDispatcher->notify(new Event('restore.accountHistory', 
-                $this,
-                EventMessage::build(__u('Account restored'))
+        $this->eventDispatcher->notify(new Event(
+            'restore.accountHistory',
+            $this,
+            EventMessage::build(__u('Account restored'))
                             ->addDetail(__u('Data'), (string)$accountHistoryDto)
-            )
-        );
+        ));
 
         return ActionResponse::ok(__u('Account restored'));
     }
