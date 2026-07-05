@@ -108,6 +108,12 @@ final class CryptPKI implements CryptPKIHandler
     {
         $privateKeyPem = $this->getPrivateKey();
 
+        // A valid RSA ciphertext is always exactly KEY_SIZE/8 bytes; anything else is
+        // invalid input — phpseclib3 returns binary garbage instead of throwing in that case.
+        if (strlen($data) !== self::KEY_SIZE / 8) {
+            return null;
+        }
+
         try {
             // The browser encrypts with PKCS#1 v1.5 padding (JSEncrypt).
             $privateKey = RSA::loadPrivateKey($privateKeyPem)
