@@ -82,6 +82,12 @@ final class AccountAcl extends Service implements AccountAclService
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission
     {
+        // Refresh userData from the context: in the API path the user is authenticated
+        // inside setupApi() (called at action start), which runs after the DI container
+        // has already constructed this service. Capturing userData only in the constructor
+        // would see an unauthenticated (blank) UserDto for every API call.
+        $this->userData = $this->context->getUserData();
+
         $this->accountPermission = new AccountPermission($actionId, $isHistory);
         $this->accountPermission->setShowPermission(
             self::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())

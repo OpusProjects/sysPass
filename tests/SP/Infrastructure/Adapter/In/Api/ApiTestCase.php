@@ -82,8 +82,9 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::ACCOUNT_VIEW      => ['GET', '/api/v1/accounts/{id}'],
         AclActionsInterface::ACCOUNT_EDIT      => ['PUT', '/api/v1/accounts/{id}'],
         AclActionsInterface::ACCOUNT_DELETE    => ['DELETE', '/api/v1/accounts/{id}'],
-        AclActionsInterface::ACCOUNT_VIEW_PASS => ['POST', '/api/v1/accounts/{id}/password'],
-        AclActionsInterface::ACCOUNT_EDIT_PASS => ['PUT', '/api/v1/accounts/{id}/password'],
+        AclActionsInterface::ACCOUNT_VIEW_PASS   => ['POST', '/api/v1/accounts/{id}/password'],
+        AclActionsInterface::ACCOUNT_EDIT_PASS   => ['PUT', '/api/v1/accounts/{id}/password'],
+        AclActionsInterface::ACCOUNT_FILE_UPLOAD => ['POST', '/api/v1/accounts/{id}/files'],
         AclActionsInterface::CATEGORY_SEARCH   => ['GET', '/api/v1/categories'],
         AclActionsInterface::CATEGORY_CREATE   => ['POST', '/api/v1/categories'],
         AclActionsInterface::CATEGORY_VIEW     => ['GET', '/api/v1/categories/{id}'],
@@ -109,7 +110,7 @@ abstract class ApiTestCase extends TestCase
     ];
 
     private static ?array $apiModuleDefinitions = null;
-    private string        $configPath;
+    protected string      $configPath;
 
     protected function setUp(): void
     {
