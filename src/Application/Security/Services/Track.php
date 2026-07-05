@@ -72,7 +72,12 @@ final class Track extends Service implements TrackService
     public function buildTrackRequest(string $source): TrackRequest
     {
         $time = time() - self::TIME_TRACKING;
-        return new TrackRequest($time, $source, $this->request->getClientAddress());
+
+        // Key on REMOTE_ADDR, never getClientAddress(): the latter trusts the
+        // client-supplied Forwarded / X-Forwarded-For header, which an attacker
+        // rotates per request to land in a fresh bucket every time, defeating the
+        // brute-force delay this enforces. (Same rationale as InstallThrottle.)
+        return new TrackRequest($time, $source, $this->request->getServer('REMOTE_ADDR'));
     }
 
     /**
