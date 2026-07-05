@@ -35,7 +35,8 @@ use SP\Domain\CustomField\Services\CustomFieldItem;
  */
 final class CustomField extends Adapter implements CustomFieldAdapter
 {
-    public function transform(Dto|CustomFieldItem $data): array
+    /** @param CustomFieldItem $data */
+    public function transform($data): array
     {
         return [
             'type' => $data->typeName,

@@ -76,9 +76,10 @@ final class Category extends Adapter implements CategoryAdapter
     }
 
     /**
+     * @param CategoryModel $data
      * @throws ActionNotFoundException
      */
-    public function transform(Model|CategoryModel $data): array
+    public function transform($data): array
     {
         $actionRoute = $this->actions->getActionById(AclActionsInterface::CATEGORY_VIEW)->getRoute();
 

@@ -81,9 +81,10 @@ final class Account extends Adapter implements AccountAdapter
     }
 
     /**
+     * @param AccountEnrichedDto $data
      * @throws ActionNotFoundException
      */
-    public function transform(Dto|AccountEnrichedDto $data): array
+    public function transform($data): array
     {
         $account = $data->getAccountView();
         $actionRoute = $this->actions->getActionById(AclActionsInterface::ACCOUNT_VIEW)->getRoute();
