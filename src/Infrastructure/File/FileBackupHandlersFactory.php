@@ -46,8 +46,13 @@ final readonly class FileBackupHandlersFactory implements BackupHandlersFactory
 
     public function build(string $path, string $hash): BackupHandlers
     {
-        // Intermediate dump the DB archive is built from
-        $dbFile = new FileHandler(FileSystem::buildPath($path, 'database.sql'), 'wb+');
+        // Intermediate dump the DB archive is built from. Restrict it to the owner
+        // right away: it holds the full plaintext SQL dump (encrypted secrets + the
+        // master password hash) and otherwise lives world-readable at the default
+        // umask until the archive is built and it is deleted.
+        $dbFilePath = FileSystem::buildPath($path, 'database.sql');
+        $dbFile = new FileHandler($dbFilePath, 'wb+');
+        @chmod($dbFilePath, 0600);
 
         $dbArchive = new ArchiveHandler(
             (string)new BackupFileDto(BackupType::db, $hash, $path, 'sql'),
