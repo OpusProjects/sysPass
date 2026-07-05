@@ -123,7 +123,10 @@ abstract class IntegrationTestCase extends TestCase
                 'REQUEST_METHOD' => strtoupper($method),
                 'REQUEST_URI' => $uri,
                 'HTTP_USER_AGENT' => self::$faker->userAgent(),
-                'HTTP_HOST' => 'localhost'
+                'HTTP_HOST' => 'localhost',
+                // A real web request always has a client address; Track keys its
+                // brute-force counter on REMOTE_ADDR, which must be a valid IP.
+                'REMOTE_ADDR' => '127.0.0.1'
                 //'QUERY_STRING' => $query
             ]
         );

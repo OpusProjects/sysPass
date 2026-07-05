@@ -83,7 +83,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             $this->mailService->send(
                 __('Password Change'),
                 $email,
-                UserPassRecover::getMailMessage($hash)
+                UserPassRecover::getMailMessage($hash, $this->uriContext->getWebUri())
             );
 
             return ActionResponse::ok(__u('Request sent'),
