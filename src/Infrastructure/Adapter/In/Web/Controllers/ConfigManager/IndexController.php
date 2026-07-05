@@ -125,7 +125,6 @@ final class IndexController extends ControllerBase
         if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
             $this->tabsHelper->addTab($this->getEventsConfig());
-            $this->tabsHelper->addTab($this->getProxyConfig());
             $this->tabsHelper->addTab($this->getAuthConfig());
         }
 
@@ -228,14 +227,6 @@ final class IndexController extends ControllerBase
         );
 
         return new DataTab(__('Logs'), $template);
-    }
-
-    protected function getProxyConfig(): DataTab
-    {
-        $template = clone $this->view;
-        $template->addTemplate('proxy');
-
-        return new DataTab(__('Proxy'), $template);
     }
 
     /**
