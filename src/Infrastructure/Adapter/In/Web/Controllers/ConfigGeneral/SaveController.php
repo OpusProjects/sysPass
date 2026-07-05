@@ -33,10 +33,13 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveController
@@ -66,6 +69,7 @@ final class SaveController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         $this->handleSiteConfig($configData);
+        $this->handleProxyConfig($configData);
 
         return $this->saveConfig(
             $configData,
@@ -105,6 +109,35 @@ final class SaveController extends SimpleControllerBase
         $configData->setCheckUpdates($checkUpdatesEnabled);
         $configData->setCheckNotices($checkNoticesEnabled);
         $configData->setEncryptSession($encryptSessionEnabled);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function handleProxyConfig(ConfigDataInterface $configData): void
+    {
+        $proxyEnabled = $this->request->analyzeBool('proxy_enabled', false);
+        $proxyServer  = $this->request->analyzeString('proxy_server');
+        $proxyPort    = $this->request->analyzeInt('proxy_port', 8080);
+        $proxyUser    = $this->request->analyzeString('proxy_user');
+        $proxyPass    = $this->request->analyzeEncrypted('proxy_pass');
+
+        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
+            throw new ValidationException(__u('Missing Proxy parameters'));
+        }
+
+        if ($proxyEnabled) {
+            $configData->setProxyEnabled(true);
+            $configData->setProxyServer($proxyServer);
+            $configData->setProxyPort($proxyPort);
+            $configData->setProxyUser($proxyUser);
+
+            if ($proxyPass !== null && $proxyPass !== '***') {
+                $configData->setProxyPass($proxyPass);
+            }
+        } else {
+            $configData->setProxyEnabled(false);
+        }
     }
 
     /**
