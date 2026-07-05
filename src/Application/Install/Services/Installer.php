@@ -295,8 +295,18 @@ final class Installer implements InstallerService
         $this->installData->setDbHost($target->host);
         $this->installData->setDbPort($target->port ?? 3306);
 
-        if ($target->isLocal()) {
+        // 'localhost' is resolved by PDO to a Unix socket, so @localhost auth is correct.
+        // Numeric loopback addresses (127.0.0.1/::1) always use TCP, and TCP connections
+        // go through the OS network stack (or Docker NAT), so @localhost would not match.
+        if ($target->host === 'localhost') {
             $this->installData->setDbAuthHost('localhost');
+
+            return;
+        }
+
+        if ($target->isLocal()) {
+            // TCP loopback: source IP is unknowable (Docker bridge, NAT, etc.) → wildcard
+            $this->installData->setDbAuthHost('%');
 
             return;
         }

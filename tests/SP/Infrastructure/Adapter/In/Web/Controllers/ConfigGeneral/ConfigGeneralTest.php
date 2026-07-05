@@ -72,7 +72,7 @@ class ConfigGeneralTest extends IntegrationTestCase
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configGeneral/downloadLog'])
         );
 
-        $this->expectOutputRegex('/^\[\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\].*/mi');
+        $this->expectOutputRegex('/^\[\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}/mi');
 
         IntegrationTestCase::runApp($container);
     }

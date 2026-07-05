@@ -23,6 +23,7 @@ jobs:
           php-version: '8.5'
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
+          ini-values: zend.assertions=1
 
       - name: Install iproute2 and locales
         run: |
@@ -47,6 +48,7 @@ jobs:
         env:
           MARIADB_ROOT_PASSWORD: syspass
           MARIADB_DATABASE: syspass
+          MARIADB_ROOT_HOST: '%'
         ports:
           - 3306:3306
         options: >-
@@ -62,6 +64,7 @@ jobs:
           php-version: '8.5'
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
+          ini-values: zend.assertions=1
 
       - name: Install iproute2 and locales
         run: |
@@ -105,7 +108,7 @@ jobs:
         run: echo "DEBUG=false" > .env
 
       - name: PHPStan
-        run: composer phpstan-app
+        run: vendor/bin/phpstan analyse --level 6 --error-format=github src
 
       - name: PHPCS
         run: composer phpcs

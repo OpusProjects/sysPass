@@ -76,9 +76,10 @@ final class Client extends Adapter implements ClientAdapter
     }
 
     /**
+     * @param ClientModel $data
      * @throws ActionNotFoundException
      */
-    public function transform(Model|ClientModel $data): array
+    public function transform($data): array
     {
         $actionRoute = $this->actions->getActionById(AclActionsInterface::CLIENT_VIEW)->getRoute();
 
