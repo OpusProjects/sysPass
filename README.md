@@ -1,4 +1,8 @@
-# 🔐 sysPass — Systems Password Manager
+# sysPass — Systems Password Manager
+
+[![CI](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml/badge.svg)](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml)
+[![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/php-8.4%2B-777BB4.svg?logo=php&logoColor=white)](https://www.php.net/)
 
 > 🛠️ **This is a fork.** This repository is a continuation of the original
 > [sysPass](https://github.com/nuxsmin/sysPass) by **Rubén Domínguez ([@nuxsmin](https://github.com/nuxsmin))**,
@@ -8,16 +12,20 @@
 
 PHP web-based password manager for business and personal use.
 
-- 🔒 AES-256 encryption in CTR mode
-- 🔑 RSA for sending passwords from forms
-- 🛡️ Two-factor authentication
-- 💻 HTML5 and Ajax interface
-- 👥 Users, groups and profiles management with up to 29 access levels
-- 🗄️ MySQL, OpenLDAP and Active Directory authentication
-- 🏷️ Tags, custom fields, public links, private accounts, favorites, history, etc.
-- 🔔 Activity notifications by email and in-app, plus an event log
-- 🌐 Multilanguage
-- 🔌 REST API
+---
+
+## ✨ Features
+
+- **AES-256 encryption**: CTR mode, all passwords encrypted at rest
+- **RSA key exchange**: passwords leave the browser already encrypted
+- **Two-factor authentication**: TOTP-based 2FA
+- **HTML5 / Ajax UI**: single-page interface, no full-page reloads
+- **Access control**: users, groups and profiles with up to 29 access levels
+- **Authentication backends**: local, OpenLDAP and Active Directory
+- **Rich account model**: tags, custom fields, public links, private accounts, favorites and history
+- **Notifications & audit log**: activity alerts by email and in-app, plus a full event log
+- **Multilanguage**: internationalised UI
+- **REST API**: full programmatic access
 
 ---
 
@@ -64,22 +72,32 @@ Architecture & design:
 
 ## 📚 Documentation
 
-Project documentation lives in the [`docs/`](docs) folder:
-
-- [`docs/API.md`](docs/API.md) — REST API reference, authentication, and Swagger UI (`/api/docs/` on a live instance).
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — hexagonal layer map, request lifecycle, DI container, and dependency rules.
-- [`docs/CLI.md`](docs/CLI.md) — command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables.
-- [`docs/INSTALL.md`](docs/INSTALL.md) — requirements and installation (Docker and manual, multi-distro).
-- [`docs/TESTING.md`](docs/TESTING.md) — running the test suites, test layout, environment requirements, and writing new tests.
+| Document | What it covers |
+|---|---|
+| [API](docs/API.md) | REST API reference, authentication, and Swagger UI (`/api/docs/` on a live instance) |
+| [Architecture](docs/ARCHITECTURE.md) | Hexagonal layer map, request lifecycle, DI container, and dependency rules |
+| [CLI](docs/CLI.md) | Command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables |
+| [Install](docs/INSTALL.md) | Requirements and installation (Docker and manual, multi-distro) |
+| [Testing](docs/TESTING.md) | Running the test suites, test layout, environment requirements, and writing new tests |
 
 ---
 
 ## 🤝 Contributing
 
-See [`CONTRIBUTING.md`](CONTRIBUTING.md) for dev setup, PR workflow, coding conventions, and tests.
+Contributions are welcome: [CONTRIBUTING.md](CONTRIBUTING.md) covers dev setup, PR workflow, coding conventions, and tests.
+
+Security issues: see [SECURITY.md](SECURITY.md) for private reporting.
+
+---
+
+## 👥 Authors
+
+- [Blai Peidro](https://github.com/blaipr)
+
+Part of [OpusProjects](https://github.com/OpusProjects).
 
 ---
 
 ## ⚖️ License
 
-This software is published under the **[GNU GPLv3](LICENSE)** license, unchanged from the original project.
+[GNU GPLv3](LICENSE)
