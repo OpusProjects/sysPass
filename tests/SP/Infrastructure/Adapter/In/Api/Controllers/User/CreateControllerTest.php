@@ -72,6 +72,89 @@ class CreateControllerTest extends UnitaryTestCase
         $this->assertEquals('User added', $result['resultMessage']);
     }
 
+    /**
+     * A non-app-admin actor submitting isAdminApp=1 must have that flag forced to
+     * false in the persisted User.
+     */
+    public function testCreateActionNonAdminCannotGrantAdminApp(): void
+    {
+        $this->apiService->method('setup');
+
+        $this->apiService->method('getParamString')->willReturnMap([
+            ['name', true, null, 'Test User'],
+            ['login', true, null, 'testuser'],
+            ['email', false, null, 'test@example.com'],
+            ['notes', false, null, null],
+        ]);
+
+        // Non-admin actor; both flags requested as 1.
+        $this->apiService->method('getParamInt')->willReturnMap([
+            ['userGroupId', true, null, 1],
+            ['userProfileId', true, null, 2],
+            ['isAdminApp', false, null, 1],
+            ['isAdminAcc', false, null, 1],
+            ['isDisabled', false, null, 0],
+            ['isChangePass', false, null, 0],
+        ]);
+
+        $capturedUser = null;
+        $this->userService
+            ->method('create')
+            ->willReturnCallback(function (User $user) use (&$capturedUser) {
+                $capturedUser = $user;
+                return 99;
+            });
+
+        $this->controller->createAction();
+
+        $this->assertNotNull($capturedUser);
+        $this->assertFalse($capturedUser->isAdminApp(), 'non-admin must not grant isAdminApp');
+        $this->assertFalse($capturedUser->isAdminAcc(), 'non-admin must not grant isAdminAcc');
+    }
+
+    /**
+     * An app-admin actor requesting isAdminApp=1 must have the flag honoured.
+     */
+    public function testCreateActionAdminCanGrantAdminApp(): void
+    {
+        // Promote the actor to app-admin.
+        $this->context->setUserData(
+            $this->context->getUserData()->mutate(['isAdminApp' => true])
+        );
+
+        $this->apiService->method('setup');
+
+        $this->apiService->method('getParamString')->willReturnMap([
+            ['name', true, null, 'Test User'],
+            ['login', true, null, 'testuser'],
+            ['email', false, null, 'test@example.com'],
+            ['notes', false, null, null],
+        ]);
+
+        $this->apiService->method('getParamInt')->willReturnMap([
+            ['userGroupId', true, null, 1],
+            ['userProfileId', true, null, 2],
+            ['isAdminApp', false, null, 1],
+            ['isAdminAcc', false, null, 1],
+            ['isDisabled', false, null, 0],
+            ['isChangePass', false, null, 0],
+        ]);
+
+        $capturedUser = null;
+        $this->userService
+            ->method('create')
+            ->willReturnCallback(function (User $user) use (&$capturedUser) {
+                $capturedUser = $user;
+                return 99;
+            });
+
+        $this->controller->createAction();
+
+        $this->assertNotNull($capturedUser);
+        $this->assertTrue($capturedUser->isAdminApp(), 'admin must be able to grant isAdminApp');
+        $this->assertTrue($capturedUser->isAdminAcc(), 'admin must be able to grant isAdminAcc');
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
