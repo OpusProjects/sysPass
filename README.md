@@ -16,7 +16,7 @@ and called for someone to fork it.
 This repository is that fork — started by [OpusProjects](https://github.com/OpusProjects)
 in June 2026, picking up [@nuxsmin](https://github.com/nuxsmin)'s own planned
 [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring)
-as the new baseline, built on PHP 8, Symfony, and MariaDB.
+as the new baseline, built on PHP 8, Symfony, and a full REST API.
 All original copyright and the GNU GPLv3 license are retained.
 
 ---
