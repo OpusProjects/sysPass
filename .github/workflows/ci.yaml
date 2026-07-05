@@ -1,4 +1,4 @@
-name: CI
+name: sysPass CI
 
 on:
   push:
@@ -75,7 +75,7 @@ jobs:
         run: composer install --no-interaction --prefer-dist
 
       - name: Load schema
-        run: mariadb -h 127.0.0.1 -P 3306 -u root -psyspass syspass < schemas/dbstructure.sql
+        run: mysql -h 127.0.0.1 -P 3306 -u root -psyspass syspass < schemas/dbstructure.sql
 
       - name: Run integration tests
         env:
@@ -100,6 +100,9 @@ jobs:
 
       - name: Install dependencies
         run: composer install --no-interaction --prefer-dist
+
+      - name: Create .env for PHPStan bootstrap
+        run: echo "DEBUG=false" > .env
 
       - name: PHPStan
         run: composer phpstan-app

@@ -1,6 +1,6 @@
 # sysPass — Systems Password Manager
 
-[![CI](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml/badge.svg)](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml)
+[![sysPass CI](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml/badge.svg)](https://github.com/OpusProjects/sysPass/actions/workflows/ci.yaml)
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/php-8.4%2B-777BB4.svg?logo=php&logoColor=white)](https://www.php.net/)
 
@@ -10,7 +10,7 @@
 > original project was discontinued by its author. All original work, copyright, and the
 > GNU GPLv3 license are retained and credited. See the Original project status section.
 
-PHP web-based password manager for business and personal use.
+sysPass is a PHP web-based password manager for business and personal use.
 
 ---
 
