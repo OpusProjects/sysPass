@@ -239,6 +239,13 @@ Key constraints:
   requests `ModuleInterface`. Do not add an unused binding "for consistency": every explicit DI
   definition must stay compilable forever, and an unused-but-broken binding is exactly what once
   fatally broke prod container compilation (the phantom `ApiRequestService` entry).
+- **The API `config/export` / `config/backup` `path` parameter is a deliberate feature, not an
+  arbitrary-write flaw.** A caller-chosen export/backup location is documented for the CLI
+  (`sp:backup --path`) and covered by tests (`ConfigControllerTest::testExportActionCustomPath`,
+  `testBackupActionCustomPath`); it is gated behind the privileged `CONFIG_EXPORT_RUN` /
+  `CONFIG_BACKUP_RUN` tokens. Do not "harden" it by confining the path to `Path::BACKUP` — that
+  breaks the documented, tested feature. (That an admin could target a web-accessible directory is
+  operational guidance, not a code bug.)
 
 ## Conventions
 
