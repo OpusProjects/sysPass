@@ -52,15 +52,15 @@ final class LogoutController extends ControllerBase
             $inactiveTime = abs(round((time() - $this->session->getLastActivity()) / 60, 2));
             $totalTime = abs(round((time() - $this->session->getStartActivity()) / 60, 2));
 
-            $this->eventDispatcher->notify(new Event('logout',
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'logout',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Logout session'))
                         ->addDetail(__u('User'), $this->session->getUserData()->login)
                         ->addDetail(__u('Inactive time'), $inactiveTime.' min.')
                         ->addDetail(__u('Total time'), $totalTime.' min.')
-                )
-            );
+            ));
 
             SessionLifecycleHandler::clean();
 

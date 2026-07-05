@@ -50,8 +50,7 @@ final class CreateController extends NotificationViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('New Notification'));

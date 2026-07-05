@@ -55,8 +55,7 @@ final class SaveEditPassController extends UserSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT_PASS, $id)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::USER_EDIT_PASS, $id);
@@ -65,13 +64,13 @@ final class SaveEditPassController extends UserSaveBase
 
             $this->userService->updatePass($id, $itemData->getPass() ?? '');
 
-            $this->eventDispatcher->notify(new Event('edit.user.pass', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.user.pass',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Password updated'))
                         ->addDetail(__u('User'), $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Password updated'));
         } catch (ValidationException $e) {
@@ -84,5 +83,4 @@ final class SaveEditPassController extends UserSaveBase
             return ActionResponse::error($e->getMessage());
         }
     }
-
 }

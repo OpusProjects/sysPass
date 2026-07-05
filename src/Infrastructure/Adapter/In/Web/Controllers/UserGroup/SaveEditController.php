@@ -57,8 +57,7 @@ final class SaveEditController extends UserGroupSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::GROUP_EDIT, $id);
@@ -67,14 +66,14 @@ final class SaveEditController extends UserGroupSaveBase
 
             $this->userGroupService->update($groupData);
 
-            $this->eventDispatcher->notify(new Event('edit.userGroup', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.userGroup',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Group updated'))
                         ->addDetail(__u('Name'), $groupData->getName())
                         ->addExtra('userGroupId', $id)
-                )
-            );
+            ));
 
             $this->updateCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->request, $this->customFieldService);
 

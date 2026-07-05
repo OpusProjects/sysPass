@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -48,14 +47,14 @@ final class EditController extends CategoryBase
 
         $this->categoryService->update($categoryData);
 
-        $this->eventDispatcher->notify(new Event('edit.category', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.category',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Category updated'))
                     ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $categoryData->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($categoryData, __('Category updated'), $categoryData->getId());
     }

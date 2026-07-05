@@ -73,8 +73,7 @@ final class DeleteController extends ControllerBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PLUGIN_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {

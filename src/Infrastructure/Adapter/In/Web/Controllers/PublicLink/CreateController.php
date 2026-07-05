@@ -50,8 +50,7 @@ final class CreateController extends PublicLinkViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('New Public Link'));

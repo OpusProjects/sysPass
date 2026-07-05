@@ -107,42 +107,156 @@ final class ThemeIcons implements ThemeIconsInterface
         $this->icons[$alias] = $icon;
     }
 
-    public function warning(): IconInterface { return $this->getIconByName('warning'); }
-    public function download(): IconInterface { return $this->getIconByName('download'); }
-    public function clear(): IconInterface { return $this->getIconByName('clear'); }
-    public function play(): IconInterface { return $this->getIconByName('play'); }
-    public function help(): IconInterface { return $this->getIconByName('help'); }
-    public function publicLink(): IconInterface { return $this->getIconByName('publicLink'); }
-    public function back(): IconInterface { return $this->getIconByName('back'); }
-    public function restore(): IconInterface { return $this->getIconByName('restore'); }
-    public function save(): IconInterface { return $this->getIconByName('save'); }
-    public function up(): IconInterface { return $this->getIconByName('up'); }
-    public function down(): IconInterface { return $this->getIconByName('down'); }
-    public function viewPass(): IconInterface { return $this->getIconByName('viewPass'); }
-    public function copy(): IconInterface { return $this->getIconByName('copy'); }
-    public function clipboard(): IconInterface { return $this->getIconByName('clipboard'); }
-    public function email(): IconInterface { return $this->getIconByName('email'); }
-    public function refresh(): IconInterface { return $this->getIconByName('refresh'); }
-    public function editPass(): IconInterface { return $this->getIconByName('editPass'); }
-    public function appAdmin(): IconInterface { return $this->getIconByName('appAdmin'); }
-    public function accAdmin(): IconInterface { return $this->getIconByName('accAdmin'); }
-    public function ldapUser(): IconInterface { return $this->getIconByName('ldapUser'); }
-    public function disabled(): IconInterface { return $this->getIconByName('disabled'); }
-    public function navPrev(): IconInterface { return $this->getIconByName('navPrev'); }
-    public function navNext(): IconInterface { return $this->getIconByName('navNext'); }
-    public function navFirst(): IconInterface { return $this->getIconByName('navFirst'); }
-    public function navLast(): IconInterface { return $this->getIconByName('navLast'); }
-    public function add(): IconInterface { return $this->getIconByName('add'); }
-    public function view(): IconInterface { return $this->getIconByName('view'); }
-    public function edit(): IconInterface { return $this->getIconByName('edit'); }
-    public function delete(): IconInterface { return $this->getIconByName('delete'); }
-    public function optional(): IconInterface { return $this->getIconByName('optional'); }
-    public function check(): IconInterface { return $this->getIconByName('check'); }
-    public function search(): IconInterface { return $this->getIconByName('search'); }
-    public function account(): IconInterface { return $this->getIconByName('account'); }
-    public function group(): IconInterface { return $this->getIconByName('group'); }
-    public function settings(): IconInterface { return $this->getIconByName('settings'); }
-    public function info(): IconInterface { return $this->getIconByName('info'); }
-    public function enabled(): IconInterface { return $this->getIconByName('enabled'); }
-    public function remove(): IconInterface { return $this->getIconByName('remove'); }
+    public function warning(): IconInterface
+    {
+        return $this->getIconByName('warning');
+    }
+    public function download(): IconInterface
+    {
+        return $this->getIconByName('download');
+    }
+    public function clear(): IconInterface
+    {
+        return $this->getIconByName('clear');
+    }
+    public function play(): IconInterface
+    {
+        return $this->getIconByName('play');
+    }
+    public function help(): IconInterface
+    {
+        return $this->getIconByName('help');
+    }
+    public function publicLink(): IconInterface
+    {
+        return $this->getIconByName('publicLink');
+    }
+    public function back(): IconInterface
+    {
+        return $this->getIconByName('back');
+    }
+    public function restore(): IconInterface
+    {
+        return $this->getIconByName('restore');
+    }
+    public function save(): IconInterface
+    {
+        return $this->getIconByName('save');
+    }
+    public function up(): IconInterface
+    {
+        return $this->getIconByName('up');
+    }
+    public function down(): IconInterface
+    {
+        return $this->getIconByName('down');
+    }
+    public function viewPass(): IconInterface
+    {
+        return $this->getIconByName('viewPass');
+    }
+    public function copy(): IconInterface
+    {
+        return $this->getIconByName('copy');
+    }
+    public function clipboard(): IconInterface
+    {
+        return $this->getIconByName('clipboard');
+    }
+    public function email(): IconInterface
+    {
+        return $this->getIconByName('email');
+    }
+    public function refresh(): IconInterface
+    {
+        return $this->getIconByName('refresh');
+    }
+    public function editPass(): IconInterface
+    {
+        return $this->getIconByName('editPass');
+    }
+    public function appAdmin(): IconInterface
+    {
+        return $this->getIconByName('appAdmin');
+    }
+    public function accAdmin(): IconInterface
+    {
+        return $this->getIconByName('accAdmin');
+    }
+    public function ldapUser(): IconInterface
+    {
+        return $this->getIconByName('ldapUser');
+    }
+    public function disabled(): IconInterface
+    {
+        return $this->getIconByName('disabled');
+    }
+    public function navPrev(): IconInterface
+    {
+        return $this->getIconByName('navPrev');
+    }
+    public function navNext(): IconInterface
+    {
+        return $this->getIconByName('navNext');
+    }
+    public function navFirst(): IconInterface
+    {
+        return $this->getIconByName('navFirst');
+    }
+    public function navLast(): IconInterface
+    {
+        return $this->getIconByName('navLast');
+    }
+    public function add(): IconInterface
+    {
+        return $this->getIconByName('add');
+    }
+    public function view(): IconInterface
+    {
+        return $this->getIconByName('view');
+    }
+    public function edit(): IconInterface
+    {
+        return $this->getIconByName('edit');
+    }
+    public function delete(): IconInterface
+    {
+        return $this->getIconByName('delete');
+    }
+    public function optional(): IconInterface
+    {
+        return $this->getIconByName('optional');
+    }
+    public function check(): IconInterface
+    {
+        return $this->getIconByName('check');
+    }
+    public function search(): IconInterface
+    {
+        return $this->getIconByName('search');
+    }
+    public function account(): IconInterface
+    {
+        return $this->getIconByName('account');
+    }
+    public function group(): IconInterface
+    {
+        return $this->getIconByName('group');
+    }
+    public function settings(): IconInterface
+    {
+        return $this->getIconByName('settings');
+    }
+    public function info(): IconInterface
+    {
+        return $this->getIconByName('info');
+    }
+    public function enabled(): IconInterface
+    {
+        return $this->getIconByName('enabled');
+    }
+    public function remove(): IconInterface
+    {
+        return $this->getIconByName('remove');
+    }
 }

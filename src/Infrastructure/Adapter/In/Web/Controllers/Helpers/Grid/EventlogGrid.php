@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
@@ -142,12 +141,13 @@ final class EventlogGrid extends GridBase
                 }
 
                 if (preg_match('/^SQL.*/m', $value)) {
-                    $value = preg_replace([
+                    $value = preg_replace(
+                        [
                                               '/([a-zA-Z_]+),/m',
                                               '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
                                           ],
-                                          ['\\1,<br>', '<br>\\1'],
-                                          $value
+                        ['\\1,<br>', '<br>\\1'],
+                        $value
                     );
                 }
 

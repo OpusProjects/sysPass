@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,14 +50,14 @@ final class DeleteController extends ClientBase
 
         $this->clientService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.client', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'delete.client',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Client deleted'))
                     ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($clientData, __('Client deleted'), $id);
     }

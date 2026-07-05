@@ -107,14 +107,14 @@ final class LdapActions implements LdapActionsService
         $searchResults = $this->getResults($filter, ['dn']);
 
         if (iterator_count($searchResults) === 0) {
-            $this->eventDispatcher->notify(new Event('ldap.search.group', 
-                    $this,
-                    EventMessage::build(__u('Error while searching the group RDN'))
+            $this->eventDispatcher->notify(new Event(
+                'ldap.search.group',
+                $this,
+                EventMessage::build(__u('Error while searching the group RDN'))
                                 ->addDetail(__u('Group'), $group)
                                 ->addDetail('LDAP ERROR', $this->ldap->getLastError())
                                 ->addDetail('LDAP FILTER', $filter)
-                )
-            );
+            ));
 
             throw LdapException::error(
                 __u('Error while searching the group RDN'),

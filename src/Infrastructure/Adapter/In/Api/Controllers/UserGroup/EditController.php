@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,15 +50,15 @@ final class EditController extends UserGroupBase
 
         $this->userGroupService->update($userGroupData);
 
-        $this->eventDispatcher->notify(new Event('edit.userGroup', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.userGroup',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Group updated'))
                     ->addDetail(__u('Name'), $userGroupData->getName())
                     ->addDetail('ID', $userGroupData->getId())
                     ->addExtra('userGroupId', $userGroupData->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($userGroupData, __('Group updated'), $userGroupData->getId());
     }

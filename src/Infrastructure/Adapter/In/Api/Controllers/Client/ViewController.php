@@ -51,14 +51,14 @@ final class ViewController extends ClientBase
 
         $clientData = $this->clientService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.client',
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.client',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Client displayed'))
                     ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         $out = $this->fractal->createData(new Item($clientData, $this->clientAdapter));
 

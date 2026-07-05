@@ -72,15 +72,15 @@ final class SaveResetController extends UserPassResetSaveBase
 
             $user = $this->userService->getById($userId);
 
-            $this->eventDispatcher->notify(new Event('edit.user.password', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.user.password',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Password updated'))
                         ->addDetail(__u('User'), $user->getLogin())
                         ->addExtra('userId', $userId)
                         ->addExtra('email', $user->getEmail())
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Password updated'));
         } catch (Exception $e) {

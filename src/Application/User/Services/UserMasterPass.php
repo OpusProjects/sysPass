@@ -25,6 +25,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\User\Services;
+
 use SP\Domain\User\Services\UserMasterPassStatus;
 
 use Exception;

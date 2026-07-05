@@ -52,15 +52,15 @@ final class EditController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($accountUpdateDto->id);
 
-        $this->eventDispatcher->notify(new Event('edit.account', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.account',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Account updated'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $accountDetails->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($accountDetails, __('Account updated'), $accountUpdateDto->id);
     }

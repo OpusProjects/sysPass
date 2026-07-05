@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,14 +50,14 @@ final class EditController extends TagBase
 
         $this->tagService->update($tagData);
 
-        $this->eventDispatcher->notify(new Event('edit.tag', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.tag',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Tag updated'))
                     ->addDetail(__u('Name'), $tagData->getName())
                     ->addDetail('ID', $tagData->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($tagData, __('Tag updated'), $tagData->getId());
     }

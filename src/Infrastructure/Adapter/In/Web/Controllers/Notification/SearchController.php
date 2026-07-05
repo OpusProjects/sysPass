@@ -74,8 +74,7 @@ final class SearchController extends ControllerBase
     public function searchAction(): ActionResponse
     {
         if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_SEARCH)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation')
-            );
+            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
         $this->view->addTemplate('datagrid-table', 'grid');

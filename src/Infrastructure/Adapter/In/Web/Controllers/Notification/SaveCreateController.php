@@ -47,16 +47,14 @@ final class SaveCreateController extends NotificationSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::NOTIFICATION_CREATE);
 
             $this->notificationService->create($this->form->getItemData());
 
-            $this->eventDispatcher->notify(new Event('create.notification', $this, EventMessage::build()->addDescription(__u('Notification created')))
-            );
+            $this->eventDispatcher->notify(new Event('create.notification', $this, EventMessage::build()->addDescription(__u('Notification created'))));
 
             return ActionResponse::ok(__u('Notification created'));
         } catch (Exception $e) {
