@@ -79,8 +79,16 @@ class ConfigControllerTest extends ApiTestCase
         $this->assertNotEmpty($r->body->data->files->app);
         $this->assertNotEmpty($r->body->data->files->db);
         // The compressed archives land in the backup dir
-        $this->assertNotEmpty(glob(self::backupPath() . '/sysPass_app-*'));
-        $this->assertNotEmpty(glob(self::backupPath() . '/sysPass_db-*'));
+        $appArchives = glob(self::backupPath() . '/sysPass_app-*');
+        $dbArchives = glob(self::backupPath() . '/sysPass_db-*');
+        $this->assertNotEmpty($appArchives);
+        $this->assertNotEmpty($dbArchives);
+
+        // ...and are restricted to the owner: they hold the full DB dump (encrypted
+        // secrets + master password hash) and the app config, so must not be world-readable.
+        foreach (array_merge($appArchives, $dbArchives) as $archive) {
+            $this->assertSame(0600, fileperms($archive) & 0777, $archive . ' must be owner-only');
+        }
     }
 
     public function testBackupActionInvalidPath(): void

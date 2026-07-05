@@ -64,6 +64,8 @@ class ArchiveHandler implements ArchiveHandlerInterface
         // Delete the non-compressed archive
         (new FileHandler($this->archive->getPath()))->delete();
 
+        $this->restrictToOwner($this->archive->getPath() . '.gz');
+
         return $packed->getFileInfo()->getPathname();
     }
 
@@ -81,6 +83,21 @@ class ArchiveHandler implements ArchiveHandlerInterface
         (new FileHandler($file))->delete();
         (new FileHandler($this->archive->getPath()))->delete();
 
+        $this->restrictToOwner($this->archive->getPath() . '.gz');
+
         return $packed->getFileInfo()->getPathname();
+    }
+
+    /**
+     * Restrict a produced backup archive to its owner.
+     *
+     * The archive holds a full DB dump (encrypted account blobs + the master
+     * password hash) or the application files (config.xml with the crypto keys),
+     * so it must not land at the process default umask (typically world-readable
+     * 0644) where any local user on a shared host could read it.
+     */
+    private function restrictToOwner(string $path): void
+    {
+        @chmod($path, 0600);
     }
 }
