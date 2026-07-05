@@ -66,6 +66,11 @@ class DatabaseUtil
         }
 
         $conn->exec(sprintf($query, $database, $user, $host, $pass));
+
+        // Docker NAT means the runner's TCP connection enters MariaDB from the bridge
+        // gateway IP (e.g. 172.17.0.1), not from SELF_IP_ADDRESS or $host — grant '%'
+        // so the test user is always reachable regardless of network topology.
+        $conn->exec(sprintf($query, $database, $user, '%', $pass));
     }
 
     /**

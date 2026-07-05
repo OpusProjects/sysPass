@@ -1846,7 +1846,7 @@ parameters:
 			message: '#^Instanceof between SP\\Domain\\Common\\Models\\Item and SP\\Domain\\Common\\Models\\Item will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
-			path: src/Domain/Account/Dtos/AccountEnrichedDto.php
+			path: src/Domain/Common/Dtos/ItemDataTrait.php
 
 		-
 			message: '#^Method SP\\Domain\\Account\\Dtos\\AccountEnrichedDto\:\:buildFromItemData\(\) return type has no value type specified in iterable type array\.$#'
