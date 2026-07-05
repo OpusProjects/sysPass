@@ -75,18 +75,17 @@ final class LdapConnection implements LdapConnectionHandler
             // password (which would let an empty password authenticate a user).
             $this->ldap->bind($username ?? $ldapParams->getBindDn(), $password ?? $ldapParams->getBindPass());
 
-            $this->eventDispatcher->notify(new Event('ldap.check.connection', $this, EventMessage::build(__u('LDAP connection OK')))
-            );
+            $this->eventDispatcher->notify(new Event('ldap.check.connection', $this, EventMessage::build(__u('LDAP connection OK'))));
         } catch (LaminasLdapException $e) {
             $this->eventDispatcher->notify(new Event('exception', $e));
 
-            $this->eventDispatcher->notify(new Event('ldap.bind', 
-                    $this,
-                    EventMessage::build(__u('LDAP connection error'))
+            $this->eventDispatcher->notify(new Event(
+                'ldap.bind',
+                $this,
+                EventMessage::build(__u('LDAP connection error'))
                                 ->addDetail('LDAP ERROR', $this->ldap->getLastError())
                                 ->addDetail('LDAP DN', $username)
-                )
-            );
+            ));
 
             throw LdapException::error(
                 __u('LDAP connection error'),

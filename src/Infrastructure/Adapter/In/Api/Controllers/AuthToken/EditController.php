@@ -26,7 +26,8 @@ final class EditController extends AuthTokenBase
 
         $this->authTokenService->update($tokenData);
 
-        $this->eventDispatcher->notify(new Event('edit.authToken',
+        $this->eventDispatcher->notify(new Event(
+            'edit.authToken',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Authorization updated'))

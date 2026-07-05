@@ -70,11 +70,11 @@ final class DownloadConfigBackupController extends SimpleControllerBase
             return ActionResponse::warning(__('Ey, this is a DEMO!!'));
         }
 
-        $this->eventDispatcher->notify(new Event('download.configBackupFile', 
-                $this,
-                EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), 'config.json')
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'download.configBackupFile',
+            $this,
+            EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), 'config.json')
+        ));
 
         if ($type !== 'json') {
             throw new RuntimeException('Not implemented');

@@ -50,17 +50,17 @@ final class SaveCreateController extends AccountSaveBase
 
         $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-        $this->eventDispatcher->notify(new Event('create.account', 
-                $this,
-                function () use ($accountId) {
-                    $accountView = $this->accountService->getByIdEnriched($accountId);
+        $this->eventDispatcher->notify(new Event(
+            'create.account',
+            $this,
+            function () use ($accountId) {
+                $accountView = $this->accountService->getByIdEnriched($accountId);
 
-                    return EventMessage::build(__u('Account created'))
-                                       ->addDetail(__u('Account'), $accountView->getName())
-                                       ->addDetail(__u('Client'), $accountView->getClientName());
-                }
-            )
-        );
+                return EventMessage::build(__u('Account created'))
+                                   ->addDetail(__u('Account'), $accountView->getName())
+                                   ->addDetail(__u('Client'), $accountView->getClientName());
+            }
+        ));
 
         $this->addCustomFieldsForItem(
             AclActionsInterface::ACCOUNT,

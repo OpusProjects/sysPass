@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;

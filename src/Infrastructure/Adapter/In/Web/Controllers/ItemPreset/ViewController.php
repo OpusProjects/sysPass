@@ -58,8 +58,7 @@ final class ViewController extends ItemPresetViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_VIEW)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('Display Value'));

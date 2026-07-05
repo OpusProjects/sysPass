@@ -84,9 +84,10 @@ final class SaveRequestController extends AccountControllerBase
 
         $usersId = [$accountView->getUserId(), $accountView->getUserEditId()];
 
-        $this->eventDispatcher->notify(new Event('request.account', 
-                $this,
-                EventMessage::build(__u('Request'))
+        $this->eventDispatcher->notify(new Event(
+            'request.account',
+            $this,
+            EventMessage::build(__u('Request'))
                             ->addDetail(
                                 __u('Requester'),
                                 sprintf('%s (%s)', $this->userDto->name, $this->userDto->login)
@@ -108,8 +109,7 @@ final class SaveRequestController extends AccountControllerBase
                                     $this->userService->getUserEmailById($usersId)
                                 )
                             )
-            )
-        );
+        ));
 
         return ActionResponse::ok(
             __u('Request done'),

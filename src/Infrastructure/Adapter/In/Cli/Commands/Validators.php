@@ -36,8 +36,7 @@ final class Validators
     public static function valueNotEmpty(
         ?string $value,
         ?string $message
-    ): string
-    {
+    ): string {
         if (empty($value)) {
             throw new RuntimeException($message ?? __u('Value cannot be blank'));
         }

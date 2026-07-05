@@ -77,8 +77,7 @@ final class DisableController extends ControllerBase
 
             $this->pluginService->toggleEnabled($id, false);
 
-            $this->eventDispatcher->notify(new Event('edit.plugin.disable', $this, EventMessage::build()->addDescription(__u('Plugin disabled')))
-            );
+            $this->eventDispatcher->notify(new Event('edit.plugin.disable', $this, EventMessage::build()->addDescription(__u('Plugin disabled'))));
 
             return ActionResponse::ok(__u('Plugin disabled'));
         } catch (Exception $e) {

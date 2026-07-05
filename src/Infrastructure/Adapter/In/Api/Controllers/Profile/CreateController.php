@@ -25,7 +25,8 @@ final class CreateController extends ProfileBase
         $id = $this->profileService->create($profileData);
         $profileData = $profileData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.profile',
+        $this->eventDispatcher->notify(new Event(
+            'create.profile',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Profile added'))

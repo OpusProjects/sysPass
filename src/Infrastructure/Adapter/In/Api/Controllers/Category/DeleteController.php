@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,14 +50,14 @@ final class DeleteController extends CategoryBase
 
         $this->categoryService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.category', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'delete.category',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Category deleted'))
                     ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $categoryData->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($categoryData, __('Category deleted'), $id);
     }

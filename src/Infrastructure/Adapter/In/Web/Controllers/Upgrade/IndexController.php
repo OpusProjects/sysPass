@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade;
 
-
 use SP\Core\Acl\Actions;
 use SP\Core\Application;
 use SP\Domain\Common\Attributes\Action;

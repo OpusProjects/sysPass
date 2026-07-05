@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Install;
 
-
 use SP\Core\Application;
 use SP\Core\Language;
 use SP\Domain\Common\Attributes\Action;

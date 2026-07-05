@@ -74,8 +74,7 @@ final class ImportController extends SimpleControllerBase
 
         $ldapParams = LdapParams::fromRequest($this->request);
 
-        $this->eventDispatcher->notify(new Event('import.ldap.start', $this, EventMessage::build(__u('LDAP Import')))
-        );
+        $this->eventDispatcher->notify(new Event('import.ldap.start', $this, EventMessage::build(__u('LDAP Import'))));
 
         $userImportResults = $this->ldapImportService->importUsers($ldapParams, $ldapImportParams);
         $totalObjects = $userImportResults->getTotalObjects();
@@ -85,8 +84,7 @@ final class ImportController extends SimpleControllerBase
             $totalObjects += $groupsImportResults->getTotalObjects();
         }
 
-        $this->eventDispatcher->notify(new Event('import.ldap.end', $this, EventMessage::build(__u('Import finished')))
-        );
+        $this->eventDispatcher->notify(new Event('import.ldap.end', $this, EventMessage::build(__u('Import finished'))));
 
         if ($totalObjects === 0) {
             throw SPException::warning(__u('There aren\'t any objects to synchronize'));

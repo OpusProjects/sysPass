@@ -56,8 +56,7 @@ final class DeleteController extends UserSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -70,13 +69,13 @@ final class DeleteController extends UserSaveBase
                 $this->userService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $ids, $this->customFieldService);
 
-                $this->eventDispatcher->notify(new Event('delete.user.selection',
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'delete.user.selection',
+                    $this,
+                    EventMessage::build()
                             ->addDescription(__u('Users deleted'))
                             ->setExtra('userId', $ids)
-                    )
-                );
+                ));
 
                 return ActionResponse::ok(__u('Users deleted'));
             }
@@ -85,14 +84,14 @@ final class DeleteController extends UserSaveBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $id, $this->customFieldService);
 
-            $this->eventDispatcher->notify(new Event('delete.user', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'delete.user',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('User deleted'))
                         ->addDetail(__u('User'), $id)
                         ->addExtra('userId', $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('User deleted'));
         } catch (Exception $e) {

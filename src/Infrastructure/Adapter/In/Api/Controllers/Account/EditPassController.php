@@ -54,15 +54,15 @@ final class EditPassController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($accountUpdateDto->id);
 
-        $this->eventDispatcher->notify(new Event('edit.account.pass', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'edit.account.pass',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Password updated'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $accountDetails->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($accountDetails, __('Password updated'), $accountUpdateDto->id);
     }

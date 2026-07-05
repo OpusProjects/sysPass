@@ -21,7 +21,8 @@ final class CreateController extends UserBase
         $id = $this->userService->create($userData);
         $userData = $userData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.user',
+        $this->eventDispatcher->notify(new Event(
+            'create.user',
             $this,
             EventMessage::build()
                 ->addDescription(__u('User added'))

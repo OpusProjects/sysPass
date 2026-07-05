@@ -54,15 +54,15 @@ final class CreateController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($accountId);
 
-        $this->eventDispatcher->notify(new Event('create.account', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'create.account',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Account created'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $accountDetails->getId())
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($accountDetails, __('Account created'), $accountId);
     }

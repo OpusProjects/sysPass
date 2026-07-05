@@ -69,7 +69,8 @@ final class UpgradeController extends ControllerBase
             $this->configData->setUpgradeKey(null);
             $this->config->save($this->configData);
 
-            return ActionResponse::ok(__u('Application successfully updated'),
+            return ActionResponse::ok(
+                __u('Application successfully updated'),
                 [__u('You will be redirected to log in within 5 seconds')]
             );
         } catch (ValidationException $e) {

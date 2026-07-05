@@ -55,8 +55,7 @@ final class SaveEditController extends PublicLinkSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::PUBLICLINK_EDIT, $id);

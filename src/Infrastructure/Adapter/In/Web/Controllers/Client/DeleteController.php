@@ -72,11 +72,11 @@ final class DeleteController extends ClientSaveBase
             $this->clientService->deleteByIdBatch($ids);
             $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $ids, $this->customFieldService);
 
-            $this->eventDispatcher->notify(new Event('delete.client.selection', 
-                    $this,
-                    EventMessage::build()->addDescription(__u('Clients deleted'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'delete.client.selection',
+                $this,
+                EventMessage::build()->addDescription(__u('Clients deleted'))
+            ));
 
             return ActionResponse::ok(__u('Clients deleted'));
         }
@@ -84,11 +84,11 @@ final class DeleteController extends ClientSaveBase
 
         $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
 
-        $this->eventDispatcher->notify(new Event('delete.client', 
-                $this,
-                EventMessage::build(__u('Client deleted'))->addDetail(__u('Client'), $id)
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'delete.client',
+            $this,
+            EventMessage::build(__u('Client deleted'))->addDetail(__u('Client'), $id)
+        ));
 
         return ActionResponse::ok(__u('Client deleted'));
     }

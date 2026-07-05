@@ -25,7 +25,6 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
-
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 

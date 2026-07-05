@@ -79,19 +79,19 @@ final class SaveEditController extends AuthTokenSaveBase
         if ($this->form->isRefresh()) {
             $this->authTokenService->refreshAndUpdate($this->form->getItemData());
 
-            $this->eventDispatcher->notify(new Event('refresh.authToken', 
-                    $this,
-                    EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'refresh.authToken',
+                $this,
+                EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
+            ));
         } else {
             $this->authTokenService->update($this->form->getItemData());
 
-            $this->eventDispatcher->notify(new Event('edit.authToken', 
-                    $this,
-                    EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'edit.authToken',
+                $this,
+                EventMessage::build(__u('Authorization updated'))->addDetail(__u('Authorization'), $id)
+            ));
         }
 
         $this->updateCustomFieldsForItem(

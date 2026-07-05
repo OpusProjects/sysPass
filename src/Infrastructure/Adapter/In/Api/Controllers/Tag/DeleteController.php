@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -51,16 +50,15 @@ final class DeleteController extends TagBase
 
         $this->tagService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.tag', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'delete.tag',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Tag removed'))
                     ->addDetail(__u('Name'), $tagData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($tagData, __('Tag removed'), $id);
     }
-
 }
