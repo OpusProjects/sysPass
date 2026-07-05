@@ -41,8 +41,8 @@ final class EditController extends UserBase
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
             'userProfileId' => $this->apiService->getParamInt('userProfileId', true),
-            'isAdminApp'    => (bool) $this->apiService->getParamInt('isAdminApp'),
-            'isAdminAcc'    => (bool) $this->apiService->getParamInt('isAdminAcc'),
+            'isAdminApp'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminApp'),
+            'isAdminAcc'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminAcc'),
             'isDisabled'    => (bool) $this->apiService->getParamInt('isDisabled'),
             'isChangePass'  => (bool) $this->apiService->getParamInt('isChangePass'),
         ]);

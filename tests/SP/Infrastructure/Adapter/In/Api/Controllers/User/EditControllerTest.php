@@ -26,7 +26,12 @@ class EditControllerTest extends UnitaryTestCase
     private MockObject|UserService $userService;
     private EditController $controller;
 
-    public function testEditAction(): void
+    /**
+     * A non-app-admin actor submitting isAdminApp=1 must have that flag forced to
+     * false in the persisted User — the old test asserted the flag was true, encoding
+     * the privilege-escalation vulnerability.
+     */
+    public function testEditActionNonAdminCannotGrantAdminApp(): void
     {
         $this->apiService
             ->expects($this->once())
@@ -44,20 +49,17 @@ class EditControllerTest extends UnitaryTestCase
             ['id', true, null, 3],
             ['userGroupId', true, null, 1],
             ['userProfileId', true, null, 2],
-            ['isAdminApp', false, null, 1],
-            ['isAdminAcc', false, null, 0],
+            ['isAdminApp', false, null, 1],  // non-admin requests the flag …
+            ['isAdminAcc', false, null, 1],  // … and this one too
             ['isDisabled', false, null, 0],
             ['isChangePass', false, null, 0],
         ];
 
-        $this->apiService
-            ->method('getParamString')
-            ->willReturnMap($paramStringMap);
+        $this->apiService->method('getParamString')->willReturnMap($paramStringMap);
+        $this->apiService->method('getParamInt')->willReturnMap($paramIntMap);
 
-        $this->apiService
-            ->method('getParamInt')
-            ->willReturnMap($paramIntMap);
-
+        // Default context user is non-admin (isAdminApp = null / false).
+        // Both flags must be forced false regardless of request.
         $this->userService
             ->expects($this->once())
             ->method('update')
@@ -65,7 +67,8 @@ class EditControllerTest extends UnitaryTestCase
                 return $user->getId() === 3
                     && $user->getName() === 'Updated User'
                     && $user->getLogin() === 'updateduser'
-                    && $user->isAdminApp() === true;
+                    && $user->isAdminApp() === false
+                    && $user->isAdminAcc() === false;
             }));
 
         $response = $this->controller->editAction();
@@ -75,6 +78,57 @@ class EditControllerTest extends UnitaryTestCase
         $this->assertEquals(0, $result['resultCode']);
         $this->assertEquals(3, $result['itemId']);
         $this->assertEquals('User updated', $result['resultMessage']);
+    }
+
+    /**
+     * An app-admin actor requesting isAdminApp=1 must have the flag honoured.
+     */
+    public function testEditActionAdminCanGrantAdminApp(): void
+    {
+        // Promote the actor to app-admin.
+        $this->context->setUserData(
+            $this->context->getUserData()->mutate(['isAdminApp' => true])
+        );
+
+        $this->apiService
+            ->expects($this->once())
+            ->method('setup')
+            ->with(AclActionsInterface::USER_EDIT);
+
+        $paramStringMap = [
+            ['name', true, null, 'Updated User'],
+            ['login', true, null, 'updateduser'],
+            ['email', false, null, 'updated@example.com'],
+            ['notes', false, null, null],
+        ];
+
+        $paramIntMap = [
+            ['id', true, null, 3],
+            ['userGroupId', true, null, 1],
+            ['userProfileId', true, null, 2],
+            ['isAdminApp', false, null, 1],
+            ['isAdminAcc', false, null, 0],
+            ['isDisabled', false, null, 0],
+            ['isChangePass', false, null, 0],
+        ];
+
+        $this->apiService->method('getParamString')->willReturnMap($paramStringMap);
+        $this->apiService->method('getParamInt')->willReturnMap($paramIntMap);
+
+        $this->userService
+            ->expects($this->once())
+            ->method('update')
+            ->with($this->callback(function (User $user) {
+                return $user->getId() === 3
+                    && $user->isAdminApp() === true
+                    && $user->isAdminAcc() === false;
+            }));
+
+        $response = $this->controller->editAction();
+
+        $this->assertInstanceOf(ApiResponse::class, $response);
+        $result = $response->getResponse();
+        $this->assertEquals(0, $result['resultCode']);
     }
 
     protected function setUp(): void

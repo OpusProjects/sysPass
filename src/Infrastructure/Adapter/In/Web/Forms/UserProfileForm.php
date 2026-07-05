@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Forms;
 
+use ReflectionClass;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -119,7 +120,39 @@ final class UserProfileForm extends FormBase implements FormInterface
         $profileData->setMgmTags($this->request->analyzeBool('profile_tags', false));
         $profileData->setEvl($this->request->analyzeBool('profile_eventlog', false));
 
+        if (!$this->context->getUserData()->isAdminApp) {
+            $this->constrainProfileToActorPermissions($profileData);
+        }
+
         return $profileData;
+    }
+
+    /**
+     * Intersect every permission bit in $profileData with the acting user's own
+     * profile so that a non-admin delegate can never grant permissions they don't
+     * hold themselves. A null actor profile (no profile loaded) → all bits forced off.
+     */
+    private function constrainProfileToActorPermissions(ProfileData $profileData): void
+    {
+        $actorProfile = $this->context->getUserProfile();
+        $reflection   = new ReflectionClass(ProfileData::class);
+
+        foreach ($reflection->getMethods() as $method) {
+            $getter = $method->getName();
+
+            if (!str_starts_with($getter, 'is') || $method->getNumberOfParameters() > 0) {
+                continue;
+            }
+
+            $setter = 'set' . substr($getter, 2);
+
+            if (!$reflection->hasMethod($setter)) {
+                continue;
+            }
+
+            $actorHasBit = $actorProfile !== null && $actorProfile->$getter();
+            $profileData->$setter($profileData->$getter() && $actorHasBit);
+        }
     }
 
     /**
