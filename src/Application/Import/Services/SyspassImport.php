@@ -353,13 +353,15 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
                 $this->addAccount($dtoWithTags, $importParams, true);
 
-                $this->eventDispatcher->notify(new Event('run.import.syspass.process.account', 
+                $this->eventDispatcher->notify(new Event('run.import.syspass.process.account',
                         $this,
                         EventMessage::build()->addDetail(__u('Account imported'), $data['name'])
                     )
                 );
+            } catch (ImportException $e) {
+                throw $e;
             } catch (Exception $e) {
-                $this->eventDispatcher->notify(new Event('exception', 
+                $this->eventDispatcher->notify(new Event('exception',
                         $e,
                         EventMessage::build()->addDescription(__('Unable to import account'))
                     )
