@@ -101,7 +101,7 @@ jobs:
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
           cache: 'npm'
