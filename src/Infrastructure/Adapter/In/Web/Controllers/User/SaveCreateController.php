@@ -53,8 +53,7 @@ final class SaveCreateController extends UserSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::USER_CREATE);
@@ -63,13 +62,13 @@ final class SaveCreateController extends UserSaveBase
 
             $id = $this->userService->create($itemData);
 
-            $this->eventDispatcher->notify(new Event('create.user', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'create.user',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('User added'))
                         ->addDetail(__u('User'), $itemData->getName())
-                )
-            );
+            ));
 
             $this->addCustomFieldsForItem(AclActionsInterface::USER, $id, $this->request, $this->customFieldService);
 

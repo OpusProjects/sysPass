@@ -57,12 +57,12 @@ final class PluginLoader extends Service implements PluginLoaderService
         try {
             $model = $this->pluginManagerService->getByName($plugin->getName() ?? '');
         } catch (NoSuchItemException $e) {
-            $this->eventDispatcher->notify(new Event('plugin.load', 
-                    $e,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.load',
+                $e,
+                EventMessage::build()
                                 ->addDetail(__('Plugin not registered'), $plugin->getName())
-                )
-            );
+            ));
 
             return;
         }
@@ -70,19 +70,19 @@ final class PluginLoader extends Service implements PluginLoaderService
         if ($model->getEnabled()) {
             $this->eventDispatcher->attach($plugin);
 
-            $this->eventDispatcher->notify(new Event('plugin.load', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.load',
+                $this,
+                EventMessage::build()
                                 ->addDetail(__('Plugin loaded'), $plugin->getName())
-                )
-            );
+            ));
         } else {
-            $this->eventDispatcher->notify(new Event('plugin.load', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.load',
+                $this,
+                EventMessage::build()
                                 ->addDetail(__('Plugin not loaded (disabled)'), $plugin->getName())
-                )
-            );
+            ));
         }
     }
 }

@@ -46,8 +46,7 @@ abstract class CommandBase extends Command
     public function __construct(
         LoggerInterface $logger,
         ConfigFileService $config
-    )
-    {
+    ) {
         $this->logger = $logger;
         $this->config = $config;
         $this->configData = $this->config->getConfigData();
@@ -61,8 +60,7 @@ abstract class CommandBase extends Command
     protected static function getEnvVarOrOption(
         string         $option,
         InputInterface $input
-    )
-    {
+    ) {
         return static::getEnvVarForOption($option)
             ?: $input->getOption($option);
     }
@@ -81,8 +79,7 @@ abstract class CommandBase extends Command
     protected static function getEnvVarOrArgument(
         string         $argument,
         InputInterface $input
-    )
-    {
+    ) {
         return static::getEnvVarForOption($argument)
             ?: $input->getArgument($argument);
     }

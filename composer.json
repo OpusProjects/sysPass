@@ -77,7 +77,7 @@
     "symfony/dom-crawler": "^8.1"
   },
   "scripts": {
-    "phpcs": "phpcs --standard=PSR2 src",
+    "phpcs": "phpcs --standard=PSR2 -n src",
     "phpstan-app": "vendor/bin/phpstan analyse --level 6 src",
     "phpstan-test": "vendor/bin/phpstan analyse --level 6 tests"
   },

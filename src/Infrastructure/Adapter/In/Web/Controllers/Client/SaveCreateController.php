@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -65,11 +64,11 @@ final class SaveCreateController extends ClientSaveBase
 
         $id = $this->clientService->create($itemData);
 
-        $this->eventDispatcher->notify(new Event('create.client', 
-                $this,
-                EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'create.client',
+            $this,
+            EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
+        ));
 
         $this->addCustomFieldsForItem(
             AclActionsInterface::CLIENT,

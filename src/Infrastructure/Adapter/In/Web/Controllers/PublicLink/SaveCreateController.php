@@ -50,8 +50,7 @@ final class SaveCreateController extends PublicLinkSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PUBLICLINK_CREATE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::PUBLICLINK_CREATE);
@@ -66,8 +65,7 @@ final class SaveCreateController extends PublicLinkSaveBase
         } catch (Exception $e) {
             processException($e);
 
-            $this->eventDispatcher->notify(new Event('exception', $e)
-            );
+            $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
         }

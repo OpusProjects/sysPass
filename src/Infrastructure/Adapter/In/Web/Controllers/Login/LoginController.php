@@ -74,7 +74,9 @@ final class LoginController extends ControllerBase
 
             $this->checkForwarded();
 
-            $this->eventDispatcher->notify(new Event('login.finish', $this,
+            $this->eventDispatcher->notify(new Event(
+                'login.finish',
+                $this,
                 EventMessage::build()->addExtra('from', $from)
             ));
 
@@ -100,15 +102,15 @@ final class LoginController extends ControllerBase
         $forward = $this->request->getForwardedFor();
 
         if ($forward !== null) {
-            $this->eventDispatcher->notify(new Event('login.info', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'login.info',
+                $this,
+                EventMessage::build()
                         ->addDetail(
                             'Forwarded',
                             $this->configData->isDemoEnabled() ? '***' : implode(',', $forward)
                         )
-                )
-            );
+            ));
         }
     }
 }

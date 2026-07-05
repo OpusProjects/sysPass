@@ -24,6 +24,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Config\Ports;
+
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;

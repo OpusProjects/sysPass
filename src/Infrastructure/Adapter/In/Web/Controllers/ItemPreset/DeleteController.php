@@ -56,8 +56,7 @@ final class DeleteController extends ItemPresetSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::ITEMPRESET_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -69,21 +68,20 @@ final class DeleteController extends ItemPresetSaveBase
 
                 $this->itemPresetService->deleteByIdBatch($ids);
 
-                $this->eventDispatcher->notify(new Event('delete.itemPreset', $this, EventMessage::build()->addDescription(__u('Values deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.itemPreset', $this, EventMessage::build()->addDescription(__u('Values deleted'))));
 
                 return ActionResponse::ok(__u('Values deleted'));
             }
 
             $this->itemPresetService->delete($id);
 
-            $this->eventDispatcher->notify(new Event('delete.itemPreset', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'delete.itemPreset',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Value deleted'))
                         ->addDetail(__u('ID'), $id)
-                )
-            );
+            ));
 
             return ActionResponse::ok(__u('Value deleted'));
         } catch (Exception $e) {

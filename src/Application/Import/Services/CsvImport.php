@@ -25,6 +25,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Import\Services;
+
 use SP\Domain\Import\Services\ImportException;
 
 use Exception;
@@ -71,12 +72,12 @@ final class CsvImport extends ImportBase implements ItemsImportService
      */
     public function doImport(ImportParamsDto $importParams): ItemsImportService
     {
-        $this->eventDispatcher->notify(new Event('run.import.csv', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'run.import.csv',
+            $this,
+            EventMessage::build()
                             ->addDescription(sprintf(__('Detected format: %s'), 'CSV'))
-            )
-        );
+        ));
 
         $this->processAccounts($importParams);
 
@@ -132,23 +133,23 @@ final class CsvImport extends ImportBase implements ItemsImportService
 
                 $this->addAccount($accountCreateDto, $importParamsDto);
 
-                $this->eventDispatcher->notify(new Event('run.import.csv.process.account', 
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'run.import.csv.process.account',
+                    $this,
+                    EventMessage::build()
                                     ->addDetail(__u('Account imported'), $accountName)
                                     ->addDetail(__u('Client'), $clientName)
-                    )
-                );
+                ));
             } catch (Exception $e) {
                 processException($e);
 
-                $this->eventDispatcher->notify(new Event('exception', 
-                        $e,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'exception',
+                    $e,
+                    EventMessage::build()
                                     ->addDetail(__u('Error while importing the account'), $accountName)
                                     ->addDetail(__u('Error while processing line'), $line)
-                    )
-                );
+                ));
             }
         }
 

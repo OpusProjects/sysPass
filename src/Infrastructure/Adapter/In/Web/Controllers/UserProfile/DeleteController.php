@@ -56,8 +56,7 @@ final class DeleteController extends UserProfileSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::PROFILE_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -70,22 +69,21 @@ final class DeleteController extends UserProfileSaveBase
                 $this->userProfileService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $ids, $this->customFieldService);
 
-                $this->eventDispatcher->notify(new Event('delete.userProfile.selection', $this, EventMessage::build()->addDescription(__u('Profiles deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.userProfile.selection', $this, EventMessage::build()->addDescription(__u('Profiles deleted'))));
 
                 return ActionResponse::ok(__u('Profiles deleted'));
             }
 
             $this->userProfileService->delete($id);
 
-            $this->eventDispatcher->notify(new Event('delete.userProfile', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'delete.userProfile',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Profile deleted'))
                         ->addDetail(__u('Profile'), $id)
                         ->addExtra('userProfileId', $id)
-                )
-            );
+            ));
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::PROFILE, $id, $this->customFieldService);
 

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -53,14 +52,14 @@ final class CreateController extends CategoryBase
 
         $categoryData = $categoryData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.category', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'create.category',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Category added'))
                     ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($categoryData, __('Category added'), $id);
     }

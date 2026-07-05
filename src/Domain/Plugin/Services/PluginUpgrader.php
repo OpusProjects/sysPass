@@ -63,12 +63,12 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
         try {
             $pluginModel = $this->pluginManagerService->getByName($plugin->getName() ?? '');
         } catch (NoSuchItemException $e) {
-            $this->eventDispatcher->notify(new Event('plugin.upgrade', 
-                    $e,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.upgrade',
+                $e,
+                EventMessage::build()
                                 ->addDetail(__('Plugin not registered'), $plugin->getName())
-                )
-            );
+            ));
 
             return;
         }
@@ -76,25 +76,25 @@ final class PluginUpgrader extends Service implements PluginUpgraderInterface
         if ($pluginModel->getVersionLevel() === null
             || Version::checkVersion($pluginModel->getVersionLevel(), $version)
         ) {
-            $this->eventDispatcher->notify(new Event('plugin.upgrade.process', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.upgrade.process',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('Upgrading plugin'))
                                 ->addDetail(__u('Name'), $plugin->getName())
-                )
-            );
+            ));
 
             $plugin->onUpgrade($version);
 
             $this->pluginManagerService->update($pluginModel->mutate(['data' => null, 'versionLevel' => $version]));
 
-            $this->eventDispatcher->notify(new Event('plugin.upgrade.process', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.upgrade.process',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('Plugin upgraded'))
                                 ->addDetail(__u('Name'), $plugin->getName())
-                )
-            );
+            ));
         }
     }
 }

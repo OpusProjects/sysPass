@@ -49,4 +49,3 @@ final class DataGridTab extends DataGridBase
         return $this;
     }
 }
-    

@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-
 use League\Fractal\Resource\Item;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
@@ -63,15 +62,15 @@ final class ViewController extends AccountBase
         $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
         $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
-        $this->eventDispatcher->notify(new Event('show.account', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.account',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Account displayed'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         $out = $this->fractal->createData(new Item($accountEnrichedDto, $this->accountAdapter));
 

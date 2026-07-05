@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
-
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Application\Api\Ports\ApiService;
@@ -61,5 +60,4 @@ abstract class CategoryBase extends ControllerBase
 
         $this->apiService->setHelpClass(CategoryHelp::class);
     }
-
 }

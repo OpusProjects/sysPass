@@ -29,7 +29,8 @@ final class CreateController extends NotificationBase
         $id = $this->notificationService->create($notification);
         $notification = $notification->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.notification',
+        $this->eventDispatcher->notify(new Event(
+            'create.notification',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Notification added'))

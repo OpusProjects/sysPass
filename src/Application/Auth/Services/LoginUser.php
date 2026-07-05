@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * sysPass
  *
@@ -25,9 +26,9 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Auth\Services;
+
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
-
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Application;
 use SP\Core\Events\Event;
@@ -52,8 +53,8 @@ use function SP\__u;
 final class LoginUser extends LoginBase implements LoginUserService
 {
     public function __construct(
-        Application                             $application,
-        TrackService                            $trackService,
+        Application $application,
+        TrackService $trackService,
         RequestService $request,
         private readonly UserPassRecoverService $userPassRecoverService
     ) {
@@ -72,13 +73,13 @@ final class LoginUser extends LoginBase implements LoginUserService
     {
         try {
             if ($userDto->isDisabled) {
-                $this->eventDispatcher->notify(new Event('login.checkUser.disabled', 
-                        $this,
-                        EventMessage::build()
+                $this->eventDispatcher->notify(new Event(
+                    'login.checkUser.disabled',
+                    $this,
+                    EventMessage::build()
                                     ->addDescription(__u('User disabled'))
                             ->addDetail(__u('User'), $userDto->login)
-                    )
-                );
+                ));
 
                 $this->addTracking();
 
@@ -86,8 +87,7 @@ final class LoginUser extends LoginBase implements LoginUserService
             }
 
             if ($userDto->isChangePass) {
-                $this->eventDispatcher->notify(new Event('login.checkUser.changePass', $this, EventMessage::build()->addDetail(__u('User'), $userDto->login))
-                );
+                $this->eventDispatcher->notify(new Event('login.checkUser.changePass', $this, EventMessage::build()->addDetail(__u('User'), $userDto->login)));
 
                 $hash = Password::generateRandomBytes(16);
 
@@ -100,7 +100,7 @@ final class LoginUser extends LoginBase implements LoginUserService
             }
 
             return new LoginResponseDto(LoginStatus::PASS);
-        } catch (EnvironmentIsBrokenException|ConstraintException|QueryException $e) {
+        } catch (EnvironmentIsBrokenException | ConstraintException | QueryException $e) {
             throw ServiceException::error('Internal error', __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
         }
     }

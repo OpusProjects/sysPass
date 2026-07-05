@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Tag;
 
-
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Application\Api\Ports\ApiService;

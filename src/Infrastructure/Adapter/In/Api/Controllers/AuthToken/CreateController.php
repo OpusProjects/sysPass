@@ -26,7 +26,8 @@ final class CreateController extends AuthTokenBase
         $id = $this->authTokenService->create($tokenData);
         $tokenData = $tokenData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.authToken',
+        $this->eventDispatcher->notify(new Event(
+            'create.authToken',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Authorization added'))

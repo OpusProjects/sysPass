@@ -50,17 +50,17 @@ final class SaveCopyController extends AccountSaveBase
 
         $accountId = $this->accountService->create($this->accountForm->getItemData());
 
-        $this->eventDispatcher->notify(new Event('create.account', 
-                $this,
-                function () use ($accountId) {
-                    $accountDetails = $this->accountService->getByIdEnriched($accountId);
+        $this->eventDispatcher->notify(new Event(
+            'create.account',
+            $this,
+            function () use ($accountId) {
+                $accountDetails = $this->accountService->getByIdEnriched($accountId);
 
-                    return EventMessage::build(__u('Account created'))
-                                       ->addDetail(__u('Account'), $accountDetails->getName())
-                                       ->addDetail(__u('Client'), $accountDetails->getClientName());
-                }
-            )
-        );
+                return EventMessage::build(__u('Account created'))
+                                   ->addDetail(__u('Account'), $accountDetails->getName())
+                                   ->addDetail(__u('Client'), $accountDetails->getClientName());
+            }
+        ));
 
         $this->addCustomFieldsForItem(
             AclActionsInterface::ACCOUNT,

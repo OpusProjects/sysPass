@@ -20,7 +20,8 @@ final class DeleteController extends CustomFieldBase
         $fieldData = $this->customFieldService->getById($id);
         $this->customFieldService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.customField',
+        $this->eventDispatcher->notify(new Event(
+            'delete.customField',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Custom field removed'))

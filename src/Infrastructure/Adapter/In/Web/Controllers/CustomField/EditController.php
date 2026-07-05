@@ -54,8 +54,7 @@ final class EditController extends CustomFieldViewBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->view->assign('header', __('Edit Field'));

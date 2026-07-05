@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -53,14 +52,14 @@ final class CreateController extends ClientBase
 
         $clientData = $clientData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.client', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'create.client',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Client added'))
                     ->addDetail(__u('Name'), $clientData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($clientData, __('Client added'), $id);
     }

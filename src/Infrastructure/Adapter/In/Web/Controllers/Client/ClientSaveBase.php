@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
-
 use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Client\Ports\ClientService;

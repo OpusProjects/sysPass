@@ -69,8 +69,7 @@ final class DeleteController extends AccountFileBase
 
             $this->accountFileService->deleteByIdBatch($ids);
 
-            $this->eventDispatcher->notify(new Event('delete.accountFile.selection', $this, EventMessage::build()->addDescription(__u('Files deleted')))
-            );
+            $this->eventDispatcher->notify(new Event('delete.accountFile.selection', $this, EventMessage::build()->addDescription(__u('Files deleted'))));
 
             return ActionResponse::ok(__u('Files deleted'));
         }
@@ -79,11 +78,11 @@ final class DeleteController extends AccountFileBase
 
         $this->accountFileService->delete($id);
 
-        $this->eventDispatcher->notify(new Event('delete.accountFile',
-                $this,
-                EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'delete.accountFile',
+            $this,
+            EventMessage::build(__u('File deleted'))->addDetail(__u('File'), $id)
+        ));
 
         return ActionResponse::ok(__u('File deleted'));
     }

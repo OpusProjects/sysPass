@@ -54,16 +54,14 @@ final class SaveEditController extends NotificationSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::NOTIFICATION_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::NOTIFICATION_EDIT, $id);
 
             $this->notificationService->update($this->form->getItemData());
 
-            $this->eventDispatcher->notify(new Event('edit.notification', $this, EventMessage::build()->addDescription(__u('Notification updated')))
-            );
+            $this->eventDispatcher->notify(new Event('edit.notification', $this, EventMessage::build()->addDescription(__u('Notification updated'))));
 
             return ActionResponse::ok(__u('Notification updated'));
         } catch (Exception $e) {

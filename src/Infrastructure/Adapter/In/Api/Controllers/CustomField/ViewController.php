@@ -18,8 +18,10 @@ final class ViewController extends CustomFieldBase
         $id = $this->apiService->getParamInt('id', true);
         $fieldData = $this->customFieldService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.customField',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.customField',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('Custom field displayed'))
                 ->addDetail(__u('Name'), $fieldData->getName())
                 ->addDetail('ID', $id)

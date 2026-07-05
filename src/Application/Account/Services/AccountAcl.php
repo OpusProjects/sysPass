@@ -103,8 +103,7 @@ final class AccountAcl extends Service implements AccountAclService
                               || $this->userData->lastUpdate > $accountAcl->getTime();
 
                 if (!$isModified) {
-                    $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL HIT'))
-                    );
+                    $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL HIT')));
 
                     return $accountAcl;
                 }
@@ -113,8 +112,7 @@ final class AccountAcl extends Service implements AccountAclService
             }
         }
 
-        $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL MISS'))
-        );
+        $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL MISS')));
 
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 

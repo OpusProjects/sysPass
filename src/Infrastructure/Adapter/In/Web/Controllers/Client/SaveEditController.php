@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -69,11 +68,11 @@ final class SaveEditController extends ClientSaveBase
 
         $this->clientService->update($this->form->getItemData());
 
-        $this->eventDispatcher->notify(new Event('edit.client', 
-                $this,
-                EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'edit.client',
+            $this,
+            EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
+        ));
 
         $this->updateCustomFieldsForItem(
             AclActionsInterface::CLIENT,

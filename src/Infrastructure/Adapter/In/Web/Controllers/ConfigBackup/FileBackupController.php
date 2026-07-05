@@ -71,11 +71,11 @@ final class FileBackupController extends SimpleControllerBase
 
         $this->fileBackupService->doBackup($this->pathsContext[Path::BACKUP], $this->pathsContext[Path::APP]);
 
-        $this->eventDispatcher->notify(new Event('run.backup.end', 
-                $this,
-                EventMessage::build(__u('Application and database backup completed successfully'))
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'run.backup.end',
+            $this,
+            EventMessage::build(__u('Application and database backup completed successfully'))
+        ));
 
         return ActionResponse::ok(__u('Backup process finished'));
     }

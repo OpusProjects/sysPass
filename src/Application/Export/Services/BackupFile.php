@@ -79,8 +79,7 @@ final class BackupFile extends Service implements BackupFileService
         try {
             $this->deleteOldBackups($backupPath);
 
-            $this->eventDispatcher->notify(new Event('run.backup.start', $this, EventMessage::build()->addDescription(__u('Make Backup')))
-            );
+            $this->eventDispatcher->notify(new Event('run.backup.start', $this, EventMessage::build()->addDescription(__u('Make Backup'))));
 
             $configData = $this->config->getConfigData();
 
@@ -127,11 +126,11 @@ final class BackupFile extends Service implements BackupFileService
     {
         $dbBackupFile = $handlers->dbFile;
 
-        $this->eventDispatcher->notify(new Event('run.backup.process',
-                $this,
-                EventMessage::build()->addDescription(__u('Copying database'))
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'run.backup.process',
+            $this,
+            EventMessage::build()->addDescription(__u('Copying database'))
+        ));
 
         $sqlOut = [
             '-- ',
@@ -262,8 +261,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function backupApp(string $directory, BackupHandlers $handlers): void
     {
-        $this->eventDispatcher->notify(new Event('run.backup.process', $this, EventMessage::build()->addDescription(__u('Copying application')))
-        );
+        $this->eventDispatcher->notify(new Event('run.backup.process', $this, EventMessage::build()->addDescription(__u('Copying application'))));
 
         $handlers->appArchive->compressDirectory($directory, self::BACKUP_INCLUDE_REGEX);
     }

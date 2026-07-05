@@ -57,8 +57,7 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
     public function export(): DOMElement
     {
         try {
-            $this->eventDispatcher->notify(new Event('run.export.process.tag', $this, EventMessage::build()->addDescription(__u('Exporting tags')))
-            );
+            $this->eventDispatcher->notify(new Event('run.export.process.tag', $this, EventMessage::build()->addDescription(__u('Exporting tags'))));
 
             $tags = $this->tagService->getAll();
 
