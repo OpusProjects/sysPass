@@ -144,6 +144,34 @@ class AuthTokenTest extends IntegrationTestCase
     }
 
     /**
+     * A missing `users` field is null (not 0), so it must be rejected as a
+     * validation error instead of reaching the int-typed repository calls as a
+     * TypeError / HTTP 500.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateWithoutUserIsRejectedNotFatal()
+    {
+        $data = [
+            'actions' => self::$faker->randomNumber(3),
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        // Clean validation error, not a TypeError. (data carries a debug trace
+        // when DEBUG is on, so match status + description rather than the whole body.)
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"User not set"/');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface

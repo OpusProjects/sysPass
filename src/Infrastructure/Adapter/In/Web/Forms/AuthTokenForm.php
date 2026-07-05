@@ -91,11 +91,14 @@ final class AuthTokenForm extends FormBase implements FormInterface
      */
     protected function checkCommon(): void
     {
-        if (0 === $this->authTokenData->getUserId()) {
+        // empty() (not `0 === `) so an absent `users`/`actions` field — which
+        // analyzeInt() returns as null, and `0 === null` is false — is rejected
+        // here instead of reaching the non-nullable int repo/ACL calls as a fatal.
+        if (empty($this->authTokenData->getUserId())) {
             throw new ValidationException(__u('User not set'));
         }
 
-        if (0 === $this->authTokenData->getActionId()) {
+        if (empty($this->authTokenData->getActionId())) {
             throw new ValidationException(__u('Action not set'));
         }
 
