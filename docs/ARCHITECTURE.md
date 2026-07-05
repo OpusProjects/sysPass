@@ -1,8 +1,10 @@
 # Architecture
 
-sysPass follows a **hexagonal (ports & adapters) architecture** with four layers
-under `src/`. Each layer has a strict dependency direction: inner layers never
-depend on outer layers.
+sysPass follows a **hexagonal (ports & adapters) architecture** organised around
+**Domain-Driven Design (DDD)** principles, with four layers under `src/`. Bounded
+contexts (`Account`, `User`, `Auth`, `Config`, …) live in `Domain/` and
+`Application/`; concrete implementations live in `Infrastructure/`. Each layer has
+a strict dependency direction: inner layers never depend on outer layers.
 
 ```
 Domain  ←──  Application  ←──  Infrastructure
