@@ -11,7 +11,7 @@ The original sysPass was created by **Rubén Domínguez
 (**[3.2.11](https://github.com/nuxsmin/sysPass/releases/tag/3.2.11)**) in July 2022.
 In May 2026, he confirmed he no longer had the time to keep evolving it
 ([nuxsmin/sysPass#1954](https://github.com/nuxsmin/sysPass/issues/1954#issuecomment-4382203218))
-and called for someone to fork it.
+and called for someone to fork the application in order to continue its development.
 
 This repository is that fork. Started by [OpusProjects](https://github.com/OpusProjects)
 in June 2026, picking up [@nuxsmin](https://github.com/nuxsmin)'s own planned
