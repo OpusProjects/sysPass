@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountAdapter;

@@ -24,6 +24,7 @@ declare(strict_types=1);
  */
 
 namespace SP\Application\Auth\Services;
+
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
 

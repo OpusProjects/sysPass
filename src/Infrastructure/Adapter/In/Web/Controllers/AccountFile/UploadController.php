@@ -128,24 +128,24 @@ final class UploadController extends ControllerBase
 
         $this->accountFileService->create(new File($fileData));
 
-        $this->eventDispatcher->notify(new Event('upload.accountFile', 
-                $this,
-                function () use ($accountId, $fileData): EventMessage {
-                    $account = $this->accountService->getByIdEnriched($accountId);
+        $this->eventDispatcher->notify(new Event(
+            'upload.accountFile',
+            $this,
+            function () use ($accountId, $fileData): EventMessage {
+                $account = $this->accountService->getByIdEnriched($accountId);
 
-                    return EventMessage::build()
-                                       ->addDescription(__u('File saved'))
-                                       ->addDetail(__u('File'), $fileData['name'])
-                                       ->addDetail(__u('Account'), $account->getName())
-                                       ->addDetail(__u('Client'), $account->getClientName())
-                                       ->addDetail(__u('Type'), $fileData['type'])
-                                       ->addDetail(
-                                           __u('Size'),
-                                           sprintf('%f KB', round($fileData['size'] / 1000))
-                                       );
-                }
-            )
-        );
+                return EventMessage::build()
+                                   ->addDescription(__u('File saved'))
+                                   ->addDetail(__u('File'), $fileData['name'])
+                                   ->addDetail(__u('Account'), $account->getName())
+                                   ->addDetail(__u('Client'), $account->getClientName())
+                                   ->addDetail(__u('Type'), $fileData['type'])
+                                   ->addDetail(
+                                       __u('Size'),
+                                       sprintf('%f KB', round($fileData['size'] / 1000))
+                                   );
+            }
+        ));
 
         return ActionResponse::ok(__u('File saved'));
     }

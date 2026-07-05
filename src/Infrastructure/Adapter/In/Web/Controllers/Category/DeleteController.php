@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 
-
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -72,11 +71,11 @@ final class DeleteController extends CategorySaveBase
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $ids, $this->customFieldService);
 
-            $this->eventDispatcher->notify(new Event('delete.category', 
-                    $this,
-                    EventMessage::build()->addDescription(__u('Categories deleted'))
-                )
-            );
+            $this->eventDispatcher->notify(new Event(
+                'delete.category',
+                $this,
+                EventMessage::build()->addDescription(__u('Categories deleted'))
+            ));
 
             return ActionResponse::ok(__u('Categories deleted'));
         }
@@ -85,11 +84,11 @@ final class DeleteController extends CategorySaveBase
 
         $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
 
-        $this->eventDispatcher->notify(new Event('delete.category', 
-                $this,
-                EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
-            )
-        );
+        $this->eventDispatcher->notify(new Event(
+            'delete.category',
+            $this,
+            EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
+        ));
 
         return ActionResponse::ok(__u('Category deleted'));
     }

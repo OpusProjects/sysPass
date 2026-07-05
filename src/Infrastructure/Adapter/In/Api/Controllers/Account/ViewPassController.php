@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
-
 use SP\Core\Application;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Events\Event;
@@ -87,15 +86,15 @@ final class ViewPassController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($id);
 
-        $this->eventDispatcher->notify(new Event('show.account.pass', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.account.pass',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Password viewed'))
                     ->addDetail(__u('Name'), $accountDetails->getName())
                     ->addDetail(__u('Client'), $accountDetails->getClientName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess(["password" => $password]);
     }

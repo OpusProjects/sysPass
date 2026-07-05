@@ -56,8 +56,7 @@ final class DeleteController extends UserGroupSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::GROUP_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -70,22 +69,21 @@ final class DeleteController extends UserGroupSaveBase
                 $this->userGroupService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $ids, $this->customFieldService);
 
-                $this->eventDispatcher->notify(new Event('delete.userGroup.selection', $this, EventMessage::build()->addDescription(__u('Groups deleted')))
-                );
+                $this->eventDispatcher->notify(new Event('delete.userGroup.selection', $this, EventMessage::build()->addDescription(__u('Groups deleted'))));
 
                 return ActionResponse::ok(__u('Groups deleted'));
             }
 
             $this->userGroupService->delete($id);
 
-            $this->eventDispatcher->notify(new Event('delete.userGroup', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'delete.userGroup',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('Group deleted'))
                         ->addDetail(__u('Group'), $id)
                         ->addExtra('userGroupId', $id)
-                )
-            );
+            ));
 
             $this->deleteCustomFieldsForItem(AclActionsInterface::GROUP, $id, $this->customFieldService);
 

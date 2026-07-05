@@ -20,7 +20,8 @@ final class EditController extends UserBase
         $userData = $this->buildUserData();
         $this->userService->update($userData);
 
-        $this->eventDispatcher->notify(new Event('edit.user',
+        $this->eventDispatcher->notify(new Event(
+            'edit.user',
             $this,
             EventMessage::build()
                 ->addDescription(__u('User updated'))

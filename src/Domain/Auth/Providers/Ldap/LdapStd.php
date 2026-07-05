@@ -107,14 +107,14 @@ final class LdapStd extends LdapBase
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
-            $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'ldap.check.group',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('User in group verified'))
                                 ->addDetail(__u('User'), $userDn)
                                 ->addDetail(__u('Group'), $this->ldapParams->getGroup())
-                )
-            );
+            ));
 
             return true;
         }
@@ -133,27 +133,27 @@ final class LdapStd extends LdapBase
         $filter = $this->getGroupMembershipDirectFilter($userDn);
 
         if ($this->ldapActions->getObjects($filter, ['dn'])->getCount() === 0) {
-            $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'ldap.check.group',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('User does not belong to the group'))
                                 ->addDetail(__u('User'), $userDn)
                                 ->addDetail(__u('Group'), $this->getGroupFromParams())
                                 ->addDetail('LDAP FILTER', $filter)
-                )
-            );
+            ));
 
             return false;
         }
 
-        $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'ldap.check.group',
+            $this,
+            EventMessage::build()
                             ->addDescription(__u('User in group verified'))
                             ->addDetail(__u('User'), $userDn)
                             ->addDetail(__u('Group'), $this->getGroupFromParams())
-            )
-        );
+        ));
 
         return true;
     }

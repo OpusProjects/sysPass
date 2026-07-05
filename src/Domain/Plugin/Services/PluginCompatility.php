@@ -65,41 +65,41 @@ final class PluginCompatility extends Service implements PluginCompatilityServic
         $appVersion = implode('.', array_slice(AppInfoInterface::APP_VERSION, 0, 2));
 
         if (version_compare($pluginVersion, $appVersion, '<')) {
-            $this->eventDispatcher->notify(new Event('plugin.check.version', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.check.version',
+                $this,
+                EventMessage::build()
                                 ->addDescription(
                                     sprintf(
                                         __('Plugin version not compatible (%s)'),
                                         implode('.', $plugin->getVersion() ?? [])
                                     )
                                 )
-                )
-            );
+            ));
 
             $this->pluginService->toggleEnabledByName($plugin->getName() ?? '', false);
 
-            $this->eventDispatcher->notify(new Event('plugin.edit.disable', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'plugin.edit.disable',
+                $this,
+                EventMessage::build()
                                 ->addDetail(__('Plugin disabled'), $plugin->getName())
-                )
-            );
+            ));
 
             return false;
         }
 
-        $this->eventDispatcher->notify(new Event('plugin.check.version', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'plugin.check.version',
+            $this,
+            EventMessage::build()
                             ->addDescription(
                                 sprintf(
                                     __('Plugin version compatible (%s)'),
                                     implode('.', $plugin->getVersion() ?? [])
                                 )
                             )
-            )
-        );
+        ));
 
         return true;
     }

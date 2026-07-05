@@ -57,8 +57,7 @@ final class SaveEditController extends UserSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::USER_EDIT)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             $this->form->validateFor(AclActionsInterface::USER_EDIT, $id);
@@ -67,14 +66,14 @@ final class SaveEditController extends UserSaveBase
 
             $this->userService->update($itemData);
 
-            $this->eventDispatcher->notify(new Event('edit.user', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'edit.user',
+                $this,
+                EventMessage::build()
                         ->addDescription(__u('User updated'))
                         ->addDetail(__u('User'), $itemData->getName())
                         ->addExtra('userId', $id)
-                )
-            );
+            ));
 
             $this->updateCustomFieldsForItem(AclActionsInterface::USER, $id, $this->request, $this->customFieldService);
 

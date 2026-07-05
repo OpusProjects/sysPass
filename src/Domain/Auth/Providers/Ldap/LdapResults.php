@@ -51,5 +51,4 @@ readonly class LdapResults
     {
         return $this->count;
     }
-
 }

@@ -33,7 +33,6 @@ use SP\Core\Util\Util;
 
 use function SP\__u;
 
-
 /**
  * Class ViewController
  *
@@ -53,14 +52,14 @@ final class ViewController extends CategoryBase
 
         $categoryData = $this->categoryService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.category', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.category',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Category displayed'))
                     ->addDetail(__u('Name'), $categoryData->getName())
                     ->addDetail('ID', $id)
-            )
-        );
+        ));
 
         $out = $this->fractal->createData(new Item($categoryData, $this->categoryAdapter));
 

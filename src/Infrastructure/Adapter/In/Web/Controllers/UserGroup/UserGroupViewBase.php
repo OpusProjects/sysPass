@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserGroup;
 
-
 use SP\Core\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;

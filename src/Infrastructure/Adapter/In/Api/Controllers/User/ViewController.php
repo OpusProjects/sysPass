@@ -18,8 +18,10 @@ final class ViewController extends UserBase
         $id = $this->apiService->getParamInt('id', true);
         $userData = $this->userService->getById($id);
 
-        $this->eventDispatcher->notify(new Event('show.user',
-            $this, EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'show.user',
+            $this,
+            EventMessage::build()
                 ->addDescription(__u('User displayed'))
                 ->addDetail(__u('Name'), $userData->getName())
                 ->addDetail('ID', $id)

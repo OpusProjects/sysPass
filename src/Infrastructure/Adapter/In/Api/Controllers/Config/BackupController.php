@@ -78,13 +78,13 @@ final class BackupController extends ControllerBase
 
         $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);
 
-        $this->eventDispatcher->notify(new Event('run.backup.end', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'run.backup.end',
+            $this,
+            EventMessage::build()
                     ->addDescription(__u('Application and database backup completed successfully'))
                     ->addDetail(__u('Path'), $path)
-            )
-        );
+        ));
 
         return ApiResponse::makeSuccess($this->buildBackupFiles($path), __('Backup process finished'));
     }

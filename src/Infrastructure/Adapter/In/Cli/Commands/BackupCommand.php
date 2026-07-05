@@ -120,8 +120,7 @@ final class BackupCommand extends CommandBase
     private function getPath(
         InputInterface $input,
         StyleInterface $style
-    ): string
-    {
+    ): string {
         $path = self::getEnvVarOrOption('path', $input);
 
         if (empty($path)) {

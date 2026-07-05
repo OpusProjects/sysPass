@@ -122,14 +122,14 @@ final class LdapMsAds extends LdapBase
             || $this->ldapParams->getGroup() === '*'
             || in_array($this->getGroupDn(), $groupsDn, true)
         ) {
-            $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'ldap.check.group',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('User in group verified'))
                                 ->addDetail(__u('User'), $userLogin)
                                 ->addDetail(__u('Group'), $this->ldapParams->getGroup())
-                )
-            );
+            ));
 
             return true;
         }
@@ -150,27 +150,27 @@ final class LdapMsAds extends LdapBase
         $filter = $this->getGroupMembershipDirectFilter();
 
         if ($this->ldapActions->getObjects($filter, ['dn'], $userDn)->getCount() === 0) {
-            $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                    $this,
-                    EventMessage::build()
+            $this->eventDispatcher->notify(new Event(
+                'ldap.check.group',
+                $this,
+                EventMessage::build()
                                 ->addDescription(__u('User does not belong to the group'))
                                 ->addDetail(__u('User'), $userLogin)
                                 ->addDetail(__u('Group'), $groupDn)
                                 ->addDetail('LDAP FILTER', $filter)
-                )
-            );
+            ));
 
             return false;
         }
 
-        $this->eventDispatcher->notify(new Event('ldap.check.group', 
-                $this,
-                EventMessage::build()
+        $this->eventDispatcher->notify(new Event(
+            'ldap.check.group',
+            $this,
+            EventMessage::build()
                             ->addDescription(__u('User in group verified'))
                             ->addDetail(__u('User'), $userLogin)
                             ->addDetail(__u('Group'), $groupDn)
-            )
-        );
+        ));
 
         return true;
     }

@@ -55,8 +55,7 @@ final class DeleteController extends TagSaveBase
     {
         try {
             if (!$this->acl->checkUserAccess(AclActionsInterface::TAG_DELETE)) {
-                return ActionResponse::error(__u('You don\'t have permission to do this operation')
-                );
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
             if ($id === null) {
@@ -80,8 +79,7 @@ final class DeleteController extends TagSaveBase
 
             $this->eventDispatcher->notify(new Event('delete.tag', $this));
 
-            return ActionResponse::ok(__u('Tag removed')
-            );
+            return ActionResponse::ok(__u('Tag removed'));
         } catch (Exception $e) {
             processException($e);
 

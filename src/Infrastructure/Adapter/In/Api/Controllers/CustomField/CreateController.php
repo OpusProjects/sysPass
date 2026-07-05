@@ -30,7 +30,8 @@ final class CreateController extends CustomFieldBase
         $id = $this->customFieldService->create($fieldData);
         $fieldData = $fieldData->mutate(['id' => $id]);
 
-        $this->eventDispatcher->notify(new Event('create.customField',
+        $this->eventDispatcher->notify(new Event(
+            'create.customField',
             $this,
             EventMessage::build()
                 ->addDescription(__u('Custom field added'))

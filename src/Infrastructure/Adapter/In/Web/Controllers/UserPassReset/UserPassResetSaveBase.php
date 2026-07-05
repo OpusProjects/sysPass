@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserPassReset;
 
-
 use Exception;
 use JsonException;
 use SP\Core\Application;
@@ -65,7 +64,6 @@ abstract class UserPassResetSaveBase extends ControllerBase
         UserService $userService,
         MailService            $mailService,
         TrackService           $trackService
-
     ) {
         parent::__construct($application, $webControllerHelper);
         $this->userPassRecoverService = $userPassRecoverService;
