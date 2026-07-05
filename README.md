@@ -4,9 +4,7 @@
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/php-8.4%2B-777BB4.svg?logo=php&logoColor=white)](https://www.php.net/)
 
-sysPass is a PHP web-based password manager for business and personal use, built on
-AES-256 encryption, RSA key exchange, and a hexagonal architecture designed for
-long-term maintainability.
+sysPass is a self-hosted, open-source web password manager for business and personal use.
 
 The original sysPass was created and maintained by **Rubén Domínguez
 ([@nuxsmin](https://github.com/nuxsmin))**, who released the last upstream version
