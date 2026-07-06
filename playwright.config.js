@@ -2,7 +2,7 @@
 const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
-  testDir: './e2e',
+  testDir: './tests/e2e',
 
   // One retry — guards against transient Docker network blips.
   retries: 1,
