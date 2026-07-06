@@ -192,60 +192,6 @@ endif; ?>
     </tr>
 </table>
 
-<div id="title" class="titleNormal">
-    <i class="material-icons">security</i>
-    <?php echo __('Security'); ?>
-</div>
-
-<table class="data tblConfig">
-    <tr>
-        <td class="valField" colspan="2" style="padding-left: 3em">
-            <ul class="config-site-list-action mdl-list">
-                <li class="mdl-list__item mdl-list__item--two-line">
-                    <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                               for="https_enabled">
-                            <input type="checkbox" id="https_enabled"
-                                   class="mdl-switch__input"
-                                   name="https_enabled" <?php
-                            echo $configData->isHttpsEnabled() ? 'checked' : ''; ?>/>
-                        </label>
-                    </div>
-
-                    <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Force HTTPS'); ?></span>
-                        <span class="mdl-list__item-sub-title"><?php
-                            echo __('It forces the use of HTTPS on all the connections'); ?></span>
-                    </span>
-                </li>
-
-                <li class="mdl-list__item mdl-list__item--two-line">
-                    <div class="mdl-switch__box">
-                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                               for="encrypt_session_enabled">
-                            <input type="checkbox" id="encrypt_session_enabled"
-                                   class="mdl-switch__input"
-                                   name="encrypt_session_enabled" <?php
-                            echo $configData->isEncryptSession() ? 'checked' : ''; ?>/>
-                        </label>
-                    </div>
-
-                    <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Encrypt Session'); ?></span>
-                        <span class="mdl-list__item-sub-title">
-                            <?php echo __('Encrypt PHP session data'); ?>
-                            <?php echo __(
-                                'This feature increases the PHP sessions security, because the stored data won\'t be readable.'
-                            ); ?>
-                        </span>
-                    </span>
-                </li>
-            </ul>
-        </td>
-    </tr>
-</table>
 
 <div id="title" class="titleNormal">
     <i class="material-icons">build</i>
@@ -254,7 +200,8 @@ endif; ?>
 
 <table class="data tblConfig">
     <tr>
-        <td class="valField" colspan="2" style="padding-left: 3em">
+        <td class="descField"><?php echo __('Maintenance'); ?></td>
+        <td class="valField">
             <ul class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
@@ -266,10 +213,8 @@ endif; ?>
                             echo $configData->isDebug() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
-
                     <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Enable debug'); ?></span>
+                        <span><?php echo __('Enable debug'); ?></span>
                         <span class="mdl-list__item-sub-title"><?php
                             echo __(
                                 'Displays some information about application configuration and performance.'
@@ -287,10 +232,8 @@ endif; ?>
                             echo $configData->isMaintenance() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
-
                     <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Maintenance mode'); ?></span>
+                        <span><?php echo __('Maintenance mode'); ?></span>
                         <span class="mdl-list__item-sub-title"><?php
                             echo __(
                                 'In this mode nobody can log into the application. To disable it, you need to either modify the configuration file or unset on the site tab.'
@@ -307,10 +250,12 @@ endif; ?>
     <?php echo __('Updates'); ?>
 </div>
 
+<?php $proxyOn = $configData->isProxyEnabled(); ?>
 <table class="data tblConfig">
     <tr>
-        <td class="valField" colspan="2" style="padding-left: 3em">
-            <ul class="config-site-list-action mdl-list">
+        <td class="descField"><?php echo __('Updates'); ?></td>
+        <td class="valField">
+            <ul id="updates-ul" class="config-site-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
@@ -321,16 +266,33 @@ endif; ?>
                             echo $configData->isCheckUpdates() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
-
                     <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Check for updates'); ?></span>
+                        <span><?php echo __('Check for updates'); ?></span>
                         <span class="mdl-list__item-sub-title"><?php
                             echo __('Check for application updates (only for administrators).'); ?></span>
                     </span>
                 </li>
 
-                <li class="mdl-list__item mdl-list__item--two-line">
+                <li id="proxy-toggle-li" class="mdl-list__item mdl-list__item--two-line"
+                    style="<?php echo $configData->isCheckUpdates() ? '' : 'display:none'; ?>">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="proxy_enabled">
+                            <input type="checkbox" id="proxy_enabled"
+                                   class="mdl-switch__input"
+                                   name="proxy_enabled" <?php
+                            echo $proxyOn ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Use Proxy'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php
+                            echo __('Use a proxy server for checking out for updates and notifications.'); ?></span>
+                    </span>
+                </li>
+
+                <?php if (!$proxyOn): ?>
+                <li id="check-notices-li" class="mdl-list__item mdl-list__item--two-line">
                     <div class="mdl-switch__box">
                         <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
                                for="check_notices_enabled">
@@ -340,119 +302,133 @@ endif; ?>
                             echo $configData->isCheckNotices() ? 'checked' : ''; ?>/>
                         </label>
                     </div>
-
                     <span class="mdl-list__item-primary-content">
-                        <span><?php
-                            echo __('Check for notifications'); ?></span>
+                        <span><?php echo __('Check for notifications'); ?></span>
                         <span class="mdl-list__item-sub-title"><?php
                             echo __(
                                 'Check if there are either sysPass security or warning notices (only for administrators).'
                             ); ?></span>
                     </span>
                 </li>
+                <?php endif; ?>
+            </ul>
+        </td>
+    </tr>
+    <tr class="proxy-fields" style="<?php echo $proxyOn ? '' : 'display:none'; ?>">
+        <td class="descField"><?php echo __('Server'); ?></td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="proxy_server" name="proxy_server" type="text"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       maxlength="128"
+                       value="<?php echo htmlspecialchars($configData->getProxyServer() ?? '', ENT_QUOTES); ?>">
+                <label class="mdl-textfield__label" for="proxy_server"><?php echo __('Proxy server'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr class="proxy-fields" style="<?php echo $proxyOn ? '' : 'display:none'; ?>">
+        <td class="descField"><?php echo __('Port'); ?></td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="proxy_port" name="proxy_port" type="number"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       pattern="[0-9]{1,5}" maxlength="5"
+                       value="<?php echo $configData->getProxyPort(); ?>">
+                <label class="mdl-textfield__label" for="proxy_port"><?php echo __('Proxy server port'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr class="proxy-fields" style="<?php echo $proxyOn ? '' : 'display:none'; ?>">
+        <td class="descField"><?php echo __('User'); ?></td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="proxy_user" name="proxy_user" type="text"
+                       class="mdl-textfield__input mdl-color-text--indigo-400"
+                       maxlength="128"
+                       value="<?php echo htmlspecialchars($configData->getProxyUser() ?? '', ENT_QUOTES); ?>">
+                <label class="mdl-textfield__label" for="proxy_user"><?php echo __('Proxy server user'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr class="proxy-fields" style="<?php echo $proxyOn ? '' : 'display:none'; ?>">
+        <td class="descField"><?php echo __('Password'); ?></td>
+        <td class="valField">
+            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input id="proxy_pass" name="proxy_pass" type="password"
+                       class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
+                       maxlength="128"
+                       value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
+                <label class="mdl-textfield__label" for="proxy_pass"><?php echo __('Proxy server password'); ?></label>
+            </div>
+        </td>
+    </tr>
+    <tr id="notices-move-row" style="<?php echo $proxyOn ? '' : 'display:none'; ?>">
+        <td class="descField"><?php echo __('Notifications'); ?></td>
+        <td class="valField">
+            <ul id="notices-ul" class="config-site-list-action mdl-list">
+                <?php if ($proxyOn): ?>
+                <li id="check-notices-li" class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="check_notices_enabled">
+                            <input type="checkbox" id="check_notices_enabled"
+                                   class="mdl-switch__input"
+                                   name="check_notices_enabled" <?php
+                            echo $configData->isCheckNotices() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Check for notifications'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php
+                            echo __(
+                                'Check if there are either sysPass security or warning notices (only for administrators).'
+                            ); ?></span>
+                    </span>
+                </li>
+                <?php endif; ?>
             </ul>
         </td>
     </tr>
 </table>
 
-<div id="proxy-section" style="<?php echo $configData->isCheckUpdates() ? '' : 'display:none'; ?>">
-    <table id="tblProxy" class="data tblConfig">
-        <tr>
-            <td class="descField"></td>
-            <td class="valField">
-                <ul class="config-proxy-list-action mdl-list">
-                    <li class="mdl-list__item mdl-list__item--two-line">
-                        <div class="mdl-switch__box">
-                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
-                                   for="proxy_enabled">
-                                <input type="checkbox" id="proxy_enabled"
-                                       class="mdl-switch__input"
-                                       name="proxy_enabled" <?php
-                                echo $configData->isProxyEnabled() ? 'checked' : ''; ?>/>
-                            </label>
-                        </div>
-
-                        <span class="mdl-list__item-primary-content">
-                            <span><?php
-                                echo __('Use Proxy'); ?></span>
-                            <span class="mdl-list__item-sub-title"><?php
-                                echo __('Use a proxy server for checking out for updates and notifications.'); ?></span>
-                        </span>
-                    </li>
-                </ul>
-            </td>
-        </tr>
-        <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
-            <td class="descField"><?php echo __('Server'); ?></td>
-            <td class="valField">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="proxy_server" name="proxy_server" type="text"
-                           class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="128"
-                           value="<?php echo htmlspecialchars($configData->getProxyServer() ?? '', ENT_QUOTES); ?>">
-                    <label class="mdl-textfield__label" for="proxy_server"><?php echo __('Proxy server'); ?></label>
-                </div>
-            </td>
-        </tr>
-        <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
-            <td class="descField"><?php echo __('Port'); ?></td>
-            <td class="valField">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="proxy_port" name="proxy_port" type="number"
-                           class="mdl-textfield__input mdl-color-text--indigo-400"
-                           pattern="[0-9]{1,5}" maxlength="5"
-                           value="<?php echo $configData->getProxyPort(); ?>">
-                    <label class="mdl-textfield__label" for="proxy_port"><?php echo __('Proxy server port'); ?></label>
-                </div>
-            </td>
-        </tr>
-        <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
-            <td class="descField"><?php echo __('User'); ?></td>
-            <td class="valField">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="proxy_user" name="proxy_user" type="text"
-                           class="mdl-textfield__input mdl-color-text--indigo-400"
-                           maxlength="128"
-                           value="<?php echo htmlspecialchars($configData->getProxyUser() ?? '', ENT_QUOTES); ?>">
-                    <label class="mdl-textfield__label" for="proxy_user"><?php echo __('Proxy server user'); ?></label>
-                </div>
-            </td>
-        </tr>
-        <tr class="proxy-fields" style="<?php echo $configData->isProxyEnabled() ? '' : 'display:none'; ?>">
-            <td class="descField"><?php echo __('Password'); ?></td>
-            <td class="valField">
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input id="proxy_pass" name="proxy_pass" type="password"
-                           class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
-                           maxlength="128"
-                           value="<?php echo $configData->getProxyPass() ? '***' : ''; ?>">
-                    <label class="mdl-textfield__label" for="proxy_pass"><?php echo __('Proxy server password'); ?></label>
-                </div>
-            </td>
-        </tr>
-    </table>
-</div>
-
 <script>
     (function () {
-        var checkUpdates = document.getElementById('check_updates_enabled');
-        var proxySection = document.getElementById('proxy-section');
-        var proxyEnabled = document.getElementById('proxy_enabled');
+        var checkUpdates   = document.getElementById('check_updates_enabled');
+        var proxyToggleLi  = document.getElementById('proxy-toggle-li');
+        var proxyEnabled   = document.getElementById('proxy_enabled');
+        var updatesUl      = document.getElementById('updates-ul');
+        var noticesUl      = document.getElementById('notices-ul');
+        var noticesMoveRow = document.getElementById('notices-move-row');
+
+        function setProxyFields(visible) {
+            document.querySelectorAll('.proxy-fields').forEach(function (r) {
+                r.style.display = visible ? '' : 'none';
+            });
+        }
+
+        function moveNotices(toProxy) {
+            var li = document.getElementById('check-notices-li');
+            if (toProxy) {
+                noticesUl.appendChild(li);
+                noticesMoveRow.style.display = '';
+            } else {
+                updatesUl.appendChild(li);
+                noticesMoveRow.style.display = 'none';
+            }
+        }
 
         checkUpdates.addEventListener('change', function () {
-            proxySection.style.display = this.checked ? '' : 'none';
+            proxyToggleLi.style.display = this.checked ? '' : 'none';
             if (!this.checked) {
                 proxyEnabled.checked = false;
-                document.querySelectorAll('.proxy-fields').forEach(function (r) {
-                    r.style.display = 'none';
-                });
+                setProxyFields(false);
+                moveNotices(false);
             }
         });
 
         proxyEnabled.addEventListener('change', function () {
-            document.querySelectorAll('.proxy-fields').forEach(function (r) {
-                r.style.display = proxyEnabled.checked ? '' : 'none';
-            });
+            setProxyFields(this.checked);
+            moveNotices(this.checked);
         });
     }());
 </script>

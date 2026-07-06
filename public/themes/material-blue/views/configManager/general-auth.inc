@@ -45,7 +45,7 @@ use function SP\__;
 
 <table id="tblAuth" class="data tblConfig">
     <tr>
-        <td class="descField"></td>
+        <td class="descField"><?php echo __('Auth Basic'); ?></td>
         <td class="valField">
             <ul class="config-auth-list-action mdl-list">
                 <li class="mdl-list__item mdl-list__item--two-line">

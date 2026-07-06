@@ -49,7 +49,7 @@ use function SP\__;
       data-hash="">
     <table id="tblMail" class="data tblConfig">
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Email'); ?></td>
             <td class="valField">
                 <ul class="config-mail-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -135,7 +135,7 @@ use function SP\__;
             </td>
         </tr>
         <tr class="mail-fields" style="<?php echo $configData->isMailEnabled() ? '' : 'display:none'; ?>">
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Authentication'); ?></td>
             <td class="valField">
                 <ul class="config-mail-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">

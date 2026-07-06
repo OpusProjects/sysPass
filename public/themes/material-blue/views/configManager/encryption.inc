@@ -123,7 +123,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Notice'); ?></td>
             <td class="valField">
                 <?php
                 if (!$configData->isMaintenance()): ?>
@@ -170,7 +170,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Options'); ?></td>
             <td class="valField">
                 <ul class="config-masterpass-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -379,7 +379,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Email'); ?></td>
             <td class="valField">
                 <ul class="config-masterpass-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
