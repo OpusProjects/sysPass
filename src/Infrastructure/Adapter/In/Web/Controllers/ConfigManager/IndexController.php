@@ -124,6 +124,7 @@ final class IndexController extends ControllerBase
     {
         if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
+            $this->tabsHelper->addTab($this->getSecurityConfig());
             $this->tabsHelper->addTab($this->getEventsConfig());
             $this->tabsHelper->addTab($this->getAuthConfig());
         }
@@ -206,6 +207,14 @@ final class IndexController extends ControllerBase
         $template->assign('curlIsAvailable', $this->extensionChecker->checkCurl());
 
         return new DataTab(__('General'), $template);
+    }
+
+    protected function getSecurityConfig(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('security');
+
+        return new DataTab(__('Security'), $template);
     }
 
     protected function getEventsConfig(): DataTab

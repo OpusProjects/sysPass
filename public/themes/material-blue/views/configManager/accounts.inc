@@ -101,7 +101,7 @@ endif; ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Password Expiry'); ?></td>
             <td class="valField">
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -157,7 +157,7 @@ endif; ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Accounts'); ?></td>
             <td class="valField">
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -289,7 +289,7 @@ endif; ?>
 
     <table id="tblFiles" class="data tblConfig round">
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Public Links'); ?></td>
             <td class="valField">
                 <ul class="config-publiclinks-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -395,7 +395,7 @@ endif; ?>
 
     <table id="tblFiles" class="data tblConfig">
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Files'); ?></td>
             <td class="valField">
                 <ul class="config-accounts-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">

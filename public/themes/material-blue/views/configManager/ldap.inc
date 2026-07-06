@@ -68,7 +68,7 @@ endif; ?>
       data-hash="">
     <table id="tblLdap" class="data tblConfig">
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('LDAP'); ?></td>
             <td class="valField">
                 <ul class="config-ldap-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
@@ -748,7 +748,7 @@ endif; ?>
             </td>
         </tr>
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Import Groups'); ?></td>
             <td class="valField">
                 <ul class="config-ldap-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">
