@@ -6325,12 +6325,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigManager/IndexController.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigProxy\\SaveController\:\:handleProxyConfig\(\) has parameter \$eventMessage with generic class SP\\Core\\Events\\EventMessage but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigProxy/SaveController.php
-
-		-
 			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getAuthCompleted\(\)\.$#'
 			identifier: method.notFound
 			count: 2
