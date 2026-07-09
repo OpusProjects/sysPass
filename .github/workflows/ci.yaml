@@ -12,14 +12,17 @@ env:
 
 jobs:
   unit:
-    name: Unit tests
+    name: Unit tests (${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
     steps:
       - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
           ini-values: zend.assertions=1
@@ -36,8 +39,11 @@ jobs:
         run: vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
 
   integration:
-    name: Integration tests
+    name: Integration tests (${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
     services:
       db:
         image: mariadb:10.11
@@ -57,7 +63,7 @@ jobs:
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
           ini-values: zend.assertions=1
