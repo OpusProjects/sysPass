@@ -129,17 +129,15 @@ class CryptSessionHandlerTest extends UnitaryTestCase
         $data = serialize(['a' => 'testA']);
 
         $this->sessionHandler
-            ->expects($this->once())
-            ->method('write')
-            ->with('test', $data)
-            ->willReturn(true);
+            ->expects($this->never())
+            ->method('write');
 
         $this->crypt
             ->expects($this->once())
             ->method('encrypt')
             ->willThrowException(CryptException::error('test'));
 
-        $this->assertTrue($this->cryptSessionHandler->write('test', $data));
+        $this->assertFalse($this->cryptSessionHandler->write('test', $data));
     }
 
     public function testClose()

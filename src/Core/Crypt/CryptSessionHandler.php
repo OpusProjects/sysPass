@@ -87,9 +87,11 @@ final class CryptSessionHandler implements SessionHandlerInterface
 
             logger('Could not encrypt session data.');
             logger($e->getMessage());
+
+            return false;
         }
 
-        return $this->sessionHandler->write($id, $encryptedData ?? $data);
+        return $this->sessionHandler->write($id, $encryptedData);
     }
 
     public function close(): bool
