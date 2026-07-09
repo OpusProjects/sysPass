@@ -60,8 +60,6 @@ Security issues: see [SECURITY.md](SECURITY.md) for private reporting.
 
 - [Blai Peidro](https://github.com/blaipr)
 
-Part of [OpusProjects](https://github.com/OpusProjects).
-
 ---
 
 ## ⚖️ License
