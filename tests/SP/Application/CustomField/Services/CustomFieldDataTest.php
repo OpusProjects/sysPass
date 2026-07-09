@@ -686,6 +686,50 @@ class CustomFieldDataTest extends UnitaryTestCase
         $this->customFieldData->updateMasterPass($customFieldData, $password);
     }
 
+    /**
+     * A custom field record with NULL data must not raise an uncaught TypeError when
+     * encrypt() is called with a non-nullable string param. The null value is coalesced to
+     * '' so the master password rotation caller can still catch a crypt failure instead of
+     * a fatal error.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     */
+    public function testUpdateMasterPassWithNullData()
+    {
+        $password = self::$faker->password();
+        $customFieldData = CustomFieldDataGenerator::factory()
+            ->buildCustomFieldData()
+            ->mutate(['data' => null]);
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('makeSecuredKey')
+            ->with($password)
+            ->willReturn('secret_key');
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('encrypt')
+            ->with('', 'secret_key', $password)
+            ->willReturn('secret_data');
+
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with(
+                new Callback(static function (CustomFieldDataModel $current) use ($customFieldData) {
+                    return $current->getData() === 'secret_data'
+                           && $current->getKey() === 'secret_key'
+                           && $customFieldData->getDefinitionId() === $current->getDefinitionId()
+                           && $customFieldData->getItemId() === $current->getItemId()
+                           && $customFieldData->getModuleId() === $current->getModuleId();
+                })
+            );
+
+        $this->customFieldData->updateMasterPass($customFieldData, $password);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

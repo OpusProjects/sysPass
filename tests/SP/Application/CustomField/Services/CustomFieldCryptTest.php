@@ -180,6 +180,43 @@ class CustomFieldCryptTest extends UnitaryTestCase
         $this->customFieldCrypt->updateMasterPassword($request);
     }
 
+    /**
+     * A custom field record flagged as encrypted but with NULL data/key must not raise an
+     * uncaught TypeError when decrypt() is called with non-nullable string params. The null
+     * values are coalesced to '' so the failure surfaces as a caught crypt exception and the
+     * record is reported as not re-encrypted instead of aborting the whole rotation fatally.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateMasterPasswordWithNullDataAndKey()
+    {
+        $hash = self::$faker->sha1();
+        $request = new UpdateMasterPassRequest('secret', 'test_secret', $hash);
+        $customFieldData = CustomFieldDataGenerator::factory()
+            ->buildCustomFieldData()
+            ->mutate(['data' => null, 'key' => null]);
+
+        $this->customFieldService
+            ->expects(self::once())
+            ->method('getAllEncrypted')
+            ->willReturn([$customFieldData]);
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('decrypt')
+            ->with('', '', $request->getCurrentMasterPass())
+            ->willThrowException(new RuntimeException('test'));
+
+        $this->customFieldService
+            ->expects(self::never())
+            ->method('updateMasterPass');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessageMatches('/could not be re-encrypted/');
+
+        $this->customFieldCrypt->updateMasterPassword($request);
+    }
+
     public function testUpdateMasterPasswordWithError()
     {
         $hash = self::$faker->sha1();

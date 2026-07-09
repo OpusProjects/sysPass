@@ -66,8 +66,8 @@ final class CustomFieldCrypt extends Service implements CustomFieldCryptService
                 $request,
                 function (CustomFieldDataModel $customFieldData) use ($request) {
                     return $this->crypt->decrypt(
-                        $customFieldData->getData(),
-                        $customFieldData->getKey(),
+                        $customFieldData->getData() ?? '',
+                        $customFieldData->getKey() ?? '',
                         $request->getCurrentMasterPass()
                     );
                 }
