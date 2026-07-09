@@ -72,16 +72,18 @@ final class AccountPreset extends Service implements AccountPresetService
         if ($itemPreset !== null && $itemPreset->getFixed() === 1) {
             $passwordPreset = $itemPreset->hydrate(Password::class);
 
-            $this->passwordValidator->validate($passwordPreset, $accountDto->pass);
+            if ($passwordPreset !== null) {
+                $this->passwordValidator->validate($passwordPreset, $accountDto->pass);
 
-            if ($this->configData->isAccountExpireEnabled()) {
-                $expireTimePreset = $passwordPreset->getExpireTime();
+                if ($this->configData->isAccountExpireEnabled()) {
+                    $expireTimePreset = $passwordPreset->getExpireTime();
 
-                if ($expireTimePreset > 0
-                    && ($accountDto->passDateChange === 0
-                        || $accountDto->passDateChange < time() + $expireTimePreset)
-                ) {
-                    return $accountDto->withPassDateChange(time() + $expireTimePreset);
+                    if ($expireTimePreset > 0
+                        && ($accountDto->passDateChange === 0
+                            || $accountDto->passDateChange < time() + $expireTimePreset)
+                    ) {
+                        return $accountDto->withPassDateChange(time() + $expireTimePreset);
+                    }
                 }
             }
         }
@@ -101,28 +103,31 @@ final class AccountPreset extends Service implements AccountPresetService
             $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION);
 
         if ($itemPresetData?->getFixed()) {
-            $userData = $this->context->getUserData();
             $accountPermission = $itemPresetData->hydrate(AccountPermission::class);
 
-            $usersView = array_diff($accountPermission->getUsersView(), [$userData->id]);
-            $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->id]);
-            $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
-            $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
+            if ($accountPermission !== null) {
+                $userData = $this->context->getUserData();
 
-            if (!empty($usersView)) {
-                $this->accountToUserRepository->addByType($accountId, $usersView);
-            }
+                $usersView = array_diff($accountPermission->getUsersView(), [$userData->id]);
+                $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->id]);
+                $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
+                $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
 
-            if (!empty($usersEdit)) {
-                $this->accountToUserRepository->addByType($accountId, $usersEdit, true);
-            }
+                if (!empty($usersView)) {
+                    $this->accountToUserRepository->addByType($accountId, $usersView);
+                }
 
-            if (!empty($userGroupsView)) {
-                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsView);
-            }
+                if (!empty($usersEdit)) {
+                    $this->accountToUserRepository->addByType($accountId, $usersEdit, true);
+                }
 
-            if (!empty($userGroupsEdit)) {
-                $this->accountToUserGroupRepository->addByType($accountId, $userGroupsEdit, true);
+                if (!empty($userGroupsView)) {
+                    $this->accountToUserGroupRepository->addByType($accountId, $userGroupsView);
+                }
+
+                if (!empty($userGroupsEdit)) {
+                    $this->accountToUserGroupRepository->addByType($accountId, $userGroupsEdit, true);
+                }
             }
         }
     }
