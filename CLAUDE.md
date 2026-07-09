@@ -246,6 +246,12 @@ Key constraints:
   `CONFIG_BACKUP_RUN` tokens. Do not "harden" it by confining the path to `Path::BACKUP` — that
   breaks the documented, tested feature. (That an admin could target a web-accessible directory is
   operational guidance, not a code bug.)
+- **`jquery-ui` is in `package-lock.json` but not in `package.json` or the vendor MAP — not
+  drift.** It is an `optionalDependencies` entry of `@selectize/selectize` (drag_drop plugin
+  support), locked like any transitive dep (`npm ls jquery-ui` shows the chain; a fresh
+  `npm install` keeps it). It is never vendored into `public/vendor/js/` and never served.
+  Likewise, a locked version ahead of a `^` constraint (e.g. `jsencrypt` `^3.3.2` → lock 3.5.4)
+  is normal semver resolution, and vendored-copy currency is enforced by CI's drift check.
 
 ## Conventions
 

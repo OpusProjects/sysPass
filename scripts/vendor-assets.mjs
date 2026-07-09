@@ -12,6 +12,10 @@ const dest = join(root, 'public', 'vendor', 'js');
 
 // target filename in public/vendor/js  ->  source path within node_modules
 // (extended as more libraries are brought under npm management)
+// Note: jquery-ui appears in package-lock.json but is deliberately absent here and from
+// package.json — it is an optionalDependencies entry of @selectize/selectize (drag_drop
+// plugin support), resolved into the lock like any transitive dep (`npm ls jquery-ui`).
+// It is never vendored or served; do not "clean" it from the lock.
 const MAP = {
   'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
