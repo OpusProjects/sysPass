@@ -214,6 +214,13 @@ final class Notification extends BaseRepository implements NotificationRepositor
      */
     public function getByIdBatch(array $notificationsId): QueryResult
     {
+        if (empty($notificationsId)) {
+            /** @var QueryResult<T> $emptyResult */
+            $emptyResult = new QueryResult();
+
+            return $emptyResult;
+        }
+
         $query = $this->queryFactory
             ->newSelect()
             ->from(NotificationModel::TABLE)
