@@ -6295,12 +6295,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/DownloadLogController.php
 
 		-
-			message: '#^PHPDoc tag @throws with type SP\\Domain\\Core\\Exceptions\\SPException\|SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigGeneral\\ValidationException is not subtype of Throwable$#'
-			identifier: throws.notThrowable
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/SaveController.php
-
-		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigLdap\\ImportController\:\:getImportParams\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
