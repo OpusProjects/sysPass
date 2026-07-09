@@ -288,7 +288,17 @@ function getFromEnv(string $envVar, mixed $default = null): mixed
     }
 
     if ($default !== null) {
-        settype($env, gettype($default));
+        if (is_bool($default)) {
+            // A dotenv value is always a string; (bool)"false" is true in PHP, so a
+            // literal "false"/"0"/"off"/"no" string must be parsed, not cast.
+            if (is_string($env)) {
+                $env = filter_var($env, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? $default;
+            } else {
+                $env = (bool)$env;
+            }
+        } else {
+            settype($env, gettype($default));
+        }
     }
 
     return $env;
