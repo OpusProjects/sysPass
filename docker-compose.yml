@@ -30,7 +30,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: mariadb:10.11
+    image: mariadb:11.8
     environment:
       MARIADB_ROOT_PASSWORD: syspass
       MARIADB_DATABASE: syspass
