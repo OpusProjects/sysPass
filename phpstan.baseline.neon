@@ -1249,8 +1249,8 @@ parameters:
 			path: src/Application/User/Services/UserToUserGroup.php
 
 		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
 			count: 1
 			path: src/Core/Bootstrap/BootstrapBase.php
 
@@ -1429,15 +1429,9 @@ parameters:
 			path: src/Core/Functions.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
 			count: 1
-			path: src/Core/Functions.php
-
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 2
 			path: src/Core/Functions.php
 
 		-
@@ -4993,8 +4987,14 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccessManager/IndexController.php
 
 		-
-			message: '#^Strict comparison using \=\=\= between true and true will always evaluate to true\.$#'
-			identifier: identical.alwaysTrue
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountControllerBase.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and true will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountControllerBase.php
 
@@ -5791,8 +5791,8 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AuthToken/SearchController.php
 
 		-
-			message: '#^Left side of \|\| is always true\.$#'
-			identifier: booleanOr.leftAlwaysTrue
+			message: '#^Left side of \|\| is always false\.$#'
+			identifier: booleanOr.leftAlwaysFalse
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Bootstrap/GetEnvironmentController.php
 
@@ -6293,12 +6293,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/DownloadLogController.php
-
-		-
-			message: '#^PHPDoc tag @throws with type SP\\Domain\\Core\\Exceptions\\SPException\|SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigGeneral\\ValidationException is not subtype of Throwable$#'
-			identifier: throws.notThrowable
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/SaveController.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigLdap\\ImportController\:\:getImportParams\(\) return type has no value type specified in iterable type array\.$#'
@@ -7063,7 +7057,19 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Index/IndexController.php
 
 		-
-			message: '#^Strict comparison using \=\=\= between true and true will always evaluate to true\.$#'
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and true will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and false will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
