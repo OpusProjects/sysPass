@@ -1,0 +1,14 @@
+name: Setup locales
+description: Install iproute2 and generate the locales required by the test suite
+
+runs:
+  using: composite
+  steps:
+    - name: Install iproute2 and locales
+      shell: bash
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y --no-install-recommends iproute2 locales
+        for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
+          sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
+        done

@@ -24,16 +24,13 @@ jobs:
           coverage: none
           ini-values: zend.assertions=1
 
-      - name: Install iproute2 and locales
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends iproute2 locales
-          for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
-            sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
-          done
+      - name: Setup locales
+        uses: ./.github/actions/setup-locales
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Run unit tests
         run: vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
@@ -65,16 +62,13 @@ jobs:
           coverage: none
           ini-values: zend.assertions=1
 
-      - name: Install iproute2 and locales
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends iproute2 locales
-          for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
-            sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
-          done
+      - name: Setup locales
+        uses: ./.github/actions/setup-locales
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Load schema
         run: mysql -h 127.0.0.1 -P 3306 -u root -psyspass syspass < schemas/dbstructure.sql
@@ -106,7 +100,9 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Install npm dependencies
         run: npm ci
