@@ -390,6 +390,55 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * A "fixed" private-account preset whose serialized data is NULL (or fails to
+     * deserialize) must be treated as if no preset applied at all: the block is
+     * skipped rather than dereferencing a null hydrated preset, and the account is
+     * updated exactly as it would be with no preset configured.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateWithPresetPrivateWithNullData()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+        $itemPreset = new ItemPreset([
+                                         'id' => self::$faker->randomNumber(),
+                                         'type' => self::$faker->colorName(),
+                                         'userId' => self::$faker->randomNumber(),
+                                         'userGroupId' => self::$faker->randomNumber(),
+                                         'userProfileId' => self::$faker->randomNumber(),
+                                         'fixed' => 1,
+                                         'priority' => self::$faker->randomNumber(),
+                                         'data' => null,
+                                     ]);
+
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+            )
+        );
+
+        $this->configService->expects(self::once())->method('getByParam')
+                            ->with('masterPwd')->willReturn(self::$faker->password());
+        $this->accountHistoryService->expects(self::once())->method('create');
+        $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
+                                ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+                                ->willReturn($itemPreset);
+        $this->accountRepository->expects(self::exactly(2))->method('getById')
+                                ->with($id)
+                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+        $this->accountRepository->expects(self::once())->method('update')
+            ->with($id, AccountModel::update($accountUpdateDto), true, true);
+        $this->accountItemsService->expects(self::once())->method('updateItems')
+                                  ->with(true, $id, $accountUpdateDto);
+        $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException

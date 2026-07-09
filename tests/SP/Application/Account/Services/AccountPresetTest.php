@@ -38,6 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
@@ -172,6 +173,46 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
+     * A "fixed" preset whose serialized data is NULL (or fails to deserialize) must be
+     * treated as if no preset applied at all: the block is skipped and the validator is
+     * never invoked, rather than dereferencing a null hydrated preset.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordPresetWithNullData(): void
+    {
+        $this->config->getConfigData()->setAccountExpireEnabled(true);
+
+        $itemPreset = new ItemPreset([
+                                          'id' => self::$faker->randomNumber(3),
+                                          'type' => self::$faker->colorName(),
+                                          'userId' => self::$faker->randomNumber(3),
+                                          'userGroupId' => self::$faker->randomNumber(3),
+                                          'userProfileId' => self::$faker->randomNumber(3),
+                                          'fixed' => 1,
+                                          'priority' => self::$faker->randomNumber(3),
+                                          'data' => null,
+                                      ]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+        $this->passwordValidator
+            ->expects(self::never())
+            ->method('validate');
+
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
+
+        $out = $this->accountPreset->checkPasswordPreset($accountDto);
+
+        self::assertSame($accountDto, $out);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws SPException
      * @throws QueryException
@@ -245,6 +286,44 @@ class AccountPresetTest extends UnitaryTestCase
                                 ->method('getForCurrentUser')
                                 ->with('account.permission')
                                 ->willReturn(null);
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountPreset->addPresetPermissions(100);
+    }
+
+    /**
+     * A "fixed" preset whose serialized data is NULL (or fails to deserialize) must be
+     * treated as if no preset applied at all: the block is skipped rather than
+     * dereferencing a null hydrated preset.
+     *
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws QueryException
+     */
+    public function testAddPresetPermissionsWithNullData()
+    {
+        $itemPreset = new ItemPreset([
+                                          'id' => self::$faker->randomNumber(3),
+                                          'type' => self::$faker->colorName(),
+                                          'userId' => self::$faker->randomNumber(3),
+                                          'userGroupId' => self::$faker->randomNumber(3),
+                                          'userProfileId' => self::$faker->randomNumber(3),
+                                          'fixed' => 1,
+                                          'priority' => self::$faker->randomNumber(3),
+                                          'data' => null,
+                                      ]);
+
+        $this->itemPresetService->expects($this->once())
+                                ->method('getForCurrentUser')
+                                ->with('account.permission')
+                                ->willReturn($itemPreset);
 
         $this->accountToUserRepository
             ->expects($this->never())

@@ -378,18 +378,20 @@ final class Account extends Service implements AccountService
         if ($itemPreset !== null && $itemPreset->getFixed()) {
             $accountPrivate = $itemPreset->hydrate(AccountPrivate::class);
 
-            if ($accountDto instanceof AccountUpdateDto && null !== $accountId) {
-                $account = $this->getById($accountId);
-                $accountDto =
-                    $accountDto->withUserId($account->getUserId())->withUserGroupId($account->getUserGroupId());
+            if ($accountPrivate !== null) {
+                if ($accountDto instanceof AccountUpdateDto && null !== $accountId) {
+                    $account = $this->getById($accountId);
+                    $accountDto =
+                        $accountDto->withUserId($account->getUserId())->withUserGroupId($account->getUserGroupId());
+                }
+
+                $privateUser = $userDto->id === $accountDto->userId
+                               && $accountPrivate->isPrivateUser();
+                $privateGroup = $userDto->userGroupId === $accountDto->userGroupId
+                                && $accountPrivate->isPrivateGroup();
+
+                return $accountDto->withPrivate($privateUser)->withPrivateGroup($privateGroup);
             }
-
-            $privateUser = $userDto->id === $accountDto->userId
-                           && $accountPrivate->isPrivateUser();
-            $privateGroup = $userDto->userGroupId === $accountDto->userGroupId
-                            && $accountPrivate->isPrivateGroup();
-
-            return $accountDto->withPrivate($privateUser)->withPrivateGroup($privateGroup);
         }
 
         return $accountDto;
