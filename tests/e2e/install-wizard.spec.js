@@ -17,7 +17,8 @@ const { ADMIN_PASS, MASTER_PASS } = require('./credentials.js');
  */
 function resetApp() {
   const compose = 'docker compose -f docker-compose.yml';
-  const cwd = `${__dirname}/..`;
+  // docker-compose.yml lives at the repo root — two levels up from tests/e2e/.
+  const cwd = `${__dirname}/../..`;
   // Drop the DB entirely — standard-mode install creates it fresh.
   execSync(
     `${compose} exec -T db mariadb -uroot -psyspass -e "DROP DATABASE IF EXISTS syspass;"`,

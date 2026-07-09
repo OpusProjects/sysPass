@@ -9,7 +9,8 @@ const { ADMIN_USER, ADMIN_PASS, MASTER_PASS } = require('./credentials.js');
 
 /** docker compose base command (run from the repo root) */
 const compose = 'docker compose -f docker-compose.yml';
-const cwd = `${__dirname}/..`;
+// docker-compose.yml lives at the repo root — two levels up from tests/e2e/.
+const cwd = `${__dirname}/../..`;
 
 /**
  * Run a MariaDB statement against the syspass database.
