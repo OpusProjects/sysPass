@@ -11,7 +11,10 @@ module.exports = defineConfig({
   // a known app state without stepping on each other.
   workers: 1,
 
-  reporter: 'list',
+  // In CI, also emit an HTML report (self-contained, non-interactive) alongside
+  // the console list so a failed run's traces/screenshots are easy to inspect
+  // from the uploaded artifact.
+  reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
 
   use: {
     baseURL: 'http://localhost:8090',
@@ -23,6 +26,7 @@ module.exports = defineConfig({
     actionTimeout: 15_000,
     navigationTimeout: 30_000,
     screenshot: 'only-on-failure',
+    trace: 'retain-on-failure',
     video: 'off',
   },
 
