@@ -502,6 +502,19 @@ class UserTest extends UnitaryTestCase
         $this->user->getUserEmailById([100, 200]);
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGetUserEmailByIdWithNoIds(): void
+    {
+        $this->database
+            ->expects(self::never())
+            ->method('runQuery');
+
+        $this->user->getUserEmailById([]);
+    }
+
     public function testCheckExistsByLogin()
     {
         $this->database

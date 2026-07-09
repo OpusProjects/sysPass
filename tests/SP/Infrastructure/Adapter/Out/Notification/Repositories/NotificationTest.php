@@ -84,6 +84,19 @@ class NotificationTest extends UnitaryTestCase
         $this->notification->getByIdBatch($ids);
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGetByIdBatchWithNoIds(): void
+    {
+        $this->database
+            ->expects(self::never())
+            ->method('runQuery');
+
+        $this->notification->getByIdBatch([]);
+    }
+
     public function testGetAllActiveForAdmin()
     {
         $callback = new Callback(
