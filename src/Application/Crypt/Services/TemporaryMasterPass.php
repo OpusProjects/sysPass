@@ -219,7 +219,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
         $emails = array_map(
             static function ($value) {
-                return $value->email;
+                return $value->getEmail() ?? '';
             },
             $this->userService->getUserEmailForGroup($groupId)
         );
@@ -255,7 +255,7 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
 
         $emails = array_map(
             static function ($value) {
-                return $value->email;
+                return $value->getEmail() ?? '';
             },
             $this->userService->getUserEmailForAll()
         );

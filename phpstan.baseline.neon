@@ -4574,39 +4574,6 @@ parameters:
 			count: 1
 			path: src/Infrastructure/File/XmlFileStorage.php
 
-		# --- Entries below surfaced by the src/Application missingType annotation pass ---
-		# Precise return types (e.g. UserModel[], UserToUserGroup[]) now let PHPStan see into
-		# array_map()/foreach closures that were previously opaque (untyped `array`). Two real
-		# pre-existing bugs found (protected-property access from outside the model — a fatal
-		# Error at runtime if the code path executes, since neither User nor UserToUserGroup
-		# defines __get()); left unfixed per PR scope (PHPDoc-only, no runtime changes) and
-		# reported. See PR body for details and the follow-up needed.
-		-
-			# BUG: TemporaryMasterPass reads User::$email (protected, no __get()) via ->email
-			# in sendByEmailForGroup()/sendByEmailForAllUsers() — a fatal Error if either path
-			# executes. Pre-existing; use getEmail() instead. Not fixed here (no runtime changes).
-			message: '#^Access to protected property SP\\Domain\\User\\Models\\User\:\:\$email\.$#'
-			identifier: property.protected
-			count: 2
-			path: src/Application/Crypt/Services/TemporaryMasterPass.php
-
-		-
-			# BUG: same as above — SaveRequestController::saveRequestAction() reads User::$email
-			# via ->email when composing the "account access requested" notification.
-			message: '#^Access to protected property SP\\Domain\\User\\Models\\User\:\:\$email\.$#'
-			identifier: property.protected
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
-
-		-
-			# BUG: AccountAcl::compileAccountAccess() reads UserToUserGroup::$userGroupId
-			# (protected, no __get()) via ->userGroupId instead of ->getUserGroupId() — a fatal
-			# Error if this branch executes. Pre-existing; not fixed here (no runtime changes).
-			message: '#^Access to protected property SP\\Domain\\User\\Models\\UserToUserGroup\:\:\$userGroupId\.$#'
-			identifier: property.protected
-			count: 1
-			path: src/Application/Account/Services/AccountAcl.php
-
 		-
 			# Not a bug: SP\Domain\Common\Models\Simple is a deliberately dynamic bag
 			# (__get()/__set()/__isset() defined) — this is PHPStan's documented

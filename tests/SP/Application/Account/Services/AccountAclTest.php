@@ -36,7 +36,6 @@ use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Application\Account\Services\AccountAcl;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -45,6 +44,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserToUserGroup;
 use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Generators\UserDataGenerator;
@@ -862,9 +862,9 @@ class AccountAclTest extends UnitaryTestCase
         $this->userToUserGroupService = $this->createStub(UserToUserGroupService::class);
         $this->userToUserGroupService->method('getGroupsForUser')
                                      ->willReturnMap([
-                                                         [1, [new Simple(['userGroupId' => 2])]],
-                                                         [2, [new Simple(['userGroupId' => 1])]],
-                                                         [3, [new Simple(['userGroupId' => 2])]],
+                                                         [1, [new UserToUserGroup(['userGroupId' => 2])]],
+                                                         [2, [new UserToUserGroup(['userGroupId' => 1])]],
+                                                         [3, [new UserToUserGroup(['userGroupId' => 2])]],
                                                          [4, []],
                                                      ]);
     }

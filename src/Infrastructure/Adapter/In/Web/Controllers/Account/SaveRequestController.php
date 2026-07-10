@@ -105,7 +105,7 @@ final class SaveRequestController extends AccountControllerBase
                             ->setExtra(
                                 'email',
                                 array_map(
-                                    static fn($value) => $value->email,
+                                    static fn($value) => $value->getEmail(),
                                     $this->userService->getUserEmailById($usersId)
                                 )
                             )
