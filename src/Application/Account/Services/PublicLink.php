@@ -276,7 +276,7 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function addLinkView(PublicLinkModel $publicLink): void
     {
-        $useInfo = array();
+        $useInfo = [];
 
         if (empty($publicLink->getHash())) {
             throw new ServiceException(__u('Public link hash not set'));
