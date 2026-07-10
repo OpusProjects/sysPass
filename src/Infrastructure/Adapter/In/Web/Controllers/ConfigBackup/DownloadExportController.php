@@ -89,7 +89,6 @@ final class DownloadExportController extends SimpleControllerBase
                          ->header('Content-Description', ' sysPass file')
                          ->header('Content-transfer-encoding', 'chunked')
                          ->header('Content-Disposition', 'attachment; filename="' . basename($file->getFile()) . '"')
-                         ->header('Set-Cookie', 'fileDownload=true; path=/')
                          ->send();
 
                 $file->readChunked();
