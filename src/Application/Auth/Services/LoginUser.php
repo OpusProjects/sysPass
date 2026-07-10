@@ -101,7 +101,12 @@ final class LoginUser extends LoginBase implements LoginUserService
 
             return new LoginResponseDto(LoginStatus::PASS);
         } catch (EnvironmentIsBrokenException | ConstraintException | QueryException $e) {
-            throw ServiceException::error('Internal error', __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
+            throw ServiceException::error(
+                'Internal error',
+                __u('Please check out the event log for more details'),
+                Service::STATUS_INTERNAL_ERROR,
+                $e
+            );
         }
     }
 }
