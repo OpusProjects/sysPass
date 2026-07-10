@@ -67,10 +67,6 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
             // Build the accounts node
             $nodeAccounts = $this->document->createElement('Accounts');
 
-            if ($nodeAccounts === false) {
-                throw ServiceException::error(__u('Unable to create node'));
-            }
-
             if (empty($accounts)) {
                 return $nodeAccounts;
             }

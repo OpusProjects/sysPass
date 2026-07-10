@@ -60,6 +60,7 @@ final class AccountForm extends FormBase implements FormInterface
      * @param int|null $id
      *
      * @return FormInterface
+     * @throws ValidationException
      */
     public function validateFor(int $action, ?int $id = null): FormInterface
     {
@@ -96,7 +97,10 @@ final class AccountForm extends FormBase implements FormInterface
             AclActionsInterface::ACCOUNTMGR_BULK_EDIT =>
             $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                   ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
-                  ->resolve()
+                  ->resolve(),
+            // Guard the public FormInterface contract: an unexpected action must fail as a
+            // handled validation error, not an \UnhandledMatchError (a 500 for the client).
+            default => throw new ValidationException(__u('Invalid action'))
         };
 
         return $this;

@@ -64,10 +64,6 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
 
             $nodeClients = $this->document->createElement('Clients');
 
-            if ($nodeClients === false) {
-                throw ServiceException::error(__u('Unable to create node'));
-            }
-
             if (empty($clients)) {
                 return $nodeClients;
             }

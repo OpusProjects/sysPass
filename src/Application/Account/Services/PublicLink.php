@@ -160,7 +160,9 @@ final class PublicLink extends Service implements PublicLinkService
                 'data' => $this->getSecuredLinkData($publicLink->getItemId(), $key),
                 'dateExpire' => self::calcDateExpire($this->config),
                 'maxCountViews' => $this->config->getConfigData()->getPublinksMaxViews(),
-                'userId' => $publicLink->getUserId() ?? $this->context->getUserData()->id
+                // getUserId() casts a missing owner to 0 (never null), so `?:` — not `??` —
+                // is needed to fall back to the session user; 0 is not a valid user id.
+                'userId' => $publicLink->getUserId() ?: $this->context->getUserData()->id
             ]
         );
     }

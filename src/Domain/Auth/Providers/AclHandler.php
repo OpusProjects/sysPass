@@ -69,14 +69,6 @@ final class AclHandler extends Provider implements EventReceiver
     ) {
         parent::__construct($application);
 
-        $this->setup();
-    }
-
-    /**
-     * @return void
-     */
-    private function setup(): void
-    {
         $this->events = $this->parseEventsToRegex(self::EVENTS);
     }
 

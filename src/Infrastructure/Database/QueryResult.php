@@ -106,7 +106,7 @@ class QueryResult
             $this->checkDataType($dataType);
         }
 
-        return $this->data?->toArray();
+        return $this->data->toArray();
     }
 
     public function getNumRows(): int

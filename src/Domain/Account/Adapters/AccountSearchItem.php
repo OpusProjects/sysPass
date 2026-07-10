@@ -133,7 +133,7 @@ final class AccountSearchItem
             $baseUrl = ($this->configData->getApplicationUrl() ?: $this->uriContext->getWebUri()) .
                        $this->uriContext->getSubUri();
 
-            return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash() ?? '');
+            return PublicLink::getLinkForHash($baseUrl, $this->accountSearchView->getPublicLinkHash());
         }
 
         return null;
@@ -213,7 +213,7 @@ final class AccountSearchItem
     public function getShortNotes(): string
     {
         if ($this->accountSearchView->getNotes()) {
-            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchView->getNotes() ?? '', 300), ENT_QUOTES));
+            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchView->getNotes(), 300), ENT_QUOTES));
         }
 
         return '';

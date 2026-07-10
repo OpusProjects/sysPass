@@ -95,6 +95,8 @@ final class ImportStrategy extends Service implements ImportStrategyService
     }
 
     /**
+     * @return 'text/plain'|'text/csv'|'text/x-csv'|'application/xml'|'text/xml' Always one of
+     *         ALLOWED_MIME — anything else throws, which keeps the caller's match exhaustive.
      * @throws FileException
      * @throws ImportException
      */
