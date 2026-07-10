@@ -31,7 +31,6 @@ const MAP = {
   'moment.min.js': 'moment/min/moment-with-locales.min.js',
   // with-data 10-year rolling range — matches the data-bearing build we shipped
   'moment-timezone.min.js': 'moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js',
-  'toastr.min.js': 'toastr/build/toastr.min.js',
   'jquery.magnific-popup.min.js': 'magnific-popup/dist/jquery.magnific-popup.min.js',
   'spark-md5.min.js': 'spark-md5/spark-md5.min.js',
   'zxcvbn.min.js': 'zxcvbn/dist/zxcvbn.js',
