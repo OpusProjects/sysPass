@@ -88,7 +88,6 @@ final class DownloadLogController extends SimpleControllerBase
                              'Content-Disposition',
                              sprintf("attachment; filename=\"%s\"", basename($file->getName()))
                          )
-                         ->header('Set-Cookie', 'fileDownload=true; path=/')
                          ->send();
 
                 $file->readChunked();
