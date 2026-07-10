@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToTagRepository;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
@@ -65,7 +66,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
             ->bindValues(['accountId' => $id])
             ->orderBy(['Tag.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
     }
 
     /**

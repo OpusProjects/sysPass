@@ -202,6 +202,9 @@ class AccountControllerTest extends ApiTestCase
         $this->assertNull($item->publicLinkHash);
         $this->assertGreaterThan(0, $item->passDate);
         $this->assertIsArray($item->tags);
+        $this->assertCount(count(self::PARAMS['tagsId']), $item->tags);
+        $this->assertSame(self::PARAMS['tagsId'][0], $item->tags[0]->id);
+        $this->assertSame('Linux', $item->tags[0]->name);
         $this->assertIsArray($item->users);
         $this->assertIsArray($item->userGroups);
         $this->assertNull($item->customFields);

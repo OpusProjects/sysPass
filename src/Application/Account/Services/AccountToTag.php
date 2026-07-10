@@ -29,7 +29,6 @@ use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Application\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -59,10 +58,8 @@ final class AccountToTag extends Service implements AccountToTagService
      */
     public function getTagsByAccountId(int $id): array
     {
-        $tags = $this->accountToTagRepository
+        return $this->accountToTagRepository
             ->getTagsByAccountId($id)
-            ->getDataAsArray(Simple::class);
-
-        return array_map(fn($tag) => Item::buildFromSimpleModel($tag), $tags);
+            ->getDataAsArray(Item::class);
     }
 }

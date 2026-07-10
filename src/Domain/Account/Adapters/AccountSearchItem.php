@@ -52,6 +52,7 @@ final class AccountSearchItem
     public static bool $isDemoMode        = false;
 
     /**
+     * @param Item[] $tags
      * @param Item[]|null $users
      * @param Item[]|null $userGroups
      */

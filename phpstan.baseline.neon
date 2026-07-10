@@ -91,12 +91,6 @@ parameters:
 			path: src/Application/Account/Services/Account.php
 
 		-
-			message: '#^Parameter \#1 \$tags of method SP\\Domain\\Account\\Dtos\\AccountEnrichedDto\:\:withTags\(\) expects array\<SP\\Domain\\Common\\Models\\Item\>, array\<SP\\Domain\\Common\\Models\\Model\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Account/Services/Account.php
-
-		-
 			message: '#^Method SP\\Application\\Account\\Services\\AccountAcl\:\:getUserGroupsInMainGroup\(\) has parameter \$userGroups with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1369,12 +1363,6 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Domain\\Account\\Adapters\\AccountSearchItem\:\:__construct\(\) has parameter \$tags with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Domain/Account/Adapters/AccountSearchItem.php
-
-		-
 			message: '#^Instanceof between SP\\Domain\\Common\\Models\\Item and SP\\Domain\\Common\\Models\\Item will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
@@ -1415,12 +1403,6 @@ parameters:
 			identifier: method.templateTypeNotInParameter
 			count: 1
 			path: src/Domain/Account/Ports/AccountSearchRepository.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Ports\\AccountToTagRepository\:\:getTagsByAccountId\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Domain/Account/Ports/AccountToTagRepository.php
 
 		-
 			message: '#^Parameter \#1 \$array \(non\-empty\-list\<non\-empty\-string\>\) of array_values is already a list, call has no effect\.$#'
