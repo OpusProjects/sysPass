@@ -12,6 +12,21 @@ const dest = join(root, 'public', 'vendor', 'js');
 
 // target filename in public/vendor/js  ->  source path within node_modules
 // (extended as more libraries are brought under npm management)
+//
+// Note: jquery-ui appears in package-lock.json but is deliberately absent here and from
+// package.json — it is an optionalDependencies entry of @selectize/selectize (drag_drop
+// plugin support), resolved into the lock like any transitive dep (`npm ls jquery-ui`).
+// It is never vendored or served; do not "clean" it from the lock.
+//
+// Not every file under public/vendor/js/ and public/js/ is npm-managed:
+//   - jquery.fileDownload.min.js (public/vendor/js/) is abandoned upstream (~2016, last
+//     published as jquery-file-download@1.4.6). The only thing on npm under that name is a
+//     snapshot of the original ASP.NET MVC demo project (.csproj/.sln, no dist/*.min.js) —
+//     not something this script can vendor from. Stays hand-vendored; edit in place.
+//   - selectize-plugins.min.js and zxcvbn-async.min.js are app-authored glue (a one-off
+//     Selectize plugin and a lazy-loader for zxcvbn.min.js), not third-party library dists,
+//     so they live under public/js/ with the other hand-authored app-*.min.js files and are
+//     served via JsController::JS_APP_MIN_FILES instead of this MAP.
 const MAP = {
   'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
