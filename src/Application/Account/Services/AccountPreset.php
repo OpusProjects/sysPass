@@ -78,11 +78,14 @@ final class AccountPreset extends Service implements AccountPresetService
                 if ($this->configData->isAccountExpireEnabled()) {
                     $expireTimePreset = $passwordPreset->getExpireTime();
 
-                    if ($expireTimePreset > 0
-                        && ($accountDto->passDateChange === 0
-                            || $accountDto->passDateChange < time() + $expireTimePreset)
-                    ) {
-                        return $accountDto->withPassDateChange(time() + $expireTimePreset);
+                    if ($expireTimePreset > 0) {
+                        $maxPassDateChange = time() + $expireTimePreset;
+
+                        if (empty($accountDto->passDateChange)
+                            || $accountDto->passDateChange > $maxPassDateChange
+                        ) {
+                            return $accountDto->withPassDateChange($maxPassDateChange);
+                        }
                     }
                 }
             }
