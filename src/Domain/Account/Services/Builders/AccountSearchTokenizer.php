@@ -102,9 +102,9 @@ final class AccountSearchTokenizer
     }
 
     /**
-     * @param array $filters
+     * @param array<string, string> $filters
      *
-     * @return array
+     * @return string[]
      */
     private function getConditions(array $filters): array
     {
@@ -126,9 +126,9 @@ final class AccountSearchTokenizer
     }
 
     /**
-     * @param array $filtersAndValues
+     * @param array<string, string> $filtersAndValues
      *
-     * @return array
+     * @return array<string, string>
      */
     private function getItems(array $filtersAndValues): array
     {
@@ -146,7 +146,7 @@ final class AccountSearchTokenizer
     }
 
     /**
-     * @param array $filtersAndValues
+     * @param array<string, string> $filtersAndValues
      *
      * @return string|null
      */

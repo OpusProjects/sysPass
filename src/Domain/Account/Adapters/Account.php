@@ -40,6 +40,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
@@ -51,8 +52,12 @@ final class Account extends Adapter implements AccountAdapter
 {
     use ItemTrait;
 
+    /** @var string[] */
     protected array $availableIncludes = ['customFields'];
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         ConfigDataInterface               $configData,
         string                            $baseUrl,
@@ -82,6 +87,7 @@ final class Account extends Adapter implements AccountAdapter
 
     /**
      * @param AccountEnrichedDto $data
+     * @return array<string, mixed>
      * @throws ActionNotFoundException
      */
     public function transform($data): array

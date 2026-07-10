@@ -50,11 +50,12 @@ use function SP\processException;
 class Request implements RequestService
 {
     /**
-     * @var array Directories that are safe to include
+     * @var string[] Directories that are safe to include
      */
     public const SECURE_DIRS = ['css', 'js'];
 
     private HeaderBag $headers;
+    /** @var InputBag<string> */
     private InputBag  $params;
     private Method $method;
     private ?bool  $https = null;
@@ -70,6 +71,9 @@ class Request implements RequestService
         $this->detectHttps();
     }
 
+    /**
+     * @return InputBag<string>
+     */
     private function getParamsForMethod(): InputBag
     {
         return match ($this->method) {
@@ -243,9 +247,9 @@ class Request implements RequestService
     /**
      * @param string $param
      * @param callable|null $mapper
-     * @param null $default
+     * @param mixed $default
      *
-     * @return array|null
+     * @return mixed[]|null
      */
     public function analyzeArray(
         string $param,
@@ -295,6 +299,9 @@ class Request implements RequestService
         return Filter::getInt($this->params->get($param));
     }
 
+    /**
+     * @return array{name: string, type: string, tmp_name: string, error: int, size: int|null}|mixed[]|null
+     */
     public function getFile(string $file): ?array
     {
         $uploaded = $this->request->files->get($file);
@@ -390,6 +397,7 @@ class Request implements RequestService
     /**
      * Return forward data per RFC 7239
      *
+     * @return array{host: string, proto: string, for: string[]|null}|null
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
      */
     public function getForwardedData(): ?array
@@ -430,6 +438,8 @@ class Request implements RequestService
 
     /**
      * Return x-forward data
+     *
+     * @return array{host: string, proto: string, for: string[]|null}|null
      */
     public function getXForwardedData(): ?array
     {

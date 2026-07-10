@@ -45,5 +45,8 @@ interface ClientAdapter
      */
     public function includeCustomFields(Client $client): Collection;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function transform(Client $data): array;
 }

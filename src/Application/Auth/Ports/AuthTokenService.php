@@ -29,6 +29,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -46,7 +47,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface AuthTokenService
 {
     /**
-     * @return QueryResult<T>
+     * @return QueryResult<AuthTokenListModel>
      * @throws QueryException
      * @throws ConstraintException
      */

@@ -55,6 +55,8 @@ interface PhpExtensionCheckerService
 
     /**
      * Returns missing extensions
+     *
+     * @return array<string, bool> Extension name => whether it is mandatory
      */
     public function getMissing(): array;
 }

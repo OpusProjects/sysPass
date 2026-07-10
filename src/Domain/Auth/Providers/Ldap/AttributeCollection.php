@@ -31,6 +31,8 @@ use SP\Core\DataCollection;
  * Class AttributeCollection
  *
  * @package SP\Domain\Auth\Providers\Ldap
+ *
+ * @extends DataCollection<string, mixed>
  */
 final class AttributeCollection extends DataCollection
 {

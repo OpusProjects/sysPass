@@ -124,7 +124,7 @@ abstract class LoggerBase extends Provider implements EventReceiver
      * @param string $address
      * @param string $user
      *
-     * @return array
+     * @return array<string, string>
      */
     final protected function formatContext(string $message, string $address, string $user): array
     {

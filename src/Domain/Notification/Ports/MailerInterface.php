@@ -42,6 +42,9 @@ interface MailerInterface
 
     public function send(): bool;
 
+    /**
+     * @return array<int, array{string, string}> Each entry is an [address, name] pair
+     */
     public function getToAddresses(): array;
 
     public function configure(MailParams $mailParams): MailerInterface;

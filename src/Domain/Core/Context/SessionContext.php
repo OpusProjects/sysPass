@@ -136,7 +136,7 @@ interface SessionContext extends Context
     /**
      * Set the color associated with an account
      *
-     * @param array $color
+     * @param array<int, string> $color
      */
     public function setAccountColor(array $color): void;
 

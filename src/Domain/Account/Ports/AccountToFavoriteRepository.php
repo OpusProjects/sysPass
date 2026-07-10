@@ -28,6 +28,7 @@ namespace SP\Domain\Account\Ports;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -42,7 +43,7 @@ interface AccountToFavoriteRepository extends Repository
      *
      * @param $id int The user Id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

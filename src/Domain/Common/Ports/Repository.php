@@ -27,6 +27,7 @@ namespace SP\Domain\Common\Ports;
 
 use Closure;
 use Exception;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -48,12 +49,12 @@ interface Repository
     /**
      * Run a SQL select query to get any data from any table
      *
-     * @param array $columns
+     * @param string[] $columns
      * @param string $from
      * @param string|null $where
-     * @param array|null $bindValues
+     * @param array<string, mixed>|null $bindValues
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function getAny(
         array  $columns,

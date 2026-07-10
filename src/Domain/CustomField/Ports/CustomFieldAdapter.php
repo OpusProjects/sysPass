@@ -32,5 +32,8 @@ use SP\Domain\CustomField\Services\CustomFieldItem;
  */
 interface CustomFieldAdapter
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function transform(CustomFieldItem $data): array;
 }

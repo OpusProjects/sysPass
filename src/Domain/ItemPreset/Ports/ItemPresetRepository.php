@@ -31,6 +31,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -43,6 +44,7 @@ interface ItemPresetRepository extends Repository
     /**
      * Creates an item
      *
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -59,6 +61,7 @@ interface ItemPresetRepository extends Repository
     /**
      * Deletes an item
      *
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -69,7 +72,7 @@ interface ItemPresetRepository extends Repository
      *
      * @param int $itemPresetId
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      */
     public function getById(int $itemPresetId): QueryResult;
 
@@ -83,6 +86,8 @@ interface ItemPresetRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
+     * @param int[] $itemPresetIds
+     * @return QueryResult
      * @throws ConstraintException
      * @throws QueryException
      */

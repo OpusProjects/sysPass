@@ -31,6 +31,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -45,7 +46,7 @@ interface UserGroupRepository extends Repository
      *
      * @param int $userGroupId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -56,7 +57,7 @@ interface UserGroupRepository extends Repository
      *
      * @param int $userGroupId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -92,7 +93,7 @@ interface UserGroupRepository extends Repository
      *
      * @param array<int> $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -112,7 +113,7 @@ interface UserGroupRepository extends Repository
      *
      * @param UserGroupModel $userGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
@@ -136,7 +137,7 @@ interface UserGroupRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

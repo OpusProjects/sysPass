@@ -34,6 +34,7 @@ namespace SP\Domain\Common\Models;
  */
 final class Simple extends Model
 {
+    /** @var array<string, mixed> */
     private array $dynamicProperties = [];
 
     public function __set(string $name, mixed $value): void

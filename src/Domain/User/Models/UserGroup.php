@@ -38,6 +38,7 @@ class UserGroup extends Model implements ItemWithIdAndNameModel
     protected ?int    $id          = null;
     protected ?string $name        = null;
     protected ?string $description = null;
+    /** @var int[]|null */
     protected ?array  $users       = null;
 
     public function getId(): ?int
@@ -56,6 +57,9 @@ class UserGroup extends Model implements ItemWithIdAndNameModel
         return $this->description;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getUsers(): ?array
     {
         return $this->users;

@@ -108,6 +108,11 @@ final class Password
         return implode($passGen());
     }
 
+    /**
+     * @param string[] $pass
+     *
+     * @return array{lower: int, upper: int, special: int, number: int}
+     */
     public static function checkStrength(array $pass): array
     {
         $charsUpper = strtoupper(self::CHARS);

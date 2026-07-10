@@ -44,6 +44,7 @@ final class AccountSearchFilterDto
     private ?string $cleanTxtSearch  = null;
     private ?int    $clientId        = null;
     private ?int    $categoryId      = null;
+    /** @var int[]|null */
     private ?array  $tagsId          = null;
     private int $sortOrder = AccountSearchConstants::SORT_DIR_ASC;
     private int $sortKey   = AccountSearchConstants::SORT_DEFAULT;
@@ -159,11 +160,17 @@ final class AccountSearchFilterDto
         return $this;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getTagsId(): ?array
     {
         return $this->tagsId;
     }
 
+    /**
+     * @param int[]|null $tagsId
+     */
     public function setTagsId(?array $tagsId): AccountSearchFilterDto
     {
         $this->tagsId = $tagsId;

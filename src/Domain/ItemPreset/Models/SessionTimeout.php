@@ -53,6 +53,9 @@ readonly class SessionTimeout
         $this->mask = $this->parseMask($parse);
     }
 
+    /**
+     * @param array<int|string, string> $parse Regex matches from {@see Address::parse4()}
+     */
     private function parseMask(array $parse): string
     {
         if (isset($parse['cidr'])) {

@@ -74,6 +74,7 @@ final class Address
     /**
      * Parses an IPv4 address from either "192.168.0.1", "192.168.0.0/255.255.255.0" or "192.168.0.0/24" formats
      *
+     * @return array<int|string, string> The regex matches, with "address", "mask" and "cidr" named groups
      * @throws InvalidArgumentException
      */
     public static function parse4(string $address): array

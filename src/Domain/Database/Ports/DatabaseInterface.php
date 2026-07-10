@@ -44,6 +44,8 @@ interface DatabaseInterface
 
     /**
      * Don't fetch records and return prepared statement
+     *
+     * @return iterable<mixed>
      */
     public function doFetchWithOptions(QueryDataInterface $queryData): iterable;
 

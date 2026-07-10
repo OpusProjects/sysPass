@@ -78,7 +78,7 @@ final class ApiResponse
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function getResponse(): array
     {

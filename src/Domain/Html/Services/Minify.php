@@ -42,7 +42,7 @@ abstract class Minify implements MinifyService
 
 
     /**
-     * @var SplObjectStorage<MinifyFile>
+     * @var SplObjectStorage<MinifyFile, null>
      */
     private SplObjectStorage $files;
 
@@ -127,6 +127,9 @@ abstract class Minify implements MinifyService
 
     abstract protected function getContentTypeHeader(): string;
 
+    /**
+     * @param SplObjectStorage<MinifyFile, null> $files
+     */
     abstract protected function minify(SplObjectStorage $files): string;
 
     /**

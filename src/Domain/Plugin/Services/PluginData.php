@@ -44,10 +44,13 @@ use function SP\__u;
 /**
  * Class PluginData
  *
- * @template T of PluginDataModel
+ * @implements PluginDataService<PluginDataModel>
  */
 final class PluginData extends Service implements PluginDataService
 {
+    /**
+     * @param PluginDataRepository<PluginDataModel> $pluginDataRepository
+     */
     public function __construct(
         Application                           $application,
         private readonly PluginDataRepository $pluginDataRepository,
@@ -61,7 +64,7 @@ final class PluginData extends Service implements PluginDataService
      * Creates an item
      *
      * @param PluginDataModel $pluginData
-     * @return QueryResult
+     * @return QueryResult<PluginDataModel>
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException
@@ -120,7 +123,7 @@ final class PluginData extends Service implements PluginDataService
      * Returns the item for given id
      *
      * @param string $name
-     * @return array<T>
+     * @return PluginDataModel[]
      * @throws CryptException
      * @throws NoSuchItemException
      * @throws ServiceException
@@ -142,7 +145,7 @@ final class PluginData extends Service implements PluginDataService
     /**
      * Returns all the items
      *
-     * @return array<T>
+     * @return PluginDataModel[]
      * @throws ConstraintException
      * @throws CryptException
      * @throws QueryException

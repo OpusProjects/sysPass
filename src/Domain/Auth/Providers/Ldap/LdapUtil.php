@@ -51,7 +51,7 @@ final class LdapUtil
     }
 
     /**
-     * @param array $attributes
+     * @param string[] $attributes
      * @param string $value
      *
      * @return string

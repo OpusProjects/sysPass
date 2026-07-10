@@ -44,7 +44,7 @@ defined('APP_ROOT') || die();
 final class AuthProvider extends Provider implements AuthProviderService
 {
     /**
-     * @var SplObjectStorage<AuthService,AuthType>
+     * @var SplObjectStorage<AuthService<covariant AuthDataBase>, AuthType>
      */
     protected readonly SplObjectStorage $auths;
 
@@ -58,7 +58,7 @@ final class AuthProvider extends Provider implements AuthProviderService
     /**
      * Register authentication methods
      *
-     * @param AuthService $auth
+     * @param AuthService<covariant AuthDataBase> $auth
      * @param AuthType $authTypeEnum
      * @throws AuthException
      */

@@ -90,7 +90,7 @@ final class LdapActions implements LdapActionsService
      *
      * @param string $groupFilter
      *
-     * @return array Groups' DN
+     * @return string[] Groups' DN
      * @throws LdapException
      */
     public function searchGroupsDn(string $groupFilter): array
@@ -156,7 +156,7 @@ final class LdapActions implements LdapActionsService
      * Get LDAP search results as a Collection
      *
      * @param string $filter Filtro a utilizar
-     * @param array|null $attributes Atributos a devolver
+     * @param string[]|null $attributes Atributos a devolver
      *
      * @throws LdapException
      */
@@ -226,6 +226,7 @@ final class LdapActions implements LdapActionsService
     /**
      * Get LDAP search results
      *
+     * @param string[] $attributes
      * @throws LdapException
      */
     public function getObjects(

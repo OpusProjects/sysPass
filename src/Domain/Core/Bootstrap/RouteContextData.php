@@ -31,6 +31,9 @@ namespace SP\Domain\Core\Bootstrap;
  */
 final readonly class RouteContextData
 {
+    /**
+     * @param array<int|float|string|null> $methodParams
+     */
     public function __construct(
         public string $controller,
         public string $actionName,

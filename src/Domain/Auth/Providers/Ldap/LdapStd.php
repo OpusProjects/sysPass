@@ -97,6 +97,7 @@ final class LdapStd extends LdapBase
 
     /**
      * @inheritDoc
+     * @param string[] $groupsDn
      * @throws LdapException
      */
     public function isUserInGroup(string $userDn, string $userLogin, array $groupsDn): bool

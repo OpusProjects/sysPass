@@ -33,12 +33,13 @@ use SP\Infrastructure\File\FileException;
 interface XmlFileStorageService
 {
     /**
+     * @return mixed[]
      * @throws FileException
      */
     public function load(string $node = 'root'): array;
 
     /**
-     * @param array|object $data Data to be saved
+     * @param mixed[]|object $data Data to be saved
      * @param string $node
      *
      * @throws FileException

@@ -63,7 +63,7 @@ interface AccountToTagRepository extends Repository
      * Update the tags of an account
      *
      * @param int $accountId
-     * @param array $tags
+     * @param int[] $tags
      *
      * @throws ConstraintException
      * @throws QueryException

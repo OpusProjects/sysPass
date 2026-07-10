@@ -30,6 +30,7 @@ namespace SP\Domain\Config\Dtos;
  */
 class ConfigRequest
 {
+    /** @var array<string, string> */
     private array $data = [];
 
     public function add(string $param, string $value): void
@@ -42,6 +43,9 @@ class ConfigRequest
         return $this->data[$param] ?? null;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getData(): array
     {
         return $this->data;

@@ -28,6 +28,7 @@ namespace SP\Domain\User\Ports;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -60,9 +61,9 @@ interface UserToUserGroupRepository
      * Updates users from a group
      *
      * @param int $id
-     * @param array $users
+     * @param int[] $users
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -73,7 +74,7 @@ interface UserToUserGroupRepository
      *
      * @param $id int
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -83,9 +84,9 @@ interface UserToUserGroupRepository
      * Adds users to a group
      *
      * @param int $groupId
-     * @param array $users
+     * @param int[] $users
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

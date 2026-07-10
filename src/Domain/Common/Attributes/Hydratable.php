@@ -35,8 +35,12 @@ use Attribute;
 #[Attribute(Attribute::TARGET_CLASS)]
 final readonly class Hydratable
 {
+    /** @var class-string[] */
     private array $targetClass;
 
+    /**
+     * @param class-string[] $targetClass
+     */
     public function __construct(private string $sourceProperty, array $targetClass)
     {
         $this->targetClass = array_filter(
@@ -45,6 +49,9 @@ final readonly class Hydratable
         );
     }
 
+    /**
+     * @return class-string[]
+     */
     public function getTargetClass(): array
     {
         return $this->targetClass;

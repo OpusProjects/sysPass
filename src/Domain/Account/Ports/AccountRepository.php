@@ -28,6 +28,9 @@ namespace SP\Domain\Account\Ports;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
+use SP\Domain\Account\Models\AccountView as AccountViewModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -45,6 +48,7 @@ interface AccountRepository extends Repository
     /**
      * Returns the total number of accounts
      *
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -73,7 +77,7 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -85,7 +89,7 @@ interface AccountRepository extends Repository
      * @param int $accountId
      * @param Account $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -97,7 +101,7 @@ interface AccountRepository extends Repository
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -109,7 +113,7 @@ interface AccountRepository extends Repository
      * @param int $accountId
      * @param Account $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -123,7 +127,7 @@ interface AccountRepository extends Repository
      * @param bool $changeOwner
      * @param bool $changeUserGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws SPException
      */
     public function updateBulk(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
@@ -133,7 +137,7 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -144,7 +148,7 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -153,7 +157,7 @@ interface AccountRepository extends Repository
     /**
      * @param int|null $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -162,7 +166,7 @@ interface AccountRepository extends Repository
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -171,7 +175,7 @@ interface AccountRepository extends Repository
     /**
      * Retrieves the password-related data of all accounts.
      *
-     * @return QueryResult
+     * @return QueryResult<Account>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -182,7 +186,7 @@ interface AccountRepository extends Repository
      *
      * @param Account $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -193,7 +197,7 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -207,7 +211,7 @@ interface AccountRepository extends Repository
      * @param bool $changeOwner
      * @param bool $changeUserGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws SPException
      */
     public function update(int $accountId, Account $account, bool $changeOwner, bool $changeUserGroup): QueryResult;
@@ -217,7 +221,7 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountViewModel>
      */
     public function getByIdEnriched(int $accountId): QueryResult;
 
@@ -226,23 +230,23 @@ interface AccountRepository extends Repository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Account>
      */
     public function getById(int $accountId): QueryResult;
 
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<Account>
      */
     public function getAll(): QueryResult;
 
     /**
      * Deletes all the items for given ids
      *
-     * @param array $accountsId
+     * @param int[] $accountsId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -253,7 +257,7 @@ interface AccountRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AccountSearchViewModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
@@ -262,7 +266,7 @@ interface AccountRepository extends Repository
      *
      * @param Account $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

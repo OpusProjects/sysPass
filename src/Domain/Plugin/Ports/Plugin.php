@@ -56,14 +56,14 @@ interface Plugin extends EventReceiver
     /**
      * Returns the plugin's version
      *
-     * @return array|null
+     * @return array<int|string>|null Version segments
      */
     public function getVersion(): ?array;
 
     /**
      * Returns the compatible sysPass version
      *
-     * @return array|null
+     * @return array<int|string>|null Version segments
      */
     public function getCompatibleVersion(): ?array;
 

@@ -33,7 +33,8 @@ use SP\Infrastructure\Database\QueryResult;
 interface Dto
 {
     /**
-     * @param QueryResult $queryResult
+     * @template TModel of Model
+     * @param QueryResult<TModel> $queryResult
      * @param string|null $type
      * @return static
      */
@@ -45,13 +46,16 @@ interface Dto
      */
     public static function fromModel(Model $model): static;
 
+    /**
+     * @param array<string, mixed> $properties
+     */
     public static function fromArray(array $properties): static;
 
     /**
      * Set any properties in batch mode. This allows to set any property from dynamic calls.
      *
      * @param string[] $properties
-     * @param array $values
+     * @param mixed[] $values
      *
      * @return Dto Returns a new instance with the poperties set.
      */

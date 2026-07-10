@@ -44,7 +44,7 @@ final class Version
      * Compare versions
      *
      * @param string $version1
-     * @param array|string $version2 A version or a list of comparable versions
+     * @param array<string|array<int|string>>|string $version2 A version or a list of comparable versions
      *
      * @return bool True if $version1 is lower than $version2
      */
@@ -77,7 +77,7 @@ final class Version
     /**
      * Return a normalized version string to be compared
      *
-     * @param array|string|null $versionIn
+     * @param array<int|string>|string|null $versionIn
      *
      * @return string|null
      */
@@ -128,7 +128,7 @@ final class Version
      *
      * @param bool $retBuild whether to return the build number
      *
-     * @return array with the version number
+     * @return int[] with the version number
      */
     public static function getVersionArray(bool $retBuild = false): array
     {

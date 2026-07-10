@@ -45,5 +45,8 @@ interface AccountAdapter
      */
     public function includeCustomFields(AccountEnrichedDto $accountEnrichedDto): Collection;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function transform(AccountEnrichedDto $data): array;
 }

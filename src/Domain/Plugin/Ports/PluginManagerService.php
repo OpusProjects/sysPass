@@ -108,6 +108,7 @@ interface PluginManagerService
     /**
      * Searches for items by a given filter
      *
+     * @return QueryResult<Plugin>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -170,7 +171,7 @@ interface PluginManagerService
     /**
      * Return the enabled plugins
      *
-     * @return Item[]
+     * @return Plugin[]
      * @throws ConstraintException
      * @throws QueryException
      */

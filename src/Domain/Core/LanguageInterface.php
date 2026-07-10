@@ -35,6 +35,8 @@ interface LanguageInterface
 {
     /**
      * Return the available languages
+     *
+     * @return array<string, string> Language code => language name
      */
     public static function getAvailableLanguages(): array;
 

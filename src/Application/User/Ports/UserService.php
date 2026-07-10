@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
@@ -127,7 +128,7 @@ interface UserService
     /**
      * Searches for items by a given filter
      *
-     * @return QueryResult<UserModel>
+     * @return QueryResult<UserListModel>
      * @throws ConstraintException
      * @throws QueryException
      */

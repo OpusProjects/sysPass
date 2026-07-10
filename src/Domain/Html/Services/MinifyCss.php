@@ -35,7 +35,7 @@ use SplObjectStorage;
 final class MinifyCss extends Minify
 {
     /**
-     * @param SplObjectStorage<MinifyFile> $files
+     * @param SplObjectStorage<MinifyFile, null> $files
      * @return string
      * @throws FileException
      */

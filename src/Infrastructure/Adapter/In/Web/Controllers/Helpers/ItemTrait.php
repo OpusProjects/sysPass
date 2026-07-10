@@ -43,6 +43,8 @@ trait ItemTrait
     /**
      * Get the list of custom fields and their values
      *
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldDataService
+     * @return CustomFieldItem[]
      * @throws SPException
      * @throws ServiceException
      */
@@ -111,7 +113,7 @@ trait ItemTrait
      * @param int $moduleId
      * @param int|int[] $itemId
      * @param RequestService $request
-     * @param CustomFieldDataService $customFieldDataService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldDataService
      *
      * @throws SPException
      * @throws ServiceException
@@ -145,7 +147,7 @@ trait ItemTrait
     /**
      * @param RequestService $request
      *
-     * @return array|null
+     * @return array<int|string, string>|null Custom field definition id => value
      */
     private static function getCustomFieldsFromRequest(RequestService $request): ?array
     {
@@ -160,7 +162,7 @@ trait ItemTrait
      *
      * @param int $moduleId
      * @param int|int[] $itemId
-     * @param CustomFieldDataService $customFieldService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      *
      * @throws ServiceException
      */
@@ -182,7 +184,7 @@ trait ItemTrait
      * @param int $moduleId
      * @param int|int[] $itemId
      * @param RequestService $request
-     * @param CustomFieldDataService $customFieldDataService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldDataService
      *
      * @throws ServiceException
      * @throws SPException
@@ -227,6 +229,9 @@ trait ItemTrait
         );
     }
 
+    /**
+     * @return mixed[]|null
+     */
     protected function getItemsIdFromRequest(RequestService $request): ?array
     {
         return $request->analyzeArray('items');

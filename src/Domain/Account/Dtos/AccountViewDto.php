@@ -33,6 +33,13 @@ use SP\Domain\Common\Dtos\Dto;
  */
 class AccountViewDto extends Dto
 {
+    /**
+     * @param int[]|null $usersView
+     * @param int[]|null $usersEdit
+     * @param int[]|null $userGroupsView
+     * @param int[]|null $userGroupsEdit
+     * @param int[]|null $tags
+     */
     public function __construct(
         public readonly int     $id,
         public readonly string  $name,
@@ -196,26 +203,41 @@ class AccountViewDto extends Dto
         return $this->parentId;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getUsersView(): ?array
     {
         return $this->usersView;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getUsersEdit(): ?array
     {
         return $this->usersEdit;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getUserGroupsView(): ?array
     {
         return $this->userGroupsView;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getUserGroupsEdit(): ?array
     {
         return $this->userGroupsEdit;
     }
 
+    /**
+     * @return int[]|null
+     */
     public function getTags(): ?array
     {
         return $this->tags;

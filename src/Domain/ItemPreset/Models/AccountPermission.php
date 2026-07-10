@@ -30,6 +30,12 @@ namespace SP\Domain\ItemPreset\Models;
  */
 readonly class AccountPermission
 {
+    /**
+     * @param int[] $usersView
+     * @param int[] $usersEdit
+     * @param int[] $userGroupsView
+     * @param int[] $userGroupsEdit
+     */
     public function __construct(
         private array $usersView,
         private array $usersEdit,
@@ -38,21 +44,33 @@ readonly class AccountPermission
     ) {
     }
 
+    /**
+     * @return int[]
+     */
     public function getUsersView(): array
     {
         return $this->usersView;
     }
 
+    /**
+     * @return int[]
+     */
     public function getUsersEdit(): array
     {
         return $this->usersEdit;
     }
 
+    /**
+     * @return int[]
+     */
     public function getUserGroupsView(): array
     {
         return $this->userGroupsView;
     }
 
+    /**
+     * @return int[]
+     */
     public function getUserGroupsEdit(): array
     {
         return $this->userGroupsEdit;

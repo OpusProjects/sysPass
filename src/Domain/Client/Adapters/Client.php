@@ -40,6 +40,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 
@@ -50,8 +51,12 @@ final class Client extends Adapter implements ClientAdapter
 {
     use ItemTrait;
 
+    /** @var string[] */
     protected array $availableIncludes = ['customFields'];
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldDataService
+     */
     public function __construct(
         ConfigDataInterface                     $configData,
         string                                  $baseUrl,
@@ -77,6 +82,7 @@ final class Client extends Adapter implements ClientAdapter
 
     /**
      * @param ClientModel $data
+     * @return array<string, mixed>
      * @throws ActionNotFoundException
      */
     public function transform($data): array

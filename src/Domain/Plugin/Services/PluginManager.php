@@ -42,11 +42,12 @@ use function SP\__u;
 
 /**
  * Class PluginManager
- *
- * @template T of PluginModel
  */
 final class PluginManager extends Service implements PluginManagerService
 {
+    /**
+     * @param PluginRepository<PluginModel> $pluginRepository
+     */
     public function __construct(Application $application, private readonly PluginRepository $pluginRepository)
     {
         parent::__construct($application);
@@ -95,7 +96,7 @@ final class PluginManager extends Service implements PluginManagerService
     /**
      * Returns all the items
      *
-     * @return array<T>
+     * @return PluginModel[]
      */
     public function getAll(): array
     {
@@ -107,7 +108,7 @@ final class PluginManager extends Service implements PluginManagerService
      *
      * @param int[] $ids
      *
-     * @return array<T>
+     * @return PluginModel[]
      */
     public function getByIdBatch(array $ids): array
     {
@@ -149,7 +150,7 @@ final class PluginManager extends Service implements PluginManagerService
      * Searches for items by a given filter
      *
      * @param ItemSearchDto $itemSearchData
-     * @return QueryResult<T>
+     * @return QueryResult<PluginModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
@@ -250,7 +251,7 @@ final class PluginManager extends Service implements PluginManagerService
     /**
      * Return the enabled plugins
      *
-     * @return array<T>
+     * @return PluginModel[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

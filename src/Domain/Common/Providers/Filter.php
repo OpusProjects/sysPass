@@ -45,6 +45,11 @@ final class Filter
         return filter_var(trim($value), FILTER_SANITIZE_EMAIL);
     }
 
+    /**
+     * @param array<int|string, mixed> $array
+     *
+     * @return array<int|string, int|float|string|null>
+     */
     public static function getArray(array $array): array
     {
         return array_map(

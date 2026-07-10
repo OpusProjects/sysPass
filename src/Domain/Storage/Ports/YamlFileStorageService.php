@@ -34,12 +34,13 @@ use SP\Infrastructure\File\FileException;
 interface YamlFileStorageService
 {
     /**
+     * @return mixed[]
      * @throws FileException
      */
     public function load(): array;
 
     /**
-     * @param array $data Data to be saved
+     * @param mixed[] $data Data to be saved
      *
      * @throws FileException
      */

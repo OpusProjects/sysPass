@@ -30,6 +30,7 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -67,7 +68,7 @@ interface CustomFieldDataRepository extends Repository
      *
      * @param CustomFieldDataModel $customFieldData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -80,7 +81,7 @@ interface CustomFieldDataRepository extends Repository
      * @param int[] $itemIds
      * @param int $moduleId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -99,7 +100,7 @@ interface CustomFieldDataRepository extends Repository
      * @param int $moduleId
      * @param int|null $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws Exception
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult;

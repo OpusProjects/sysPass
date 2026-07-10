@@ -32,6 +32,7 @@ use SP\Core\Crypt\Hash;
  */
 final class Uri
 {
+    /** @var array<string, string> */
     private array $params = [];
 
     public function __construct(private readonly string $base)
@@ -61,7 +62,7 @@ final class Uri
     }
 
     /**
-     * @param array $params Param's name. If an '_' is set at the beginning, it will be a protected param
+     * @param array<string, int|string> $params Param's name. If an '_' is set at the beginning, it will be a protected param
      *
      * @return Uri
      */

@@ -28,6 +28,7 @@ namespace SP\Domain\Plugin\Ports;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -64,7 +65,7 @@ interface PluginDataRepository
      *
      * @param string $name
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -76,7 +77,7 @@ interface PluginDataRepository
      * @param string $name
      * @param int $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -113,7 +114,7 @@ interface PluginDataRepository
      *
      * @param string[] $names
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
