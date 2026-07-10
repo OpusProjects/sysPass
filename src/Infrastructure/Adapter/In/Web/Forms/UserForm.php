@@ -178,9 +178,9 @@ final class UserForm extends FormBase implements FormInterface
 
         $userData = $this->context->getUserData();
 
-        if ($this->itemId === $userData->getId()
+        if ($this->itemId === $userData->id
             || (is_array($this->itemId)
-                && in_array($userData->getId(), $this->itemId, true))
+                && in_array($userData->id, $this->itemId, true))
         ) {
             throw new ValidationException(__u('Unable to delete, user in use'));
         }

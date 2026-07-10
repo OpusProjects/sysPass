@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers;
 
 use Exception;
-use SP\Domain\Core\Context\Context;
+use LogicException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
@@ -62,7 +62,7 @@ abstract class ControllerBase
 
     protected readonly EventDispatcherInterface    $eventDispatcher;
     protected readonly ConfigFileService           $config;
-    protected readonly Context|SessionContext      $session;
+    protected readonly SessionContext              $session;
     protected readonly ThemeInterface              $theme;
     protected readonly AclInterface                $acl;
     protected readonly ConfigDataInterface         $configData;
@@ -79,11 +79,20 @@ abstract class ControllerBase
 
     public function __construct(Application $application, WebControllerHelper $webControllerHelper)
     {
+        $context = $application->getContext();
+
+        if (!$context instanceof SessionContext) {
+            // The web module always binds Context to a session-backed implementation
+            // (see Infrastructure/Adapter/In/Web/module.php); this is only reachable
+            // if that wiring is ever broken.
+            throw new LogicException(sprintf('%s requires a session-backed context', static::class));
+        }
+
         $this->routeContextData = $webControllerHelper->getRouteContextData();
         $this->config = $application->getConfig();
         $this->configData = $this->config->getConfigData();
         $this->eventDispatcher = $application->getEventDispatcher();
-        $this->session = $application->getContext();
+        $this->session = $context;
         $this->theme = $webControllerHelper->getTheme();
         $this->router = $webControllerHelper->getRouter();
         $this->acl = $webControllerHelper->getAcl();
@@ -176,8 +185,8 @@ abstract class ControllerBase
         }
 
         // Check whether authentication was done through the web server and the user matches
-        if ($this->session->isLoggedIn()
-            && $this->session->getAuthCompleted() === $requireAuthCompleted
+        // (isLoggedIn() is already guaranteed true here by the guard clause above)
+        if ($this->session->getAuthCompleted() === $requireAuthCompleted
             && $this->configData->isAuthBasicEnabled()
             && $this->browser->checkServerAuthUser($this->userDto->login) === false
             && $this->browser->checkServerAuthUser($this->userDto->ssoLogin) === false
