@@ -128,7 +128,7 @@ final class LdapImport extends Service implements LdapImportService
 
         $filter = match (true) {
             $useInputFilter && $isGroup => $ldap->getGroupObjectFilter(),
-            $useInputFilter && !$isGroup => $ldap->getGroupMembershipIndirectFilter(),
+            $useInputFilter => $ldap->getGroupMembershipIndirectFilter(),
             default => $ldapImportParams->getFilter()
         };
 

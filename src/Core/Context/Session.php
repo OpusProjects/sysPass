@@ -447,7 +447,7 @@ class Session extends ContextBase implements SessionContext
 
     public function getPluginKey(string $pluginName, string $key): mixed
     {
-        /** @var ContextCollection $ctxKey */
+        /** @var ContextCollection|null $ctxKey null when no key was ever set for this plugin */
         $ctxKey = $this->getContextKey($pluginName);
 
         return $ctxKey?->get($key);

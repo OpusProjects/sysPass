@@ -99,7 +99,7 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
     private function getXmlVersion(): int
     {
         return (int)Version::versionToInteger(
-            (new DOMXPath($this->document))->query('/Root/Meta/Version')->item(0)?->nodeValue ?? 0
+            (new DOMXPath($this->document))->query('/Root/Meta/Version')->item(0)->nodeValue ?? 0
         );
     }
 

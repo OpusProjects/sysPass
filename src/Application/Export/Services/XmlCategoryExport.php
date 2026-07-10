@@ -63,10 +63,6 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
 
             $nodeCategories = $this->document->createElement('Categories');
 
-            if ($nodeCategories === false) {
-                throw ServiceException::error(__u('Unable to create node'));
-            }
-
             if (empty($categories)) {
                 return $nodeCategories;
             }

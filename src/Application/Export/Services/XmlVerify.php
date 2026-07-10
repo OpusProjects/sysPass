@@ -178,9 +178,7 @@ final class XmlVerify extends Service implements XmlVerifyService
         $hash = $this->document
             ->getElementsByTagName('Encrypted')
             ->item(0)
-            ->attributes
-            ?->getNamedItem('hash')
-            ->nodeValue;
+            ?->getAttribute('hash');
 
         if (empty($hash) || !Hash::checkHashKey($password, $hash)) {
             throw ServiceException::error(__u('Wrong encryption password'));

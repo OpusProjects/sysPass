@@ -141,6 +141,8 @@ final class Database implements DatabaseInterface
             $connection = $this->dbStorageHandler->getConnection();
 
             $sql = $query->getStatement();
+            // Aura's QueryInterface::getBindValues() promises array only in its docblock —
+            // the method is untyped, so keep the null guard (PHPStan sees the docblock).
             $bindValues = $query->getBindValues() ?? [];
             $expandedBinds = [];
 

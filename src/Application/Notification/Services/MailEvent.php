@@ -73,7 +73,7 @@ final class MailEvent extends Service implements EventReceiver
     ) {
         parent::__construct($application);
 
-        $this->setupEvents($this->config->getConfigData()->getMailEvents() ?? []);
+        $this->events = $this->setupEvents($this->config->getConfigData()->getMailEvents() ?? []);
     }
 
     /**

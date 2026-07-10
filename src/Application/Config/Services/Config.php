@@ -54,8 +54,8 @@ final class Config extends Service implements ConfigService
 
     /**
      * @param string $param
-     * @param null $default
-     * @return string|null
+     * @param mixed $default
+     * @return mixed
      * @throws NoSuchItemException
      * @throws SPException
      * @throws ServiceException

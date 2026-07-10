@@ -188,7 +188,7 @@ final class User extends Service implements UserService
     public function create(UserModel $user): int
     {
         if (!empty($user->getPass())) {
-            $user = $user->mutate(['pass' => Hash::hashKey($user->getPass() ?? '')]);
+            $user = $user->mutate(['pass' => Hash::hashKey($user->getPass())]);
         }
 
         return $this->userRepository

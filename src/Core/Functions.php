@@ -283,7 +283,9 @@ function getFromEnv(string $envVar, mixed $default = null): mixed
     // not getenv(); read those first, then fall back to a real environment variable.
     $env = $_ENV[$envVar] ?? $_SERVER[$envVar] ?? getenv($envVar);
 
-    if ($env === false || $env === null || $env === '') {
+    // The ?? chain never yields null (an unset/null entry falls through to getenv(),
+    // which returns string|array|false), so only false and '' mean "not set".
+    if ($env === false || $env === '') {
         $env = $default;
     }
 

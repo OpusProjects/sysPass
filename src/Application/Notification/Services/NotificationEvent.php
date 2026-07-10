@@ -54,7 +54,7 @@ final class NotificationEvent extends Service implements EventReceiver
     ) {
         parent::__construct($application);
 
-        $this->setupEvents();
+        $this->events = $this->setupEvents();
     }
 
     /**

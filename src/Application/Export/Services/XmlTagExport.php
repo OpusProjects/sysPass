@@ -63,10 +63,6 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
 
             $nodeTags = $this->document->createElement('Tags');
 
-            if ($nodeTags === false) {
-                throw ServiceException::error(__u('Unable to create node'));
-            }
-
             if (empty($tags)) {
                 return $nodeTags;
             }
