@@ -152,7 +152,7 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
             } catch (ConstraintException|DuplicatedItemException|QueryException $e) {
                 throw AuthException::error(
                     __u('Internal error'),
-                    __FUNCTION__,
+                    __u('Please check out the event log for more details'),
                     Service::STATUS_INTERNAL_ERROR,
                     $e
                 );
@@ -233,7 +233,12 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
                 $this->userService->createOnLogin($userLoginRequest);
             }
         } catch (ConstraintException|DuplicatedItemException|QueryException $e) {
-            throw AuthException::error(__u('Internal error'), __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
+            throw AuthException::error(
+                __u('Internal error'),
+                __u('Please check out the event log for more details'),
+                Service::STATUS_INTERNAL_ERROR,
+                $e
+            );
         }
     }
 }
