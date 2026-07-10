@@ -23,7 +23,7 @@
   -->
 
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.1/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.2/phpunit.xsd"
          backupGlobals="false"
          bootstrap="./SP/bootstrap.php"
          colors="true"
@@ -52,9 +52,7 @@
         </testsuite>
         <testsuite name="modules">
             <directory suffix=".php">./SP/Infrastructure/Adapter/In/Web</directory>
-            <directory suffix=".php">./SP/Infrastructure/Adapter/In/Api</directory>
             <directory suffix=".php">./SP/Infrastructure/Adapter/In/Cli</directory>
-            <exclude>./SP/Infrastructure/Adapter/In/Api</exclude>
             <exclude>./SP/Infrastructure/Adapter/In/Cli/CliTestCase.php</exclude>
         </testsuite>
     </testsuites>

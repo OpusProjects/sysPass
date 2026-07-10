@@ -42,12 +42,13 @@ tests/
 ```
 
 The `core` testsuite covers `Core/`, `Domain/`, `Application/`, and `Infrastructure/`
-(excluding the Web/Api/Cli adapter tests). The `modules` testsuite covers the adapter
-integration tests under `Infrastructure/Adapter/In/`: the Web controller tests (mocked
-container via `IntegrationTestCase`), the end-to-end CLI command tests (real DI
-container + real database via `CliTestCase`, per-test config and runtime dirs under
-`/tmp/syspass-cli-tests`), and the end-to-end REST API tests (real container + real DB
-via `ApiTestCase`, driving the real Bootstrap dispatch with crypto-backed auth tokens).
+(excluding the Web/Cli adapter tests — this includes the end-to-end REST API tests,
+real container + real DB via `ApiTestCase`, driving the real Bootstrap dispatch with
+crypto-backed auth tokens). The `modules` testsuite covers the two adapter test
+directories `core` leaves out: the Web controller tests (mocked container via
+`IntegrationTestCase`) and the end-to-end CLI command tests (real DI container + real
+database via `CliTestCase`, per-test config and runtime dirs under
+`/tmp/syspass-cli-tests`).
 
 ## Test groups
 
