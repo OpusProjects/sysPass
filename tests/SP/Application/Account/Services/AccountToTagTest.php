@@ -30,7 +30,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Application\Account\Services\AccountToTag;
 use SP\Domain\Common\Models\Item;
-use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -57,8 +56,8 @@ class AccountToTagTest extends UnitaryTestCase
     {
         $accountId = self::$faker->randomNumber();
 
-        $result =
-            new QueryResult([new Simple(['id' => self::$faker->randomNumber(), 'name' => self::$faker->colorName()])]);
+        $tag = new Item(['id' => self::$faker->randomNumber(), 'name' => self::$faker->colorName()]);
+        $result = new QueryResult([$tag]);
 
         $this->accountToTagRepository
             ->expects(self::once())
@@ -67,10 +66,10 @@ class AccountToTagTest extends UnitaryTestCase
             ->willReturn($result);
 
         $actual = $this->accountToTag->getTagsByAccountId($accountId);
-        $expected = $result->getData(Simple::class)->toArray(null, null, true);
 
+        $this->assertCount(1, $actual);
         $this->assertTrue($actual[0] instanceof Item);
-        $this->assertEquals($expected, $actual[0]->toArray());
+        $this->assertSame($tag, $actual[0]);
     }
 
     /**

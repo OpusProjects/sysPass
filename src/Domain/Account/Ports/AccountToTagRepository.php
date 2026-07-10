@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,7 +43,7 @@ interface AccountToTagRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */
