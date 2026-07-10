@@ -34,9 +34,14 @@ abstract class IconBase implements IconInterface
 {
     /**
      * Icon CSS classes
+     *
+     * @var string[]|null
      */
     protected ?array $class = null;
 
+    /**
+     * @param string|string[]|null $class
+     */
     public function __construct(
         protected string  $icon,
         string|array|null $class = null,
@@ -47,6 +52,9 @@ abstract class IconBase implements IconInterface
         }
     }
 
+    /**
+     * @param string|string[] $class
+     */
     private function setClass(string|array $class): void
     {
         if (is_array($class)) {
@@ -79,6 +87,9 @@ abstract class IconBase implements IconInterface
         return $this->icon;
     }
 
+    /**
+     * @param string|string[]|null $class
+     */
     public function mutate(?string $icon = null, string|array|null $class = null, ?string $title = null): IconInterface
     {
         $clone = clone $this;

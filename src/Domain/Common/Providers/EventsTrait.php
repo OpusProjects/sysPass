@@ -31,7 +31,7 @@ namespace SP\Domain\Common\Providers;
 trait EventsTrait
 {
     /**
-     * @param array $events
+     * @param string[] $events
      *
      * @return string
      */

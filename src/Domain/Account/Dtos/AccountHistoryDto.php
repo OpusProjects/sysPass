@@ -31,6 +31,15 @@ namespace SP\Domain\Account\Dtos;
  */
 final class AccountHistoryDto extends AccountDto
 {
+    /**
+     * @param int[]|null $usersView
+     * @param int[]|null $usersEdit
+     * @param int[]|null $otherUserGroupsView
+     * @param int[]|null $otherUserGroupsEdit
+     * @param int[]|null $tags
+     * @param int[]|null $userGroupsView
+     * @param int[]|null $userGroupsEdit
+     */
     public function __construct(
         ?int                    $id = null,
         ?int                    $clientId = null,

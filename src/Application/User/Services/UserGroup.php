@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\User\Services;
 
 use SP\Core\Application;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -182,7 +183,7 @@ final class UserGroup extends Service implements UserGroupService
     /**
      * Returns the users that are using the given group id
      *
-     * @return array<T>
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -194,7 +195,7 @@ final class UserGroup extends Service implements UserGroupService
     /**
      * Returns the items that are using the given group id
      *
-     * @return array<T>
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -35,7 +35,10 @@ use SP\Domain\CustomField\Services\CustomFieldItem;
  */
 final class CustomField extends Adapter implements CustomFieldAdapter
 {
-    /** @param CustomFieldItem $data */
+    /**
+     * @param CustomFieldItem $data
+     * @return array<string, mixed>
+     */
     public function transform($data): array
     {
         return [

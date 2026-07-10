@@ -45,5 +45,8 @@ interface CategoryAdapter
      */
     public function includeCustomFields(Category $data): Collection;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function transform(Category $data): array;
 }

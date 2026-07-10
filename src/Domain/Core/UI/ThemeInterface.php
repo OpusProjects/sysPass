@@ -35,14 +35,14 @@ interface ThemeInterface
     /**
      * Get the available themes from the themes directory
      *
-     * @return array With the theme information
+     * @return array<string, string> Theme directory name => theme name
      */
     public function getAvailable(): array;
 
     /**
      * Get the theme information from the information file
      *
-     * @return array (
+     * @return array<string, mixed> (
      *          'name' => string
      *          'creator' => string
      *          'version' => string

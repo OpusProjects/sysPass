@@ -32,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Crypt\Hash;
 use SP\Core\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
 use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Domain\Common\Adapters\Serde;
@@ -86,7 +87,7 @@ final class AuthToken extends Service implements AuthTokenService
 
     /**
      * @param ItemSearchDto $itemSearchData
-     * @return QueryResult<T>
+     * @return QueryResult<AuthTokenListModel>
      * @throws ConstraintException
      * @throws QueryException
      */

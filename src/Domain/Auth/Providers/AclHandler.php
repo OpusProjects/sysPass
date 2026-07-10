@@ -37,6 +37,7 @@ use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\User\Ports\UserGroupService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\File\FileSystem;
 
@@ -61,6 +62,9 @@ final class AclHandler extends Provider implements EventReceiver
 
     private readonly string $events;
 
+    /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     */
     public function __construct(
         Application                         $application,
         private readonly UserProfileService $userProfileService,

@@ -40,6 +40,9 @@ use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
  */
 final readonly class PluginOperation implements PluginOperationInterface
 {
+    /**
+     * @param PluginDataService<PluginDataModel> $pluginDataService
+     */
     public function __construct(
         private PluginDataService $pluginDataService,
         private string            $pluginName

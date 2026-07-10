@@ -29,6 +29,7 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -41,7 +42,7 @@ interface ConfigRepository extends Repository
     /**
      * @param ConfigModel $config
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -49,7 +50,7 @@ interface ConfigRepository extends Repository
 
     /**
      * @param ConfigModel $config
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

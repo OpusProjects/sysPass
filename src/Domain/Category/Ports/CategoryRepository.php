@@ -32,6 +32,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -46,7 +47,7 @@ interface CategoryRepository extends Repository
      *
      * @param Category $category
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
@@ -93,9 +94,9 @@ interface CategoryRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $categoryIds
+     * @param int[] $categoryIds
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -106,7 +107,7 @@ interface CategoryRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

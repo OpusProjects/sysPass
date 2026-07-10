@@ -140,12 +140,15 @@ interface FileHandlerInterface
     /**
      * Reads data from a CSV file
      *
+     * @return iterable<array<int, string|null>>
      * @throws FileException
      */
     public function readFromCsv(string $delimiter): iterable;
 
     /**
      * Reads data from a file line by line
+     *
+     * @return iterable<string>
      */
     public function read(): iterable;
 }

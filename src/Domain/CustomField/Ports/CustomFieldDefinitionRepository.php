@@ -31,6 +31,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -45,7 +46,7 @@ interface CustomFieldDefinitionRepository extends Repository
      *
      * @param CustomFieldDefinitionModel $customFieldDefinition
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -81,9 +82,9 @@ interface CustomFieldDefinitionRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -94,7 +95,7 @@ interface CustomFieldDefinitionRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

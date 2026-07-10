@@ -31,14 +31,21 @@ namespace SP\Domain\Auth\Dtos;
 final class LdapCheckResults
 {
 
+    /** @var array<array{items: string[], type: string|null}> */
     private array $results = [];
 
+    /**
+     * @param string[] $items
+     */
     public function __construct(array $items, ?string $type = null)
     {
         $this->addItems($items, $type);
     }
 
 
+    /**
+     * @param string[] $items
+     */
     public function addItems(array $items, ?string $type = null): void
     {
         $this->results[] = ['items' => $items, 'type' => $type];
@@ -49,6 +56,9 @@ final class LdapCheckResults
         return (int)array_sum(array_map(fn(array $result) => count($result['items']), $this->results));
     }
 
+    /**
+     * @return array<array{items: string[], type: string|null}>
+     */
     public function getResults(): array
     {
         return $this->results;

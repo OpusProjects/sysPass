@@ -29,6 +29,8 @@ use SP\Core\DataCollection;
 
 /**
  * Class ApiRequestData
+ *
+ * @extends DataCollection<string, mixed>
  */
 final class ApiRequestData extends DataCollection
 {

@@ -30,7 +30,13 @@ namespace SP\Domain\Core\Messages;
  */
 interface FormatterInterface
 {
+    /**
+     * @param array<array{string, string}> $text
+     */
     public function formatDetail(array $text, bool $translate = false): string;
 
+    /**
+     * @param string[] $text
+     */
     public function formatDescription(array $text, bool $translate = false): string;
 }

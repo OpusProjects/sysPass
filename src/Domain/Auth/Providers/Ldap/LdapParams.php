@@ -46,7 +46,9 @@ final class LdapParams
     private bool    $tlsEnabled            = false;
     private ?string $filterUserObject      = null;
     private ?string $filterGroupObject     = null;
+    /** @var string[]|null */
     private ?array  $filterUserAttributes  = null;
+    /** @var string[]|null */
     private ?array  $filterGroupAttributes = null;
 
     public function __construct(
@@ -80,6 +82,7 @@ final class LdapParams
     }
 
     /**
+     * @param array<string, mixed> $params
      * @throws ValidationException
      */
     public static function fromArray(array $params): LdapParams
@@ -168,21 +171,33 @@ final class LdapParams
         }
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getFilterUserAttributes(): ?array
     {
         return $this->filterUserAttributes;
     }
 
+    /**
+     * @param string[]|null $filterUserAttributes
+     */
     public function setFilterUserAttributes(?array $filterUserAttributes = null): void
     {
         $this->filterUserAttributes = $filterUserAttributes;
     }
 
+    /**
+     * @return string[]|null
+     */
     public function getFilterGroupAttributes(): ?array
     {
         return $this->filterGroupAttributes;
     }
 
+    /**
+     * @param string[]|null $filterGroupAttributes
+     */
     public function setFilterGroupAttributes(?array $filterGroupAttributes = null): void
     {
         $this->filterGroupAttributes = $filterGroupAttributes;

@@ -32,8 +32,12 @@ final class VerifyResult
 {
     private string $version;
     private bool   $encrypted;
+    /** @var array<string, int> */
     private array  $nodes;
 
+    /**
+     * @param array<string, int> $nodes Node name => number of occurrences
+     */
     public function __construct(string $version, bool $encrypted, array $nodes)
     {
         $this->version = $version;
@@ -51,6 +55,9 @@ final class VerifyResult
         return $this->encrypted;
     }
 
+    /**
+     * @return array<string, int> Node name => number of occurrences
+     */
     public function getNodes(): array
     {
         return $this->nodes;

@@ -32,6 +32,8 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 
 /**
  * Class ConfigData
+ *
+ * @extends DataCollection<string, mixed>
  */
 final class ConfigData extends DataCollection implements ConfigDataInterface
 {
@@ -48,6 +50,9 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
     private const DEFAULT_ACCOUNT_EXPIRE_TIME   = 10368000;
     private const DEFAULT_PROXY_PORT            = 8080;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array
     {
         return $this->getArrayCopy();
@@ -58,11 +63,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this->count();
     }
 
+    /**
+     * @return string[]
+     */
     public function getLogEvents(): array
     {
         return $this->get(ConfigDataInterface::LOG_EVENTS, []);
     }
 
+    /**
+     * @param string[]|null $logEvents
+     */
     public function setLogEvents(?array $logEvents): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::LOG_EVENTS, $logEvents);
@@ -458,6 +469,9 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getFilesAllowedExts(): array
     {
         return $this->get(ConfigDataInterface::FILES_ALLOWED_EXTS, []);
@@ -775,11 +789,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getWikiFilter(): array
     {
         return $this->get(ConfigDataInterface::WIKI_FILTER, []);
     }
 
+    /**
+     * @param string[]|null $wikiFilter
+     */
     public function setWikiFilter(?array $wikiFilter): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::WIKI_FILTER, $wikiFilter);
@@ -915,6 +935,9 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
      *        which is a value of any type other than a resource.
      * @since 5.4.0
      */
+    /**
+     * @return array<string, mixed>
+     */
     public function jsonSerialize(): array
     {
         return $this->getArrayCopy();
@@ -1031,11 +1054,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getMailRecipients(): array
     {
         return $this->get(ConfigDataInterface::MAIL_RECIPIENTS, []);
     }
 
+    /**
+     * @param string[]|null $mailRecipients
+     */
     public function setMailRecipients(?array $mailRecipients): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::MAIL_RECIPIENTS, $mailRecipients);
@@ -1043,11 +1072,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getMailEvents(): array
     {
         return $this->get(ConfigDataInterface::MAIL_EVENTS, []);
     }
 
+    /**
+     * @param string[]|null $mailEvents
+     */
     public function setMailEvents(?array $mailEvents): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::MAIL_EVENTS, $mailEvents);
@@ -1118,11 +1153,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getFilesAllowedMime(): array
     {
         return $this->get(ConfigDataInterface::FILES_ALLOWED_MIME, []);
     }
 
+    /**
+     * @param string[]|null $filesAllowedMime
+     */
     public function setFilesAllowedMime(?array $filesAllowedMime): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::FILES_ALLOWED_MIME, $filesAllowedMime);
@@ -1195,11 +1236,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getLdapFilterUserAttributes(): array
     {
         return $this->get(ConfigDataInterface::LDAP_FILTER_USER_ATTRIBUTES, []);
     }
 
+    /**
+     * @param string[]|null $attributes
+     */
     public function setLdapFilterUserAttributes(?array $attributes): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::LDAP_FILTER_USER_ATTRIBUTES, $attributes);
@@ -1207,11 +1254,17 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getLdapFilterGroupAttributes(): array
     {
         return $this->get(ConfigDataInterface::LDAP_FILTER_GROUP_ATTRIBUTES, []);
     }
 
+    /**
+     * @param string[]|null $attributes
+     */
     public function setLdapFilterGroupAttributes(?array $attributes): ConfigDataInterface
     {
         $this->set(ConfigDataInterface::LDAP_FILTER_GROUP_ATTRIBUTES, $attributes);

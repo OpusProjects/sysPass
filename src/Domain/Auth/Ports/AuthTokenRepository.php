@@ -32,6 +32,8 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -43,7 +45,7 @@ interface AuthTokenRepository extends Repository
 {
     /**
      * @param int $id
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -68,9 +70,9 @@ interface AuthTokenRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $authTokensId
+     * @param int[] $authTokensId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -81,7 +83,7 @@ interface AuthTokenRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AuthTokenListModel>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
@@ -93,7 +95,7 @@ interface AuthTokenRepository extends Repository
      *
      * @param AuthTokenModel $authToken
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException

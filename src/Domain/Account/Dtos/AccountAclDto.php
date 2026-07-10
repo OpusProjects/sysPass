@@ -37,6 +37,10 @@ final class AccountAclDto
 {
     use ItemDataTrait;
 
+    /**
+     * @param Item[] $usersId
+     * @param Item[] $userGroupsId
+     */
     public function __construct(
         private readonly int $accountId,
         private readonly int $userId,
@@ -84,8 +88,8 @@ final class AccountAclDto
     /**
      * @param AccountSearchView $accountSearchView
      *
-     * @param array $users
-     * @param array $userGroups
+     * @param Item[] $users
+     * @param Item[] $userGroups
      *
      * @return AccountAclDto
      */

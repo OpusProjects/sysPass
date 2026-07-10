@@ -38,12 +38,16 @@ use function SP\__u;
  */
 final class Serde
 {
+    /**
+     * @param mixed[]|object|string|int $data
+     */
     public static function serialize(array|object|string|int $data): string
     {
         return serialize($data);
     }
 
     /**
+     * @param mixed[]|object|string|int $data
      * @throws SPException
      */
     public static function serializeJson(array|object|string|int $data, int $flags = 0): string

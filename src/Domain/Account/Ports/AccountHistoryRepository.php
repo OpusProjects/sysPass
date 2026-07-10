@@ -27,8 +27,11 @@ namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
+use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -50,14 +53,14 @@ interface AccountHistoryRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function getHistoryForAccount(int $id): QueryResult;
 
     /**
      * Deletes all the items for given accounts id
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      */
@@ -66,7 +69,7 @@ interface AccountHistoryRepository extends Repository
     /**
      * Get the password-related data for all accounts.
      *
-     * @return QueryResult
+     * @return QueryResult<AccountHistoryModel>
      */
     public function getAccountsPassData(): QueryResult;
 
@@ -94,21 +97,21 @@ interface AccountHistoryRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<AccountHistoryView>
      */
     public function getById(int $id): QueryResult;
 
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function getAll(): QueryResult;
 
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      */
@@ -119,7 +122,7 @@ interface AccountHistoryRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 }

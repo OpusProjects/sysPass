@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -47,7 +48,7 @@ interface ClientRepository extends Repository
      *
      * @param ClientModel $client
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws DuplicatedItemException
      * @throws SPException
      */
@@ -77,7 +78,7 @@ interface ClientRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $clientIds
+     * @param int[] $clientIds
      *
      * @return QueryResult<T>
      * @throws ConstraintException
@@ -90,7 +91,7 @@ interface ClientRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

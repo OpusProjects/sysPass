@@ -34,6 +34,15 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 abstract class AccountDto extends Dto
 {
+    /**
+     * @param int[]|null $usersView
+     * @param int[]|null $usersEdit
+     * @param int[]|null $otherUserGroupsView
+     * @param int[]|null $otherUserGroupsEdit
+     * @param int[]|null $tags
+     * @param int[]|null $userGroupsView
+     * @param int[]|null $userGroupsEdit
+     */
     public function __construct(
         public readonly ?int    $id = null,
         public readonly ?int    $clientId = null,
@@ -106,6 +115,7 @@ abstract class AccountDto extends Dto
     }
 
     /**
+     * @param int[] $users
      * @throws SPException
      */
     public function withUsersView(array $users): static
@@ -114,6 +124,7 @@ abstract class AccountDto extends Dto
     }
 
     /**
+     * @param int[] $users
      * @throws SPException
      */
     public function withUsersEdit(array $users): static
@@ -122,6 +133,7 @@ abstract class AccountDto extends Dto
     }
 
     /**
+     * @param int[] $userGroups
      * @throws SPException
      */
     public function withUserGroupsView(array $userGroups): static
@@ -130,6 +142,7 @@ abstract class AccountDto extends Dto
     }
 
     /**
+     * @param int[] $userGroups
      * @throws SPException
      */
     public function withUserGroupsEdit(array $userGroups): static
@@ -138,6 +151,7 @@ abstract class AccountDto extends Dto
     }
 
     /**
+     * @param int[] $tags
      * @throws SPException
      */
     public function withTags(array $tags): static

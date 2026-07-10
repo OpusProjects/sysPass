@@ -62,7 +62,7 @@ interface RequestService
      * @param callable|null $mapper
      * @param mixed $default
      *
-     * @return array|null
+     * @return mixed[]|null
      */
     public function analyzeArray(string $param, ?callable $mapper = null, mixed $default = null): ?array;
 
@@ -78,6 +78,9 @@ interface RequestService
 
     public function analyzeInt(string $param, ?int $default = null): ?int;
 
+    /**
+     * @return array{name: string, type: string, tmp_name: string, error: int, size: int|null}|mixed[]|null
+     */
     public function getFile(string $file): ?array;
 
     public function analyzeBool(string $param, ?bool $default = null): bool;
@@ -100,6 +103,7 @@ interface RequestService
     /**
      * Return forward data per RFC 7239
      *
+     * @return array{host: string, proto: string, for: string[]|null}|null
      * @see https://tools.ietf.org/html/rfc7239#section-7.5
      */
     public function getForwardedData(): ?array;
@@ -108,6 +112,8 @@ interface RequestService
 
     /**
      * Return x-forward data
+     *
+     * @return array{host: string, proto: string, for: string[]|null}|null
      */
     public function getXForwardedData(): ?array;
 

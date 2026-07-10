@@ -84,7 +84,7 @@ interface AccountFileRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException

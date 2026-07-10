@@ -51,6 +51,8 @@ abstract class Dto implements DtoInterface
 
     /**
      * @inheritDoc
+     * @template TModel of Model
+     * @param QueryResult<TModel> $queryResult
      * @throws SPException
      */
     public static function fromResult(QueryResult $queryResult, ?string $type = null): static
@@ -61,7 +63,7 @@ abstract class Dto implements DtoInterface
     /**
      * Create a Dto instance with constructor values from an array.
      *
-     * @param array $properties
+     * @param array<string, mixed> $properties
      * @return static
      * @throws SPException
      */
@@ -84,7 +86,8 @@ abstract class Dto implements DtoInterface
     }
 
     /**
-     * @param ReflectionClass $reflectionClass
+     * @template T of object
+     * @param ReflectionClass<T> $reflectionClass
      * @return null[]
      * @throws SPException
      */
@@ -101,9 +104,9 @@ abstract class Dto implements DtoInterface
     }
 
     /**
-     * @param array|null $properties Properties to process
+     * @param string[]|null $properties Properties to process
      * @param DumpMode $mode The mode to process the properties
-     * @return array
+     * @return array<string, mixed>
      */
     final public function toArray(?array $properties = null, DumpMode $mode = DumpMode::ONLY): array
     {
@@ -188,6 +191,8 @@ abstract class Dto implements DtoInterface
 
     /**
      * @inheritDoc
+     * @param string[] $properties
+     * @param mixed[] $values
      */
     public function setBatch(array $properties, array $values): static
     {
@@ -201,6 +206,7 @@ abstract class Dto implements DtoInterface
     }
 
     /**
+     * @param array<string, mixed> $properties
      * @throws SPException
      */
     public function mutate(array $properties): static

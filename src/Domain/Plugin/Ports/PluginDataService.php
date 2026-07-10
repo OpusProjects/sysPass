@@ -44,6 +44,7 @@ interface PluginDataService
     /**
      * Creates an item
      *
+     * @return QueryResult<T>
      * @throws CryptoException
      * @throws ConstraintException
      * @throws NoSuchPropertyException

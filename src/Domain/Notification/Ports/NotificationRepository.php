@@ -30,6 +30,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -43,7 +44,7 @@ interface NotificationRepository extends Repository
      * Creates an item
      *
      * @param NotificationModel $notification
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -65,7 +66,7 @@ interface NotificationRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -90,7 +91,7 @@ interface NotificationRepository extends Repository
     /**
      * Returns all the items for given ids
      *
-     * @param array $notificationsId
+     * @param int[] $notificationsId
      *
      * @return QueryResult<T>
      */
@@ -99,8 +100,8 @@ interface NotificationRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $notificationsId
-     * @return QueryResult
+     * @param int[] $notificationsId
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -111,7 +112,7 @@ interface NotificationRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -120,9 +121,9 @@ interface NotificationRepository extends Repository
     /**
      * Deletes an item
      *
-     * @param array $notificationsId
+     * @param int[] $notificationsId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

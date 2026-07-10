@@ -33,6 +33,8 @@ use SP\Domain\Common\Adapters\PrintableTrait;
 
 /**
  * Class Model
+ *
+ * @implements ArrayAccess<string, mixed>
  */
 abstract class Model implements JsonSerializable, ArrayAccess
 {
@@ -40,14 +42,22 @@ abstract class Model implements JsonSerializable, ArrayAccess
 
     /**
      * Dynamically declared properties. Must not be class' properties
+     *
+     * @var array<string, mixed>
      */
     private array $properties = [];
 
+    /**
+     * @param array<string, mixed>|null $properties
+     */
     public function __construct(?array $properties = [])
     {
         $this->assignProperties($properties);
     }
 
+    /**
+     * @param array<string, mixed> $properties
+     */
     private function assignProperties(array $properties): void
     {
         $selfProperties = array_intersect_key($properties, $this->getClassProperties());
@@ -60,7 +70,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     private function getClassProperties(): array
     {
@@ -84,11 +94,11 @@ abstract class Model implements JsonSerializable, ArrayAccess
     }
 
     /**
-     * @param array|null $only Include only these properties
-     * @param array|null $exclude Filter out these properties
+     * @param string[]|null $only Include only these properties
+     * @param string[]|null $exclude Filter out these properties
      * @param bool $includeOuter Whether to include non-class properties
      *
-     * @return array
+     * @return array<string, mixed>
      */
     final public function toArray(?array $only = null, ?array $exclude = null, bool $includeOuter = false): array
     {
@@ -109,6 +119,11 @@ abstract class Model implements JsonSerializable, ArrayAccess
         return $fields;
     }
 
+    /**
+     * @param string[]|null $exclude
+     *
+     * @return string[]
+     */
     final public static function getColsWithPreffix(string $preffix, ?array $exclude = null): array
     {
         return array_map(static fn(string $name) => sprintf('%s.%s', $preffix, $name), self::getCols($exclude));
@@ -117,9 +132,9 @@ abstract class Model implements JsonSerializable, ArrayAccess
     /**
      * Get columns name for this model
      *
-     * @param array|null $exclude The columns to filter out from this model
+     * @param string[]|null $exclude The columns to filter out from this model
      *
-     * @return array
+     * @return string[]
      */
     final public static function getCols(?array $exclude = null): array
     {
@@ -149,7 +164,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
     /**
      * Create a new object with properties changed
      *
-     * @param array $properties
+     * @param array<string, mixed> $properties
      *
      * @return static
      */
@@ -162,7 +177,7 @@ abstract class Model implements JsonSerializable, ArrayAccess
      * Specify data which should be serialized to JSON
      *
      * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
+     * @return array<string, mixed> data which can be serialized by <b>json_encode</b>,
      *        which is a value of any type other than a resource.
      * @since 5.4.0
      */

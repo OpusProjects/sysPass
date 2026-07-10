@@ -107,6 +107,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
     }
 
     /**
+     * @return iterable<string>
      * @throws UpgradeException
      */
     private function getQueriesFromFile(string $version): iterable

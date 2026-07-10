@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Dtos;
 
+use SP\Domain\Common\Models\Item;
+
 /**
  * Class AccountCacheDto
  */
@@ -36,8 +38,8 @@ readonly class AccountCacheDto
      * AccountCacheDto constructor.
      *
      * @param int $accountId
-     * @param array $users
-     * @param array $userGroups
+     * @param Item[] $users
+     * @param Item[] $userGroups
      */
     public function __construct(
         private int   $accountId,
@@ -52,11 +54,17 @@ readonly class AccountCacheDto
         return $this->accountId;
     }
 
+    /**
+     * @return Item[]
+     */
     public function getUsers(): array
     {
         return $this->users;
     }
 
+    /**
+     * @return Item[]
+     */
     public function getUserGroups(): array
     {
         return $this->userGroups;

@@ -43,6 +43,8 @@ final class ConfigUtil
 
     /**
      * Adapter to convert a string of email addresses into an array
+     *
+     * @return string[]
      */
     public static function mailAddressesAdapter(string $mailAddresses): array
     {
@@ -58,6 +60,9 @@ final class ConfigUtil
 
     /**
      * Adapter to convert a string of events into an array
+     *
+     * @param string[] $events
+     * @return string[]
      */
     public static function eventsAdapter(array $events): array
     {

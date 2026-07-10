@@ -35,7 +35,7 @@ trait ItemDataTrait
     /**
      * @param Item[] $items
      *
-     * @return array
+     * @return Item[]
      */
     private static function buildFromItemData(array $items): array
     {

@@ -31,6 +31,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -45,7 +46,7 @@ interface UserProfileRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -79,7 +80,7 @@ interface UserProfileRepository extends Repository
      *
      * @param UserProfileModel $userProfile
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
@@ -100,7 +101,7 @@ interface UserProfileRepository extends Repository
      *
      * @param array<int> $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

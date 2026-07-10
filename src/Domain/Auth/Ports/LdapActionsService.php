@@ -42,7 +42,7 @@ interface LdapActionsService
      *
      * @param string $groupFilter
      *
-     * @return array Groups' DN
+     * @return string[] Groups' DN
      * @throws LdapException
      */
     public function searchGroupsDn(string $groupFilter): array;
@@ -58,6 +58,7 @@ interface LdapActionsService
     /**
      * Get LDAP search results
      *
+     * @param string[] $attributes
      * @throws LdapException
      */
     public function getObjects(

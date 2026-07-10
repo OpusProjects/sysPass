@@ -31,14 +31,16 @@ namespace SP\Domain\Account\Dtos;
 final class AccountSearchTokensDto
 {
     private string  $search;
+    /** @var string[] */
     private array   $conditions;
+    /** @var array<string, string> */
     private array   $items;
     private ?string $operator;
 
     /**
      * @param string $search
-     * @param array $conditions
-     * @param array $items
+     * @param string[] $conditions
+     * @param array<string, string> $items
      * @param string|null $operator
      */
     public function __construct(string $search, array $conditions, array $items, ?string $operator)
@@ -49,11 +51,17 @@ final class AccountSearchTokensDto
         $this->operator = $operator;
     }
 
+    /**
+     * @return string[]
+     */
     public function getConditions(): array
     {
         return $this->conditions;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getItems(): array
     {
         return $this->items;

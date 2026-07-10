@@ -41,7 +41,9 @@ final class JsonMessage implements JsonSerializable
 
     protected int     $status      = self::JSON_ERROR;
     protected ?string $description = null;
+    /** @var mixed[] */
     protected array   $data        = [];
+    /** @var string[] */
     protected array   $messages    = [];
 
     /**
@@ -66,6 +68,9 @@ final class JsonMessage implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @param mixed[] $data
+     */
     public function setData(array $data): JsonMessage
     {
         $this->data = $data;
@@ -73,6 +78,9 @@ final class JsonMessage implements JsonSerializable
         return $this;
     }
 
+    /**
+     * @param string[] $messages
+     */
     public function setMessages(array $messages): JsonMessage
     {
         $this->messages = array_map(__(...), $messages);
@@ -90,7 +98,7 @@ final class JsonMessage implements JsonSerializable
      * Specify data which should be serialized to JSON
      *
      * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
+     * @return array<string, mixed> data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
@@ -101,6 +109,8 @@ final class JsonMessage implements JsonSerializable
 
     /**
      * Return an array with the object's properties
+     *
+     * @return array<string, mixed>
      */
     public function getJsonArray(): array
     {

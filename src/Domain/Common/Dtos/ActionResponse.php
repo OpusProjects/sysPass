@@ -41,6 +41,10 @@ use function SP\__;
 final readonly class ActionResponse implements JsonSerializable
 {
 
+    /**
+     * @param string[]|string|Closure $subject
+     * @param mixed[]|string|stdClass|null $extra
+     */
     public function __construct(
         public ResponseStatus             $status,
         public array|string|Closure $subject,
@@ -48,16 +52,28 @@ final readonly class ActionResponse implements JsonSerializable
     ) {
     }
 
+    /**
+     * @param string[]|string|stdClass $subject
+     * @param mixed[]|string|null $extra
+     */
     public static function ok(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
     {
         return new self(ResponseStatus::OK, $subject, $extra);
     }
 
+    /**
+     * @param string[]|string|stdClass $subject
+     * @param mixed[]|string|null $extra
+     */
     public static function error(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
     {
         return new self(ResponseStatus::ERROR, $subject, $extra);
     }
 
+    /**
+     * @param string[]|string|stdClass $subject
+     * @param mixed[]|string|null $extra
+     */
     public static function warning(array|string|stdClass $subject, array|string|null $extra = null): ActionResponse
     {
         return new self(ResponseStatus::WARNING, $subject, $extra);
@@ -84,7 +100,8 @@ final readonly class ActionResponse implements JsonSerializable
      * Specify data which should be serialized to JSON
      *
      * @link  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     * @return array data which can be serialized by <b>json_encode</b>,
+     * @return array{status: string, description: string|string[], data: mixed[]|string|stdClass|null}
+     * data which can be serialized by <b>json_encode</b>,
      * which is a value of any type other than a resource.
      * @since 5.4.0
      */
@@ -97,6 +114,9 @@ final readonly class ActionResponse implements JsonSerializable
         ];
     }
 
+    /**
+     * @return string|string[]
+     */
     private function adaptSubject(): string|array
     {
         return match (gettype($this->subject)) {

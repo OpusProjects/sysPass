@@ -53,6 +53,7 @@ final class CustomFieldItem extends Dto implements JsonSerializable
 
     /**
      * @inheritDoc
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {

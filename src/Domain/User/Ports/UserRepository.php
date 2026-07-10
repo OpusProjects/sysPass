@@ -32,8 +32,10 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -171,7 +173,7 @@ interface UserRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
@@ -183,7 +185,7 @@ interface UserRepository extends Repository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -204,9 +206,9 @@ interface UserRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -217,7 +219,7 @@ interface UserRepository extends Repository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<UserListModel>
      * @throws QueryException
      * @throws ConstraintException
      * @throws Exception
@@ -229,7 +231,7 @@ interface UserRepository extends Repository
      *
      * @param UserModel $user
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException

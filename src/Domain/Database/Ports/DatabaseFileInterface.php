@@ -32,6 +32,8 @@ interface DatabaseFileInterface
 {
     /**
      * Parses a database script file and returns an array of lines parsed
+     *
+     * @return iterable<string>
      */
     public function parse(string $delimiter = ';'): iterable;
 }

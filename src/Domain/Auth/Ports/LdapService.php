@@ -63,7 +63,7 @@ interface LdapService
      *
      * @param string $userDn
      * @param string $userLogin
-     * @param array $groupsDn
+     * @param string[] $groupsDn
      *
      * @return bool
      */

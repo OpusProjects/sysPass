@@ -130,12 +130,21 @@ interface ConfigDataInterface extends JsonSerializable
     public const LDAP_FILTER_GROUP_ATTRIBUTES  = 'ldapFilterGroupAttributes';
     public const LDAP_DATABASE_ENABLED         = 'ldapDatabaseEnabled';
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array;
 
     public function countAttributes(): int;
 
+    /**
+     * @return string[]
+     */
     public function getLogEvents(): array;
 
+    /**
+     * @param string[]|null $logEvents
+     */
     public function setLogEvents(?array $logEvents): ConfigDataInterface;
 
     public function isDokuwikiEnabled(): bool;
@@ -266,6 +275,9 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setDemoEnabled(?bool $demoEnabled): ConfigDataInterface;
 
+    /**
+     * @return string[]
+     */
     public function getFilesAllowedExts(): array;
 
     public function getFilesAllowedSize(): int;
@@ -372,8 +384,14 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setWikiEnabled(?bool $wikiEnabled): ConfigDataInterface;
 
+    /**
+     * @return string[]
+     */
     public function getWikiFilter(): array;
 
+    /**
+     * @param string[]|null $wikiFilter
+     */
     public function setWikiFilter(?array $wikiFilter): ConfigDataInterface;
 
     public function getWikiPageurl(): ?string;
@@ -454,12 +472,24 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setSsoDefaultProfile(?int $ssoDefaultProfile): ConfigDataInterface;
 
+    /**
+     * @return string[]|null
+     */
     public function getMailRecipients(): ?array;
 
+    /**
+     * @param string[]|null $mailRecipients
+     */
     public function setMailRecipients(?array $mailRecipients): ConfigDataInterface;
 
+    /**
+     * @return string[]|null
+     */
     public function getMailEvents(): ?array;
 
+    /**
+     * @param string[]|null $mailEvents
+     */
     public function setMailEvents(?array $mailEvents): ConfigDataInterface;
 
     public function getDatabaseVersion(): string;
@@ -482,8 +512,14 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setLdapTlsEnabled(?bool $ldapTlsEnabled): ConfigDataInterface;
 
+    /**
+     * @return string[]
+     */
     public function getFilesAllowedMime(): array;
 
+    /**
+     * @param string[]|null $filesAllowedMime
+     */
     public function setFilesAllowedMime(?array $filesAllowedMime): ConfigDataInterface;
 
     public function getLdapType(): int;
@@ -506,12 +542,24 @@ interface ConfigDataInterface extends JsonSerializable
 
     public function setLdapFilterGroupObject(?string $filter): ConfigDataInterface;
 
+    /**
+     * @return string[]
+     */
     public function getLdapFilterUserAttributes(): array;
 
+    /**
+     * @param string[]|null $attributes
+     */
     public function setLdapFilterUserAttributes(?array $attributes): ConfigDataInterface;
 
+    /**
+     * @return string[]
+     */
     public function getLdapFilterGroupAttributes(): array;
 
+    /**
+     * @param string[]|null $attributes
+     */
     public function setLdapFilterGroupAttributes(?array $attributes): ConfigDataInterface;
 
     public function isLdapDatabaseEnabled(): bool;

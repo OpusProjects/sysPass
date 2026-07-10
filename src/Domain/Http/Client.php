@@ -34,6 +34,9 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
  */
 final class Client
 {
+    /**
+     * @return array<string, mixed> Guzzle request options
+     */
     public static function getOptions(ConfigDataInterface $configData): array
     {
         $options = ['timeout' => 10, 'version' => 1.1,];

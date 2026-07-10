@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
 /**
@@ -63,7 +64,7 @@ interface PublicLinkRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -85,7 +86,7 @@ interface PublicLinkRepository extends Repository
      *
      * @param PublicLink $publicLinkData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws DuplicatedItemException
      * @throws QueryException
      * @throws ConstraintException
@@ -147,7 +148,7 @@ interface PublicLinkRepository extends Repository
      *
      * @param int $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function getHashForItem(int $itemId): QueryResult;
 }

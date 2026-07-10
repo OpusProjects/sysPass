@@ -112,7 +112,7 @@ interface Context
     /**
      * Set the accounts cache
      *
-     * @param array $accountsCache
+     * @param array<int, AccountCacheDto> $accountsCache
      */
     public function setAccountsCache(array $accountsCache): void;
 

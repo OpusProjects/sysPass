@@ -51,6 +51,10 @@ final class AccountSearchItem
     public static bool $publicLinkEnabled = false;
     public static bool $isDemoMode        = false;
 
+    /**
+     * @param Item[]|null $users
+     * @param Item[]|null $userGroups
+     */
     public function __construct(
         protected AccountSearchView          $accountSearchView,
         private readonly AccountPermission   $accountAcl,
@@ -149,6 +153,9 @@ final class AccountSearchItem
         return $this->link;
     }
 
+    /**
+     * @return string[]
+     */
     public function getAccesses(): array
     {
         $accesses = [
