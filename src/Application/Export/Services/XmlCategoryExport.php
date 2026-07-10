@@ -82,7 +82,7 @@ final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategory
 
             return $nodeCategories;
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 }

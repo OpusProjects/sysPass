@@ -83,7 +83,7 @@ final class XmlClientExport extends XmlExportEntityBase implements XmlClientExpo
 
             return $nodeClients;
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 }

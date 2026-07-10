@@ -97,7 +97,7 @@ final class XmlExport extends Service implements XmlExportService
 
             $this->document->appendChild($this->document->createElement('Root'));
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 
@@ -203,7 +203,7 @@ final class XmlExport extends Service implements XmlExportService
 
             $this->document->documentElement->appendChild($nodeMeta);
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 
@@ -234,7 +234,7 @@ final class XmlExport extends Service implements XmlExportService
                 $this->document->documentElement->appendChild($selfNode);
             }
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 
@@ -275,7 +275,7 @@ final class XmlExport extends Service implements XmlExportService
                 ->item(0)
                 ->appendChild($hashNode);
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 }
