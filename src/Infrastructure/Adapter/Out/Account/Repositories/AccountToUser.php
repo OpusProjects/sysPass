@@ -110,11 +110,11 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      *
      * @param int $id the account ID
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): bool
+    public function deleteByAccountId(int $id): void
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -126,7 +126,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account users'));
 
-        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
+        $this->db->runQuery($queryData);
     }
 
     /**

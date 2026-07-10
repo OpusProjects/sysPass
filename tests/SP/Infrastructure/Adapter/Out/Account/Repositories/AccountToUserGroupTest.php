@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Adapter\Out\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Item;
@@ -72,7 +73,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult(null, 1));
 
-        $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
+        $this->accountToUserGroup->deleteByAccountId($accountId);
     }
 
     public function testGetUserGroupsByAccountId(): void
@@ -99,10 +100,16 @@ class AccountToUserGroupTest extends UnitaryTestCase
     }
 
     /**
+     * A group can be linked to any number of accounts (or none), so any affected row count
+     * (including zero, when the group has no linked accounts) is a successful outcome.
+     *
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function testDeleteByUserGroupId(): void
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    public function testDeleteByUserGroupId(int $affectedRows): void
     {
         $userGroupId = self::$faker->randomNumber();
 
@@ -120,9 +127,9 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('runQuery')
             ->with($callback)
-            ->willReturn(new QueryResult(null, 1));
+            ->willReturn(new QueryResult(null, $affectedRows));
 
-        $this->assertTrue($this->accountToUserGroup->deleteByUserGroupId($userGroupId));
+        $this->accountToUserGroup->deleteByUserGroupId($userGroupId);
     }
 
     /**
@@ -168,10 +175,16 @@ class AccountToUserGroupTest extends UnitaryTestCase
     }
 
     /**
+     * An account can have any number of secondary groups (or none), so any affected row count
+     * (including zero, or more than one) is a successful outcome, not just exactly one.
+     *
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function testDeleteByAccountId(): void
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    public function testDeleteByAccountId(int $affectedRows): void
     {
         $accountId = self::$faker->randomNumber();
 
@@ -189,9 +202,9 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('runQuery')
             ->with($callback)
-            ->willReturn(new QueryResult(null, 1));
+            ->willReturn(new QueryResult(null, $affectedRows));
 
-        $this->assertTrue($this->accountToUserGroup->deleteByAccountId($accountId));
+        $this->accountToUserGroup->deleteByAccountId($accountId);
     }
 
     public function testGetUserGroupsByUserGroupId(): void
