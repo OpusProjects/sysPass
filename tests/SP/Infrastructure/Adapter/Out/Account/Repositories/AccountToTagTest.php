@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Adapter\Out\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -74,10 +75,16 @@ class AccountToTagTest extends UnitaryTestCase
     }
 
     /**
+     * An account can have any number of tags (or none), so any affected row count (including
+     * zero, or more than one) is a successful outcome, not just exactly one.
+     *
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function testDeleteByAccountId(): void
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    public function testDeleteByAccountId(int $affectedRows): void
     {
         $accountId = self::$faker->randomNumber();
 
@@ -95,9 +102,9 @@ class AccountToTagTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('runQuery')
             ->with($callback)
-            ->willReturn(new QueryResult(null, 1));
+            ->willReturn(new QueryResult(null, $affectedRows));
 
-        $this->assertTrue($this->accountToTag->deleteByAccountId($accountId));
+        $this->accountToTag->deleteByAccountId($accountId);
     }
 
     /**

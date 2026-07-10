@@ -53,11 +53,11 @@ interface AccountToTagRepository extends Repository
      *
      * @param int $id
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): bool;
+    public function deleteByAccountId(int $id): void;
 
     /**
      * Update the tags of an account
