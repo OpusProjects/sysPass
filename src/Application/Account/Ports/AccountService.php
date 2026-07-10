@@ -34,6 +34,7 @@ use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
@@ -207,7 +208,7 @@ interface AccountService
     /**
      * @param int|null $id The account ID
      *
-     * @return array
+     * @return Simple[]
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -216,7 +217,7 @@ interface AccountService
     /**
      * @param int $id The account ID
      *
-     * @return array
+     * @return Simple[]
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -240,7 +241,7 @@ interface AccountService
     /**
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AccountSearchViewModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult;
 
@@ -267,6 +268,7 @@ interface AccountService
     /**
      * Get the password-related data for all accounts.
      *
+     * @return Account[]
      * @throws QueryException
      * @throws ConstraintException
      */

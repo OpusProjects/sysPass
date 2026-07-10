@@ -50,7 +50,7 @@ use function SP\processException;
 final class KeepassImport extends XmlImportBase implements ItemsImportService
 {
     /**
-     * @var SplObjectStorage<AccountCreateDto>[] $items
+     * @var array<string, SplObjectStorage<AccountCreateDto, null>>
      */
     private array $entries = [];
 
@@ -158,6 +158,9 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
         }
     }
 
+    /**
+     * @return SplObjectStorage<AccountCreateDto, null>|null
+     */
     private function getEntryFor(string $groupName): ?SplObjectStorage
     {
         if (array_key_exists($groupName, $this->entries)) {
@@ -167,6 +170,9 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
         return null;
     }
 
+    /**
+     * @param array<string, string|null> $entry
+     */
     private function mapEntryToAccount(array $entry, string $groupName): AccountCreateDto
     {
         return new AccountCreateDto(
@@ -180,7 +186,7 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
     }
 
     /**
-     * @param SplObjectStorage<AccountCreateDto> $accounts
+     * @param SplObjectStorage<AccountCreateDto, null> $accounts
      * @param int $clientId
      * @param ImportParamsDto $importParamsDto
      * @param string $groupName

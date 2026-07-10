@@ -102,6 +102,8 @@ final class Mail extends Service implements MailService
 
     /**
      * Returns the email footer with the application signature
+     *
+     * @return string[]
      */
     private function getEmailFooter(): array
     {
@@ -115,7 +117,7 @@ final class Mail extends Service implements MailService
 
     /**
      * @param string $subject
-     * @param array|string $to
+     * @param string[]|string $to
      * @param MailMessage $mailMessage
      *
      * @throws ServiceException

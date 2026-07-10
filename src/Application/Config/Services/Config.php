@@ -47,6 +47,9 @@ use function SP\processException;
 final class Config extends Service implements ConfigService
 {
 
+    /**
+     * @param ConfigRepository<ConfigModel> $configRepository
+     */
     public function __construct(Application $application, private readonly ConfigRepository $configRepository)
     {
         parent::__construct($application);

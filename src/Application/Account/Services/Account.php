@@ -36,6 +36,7 @@ use SP\Domain\Account\Dtos\AccountUpdateBulkDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Models\AccountView;
 use SP\Application\Account\Ports\AccountCryptService;
 use SP\Application\Account\Ports\AccountHistoryService;
@@ -56,6 +57,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Dtos\UserDto;
@@ -70,6 +72,9 @@ use function SP\__u;
  */
 final class Account extends Service implements AccountService
 {
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application                                   $application,
         private readonly AccountRepository            $accountRepository,
@@ -588,7 +593,7 @@ final class Account extends Service implements AccountService
     /**
      * @param int|null $id
      *
-     * @return array
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -601,7 +606,7 @@ final class Account extends Service implements AccountService
     /**
      * @param int $id
      *
-     * @return array
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -639,7 +644,7 @@ final class Account extends Service implements AccountService
     /**
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AccountSearchViewModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {

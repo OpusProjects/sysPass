@@ -41,7 +41,7 @@ final readonly class AuthTokenAction implements AuthTokenActionService
     /**
      * Devuelver un array de acciones posibles para los tokens
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getTokenActions(): array
     {

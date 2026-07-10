@@ -64,6 +64,9 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public const TYPE_ACCOUNT = 1;
 
+    /**
+     * @param PublicLinkRepository<PublicLinkModel> $publicLinkRepository
+     */
     public function __construct(
         Application                           $application,
         private readonly PublicLinkRepository $publicLinkRepository,
@@ -93,7 +96,7 @@ final class PublicLink extends Service implements PublicLinkService
     /**
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<PublicLinkModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
@@ -299,6 +302,8 @@ final class PublicLink extends Service implements PublicLinkService
 
     /**
      * Update the usage information
+     *
+     * @return array{who: string, time: int, hash: string, agent: string, https: bool|null}
      */
     public static function getUseInfo(string $hash, RequestService $request): array
     {

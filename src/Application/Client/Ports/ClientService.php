@@ -42,6 +42,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface ClientService
 {
     /**
+     * @return QueryResult<Client>
      * @throws ConstraintException
      * @throws QueryException
      */

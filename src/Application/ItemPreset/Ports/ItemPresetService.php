@@ -55,6 +55,7 @@ interface ItemPresetService
     /**
      * Deletes an item
      *
+     * @return ItemPresetService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException

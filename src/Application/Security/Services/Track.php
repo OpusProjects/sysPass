@@ -57,6 +57,9 @@ final class Track extends Service implements TrackService
     private const TIME_TRACKING_MAX_ATTEMPTS = 10;
     private const TIME_SLEEP                 = 0.25;
 
+    /**
+     * @param TrackRepository<TrackModel> $trackRepository
+     */
     public function __construct(
         Application                      $application,
         private readonly TrackRepository $trackRepository,
@@ -175,7 +178,7 @@ final class Track extends Service implements TrackService
 
     /**
      * @param ItemSearchDto $itemSearchData
-     * @return QueryResult
+     * @return QueryResult<TrackModel>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {

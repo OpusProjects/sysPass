@@ -28,6 +28,7 @@ namespace SP\Application\Account\Services;
 use SP\Core\Application;
 use SP\Domain\Account\Ports\AccountToFavoriteRepository;
 use SP\Application\Account\Ports\AccountToFavoriteService;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,6 +50,7 @@ final class AccountToFavorite extends Service implements AccountToFavoriteServic
     /**
      * Get an array with the IDs of the favorite accounts
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

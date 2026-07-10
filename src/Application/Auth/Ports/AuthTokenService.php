@@ -69,6 +69,8 @@ interface AuthTokenService
     /**
      * Deletes all the items for given ids
      *
+     * @param int[] $ids
+     *
      * @throws ServiceException
      * @throws ConstraintException
      * @throws QueryException

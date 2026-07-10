@@ -44,10 +44,14 @@ use function SP\__u;
  * Class NotificationService
  *
  * @template T of NotificationModel
+ * @implements NotificationService<T>
  */
 final class Notification extends Service implements NotificationService
 {
 
+    /**
+     * @param NotificationRepository<NotificationModel> $notificationRepository
+     */
     public function __construct(
         Application                             $application,
         private readonly NotificationRepository $notificationRepository
@@ -94,6 +98,7 @@ final class Notification extends Service implements NotificationService
     /**
      * Deletes an item preserving the sticky ones
      *
+     * @return NotificationService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
@@ -110,6 +115,7 @@ final class Notification extends Service implements NotificationService
     /**
      * Deletes an item
      *
+     * @return NotificationService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException

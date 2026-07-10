@@ -37,6 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\ItemPreset\Models\AccountPermission;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
@@ -47,6 +48,9 @@ use SP\Infrastructure\Adapter\In\Web\Validators\PasswordValidator;
  */
 final class AccountPreset extends Service implements AccountPresetService
 {
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application                                   $application,
         private readonly ItemPresetService $itemPresetService,

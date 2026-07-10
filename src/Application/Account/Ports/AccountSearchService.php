@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\Account\Ports;
 
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -40,6 +41,7 @@ interface AccountSearchService
      * Processes the search results and builds the variable that holds the data of each account
      * to be displayed.
      *
+     * @return QueryResult<AccountSearchViewModel>
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

@@ -33,7 +33,7 @@ interface AuthTokenActionService
     /**
      * Return an array of possible actions for tokens
      *
-     * @return array
+     * @return array<int, string>
      */
     public function getTokenActions(): array;
 }

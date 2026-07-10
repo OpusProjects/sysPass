@@ -44,6 +44,9 @@ use function SP\processException;
  */
 final class CustomFieldCrypt extends Service implements CustomFieldCryptService
 {
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application                             $application,
         private readonly CustomFieldDataService $customFieldService,

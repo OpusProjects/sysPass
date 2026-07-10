@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\CustomField\Ports;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\CustomField\Models\CustomFieldData;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
@@ -46,6 +47,7 @@ interface CustomFieldDataService
     /**
      * Returns the module's item for given id
      *
+     * @return Simple[]
      * @throws ServiceException
      */
     public function getBy(int $moduleId, ?int $itemId): array;
@@ -59,6 +61,8 @@ interface CustomFieldDataService
 
     /**
      * Delete the custom field data for the module
+     *
+     * @param int[] $itemsId
      *
      * @throws ServiceException
      */

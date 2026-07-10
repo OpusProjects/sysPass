@@ -40,6 +40,9 @@ use SP\Application\CustomField\Ports\CustomFieldTypeService;
 final class CustomFieldType extends Service implements CustomFieldTypeService
 {
 
+    /**
+     * @param CustomFieldTypeRepository<CustomFieldTypeModel> $customFieldTypeRepository
+     */
     public function __construct(
         Application                                $application,
         private readonly CustomFieldTypeRepository $customFieldTypeRepository

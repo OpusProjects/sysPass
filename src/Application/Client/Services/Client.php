@@ -50,6 +50,9 @@ use function SP\__u;
  */
 final class Client extends Service implements ClientService
 {
+    /**
+     * @param ClientRepository<ClientModel> $clientRepository
+     */
     public function __construct(
         Application                       $application,
         private readonly ClientRepository $clientRepository,

@@ -39,6 +39,9 @@ use SP\Application\User\Ports\UserToUserGroupService;
 final class UserToUserGroup extends Service implements UserToUserGroupService
 {
 
+    /**
+     * @param UserToUserGroupRepository<UserToUserGroupModel> $userToUserGroupRepository
+     */
     public function __construct(
         Application                                $application,
         private readonly UserToUserGroupRepository $userToUserGroupRepository
@@ -47,6 +50,8 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
     }
 
     /**
+     * @param int[] $users
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -56,6 +61,8 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
     }
 
     /**
+     * @param int[] $users
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -86,7 +93,7 @@ final class UserToUserGroup extends Service implements UserToUserGroupService
      * Returns the groups which the user belongs to
      *
      * @param int $userId
-     * @return array
+     * @return UserToUserGroupModel[]
      */
     public function getGroupsForUser(int $userId): array
     {

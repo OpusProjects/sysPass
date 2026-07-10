@@ -67,6 +67,7 @@ interface CategoryService
     public function getByName(string $name): ?Category;
 
     /**
+     * @return CategoryService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
@@ -75,6 +76,8 @@ interface CategoryService
 
     /**
      * Deletes all the items for given ids
+     *
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException

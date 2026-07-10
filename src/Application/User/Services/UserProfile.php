@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\User\Services;
 
 use SP\Core\Application;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -47,6 +48,9 @@ use function SP\__u;
 final class UserProfile extends Service implements UserProfileService
 {
 
+    /**
+     * @param UserProfileRepository<UserProfileModel> $userProfileRepository
+     */
     public function __construct(Application $application, private readonly UserProfileRepository $userProfileRepository)
     {
         parent::__construct($application);
@@ -132,7 +136,7 @@ final class UserProfile extends Service implements UserProfileService
 
     /**
      * @param int $id
-     * @return array
+     * @return Simple[]
      */
     public function getUsersForProfile(int $id): array
     {

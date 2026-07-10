@@ -29,6 +29,7 @@ namespace SP\Application\User\Services;
 use JsonException;
 use SP\Core\Application;
 use SP\Core\Crypt\Hash;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -52,6 +53,9 @@ use function SP\__u;
  */
 final class User extends Service implements UserService
 {
+    /**
+     * @param UserRepository<UserModel> $userRepository
+     */
     public function __construct(
         Application                            $application,
         private readonly UserRepository        $userRepository,
@@ -319,6 +323,7 @@ final class User extends Service implements UserService
     /**
      * Get the email addresses of the users in a group
      *
+     * @return array<UserModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -353,6 +358,7 @@ final class User extends Service implements UserService
     /**
      * Returns the usage of the given user's id
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

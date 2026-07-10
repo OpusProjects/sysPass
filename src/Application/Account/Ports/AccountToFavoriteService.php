@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Ports;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 
@@ -38,6 +39,7 @@ interface AccountToFavoriteService
     /**
      * Get an array with the IDs of favorite accounts
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

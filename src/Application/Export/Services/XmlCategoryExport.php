@@ -32,6 +32,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Application\Export\Ports\XmlCategoryExportService;
 
@@ -42,6 +43,9 @@ use function SP\__u;
  */
 final class XmlCategoryExport extends XmlExportEntityBase implements XmlCategoryExportService
 {
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     */
     public function __construct(
         Application                      $application,
         private readonly CategoryService $categoryService

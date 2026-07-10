@@ -33,6 +33,7 @@ use SP\Core\Crypt\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Domain\Client\Models\Client;
 use SP\Application\Client\Ports\ClientService;
@@ -67,10 +68,12 @@ abstract class ImportBase extends Service implements ImportService
     protected int                      $version = 0;
     protected int                      $counter = 0;
     protected readonly AccountService  $accountService;
+    /** @var CategoryService<CategoryModel> */
     protected readonly CategoryService $categoryService;
     protected readonly ClientService   $clientService;
     protected readonly TagService      $tagService;
     protected readonly ConfigService   $configService;
+    /** @var array<string, mixed> */
     private array                      $cache;
 
     public function __construct(

@@ -51,6 +51,9 @@ use function SP\__u;
 final class AccountFile extends Service implements AccountFileService
 {
 
+    /**
+     * @param AccountFileRepository<FileModel> $accountFileRepository
+     */
     public function __construct(
         Application                            $application,
         private readonly AccountFileRepository $accountFileRepository,
@@ -144,7 +147,7 @@ final class AccountFile extends Service implements AccountFileService
      *
      * @param ItemSearchDto $searchData
      *
-     * @return QueryResult
+     * @return QueryResult<FileModel>
      */
     public function search(ItemSearchDto $searchData): QueryResult
     {

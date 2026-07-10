@@ -46,9 +46,13 @@ use function SP\__u;
  * Class Category
  *
  * @template T of CategoryModel
+ * @implements CategoryService<T>
  */
 final class Category extends Service implements CategoryService
 {
+    /**
+     * @param CategoryRepository<CategoryModel> $categoryRepository
+     */
     public function __construct(
         Application                                  $application,
         private readonly CategoryRepository $categoryRepository
@@ -103,6 +107,7 @@ final class Category extends Service implements CategoryService
     }
 
     /**
+     * @return CategoryService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
@@ -118,6 +123,8 @@ final class Category extends Service implements CategoryService
 
     /**
      * Deletes all the items for given ids
+     *
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException

@@ -29,6 +29,8 @@ namespace SP\Application\Account\Ports;
 use SP\Domain\Account\Dtos\AccountHistoryCreateDto;
 use SP\Domain\Account\Dtos\AccountHistoryDto;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,13 +56,14 @@ interface AccountHistoryService
     /**
      * Gets the history listing for an account.
      *
-     * @return array With the records keyed by id and date - user as the value
+     * @return Simple[] With the records keyed by id and date - user as the value
      * @throws ConstraintException
      * @throws QueryException
      */
     public function getHistoryForAccount(int $id): array;
 
     /**
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -75,6 +78,7 @@ interface AccountHistoryService
     public function create(AccountHistoryCreateDto $dto): int;
 
     /**
+     * @return AccountHistoryModel[]
      * @throws QueryException
      * @throws ConstraintException
      */

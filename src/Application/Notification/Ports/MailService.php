@@ -49,7 +49,7 @@ interface MailService
 
     /**
      * @param string $subject
-     * @param array|string $to
+     * @param string[]|string $to
      * @param MailMessage $mailMessage
      *
      * @throws Exception
