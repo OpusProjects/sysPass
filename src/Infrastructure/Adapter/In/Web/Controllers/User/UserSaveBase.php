@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\Notification\Ports\MailService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\User\Models\User;
 use SP\Application\User\Ports\UserPassRecoverService;
 use SP\Application\User\Ports\UserService;
@@ -48,11 +49,17 @@ use function SP\__;
 abstract class UserSaveBase extends ControllerBase
 {
     protected UserService $userService;
+    /**
+     * @var CustomFieldDataService<CustomFieldDataModel>
+     */
     protected CustomFieldDataService $customFieldService;
     protected UserForm  $form;
     private MailService            $mailService;
     private UserPassRecoverService $userPassRecoverService;
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application            $application,
         WebControllerHelper    $webControllerHelper,

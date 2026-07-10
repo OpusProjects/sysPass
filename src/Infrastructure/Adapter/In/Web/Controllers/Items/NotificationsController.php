@@ -35,6 +35,7 @@ use SP\Domain\Html\Html;
 use SP\Domain\Http\Dtos\JsonMessage;
 use SP\Domain\Http\Services\JsonResponse;
 use SP\Application\Notification\Ports\NotificationService;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 
@@ -45,8 +46,14 @@ use function SP\__;
  */
 final class NotificationsController extends SimpleControllerBase
 {
+    /**
+     * @var NotificationService<NotificationModel>
+     */
     private NotificationService $notificationService;
 
+    /**
+     * @param NotificationService<NotificationModel> $notificationService
+     */
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,

@@ -81,6 +81,7 @@ final readonly class XmlFileStorage implements XmlFileStorageService
     }
 
     /**
+     * @param mixed[]|object $items
      * @throws DOMException
      */
     private function serializeItems(array|object $items, DOMNode $currentNode, ?string $type = null): void
@@ -106,6 +107,10 @@ final readonly class XmlFileStorage implements XmlFileStorageService
         }
     }
 
+    /**
+     * @param mixed[]|object $items
+     * @return mixed[]
+     */
     private function analyzeItems(array|object $items): array
     {
         if (is_object($items)) {
@@ -117,6 +122,9 @@ final readonly class XmlFileStorage implements XmlFileStorageService
         return $items;
     }
 
+    /**
+     * @return mixed[]
+     */
     private function analyzeObject(object $object): array
     {
         $items = [];
@@ -164,6 +172,10 @@ final readonly class XmlFileStorage implements XmlFileStorageService
         return $this->deserializeItems($nodes->item(0)->childNodes);
     }
 
+    /**
+     * @param DOMNodeList<DOMNode> $nodeList
+     * @return mixed[]
+     */
     private function deserializeItems(DOMNodeList $nodeList): array
     {
         $nodes = [];

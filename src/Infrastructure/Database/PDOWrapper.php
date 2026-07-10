@@ -38,6 +38,7 @@ class PDOWrapper
     /**
      * Build a PDO object with the given connection data and options
      *
+     * @param array<int, mixed> $opts
      * @throws DatabaseException
      */
     public function build(string $connectionUri, DatabaseConnectionData $connectionData, array $opts): PDO

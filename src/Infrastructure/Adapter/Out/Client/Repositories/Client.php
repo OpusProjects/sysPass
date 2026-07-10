@@ -29,6 +29,7 @@ use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,6 +46,7 @@ use function SP\__u;
  * Class Client
  *
  * @template T of ClientModel
+ * @implements ClientRepository<T>
  */
 final class Client extends BaseRepository implements ClientRepository
 {
@@ -55,7 +57,7 @@ final class Client extends BaseRepository implements ClientRepository
      *
      * @param ClientModel $client
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws DuplicatedItemException
      * @throws SPException
      */
@@ -232,9 +234,13 @@ final class Client extends BaseRepository implements ClientRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $clientIds
+     * Real type, not QueryResult<T> as ClientRepository::deleteByIdBatch() claims: this
+     * builds the delete via QueryData::build() with no mapper, same as delete() below, so
+     * rows (if any) hydrate as Simple, never as T. See PR body.
      *
-     * @return QueryResult
+     * @param int[] $clientIds
+     *
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -259,7 +265,7 @@ final class Client extends BaseRepository implements ClientRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -313,7 +319,7 @@ final class Client extends BaseRepository implements ClientRepository
      *
      * @param AccountFilterBuilder $accountFilterUser
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */

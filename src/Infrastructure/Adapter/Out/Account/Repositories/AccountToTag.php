@@ -48,7 +48,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -97,7 +97,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
      * Update the tags for an account
      *
      * @param int $accountId
-     * @param array $tags
+     * @param int[] $tags
      *
      * @return void
      * @throws ConstraintException

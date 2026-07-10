@@ -34,7 +34,7 @@ trait HelpTrait
     /**
      * @param  string  $action
      *
-     * @return array
+     * @return array{help?: array<int, array<string, array{description: string, required: bool}>>}
      */
     public static function getHelpFor(string $action): array
     {
@@ -56,7 +56,7 @@ trait HelpTrait
      * @param  string  $description
      * @param  bool  $required
      *
-     * @return array
+     * @return array<string, array{description: string, required: bool}>
      */
     private static function getItem(
         string $name,

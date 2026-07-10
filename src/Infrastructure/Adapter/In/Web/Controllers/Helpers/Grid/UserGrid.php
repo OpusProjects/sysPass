@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Models\UserList;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class UserGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<UserList>
  */
 final class UserGrid extends GridBase
 {
+    /**
+     * @var QueryResult<UserList>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<UserList> $queryResult
      *
      * @return DataGridInterface
      * @throws SPException

@@ -90,6 +90,9 @@ interface TemplateInterface
     public function getBase(): string;
 
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getContentTemplates(): array;
 
     /**

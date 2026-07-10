@@ -37,6 +37,9 @@ final class DataGridSort implements DataGridSortInterface
     private int    $sortKey = 0;
     private string $title   = '';
     private string $name    = '';
+    /**
+     * @var string[]
+     */
     private array  $class   = [];
     private IconInterface $iconUp;
     private IconInterface $iconDown;

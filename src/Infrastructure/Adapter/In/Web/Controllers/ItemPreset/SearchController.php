@@ -33,6 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\ItemPresetGrid;
@@ -48,9 +49,15 @@ final class SearchController extends ControllerBase
     use ItemTrait;
 
 
+    /**
+     * @var ItemPresetService<ItemPresetModel>
+     */
     private ItemPresetService $itemPresetService;
     private ItemPresetGrid    $itemPresetGrid;
 
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application       $application,
         WebControllerHelper $webControllerHelper,

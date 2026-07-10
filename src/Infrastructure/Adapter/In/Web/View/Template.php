@@ -181,6 +181,9 @@ final class Template implements TemplateInterface
         return $this->base;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getContentTemplates(): array
     {
         return $this->contentTemplates->getArrayCopy();

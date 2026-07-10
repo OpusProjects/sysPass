@@ -30,6 +30,7 @@ use Exception;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -45,6 +46,7 @@ use function SP\__u;
  * Class AuthToken
  *
  * @template T of AuthTokenModel
+ * @implements AuthTokenRepository<T>
  */
 final class AuthToken extends BaseRepository implements AuthTokenRepository
 {
@@ -54,7 +56,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
 
     /**
      * @param int $id
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -115,9 +117,9 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $authTokensId
+     * @param int[] $authTokensId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -142,7 +144,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AuthTokenListModel>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
@@ -181,7 +183,7 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
      *
      * @param AuthTokenModel $authToken
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException

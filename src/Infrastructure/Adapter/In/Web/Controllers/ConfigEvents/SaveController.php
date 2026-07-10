@@ -37,6 +37,9 @@ final class SaveController extends SimpleControllerBase
         );
     }
 
+    /**
+     * @param EventMessage<mixed> $eventMessage
+     */
     private function handleEventsConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
         $logEnabled = $this->request->analyzeBool('log_enabled', false);

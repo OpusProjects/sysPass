@@ -57,6 +57,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
     protected string $onClickFunction = '';
     /**
      * The OnClick event arguments
+     *
+     * @var string[]|null
      */
     protected ?array $onClickArgs = null;
     /**
@@ -69,6 +71,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
     protected bool $isSkip = false;
     /**
      * The row name which determines whether the action is displayed
+     *
+     * @var array<int, array{field: string, value: mixed}>|null
      */
     protected ?array $filterRowSource = null;
     /**
@@ -81,14 +85,20 @@ abstract class DataGridActionBase implements DataGridActionInterface
     protected ?int $type = null;
     /**
      * Data attributes (ie. data-*)
+     *
+     * @var array<string, mixed>|null
      */
     protected ?array $data = null;
     /**
      * Additional attributes (ie. name=*)
+     *
+     * @var array<string, mixed>|null
      */
     protected ?array $attributes = null;
     /**
      * CSS classes
+     *
+     * @var string[]|null
      */
     protected ?array $classes = null;
     /**
@@ -235,6 +245,9 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
+    /**
+     * @return array<int, array{field: string, value: mixed}>|null
+     */
     public function getFilterRowSource(): ?array
     {
         return $this->filterRowSource;
@@ -268,11 +281,17 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getData(): ?array
     {
         return $this->data;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function setData(array $data): static
     {
         $this->data = $data;
@@ -294,6 +313,9 @@ abstract class DataGridActionBase implements DataGridActionInterface
         return $this;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array
     {
         return (array)$this->attributes;
@@ -301,6 +323,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Set attributes
+     *
+     * @param array<string, mixed> $attributes
      */
     public function setAttributes(array $attributes): static
     {
@@ -337,6 +361,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Returns classes
+     *
+     * @return string[]
      */
     public function getClasses(): array
     {
@@ -345,6 +371,8 @@ abstract class DataGridActionBase implements DataGridActionInterface
 
     /**
      * Set classes
+     *
+     * @param string[] $classes
      */
     public function setClasses(array $classes): void
     {

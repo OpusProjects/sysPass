@@ -28,6 +28,7 @@ use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Html\Html;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
@@ -45,14 +46,19 @@ use function SP\getElapsedTime;
  * Class NotificationGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<NotificationModel>
  */
 final class NotificationGrid extends GridBase
 {
+    /**
+     * @var QueryResult<NotificationModel>|null
+     */
     private ?QueryResult $queryResult = null;
     private ?bool $isAdminApp = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<NotificationModel> $queryResult
      *
      * @return DataGridInterface
      */

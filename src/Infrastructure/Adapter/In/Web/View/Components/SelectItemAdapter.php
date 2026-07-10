@@ -39,10 +39,16 @@ use function SP\__u;
 final readonly class SelectItemAdapter
 {
 
+    /**
+     * @param mixed[] $items
+     */
     public function __construct(protected array $items)
     {
     }
 
+    /**
+     * @param mixed[] $items
+     */
     public static function factory(array $items): SelectItemAdapter
     {
         return new SelectItemAdapter($items);
@@ -50,6 +56,9 @@ final readonly class SelectItemAdapter
 
     /**
      * Returns an array of ids from the given array of objects
+     *
+     * @param mixed[] $items
+     * @return mixed[]
      */
     public static function getIdFromArrayOfObjects(array $items): array
     {
@@ -93,7 +102,7 @@ final readonly class SelectItemAdapter
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
-     * @param array $selected
+     * @param array<int, int|string> $selected
      * @param string|int|null $skip
      *
      * @return SelectItem[]
@@ -136,6 +145,7 @@ final readonly class SelectItemAdapter
     /**
      * Returns a collection of items for a select component and set selected ones from an array
      *
+     * @param array<int, int|string> $selected
      * @return SelectItem[]
      */
     public function getItemsFromArraySelected(array $selected, bool $useValueAsKey = false): array

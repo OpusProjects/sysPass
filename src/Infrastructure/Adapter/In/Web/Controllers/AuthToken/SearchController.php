@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
 use SP\Core\Application;
 use SP\Application\Auth\Ports\AuthTokenService;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -47,6 +48,7 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     /**
+     * @param AuthTokenService<AuthTokenModel> $authTokenService
      * @throws AuthException
      * @throws SessionTimeout
      */

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -40,6 +41,7 @@ use function SP\__u;
  * Class UserToUserGroup
  *
  * @template T of UserToUserGroupModel
+ * @implements UserToUserGroupRepository<T>
  */
 final class UserToUserGroup extends BaseRepository implements UserToUserGroupRepository
 {
@@ -90,9 +92,9 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      * Updates users from a group
      *
      * @param int $id
-     * @param array $users
+     * @param int[] $users
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ServiceException
      */
     public function update(int $id, array $users): QueryResult
@@ -113,7 +115,7 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      *
      * @param $id int
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -133,9 +135,9 @@ final class UserToUserGroup extends BaseRepository implements UserToUserGroupRep
      * Adds users to a group
      *
      * @param int $groupId
-     * @param array $users
+     * @param int[] $users
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

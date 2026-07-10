@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Security\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -40,6 +41,7 @@ use function SP\__u;
  * Class Track
  *
  * @template T of TrackModel
+ * @implements TrackRepository<T>
  */
 final class Track extends BaseRepository implements TrackRepository
 {
@@ -48,7 +50,7 @@ final class Track extends BaseRepository implements TrackRepository
     /**
      * @param TrackModel $track
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

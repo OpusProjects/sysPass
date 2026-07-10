@@ -36,7 +36,7 @@ use function SP\processException;
 class DatabaseUtil
 {
     /**
-     * @var array Database tables
+     * @var string[] Database tables
      */
     public const TABLES = [
         'Client',
@@ -69,7 +69,7 @@ class DatabaseUtil
     ];
 
     /**
-     * @var array Database views
+     * @var string[] Database views
      */
     public const VIEWS = [
         'account_data_v',
@@ -139,6 +139,8 @@ class DatabaseUtil
 
     /**
      * Get the database server information
+     *
+     * @return array<string, mixed>
      */
     public function getDBinfo(): array
     {

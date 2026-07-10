@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -40,6 +41,7 @@ use function SP\__u;
  * Class UserPassRecover
  *
  * @template T of UserPassRecoverModel
+ * @implements UserPassRecoverRepository<T>
  */
 final class UserPassRecover extends BaseRepository implements UserPassRecoverRepository
 {
@@ -73,7 +75,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
      * @param int $userId
      * @param string $hash
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

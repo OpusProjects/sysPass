@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -46,6 +47,7 @@ final class SearchController extends SearchGridControllerBase
     use ItemTrait;
 
     /**
+     * @param CategoryService<CategoryModel> $categoryService
      * @throws AuthException
      * @throws SessionTimeout
      */

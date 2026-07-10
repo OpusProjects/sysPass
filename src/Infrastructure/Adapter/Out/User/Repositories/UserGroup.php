@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 use Exception;
 use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountToUserGroup as AccountToUserGroupModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -46,6 +47,7 @@ use function SP\__u;
  * Class UserGroup
  *
  * @template T of UserGroupModel
+ * @implements UserGroupRepository<T>
  */
 final class UserGroup extends BaseRepository implements UserGroupRepository
 {
@@ -54,7 +56,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -75,7 +77,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      * Returns the items that are using the given group id
      *
      * @param int $userGroupId
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -113,7 +115,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      *
      * @param int $userGroupId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception
@@ -216,7 +218,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      *
      * @param array<int> $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -271,7 +273,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      *
      * @param UserGroupModel $userGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException

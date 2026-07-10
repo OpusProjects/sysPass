@@ -47,6 +47,8 @@ interface DataGridDataInterface
 
     /**
      * Return the query data sources
+     *
+     * @return array<int, array{name: string, isMethod: bool, filter: ?callable, truncate: bool}>
      */
     public function getDataRowSources(): array;
 
@@ -62,11 +64,16 @@ interface DataGridDataInterface
 
     /**
      * Set the query data
+     *
+     * @template T of object
+     * @param QueryResult<T> $queryResult
      */
     public function setData(QueryResult $queryResult): void;
 
     /**
      * Return the query data
+     *
+     * @return array<int, object>
      */
     public function getData(): array;
 
@@ -81,6 +88,8 @@ interface DataGridDataInterface
 
     /**
      * Return the data sources that are shown with icons
+     *
+     * @return array<int, array{field: string, icon: IconInterface, value: int}>
      */
     public function getDataRowSourcesWithIcon(): array;
 

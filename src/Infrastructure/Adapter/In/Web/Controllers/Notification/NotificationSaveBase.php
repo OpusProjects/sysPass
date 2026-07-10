@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
 use SP\Core\Application;
 use SP\Application\Notification\Ports\NotificationService;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\NotificationForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
@@ -35,9 +36,15 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
  */
 abstract class NotificationSaveBase extends ControllerBase
 {
+    /**
+     * @var NotificationService<NotificationModel>
+     */
     protected NotificationService $notificationService;
     protected NotificationForm    $form;
 
+    /**
+     * @param NotificationService<NotificationModel> $notificationService
+     */
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,

@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Auth\Models\AuthTokenList;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
@@ -41,13 +42,18 @@ use function SP\getElapsedTime;
  * Class AuthTokenGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<AuthTokenList>
  */
 final class AuthTokenGrid extends GridBase
 {
+    /**
+     * @var QueryResult<AuthTokenList>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<AuthTokenList> $queryResult
      *
      * @return DataGridInterface
      */

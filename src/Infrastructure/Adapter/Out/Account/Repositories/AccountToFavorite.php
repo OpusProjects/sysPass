@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToFavoriteRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
@@ -44,7 +45,7 @@ final class AccountToFavorite extends BaseRepository implements AccountToFavorit
      *
      * @param $id int The user ID
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

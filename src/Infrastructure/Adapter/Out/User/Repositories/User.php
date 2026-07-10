@@ -31,6 +31,7 @@ use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountToUser as AccountToUserModel;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -52,6 +53,7 @@ use function SP\__u;
  * Class User
  *
  * @template T of UserModel
+ * @implements UserRepository<T>
  */
 final class User extends BaseRepository implements UserRepository
 {
@@ -152,7 +154,7 @@ final class User extends BaseRepository implements UserRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -199,9 +201,9 @@ final class User extends BaseRepository implements UserRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -226,7 +228,7 @@ final class User extends BaseRepository implements UserRepository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<UserListModel>
      * @throws QueryException
      * @throws ConstraintException
      * @throws Exception
@@ -277,7 +279,7 @@ final class User extends BaseRepository implements UserRepository
      *
      * @param UserModel $user
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
@@ -568,10 +570,7 @@ final class User extends BaseRepository implements UserRepository
     public function getUserEmailById(array $ids): QueryResult
     {
         if (empty($ids)) {
-            /** @var QueryResult<T> $emptyResult */
-            $emptyResult = new QueryResult();
-
-            return $emptyResult;
+            return new QueryResult();
         }
 
         $query = $this->queryFactory
@@ -591,7 +590,7 @@ final class User extends BaseRepository implements UserRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws Exception

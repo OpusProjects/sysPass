@@ -38,6 +38,9 @@ use Symfony\Component\Console\Input\InputInterface;
  */
 abstract class CommandBase extends Command
 {
+    /**
+     * @var string[]
+     */
     public static array $envVarsMapping = [];
     protected LoggerInterface     $logger;
     protected ConfigFile $config;

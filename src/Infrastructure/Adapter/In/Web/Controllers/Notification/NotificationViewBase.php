@@ -41,9 +41,15 @@ use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
  */
 abstract class NotificationViewBase extends ControllerBase
 {
+    /**
+     * @var NotificationService<Notification>
+     */
     private NotificationService $notificationService;
     private UserService         $userService;
 
+    /**
+     * @param NotificationService<Notification> $notificationService
+     */
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,

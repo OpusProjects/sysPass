@@ -52,6 +52,7 @@ use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Adapters\Address;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
@@ -138,6 +139,9 @@ final class Init extends HttpModuleBase
 
     private bool $isIndex = false;
 
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application                          $application,
         ProvidersHelper                      $providersHelper,

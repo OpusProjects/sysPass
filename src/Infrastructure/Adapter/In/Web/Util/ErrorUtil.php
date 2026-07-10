@@ -125,6 +125,8 @@ final class ErrorUtil
 
     /**
      * Return error message by type
+     *
+     * @return array{txt: string, hint: string}
      */
     protected static function getErrorTypes(int $type): array
     {

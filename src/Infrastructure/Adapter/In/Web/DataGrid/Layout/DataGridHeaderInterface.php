@@ -38,7 +38,7 @@ interface DataGridHeaderInterface
     public function addHeader(string $header): void;
 
     /**
-     * @return array
+     * @return string[]
      */
     public function getHeaders(): array;
 }

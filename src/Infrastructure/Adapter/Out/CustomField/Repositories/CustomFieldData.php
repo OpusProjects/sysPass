@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\CustomField\Repositories;
 
 use Exception;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
@@ -41,6 +42,7 @@ use SP\Infrastructure\Database\QueryResult;
  * Class CustomFieldData
  *
  * @template T of CustomFieldDataModel
+ * @implements CustomFieldDataRepository<T>
  */
 final class CustomFieldData extends BaseRepository implements CustomFieldDataRepository
 {
@@ -110,7 +112,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      *
      * @param CustomFieldDataModel $customFieldData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -137,7 +139,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      * @param int[] $itemIds
      * @param int $moduleId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -199,7 +201,7 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      * @param int $moduleId
      * @param int|null $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws Exception
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult

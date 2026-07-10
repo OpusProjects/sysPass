@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
@@ -43,13 +44,18 @@ use function SP\getElapsedTime;
  * Class AccountGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<AccountSearchView>
  */
 final class AccountGrid extends GridBase
 {
+    /**
+     * @var QueryResult<AccountSearchView>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<AccountSearchView> $queryResult
      *
      * @return DataGridInterface
      * @throws SPException

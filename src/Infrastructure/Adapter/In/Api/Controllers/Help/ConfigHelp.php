@@ -36,7 +36,7 @@ final class ConfigHelp implements HelpInterface
     use HelpTrait;
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function backup(): array
     {
@@ -47,7 +47,7 @@ final class ConfigHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function export(): array
     {

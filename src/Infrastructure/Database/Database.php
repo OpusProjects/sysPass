@@ -57,6 +57,7 @@ use PDOStatement;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventDispatcher;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -89,6 +90,11 @@ final class Database implements DatabaseInterface
 
     /**
      * Perform any type of query
+     *
+     * The row class is chosen at runtime via QueryData::getMapClassName(): string (a plain
+     * string, not class-string<T>), so QueryResult's T genuinely cannot be bound here — this
+     * return type has to stay bare QueryResult. See DatabaseInterface::runQuery() (same, by
+     * contract).
      *
      * @throws QueryException
      * @throws ConstraintException
@@ -129,7 +135,7 @@ final class Database implements DatabaseInterface
      * Bind the query parameters using the appropriate type
      *
      * @param QueryInterface $query The query data
-     * @param array $options
+     * @param array<int, mixed> $options
      *
      * @return PDOStatement
      * @throws ConstraintException
@@ -246,6 +252,14 @@ final class Database implements DatabaseInterface
         };
     }
 
+    /**
+     * $class always resolves to a real class (QueryData::getMapClassName() defaults to
+     * Simple::class, never empty/null), so PDO::FETCH_CLASS is always used and every row is
+     * hydrated as a Model instance (every class ever passed to QueryData::setMapClassName()/
+     * buildWithMapper() is a Model subclass).
+     *
+     * @return array<int, Model&object>
+     */
     private function fetch(PDOStatement $stmt, ?string $class = null): array
     {
         $fetchArgs = [PDO::FETCH_DEFAULT];
@@ -274,7 +288,7 @@ final class Database implements DatabaseInterface
      * Don't fetch records and return prepared statement
      *
      * @param QueryData $queryData
-     * @param array $options
+     * @param array<int, mixed> $options
      * @param int $mode Fech mode
      * @param bool|null $buffered Set buffered behavior (useful for big datasets)
      *

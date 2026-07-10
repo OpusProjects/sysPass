@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Plugin\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,6 +43,7 @@ use function SP\__u;
  * Class Plugin
  *
  * @template T of PluginModel
+ * @implements PluginRepository<T>
  */
 final class Plugin extends BaseRepository implements PluginRepository
 {
@@ -54,7 +56,7 @@ final class Plugin extends BaseRepository implements PluginRepository
      *
      * @param PluginModel $plugin
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -158,7 +160,7 @@ final class Plugin extends BaseRepository implements PluginRepository
     /**
      * Returns all the items for given ids
      *
-     * @param array $pluginsId
+     * @param int[] $pluginsId
      *
      * @return QueryResult<T>
      * @throws ConstraintException
@@ -181,9 +183,9 @@ final class Plugin extends BaseRepository implements PluginRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $pluginsId
+     * @param int[] $pluginsId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
@@ -209,7 +211,7 @@ final class Plugin extends BaseRepository implements PluginRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

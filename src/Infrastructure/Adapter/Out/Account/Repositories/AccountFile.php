@@ -41,6 +41,8 @@ use function SP\__u;
 
 /**
  * Class AccountFile
+ *
+ * @implements AccountFileRepository<FileModel>
  */
 final class AccountFile extends BaseRepository implements AccountFileRepository
 {

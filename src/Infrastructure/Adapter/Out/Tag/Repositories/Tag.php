@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Tag\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,6 +43,7 @@ use function SP\__u;
  * Class Tag
  *
  * @template T of TagModel
+ * @implements TagRepository<T>
  */
 final class Tag extends BaseRepository implements TagRepository
 {
@@ -52,7 +54,7 @@ final class Tag extends BaseRepository implements TagRepository
      *
      * @param TagModel $tag
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException
@@ -232,9 +234,9 @@ final class Tag extends BaseRepository implements TagRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -259,7 +261,7 @@ final class Tag extends BaseRepository implements TagRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

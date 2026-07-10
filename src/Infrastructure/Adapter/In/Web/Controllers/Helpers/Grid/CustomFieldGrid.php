@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\CustomFields;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class CustomFieldGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<CustomFieldDefinition>
  */
 final class CustomFieldGrid extends GridBase
 {
+    /**
+     * @var QueryResult<CustomFieldDefinition>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<CustomFieldDefinition> $queryResult
      *
      * @return DataGridInterface
      */

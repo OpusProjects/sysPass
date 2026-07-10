@@ -38,6 +38,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 
 use function SP\__u;
 
@@ -49,6 +50,7 @@ final class ViewPassController extends AccountBase
     private CryptInterface $crypt;
 
     /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      * @throws InvalidClassException
      */
     public function __construct(

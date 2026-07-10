@@ -34,6 +34,7 @@ use SP\Application\Account\Ports\AccountService;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Application\Account\Services\PublicLink;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Application\Client\Ports\ClientService;
 use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
@@ -49,13 +50,16 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\ItemPreset\Models\AccountPermission as AccountPermissionPreset;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\Tag\Ports\TagService;
 use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
@@ -77,6 +81,12 @@ final class AccountHelper extends AccountHelperBase
     private ?AccountPermission $accountPermission = null;
     private ?int               $accountId         = null;
 
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     * @param CategoryService<CategoryModel> $categoryService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     */
     public function __construct(
         Application                             $application,
         TemplateInterface                       $template,

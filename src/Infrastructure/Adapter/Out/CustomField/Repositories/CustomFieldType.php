@@ -38,6 +38,7 @@ use SP\Infrastructure\Database\QueryResult;
  * Class CustomFieldType
  *
  * @template T of CustomFieldTypeModel
+ * @implements CustomFieldTypeRepository<T>
  */
 final class CustomFieldType extends BaseRepository implements CustomFieldTypeRepository
 {

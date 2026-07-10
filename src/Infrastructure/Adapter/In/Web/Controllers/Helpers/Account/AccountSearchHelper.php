@@ -30,6 +30,7 @@ use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Application\Account\Ports\AccountSearchService;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Application\Client\Ports\ClientService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -71,6 +72,9 @@ final class AccountSearchHelper extends HelperBase
     private bool                    $isIndex;
     private ?AccountSearchFilterDto $accountSearchFilter = null;
 
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     */
     public function __construct(
         Application                           $application,
         TemplateInterface                     $template,

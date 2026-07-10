@@ -49,7 +49,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      *
      * @param int $id the account ID
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -76,7 +76,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -145,7 +145,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
     /**
      * @param int $accountId
-     * @param array $items
+     * @param int[] $items
      * @param bool $isEdit
      *
      * @return void

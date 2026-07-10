@@ -35,6 +35,7 @@ use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
@@ -53,9 +54,15 @@ final class ItemPresetHelper extends HelperBase
     private ?SelectItemAdapter          $users      = null;
     private ?SelectItemAdapter $userGroups = null;
     private UserService        $userService;
+    /**
+     * @var UserGroupService<UserGroupModel>
+     */
     private UserGroupService   $userGroupService;
     private UserProfileService $userProfileService;
 
+    /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     */
     public function __construct(
         Application       $application,
         TemplateInterface $template,

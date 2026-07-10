@@ -31,6 +31,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserProfile;
 use SP\Application\User\Ports\UserProfileService;
@@ -47,8 +48,14 @@ abstract class UserProfileViewBase extends ControllerBase
     use ItemTrait;
 
     private UserProfileService $userProfileService;
+    /**
+     * @var CustomFieldDataService<CustomFieldDataModel>
+     */
     private CustomFieldDataService $customFieldService;
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,

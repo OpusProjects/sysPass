@@ -35,6 +35,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
@@ -50,6 +51,9 @@ use function SP\__u;
  */
 final class ViewPassHistoryController extends AccountControllerBase
 {
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application                            $application,
         WebControllerHelper                    $webControllerHelper,

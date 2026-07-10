@@ -33,6 +33,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\User\Ports\UserGroupService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\UserGroupGrid;
@@ -48,9 +49,15 @@ final class SearchController extends ControllerBase
     use ItemTrait;
 
 
+    /**
+     * @var UserGroupService<UserGroupModel>
+     */
     private UserGroupService $userGroupService;
     private UserGroupGrid    $userGroupGrid;
 
+    /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     */
     public function __construct(
         Application      $application,
         WebControllerHelper $webControllerHelper,

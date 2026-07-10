@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Database;
 
-use SP\Domain\Common\Models\Model;
 use SplFixedArray;
 use TypeError;
 
@@ -35,16 +34,21 @@ use function SP\__u;
 /**
  * Class QueryResult
  *
- * @template T of Model&object
+ * @template T of object
  */
 class QueryResult
 {
+    /**
+     * @var SplFixedArray<T>
+     */
     private readonly SplFixedArray $data;
     private readonly int           $numRows;
     private int $totalNumRows = 0;
 
     /**
      * QueryResult constructor.
+     *
+     * @param array<int, T>|SplFixedArray<T>|null $data
      */
     public function __construct(
         array|SplFixedArray|null $data = null,
@@ -60,6 +64,11 @@ class QueryResult
         $this->numRows = $this->data->count();
     }
 
+    /**
+     * @template U of object
+     * @param array<int, U> $data
+     * @return QueryResult<U>
+     */
     public static function withTotalNumRows(array $data, ?int $totalNumRows = null): QueryResult
     {
         $result = new self($data);
@@ -132,8 +141,9 @@ class QueryResult
     /**
      * Mutate the current data into another {@link QueryResult} by applying the given callback function
      *
-     * @param callable $callable
-     * @return QueryResult
+     * @template U of object
+     * @param callable(T): U $callable
+     * @return QueryResult<U>
      */
     public function mutateWithCallback(callable $callable): QueryResult
     {

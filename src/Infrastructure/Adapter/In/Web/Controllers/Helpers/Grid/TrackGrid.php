@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Http\Adapters\Address;
+use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
@@ -43,13 +44,18 @@ use function SP\getElapsedTime;
  * Class TrackGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<TrackModel>
  */
 final class TrackGrid extends GridBase
 {
+    /**
+     * @var QueryResult<TrackModel>|null
+     */
     protected ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<TrackModel> $queryResult
      *
      * @return DataGridInterface
      */

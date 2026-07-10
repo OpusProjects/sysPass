@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Notification\Ports\NotificationService;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\NotificationGrid;
@@ -48,9 +49,15 @@ final class IndexController extends ControllerBase
 {
     use ItemTrait;
 
+    /**
+     * @var NotificationService<NotificationModel>
+     */
     private NotificationService $notificationService;
     private NotificationGrid    $notificationGrid;
 
+    /**
+     * @param NotificationService<NotificationModel> $notificationService
+     */
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,

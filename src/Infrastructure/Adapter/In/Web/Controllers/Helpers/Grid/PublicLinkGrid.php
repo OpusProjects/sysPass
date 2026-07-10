@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
@@ -43,13 +44,18 @@ use function SP\getElapsedTime;
  * Class PublicLinkGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<PublicLinkModel>
  */
 final class PublicLinkGrid extends GridBase
 {
+    /**
+     * @var QueryResult<PublicLinkModel>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<PublicLinkModel> $queryResult
      *
      * @return DataGridInterface
      */

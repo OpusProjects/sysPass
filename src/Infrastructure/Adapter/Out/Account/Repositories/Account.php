@@ -35,6 +35,7 @@ use SP\Domain\Account\Models\AccountView as AccountViewModel;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountRepository;
 use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -68,7 +69,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * Return the total number of accounts
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -139,7 +140,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -160,7 +161,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param AccountModel $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -183,7 +184,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param AccountModel $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -205,7 +206,7 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      * @param AccountModel $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -231,7 +232,7 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      * @param EncryptedPassword $encryptedPassword
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -255,7 +256,7 @@ final class Account extends BaseRepository implements AccountRepository
      * @param int $accountId
      * @param AccountModel $account
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -291,7 +292,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -316,7 +317,7 @@ final class Account extends BaseRepository implements AccountRepository
      * @param bool $changeOwner
      * @param bool $changeUserGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -367,7 +368,7 @@ final class Account extends BaseRepository implements AccountRepository
      * @param bool $changeOwner
      * @param bool $changeUserGroup
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -416,7 +417,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountViewModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -441,7 +442,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<AccountModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -464,7 +465,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<AccountModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -481,9 +482,9 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $accountsId
+     * @param int[] $accountsId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -508,7 +509,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<AccountSearchViewModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -548,7 +549,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -569,7 +570,7 @@ final class Account extends BaseRepository implements AccountRepository
      *
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -601,7 +602,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * @param int|null $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -630,7 +631,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * @param int $accountId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -654,7 +655,7 @@ final class Account extends BaseRepository implements AccountRepository
     /**
      * Get the password-related data of all accounts.
      *
-     * @return QueryResult
+     * @return QueryResult<AccountModel>
      * @throws ConstraintException
      * @throws QueryException
      */

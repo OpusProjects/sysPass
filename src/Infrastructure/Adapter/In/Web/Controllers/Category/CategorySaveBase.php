@@ -27,7 +27,9 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 use SP\Core\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\CategoryForm;
@@ -44,6 +46,8 @@ abstract class CategorySaveBase extends ControllerBase
     protected readonly CategoryForm $form;
 
     /**
+     * @param CategoryService<CategoryModel> $categoryService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      * @throws AuthException
      * @throws SessionTimeout
      */

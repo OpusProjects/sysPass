@@ -163,10 +163,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
 
     /**
      * @param AccountSearchFilterDto $accountSearchFilter
-     * @return void
-     */
-    /**
-     * @return array{0: string, 1: array}|null
+     * @return array{0: string, 1: array<string, mixed>}|null
      */
     private function buildTextFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
@@ -191,7 +188,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
-     * @return array{0: string, 1: array}|null
+     * @return array{0: string, 1: array<string, mixed>}|null
      */
     private function buildCategoryFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
@@ -206,7 +203,7 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
-     * @return array{0: string, 1: array}|null
+     * @return array{0: string, 1: array<string, mixed>}|null
      */
     private function buildClientFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {
@@ -240,15 +237,12 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     }
 
     /**
-     * @param AccountSearchFilterDto $accountSearchFilter
-     * @return void
-     */
-    /**
      * A correlated subquery (not a JOIN) so the tag match is a single boolean that
      * can be OR-combined with the other dimensions. AND requires all of the tags;
      * OR requires any of them.
      *
-     * @return array{0: string, 1: array}|null
+     * @param AccountSearchFilterDto $accountSearchFilter
+     * @return array{0: string, 1: array<string, mixed>}|null
      */
     private function buildTagsFilter(AccountSearchFilterDto $accountSearchFilter): ?array
     {

@@ -35,6 +35,9 @@ final class SaveController extends SimpleControllerBase
         );
     }
 
+    /**
+     * @param EventMessage<mixed> $eventMessage
+     */
     private function handleAuthConfig(ConfigDataInterface $configData, EventMessage $eventMessage): void
     {
         $authBasicEnabled = $this->request->analyzeBool('authbasic_enabled', false);

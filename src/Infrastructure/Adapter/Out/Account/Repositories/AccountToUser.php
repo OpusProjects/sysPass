@@ -75,7 +75,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      * Create the association between users and accounts.
      *
      * @param int $accountId
-     * @param array $items
+     * @param int[] $items
      * @param bool $isEdit
      *
      * @return void
@@ -134,7 +134,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      *
      * @param int $id the account ID
      *
-     * @return QueryResult
+     * @return QueryResult<Item>
      * @throws ConstraintException
      * @throws QueryException
      */

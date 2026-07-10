@@ -39,6 +39,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Application\Import\Services\ImportStrategy;
+use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
@@ -103,7 +104,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     }
 
     /**
-     * @return array
+     * @return mixed[]
      * @throws FileException
      * @throws InvalidClassException
      */
@@ -142,7 +143,7 @@ final class GetEnvironmentController extends SimpleControllerBase
     }
 
     /**
-     * @return array
+     * @return Plugin[]
      */
     private function getPlugins(): array
     {

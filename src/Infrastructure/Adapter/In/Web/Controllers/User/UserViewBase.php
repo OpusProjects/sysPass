@@ -31,7 +31,9 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
@@ -48,10 +50,20 @@ abstract class UserViewBase extends ControllerBase
     use ItemTrait;
 
     protected UserService    $userService;
+    /**
+     * @var UserGroupService<UserGroupModel>
+     */
     private UserGroupService $userGroupService;
     private UserProfileService $userProfileService;
+    /**
+     * @var CustomFieldDataService<CustomFieldDataModel>
+     */
     private CustomFieldDataService $customFieldService;
 
+    /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application            $application,
         WebControllerHelper    $webControllerHelper,
