@@ -34,7 +34,7 @@ interface HelpInterface
     /**
      * @param string $action
      *
-     * @return array
+     * @return array{help?: array<int, array<string, array{description: string, required: bool}>>}
      */
     public static function getHelpFor(string $action): array;
 }

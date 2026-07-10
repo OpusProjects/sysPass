@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Category\Models\Category;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class CategoryGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<Category>
  */
 final class CategoryGrid extends GridBase
 {
+    /**
+     * @var QueryResult<Category>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<Category> $queryResult
      *
      * @return DataGridInterface
      * @throws SPException

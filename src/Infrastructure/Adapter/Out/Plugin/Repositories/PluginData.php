@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Plugin\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
@@ -40,6 +41,7 @@ use function SP\__u;
  * Class PluginData
  *
  * @template T of PluginDataModel
+ * @implements PluginDataRepository<T>
  */
 final class PluginData extends BaseRepository implements PluginDataRepository
 {
@@ -52,7 +54,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      *
      * @param PluginDataModel $pluginData
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -99,7 +101,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      *
      * @param string $name
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -121,7 +123,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      * @param string $name
      * @param int $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -210,7 +212,7 @@ final class PluginData extends BaseRepository implements PluginDataRepository
      *
      * @param string[] $names
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

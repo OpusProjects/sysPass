@@ -40,6 +40,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Tag\Ports\TagService;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserService;
+use SP\Domain\Category\Models\Category as CategoryModel;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
@@ -58,6 +60,8 @@ final class BulkEditController extends ControllerBase
     use ItemTrait;
 
     /**
+     * @param CategoryService<CategoryModel> $categoryService
+     * @param UserGroupService<UserGroupModel> $userGroupService
      * @throws AuthException
      * @throws SessionTimeout
      */

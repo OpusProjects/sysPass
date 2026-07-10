@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionType;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class TagGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<TagModel>
  */
 final class TagGrid extends GridBase
 {
+    /**
+     * @var QueryResult<TagModel>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<TagModel> $queryResult
      *
      * @return DataGridInterface
      */

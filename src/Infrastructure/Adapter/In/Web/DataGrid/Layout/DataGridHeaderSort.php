@@ -35,6 +35,9 @@ use SplObjectStorage;
  */
 final class DataGridHeaderSort extends DataGridHeaderBase
 {
+    /**
+     * @var SplObjectStorage<DataGridSortInterface, null>
+     */
     private SplObjectStorage $sortFields;
 
     public function __construct()
@@ -44,7 +47,7 @@ final class DataGridHeaderSort extends DataGridHeaderBase
 
 
     /**
-     * @return DataGridSortInterface[]|null
+     * @return SplObjectStorage<DataGridSortInterface, null>
      */
     public function getSortFields(): ?SplObjectStorage
     {

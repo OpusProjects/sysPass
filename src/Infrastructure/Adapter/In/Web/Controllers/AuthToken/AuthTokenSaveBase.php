@@ -26,8 +26,10 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
 use SP\Core\Application;
 use SP\Application\Auth\Ports\AuthTokenService;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\AuthTokenForm;
@@ -44,6 +46,8 @@ abstract class AuthTokenSaveBase extends ControllerBase
     protected readonly AuthTokenForm $form;
 
     /**
+     * @param AuthTokenService<AuthTokenModel> $authTokenService
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      * @throws AuthException
      * @throws SessionTimeout
      */

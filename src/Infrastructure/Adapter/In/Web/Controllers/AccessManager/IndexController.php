@@ -37,10 +37,12 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
+use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\PublicLinkGrid;
@@ -58,6 +60,8 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 final class IndexController extends ControllerBase
 {
     /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     * @param AuthTokenService<AuthTokenModel> $authTokenService
      * @throws AuthException
      * @throws SessionTimeout
      */

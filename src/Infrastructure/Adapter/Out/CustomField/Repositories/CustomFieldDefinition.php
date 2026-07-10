@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\CustomField\Repositories;
 
 use Exception;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -43,6 +44,7 @@ use function SP\__u;
  * Class CustomFieldDefinition
  *
  * @template T of CustomFieldDefinitionModel
+ * @implements CustomFieldDefinitionRepository<T>
  */
 final class CustomFieldDefinition extends BaseRepository implements CustomFieldDefinitionRepository
 {
@@ -53,7 +55,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
      *
      * @param CustomFieldDefinitionModel $customFieldDefinition
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -145,9 +147,9 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -173,7 +175,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

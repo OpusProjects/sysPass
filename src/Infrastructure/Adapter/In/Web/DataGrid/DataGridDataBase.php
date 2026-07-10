@@ -38,10 +38,14 @@ abstract class DataGridDataBase implements DataGridDataInterface
 {
     /**
      * The matrix data
+     *
+     * @var array<int, object>
      */
     private array $data = [];
     /**
      * The columns to display from the retrieved data
+     *
+     * @var array<int, array{name: string, isMethod: bool, filter: ?callable, truncate: bool}>
      */
     private array $sources = [];
     /**
@@ -50,10 +54,15 @@ abstract class DataGridDataBase implements DataGridDataInterface
     private string $sourceId = '';
     /**
      * The columns to display from the retrieved data that are represented with icons
+     *
+     * @var array<int, array{field: string, icon: IconInterface, value: int}>
      */
     private array $sourcesWithIcon = [];
     private int $dataCount = 0;
 
+    /**
+     * @return array<int, array{field: string, icon: IconInterface, value: int}>
+     */
     public function getDataRowSourcesWithIcon(): array
     {
         return $this->sourcesWithIcon;
@@ -78,6 +87,9 @@ abstract class DataGridDataBase implements DataGridDataInterface
         $this->sourceId = $id;
     }
 
+    /**
+     * @return array<int, array{name: string, isMethod: bool, filter: ?callable, truncate: bool}>
+     */
     public function getDataRowSources(): array
     {
         return $this->sources;
@@ -88,13 +100,17 @@ abstract class DataGridDataBase implements DataGridDataInterface
         return $this->sourceId;
     }
 
+    /**
+     * @return array<int, object>
+     */
     public function getData(): array
     {
         return $this->data;
     }
 
     /**
-     * @param QueryResult $queryResult
+     * @template T of object
+     * @param QueryResult<T> $queryResult
      */
     public function setData(QueryResult $queryResult): void
     {

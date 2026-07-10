@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
@@ -39,13 +40,18 @@ use function SP\getElapsedTime;
 
 /**
  * Class AccountHistoryGrid
+ *
+ * @extends GridBase<Simple>
  */
 final class AccountHistoryGrid extends GridBase
 {
+    /**
+     * @var QueryResult<Simple>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<Simple> $queryResult
      *
      * @return DataGridInterface
      */

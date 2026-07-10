@@ -35,6 +35,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
@@ -48,6 +49,7 @@ abstract class ClientViewBase extends ControllerBase
     use ItemTrait;
 
     /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      * @throws AuthException
      * @throws SessionTimeout
      */

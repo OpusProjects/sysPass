@@ -33,6 +33,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\AccountHelp;
 
@@ -43,10 +44,14 @@ abstract class AccountBase extends ControllerBase
 {
     protected AccountPresetService        $accountPresetService;
     protected AccountService          $accountService;
+    /**
+     * @var CustomFieldDataService<CustomFieldDataModel>
+     */
     protected CustomFieldDataService $customFieldService;
     protected AccountAdapter $accountAdapter;
 
     /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
      * @throws InvalidClassException
      */
     public function __construct(

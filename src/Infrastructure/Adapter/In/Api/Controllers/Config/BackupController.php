@@ -92,7 +92,7 @@ final class BackupController extends ControllerBase
     /**
      * @param string|null $path
      *
-     * @return array[]
+     * @return array{files: array{app: string, db: string}}
      */
     private function buildBackupFiles(?string $path): array
     {

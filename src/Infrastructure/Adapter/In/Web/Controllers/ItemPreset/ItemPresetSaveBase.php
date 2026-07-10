@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset;
 
 use SP\Core\Application;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\ItemsPresetForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
@@ -35,9 +36,15 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
  */
 abstract class ItemPresetSaveBase extends ControllerBase
 {
+    /**
+     * @var ItemPresetService<ItemPresetModel>
+     */
     protected ItemPresetService $itemPresetService;
     protected ItemsPresetForm   $form;
 
+    /**
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,

@@ -38,6 +38,8 @@ final class CustomFields
 
     /**
      * Returns the modules available for custom fields
+     *
+     * @return array<int, string>
      */
     public static function getFieldModules(): array
     {

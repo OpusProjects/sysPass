@@ -36,6 +36,8 @@ final class DataGridActionSearch extends DataGridActionBase
 
     /**
      * The arguments for the OnSubmit function
+     *
+     * @var string[]
      */
     private array $onSubmitArgs = [];
 

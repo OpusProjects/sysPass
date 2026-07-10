@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserProfile;
 use SP\Core\Application;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserProfileService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserProfileForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
@@ -37,9 +38,15 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 abstract class UserProfileSaveBase extends ControllerBase
 {
     protected UserProfileService $userProfileService;
+    /**
+     * @var CustomFieldDataService<CustomFieldDataModel>
+     */
     protected CustomFieldDataService $customFieldService;
     protected UserProfileForm             $form;
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application         $application,
         WebControllerHelper $webControllerHelper,

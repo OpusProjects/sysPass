@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Adapter\Out\Category\Repositories;
 use Exception;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -43,6 +44,7 @@ use function SP\__u;
  * Class Category
  *
  * @template T of CategoryModel
+ * @implements CategoryRepository<T>
  */
 final class Category extends BaseRepository implements CategoryRepository
 {
@@ -53,7 +55,7 @@ final class Category extends BaseRepository implements CategoryRepository
      *
      * @param CategoryModel $category
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws DuplicatedItemException
      * @throws QueryException
@@ -232,9 +234,9 @@ final class Category extends BaseRepository implements CategoryRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $categoryIds
+     * @param int[] $categoryIds
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -259,7 +261,7 @@ final class Category extends BaseRepository implements CategoryRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

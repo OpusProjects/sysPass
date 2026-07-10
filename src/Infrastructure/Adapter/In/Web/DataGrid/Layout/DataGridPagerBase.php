@@ -43,6 +43,9 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
     protected int           $totalRows       = 0;
     protected bool          $filterOn        = false;
     protected string        $onClickFunction = '';
+    /**
+     * @var string[]
+     */
     protected array         $onClickArgs     = [];
     protected IconInterface $iconPrev;
     protected IconInterface $iconNext;
@@ -236,6 +239,9 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
             : $this->onClickFunction;
     }
 
+    /**
+     * @return string[]
+     */
     protected function parseArgs(): array
     {
         $args = [];

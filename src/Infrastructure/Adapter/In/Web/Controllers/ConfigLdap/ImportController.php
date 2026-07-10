@@ -104,7 +104,7 @@ final class ImportController extends SimpleControllerBase
     }
 
     /**
-     * @return array
+     * @return array{0: LdapImportParamsDto, 1: bool}
      * @throws ValidationException
      */
     private function getImportParams(): array

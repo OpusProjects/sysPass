@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -41,6 +42,7 @@ use function SP\__u;
  * Class UserProfile
  *
  * @template T of UserProfileModel
+ * @implements UserProfileRepository<T>
  */
 final class UserProfile extends BaseRepository implements UserProfileRepository
 {
@@ -49,7 +51,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -110,7 +112,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      *
      * @param array<int> $ids
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -163,7 +165,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
      *
      * @param UserProfileModel $userProfile
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      * @throws DuplicatedItemException

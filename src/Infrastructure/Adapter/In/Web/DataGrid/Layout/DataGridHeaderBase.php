@@ -35,6 +35,8 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
 {
     /**
      * The headers that identify the data columns
+     *
+     * @var string[]
      */
     private array $headers = [];
     /**
@@ -55,6 +57,9 @@ abstract class DataGridHeaderBase implements DataGridHeaderInterface
         return $this->width;
     }
 
+    /**
+     * @return string[]
+     */
     public function getHeaders(): array
     {
         return $this->headers;

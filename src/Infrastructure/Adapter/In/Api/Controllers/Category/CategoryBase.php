@@ -29,6 +29,7 @@ use SP\Core\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
@@ -39,10 +40,14 @@ use SP\Infrastructure\Adapter\In\Api\Controllers\Help\CategoryHelp;
  */
 abstract class CategoryBase extends ControllerBase
 {
+    /**
+     * @var CategoryService<CategoryModel>
+     */
     protected CategoryService $categoryService;
     protected CategoryAdapter $categoryAdapter;
 
     /**
+     * @param CategoryService<CategoryModel> $categoryService
      * @throws InvalidClassException
      */
     public function __construct(

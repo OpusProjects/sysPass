@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Client\Models\Client;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class ClientGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<Client>
  */
 final class ClientGrid extends GridBase
 {
+    /**
+     * @var QueryResult<Client>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<Client> $queryResult
      *
      * @return DataGridInterface
      * @throws SPException

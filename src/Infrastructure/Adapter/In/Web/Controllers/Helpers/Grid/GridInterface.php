@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Common\Models\Model;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -31,11 +32,13 @@ use SP\Infrastructure\Database\QueryResult;
  * Interface GridInterface
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @template T of Model&object
  */
 interface GridInterface
 {
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<T> $queryResult
      *
      * @return DataGridInterface
      */

@@ -88,6 +88,8 @@ final class SelectItem implements JsonSerializable
 
     /**
      * @inheritDoc
+     *
+     * @return array{id: int|string, name: string}
      */
     public function jsonSerialize(): array
     {

@@ -67,20 +67,35 @@ interface DataGridActionInterface
 
     public function setFilterRowSource(string $rowSource, mixed $value = 1): static;
 
+    /**
+     * @return array<int, array{field: string, value: mixed}>|null
+     */
     public function getFilterRowSource(): ?array;
 
     public function setType(int $type): static;
 
     public function getType(): ?int;
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getData(): ?array;
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function setData(array $data): static;
 
     public function addData(string $name, mixed $data): static;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAttributes(): array;
 
+    /**
+     * @param array<string, mixed> $attributes
+     */
     public function setAttributes(array $attributes): static;
 
     public function addAttribute(string $name, mixed $value): static;
@@ -94,8 +109,14 @@ interface DataGridActionInterface
 
     public function getClassesAsString(): ?string;
 
+    /**
+     * @return string[]
+     */
     public function getClasses(): array;
 
+    /**
+     * @param string[] $classes
+     */
     public function setClasses(array $classes): void;
 
     public function addClass(mixed $value): static;

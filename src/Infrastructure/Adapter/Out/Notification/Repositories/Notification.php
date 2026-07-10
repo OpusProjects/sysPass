@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Notification\Repositories;
 
 use Aura\SqlQuery\Common\SelectInterface;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -42,6 +43,7 @@ use function SP\__u;
  * Class Notification
  *
  * @template T of NotificationModel
+ * @implements NotificationRepository<T>
  */
 final class Notification extends BaseRepository implements NotificationRepository
 {
@@ -51,7 +53,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
      * Creates an item
      *
      * @param NotificationModel $notification
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -97,7 +99,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -119,7 +121,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -139,9 +141,9 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * Deletes an item
      *
-     * @param array $notificationsId
+     * @param int[] $notificationsId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -206,7 +208,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * Returns all the items for given ids
      *
-     * @param array $notificationsId
+     * @param int[] $notificationsId
      *
      * @return QueryResult<T>
      * @throws ConstraintException
@@ -215,10 +217,7 @@ final class Notification extends BaseRepository implements NotificationRepositor
     public function getByIdBatch(array $notificationsId): QueryResult
     {
         if (empty($notificationsId)) {
-            /** @var QueryResult<T> $emptyResult */
-            $emptyResult = new QueryResult();
-
-            return $emptyResult;
+            return new QueryResult();
         }
 
         $query = $this->queryFactory
@@ -235,8 +234,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
     /**
      * Deletes all the items for given ids
      *
-     * @param array $notificationsId
-     * @return QueryResult
+     * @param int[] $notificationsId
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

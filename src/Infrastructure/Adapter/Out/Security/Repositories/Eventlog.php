@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Security\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -40,6 +41,7 @@ use function SP\__u;
  * Class Eventlog
  *
  * @template T of EventlogModel
+ * @implements EventlogRepository<T>
  */
 final class Eventlog extends BaseRepository implements EventlogRepository
 {
@@ -100,7 +102,7 @@ final class Eventlog extends BaseRepository implements EventlogRepository
     /**
      * @param EventlogModel $eventlog
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -36,7 +36,7 @@ final class AccountHelp implements HelpInterface
     use HelpTrait;
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function view(): array
     {
@@ -49,7 +49,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function viewPass(): array
     {
@@ -62,7 +62,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function editPass(): array
     {
@@ -76,7 +76,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function create(): array
     {
@@ -100,7 +100,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function edit(): array
     {
@@ -123,7 +123,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function search(): array
     {
@@ -139,7 +139,7 @@ final class AccountHelp implements HelpInterface
     }
 
     /**
-     * @return array
+     * @return array<int, array<string, array{description: string, required: bool}>>
      */
     public static function delete(): array
     {

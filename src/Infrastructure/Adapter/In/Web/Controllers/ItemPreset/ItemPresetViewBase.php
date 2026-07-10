@@ -43,9 +43,15 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
  */
 abstract class ItemPresetViewBase extends ControllerBase
 {
+    /**
+     * @var ItemPresetService<ItemPreset>
+     */
     private ItemPresetService $itemPresetService;
     private ItemPresetHelper  $itemPresetHelper;
 
+    /**
+     * @param ItemPresetService<ItemPreset> $itemPresetService
+     */
     public function __construct(
         Application       $application,
         WebControllerHelper $webControllerHelper,

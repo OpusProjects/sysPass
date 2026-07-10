@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
 use SP\Core\Application;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -42,8 +43,14 @@ use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
  */
 final class CategoriesController extends SimpleControllerBase
 {
+    /**
+     * @var CategoryService<CategoryModel>
+     */
     private CategoryService $categoryService;
 
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     */
     public function __construct(
         Application $application,
         SimpleControllerHelper $simpleControllerHelper,

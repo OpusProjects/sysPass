@@ -32,6 +32,7 @@ use SP\Domain\Account\Models\Account as AccountModel;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -153,7 +154,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      *
      * @param int $id
      *
-     * @return QueryResult
+     * @return QueryResult<AccountHistoryView>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -182,7 +183,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Returns all the items
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -236,7 +237,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -261,7 +262,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Deletes all the items for given accounts id
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -288,7 +289,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
      *
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -331,7 +332,7 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
     /**
      * Get the password-related data of all accounts.
      *
-     * @return QueryResult
+     * @return QueryResult<AccountHistoryModel>
      * @throws ConstraintException
      * @throws QueryException
      */

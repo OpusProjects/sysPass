@@ -28,6 +28,7 @@ namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Ports\PublicLinkRepository;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -44,6 +45,7 @@ use function SP\__u;
  * Class PublicLink
  *
  * @template T of PublicLinkModel
+ * @implements PublicLinkRepository<T>
  */
 final class PublicLink extends BaseRepository implements PublicLinkRepository
 {
@@ -110,7 +112,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
     /**
      * Deletes all the items for given ids
      *
-     * @param array $ids
+     * @param int[] $ids
      *
      * @return int
      * @throws ConstraintException
@@ -193,7 +195,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      *
      * @param PublicLinkModel $publicLinkData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws DuplicatedItemException
      * @throws QueryException
      * @throws ConstraintException
@@ -426,7 +428,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      *
      * @param int $itemId
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

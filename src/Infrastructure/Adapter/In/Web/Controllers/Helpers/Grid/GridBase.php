@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
 use SP\Core\Application;
+use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\UI\ThemeIconsInterface;
@@ -42,6 +43,9 @@ use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
  * Class GridBase
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @template T of Model&object
+ * @implements GridInterface<T>
  */
 abstract class GridBase extends HelperBase implements GridInterface
 {

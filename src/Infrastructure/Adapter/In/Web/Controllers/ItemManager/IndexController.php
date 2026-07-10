@@ -38,6 +38,8 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\Tag\Ports\TagService;
+use SP\Domain\Category\Models\Category as CategoryModel;
+use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -64,6 +66,9 @@ final class IndexController extends ControllerBase
 {
     protected ?ItemSearchDto $itemSearchData = null;
     private TabsGridHelper   $tabsGridHelper;
+    /**
+     * @var CategoryService<CategoryModel>
+     */
     private CategoryService $categoryService;
     private TagService      $tagService;
     private ClientService   $clientService;
@@ -71,6 +76,9 @@ final class IndexController extends ControllerBase
     private AccountFileService           $accountFileService;
     private AccountService             $accountService;
     private AccountHistoryService $accountHistoryService;
+    /**
+     * @var ItemPresetService<ItemPresetModel>
+     */
     private ItemPresetService     $itemPresetService;
     private CategoryGrid          $categoryGrid;
     private TagGrid                        $tagGrid;
@@ -81,6 +89,10 @@ final class IndexController extends ControllerBase
     private AccountHistoryGrid             $accountHistoryGrid;
     private ItemPresetGrid                 $itemPresetGrid;
 
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     */
     public function __construct(
         Application                  $application,
         WebControllerHelper          $webControllerHelper,

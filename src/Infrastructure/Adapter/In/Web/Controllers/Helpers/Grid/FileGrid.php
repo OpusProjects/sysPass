@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
+use SP\Domain\Account\Models\File as FileModel;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
@@ -42,13 +43,18 @@ use function SP\getElapsedTime;
  * Class FileGrid
  *
  * @package SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid
+ *
+ * @extends GridBase<FileModel>
  */
 final class FileGrid extends GridBase
 {
+    /**
+     * @var QueryResult<FileModel>|null
+     */
     private ?QueryResult $queryResult = null;
 
     /**
-     * @param QueryResult $queryResult
+     * @param QueryResult<FileModel> $queryResult
      *
      * @return DataGridInterface
      * @throws SPException

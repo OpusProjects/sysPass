@@ -90,7 +90,7 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @param ConfigDataInterface $configData
-     * @param EventMessage $eventMessage
+     * @param EventMessage<mixed> $eventMessage
      *
      * @return void
      * @throws ValidationException
@@ -122,7 +122,7 @@ final class SaveController extends SimpleControllerBase
 
     /**
      * @param ConfigDataInterface $configData
-     * @param EventMessage $eventMessage
+     * @param EventMessage<mixed> $eventMessage
      *
      * @return void
      */

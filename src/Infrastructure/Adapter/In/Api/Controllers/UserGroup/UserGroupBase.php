@@ -30,6 +30,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Application\User\Ports\UserGroupService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\UserGroupHelp;
 
@@ -38,9 +39,13 @@ use SP\Infrastructure\Adapter\In\Api\Controllers\Help\UserGroupHelp;
  */
 abstract class UserGroupBase extends ControllerBase
 {
+    /**
+     * @var UserGroupService<UserGroupModel>
+     */
     protected UserGroupService $userGroupService;
 
     /**
+     * @param UserGroupService<UserGroupModel> $groupService
      * @throws InvalidClassException
      */
     public function __construct(

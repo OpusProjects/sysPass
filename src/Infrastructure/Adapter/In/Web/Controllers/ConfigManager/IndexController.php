@@ -56,6 +56,7 @@ use SP\Application\Notification\Services\MailEvent;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
@@ -77,6 +78,7 @@ final class IndexController extends ControllerBase
 {
 
     /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
      * @throws AuthException
      * @throws SessionTimeout
      */

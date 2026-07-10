@@ -28,6 +28,7 @@ use SP\Core\Application;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
 use SP\Infrastructure\Adapter\In\Web\Forms\FormInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
@@ -42,6 +43,9 @@ abstract class AccountSaveBase extends AccountControllerBase
 
     protected readonly FormInterface $accountForm;
 
+    /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     */
     public function __construct(
         Application                               $application,
         WebControllerHelper                       $webControllerHelper,

@@ -34,7 +34,9 @@ use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Application\Account\Ports\AccountToUserGroupService;
 use SP\Application\Account\Ports\AccountToUserService;
 use SP\Application\Category\Ports\CategoryService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Application\Client\Ports\ClientService;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedActionException;
@@ -54,6 +56,9 @@ final class AccountHistoryHelper extends AccountHelperBase
     private ?int               $accountId         = null;
     private ?AccountPermission $accountPermission = null;
 
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     */
     public function __construct(
         Application                                $application,
         TemplateInterface                          $template,
@@ -162,6 +167,9 @@ final class AccountHistoryHelper extends AccountHelperBase
 
     /**
      * Maps history items to fill in a date select
+     *
+     * @param Simple[] $history
+     * @return array<int, string>
      */
     public static function mapHistoryForDateSelect(array $history): array
     {

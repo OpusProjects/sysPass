@@ -33,6 +33,7 @@ use SP\Core\Application;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Plugin\Models\PluginData as PluginDataModel;
 use SP\Domain\Plugin\Ports\PluginDataService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -48,8 +49,14 @@ final class ResetController extends ControllerBase
 {
 
     private PluginManagerService $pluginService;
+    /**
+     * @var PluginDataService<PluginDataModel>
+     */
     private PluginDataService    $pluginDataService;
 
+    /**
+     * @param PluginDataService<PluginDataModel> $pluginDataService
+     */
     public function __construct(
         Application          $application,
         WebControllerHelper  $webControllerHelper,

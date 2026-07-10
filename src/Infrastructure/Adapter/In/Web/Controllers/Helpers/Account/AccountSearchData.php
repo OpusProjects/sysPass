@@ -95,6 +95,9 @@ final class AccountSearchData
     ];
     private const TEXT_LENGTH_CARDS  = 40;
     private const TEXT_LENGTH_NORMAL = 60;
+    /**
+     * @var array<int, string>|null
+     */
     private ?array $accountColor = null;
 
     public function __construct(

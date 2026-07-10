@@ -36,6 +36,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
+use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
@@ -50,6 +51,8 @@ abstract class AuthTokenViewBase extends ControllerBase
     use ItemTrait;
 
     /**
+     * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
+     * @param AuthTokenService<AuthToken> $authTokenService
      * @throws AuthException
      * @throws SessionTimeout
      */

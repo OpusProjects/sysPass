@@ -112,7 +112,7 @@ final class JsController extends ResourceBase
 
     /**
      * @param string $base
-     * @param array $files
+     * @param string[] $files
      * @param bool $insecure
      * @return FileHandler[]
      */

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\Out\Config\Repositories;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Config\Ports\ConfigRepository;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -39,6 +40,7 @@ use function SP\__u;
  * Class Config
  *
  * @template T of ConfigModel
+ * @implements ConfigRepository<T>
  */
 final class Config extends BaseRepository implements ConfigRepository
 {
@@ -47,7 +49,7 @@ final class Config extends BaseRepository implements ConfigRepository
     /**
      * @param ConfigModel $config
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -74,7 +76,7 @@ final class Config extends BaseRepository implements ConfigRepository
     /**
      * @param ConfigModel $config
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

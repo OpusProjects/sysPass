@@ -8,6 +8,9 @@ final class UserGroupHelp implements HelpInterface
 {
     use HelpTrait;
 
+    /**
+     * @return array<int, array<string, array{description: string, required: bool}>>
+     */
     public static function view(): array
     {
         return
@@ -16,6 +19,9 @@ final class UserGroupHelp implements HelpInterface
             ];
     }
 
+    /**
+     * @return array<int, array<string, array{description: string, required: bool}>>
+     */
     public static function create(): array
     {
         return
@@ -26,6 +32,9 @@ final class UserGroupHelp implements HelpInterface
             ];
     }
 
+    /**
+     * @return array<int, array<string, array{description: string, required: bool}>>
+     */
     public static function edit(): array
     {
         return
@@ -37,6 +46,9 @@ final class UserGroupHelp implements HelpInterface
             ];
     }
 
+    /**
+     * @return array<int, array<string, array{description: string, required: bool}>>
+     */
     public static function search(): array
     {
         return
@@ -46,6 +58,9 @@ final class UserGroupHelp implements HelpInterface
             ];
     }
 
+    /**
+     * @return array<int, array<string, array{description: string, required: bool}>>
+     */
     public static function delete(): array
     {
         return

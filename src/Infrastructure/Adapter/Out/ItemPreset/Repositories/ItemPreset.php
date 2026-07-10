@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\ItemPreset\Repositories;
 
 use Exception;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -41,6 +42,7 @@ use function SP\__u;
  * Class ItemPreset
  *
  * @template T of ItemPresetModel
+ * @implements ItemPresetRepository<T>
  */
 class ItemPreset extends BaseRepository implements ItemPresetRepository
 {
@@ -125,7 +127,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
      *
      * @param int $itemPresetId
      *
-     * @return QueryResult
+     * @return QueryResult<T>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -211,6 +213,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
     /**
      * Deletes all the items for given ids
      *
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

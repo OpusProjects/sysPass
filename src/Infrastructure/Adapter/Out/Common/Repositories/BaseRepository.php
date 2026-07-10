@@ -31,6 +31,7 @@ use Closure;
 use Exception;
 use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Context\Context;
@@ -102,12 +103,12 @@ abstract class BaseRepository implements Repository
     /**
      * Run a SQL select query to get any data from any table
      *
-     * @param array $columns
+     * @param string[] $columns
      * @param string $from
      * @param string|null $where
-     * @param array|null $bindValues
+     * @param array<string, mixed>|null $bindValues
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -66,7 +66,7 @@ final class AccountPasswordHelper extends HelperBase
      *
      * @param bool $useImage
      *
-     * @return array
+     * @return array{useimage: bool, html: string}
      * @throws CryptException
      * @throws HelperException
      */

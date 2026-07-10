@@ -35,6 +35,9 @@ final class Query implements QueryInterface
 {
     private Quoter $quoter;
 
+    /**
+     * @param array<int|string, mixed> $values
+     */
     private function __construct(private readonly string $query, private array $values)
     {
         $this->quoter = new Quoter();
@@ -44,7 +47,7 @@ final class Query implements QueryInterface
      * Build an instance of this class for the given database
      *
      * @param string $query
-     * @param array $values
+     * @param array<int|string, mixed> $values
      *
      * @return Query
      */
@@ -93,7 +96,7 @@ final class Query implements QueryInterface
      *
      * Adds values to bind into the query; merges with existing values.
      *
-     * @param array $bind_values Values to bind to the query.
+     * @param array<int|string, mixed> $bind_values Values to bind to the query.
      *
      * @return $this
      *
@@ -127,7 +130,7 @@ final class Query implements QueryInterface
     }
 
     /**
-     * @return array
+     * @return array<int|string, mixed>
      */
     public function getBindValues(): array
     {
