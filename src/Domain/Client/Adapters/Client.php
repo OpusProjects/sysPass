@@ -93,7 +93,7 @@ final class Client extends Adapter implements ClientAdapter
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
-                        $data->getId(),
+                        $data->getId() ?? 0,
                         $actionRoute,
                         $this->configData,
                         $this->baseUrl

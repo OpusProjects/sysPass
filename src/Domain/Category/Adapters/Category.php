@@ -92,7 +92,7 @@ final class Category extends Adapter implements CategoryAdapter
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
-                        $data->getId(),
+                        $data->getId() ?? 0,
                         $actionRoute,
                         $this->configData,
                         $this->baseUrl
