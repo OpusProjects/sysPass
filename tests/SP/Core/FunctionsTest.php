@@ -30,11 +30,12 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 use function SP\getFromEnv;
+use function SP\mb_ucfirst;
 
 /**
  * Class FunctionsTest
  *
- * Covers SP\getFromEnv() from src/Core/Functions.php
+ * Covers SP\getFromEnv() and SP\mb_ucfirst() from src/Core/Functions.php
  */
 #[Group('unitary')]
 class FunctionsTest extends TestCase
@@ -113,5 +114,23 @@ class FunctionsTest extends TestCase
 
         $this->assertTrue(getFromEnv(self::ENV_VAR, true));
         $this->assertFalse(getFromEnv(self::ENV_VAR, false));
+    }
+
+    public static function ucfirstProvider(): array
+    {
+        return [
+            'ascii word' => ['hello', 'Hello'],
+            'already capitalized' => ['World', 'World'],
+            'multibyte word' => ['ñandú', 'Ñandú'],
+            'single multibyte char' => ['ñ', 'Ñ'],
+            'single ascii char' => ['a', 'A'],
+            'empty string' => ['', ''],
+        ];
+    }
+
+    #[DataProvider('ucfirstProvider')]
+    public function testMbUcfirst(string $input, string $expected): void
+    {
+        $this->assertSame($expected, mb_ucfirst($input));
     }
 }
