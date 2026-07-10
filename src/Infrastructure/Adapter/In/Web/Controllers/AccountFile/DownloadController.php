@@ -77,7 +77,6 @@ final class DownloadController extends AccountFileBase
             $disposition = sprintf('inline; filename="%s"', $fileDto->name);
         } else {
             $disposition = sprintf('attachment; filename="%s"', $fileDto->name);
-            $response->header('Set-Cookie', 'fileDownload=true; path=/');
         }
 
         $response->header('Content-Disposition', $disposition);

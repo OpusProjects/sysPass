@@ -19,10 +19,6 @@ const dest = join(root, 'public', 'vendor', 'js');
 // It is never vendored or served; do not "clean" it from the lock.
 //
 // Not every file under public/vendor/js/ and public/js/ is npm-managed:
-//   - jquery.fileDownload.min.js (public/vendor/js/) is abandoned upstream (~2016, last
-//     published as jquery-file-download@1.4.6). The only thing on npm under that name is a
-//     snapshot of the original ASP.NET MVC demo project (.csproj/.sln, no dist/*.min.js) —
-//     not something this script can vendor from. Stays hand-vendored; edit in place.
 //   - selectize-plugins.min.js and zxcvbn-async.min.js are app-authored glue (a one-off
 //     Selectize plugin and a lazy-loader for zxcvbn.min.js), not third-party library dists,
 //     so they live under public/js/ with the other hand-authored app-*.min.js files and are
