@@ -101,11 +101,11 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
     /**
      * @param $id int
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByUserGroupId(int $id): bool
+    public function deleteByUserGroupId(int $id): void
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -115,7 +115,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
+        $this->db->runQuery($queryData);
     }
 
     /**
@@ -178,11 +178,11 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
     /**
      * @param $id int
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): bool
+    public function deleteByAccountId(int $id): void
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -192,6 +192,6 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while deleting the account\'s groups'));
 
-        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
+        $this->db->runQuery($queryData);
     }
 }

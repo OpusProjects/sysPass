@@ -27,6 +27,7 @@ namespace SP\Tests\Infrastructure\Adapter\Out\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Item;
@@ -72,7 +73,7 @@ class AccountToUserTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult(null, 1));
 
-        $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
+        $this->accountToUser->deleteByAccountId($accountId);
     }
 
     public function testGetUserGroupsByAccountId(): void
@@ -122,7 +123,7 @@ class AccountToUserTest extends UnitaryTestCase
             ->with($callback)
             ->willReturn(new QueryResult(null, 1));
 
-        $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
+        $this->accountToUser->deleteByAccountId($accountId);
     }
 
     /**
@@ -165,10 +166,16 @@ class AccountToUserTest extends UnitaryTestCase
     }
 
     /**
+     * An account can have any number of secondary users (or none), so any affected row count
+     * (including zero, or more than one) is a successful outcome, not just exactly one.
+     *
      * @throws QueryException
      * @throws ConstraintException
      */
-    public function testDeleteByAccountId(): void
+    #[TestWith([0])]
+    #[TestWith([1])]
+    #[TestWith([2])]
+    public function testDeleteByAccountId(int $affectedRows): void
     {
         $accountId = self::$faker->randomNumber();
 
@@ -186,9 +193,9 @@ class AccountToUserTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('runQuery')
             ->with($callback)
-            ->willReturn(new QueryResult(null, 1));
+            ->willReturn(new QueryResult(null, $affectedRows));
 
-        $this->assertTrue($this->accountToUser->deleteByAccountId($accountId));
+        $this->accountToUser->deleteByAccountId($accountId);
     }
 
     protected function setUp(): void
