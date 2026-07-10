@@ -45,6 +45,8 @@ trait EventReceiver
     /**
      * Build the events regex from the class' EventReceiver attributes. The caller's
      * constructor assigns the result to the readonly $events property.
+     *
+     * @param string[] $userEvents
      */
     private function setupEvents(array $userEvents = []): string
     {
@@ -64,7 +66,7 @@ trait EventReceiver
     }
 
     /**
-     * @param array $events
+     * @param string[] $events
      *
      * @return string
      */

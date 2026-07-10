@@ -33,6 +33,7 @@ use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Ports\AccountHistoryRepository;
 use SP\Application\Account\Ports\AccountHistoryService;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -78,7 +79,7 @@ final class AccountHistory extends Service implements AccountHistoryService
      *
      * @param int $id
      *
-     * @return array With the records keyed by id and date - user as the value
+     * @return Simple[] With the records keyed by id and date - user as the value
      */
     public function getHistoryForAccount(int $id): array
     {
@@ -88,7 +89,7 @@ final class AccountHistory extends Service implements AccountHistoryService
     /**
      * @param ItemSearchDto $itemSearchData
      *
-     * @return QueryResult
+     * @return QueryResult<Simple>
      */
     public function search(ItemSearchDto $itemSearchData): QueryResult
     {
@@ -108,7 +109,7 @@ final class AccountHistory extends Service implements AccountHistoryService
     }
 
     /**
-     * @return array
+     * @return AccountHistoryModel[]
      * @throws SPException
      */
     public function getAccountsPassData(): array

@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\User\Ports;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -87,6 +88,7 @@ interface UserProfileService
     public function update(UserProfileModel $userProfile): void;
 
     /**
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

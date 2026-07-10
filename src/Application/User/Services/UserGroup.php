@@ -45,9 +45,13 @@ use function SP\__u;
  * Class UserGroup
  *
  * @template T of UserGroupModel
+ * @implements UserGroupService<T>
  */
 final class UserGroup extends Service implements UserGroupService
 {
+    /**
+     * @param UserGroupRepository<UserGroupModel> $userGroupRepository
+     */
     public function __construct(
         Application                             $application,
         private readonly UserGroupRepository    $userGroupRepository,

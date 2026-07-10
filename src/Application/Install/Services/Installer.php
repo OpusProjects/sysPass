@@ -70,6 +70,9 @@ final class Installer implements InstallerService
     private RequestService $request;
     private ?InstallData   $installData = null;
 
+    /**
+     * @param UserGroupService<UserGroup> $userGroupService
+     */
     public function __construct(
         RequestService               $request,
         private readonly ConfigFileService      $config,

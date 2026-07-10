@@ -55,6 +55,9 @@ use function SP\processException;
  */
 final class LdapImport extends Service implements LdapImportService
 {
+    /**
+     * @param UserGroupService<UserGroup> $userGroupService
+     */
     public function __construct(
         Application                         $application,
         private readonly UserService        $userService,
@@ -148,6 +151,9 @@ final class LdapImport extends Service implements LdapImportService
         );
     }
 
+    /**
+     * @param array<int|string, mixed>|string|null $entry
+     */
     private function flattenEntry(array|string|null $entry): ?string
     {
         if (is_array($entry)) {

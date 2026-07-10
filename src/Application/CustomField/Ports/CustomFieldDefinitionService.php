@@ -42,6 +42,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface CustomFieldDefinitionService
 {
     /**
+     * @return QueryResult<CustomFieldDefinitionModel>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -47,6 +47,9 @@ use function SP\__u;
 final class Tag extends Service implements TagService
 {
 
+    /**
+     * @param TagRepository<TagModel> $tagRepository
+     */
     public function __construct(Application $application, private readonly TagRepository $tagRepository)
     {
         parent::__construct($application);

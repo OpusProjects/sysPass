@@ -30,6 +30,7 @@ use SP\Application\Category\Ports\CategoryService;
 use SP\Application\Client\Ports\ClientService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Application\Tag\Ports\TagService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 
 /**
  * Interface ImportHelperInterface
@@ -38,6 +39,9 @@ interface ImportHelperInterface
 {
     public function getAccountService(): AccountService;
 
+    /**
+     * @return CategoryService<CategoryModel>
+     */
     public function getCategoryService(): CategoryService;
 
     public function getClientService(): ClientService;

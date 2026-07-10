@@ -40,6 +40,7 @@ use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Dtos\UserMasterPassDto;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Application\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
 
@@ -55,6 +56,9 @@ final class UserMasterPass extends Service implements UserMasterPassService
     private const PARAM_MASTER_PWD      = 'masterPwd';
     private const PARAM_LASTUPDATEMPASS = 'lastupdatempass';
 
+    /**
+     * @param UserRepository<UserModel> $userRepository
+     */
     public function __construct(
         Application                     $application,
         private readonly UserRepository $userRepository,

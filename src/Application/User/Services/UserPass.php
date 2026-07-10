@@ -43,6 +43,9 @@ use function SP\__u;
  */
 final class UserPass extends Service implements UserPassService
 {
+    /**
+     * @param UserRepository<User> $userRepository
+     */
     public function __construct(
         Application                     $application,
         private readonly UserRepository $userRepository

@@ -48,6 +48,9 @@ final class NotificationEvent extends Service implements EventReceiver
 {
     use EventReceiverTrait;
 
+    /**
+     * @param NotificationService<Notification> $notificationService
+     */
     public function __construct(
         Application $application,
         private readonly NotificationService $notificationService

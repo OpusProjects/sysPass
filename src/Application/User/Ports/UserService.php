@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserLoginRequest;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Domain\User\Models\UserPreferences;
@@ -177,6 +178,7 @@ interface UserService
     /**
      * Get the email addresses of the users in a group
      *
+     * @return UserModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -185,6 +187,7 @@ interface UserService
     /**
      * Get the email addresses of the users in a group
      *
+     * @return UserModel[]
      * @throws ConstraintException
      * @throws QueryException
      **/
@@ -195,6 +198,7 @@ interface UserService
      *
      * @param int[] $ids
      *
+     * @return UserModel[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -203,6 +207,7 @@ interface UserService
     /**
      * Returns the usage of the given user's id
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

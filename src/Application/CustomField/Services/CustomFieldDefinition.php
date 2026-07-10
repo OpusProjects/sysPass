@@ -47,6 +47,9 @@ use function SP\__u;
 final class CustomFieldDefinition extends Service implements CustomFieldDefinitionService
 {
 
+    /**
+     * @param CustomFieldDefinitionRepository<CustomFieldDefinitionModel> $customFieldDefinitionRepository
+     */
     public function __construct(
         Application                                      $application,
         private readonly CustomFieldDefinitionRepository $customFieldDefinitionRepository
@@ -55,6 +58,7 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
     }
 
     /**
+     * @return QueryResult<CustomFieldDefinitionModel>
      * @throws ConstraintException
      * @throws QueryException
      */

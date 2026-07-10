@@ -36,6 +36,7 @@ use SP\Application\Account\Ports\AccountSearchService;
 use SP\Domain\Account\Services\Builders\AccountSearchTokenizer;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Database\QueryResult;
@@ -47,6 +48,9 @@ use function SP\processException;
  */
 final class AccountSearch extends Service implements AccountSearchService
 {
+    /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
+     */
     public function __construct(
         Application                              $application,
         private readonly UserService             $userService,
@@ -80,6 +84,9 @@ final class AccountSearch extends Service implements AccountSearchService
         return $this->accountSearchRepository->getByFilter($accountSearchFilter);
     }
 
+    /**
+     * @param array<string, string> $filters
+     */
     private function processFilterItems(array $filters): void
     {
         foreach ($filters as $filter => $text) {
@@ -126,6 +133,9 @@ final class AccountSearch extends Service implements AccountSearchService
         }
     }
 
+    /**
+     * @param string[] $filters
+     */
     private function processFilterConditions(array $filters,): void
     {
         foreach ($filters as $filter) {

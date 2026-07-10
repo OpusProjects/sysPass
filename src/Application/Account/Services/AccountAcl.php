@@ -34,6 +34,7 @@ use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Application\Account\Ports\AccountAclService;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -266,7 +267,7 @@ final class AccountAcl extends Service implements AccountAclService
      *
      * @param int $userId
      *
-     * @return array
+     * @return Item[]
      */
     private function getUserInSecondaryUsers(int $userId): array
     {
@@ -283,7 +284,7 @@ final class AccountAcl extends Service implements AccountAclService
     /**
      * Check whether the user's groups are linked through the account's main group
      *
-     * @param array $userGroups
+     * @param int[] $userGroups
      *
      * @return bool
      */
@@ -297,10 +298,10 @@ final class AccountAcl extends Service implements AccountAclService
      * Check whether the user or the user's group is among the groups associated with the
      * account.
      *
-     * @param array $userGroups
+     * @param int[] $userGroups
      * @param int $userGroupId
      *
-     * @return array
+     * @return Item[]
      */
     private function getUserGroupsInSecondaryGroups(array $userGroups, int $userGroupId): array
     {

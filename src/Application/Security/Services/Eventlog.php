@@ -43,6 +43,9 @@ use SP\Infrastructure\Database\QueryResult;
 final class Eventlog extends Service implements EventlogService
 {
 
+    /**
+     * @param EventlogRepository<EventlogModel> $eventLogRepository
+     */
     public function __construct(
         Application                         $application,
         private readonly EventlogRepository $eventLogRepository,
@@ -52,6 +55,7 @@ final class Eventlog extends Service implements EventlogService
     }
 
     /**
+     * @return QueryResult<EventlogModel>
      * @throws ConstraintException
      * @throws QueryException
      */

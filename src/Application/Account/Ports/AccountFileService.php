@@ -85,6 +85,7 @@ interface AccountFileService
     /**
      * Searches for items by a given filter
      *
+     * @return QueryResult<FileModel>
      * @throws ConstraintException
      * @throws QueryException
      */

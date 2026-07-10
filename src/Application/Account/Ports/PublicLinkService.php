@@ -30,6 +30,7 @@ use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink;
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
@@ -48,6 +49,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface PublicLinkService
 {
     /**
+     * @return QueryResult<PublicLinkModel>
      * @throws ConstraintException
      * @throws QueryException
      */

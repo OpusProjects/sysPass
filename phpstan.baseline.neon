@@ -1,188 +1,19 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountFileService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Ports/AccountFileService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountHistoryService\:\:getAccountsPassData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountHistoryService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountHistoryService\:\:getHistoryForAccount\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountHistoryService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountHistoryService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Ports/AccountHistoryService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountSearchService\:\:getByFilter\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Ports/AccountSearchService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountService\:\:getAccountsPassData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountService\:\:getForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountService\:\:getLinked\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Ports/AccountService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\AccountToFavoriteService\:\:getForUserId\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Ports/AccountToFavoriteService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Ports\\PublicLinkService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Ports/PublicLinkService.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\Account\:\:__construct\(\) has parameter \$itemPresetService with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/Account.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\Account\:\:getForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/Account.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\Account\:\:getLinked\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/Account.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\Account\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/Account.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountAcl\:\:getUserGroupsInMainGroup\(\) has parameter \$userGroups with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountAcl.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountAcl\:\:getUserGroupsInSecondaryGroups\(\) has parameter \$userGroups with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountAcl.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountAcl\:\:getUserGroupsInSecondaryGroups\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountAcl.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountAcl\:\:getUserInSecondaryUsers\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountAcl.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountFile\:\:__construct\(\) has parameter \$accountFileRepository with generic interface SP\\Domain\\Account\\Ports\\AccountFileRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountFile.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountFile\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountFile.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountHistory\:\:getAccountsPassData\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountHistory\:\:getHistoryForAccount\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountHistory\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountMasterPassword\:\:getETA\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
+			# processAccounts() is shared by both rotation paths (Account[] and AccountHistory[] callers);
+			# the accurate union type surfaces that it reads AccountHistory::$mPassHash (protected) from
+			# outside the class. isset() on an inaccessible property is false in PHP, so the comparison
+			# this guards is dead for AccountHistory callers too — a pre-existing behavior, not a
+			# regression from this annotation pass. See PR body for details; left as-is (no runtime change).
+			message: '#^Access to protected property SP\\Domain\\Account\\Models\\Account\|SP\\Domain\\Account\\Models\\AccountHistory\:\:\$mPassHash\.$#'
+			identifier: property.protected
 			count: 1
 			path: src/Application/Account/Services/AccountMasterPassword.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountMasterPassword\:\:processAccounts\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountMasterPassword.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountPreset\:\:__construct\(\) has parameter \$itemPresetService with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountPreset.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:__construct\(\) has parameter \$userGroupService with generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/AccountSearch.php
 
 		-
 			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:getByFilter\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Account\\Models\\AccountSearchView\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Account\\Models\\AccountSearchView\>\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Application/Account/Services/AccountSearch.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:processFilterConditions\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountSearch.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:processFilterItems\(\) has parameter \$filters with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Application/Account/Services/AccountSearch.php
 
@@ -193,38 +24,8 @@ parameters:
 			path: src/Application/Account/Services/AccountSearch.php
 
 		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountToFavorite\:\:getForUserId\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/AccountToFavorite.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\PublicLink\:\:__construct\(\) has parameter \$publicLinkRepository with generic interface SP\\Domain\\Account\\Ports\\PublicLinkRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/PublicLink.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\PublicLink\:\:getUseInfo\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Account/Services/PublicLink.php
-
-		-
-			message: '#^Method SP\\Application\\Account\\Services\\PublicLink\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Account/Services/PublicLink.php
-
-		-
 			message: '#^Method SP\\Application\\Api\\Ports\\ApiService\:\:getParamArray\(\) has parameter \$default with no type specified\.$#'
 			identifier: missingType.parameter
-			count: 1
-			path: src/Application/Api/Ports/ApiService.php
-
-		-
-			message: '#^Method SP\\Application\\Api\\Ports\\ApiService\:\:getParamArray\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Application/Api/Ports/ApiService.php
 
@@ -247,26 +48,8 @@ parameters:
 			path: src/Application/Api/Ports/ApiService.php
 
 		-
-			message: '#^Method SP\\Application\\Api\\Services\\Api\:\:__construct\(\) has parameter \$authTokenService with generic interface SP\\Application\\Auth\\Ports\\AuthTokenService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Api/Services/Api.php
-
-		-
-			message: '#^Method SP\\Application\\Api\\Services\\Api\:\:getHelp\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Api/Services/Api.php
-
-		-
 			message: '#^Method SP\\Application\\Api\\Services\\Api\:\:getParamArray\(\) has parameter \$default with no type specified\.$#'
 			identifier: missingType.parameter
-			count: 1
-			path: src/Application/Api/Services/Api.php
-
-		-
-			message: '#^Method SP\\Application\\Api\\Services\\Api\:\:getParamArray\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Application/Api/Services/Api.php
 
@@ -289,116 +72,8 @@ parameters:
 			path: src/Application/Api/Services/Api.php
 
 		-
-			message: '#^Method SP\\Application\\Auth\\Ports\\AuthTokenActionService\:\:getTokenActions\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Ports/AuthTokenActionService.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Ports\\AuthTokenService\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Ports/AuthTokenService.php
-
-		-
-			message: '#^Call to an undefined method SP\\Application\\Auth\\Services\\AuthToken\:\:getToken\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Class SP\\Application\\Auth\\Services\\AuthToken implements generic interface SP\\Application\\Auth\\Ports\\AuthTokenService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthToken\:\:__construct\(\) has parameter \$authTokenRepository with generic class SP\\Application\\Auth\\Services\\AuthToken but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthToken\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthToken\:\:getAll\(\) should return array\<T of SP\\Domain\\Auth\\Models\\AuthToken\> but returns array\<SP\\Application\\Auth\\Services\\AuthToken\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthToken\:\:getById\(\) should return SP\\Domain\\Auth\\Models\\AuthToken but returns SP\\Application\\Auth\\Services\\AuthToken\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthToken\:\:getTokenByToken\(\) should return SP\\Domain\\Auth\\Models\\AuthToken but returns SP\\Application\\Auth\\Services\\AuthToken\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Parameter \#1 \$dataType of method SP\\Infrastructure\\Database\\QueryResult\<SP\\Application\\Auth\\Services\\AuthToken\>\:\:getData\(\) expects class\-string\<SP\\Application\\Auth\\Services\\AuthToken\>\|null, string given\.$#'
-			identifier: argument.type
-			count: 3
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Parameter \#1 \$dataType of method SP\\Infrastructure\\Database\\QueryResult\<SP\\Application\\Auth\\Services\\AuthToken\>\:\:getDataAsArray\(\) expects class\-string\<SP\\Application\\Auth\\Services\\AuthToken\>\|null, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Type SP\\Application\\Auth\\Services\\AuthToken in generic type SP\\Domain\\Auth\\Ports\\AuthTokenRepository\<SP\\Application\\Auth\\Services\\AuthToken\> in PHPDoc tag @param for parameter \$authTokenRepository is not subtype of template type T of SP\\Domain\\Auth\\Models\\AuthToken of interface SP\\Domain\\Auth\\Ports\\AuthTokenRepository\.$#'
-			identifier: generics.notSubtype
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Type SP\\Application\\Auth\\Services\\AuthToken in generic type SP\\Domain\\Auth\\Ports\\AuthTokenRepository\<SP\\Application\\Auth\\Services\\AuthToken\> in PHPDoc type for property SP\\Application\\Auth\\Services\\AuthToken\:\:\$authTokenRepository is not subtype of template type T of SP\\Domain\\Auth\\Models\\AuthToken of interface SP\\Domain\\Auth\\Ports\\AuthTokenRepository\.$#'
-			identifier: generics.notSubtype
-			count: 1
-			path: src/Application/Auth/Services/AuthToken.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\AuthTokenAction\:\:getTokenActions\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Services/AuthTokenAction.php
-
-		-
 			message: '#^Call to function is_array\(\) with array\<mixed, mixed\> will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
-			count: 1
-			path: src/Application/Auth/Services/LdapCheck.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\LdapCheck\:\:getObjectsWithAttributes\(\) has parameter \$attributes with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Services/LdapCheck.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\LdapCheck\:\:getObjectsWithAttributes\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Services/LdapCheck.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\LdapCheck\:\:ldapResultsMapper\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Auth/Services/LdapCheck.php
-
-		-
-			message: '#^Method SP\\Application\\Auth\\Services\\LdapCheck\:\:ldapResultsMapper\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Application/Auth/Services/LdapCheck.php
 
@@ -409,58 +84,10 @@ parameters:
 			path: src/Application/Auth/Services/LdapCheck.php
 
 		-
-			message: '#^Method SP\\Application\\Category\\Ports\\CategoryService\:\:delete\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Category/Ports/CategoryService.php
-
-		-
-			message: '#^Method SP\\Application\\Category\\Ports\\CategoryService\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Category/Ports/CategoryService.php
-
-		-
-			message: '#^Class SP\\Application\\Category\\Services\\Category implements generic interface SP\\Application\\Category\\Ports\\CategoryService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Category/Services/Category.php
-
-		-
-			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:__construct\(\) has parameter \$categoryRepository with generic interface SP\\Domain\\Category\\Ports\\CategoryRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Category/Services/Category.php
-
-		-
-			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:delete\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Category/Services/Category.php
-
-		-
-			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:deleteByIdBatch\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Category/Services/Category.php
-
-		-
 			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Category\\Models\\Category\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Category\\Models\\Category\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/Category/Services/Category.php
-
-		-
-			message: '#^Method SP\\Application\\Client\\Ports\\ClientService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Client/Ports/ClientService.php
-
-		-
-			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:__construct\(\) has parameter \$clientRepository with generic interface SP\\Domain\\Client\\Ports\\ClientRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Client/Services/Client.php
 
 		-
 			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:getAllForUser\(\) should return array\<SP\\Domain\\Common\\Models\\Simple\> but returns array\<SP\\Domain\\Client\\Models\\Client\>\.$#'
@@ -487,19 +114,6 @@ parameters:
 			path: src/Application/Config/Ports/ConfigService.php
 
 		-
-			message: '#^Method SP\\Application\\Config\\Services\\Config\:\:__construct\(\) has parameter \$configRepository with generic interface SP\\Domain\\Config\\Ports\\ConfigRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Config/Services/Config.php
-
-
-		-
-			message: '#^Method SP\\Application\\Config\\Services\\ConfigFile\:\:configMapper\(\) has parameter \$items with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Config/Services/ConfigFile.php
-
-		-
 			message: '#^Method SP\\Application\\Crypt\\Ports\\MasterPassService\:\:updateConfig\(\) has parameter \$hash with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
@@ -512,78 +126,6 @@ parameters:
 			path: src/Application/Crypt/Services/MasterPass.php
 
 		-
-			message: '#^Method SP\\Application\\CustomField\\Ports\\CustomFieldDataService\:\:delete\(\) has parameter \$itemsId with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/CustomField/Ports/CustomFieldDataService.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Ports\\CustomFieldDataService\:\:getBy\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/CustomField/Ports/CustomFieldDataService.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Ports\\CustomFieldDefinitionService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Ports/CustomFieldDefinitionService.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldCrypt\:\:__construct\(\) has parameter \$customFieldService with generic interface SP\\Application\\CustomField\\Ports\\CustomFieldDataService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldCrypt.php
-
-		-
-			message: '#^Class SP\\Application\\CustomField\\Services\\CustomFieldData implements generic interface SP\\Application\\CustomField\\Ports\\CustomFieldDataService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldData.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldData\:\:__construct\(\) has parameter \$customFieldDataRepository with generic interface SP\\Domain\\CustomField\\Ports\\CustomFieldDataRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldData.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldData\:\:__construct\(\) has parameter \$customFieldDefinitionRepository with generic interface SP\\Domain\\CustomField\\Ports\\CustomFieldDefinitionRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldData.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldData\:\:delete\(\) has parameter \$itemsId with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldData.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldData\:\:getBy\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldData.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldDefinition\:\:__construct\(\) has parameter \$customFieldDefinitionRepository with generic interface SP\\Domain\\CustomField\\Ports\\CustomFieldDefinitionRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldDefinition.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldDefinition\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldDefinition.php
-
-		-
-			message: '#^Method SP\\Application\\CustomField\\Services\\CustomFieldType\:\:__construct\(\) has parameter \$customFieldTypeRepository with generic interface SP\\Domain\\CustomField\\Ports\\CustomFieldTypeRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/CustomField/Services/CustomFieldType.php
-
-		-
 			message: '#^Template type T of method SP\\Application\\CustomField\\Services\\CustomFieldType\:\:getAll\(\) is not referenced in a parameter\.$#'
 			identifier: method.templateTypeNotInParameter
 			count: 1
@@ -594,14 +136,6 @@ parameters:
 			identifier: arguments.count
 			count: 1
 			path: src/Application/Export/Services/BackupFile.php
-
-
-		-
-			message: '#^Method SP\\Application\\Export\\Services\\XmlCategoryExport\:\:__construct\(\) has parameter \$categoryService with generic interface SP\\Application\\Category\\Ports\\CategoryService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Export/Services/XmlCategoryExport.php
-
 
 
 		-
@@ -631,124 +165,10 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Application\\Import\\Ports\\ImportHelperInterface\:\:getCategoryService\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Ports/ImportHelperInterface.php
-
-		-
-			message: '#^Property SP\\Application\\Import\\Services\\ImportBase\:\:\$cache type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Import/Services/ImportBase.php
-
-		-
-			message: '#^Property SP\\Application\\Import\\Services\\ImportBase\:\:\$categoryService with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/ImportBase.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\ImportHelper\:\:__construct\(\) has parameter \$categoryService with generic interface SP\\Application\\Category\\Ports\\CategoryService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/ImportHelper.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\ImportHelper\:\:getCategoryService\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/ImportHelper.php
-
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\KeepassImport\:\:getEntryFor\(\) return type with generic class SplObjectStorage does not specify its types\: TObject, TData$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/KeepassImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\KeepassImport\:\:mapEntryToAccount\(\) has parameter \$entry with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Import/Services/KeepassImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\KeepassImport\:\:processAccounts\(\) has parameter \$accounts with generic class SplObjectStorage but does not specify its types\: TObject, TData$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/KeepassImport.php
-
-		-
-			message: '#^Property SP\\Application\\Import\\Services\\KeepassImport\:\:\$entries type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Import/Services/KeepassImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\LdapImport\:\:__construct\(\) has parameter \$userGroupService with generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/LdapImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\LdapImport\:\:flattenEntry\(\) has parameter \$entry with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Import/Services/LdapImport.php
-
-
-		-
 			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Core\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Application/Import/Services/LdapImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\SyspassImport\:\:processAccountTags\(\) has parameter \$nodes with generic class DOMNodeList but does not specify its types\: TNode$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Import/Services/SyspassImport.php
-
-		-
-			message: '#^Method SP\\Application\\Import\\Services\\SyspassImport\:\:processAccountTags\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Import/Services/SyspassImport.php
-
-
-
-
-		-
-			message: '#^Method SP\\Application\\Install\\Services\\Installer\:\:__construct\(\) has parameter \$userGroupService with generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Install/Services/Installer.php
-
-
-		-
-			message: '#^Method SP\\Application\\ItemPreset\\Ports\\ItemPresetService\:\:delete\(\) return type with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/ItemPreset/Ports/ItemPresetService.php
-
-		-
-			message: '#^Class SP\\Application\\ItemPreset\\Services\\ItemPreset implements generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/ItemPreset/Services/ItemPreset.php
-
-		-
-			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:__construct\(\) has parameter \$itemPresetRepository with generic interface SP\\Domain\\ItemPreset\\Ports\\ItemPresetRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/ItemPreset/Services/ItemPreset.php
-
-		-
-			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:delete\(\) return type with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/ItemPreset/Services/ItemPreset.php
 
 		-
 			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\ItemPreset\\Models\\ItemPreset\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\ItemPreset\\Models\\ItemPreset\>\.$#'
@@ -757,52 +177,10 @@ parameters:
 			path: src/Application/ItemPreset/Services/ItemPreset.php
 
 		-
-			message: '#^Method SP\\Application\\Notification\\Ports\\MailService\:\:send\(\) has parameter \$to with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Ports/MailService.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Ports\\NotificationService\:\:delete\(\) return type with generic interface SP\\Application\\Notification\\Ports\\NotificationService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Ports/NotificationService.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Ports\\NotificationService\:\:deleteAdmin\(\) return type with generic interface SP\\Application\\Notification\\Ports\\NotificationService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Ports/NotificationService.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Mail\:\:getEmailFooter\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/Mail.php
-
-		-
 			message: '#^Method SP\\Application\\Notification\\Services\\Mail\:\:getSubjectForAction\(\) has parameter \$action with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
 			path: src/Application/Notification/Services/Mail.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Mail\:\:send\(\) has parameter \$to with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/Mail.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\MailEvent\:\:parseEventsToRegex\(\) has parameter \$events with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/MailEvent.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\MailEvent\:\:setupEvents\(\) has parameter \$userEvents with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/MailEvent.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
@@ -810,30 +188,6 @@ parameters:
 			count: 1
 			path: src/Application/Notification/Services/MailEvent.php
 
-
-		-
-			message: '#^Class SP\\Application\\Notification\\Services\\Notification implements generic interface SP\\Application\\Notification\\Ports\\NotificationService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Services/Notification.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:__construct\(\) has parameter \$notificationRepository with generic interface SP\\Domain\\Notification\\Ports\\NotificationRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Services/Notification.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:delete\(\) return type with generic interface SP\\Application\\Notification\\Ports\\NotificationService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Services/Notification.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:deleteAdmin\(\) return type with generic interface SP\\Application\\Notification\\Ports\\NotificationService does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Services/Notification.php
 
 		-
 			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Notification\\Models\\Notification\>\.$#'
@@ -848,24 +202,6 @@ parameters:
 			path: src/Application/Notification/Services/Notification.php
 
 		-
-			message: '#^Method SP\\Application\\Notification\\Services\\NotificationEvent\:\:__construct\(\) has parameter \$notificationService with generic interface SP\\Application\\Notification\\Ports\\NotificationService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Notification/Services/NotificationEvent.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\NotificationEvent\:\:parseEventsToRegex\(\) has parameter \$events with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/NotificationEvent.php
-
-		-
-			message: '#^Method SP\\Application\\Notification\\Services\\NotificationEvent\:\:setupEvents\(\) has parameter \$userEvents with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/Notification/Services/NotificationEvent.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
 			identifier: parameter.notFound
 			count: 1
@@ -873,209 +209,10 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Application\\Security\\Ports\\EventlogService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Ports/EventlogService.php
-
-		-
-			message: '#^Method SP\\Application\\Security\\Ports\\TrackService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Ports/TrackService.php
-
-		-
-			message: '#^Method SP\\Application\\Security\\Services\\Eventlog\:\:__construct\(\) has parameter \$eventLogRepository with generic interface SP\\Domain\\Security\\Ports\\EventlogRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Services/Eventlog.php
-
-		-
-			message: '#^Method SP\\Application\\Security\\Services\\Eventlog\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Services/Eventlog.php
-
-		-
-			message: '#^Method SP\\Application\\Security\\Services\\Track\:\:__construct\(\) has parameter \$trackRepository with generic interface SP\\Domain\\Security\\Ports\\TrackRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Services/Track.php
-
-		-
-			message: '#^Method SP\\Application\\Security\\Services\\Track\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Security/Services/Track.php
-
-		-
-			message: '#^Method SP\\Application\\Tag\\Services\\Tag\:\:__construct\(\) has parameter \$tagRepository with generic interface SP\\Domain\\Tag\\Ports\\TagRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/Tag/Services/Tag.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserGroupService\:\:getUsage\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserGroupService\:\:getUsageByUsers\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserGroupService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Ports/UserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserProfileService\:\:getUsersForProfile\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserProfileService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserService\:\:getUsageForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserService\:\:getUserEmailById\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserService\:\:getUserEmailForAll\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserService\:\:getUserEmailForGroup\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserToUserGroupService\:\:add\(\) has parameter \$users with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserToUserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserToUserGroupService\:\:getGroupsForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserToUserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserToUserGroupService\:\:getUsersByGroupId\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserToUserGroupService.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Ports\\UserToUserGroupService\:\:update\(\) has parameter \$users with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Ports/UserToUserGroupService.php
-
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\User\:\:__construct\(\) has parameter \$userRepository with generic interface SP\\Domain\\User\\Ports\\UserRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/User.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\User\:\:getUsageForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/User.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\User\:\:getUserEmailForGroup\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/User.php
-
-		-
-			message: '#^Class SP\\Application\\User\\Services\\UserGroup implements generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserGroup.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserGroup\:\:__construct\(\) has parameter \$userGroupRepository with generic interface SP\\Domain\\User\\Ports\\UserGroupRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserGroup.php
-
-		-
 			message: '#^Method SP\\Application\\User\\Services\\UserGroup\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\User\\Models\\UserGroup\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\User\\Models\\UserGroup\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/User/Services/UserGroup.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserMasterPass\:\:__construct\(\) has parameter \$userRepository with generic interface SP\\Domain\\User\\Ports\\UserRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserMasterPass.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserPass\:\:__construct\(\) has parameter \$userRepository with generic interface SP\\Domain\\User\\Ports\\UserRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserPass.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserPassRecover\:\:__construct\(\) has parameter \$userPassRecoverRepository with generic interface SP\\Domain\\User\\Ports\\UserPassRecoverRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserPassRecover.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserProfile\:\:__construct\(\) has parameter \$userProfileRepository with generic interface SP\\Domain\\User\\Ports\\UserProfileRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserProfile.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserProfile\:\:getUsersForProfile\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/UserProfile.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserToUserGroup\:\:__construct\(\) has parameter \$userToUserGroupRepository with generic interface SP\\Domain\\User\\Ports\\UserToUserGroupRepository but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Application/User/Services/UserToUserGroup.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserToUserGroup\:\:add\(\) has parameter \$users with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/UserToUserGroup.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserToUserGroup\:\:getGroupsForUser\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/UserToUserGroup.php
-
-		-
-			message: '#^Method SP\\Application\\User\\Services\\UserToUserGroup\:\:update\(\) has parameter \$users with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Application/User/Services/UserToUserGroup.php
 
 		-
 			message: '#^If condition is always false\.$#'
@@ -5436,3 +4573,85 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Infrastructure/File/XmlFileStorage.php
+
+		# --- Entries below surfaced by the src/Application missingType annotation pass ---
+		# Precise return types (e.g. UserModel[], UserToUserGroup[]) now let PHPStan see into
+		# array_map()/foreach closures that were previously opaque (untyped `array`). Two real
+		# pre-existing bugs found (protected-property access from outside the model — a fatal
+		# Error at runtime if the code path executes, since neither User nor UserToUserGroup
+		# defines __get()); left unfixed per PR scope (PHPDoc-only, no runtime changes) and
+		# reported. See PR body for details and the follow-up needed.
+		-
+			# BUG: TemporaryMasterPass reads User::$email (protected, no __get()) via ->email
+			# in sendByEmailForGroup()/sendByEmailForAllUsers() — a fatal Error if either path
+			# executes. Pre-existing; use getEmail() instead. Not fixed here (no runtime changes).
+			message: '#^Access to protected property SP\\Domain\\User\\Models\\User\:\:\$email\.$#'
+			identifier: property.protected
+			count: 2
+			path: src/Application/Crypt/Services/TemporaryMasterPass.php
+
+		-
+			# BUG: same as above — SaveRequestController::saveRequestAction() reads User::$email
+			# via ->email when composing the "account access requested" notification.
+			message: '#^Access to protected property SP\\Domain\\User\\Models\\User\:\:\$email\.$#'
+			identifier: property.protected
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
+
+		-
+			# BUG: AccountAcl::compileAccountAccess() reads UserToUserGroup::$userGroupId
+			# (protected, no __get()) via ->userGroupId instead of ->getUserGroupId() — a fatal
+			# Error if this branch executes. Pre-existing; not fixed here (no runtime changes).
+			message: '#^Access to protected property SP\\Domain\\User\\Models\\UserToUserGroup\:\:\$userGroupId\.$#'
+			identifier: property.protected
+			count: 1
+			path: src/Application/Account/Services/AccountAcl.php
+
+		-
+			# Not a bug: SP\Domain\Common\Models\Simple is a deliberately dynamic bag
+			# (__get()/__set()/__isset() defined) — this is PHPStan's documented
+			# property.notFound false positive for magic-property classes without @property
+			# tags (see the "Learn more" link PHPStan attaches to this error). Adding
+			# @property tags to the shared Simple class isn't a precise fix (its shape is
+			# whatever the query projects, ad hoc per call site) and touching these
+			# Infrastructure call sites is out of this PR's src/Application scope.
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$clientName\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Items/AccountsUserController.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Items/AccountsUserController.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Items/AccountsUserController.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/PublicLink/PublicLinkViewBase.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/PublicLink/PublicLinkViewBase.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$icon\.$#'
+			identifier: property.notFound
+			count: 4
+			path: src/Infrastructure/Adapter/In/Web/Controllers/User/UserViewBase.php
+
+		-
+			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$ref\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/User/UserViewBase.php

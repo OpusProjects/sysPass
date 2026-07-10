@@ -68,6 +68,7 @@ interface NotificationService
     /**
      * Deletes an item preserving the sticky ones
      *
+     * @return NotificationService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException
@@ -77,6 +78,7 @@ interface NotificationService
     /**
      * Deletes an item
      *
+     * @return NotificationService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException

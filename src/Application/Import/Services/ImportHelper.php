@@ -31,12 +31,16 @@ use SP\Application\Client\Ports\ClientService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Application\Import\Ports\ImportHelperInterface;
 use SP\Application\Tag\Ports\TagService;
+use SP\Domain\Category\Models\Category as CategoryModel;
 
 /**
  * A helper class to provide the needed services.
  */
 readonly class ImportHelper implements ImportHelperInterface
 {
+    /**
+     * @param CategoryService<CategoryModel> $categoryService
+     */
     public function __construct(
         private AccountService  $accountService,
         private CategoryService $categoryService,
@@ -51,6 +55,9 @@ readonly class ImportHelper implements ImportHelperInterface
         return $this->accountService;
     }
 
+    /**
+     * @return CategoryService<CategoryModel>
+     */
     public function getCategoryService(): CategoryService
     {
         return $this->categoryService;

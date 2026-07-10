@@ -31,6 +31,7 @@ use SP\Domain\Import\Services\ImportException;
 use CallbackFilterIterator;
 use DOMDocument;
 use DOMElement;
+use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
@@ -373,6 +374,10 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
 
     /**
      * Process the account tags
+     *
+     * @param DOMNodeList<DOMNode> $nodes
+     *
+     * @return array<int, mixed>
      */
     private function processAccountTags(DOMNodeList $nodes): array
     {

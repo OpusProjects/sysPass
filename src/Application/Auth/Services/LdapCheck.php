@@ -69,6 +69,9 @@ final readonly class LdapCheck implements LdapCheckService
     }
 
     /**
+     * @param string[] $attributes
+     *
+     * @return array<int|string, mixed>
      * @throws LdapException
      */
     private static function getObjectsWithAttributes(
@@ -85,10 +88,10 @@ final readonly class LdapCheck implements LdapCheckService
     /**
      * Get the data from an LDAP search for an attribute
      *
-     * @param array $data
+     * @param array<int|string, mixed> $data
      * @param string[] $attributes
      *
-     * @return array
+     * @return array<int|string, mixed>
      */
     private static function ldapResultsMapper(array $data, array $attributes = ['dn']): array
     {

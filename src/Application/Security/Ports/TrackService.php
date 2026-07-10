@@ -32,6 +32,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Security\Dtos\TrackRequest;
+use SP\Domain\Security\Models\Track;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -76,6 +77,7 @@ interface TrackService
     public function add(TrackRequest $trackRequest): int;
 
     /**
+     * @return QueryResult<Track>
      * @throws ConstraintException
      * @throws QueryException
      */

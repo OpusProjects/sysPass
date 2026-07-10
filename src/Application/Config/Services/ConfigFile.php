@@ -128,6 +128,9 @@ class ConfigFile implements ConfigFileService
 
     /**
      * Map the config array keys with ConfigData class setters
+     *
+     * @param array<int|string, mixed> $items
+     *
      * @throws ReflectionException
      */
     private function configMapper(array $items): ConfigDataInterface

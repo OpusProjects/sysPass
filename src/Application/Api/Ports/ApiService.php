@@ -76,6 +76,7 @@ interface ApiService
     public function getParamString(string $param, bool $required = false, $default = null): ?string;
 
     /**
+     * @return array<int|string, int|float|string|null>|null
      * @throws ServiceException
      */
     public function getParamArray(string $param, bool $required = false, $default = null): ?array;

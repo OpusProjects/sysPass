@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\User\Ports;
 
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -41,6 +42,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface UserGroupService
 {
     /**
+     * @return QueryResult<UserGroupModel>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -100,6 +102,7 @@ interface UserGroupService
     /**
      * Returns the users that are using the given group id
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -108,6 +111,7 @@ interface UserGroupService
     /**
      * Returns the items that are using the given group id
      *
+     * @return Simple[]
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -32,6 +32,7 @@ use SP\Core\Events\Event;
 use SP\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Application\Account\Ports\AccountCryptService;
 use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Application\Account\Ports\AccountMasterPasswordService;
@@ -110,11 +111,14 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     }
 
     /**
-     * @param Account[] $accounts
+     * Shared by both the live-account and account-history rotation paths (see the two
+     * call sites below), so $accounts holds either model depending on the caller.
+     *
+     * @param array<Account|AccountHistoryModel> $accounts
      * @param callable $passUpdater
      * @param UpdateMasterPassRequest $updateMasterPassRequest
      *
-     * @return array{0: EventMessage, 1: int} Tuple of [eventMessage, errorCount]
+     * @return array{0: EventMessage<mixed>, 1: int} Tuple of [eventMessage, errorCount]
      */
     private function processAccounts(
         array                   $accounts,
@@ -205,7 +209,7 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
     /**
      * Returns the approximate time in seconds for an operation
      *
-     * @return array With the estimated time and the number of items per second
+     * @return array{0: int, 1: int|float} With the estimated time and the number of items per second
      */
     public static function getETA(int $startTime, int $numItems, int $totalItems): array
     {

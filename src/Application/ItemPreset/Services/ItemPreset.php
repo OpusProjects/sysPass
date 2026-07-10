@@ -44,10 +44,14 @@ use function SP\__u;
  * Class ItemPreset
  *
  * @template T of ItemPresetModel
+ * @implements ItemPresetService<T>
  */
 final class ItemPreset extends Service implements ItemPresetService
 {
 
+    /**
+     * @param ItemPresetRepository<ItemPresetModel> $itemPresetRepository
+     */
     public function __construct(Application $application, private readonly ItemPresetRepository $itemPresetRepository)
     {
         parent::__construct($application);
@@ -74,6 +78,7 @@ final class ItemPreset extends Service implements ItemPresetService
     /**
      * Deletes an item
      *
+     * @return ItemPresetService<T>
      * @throws ConstraintException
      * @throws QueryException
      * @throws NoSuchItemException

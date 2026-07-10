@@ -34,6 +34,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
@@ -44,10 +45,15 @@ use function SP\__u;
  * Class CustomFieldService
  *
  * @template T of CustomFieldDataModel
+ * @implements CustomFieldDataService<T>
  */
 final class CustomFieldData extends Service implements CustomFieldDataService
 {
 
+    /**
+     * @param CustomFieldDataRepository<CustomFieldDataModel> $customFieldDataRepository
+     * @param CustomFieldDefinitionRepository<CustomFieldDefinitionModel> $customFieldDefinitionRepository
+     */
     public function __construct(
         Application                                      $application,
         private readonly CustomFieldDataRepository       $customFieldDataRepository,
@@ -79,6 +85,7 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     /**
      * Returns the data given module and item's id
      *
+     * @return Simple[]
      * @throws ServiceException
      */
     public function getBy(int $moduleId, ?int $itemId): array
@@ -172,7 +179,7 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     /**
      * Delete custom field's data
      *
-     * @param array $itemsId
+     * @param int[] $itemsId
      * @param int $moduleId
      * @throws ServiceException
      */

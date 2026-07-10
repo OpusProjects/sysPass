@@ -40,6 +40,7 @@ use SP\Infrastructure\Database\QueryResult;
 interface EventlogService
 {
     /**
+     * @return QueryResult<Eventlog>
      * @throws ConstraintException
      * @throws QueryException
      */

@@ -57,6 +57,7 @@ use function SP\__u;
  * Class AuthToken
  *
  * @template T of AuthTokenModel
+ * @implements AuthTokenService<T>
  */
 final class AuthToken extends Service implements AuthTokenService
 {
@@ -74,7 +75,7 @@ final class AuthToken extends Service implements AuthTokenService
 
     /**
      * @param Application $application
-     * @param AuthTokenRepository<AuthToken> $authTokenRepository
+     * @param AuthTokenRepository<AuthTokenModel> $authTokenRepository
      * @param CryptInterface $crypt
      */
     public function __construct(
@@ -119,6 +120,8 @@ final class AuthToken extends Service implements AuthTokenService
 
     /**
      * Deletes all the items for given ids
+     *
+     * @param int[] $ids
      *
      * @throws ServiceException
      * @throws ConstraintException

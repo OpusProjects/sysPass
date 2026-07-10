@@ -73,6 +73,7 @@ final class Api extends Service implements ApiService
     private ?ApiStatuses $status = null;
 
     /**
+     * @param AuthTokenService<AuthTokenModel> $authTokenService
      * @throws InvalidArgumentException
      */
     public function __construct(
@@ -194,7 +195,7 @@ final class Api extends Service implements ApiService
      *
      * @param string $action
      *
-     * @return array
+     * @return array<string, mixed>
      */
     private function getHelp(string $action): array
     {
@@ -355,6 +356,7 @@ final class Api extends Service implements ApiService
     }
 
     /**
+     * @return array<int|string, int|float|string|null>|null
      * @throws ServiceException
      */
     public function getParamArray(string $param, bool $required = false, $default = null): ?array

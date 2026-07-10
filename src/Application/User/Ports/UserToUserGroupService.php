@@ -27,6 +27,7 @@ namespace SP\Application\User\Ports;
 
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 
 /**
  * Class UserToUserGroupService
@@ -36,18 +37,23 @@ use SP\Domain\Core\Exceptions\QueryException;
 interface UserToUserGroupService
 {
     /**
+     * @param int[] $users
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
     public function add(int $id, array $users): int;
 
     /**
+     * @param int[] $users
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
     public function update(int $id, array $users): int;
 
     /**
+     * @return int[]
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -56,6 +62,7 @@ interface UserToUserGroupService
     /**
      * Returns the groups which the user belongs to
      *
+     * @return UserToUserGroupModel[]
      * @throws ConstraintException
      * @throws QueryException
      */

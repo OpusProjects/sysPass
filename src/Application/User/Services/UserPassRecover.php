@@ -56,6 +56,9 @@ final class UserPassRecover extends Service implements UserPassRecoverService
      */
     public const MAX_PASS_RECOVER_LIMIT = 3;
 
+    /**
+     * @param UserPassRecoverRepository<UserPassRecoverModel> $userPassRecoverRepository
+     */
     public function __construct(
         Application                                $application,
         private readonly UserPassRecoverRepository $userPassRecoverRepository
