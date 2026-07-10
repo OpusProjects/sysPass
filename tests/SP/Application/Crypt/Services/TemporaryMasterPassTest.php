@@ -44,6 +44,7 @@ use SP\Application\Crypt\Services\TemporaryMasterPass;
 use SP\Application\Notification\Ports\MailService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Tests\Generators\UserDataGenerator;
 use SP\Tests\UnitaryTestCase;
 
 /**
@@ -75,7 +76,14 @@ class TemporaryMasterPassTest extends UnitaryTestCase
         $this->userService
             ->expects(self::once())
             ->method('getUserEmailForAll')
-            ->willReturn(array_map(static fn($email) => (object)['email' => $email], $emails));
+            ->willReturn(
+                array_map(
+                    static fn($email) => UserDataGenerator::factory()
+                                                           ->buildUserData()
+                                                           ->mutate(['email' => $email]),
+                    $emails
+                )
+            );
 
         $this->mailService
             ->expects(self::once())
@@ -127,7 +135,14 @@ class TemporaryMasterPassTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('getUserEmailForGroup')
             ->with($groupId)
-            ->willReturn(array_map(static fn($email) => (object)['email' => $email], $emails));
+            ->willReturn(
+                array_map(
+                    static fn($email) => UserDataGenerator::factory()
+                                                           ->buildUserData()
+                                                           ->mutate(['email' => $email]),
+                    $emails
+                )
+            );
 
         $this->mailService
             ->expects(self::once())

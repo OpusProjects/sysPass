@@ -47,6 +47,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\BodyChecker;
 use SP\Tests\Generators\AccountDataGenerator;
@@ -311,6 +312,20 @@ class AccountTest extends IntegrationTestCase
         $this->addDatabaseMapperResolver(
             AccountView::class,
             new QueryResult([$accountDataGenerator->buildAccountDataView()])
+        );
+
+        // Real User models (not stubs exposing a public $email) so the "email" extra
+        // built via ->getEmail() on each user actually exercises the model's protected
+        // property access: a bug here would fatal (Error: Cannot access protected
+        // property) rather than merely mis-assert.
+        $this->addDatabaseMapperResolver(
+            UserModel::class,
+            new QueryResult(
+                [
+                    UserDataGenerator::factory()->buildUserData(),
+                    UserDataGenerator::factory()->buildUserData(),
+                ]
+            )
         );
 
         $container = $this->buildContainer(

@@ -234,7 +234,7 @@ final class AccountAcl extends Service implements AccountAclService
         // Analyze user's groups
         // Groups in which the user is listed in
         $userGroups = array_map(
-            static fn($value) => (int)$value->userGroupId,
+            static fn($value) => (int)$value->getUserGroupId(),
             $this->userToUserGroupService->getGroupsForUser($this->userData->id ?? 0)
         );
 
