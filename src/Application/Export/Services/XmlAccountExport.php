@@ -112,7 +112,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
 
             return $nodeAccounts;
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 }
