@@ -33,6 +33,8 @@ use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 
+use function SP\__u;
+
 /**
  * Class Config
  *
@@ -64,7 +66,7 @@ final class Config extends BaseRepository implements ConfigRepository
                 ]
             );
 
-        $queryData = QueryData::build($query);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the config parameter'));
 
         return $this->db->runQuery($queryData);
     }
@@ -83,7 +85,7 @@ final class Config extends BaseRepository implements ConfigRepository
             ->into(self::TABLE)
             ->cols($config->toArray());
 
-        $queryData = QueryData::build($query);
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while creating the config parameter'));
 
         return $this->db->runQuery($queryData);
     }
