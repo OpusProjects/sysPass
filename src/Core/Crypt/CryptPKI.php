@@ -115,11 +115,18 @@ final class CryptPKI implements CryptPKIHandler
         }
 
         try {
-            // The browser encrypts with PKCS#1 v1.5 padding (JSEncrypt).
-            $privateKey = RSA::loadPrivateKey($privateKeyPem)
-                ->withPadding(RSA::ENCRYPTION_PKCS1);
+            $privateKey = RSA::loadPrivateKey($privateKeyPem);
 
-            return $privateKey->decrypt($data) ?: null;
+            // loadPrivateKey() is declared to return the generic Common\PrivateKey
+            // interface, but RSA::loadPrivateKey() always yields an RSA\PrivateKey in
+            // practice; withPadding() is RSA-specific (not applicable to DSA/EC keys),
+            // hence not part of the generic interface.
+            if (!$privateKey instanceof RSA\PrivateKey) {
+                return null;
+            }
+
+            // The browser encrypts with PKCS#1 v1.5 padding (JSEncrypt).
+            return $privateKey->withPadding(RSA::ENCRYPTION_PKCS1)->decrypt($data) ?: null;
         } catch (Throwable) {
             return null;
         }

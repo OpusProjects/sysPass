@@ -24,10 +24,11 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
+use LogicException;
 use SP\Core\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
-use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
@@ -41,7 +42,7 @@ abstract class HelperBase
 {
     protected readonly TemplateInterface        $view;
     protected readonly ConfigDataInterface      $configData;
-    protected readonly Context                  $context;
+    protected readonly SessionContext           $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
     protected readonly ConfigFileService        $config;
 
@@ -50,8 +51,17 @@ abstract class HelperBase
         TemplateInterface                 $template,
         protected readonly RequestService $request
     ) {
+        $context = $application->getContext();
+
+        if (!$context instanceof SessionContext) {
+            // The web module always binds Context to a session-backed implementation
+            // (see Infrastructure/Adapter/In/Web/module.php); this is only reachable
+            // if that wiring is ever broken.
+            throw new LogicException(sprintf('%s requires a session-backed context', static::class));
+        }
+
         $this->config = $application->getConfig();
-        $this->context = $application->getContext();
+        $this->context = $context;
         $this->eventDispatcher = $application->getEventDispatcher();
         $this->configData = $this->config->getConfigData();
         $this->view = $template;
