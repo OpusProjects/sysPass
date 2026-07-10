@@ -47,7 +47,6 @@ final class JsController extends ResourceBase
         'spark-md5.min.js',
         'moment.min.js',
         'moment-timezone.min.js',
-        'toastr.min.js',
         'jquery.magnific-popup.min.js',
     ];
     private const JS_APP_MIN_FILES = [
@@ -64,6 +63,9 @@ final class JsController extends ResourceBase
         // library dist); placed before app-util.min.js, which is the first to call zxcvbn().
         'zxcvbn-async.min.js',
         'app-util.min.js',
+        // Hand-rolled toast module (app-authored, not a library dist) — must load before
+        // app-main.min.js, whose msg wrapper calls window.toasts.
+        'toasts.min.js',
         'app-main.min.js',
     ];
 

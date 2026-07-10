@@ -1,3 +1,13 @@
+#toast-container {
+  position: fixed;
+  z-index: 999999;
+  pointer-events: none; }
+
+#toast-container.toast-top-center {
+  top: 0;
+  right: 0;
+  width: 100%; }
+
 #toast-container > div {
   opacity: 1;
   box-shadow: none;
@@ -15,7 +25,37 @@
   text-align: center; }
 
 .toast {
+  position: relative;
+  pointer-events: auto;
+  overflow: hidden;
+  margin: 0 0 6px;
+  padding: 15px 40px 15px 15px;
+  border-radius: 3px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, .3);
+  color: #fff;
+  cursor: pointer;
   background-color: #030303; }
+
+.toast-message {
+  word-wrap: break-word; }
+
+.toast-close-button {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  line-height: 1;
+  opacity: .8;
+  cursor: pointer; }
+
+.toast-close-button:hover,
+.toast-close-button:focus {
+  opacity: 1; }
 
 .toast-success {
   background-color: #26a69a; }
@@ -28,6 +68,9 @@
 
 .toast-warning {
   background-color: #ffca28;
+  color: #555; }
+
+.toast-warning .toast-close-button {
   color: #555; }
 
 /*# sourceMappingURL=toastr.css.map */
