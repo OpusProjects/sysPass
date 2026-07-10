@@ -25,6 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web;
 
 use Exception;
+use LogicException;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Context\ContextBase;
@@ -36,6 +37,7 @@ use SP\Core\HttpModuleBase;
 use SP\Core\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -295,7 +297,9 @@ final class Init extends HttpModuleBase
      */
     private function initUserSession(): void
     {
-        $lastActivity = $this->context->getLastActivity();
+        $sessionContext = $this->requireSessionContext();
+
+        $lastActivity = $sessionContext->getLastActivity();
         $inMaintenance = $this->configData->isMaintenance();
 
         // Session timeout
@@ -305,7 +309,7 @@ final class Init extends HttpModuleBase
         ) {
             SessionLifecycleHandler::restart();
         } else {
-            $sidStartTime = $this->context->getSidStartTime();
+            $sidStartTime = $sessionContext->getSidStartTime();
 
             // Regenerate session's ID frequently to avoid fixation
             if ($sidStartTime === 0) {
@@ -316,7 +320,7 @@ final class Init extends HttpModuleBase
                       && $this->context->isLoggedIn()
             ) {
                 try {
-                    CryptSession::reKey($this->context);
+                    CryptSession::reKey($sessionContext);
                 } catch (CryptException $e) {
                     logger($e->getMessage());
 
@@ -326,7 +330,7 @@ final class Init extends HttpModuleBase
                 }
             }
 
-            $this->context->setLastActivity(time());
+            $sessionContext->setLastActivity(time());
         }
     }
 
@@ -337,7 +341,8 @@ final class Init extends HttpModuleBase
      */
     private function getSessionLifeTime(): int
     {
-        $timeout = $this->context->getSessionTimeout();
+        $sessionContext = $this->requireSessionContext();
+        $timeout = $sessionContext->getSessionTimeout();
 
         try {
             if ($this->isIndex || $timeout === null) {
@@ -345,13 +350,27 @@ final class Init extends HttpModuleBase
 
                 logger('Session timeout: ' . $userTimeout);
 
-                return $this->context->setSessionTimeout($userTimeout);
+                return $sessionContext->setSessionTimeout($userTimeout);
             }
         } catch (Exception $e) {
             processException($e);
         }
 
         return $timeout ?? $this->configData->getSessionTimeout();
+    }
+
+    /**
+     * The web module always binds Context to a session-backed implementation
+     * (see Infrastructure/Adapter/In/Web/module.php); this is only reachable
+     * if that wiring is ever broken.
+     */
+    private function requireSessionContext(): SessionContext
+    {
+        if (!$this->context instanceof SessionContext) {
+            throw new LogicException(sprintf('%s requires a session-backed context', self::class));
+        }
+
+        return $this->context;
     }
 
     /**

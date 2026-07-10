@@ -32,6 +32,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use ReflectionAttribute;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionNamedType;
 use SP\Core\Bootstrap\BootstrapBase;
 use SP\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
@@ -163,7 +164,9 @@ final class Bootstrap extends BootstrapBase
             $this->routeContextData->methodName
         );
 
-        if ($method->getReturnType()?->getName() !== ActionResponse::class) {
+        $returnType = $method->getReturnType();
+
+        if (!$returnType instanceof ReflectionNamedType || $returnType->getName() !== ActionResponse::class) {
             throw InitializationException::error(
                 sprintf('Incorrect method return type: expected \'%s\'', ActionResponse::class)
             );

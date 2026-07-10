@@ -53,7 +53,6 @@ final class Router
     private readonly RouteCollection $routes;
     private int      $routeCount = 0;
     private ?Closure $onError    = null;
-    private bool     $skip       = false;
 
     public function __construct(
         private Request $request,
@@ -118,14 +117,6 @@ final class Router
         $this->onError = $callback(...);
     }
 
-    /**
-     * Stop dispatching further responders.
-     */
-    public function skipRemaining(): void
-    {
-        $this->skip = true;
-    }
-
     public function request(): Request
     {
         return $this->request;
@@ -145,7 +136,6 @@ final class Router
         $request ??= $this->request;
         $this->request = $request;
         $response ??= $this->response;
-        $this->skip = false;
 
         $context = new RequestContext();
         $context->fromRequest($request);
@@ -182,7 +172,7 @@ final class Router
                 }
             }
 
-            if ($sendResponse && !$this->skip && !$response->isSent()) {
+            if ($sendResponse && !$response->isSent()) {
                 $response->send(true);
             }
         } finally {

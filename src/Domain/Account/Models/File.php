@@ -79,14 +79,6 @@ class File extends Model implements ItemWithIdAndNameModel
         return $this->thumb;
     }
 
-    /**
-     * @param string $thumb
-     */
-    public function setThumb(string $thumb): void
-    {
-        $this->thumb = $thumb;
-    }
-
     public function getSize(): ?int
     {
         return $this->size;

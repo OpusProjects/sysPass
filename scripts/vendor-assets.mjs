@@ -12,6 +12,17 @@ const dest = join(root, 'public', 'vendor', 'js');
 
 // target filename in public/vendor/js  ->  source path within node_modules
 // (extended as more libraries are brought under npm management)
+//
+// Note: jquery-ui appears in package-lock.json but is deliberately absent here and from
+// package.json — it is an optionalDependencies entry of @selectize/selectize (drag_drop
+// plugin support), resolved into the lock like any transitive dep (`npm ls jquery-ui`).
+// It is never vendored or served; do not "clean" it from the lock.
+//
+// Not every file under public/vendor/js/ and public/js/ is npm-managed:
+//   - selectize-plugins.min.js and zxcvbn-async.min.js are app-authored glue (a one-off
+//     Selectize plugin and a lazy-loader for zxcvbn.min.js), not third-party library dists,
+//     so they live under public/js/ with the other hand-authored app-*.min.js files and are
+//     served via JsController::JS_APP_MIN_FILES instead of this MAP.
 const MAP = {
   'clipboard.min.js': 'clipboard/dist/clipboard.min.js',
   'jquery.min.js': 'jquery/dist/jquery.min.js',
@@ -20,7 +31,6 @@ const MAP = {
   'moment.min.js': 'moment/min/moment-with-locales.min.js',
   // with-data 10-year rolling range — matches the data-bearing build we shipped
   'moment-timezone.min.js': 'moment-timezone/builds/moment-timezone-with-data-10-year-range.min.js',
-  'toastr.min.js': 'toastr/build/toastr.min.js',
   'jquery.magnific-popup.min.js': 'magnific-popup/dist/jquery.magnific-popup.min.js',
   'spark-md5.min.js': 'spark-md5/spark-md5.min.js',
   'zxcvbn.min.js': 'zxcvbn/dist/zxcvbn.js',

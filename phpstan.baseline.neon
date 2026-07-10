@@ -258,11 +258,6 @@ parameters:
 			count: 1
 			path: src/Application/Account/Services/AccountToUserGroup.php
 
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: src/Application/Account/Services/PublicLink.php
 
 		-
 			message: '#^Method SP\\Application\\Account\\Services\\PublicLink\:\:__construct\(\) has parameter \$publicLinkRepository with generic interface SP\\Domain\\Account\\Ports\\PublicLinkRepository but does not specify its types\: T$#'
@@ -481,12 +476,6 @@ parameters:
 			path: src/Application/Auth/Services/LdapCheck.php
 
 		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:setAuthCompleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Application/Auth/Services/Login.php
-
-		-
 			message: '#^Method SP\\Application\\Category\\Ports\\CategoryService\:\:delete\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
@@ -570,11 +559,6 @@ parameters:
 			count: 1
 			path: src/Application/Config/Services/Config.php
 
-		-
-			message: '#^Strict comparison using \=\=\= between null and null will always evaluate to true\.$#'
-			identifier: identical.alwaysTrue
-			count: 1
-			path: src/Application/Config/Services/Config.php
 
 		-
 			message: '#^Method SP\\Application\\Config\\Services\\ConfigFile\:\:configMapper\(\) has parameter \$items with no value type specified in iterable type array\.$#'
@@ -678,11 +662,6 @@ parameters:
 			count: 1
 			path: src/Application/Export/Services/BackupFile.php
 
-		-
-			message: '#^Strict comparison using \=\=\= between DOMElement and false will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Export/Services/XmlAccountExport.php
 
 		-
 			message: '#^Method SP\\Application\\Export\\Services\\XmlCategoryExport\:\:__construct\(\) has parameter \$categoryService with generic interface SP\\Application\\Category\\Ports\\CategoryService but does not specify its types\: T$#'
@@ -690,17 +669,7 @@ parameters:
 			count: 1
 			path: src/Application/Export/Services/XmlCategoryExport.php
 
-		-
-			message: '#^Strict comparison using \=\=\= between DOMElement and false will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Export/Services/XmlCategoryExport.php
 
-		-
-			message: '#^Strict comparison using \=\=\= between DOMElement and false will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Export/Services/XmlClientExport.php
 
 		-
 			message: '#^Method SP\\Application\\Export\\Services\\XmlExport\:\:getEncryptedNode\(\) never returns false so it can be removed from the return type\.$#'
@@ -714,11 +683,6 @@ parameters:
 			count: 1
 			path: src/Application/Export/Services/XmlExport.php
 
-		-
-			message: '#^Strict comparison using \=\=\= between DOMElement and false will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Application/Export/Services/XmlTagExport.php
 
 		-
 			message: '#^Call to an undefined method DOMNameSpaceNode\|DOMNode\:\:getAttribute\(\)\.$#'
@@ -732,11 +696,6 @@ parameters:
 			count: 1
 			path: src/Application/Export/Services/XmlVerify.php
 
-		-
-			message: '#^Using nullsafe method call on non\-nullable type DOMNamedNodeMap\<DOMAttr\>\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Application/Export/Services/XmlVerify.php
 
 		-
 			message: '#^Method SP\\Application\\Import\\Ports\\ImportHelperInterface\:\:getCategoryService\(\) return type with generic interface SP\\Application\\Category\\Ports\\CategoryService does not specify its types\: T$#'
@@ -768,11 +727,6 @@ parameters:
 			count: 1
 			path: src/Application/Import/Services/ImportHelper.php
 
-		-
-			message: '#^Match expression does not handle remaining value\: string$#'
-			identifier: match.unhandled
-			count: 1
-			path: src/Application/Import/Services/ImportStrategy.php
 
 		-
 			message: '#^Method SP\\Application\\Import\\Services\\KeepassImport\:\:getEntryFor\(\) return type with generic class SplObjectStorage does not specify its types\: TObject, TData$#'
@@ -810,11 +764,6 @@ parameters:
 			count: 1
 			path: src/Application/Import/Services/LdapImport.php
 
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: src/Application/Import/Services/LdapImport.php
 
 		-
 			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Core\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
@@ -834,23 +783,8 @@ parameters:
 			count: 1
 			path: src/Application/Import/Services/SyspassImport.php
 
-		-
-			message: '#^Using nullsafe property access "\?\-\>nodeValue" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Application/Import/Services/SyspassImport.php
 
-		-
-			message: '#^Readonly property SP\\Application\\Import\\Services\\XmlFile\:\:\$document is assigned outside of the constructor\.$#'
-			identifier: property.readOnlyAssignNotInConstructor
-			count: 1
-			path: src/Application/Import/Services/XmlFile.php
 
-		-
-			message: '#^Using nullsafe property access "\?\-\>nodeValue" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Application/Import/Services/XmlFile.php
 
 		-
 			message: '#^Method SP\\Application\\Install\\Services\\Installer\:\:__construct\(\) has parameter \$userGroupService with generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
@@ -858,11 +792,6 @@ parameters:
 			count: 1
 			path: src/Application/Install/Services/Installer.php
 
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 4
-			path: src/Application/Install/Services/MysqlSetup.php
 
 		-
 			message: '#^Method SP\\Application\\ItemPreset\\Ports\\ItemPresetService\:\:delete\(\) return type with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService does not specify its types\: T$#'
@@ -954,11 +883,6 @@ parameters:
 			count: 1
 			path: src/Application/Notification/Services/MailEvent.php
 
-		-
-			message: '#^Readonly property SP\\Application\\Notification\\Services\\MailEvent\:\:\$events is assigned outside of the constructor\.$#'
-			identifier: property.readOnlyAssignNotInConstructor
-			count: 1
-			path: src/Application/Notification/Services/MailEvent.php
 
 		-
 			message: '#^Class SP\\Application\\Notification\\Services\\Notification implements generic interface SP\\Application\\Notification\\Ports\\NotificationService but does not specify its types\: T$#'
@@ -1020,11 +944,6 @@ parameters:
 			count: 1
 			path: src/Application/Notification/Services/NotificationEvent.php
 
-		-
-			message: '#^Readonly property SP\\Application\\Notification\\Services\\NotificationEvent\:\:\$events is assigned outside of the constructor\.$#'
-			identifier: property.readOnlyAssignNotInConstructor
-			count: 1
-			path: src/Application/Notification/Services/NotificationEvent.php
 
 		-
 			message: '#^Method SP\\Application\\Security\\Ports\\EventlogService\:\:search\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
@@ -1140,11 +1059,6 @@ parameters:
 			count: 1
 			path: src/Application/User/Ports/UserToUserGroupService.php
 
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: src/Application/User/Services/User.php
 
 		-
 			message: '#^Method SP\\Application\\User\\Services\\User\:\:__construct\(\) has parameter \$userRepository with generic interface SP\\Domain\\User\\Ports\\UserRepository but does not specify its types\: T$#'
@@ -1249,8 +1163,8 @@ parameters:
 			path: src/Application/User/Services/UserToUserGroup.php
 
 		-
-			message: '#^If condition is always true\.$#'
-			identifier: if.alwaysTrue
+			message: '#^If condition is always false\.$#'
+			identifier: if.alwaysFalse
 			count: 1
 			path: src/Core/Bootstrap/BootstrapBase.php
 
@@ -1266,11 +1180,6 @@ parameters:
 			count: 1
 			path: src/Core/Bootstrap/PathsContext.php
 
-		-
-			message: '#^Negated boolean expression is always true\.$#'
-			identifier: booleanNot.alwaysTrue
-			count: 1
-			path: src/Core/Bootstrap/Router.php
 
 		-
 			message: '#^Method SP\\Core\\Context\\ContextBase\:\:setContextReference\(\) has parameter \$context with no value type specified in iterable type array\.$#'
@@ -1296,23 +1205,12 @@ parameters:
 			count: 1
 			path: src/Core/Context/Session.php
 
-		-
-			message: '#^Using nullsafe method call on non\-nullable type SP\\Core\\Context\\ContextCollection\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Core/Context/Session.php
 
 		-
 			message: '#^Method SP\\Core\\Context\\Stateless\:\:setAccountsCache\(\) has parameter \$accountsCache with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Core/Context/Stateless.php
-
-		-
-			message: '#^Call to an undefined method phpseclib3\\Crypt\\Common\\PrivateKey\:\:withPadding\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Core/Crypt/CryptPKI.php
 
 		-
 			message: '#^Type mixed in generic type ArrayObject\<mixed, mixed\> in PHPDoc tag @extends is not subtype of template type TKey of \(int\|string\) of class ArrayObject\.$#'
@@ -1429,22 +1327,11 @@ parameters:
 			path: src/Core/Functions.php
 
 		-
-			message: '#^Negated boolean expression is always false\.$#'
-			identifier: booleanNot.alwaysFalse
+			message: '#^Negated boolean expression is always true\.$#'
+			identifier: booleanNot.alwaysTrue
 			count: 1
 			path: src/Core/Functions.php
 
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 2
-			path: src/Core/Functions.php
-
-		-
-			message: '#^Strict comparison using \=\=\= between mixed and null will always evaluate to false\.$#'
-			identifier: identical.alwaysFalse
-			count: 1
-			path: src/Core/Functions.php
 
 		-
 			message: '#^Method SP\\Core\\Language\:\:getAvailableLanguages\(\) return type has no value type specified in iterable type array\.$#'
@@ -1680,11 +1567,6 @@ parameters:
 			count: 1
 			path: src/Domain/Account/Adapters/AccountPermission.php
 
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 2
-			path: src/Domain/Account/Adapters/AccountSearchItem.php
 
 		-
 			message: '#^Method SP\\Domain\\Account\\Adapters\\AccountSearchItem\:\:__construct\(\) has parameter \$tags with no value type specified in iterable type array\.$#'
@@ -2448,11 +2330,6 @@ parameters:
 			count: 1
 			path: src/Domain/Auth/Providers/AclHandler.php
 
-		-
-			message: '#^Readonly property SP\\Domain\\Auth\\Providers\\AclHandler\:\:\$events is assigned outside of the constructor\.$#'
-			identifier: property.readOnlyAssignNotInConstructor
-			count: 1
-			path: src/Domain/Auth/Providers/AclHandler.php
 
 		-
 			message: '#^Method SP\\Domain\\Auth\\Providers\\AuthProvider\:\:registerAuth\(\) has parameter \$auth with generic interface SP\\Domain\\Auth\\Providers\\AuthService but does not specify its types\: T$#'
@@ -4945,12 +4822,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
 
 		-
-			message: '#^Call to an undefined method ReflectionType\:\:getName\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
-
-		-
 			message: '#^Call to an undefined method SP\\Domain\\Core\\Bootstrap\\BootstrapInterface\:\:handleRequest\(\)\.$#'
 			identifier: method.notFound
 			count: 1
@@ -4993,8 +4864,14 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccessManager/IndexController.php
 
 		-
-			message: '#^Strict comparison using \=\=\= between true and true will always evaluate to true\.$#'
-			identifier: identical.alwaysTrue
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountControllerBase.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and true will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountControllerBase.php
 
@@ -5791,8 +5668,8 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AuthToken/SearchController.php
 
 		-
-			message: '#^Left side of \|\| is always true\.$#'
-			identifier: booleanOr.leftAlwaysTrue
+			message: '#^Left side of \|\| is always false\.$#'
+			identifier: booleanOr.leftAlwaysFalse
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Bootstrap/GetEnvironmentController.php
 
@@ -6295,46 +6172,17 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/DownloadLogController.php
 
 		-
-			message: '#^PHPDoc tag @throws with type SP\\Domain\\Core\\Exceptions\\SPException\|SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigGeneral\\ValidationException is not subtype of Throwable$#'
-			identifier: throws.notThrowable
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/SaveController.php
-
-		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigLdap\\ImportController\:\:getImportParams\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigLdap/ImportController.php
 
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getTemporaryMasterPass\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigManager/IndexController.php
-
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigManager/IndexController.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigManager\\IndexController\:\:__construct\(\) has parameter \$userGroupService with generic interface SP\\Application\\User\\Ports\\UserGroupService but does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigManager/IndexController.php
-
-		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\ConfigProxy\\SaveController\:\:handleProxyConfig\(\) has parameter \$eventMessage with generic class SP\\Core\\Events\\EventMessage but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigProxy/SaveController.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getAuthCompleted\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Infrastructure/Adapter/In/Web/Controllers/ControllerBase.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\CustomField\\DeleteController\:\:addCustomFieldsForItem\(\) has parameter \$customFieldDataService with generic interface SP\\Application\\CustomField\\Ports\\CustomFieldDataService but does not specify its types\: T$#'
@@ -6529,18 +6377,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Eventlog/SearchController.php
 
 		-
-			message: '#^Call to an undefined method SP\\Domain\\User\\Dtos\\UserDto\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountActionsHelper.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\User\\Dtos\\UserDto\:\:getIsAdminApp\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountActionsHelper.php
-
-		-
 			message: '#^Parameter \#1 \$id of method SP\\Infrastructure\\Adapter\\In\\Web\\DataGrid\\Action\\DataGridActionBase\:\:setId\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 16
@@ -6661,12 +6497,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountPasswordHelper.php
 
 		-
-			message: '#^Parameter \#1 \$sessionContext of static method SP\\Core\\Crypt\\Session\:\:getSessionKey\(\) expects SP\\Domain\\Core\\Context\\SessionContext, SP\\Domain\\Core\\Context\\Context given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountPasswordHelper.php
-
-		-
 			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Helpers\\Account\\AccountSearchData\:\:\$accountColor type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6677,18 +6507,6 @@ parameters:
 			identifier: generics.notSubtype
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountSearchData.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getSearchFilters\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountSearchHelper.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:setSearchFilters\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/Account/AccountSearchHelper.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Helpers\\Account\\AccountSearchHelper\:\:__construct\(\) has parameter \$categoryService with generic interface SP\\Application\\Category\\Ports\\CategoryService but does not specify its types\: T$#'
@@ -7045,31 +6863,25 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/ItemPresetHelper.php
 
 		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getAuthCompleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/LayoutHelper.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:setPublicKey\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/LayoutHelper.php
-
-		-
 			message: '#^Parameter \#1 \$id of method SP\\Infrastructure\\Adapter\\In\\Web\\DataGrid\\Action\\DataGridActionBase\:\:setId\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 6
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Helpers/LayoutHelper.php
 
 		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getAuthCompleted\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Index/IndexController.php
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 2
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
 
 		-
-			message: '#^Strict comparison using \=\=\= between true and true will always evaluate to true\.$#'
+			message: '#^Strict comparison using \=\=\= between false and true will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and false will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Install/IndexController.php
@@ -7361,18 +7173,6 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LoginController.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getLastActivity\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LogoutController.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getStartActivity\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LogoutController.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Notification\\DeleteController\:\:addCustomFieldsForItem\(\) has parameter \$customFieldDataService with generic interface SP\\Application\\CustomField\\Ports\\CustomFieldDataService but does not specify its types\: T$#'
@@ -9270,69 +9070,12 @@ parameters:
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/DataGrid/Layout/DataGridPagerInterface.php
 
-		-
-			message: '#^Match expression does not handle remaining values\: 9\|int\<min, 3\>\|int\<6, 7\>\|int\<11, 1304\>\|int\<1306, max\>$#'
-			identifier: match.unhandled
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Forms/AccountForm.php
 
-		-
-			message: '#^Call to an undefined method SP\\Domain\\User\\Dtos\\UserDto\:\:getId\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Infrastructure/Adapter/In/Web/Forms/UserForm.php
 
-		-
-			message: '#^Call to function is_array\(\) with int\|null will always evaluate to false\.$#'
-			identifier: function.impossibleType
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Forms/UserForm.php
-
-		-
-			message: '#^Result of && is always false\.$#'
-			identifier: booleanAnd.alwaysFalse
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Forms/UserForm.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getLastActivity\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getSessionTimeout\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:getSidStartTime\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:setLastActivity\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
-
-		-
-			message: '#^Call to an undefined method SP\\Domain\\Core\\Context\\Context\:\:setSessionTimeout\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Init\:\:__construct\(\) has parameter \$itemPresetService with generic interface SP\\Application\\ItemPreset\\Ports\\ItemPresetService but does not specify its types\: T$#'
 			identifier: missingType.generics
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Init.php
-
-		-
-			message: '#^Parameter \#1 \$sessionContext of static method SP\\Core\\Crypt\\Session\:\:reKey\(\) expects SP\\Domain\\Core\\Context\\SessionContext, SP\\Domain\\Core\\Context\\Context given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Init.php
 
@@ -9606,11 +9349,6 @@ parameters:
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Account/Repositories/AccountSearch.php
 
-		-
-			message: '#^Readonly property SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\AccountSearch\:\:\$query is assigned outside of the constructor\.$#'
-			identifier: property.readOnlyAssignNotInConstructor
-			count: 1
-			path: src/Infrastructure/Adapter/Out/Account/Repositories/AccountSearch.php
 
 		-
 			message: '#^Template type T of method SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\AccountSearch\:\:getByFilter\(\) is not referenced in a parameter\.$#'
@@ -10416,11 +10154,6 @@ parameters:
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/UserToUserGroup.php
 
-		-
-			message: '#^Expression on left side of \?\? is not nullable\.$#'
-			identifier: nullCoalesce.expr
-			count: 1
-			path: src/Infrastructure/Database/Database.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\Database\\Database\:\:doFetchWithOptions\(\) has parameter \$options with no value type specified in iterable type array\.$#'
@@ -10452,6 +10185,11 @@ parameters:
 			count: 3
 			path: src/Infrastructure/Database/Database.php
 
+		-
+			message: '#^Expression on left side of \?\? is not nullable\.$#'
+			identifier: nullCoalesce.expr
+			count: 1
+			path: src/Infrastructure/Database/Database.php
 		-
 			message: '#^Strict comparison using \=\=\= between SP\\Infrastructure\\Database\\DbStorageDriver and SP\\Infrastructure\\Database\\DbStorageDriver\:\:mysql will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
@@ -10524,11 +10262,6 @@ parameters:
 			count: 1
 			path: src/Infrastructure/Database/QueryResult.php
 
-		-
-			message: '#^Using nullsafe method call on non\-nullable type SplFixedArray\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Infrastructure/Database/QueryResult.php
 
 		-
 			message: '#^Unsafe usage of new static\(\)\.$#'

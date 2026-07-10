@@ -133,11 +133,11 @@ final readonly class MysqlSetup implements DatabaseSetupService
                     sprintf(
                         $query,
                         $dbc->quote($user),
-                        $dbc->quote($this->installData->getDbAuthHostDns() ?? ''),
+                        $dbc->quote($this->installData->getDbAuthHostDns()),
                         $dbc->quote($pass)
                     )
                 );
-                $createdHosts[] = $this->installData->getDbAuthHostDns() ?? '';
+                $createdHosts[] = $this->installData->getDbAuthHostDns();
             }
 
             $dbc->exec('FLUSH PRIVILEGES');
@@ -285,7 +285,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                         $query,
                         $grantDbName,
                         $dbc->quote($dbUser),
-                        $dbc->quote($this->installData->getDbAuthHostDns() ?? '')
+                        $dbc->quote($this->installData->getDbAuthHostDns())
                     )
                 );
             }
@@ -411,7 +411,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                         sprintf(
                             'DROP USER IF EXISTS %s@%s',
                             $dbc->quote($dbUser),
-                            $dbc->quote($this->installData->getDbAuthHostDns() ?? '')
+                            $dbc->quote($this->installData->getDbAuthHostDns())
                         )
                     );
                 }

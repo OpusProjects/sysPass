@@ -127,7 +127,7 @@ final class Account extends Adapter implements AccountAdapter
                 [
                     'rel' => 'self',
                     'uri' => Link::getDeepLink(
-                        $account->getId(),
+                        $account->getId() ?? 0,
                         $actionRoute,
                         $this->configData,
                         $this->baseUrl

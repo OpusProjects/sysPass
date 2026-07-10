@@ -38,6 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchPropertyException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
@@ -143,15 +144,23 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
+     * A "fixed" preset's expiry acts as a CEILING on the rotation deadline: an
+     * account with no deadline set yet (null or 0) must have one set to the
+     * policy's limit (now + preset expire time).
+     *
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
      */
-    public function testCheckPasswordPresetWithPassDateChangeModified(): void
+    #[TestWith([null])]
+    #[TestWith([0])]
+    public function testCheckPasswordPresetWithUnsetPassDateChangeIsSetToPolicyLimit(?int $passDateChange): void
     {
-        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
-        $passwordPreset = $itemPresetDataGenerator->buildPassword();
+        $expireDays = self::$faker->numberBetween(1, 30);
+        $expireTimePreset = $expireDays * Password::EXPIRE_TIME_MULTIPLIER;
 
+        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
+        $passwordPreset = $this->buildPasswordPresetWithExpireDays($expireDays);
         $itemPreset = $itemPresetDataGenerator->buildItemPresetData($passwordPreset)->mutate(['fixed' => 1]);
 
         $this->itemPresetService
@@ -163,12 +172,133 @@ class AccountPresetTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('validate');
 
-        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
-        $accountDto = $accountDto->mutate(['passDateChange' => 0]);
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto()
+                                           ->mutate(['passDateChange' => $passDateChange]);
+
+        $before = time();
+        $out = $this->accountPreset->checkPasswordPreset($accountDto);
+        $after = time();
+
+        self::assertGreaterThanOrEqual($before + $expireTimePreset, $out->passDateChange);
+        self::assertLessThanOrEqual($after + $expireTimePreset, $out->passDateChange);
+    }
+
+    /**
+     * A "fixed" preset's expiry acts as a CEILING: a deadline set later than the
+     * policy's limit (now + preset expire time) must be clamped DOWN to that limit.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordPresetWithLaterPassDateChangeIsClampedToPolicyLimit(): void
+    {
+        $expireDays = self::$faker->numberBetween(1, 30);
+        $expireTimePreset = $expireDays * Password::EXPIRE_TIME_MULTIPLIER;
+
+        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
+        $passwordPreset = $this->buildPasswordPresetWithExpireDays($expireDays);
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($passwordPreset)->mutate(['fixed' => 1]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+        $this->passwordValidator
+            ->expects(self::once())
+            ->method('validate');
+
+        // A user-chosen deadline further away than the policy allows (e.g. the
+        // policy mandates rotation every 90 days, but this account is set to
+        // rotate in a year).
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto()
+                                           ->mutate(['passDateChange' => time() + $expireTimePreset + 31536000]);
+
+        $before = time();
+        $out = $this->accountPreset->checkPasswordPreset($accountDto);
+        $after = time();
+
+        self::assertGreaterThanOrEqual($before + $expireTimePreset, $out->passDateChange);
+        self::assertLessThanOrEqual($after + $expireTimePreset, $out->passDateChange);
+    }
+
+    /**
+     * A "fixed" preset's expiry acts as a CEILING, not a floor: a deadline that is
+     * already earlier (stricter) than the policy's limit must be left untouched.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordPresetWithEarlierPassDateChangeIsUnchanged(): void
+    {
+        $expireDays = self::$faker->numberBetween(10, 30);
+        $expireTimePreset = $expireDays * Password::EXPIRE_TIME_MULTIPLIER;
+
+        $itemPresetDataGenerator = ItemPresetDataGenerator::factory();
+        $passwordPreset = $this->buildPasswordPresetWithExpireDays($expireDays);
+        $itemPreset = $itemPresetDataGenerator->buildItemPresetData($passwordPreset)->mutate(['fixed' => 1]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+        $this->passwordValidator
+            ->expects(self::once())
+            ->method('validate');
+
+        // A user-chosen deadline stricter than the policy requires (e.g. the
+        // policy allows up to 30 days, but this account rotates in a week).
+        $passDateChange = time() + Password::EXPIRE_TIME_MULTIPLIER * 7;
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto()
+                                           ->mutate(['passDateChange' => $passDateChange]);
 
         $out = $this->accountPreset->checkPasswordPreset($accountDto);
 
-        $this->assertGreaterThan(0, $out->passDateChange);
+        self::assertSame($accountDto, $out);
+        self::assertSame($passDateChange, $out->passDateChange);
+    }
+
+    /**
+     * A "fixed" preset whose serialized data is NULL (or fails to deserialize) must be
+     * treated as if no preset applied at all: the block is skipped and the validator is
+     * never invoked, rather than dereferencing a null hydrated preset.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordPresetWithNullData(): void
+    {
+        $this->config->getConfigData()->setAccountExpireEnabled(true);
+
+        $itemPreset = new ItemPreset([
+                                          'id' => self::$faker->randomNumber(3),
+                                          'type' => self::$faker->colorName(),
+                                          'userId' => self::$faker->randomNumber(3),
+                                          'userGroupId' => self::$faker->randomNumber(3),
+                                          'userProfileId' => self::$faker->randomNumber(3),
+                                          'fixed' => 1,
+                                          'priority' => self::$faker->randomNumber(3),
+                                          'data' => null,
+                                      ]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+        $this->passwordValidator
+            ->expects(self::never())
+            ->method('validate');
+
+        $accountDto = AccountDataGenerator::factory()->buildAccountCreateDto();
+
+        $out = $this->accountPreset->checkPasswordPreset($accountDto);
+
+        self::assertSame($accountDto, $out);
     }
 
     /**
@@ -255,6 +385,60 @@ class AccountPresetTest extends UnitaryTestCase
             ->method('addByType');
 
         $this->accountPreset->addPresetPermissions(100);
+    }
+
+    /**
+     * A "fixed" preset whose serialized data is NULL (or fails to deserialize) must be
+     * treated as if no preset applied at all: the block is skipped rather than
+     * dereferencing a null hydrated preset.
+     *
+     * @throws ConstraintException
+     * @throws SPException
+     * @throws QueryException
+     */
+    public function testAddPresetPermissionsWithNullData()
+    {
+        $itemPreset = new ItemPreset([
+                                          'id' => self::$faker->randomNumber(3),
+                                          'type' => self::$faker->colorName(),
+                                          'userId' => self::$faker->randomNumber(3),
+                                          'userGroupId' => self::$faker->randomNumber(3),
+                                          'userProfileId' => self::$faker->randomNumber(3),
+                                          'fixed' => 1,
+                                          'priority' => self::$faker->randomNumber(3),
+                                          'data' => null,
+                                      ]);
+
+        $this->itemPresetService->expects($this->once())
+                                ->method('getForCurrentUser')
+                                ->with('account.permission')
+                                ->willReturn($itemPreset);
+
+        $this->accountToUserRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountToUserGroupRepository
+            ->expects($this->never())
+            ->method('addByType');
+
+        $this->accountPreset->addPresetPermissions(100);
+    }
+
+    private function buildPasswordPresetWithExpireDays(int $expireDays): Password
+    {
+        return new Password(
+            self::$faker->numberBetween(1, 12),
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            self::$faker->boolean(),
+            $expireDays,
+            self::$faker->randomNumber(3),
+            self::$faker->regexify('abc123')
+        );
     }
 
     protected function setUp(): void

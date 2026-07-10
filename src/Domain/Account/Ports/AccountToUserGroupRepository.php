@@ -62,11 +62,11 @@ interface AccountToUserGroupRepository extends Repository
     /**
      * @param $id int
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByUserGroupId(int $id): bool;
+    public function deleteByUserGroupId(int $id): void;
 
     /**
      * @param int $id
@@ -92,9 +92,9 @@ interface AccountToUserGroupRepository extends Repository
     /**
      * @param $id int
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): bool;
+    public function deleteByAccountId(int $id): void;
 }

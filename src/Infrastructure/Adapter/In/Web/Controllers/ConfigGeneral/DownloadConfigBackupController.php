@@ -91,7 +91,6 @@ final class DownloadConfigBackupController extends SimpleControllerBase
                          ->header('Content-Description', ' sysPass file')
                          ->header('Content-transfer-encoding', 'binary')
                          ->header('Content-Disposition', 'attachment; filename="config.json"')
-                         ->header('Set-Cookie', 'fileDownload=true; path=/')
                          ->body($data);
             }
         );

@@ -41,26 +41,31 @@ final class JsController extends ResourceBase
 
     private const JS_MIN_FILES = [
         'jquery.min.js',
-        'jquery.fileDownload.min.js',
         'clipboard.min.js',
         'selectize.min.js',
-        'selectize-plugins.min.js',
-        'zxcvbn-async.min.js',
         'jsencrypt.min.js',
         'spark-md5.min.js',
         'moment.min.js',
         'moment-timezone.min.js',
-        'toastr.min.js',
         'jquery.magnific-popup.min.js',
-        'eventsource.min.js',
     ];
     private const JS_APP_MIN_FILES = [
         'app.min.js',
         'app-config.min.js',
+        // Selectize plugin glue (app-authored, not a library dist) — must load after
+        // selectize.min.js (JS_MIN_FILES, previous <script> tag) and before app-triggers.min.js,
+        // which registers a Selectize control using the "clear_selection" plugin it defines.
+        'selectize-plugins.min.js',
         'app-triggers.min.js',
         'app-actions.min.js',
         'app-requests.min.js',
+        // Lazily loads vendor/js/zxcvbn.min.js on window "load" (app-authored glue, not a
+        // library dist); placed before app-util.min.js, which is the first to call zxcvbn().
+        'zxcvbn-async.min.js',
         'app-util.min.js',
+        // Hand-rolled toast module (app-authored, not a library dist) — must load before
+        // app-main.min.js, whose msg wrapper calls window.toasts.
+        'toasts.min.js',
         'app-main.min.js',
     ];
 

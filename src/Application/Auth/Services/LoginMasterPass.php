@@ -112,7 +112,12 @@ final class LoginMasterPass extends LoginBase implements LoginMasterPassService
 
             $this->eventDispatcher->notify(new Event('login.masterPass', $this, EventMessage::build()->addDescription(__u('Master password updated'))));
         } catch (NoSuchItemException | CryptException $e) {
-            throw ServiceException::error('Internal error', __FUNCTION__, Service::STATUS_INTERNAL_ERROR, $e);
+            throw ServiceException::error(
+                'Internal error',
+                __u('Please check out the event log for more details'),
+                Service::STATUS_INTERNAL_ERROR,
+                $e
+            );
         }
     }
 

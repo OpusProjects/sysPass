@@ -4,13 +4,20 @@
 [![License: GPLv3](https://img.shields.io/badge/license-GPLv3-blue.svg)](LICENSE)
 [![PHP](https://img.shields.io/badge/php-8.4%2B-777BB4.svg?logo=php&logoColor=white)](https://www.php.net/)
 
-> 🛠️ **This is a fork.** This repository is a continuation of the original
-> [sysPass](https://github.com/nuxsmin/sysPass) by **Rubén Domínguez ([@nuxsmin](https://github.com/nuxsmin))**,
-> picked up by [OpusProjects](https://github.com/OpusProjects) after the
-> original project was discontinued by its author. All original work, copyright, and the
-> GNU GPLv3 license are retained and credited. See the Original project status section.
+sysPass is a self-hosted, open-source web password manager for business and personal use.
 
-sysPass is a PHP web-based password manager for business and personal use.
+The original sysPass was created by **Rubén Domínguez
+([@nuxsmin](https://github.com/nuxsmin))**, who released the last upstream version
+(**[3.2.11](https://github.com/nuxsmin/sysPass/releases/tag/3.2.11)**) in July 2022.
+In May 2026, he confirmed he no longer had the time to keep evolving it
+([nuxsmin/sysPass#1954](https://github.com/nuxsmin/sysPass/issues/1954#issuecomment-4382203218))
+and called for someone to fork the application in order to continue its development.
+
+This repository is that fork. Started by [OpusProjects](https://github.com/OpusProjects)
+in June 2026, picking up [@nuxsmin](https://github.com/nuxsmin)'s own planned
+[hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring)
+as the new baseline, built on PHP 8, Symfony, PHP-DI, MariaDB, Docker, PHPUnit, and a full REST API.
+All original copyright and the GNU GPLv3 license are retained.
 
 ---
 
@@ -26,47 +33,6 @@ sysPass is a PHP web-based password manager for business and personal use.
 - **Notifications & audit log**: activity alerts by email and in-app, plus a full event log
 - **Multilanguage**: internationalised UI
 - **REST API**: full programmatic access
-
----
-
-## 📜 Original project status
-
-The original sysPass was created in 2010 and maintained by **Rubén Domínguez ([@nuxsmin](https://github.com/nuxsmin))**.
-
-Its last release, **[3.2.11](https://github.com/nuxsmin/sysPass/releases/tag/3.2.11)**, shipped on **2 July 2022**, then went dormant.
-
-In **May 2026**, the author confirmed he had no time to continue developing it and called for a fork.
-
-In his own words ([nuxsmin/sysPass#1954, 2026-05-05](https://github.com/nuxsmin/sysPass/issues/1954#issuecomment-4382203218)):
-
-> _"That being said, I believe it would be better to either fork this application and continue
-> its development or look for another one. I know it could be disappointing, but the reality is
-> that I don't have the time to continue evolving it with the required quality standards."_
-
-This fork exists to keep sysPass alive. It started on **20 June 2026** from the last upstream release
-(**3.2.11**) as a baseline.
-
----
-
-## 📜 Current project status
-
-This fork carries **[@nuxsmin](https://github.com/nuxsmin)**'s planned [hexagonal-architecture rework](https://github.com/nuxsmin/sysPass/tree/feat/code_refactoring) forward to keep evolving the project.
-
-Tech stack:
-
-- **PHP 8.4+** — language runtime
-- **Symfony 8** — HTTP, routing & console components
-- **PHP-DI** — dependency-injection container
-- **Composer** — dependency management
-- **Docker** — containerised dev stack
-- **MariaDB / MySQL** — database
-- **PHPUnit 13** — test suite
-- **npm / Node** — build & test tooling (Playwright E2E; not needed at runtime)
-
-Architecture & design:
-
-- **Hexagonal architecture** — ports & adapters
-- **Domain-Driven Design (DDD)** — `Domain/` + `Infrastructure/` layering
 
 ---
 
@@ -93,8 +59,6 @@ Security issues: see [SECURITY.md](SECURITY.md) for private reporting.
 ## 👥 Authors
 
 - [Blai Peidro](https://github.com/blaipr)
-
-Part of [OpusProjects](https://github.com/OpusProjects).
 
 ---
 

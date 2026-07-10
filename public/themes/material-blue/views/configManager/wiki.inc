@@ -49,7 +49,7 @@ use function SP\__;
 
     <table id="tblWiki" class="data tblConfig">
         <tr>
-            <td class="descField"></td>
+            <td class="descField"><?php echo __('Wiki'); ?></td>
             <td class="valField">
                 <ul class="config-wiki-list-action mdl-list">
                     <li class="mdl-list__item mdl-list__item--two-line">

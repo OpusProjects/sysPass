@@ -43,7 +43,6 @@ final class CssController extends ResourceBase
         'jquery-ui.min.css',
         'jquery-ui.structure.min.css',
         'material-icons.min.css',
-        'toastr.min.css',
         'magnific-popup.min.css',
     ];
 

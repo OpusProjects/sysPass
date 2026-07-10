@@ -281,8 +281,8 @@ final class AccountActionsHelper extends HelperBase
 
                 $actions[] = $actionRefresh;
 
-                if ($userData->getIsAdminApp()
-                    || $userData->getId() === $accountActionsDto->getPublicLinkCreatorId()
+                if ($userData->isAdminApp
+                    || $userData->id === $accountActionsDto->getPublicLinkCreatorId()
                 ) {
                     $actionDelete = $this->getPublicLinkDeleteAction();
                     $actionDelete->addData('item-id', $itemId);

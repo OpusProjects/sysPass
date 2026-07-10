@@ -567,6 +567,13 @@ final class User extends BaseRepository implements UserRepository
      */
     public function getUserEmailById(array $ids): QueryResult
     {
+        if (empty($ids)) {
+            /** @var QueryResult<T> $emptyResult */
+            $emptyResult = new QueryResult();
+
+            return $emptyResult;
+        }
+
         $query = $this->queryFactory
             ->newSelect()
             ->cols(UserModel::getCols())

@@ -238,7 +238,7 @@ abstract class DataGridPagerBase implements DataGridPagerInterface
 
     protected function parseArgs(): array
     {
-        $args = array();
+        $args = [];
 
         foreach ($this->onClickArgs as $arg) {
             $args[] = (!is_numeric($arg) && $arg !== 'this')

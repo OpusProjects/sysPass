@@ -2,7 +2,6 @@ name: sysPass CI
 
 on:
   push:
-    branches: [main]
     tags: ['v*']
   pull_request:
     branches: [main]
@@ -13,38 +12,41 @@ env:
 
 jobs:
   unit:
-    name: Unit tests
+    name: Unit tests (${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
           ini-values: zend.assertions=1
 
-      - name: Install iproute2 and locales
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends iproute2 locales
-          for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
-            sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
-          done
+      - name: Setup locales
+        uses: ./.github/actions/setup-locales
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Run unit tests
         run: vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
 
   integration:
-    name: Integration tests
+    name: Integration tests (${{ matrix.php }})
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php: ['8.4', '8.5']
     services:
       db:
-        image: mariadb:10.11
+        image: mariadb:11.8
         env:
           MARIADB_ROOT_PASSWORD: syspass
           MARIADB_DATABASE: syspass
@@ -57,25 +59,22 @@ jobs:
           --health-timeout=5s
           --health-retries=20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
           ini-values: zend.assertions=1
 
-      - name: Install iproute2 and locales
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends iproute2 locales
-          for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
-            sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
-          done
+      - name: Setup locales
+        uses: ./.github/actions/setup-locales
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Load schema
         run: mysql -h 127.0.0.1 -P 3306 -u root -psyspass syspass < schemas/dbstructure.sql
@@ -93,7 +92,7 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -101,13 +100,15 @@ jobs:
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: 'lts/*'
           cache: 'npm'
 
       - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+        uses: ramsey/composer-install@v4
+        with:
+          composer-options: --prefer-dist
 
       - name: Install npm dependencies
         run: npm ci
@@ -124,6 +125,57 @@ jobs:
       - name: Verify vendored npm assets are current
         run: npm run vendor && git diff --exit-code public/vendor/
 
+  e2e:
+    name: E2E tests (Playwright)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Start the app stack
+        run: docker compose up --build -d
+
+      - name: Wait for the app to respond
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf -o /dev/null "http://localhost:8090/index.php?r=install/index"; then
+              echo "App is up after $((i * 3))s."
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "App did not become ready within 90s." >&2
+          docker compose logs
+          exit 1
+
+      - name: Run Playwright e2e suite
+        run: npm run test:e2e
+
+      - name: Dump app logs on failure
+        if: failure()
+        run: docker compose logs
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7
+
   build-image:
     name: Build image
     needs: [unit, integration]
@@ -132,7 +184,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: docker/login-action@v4
         if: github.event_name == 'push'
@@ -153,6 +205,7 @@ jobs:
       - uses: docker/build-push-action@v7
         with:
           context: .
+          file: docker/Dockerfile
           push: ${{ github.event_name == 'push' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -165,7 +218,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Extract changelog section for this version
         run: |

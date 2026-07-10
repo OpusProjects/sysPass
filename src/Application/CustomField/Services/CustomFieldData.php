@@ -163,7 +163,7 @@ final class CustomFieldData extends Service implements CustomFieldDataService
 
         return $customFieldData->mutate(
             [
-                'data' => $this->crypt->encrypt($customFieldData->getData(), $securedKey, $key),
+                'data' => $this->crypt->encrypt($customFieldData->getData() ?? '', $securedKey, $key),
                 'key' => $securedKey
             ]
         );

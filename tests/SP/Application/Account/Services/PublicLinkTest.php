@@ -558,6 +558,43 @@ class PublicLinkTest extends UnitaryTestCase
         $this->assertEquals($result->getLastId(), $actual);
     }
 
+    /**
+     * A link created without an explicit owner must be assigned to the session user.
+     * PublicLink::getUserId() casts a missing owner to 0 (never null), so the fallback
+     * has to treat 0 as "unset" — a regression here persists links with userId = 0.
+     */
+    public function testCreateAssignsSessionUserWhenOwnerMissing()
+    {
+        $publicLinkData = PublicLinkDataGenerator::factory()
+            ->buildPublicLink()
+            ->mutate(['userId' => null]);
+        $result = new QueryResult(null, 0, self::$faker->randomNumber());
+
+        $sessionUserId = $this->context->getUserData()->id;
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('create')
+            ->with(
+                new Callback(
+                    static fn(PublicLinkModel $actual) => $actual->getUserId() === $sessionUserId
+                )
+            )
+            ->willReturn($result);
+
+        $this->accountService
+            ->method('getDataForLink')
+            ->willReturn(new Simple(['pass' => self::$faker->password(), 'key' => self::$faker->sha1()]));
+
+        $this->crypt
+            ->method('decrypt')
+            ->willReturn(self::$faker->password());
+
+        $actual = $this->publicLink->create($publicLinkData);
+
+        $this->assertEquals($result->getLastId(), $actual);
+    }
+
     public function testCalcDateExpire()
     {
         $expireDate = time() + $this->config->getConfigData()->getPublinksMaxTime();

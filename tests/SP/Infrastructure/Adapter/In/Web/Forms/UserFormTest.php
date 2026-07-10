@@ -84,6 +84,31 @@ final class UserFormTest extends UnitaryTestCase
         $this->assertFalse($user->isAdminAcc());
     }
 
+    /**
+     * Deleting your own account must be rejected.
+     */
+    public function testDeleteSelfIsRejected(): void
+    {
+        $form = $this->buildForm();
+
+        $this->expectException(\SP\Domain\Core\Exceptions\ValidationException::class);
+        $this->expectExceptionMessage('Unable to delete, user in use');
+
+        $form->validateFor(AclActionsInterface::USER_DELETE, $this->context->getUserData()->id);
+    }
+
+    /**
+     * Deleting another user passes the self-delete guard.
+     */
+    public function testDeleteOtherUserIsAllowed(): void
+    {
+        $form = $this->buildForm();
+
+        $result = $form->validateFor(AclActionsInterface::USER_DELETE, $this->context->getUserData()->id + 1);
+
+        $this->assertSame($form, $result);
+    }
+
     // ── helpers ──────────────────────────────────────────────────────────────
 
     private function buildForm(?int $itemId = null): UserForm

@@ -33,10 +33,13 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\ConfigTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
+
+use function SP\__u;
 
 /**
  * Class SaveController
@@ -66,6 +69,7 @@ final class SaveController extends SimpleControllerBase
         $configData = $this->config->getConfigData();
 
         $this->handleSiteConfig($configData);
+        $this->handleProxyConfig($configData);
 
         return $this->saveConfig(
             $configData,
@@ -88,23 +92,48 @@ final class SaveController extends SimpleControllerBase
         $siteTheme = $this->request->analyzeString('site_theme', 'material-blue');
         $sessionTimeout = $this->request->analyzeInt('session_timeout', 300);
         $applicationUrl = $this->request->analyzeString('app_url');
-        $httpsEnabled = $this->request->analyzeBool('https_enabled', false);
         $debugEnabled = $this->request->analyzeBool('debug_enabled', false);
         $maintenanceEnabled = $this->request->analyzeBool('maintenance_enabled', false);
         $checkUpdatesEnabled = $this->request->analyzeBool('check_updates_enabled', false);
         $checkNoticesEnabled = $this->request->analyzeBool('check_notices_enabled', false);
-        $encryptSessionEnabled = $this->request->analyzeBool('encrypt_session_enabled', false);
 
         $configData->setSiteLang($siteLang);
         $configData->setSiteTheme($siteTheme);
         $configData->setSessionTimeout($sessionTimeout);
         $configData->setApplicationUrl($applicationUrl);
-        $configData->setHttpsEnabled($httpsEnabled);
         $configData->setDebug($debugEnabled);
         $configData->setMaintenance($maintenanceEnabled);
         $configData->setCheckUpdates($checkUpdatesEnabled);
         $configData->setCheckNotices($checkNoticesEnabled);
-        $configData->setEncryptSession($encryptSessionEnabled);
+    }
+
+    /**
+     * @throws ValidationException
+     */
+    private function handleProxyConfig(ConfigDataInterface $configData): void
+    {
+        $proxyEnabled = $this->request->analyzeBool('proxy_enabled', false);
+        $proxyServer  = $this->request->analyzeString('proxy_server');
+        $proxyPort    = $this->request->analyzeInt('proxy_port', 8080);
+        $proxyUser    = $this->request->analyzeString('proxy_user');
+        $proxyPass    = $this->request->analyzeEncrypted('proxy_pass');
+
+        if ($proxyEnabled && (!$proxyServer || !$proxyPort)) {
+            throw new ValidationException(__u('Missing Proxy parameters'));
+        }
+
+        if ($proxyEnabled) {
+            $configData->setProxyEnabled(true);
+            $configData->setProxyServer($proxyServer);
+            $configData->setProxyPort($proxyPort);
+            $configData->setProxyUser($proxyUser);
+
+            if ($proxyPass !== null && $proxyPass !== '***') {
+                $configData->setProxyPass($proxyPass);
+            }
+        } else {
+            $configData->setProxyEnabled(false);
+        }
     }
 
     /**

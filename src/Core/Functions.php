@@ -224,7 +224,7 @@ function _t(string $domain, string $message, bool $translate = true): string
  */
 function mb_ucfirst(string $string): string
 {
-    return mb_strtoupper(mb_substr($string, 0, 1));
+    return mb_strtoupper(mb_substr($string, 0, 1)) . mb_substr($string, 1);
 }
 
 /**
@@ -283,12 +283,24 @@ function getFromEnv(string $envVar, mixed $default = null): mixed
     // not getenv(); read those first, then fall back to a real environment variable.
     $env = $_ENV[$envVar] ?? $_SERVER[$envVar] ?? getenv($envVar);
 
-    if ($env === false || $env === null || $env === '') {
+    // The ?? chain never yields null (an unset/null entry falls through to getenv(),
+    // which returns string|array|false), so only false and '' mean "not set".
+    if ($env === false || $env === '') {
         $env = $default;
     }
 
     if ($default !== null) {
-        settype($env, gettype($default));
+        if (is_bool($default)) {
+            // A dotenv value is always a string; (bool)"false" is true in PHP, so a
+            // literal "false"/"0"/"off"/"no" string must be parsed, not cast.
+            if (is_string($env)) {
+                $env = filter_var($env, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? $default;
+            } else {
+                $env = (bool)$env;
+            }
+        } else {
+            settype($env, gettype($default));
+        }
     }
 
     return $env;

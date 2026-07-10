@@ -59,14 +59,6 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
     ) {
         parent::__construct($database, $session, $eventDispatcher, $queryFactory);
 
-        $this->initQuery();
-    }
-
-    /**
-     * @return void
-     */
-    private function initQuery(): void
-    {
         $cols = [
             'id',
             'clientId',

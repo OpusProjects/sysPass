@@ -720,8 +720,8 @@ use function SP\__;
                         var response = xhr.responseJSON;
 
                         if (response && (response.status === 'OK' || response.status === 0)) {
-                            if (window.toastr) {
-                                toastr.remove();
+                            if (window.toasts) {
+                                toasts.clear();
                             }
                             // no auto-redirect — the success screen has the Login button
                             sysPassApp.util.redirect = function() {};

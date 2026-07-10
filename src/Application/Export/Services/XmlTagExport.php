@@ -63,10 +63,6 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
 
             $nodeTags = $this->document->createElement('Tags');
 
-            if ($nodeTags === false) {
-                throw ServiceException::error(__u('Unable to create node'));
-            }
-
             if (empty($tags)) {
                 return $nodeTags;
             }
@@ -81,7 +77,7 @@ final class XmlTagExport extends XmlExportEntityBase implements XmlTagExportServ
 
             return $nodeTags;
         } catch (Exception $e) {
-            throw ServiceException::error($e->getMessage(), __FUNCTION__);
+            throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
         }
     }
 }

@@ -47,14 +47,6 @@ final readonly class XmlFile implements XmlFileService
 
     public function __construct()
     {
-        $this->createDocument();
-    }
-
-    /**
-     * @return void
-     */
-    private function createDocument(): void
-    {
         $this->document = new DOMDocument();
         $this->document->formatOutput = false;
         $this->document->preserveWhiteSpace = false;
@@ -102,7 +94,7 @@ final readonly class XmlFile implements XmlFileService
         $nodes = $this->document->getElementsByTagName('Generator');
 
         try {
-            return XmlFormat::from(strtolower($nodes->item(0)?->nodeValue ?? ''));
+            return XmlFormat::from(strtolower($nodes->item(0)->nodeValue ?? ''));
         } catch (ValueError $e) {
             throw ImportException::error(
                 __u('XML file not supported'),

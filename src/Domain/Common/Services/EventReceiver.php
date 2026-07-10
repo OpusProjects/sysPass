@@ -42,7 +42,11 @@ trait EventReceiver
         return $this->events;
     }
 
-    private function setupEvents(array $userEvents = []): void
+    /**
+     * Build the events regex from the class' EventReceiver attributes. The caller's
+     * constructor assigns the result to the readonly $events property.
+     */
+    private function setupEvents(array $userEvents = []): string
     {
         $reflectionClass = new ReflectionClass($this);
 
@@ -56,7 +60,7 @@ trait EventReceiver
             $reflectionClass->getAttributes(EventReceiverAttribute::class)
         );
 
-        $this->events = $this->parseEventsToRegex(array_merge($userEvents, $events));
+        return $this->parseEventsToRegex(array_merge($userEvents, $events));
     }
 
     /**

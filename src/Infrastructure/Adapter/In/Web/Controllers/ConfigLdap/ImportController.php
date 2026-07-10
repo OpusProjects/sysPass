@@ -129,7 +129,7 @@ final class ImportController extends SimpleControllerBase
             throw ValidationException::error(__u('Wrong LDAP parameters'));
         }
 
-        return array($ldapImportParams, $checkImportGroups);
+        return [$ldapImportParams, $checkImportGroups];
     }
 
     /**

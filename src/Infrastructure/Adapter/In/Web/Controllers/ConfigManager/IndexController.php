@@ -124,8 +124,8 @@ final class IndexController extends ControllerBase
     {
         if ($this->checkAccess(AclActionsInterface::CONFIG_GENERAL)) {
             $this->tabsHelper->addTab($this->getConfigGeneral());
+            $this->tabsHelper->addTab($this->getSecurityConfig());
             $this->tabsHelper->addTab($this->getEventsConfig());
-            $this->tabsHelper->addTab($this->getProxyConfig());
             $this->tabsHelper->addTab($this->getAuthConfig());
         }
 
@@ -209,6 +209,14 @@ final class IndexController extends ControllerBase
         return new DataTab(__('General'), $template);
     }
 
+    protected function getSecurityConfig(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('security');
+
+        return new DataTab(__('Security'), $template);
+    }
+
     protected function getEventsConfig(): DataTab
     {
         $template = clone $this->view;
@@ -228,14 +236,6 @@ final class IndexController extends ControllerBase
         );
 
         return new DataTab(__('Logs'), $template);
-    }
-
-    protected function getProxyConfig(): DataTab
-    {
-        $template = clone $this->view;
-        $template->addTemplate('proxy');
-
-        return new DataTab(__('Proxy'), $template);
     }
 
     /**
@@ -556,7 +556,7 @@ final class IndexController extends ControllerBase
         );
         $template->assign(
             'locale',
-            Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang() ?? '', __('Not installed'))
+            Language::$localeStatus ?: sprintf('%s (%s)', $this->configData->getSiteLang(), __('Not installed'))
         );
         $template->assign('securedSession', CryptSessionHandler::$isSecured);
         $template->assign(

@@ -73,11 +73,11 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
      *
      * @param int $id
      *
-     * @return bool
+     * @return void
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function deleteByAccountId(int $id): bool
+    public function deleteByAccountId(int $id): void
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -89,7 +89,7 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the account\'s tags'));
 
-        return $this->db->runQuery($queryData)->getAffectedNumRows() === 1;
+        $this->db->runQuery($queryData);
     }
 
     /**

@@ -183,7 +183,11 @@ final class Login extends LoginBase implements LoginService
     private function loadUserPreferences(): void
     {
         $this->language->setLanguage(true);
-        $this->context->setAuthCompleted(true);
+
+        if ($this->context instanceof SessionContext) {
+            $this->context->setAuthCompleted(true);
+        }
+
         $this->eventDispatcher->notify(new Event('login.preferences.load', $this));
     }
 
