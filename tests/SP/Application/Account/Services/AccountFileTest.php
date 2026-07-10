@@ -66,7 +66,7 @@ class AccountFileTest extends UnitaryTestCase
     public function testCreate(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData())
-            ->mutate(['type' => self::$faker->mimeType()]);
+            ->mutate(['type' => 'application/pdf']);
 
         $this->imageUtil
             ->expects(self::never())
@@ -75,7 +75,7 @@ class AccountFileTest extends UnitaryTestCase
         $this->accountFileRepository
             ->expects(self::once())
             ->method('create')
-            ->with($fileData);
+            ->with($fileData->mutate(['thumb' => 'no_thumb']));
 
         $this->accountFile->create($fileData);
     }
@@ -88,17 +88,18 @@ class AccountFileTest extends UnitaryTestCase
     public function testCreateWithThumbnail(): void
     {
         $fileData = File::buildFromSimpleModel(FileDataGenerator::factory()->buildFileData());
+        $thumbnail = self::$faker->paragraph();
 
         $this->accountFileRepository
             ->expects(self::once())
             ->method('create')
-            ->with($fileData);
+            ->with($fileData->mutate(['thumb' => $thumbnail]));
 
         $this->imageUtil
             ->expects(self::once())
             ->method('createThumbnail')
             ->with($fileData->getContent())
-            ->willReturn(self::$faker->paragraph());
+            ->willReturn($thumbnail);
 
         $this->accountFile->create($fileData);
     }

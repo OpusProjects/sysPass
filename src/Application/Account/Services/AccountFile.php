@@ -72,9 +72,9 @@ final class AccountFile extends Service implements AccountFileService
     public function create(FileModel $file): int
     {
         if (FileSystem::isImage($file->getType() ?? '')) {
-            $file->setThumb($this->imageUtil->createThumbnail($file->getContent() ?? ''));
+            $file = $file->mutate(['thumb' => $this->imageUtil->createThumbnail($file->getContent() ?? '')]);
         } else {
-            $file->setThumb('no_thumb');
+            $file = $file->mutate(['thumb' => 'no_thumb']);
         }
 
         return $this->accountFileRepository->create($file);
