@@ -30,8 +30,6 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
-use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\RepositoryItemTrait;
@@ -206,14 +204,23 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
      */
     public function getForModuleAndItemId(int $moduleId, ?int $itemId): QueryResult
     {
-        $cols = array_merge(
-            CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition', ['field', 'typeId']),
-            CustomFieldDataModel::getColsWithPreffix(
-                'CF_Data',
-                ['id', 'moduleId', 'itemId', 'definitionId']
-            ),
-            CustomFieldTypeModel::getColsWithPreffix('CF_Type')
-        );
+        // Aliased explicitly: CF_Definition.id/name and CF_Type.id/name would otherwise
+        // collide as bare "id"/"name" columns, and the consumer (ItemTrait::getCustomFieldsForItem())
+        // reads these exact keys off each result row.
+        $cols = [
+            'CF_Definition.id AS definitionId',
+            'CF_Definition.name AS definitionName',
+            'CF_Definition.moduleId',
+            'CF_Definition.required',
+            'CF_Definition.help',
+            'CF_Definition.showInList',
+            'CF_Definition.isEncrypted',
+            'CF_Data.data',
+            'CF_Data.key',
+            'CF_Type.id AS typeId',
+            'CF_Type.name AS typeName',
+            'CF_Type.text AS typeText',
+        ];
 
         $query = $this->queryFactory
             ->newSelect()
