@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Crypt;
 
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\logger;
 

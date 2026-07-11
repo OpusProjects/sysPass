@@ -30,7 +30,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**

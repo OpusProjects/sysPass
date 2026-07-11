@@ -40,7 +40,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Application\User\Ports\UserPassRecoverService;

@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Auth\Services\LoginBase;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Application\Security\Ports\TrackService;
 use SP\Tests\Support\UnitaryTestCase;

@@ -32,7 +32,7 @@ use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\Browser\BrowserAuth;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

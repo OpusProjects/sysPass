@@ -30,7 +30,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridData;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;

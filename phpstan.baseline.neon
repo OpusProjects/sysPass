@@ -998,7 +998,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccountFile/DeleteController.php
 
 		-
-			message: '#^Parameter \#2 \$default of method SP\\Infrastructure\\Http\\Ports\\RequestService\:\:analyzeInt\(\) expects int\|null, false given\.$#'
+			message: '#^Parameter \#2 \$default of method SP\\Domain\\Http\\Ports\\RequestService\:\:analyzeInt\(\) expects int\|null, false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccountFile/ListController.php

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Bootstrap;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class UriContext

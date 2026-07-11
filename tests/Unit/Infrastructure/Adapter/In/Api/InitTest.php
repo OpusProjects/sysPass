@@ -42,7 +42,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Log\Providers\LogHandler;
 use SP\Infrastructure\Adapter\In\Api\Init;

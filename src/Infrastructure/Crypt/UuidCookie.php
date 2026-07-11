@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Crypt;
 
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class UuidCookie

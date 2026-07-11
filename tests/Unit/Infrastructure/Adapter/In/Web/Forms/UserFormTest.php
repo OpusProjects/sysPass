@@ -7,7 +7,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserForm;

@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Application\Tag\Ports\TagService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;

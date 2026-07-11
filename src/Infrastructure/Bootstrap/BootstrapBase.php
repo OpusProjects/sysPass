@@ -47,7 +47,7 @@ use SP\Domain\Core\Exceptions\CheckException;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use Symfony\Component\ErrorHandler\Debug;
 use Throwable;

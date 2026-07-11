@@ -34,7 +34,7 @@ use SP\Domain\Common\Providers\Version;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
 use SP\Domain\Install\Services\DatabaseSetupService;

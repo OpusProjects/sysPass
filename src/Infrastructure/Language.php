@@ -29,7 +29,7 @@ namespace SP\Infrastructure;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\LanguageInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\logger;
 

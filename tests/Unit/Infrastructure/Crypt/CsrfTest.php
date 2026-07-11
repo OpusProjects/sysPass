@@ -33,8 +33,8 @@ use SP\Infrastructure\Crypt\Csrf;
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
-use SP\Infrastructure\Http\Method;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Method;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

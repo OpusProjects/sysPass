@@ -49,7 +49,7 @@ use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;

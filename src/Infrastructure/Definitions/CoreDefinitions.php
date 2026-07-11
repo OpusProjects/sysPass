@@ -106,7 +106,7 @@ use SP\Domain\Export\Dtos\BackupType;
 use SP\Application\Export\Ports\BackupFileService;
 use SP\Application\Export\Services\BackupFile;
 use SP\Infrastructure\Http\Client;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Http\Services\Request;
 use SP\Infrastructure\Http\Services\Response;

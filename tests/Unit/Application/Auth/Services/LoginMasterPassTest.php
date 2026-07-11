@@ -40,7 +40,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\TemporaryMasterPassService;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;

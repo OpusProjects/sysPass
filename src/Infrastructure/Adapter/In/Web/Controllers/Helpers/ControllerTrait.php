@@ -31,7 +31,7 @@ use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Dtos\JsonMessage;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Http\Services\JsonResponse;
 

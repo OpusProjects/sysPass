@@ -35,7 +35,7 @@ use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\__;
 use function SP\getLastCaller;

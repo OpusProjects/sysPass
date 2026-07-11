@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldItem;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Trait ItemTrait
