@@ -42,8 +42,8 @@ use SP\Application\Export\Services\BackupFile;
 use SP\Domain\Export\Dtos\BackupHandlers;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\QueryData;
+use SP\Domain\Database\Ports\DatabaseUtilService;
+use SP\Domain\Database\Ports\QueryDataInterface;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
@@ -73,7 +73,7 @@ class FileBackupServiceTest extends UnitaryTestCase
     {
         $this->config->getConfigData()->setDbName('a_db');
 
-        $tablesCount = count(DatabaseUtil::TABLES) + count(DatabaseUtil::VIEWS);
+        $tablesCount = count(DatabaseUtilService::TABLES) + count(DatabaseUtilService::VIEWS);
         $tablesType = ['table', 'view'];
 
         $queryResults = array_map(
@@ -85,7 +85,7 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects(self::exactly($tablesCount))
             ->method('runQuery')
             ->with(
-                new Callback(static function (QueryData $queryData) {
+                new Callback(static function (QueryDataInterface $queryData) {
                     return preg_match('/^SHOW CREATE TABLE \w+$/', $queryData->getQuery()->getStatement()) === 1;
                 })
             )
@@ -100,7 +100,7 @@ class FileBackupServiceTest extends UnitaryTestCase
             ->expects(self::exactly($tablesCount - 2))
             ->method('doFetchWithOptions')
             ->with(
-                new Callback(static function (QueryData $queryData) {
+                new Callback(static function (QueryDataInterface $queryData) {
                     return preg_match('/^SELECT \* FROM `\w+`$/', $queryData->getQuery()->getStatement()) === 1;
                 }),
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
@@ -111,7 +111,7 @@ class FileBackupServiceTest extends UnitaryTestCase
 
         // header + one create statement per table/view + 2 rows per table + footer
         $this->dbFileHandler
-            ->expects($this->exactly(1 + $tablesCount + count(DatabaseUtil::TABLES) * 2 + 1))
+            ->expects($this->exactly(1 + $tablesCount + count(DatabaseUtilService::TABLES) * 2 + 1))
             ->method('write');
 
         $this->dbFileHandler
@@ -215,7 +215,8 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->fileBackupService = new BackupFile(
             $this->application,
             $this->database,
-            $this->createStub(DatabaseUtil::class),
+            $this->createStub(DatabaseUtilService::class),
+            new \SP\Infrastructure\Database\QueryDataFactory(),
             $this->backupHandlersFactory
         );
     }

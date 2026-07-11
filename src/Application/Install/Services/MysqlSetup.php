@@ -32,10 +32,10 @@ use PDOException;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\DatabaseSetupService;
-use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Domain\Database\Ports\DatabaseUtilService;
 use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\__;
@@ -52,7 +52,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
         private DbStorageHandler      $dbStorage,
         private InstallData           $installData,
         private DatabaseFileInterface $databaseFile,
-        private DatabaseUtil          $databaseUtil
+        private DatabaseUtilService   $databaseUtil
     ) {
     }
 
@@ -203,7 +203,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
      */
     private function countExistingSysPassObjects(): int
     {
-        $names = array_merge(DatabaseUtil::TABLES, DatabaseUtil::VIEWS);
+        $names = array_merge(DatabaseUtilService::TABLES, DatabaseUtilService::VIEWS);
 
         try {
             $sth = $this->dbStorage
@@ -361,7 +361,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
             // The FK constraints between the tables would make ordered drops fail
             $this->execBestEffort($dbc, 'SET FOREIGN_KEY_CHECKS = 0');
 
-            foreach (DatabaseUtil::VIEWS as $view) {
+            foreach (DatabaseUtilService::VIEWS as $view) {
                 $this->execBestEffort(
                     $dbc,
                     sprintf(
@@ -372,7 +372,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
                 );
             }
 
-            foreach (DatabaseUtil::TABLES as $table) {
+            foreach (DatabaseUtilService::TABLES as $table) {
                 $this->execBestEffort(
                     $dbc,
                     sprintf(

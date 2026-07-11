@@ -42,9 +42,8 @@ use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Application\Export\Ports\BackupFileService;
 use SP\Application\Export\Ports\BackupHandlersFactory;
 use SP\Domain\Export\Dtos\BackupHandlers;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\Query;
-use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\Database\QueryData;
+use SP\Domain\Database\Ports\DatabaseUtilService;
+use SP\Domain\Database\Ports\QueryDataFactory;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\File\FileSystem;
 
@@ -61,7 +60,8 @@ final class BackupFile extends Service implements BackupFileService
     public function __construct(
         Application                            $application,
         private readonly DatabaseInterface     $database,
-        private readonly DatabaseUtil          $databaseUtil,
+        private readonly DatabaseUtilService   $databaseUtil,
+        private readonly QueryDataFactory      $queryDataFactory,
         private readonly BackupHandlersFactory $backupHandlersFactory,
     ) {
         parent::__construct($application);
@@ -154,9 +154,9 @@ final class BackupFile extends Service implements BackupFileService
         $views = $this->getViews();
 
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $table), []);
+            $queryData = $this->queryDataFactory->fromRawSql(sprintf('SHOW CREATE TABLE %s', $table));
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($queryData)->getData();
 
             $sqlOut = [
                 '-- ',
@@ -171,9 +171,9 @@ final class BackupFile extends Service implements BackupFileService
         }
 
         foreach ($views as $view) {
-            $query = Query::buildForMySQL(sprintf('SHOW CREATE TABLE %s', $view), []);
+            $queryData = $this->queryDataFactory->fromRawSql(sprintf('SHOW CREATE TABLE %s', $view));
 
-            $data = $this->database->runQuery(QueryData::build($query))->getData();
+            $data = $this->database->runQuery($queryData)->getData();
 
             $sqlOut = [
                 '-- ',
@@ -189,11 +189,11 @@ final class BackupFile extends Service implements BackupFileService
 
         // Save tables' values
         foreach ($tables as $table) {
-            $query = Query::buildForMySQL(sprintf('SELECT * FROM `%s`', $table), []);
+            $queryData = $this->queryDataFactory->fromRawSql(sprintf('SELECT * FROM `%s`', $table));
 
             // Get table records
             $rows = $this->database->doFetchWithOptions(
-                QueryData::build($query),
+                $queryData,
                 [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL],
                 PDO::FETCH_NUM,
                 false
@@ -243,7 +243,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getTables(): array
     {
-        return DatabaseUtil::TABLES;
+        return DatabaseUtilService::TABLES;
     }
 
     /**
@@ -251,7 +251,7 @@ final class BackupFile extends Service implements BackupFileService
      */
     private function getViews(): array
     {
-        return DatabaseUtil::VIEWS;
+        return DatabaseUtilService::VIEWS;
     }
 
     /**

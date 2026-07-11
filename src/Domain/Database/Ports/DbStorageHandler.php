@@ -23,12 +23,33 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Database\Ports;
+
+use PDO;
+use SP\Domain\Database\DatabaseException;
+use SP\Domain\Database\DbStorageDriver;
 
 /**
- * Enum DbStorageDriver
+ * Interface DbStorageHandler
  */
-enum DbStorageDriver
+interface DbStorageHandler
 {
-    case mysql;
+    /**
+     * Get a PDO connection
+     *
+     * @return PDO
+     * @throws DatabaseException
+     */
+    public function getConnection(): PDO;
+
+    /**
+     * Get a PDO connection without selecting the database
+     *
+     * @return PDO
+     * @throws DatabaseException
+     */
+    public function getConnectionSimple(): PDO;
+
+
+    public function getDriver(): DbStorageDriver;
 }

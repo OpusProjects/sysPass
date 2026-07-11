@@ -36,10 +36,10 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Services\MysqlSetup;
-use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Domain\Database\Ports\DatabaseUtilService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -60,7 +60,7 @@ class MySQLTest extends UnitaryTestCase
     private InstallData                      $installData;
     private ConfigDataInterface              $configData;
     private DatabaseFileInterface|MockObject $databaseFile;
-    private DatabaseUtil|MockObject          $databaseUtil;
+    private DatabaseUtilService|MockObject          $databaseUtil;
 
     /**
      * @throws SPException
@@ -342,7 +342,7 @@ class MySQLTest extends UnitaryTestCase
         $pdoStatement->expects(self::once())->method('execute')->with(
             new Callback(
                 fn($args) => $args[0] === $this->installData->getDbName()
-                             && count($args) === 1 + count(DatabaseUtil::TABLES) + count(DatabaseUtil::VIEWS)
+                             && count($args) === 1 + count(DatabaseUtilService::TABLES) + count(DatabaseUtilService::VIEWS)
             )
         );
         $pdoStatement->expects(self::once())->method('fetchColumn')->willReturn(0);
@@ -597,7 +597,7 @@ class MySQLTest extends UnitaryTestCase
         $dropViewRegex = '/^DROP VIEW IF EXISTS `' . $dbName . '`\.`\w+`$/';
 
         // FK toggle (2) + views + tables — with FK checks off, drop order is irrelevant
-        $expectedCount = 2 + count(DatabaseUtil::VIEWS) + count(DatabaseUtil::TABLES);
+        $expectedCount = 2 + count(DatabaseUtilService::VIEWS) + count(DatabaseUtilService::TABLES);
 
         $this->pdo->expects(self::exactly($expectedCount))
                   ->method('exec')
@@ -931,7 +931,7 @@ class MySQLTest extends UnitaryTestCase
 
         $this->installData = $this->getInstallData();
         $this->configData = $this->config->getConfigData();
-        $this->databaseUtil = $this->createMock(DatabaseUtil::class);
+        $this->databaseUtil = $this->createMock(DatabaseUtilService::class);
         $this->mysqlService = new MysqlSetup(
             $this->dbStorage,
             $this->installData,

@@ -26,55 +26,16 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use Exception;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DatabaseUtilService;
+use SP\Domain\Database\Ports\DbStorageHandler;
 
 use function SP\processException;
 
 /**
  * Class DBUtil with database utilities
  */
-class DatabaseUtil
+class DatabaseUtil implements DatabaseUtilService
 {
-    /**
-     * @var string[] Database tables
-     */
-    public const TABLES = [
-        'Client',
-        'Category',
-        'Tag',
-        'UserGroup',
-        'UserProfile',
-        'User',
-        'Account',
-        'AccountToFavorite',
-        'AccountFile',
-        'AccountToUserGroup',
-        'AccountHistory',
-        'AccountToTag',
-        'AccountToUser',
-        'AuthToken',
-        'Config',
-        'CustomFieldType',
-        'CustomFieldDefinition',
-        'CustomFieldData',
-        'EventLog',
-        'ItemPreset',
-        'PublicLink',
-        'UserPassRecover',
-        'UserToUserGroup',
-        'Plugin',
-        'PluginData',
-        'Track',
-        'Notification',
-    ];
-
-    /**
-     * @var string[] Database views
-     */
-    public const VIEWS = [
-        'account_data_v',
-        'account_search_v',
-    ];
 
     /**
      * DatabaseUtil constructor.

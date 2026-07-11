@@ -29,7 +29,7 @@ use DI\DependencyException;
 use DI\NotFoundException;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Application\Config\Ports\ConfigFileService;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Database\DatabaseException;
 use SP\Infrastructure\Adapter\In\Cli\Commands\InstallCommand;
 use SP\Tests\Support\DatabaseUtil;
 use SP\Tests\Integration\Infrastructure\Adapter\In\Cli\CliTestCase;
