@@ -107,9 +107,9 @@ final class AccountHelp implements HelpInterface
         return
             [
                 self::getItem('id', __('Account Id'), true),
-                self::getItem('name', __('Account name')),
-                self::getItem('categoryId', __('Category Id')),
-                self::getItem('clientId', __('Client Id')),
+                self::getItem('name', __('Account name'), true),
+                self::getItem('categoryId', __('Category Id'), true),
+                self::getItem('clientId', __('Client Id'), true),
                 self::getItem('login', __('Access user')),
                 self::getItem('url', __('Access URL or IP')),
                 self::getItem('notes', __('Notes about the account')),
