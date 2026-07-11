@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Api;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Core\Bootstrap\Router;
 use SP\Core\Application;
 use SP\Core\Context\ContextException;
@@ -37,6 +38,7 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
 
 use function SP\logger;
 
@@ -74,6 +76,8 @@ final class Init extends HttpModuleBase
      * @throws ContextException
      * @throws InitializationException
      * @throws SPException
+     * @throws FileException
+     * @throws EnvironmentIsBrokenException
      */
     public function initialize(string $controller): void
     {
@@ -98,6 +102,10 @@ final class Init extends HttpModuleBase
 
         // Checks if upgrade is needed
         if ($this->checkUpgradeNeeded()) {
+            logger('Upgrade needed', 'INFO');
+
+            $this->config->generateUpgradeKey();
+
             throw new InitializationException('Upgrade needed');
         }
 
