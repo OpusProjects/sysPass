@@ -267,12 +267,25 @@ class CustomFieldDataTest extends UnitaryTestCase
             static function (QueryData $arg) use ($moduleId, $itemId) {
                 $query = $arg->getQuery();
                 $values = $query->getBindValues();
+                $statement = $query->getStatement();
 
                 return $values['moduleId'] === $moduleId
                        && $values['itemId'] === $itemId
                        && $arg->getMapClassName() === SimpleModel::class
                        && is_a($query, SelectInterface::class)
-                       && !empty($query->getStatement());
+                       && !empty($statement)
+                       && str_contains($statement, '`CF_Definition`.`id` AS `definitionId`')
+                       && str_contains($statement, '`CF_Definition`.`name` AS `definitionName`')
+                       && str_contains($statement, '`CF_Definition`.`moduleId`')
+                       && str_contains($statement, '`CF_Definition`.`required`')
+                       && str_contains($statement, '`CF_Definition`.`help`')
+                       && str_contains($statement, '`CF_Definition`.`showInList`')
+                       && str_contains($statement, '`CF_Definition`.`isEncrypted`')
+                       && str_contains($statement, '`CF_Data`.`data`')
+                       && str_contains($statement, '`CF_Data`.`key`')
+                       && str_contains($statement, '`CF_Type`.`id` AS `typeId`')
+                       && str_contains($statement, '`CF_Type`.`name` AS `typeName`')
+                       && str_contains($statement, '`CF_Type`.`text` AS `typeText`');
             }
         );
 
