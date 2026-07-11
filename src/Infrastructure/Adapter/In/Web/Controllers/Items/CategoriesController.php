@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Attributes\Action;
@@ -33,7 +33,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Infrastructure\Http\Services\JsonResponse;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;

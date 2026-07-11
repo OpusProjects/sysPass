@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserProfile;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;

@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Support\Stubs;
 
-use SP\Core\ModuleBase;
+use SP\Infrastructure\ModuleBase;
 
 /**
  * Class ModuleBaseStub

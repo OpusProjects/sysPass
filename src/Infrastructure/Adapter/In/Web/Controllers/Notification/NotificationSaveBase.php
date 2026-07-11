@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Notification;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;

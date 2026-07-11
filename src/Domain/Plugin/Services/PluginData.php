@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Plugin\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;

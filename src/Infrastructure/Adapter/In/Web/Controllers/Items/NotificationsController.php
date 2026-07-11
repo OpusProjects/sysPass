@@ -24,16 +24,16 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Html\Html;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Infrastructure\Html\Html;
+use SP\Infrastructure\Http\Dtos\JsonMessage;
+use SP\Infrastructure\Http\Services\JsonResponse;
 use SP\Application\Notification\Ports\NotificationService;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;

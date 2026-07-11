@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Providers;
 
 use SP\Domain\Common\Services\Service;
-use SP\Domain\Log\Ports\ProviderInterface;
+use SP\Infrastructure\Log\Ports\ProviderInterface;
 
 /**
  * Class Provider

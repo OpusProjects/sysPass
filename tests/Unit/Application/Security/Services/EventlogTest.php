@@ -33,7 +33,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Domain\Security\Ports\EventlogRepository;
 use SP\Application\Security\Services\Eventlog;

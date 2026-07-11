@@ -27,13 +27,13 @@ declare(strict_types=1);
 namespace SP\Domain\Upgrade\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileHandler;

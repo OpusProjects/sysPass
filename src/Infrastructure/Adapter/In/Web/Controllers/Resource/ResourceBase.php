@@ -24,11 +24,11 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Resource;
 
-use SP\Core\Application;
-use SP\Core\Bootstrap\PathsContext;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Html\Ports\MinifyService;
+use SP\Infrastructure\Html\Ports\MinifyService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 

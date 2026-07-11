@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Login;
 
-use SP\Core\Context\SessionLifecycleHandler;
+use SP\Infrastructure\Context\SessionLifecycleHandler;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

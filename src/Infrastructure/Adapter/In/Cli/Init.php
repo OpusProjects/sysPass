@@ -25,11 +25,11 @@
 namespace SP\Infrastructure\Adapter\In\Cli;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\Language;
-use SP\Core\ModuleBase;
-use SP\Core\ProvidersHelper;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Context\ContextException;
+use SP\Infrastructure\Language;
+use SP\Infrastructure\ModuleBase;
+use SP\Infrastructure\ProvidersHelper;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\LanguageInterface;
 use Symfony\Component\Console\Application as ConsoleApplication;

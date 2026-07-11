@@ -26,9 +26,9 @@ declare(strict_types=1);
 namespace SP\Application\CustomField\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;

@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use Exception;
-use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Infrastructure\Database\Ports\DbStorageHandler;
 
 use function SP\processException;
 

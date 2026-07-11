@@ -61,7 +61,7 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\File\FileException;

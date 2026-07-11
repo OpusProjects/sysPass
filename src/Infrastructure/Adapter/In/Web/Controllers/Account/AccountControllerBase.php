@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Context\ContextBase;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Context\ContextBase;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;

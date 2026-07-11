@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Auth\Providers\Ldap\AttributeCollection;
 use SP\Domain\Auth\Providers\Ldap\LdapActions;
 use SP\Domain\Auth\Providers\Ldap\LdapCodeEnum;

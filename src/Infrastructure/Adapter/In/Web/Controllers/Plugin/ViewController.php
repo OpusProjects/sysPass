@@ -29,8 +29,8 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;

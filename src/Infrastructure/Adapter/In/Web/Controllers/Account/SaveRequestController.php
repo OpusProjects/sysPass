@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -34,7 +34,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Providers\Uri;
+use SP\Infrastructure\Http\Providers\Uri;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

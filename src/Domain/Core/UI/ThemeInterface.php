@@ -28,7 +28,7 @@ namespace SP\Domain\Core\UI;
 /**
  * Interface ThemeInterface
  *
- * @package SP\Core\UI
+ * @package SP\Infrastructure\UI
  */
 interface ThemeInterface
 {

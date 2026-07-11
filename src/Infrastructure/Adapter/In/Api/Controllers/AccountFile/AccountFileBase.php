@@ -2,8 +2,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\AccountFile;
 
-use SP\Core\Bootstrap\Router;
-use SP\Core\Application;
+use SP\Infrastructure\Bootstrap\Router;
+use SP\Infrastructure\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Application\Account\Ports\AccountFileService;
 use SP\Application\Account\Services\AccountFileAcl;

@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Application\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;

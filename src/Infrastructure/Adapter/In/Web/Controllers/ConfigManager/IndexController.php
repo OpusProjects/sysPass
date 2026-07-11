@@ -24,12 +24,12 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigManager;
 
-use SP\Core\Application;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Crypt\CryptSessionHandler;
-use SP\Core\Events\Event;
-use SP\Core\Language;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Infrastructure\Crypt\CryptSessionHandler;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Language;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
 use SP\Domain\Auth\Providers\Ldap\LdapStd;
@@ -51,7 +51,7 @@ use SP\Application\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
-use SP\Domain\Log\Providers\LogInterface;
+use SP\Infrastructure\Log\Providers\LogInterface;
 use SP\Application\Notification\Services\MailEvent;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
@@ -66,7 +66,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
-use SP\Core\Util\Util;
+use SP\Infrastructure\Util\Util;
 use RuntimeException;
 
 use function SP\__;

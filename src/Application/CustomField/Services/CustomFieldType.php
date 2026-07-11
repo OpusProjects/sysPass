@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\CustomField\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;

@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers;
 
-use SP\Core\Application;
-use SP\Core\Events\EventDispatcher;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Acl\AclInterface;
@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Traits\WebControllerTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 

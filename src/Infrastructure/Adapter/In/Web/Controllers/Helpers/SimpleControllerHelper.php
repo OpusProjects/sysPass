@@ -26,13 +26,13 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
-use SP\Core\Bootstrap\Router;
-use SP\Core\PhpExtensionChecker;
+use SP\Infrastructure\Bootstrap\Router;
+use SP\Infrastructure\PhpExtensionChecker;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 
 /**
  * Class SimpleControllerHelper

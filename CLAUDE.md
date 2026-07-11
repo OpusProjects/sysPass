@@ -61,8 +61,7 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 | Application layer (use-cases, driving ports) | `src/Application/<Ctx>/` (`Ports/`, `Services/`) |
 | Infrastructure — driven adapters (repositories) | `src/Infrastructure/Adapter/Out/<Ctx>/Repositories/` |
 | Infrastructure — driving adapters (controllers) | `src/Infrastructure/Adapter/In/{Web,Api,Cli}/` |
-| Infrastructure — shared (DB, file, common repos) | `src/Infrastructure/{Database,File}/` |
-| Core (bootstrap, DI definitions, ACL, crypt) | `src/Core/` (`Definitions/CoreDefinitions.php`, `DomainDefinitions.php`) |
+| Infrastructure — shared (DB, file, HTTP, HTML, log, crypt, bootstrap, DI) | `src/Infrastructure/{Database,File,Http,Html,Log,Crypt,Bootstrap,Definitions,...}/` |
 | Theme (only one) | `public/themes/material-blue/` |
 | Front-end JS/CSS (served via a PHP `file` route) | vendored under `public/vendor/`, `public/js/` |
 | Runtime config | `config/` (runtime; gitignored `config.xml` holds DB creds + crypto keys) |
@@ -128,11 +127,11 @@ The rewrite's web entry was **never run by upstream CI** (only the mocked unit/i
 so these runtime contracts are easy to break:
 
 - **Routing:** `?r=<controller>/<action>/<p1>/<p2>` → `<Controller>Controller::<action>Action(...)`;
-  empty action → `index` (`src/Core/Bootstrap/RouteContext.php`). Leaf code reads ids from these
+  empty action → `index` (`src/Infrastructure/Bootstrap/RouteContext.php`). Leaf code reads ids from these
   route params, not the path.
 - **DI definition order** (`src/Base.php`): `DomainDefinitions` → `CoreDefinitions` → module
   `module.php`, and **php-di gives later sources precedence** — the specific entry overrides the
-  `SP\Domain\*\Ports\*Service` wildcard auto-wiring; the module overrides Core. Keep this order.
+  `SP\Domain\*\Ports\*Service` wildcard auto-wiring; the module overrides CoreDefinitions. Keep this order.
 - **Compilation:** when `!DEBUG` the container is **compiled and lazy proxies are written**
   (`enableCompilation`/`writeProxiesToFile`); when `DEBUG` it's built live. So (1) every definition
   must be **compilable** — never bind a literal object; use `create()`/`autowire()`/`factory()`
@@ -227,7 +226,7 @@ Key constraints:
 - **Key libraries:** `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
   (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
   abandoned `klein/klein` router — the HTTP layer goes through
-  `SP\Domain\Http\Ports\ResponseService` + `SP\Core\Bootstrap\Router`).
+  `SP\Infrastructure\Http\Ports\ResponseService` + `SP\Infrastructure\Bootstrap\Router`).
 - Faker 1.24 emits `trigger_deprecation()` notices (provider API deprecated for Faker 2) —
   these are library-internal (not PHP-level), suppressed by `display_errors=0` in `phpunit.xml`.
   `session.sid_bits_per_character` was removed from `SessionLifecycleHandler::SESSION_OPTIONS`.

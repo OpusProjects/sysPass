@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Adapters\AccountSearchItem;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Application\Tag\Ports\TagService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\UserPreferences;

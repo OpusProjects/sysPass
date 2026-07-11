@@ -30,7 +30,7 @@ use GdImage;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
-use SP\Domain\Image\Ports\ImageService;
+use SP\Infrastructure\Image\Ports\ImageService;
 use SP\Infrastructure\File\FileHandler;
 
 use function SP\__u;

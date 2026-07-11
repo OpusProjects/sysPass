@@ -79,7 +79,7 @@ parameters:
 			path: src/Application/Auth/Services/LdapCheck.php
 
 		-
-			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Core\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
+			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Infrastructure\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Application/Auth/Services/LdapCheck.php
@@ -121,7 +121,7 @@ parameters:
 			path: src/Application/CustomField/Services/CustomFieldType.php
 
 		-
-			message: '#^Method SP\\Domain\\Database\\Ports\\DatabaseInterface\:\:doFetchWithOptions\(\) invoked with 4 parameters, 1 required\.$#'
+			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:doFetchWithOptions\(\) invoked with 4 parameters, 1 required\.$#'
 			identifier: arguments.count
 			count: 1
 			path: src/Application/Export/Services/BackupFile.php
@@ -154,7 +154,7 @@ parameters:
 
 
 		-
-			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Core\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
+			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Infrastructure\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Application/Import/Services/LdapImport.php
@@ -207,7 +207,7 @@ parameters:
 			message: '#^If condition is always false\.$#'
 			identifier: if.alwaysFalse
 			count: 1
-			path: src/Core/Bootstrap/BootstrapBase.php
+			path: src/Infrastructure/Bootstrap/BootstrapBase.php
 
 		-
 			# Surfaced by this PR's annotation pass, not a runtime bug: now that addPaths()'s
@@ -215,66 +215,66 @@ parameters:
 			# $pathSpec is always a 2-tuple, so the defensive is_array() guard below is
 			# provably always true. Left in place (defends against a malformed 'paths' DI
 			# entry at runtime, which PHPStan can't see); see PR body.
-			message: '#^Call to function is_array\(\) with array\{SP\\Core\\Bootstrap\\Path, string\} will always evaluate to true\.$#'
+			message: '#^Call to function is_array\(\) with array\{SP\\Infrastructure\\Bootstrap\\Path, string\} will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: src/Core/Bootstrap/PathsContext.php
+			path: src/Infrastructure/Bootstrap/PathsContext.php
 
 		-
-			message: '#^Method SP\\Core\\Bootstrap\\PathsContext\:\:offsetGet\(\) never returns null so it can be removed from the return type\.$#'
+			message: '#^Method SP\\Infrastructure\\Bootstrap\\PathsContext\:\:offsetGet\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
-			path: src/Core/Bootstrap/PathsContext.php
+			path: src/Infrastructure/Bootstrap/PathsContext.php
 
 
 		-
 			message: '#^Type mixed in generic type ArrayObject\<mixed, mixed\> in PHPDoc tag @extends is not subtype of template type TKey of \(int\|string\) of class ArrayObject\.$#'
 			identifier: generics.notSubtype
 			count: 1
-			path: src/Core/DataCollection.php
+			path: src/Infrastructure/DataCollection.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventName$#'
 			identifier: parameter.notFound
 			count: 1
-			path: src/Core/Events/EventDispatcherBase.php
+			path: src/Infrastructure/Events/EventDispatcherBase.php
 
 		-
 			message: '#^Negated boolean expression is always true\.$#'
 			identifier: booleanNot.alwaysTrue
 			count: 1
-			path: src/Core/Functions.php
+			path: src/Infrastructure/Functions.php
 
 
 		-
 			message: '#^Unsafe usage of new static\(\)\.$#'
 			identifier: new.static
 			count: 1
-			path: src/Core/Messages/MessageBase.php
+			path: src/Infrastructure/Messages/MessageBase.php
 
 		-
-			message: '#^Method SP\\Core\\PhpExtensionChecker\:\:__call\(\) has no return type specified\.$#'
+			message: '#^Method SP\\Infrastructure\\PhpExtensionChecker\:\:__call\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1
-			path: src/Core/PhpExtensionChecker.php
+			path: src/Infrastructure/PhpExtensionChecker.php
 
 		-
-			message: '#^Method SP\\Core\\UI\\Theme\:\:getThemeName\(\) never returns null so it can be removed from the return type\.$#'
+			message: '#^Method SP\\Infrastructure\\UI\\Theme\:\:getThemeName\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
-			path: src/Core/UI/Theme.php
+			path: src/Infrastructure/UI/Theme.php
 
 		-
-			message: '#^Method SP\\Core\\Util\\Chainable\:\:__construct\(\) has parameter \$args with no type specified\.$#'
+			message: '#^Method SP\\Infrastructure\\Util\\Chainable\:\:__construct\(\) has parameter \$args with no type specified\.$#'
 			identifier: missingType.parameter
 			count: 1
-			path: src/Core/Util/Chainable.php
+			path: src/Infrastructure/Util/Chainable.php
 
 		-
-			message: '#^Method SP\\Core\\Util\\Util\:\:getMethodParameterTypes\(\) should return array\<ReflectionNamedType\> but returns array\<ReflectionType\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Util\\Util\:\:getMethodParameterTypes\(\) should return array\<ReflectionNamedType\> but returns array\<ReflectionType\>\.$#'
 			identifier: return.type
 			count: 1
-			path: src/Core/Util/Util.php
+			path: src/Infrastructure/Util/Util.php
 
 		-
 			message: '#^Method SP\\Domain\\Account\\Adapters\\Account\:\:processCustomFields\(\) has no return type specified\.$#'
@@ -650,10 +650,10 @@ parameters:
 			# runQuery() entry below — the row class is chosen at runtime via
 			# QueryData::getMapClassName(): string (a plain string, not class-string<T>), so
 			# QueryResult's T genuinely cannot be bound in this interface method either.
-			message: '#^Method SP\\Domain\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
+			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: src/Domain/Database/Ports/DatabaseInterface.php
+			path: src/Infrastructure/Database/Ports/DatabaseInterface.php
 
 		-
 			message: '#^PHPDoc tag @return with type resource is incompatible with native type SP\\Domain\\File\\Ports\\FileHandlerInterface\.$#'
@@ -662,10 +662,10 @@ parameters:
 			path: src/Domain/File/Ports/FileHandlerInterface.php
 
 		-
-			message: '#^Argument of an invalid type \$this\(SP\\Domain\\Http\\Dtos\\JsonMessage\) supplied for foreach, only iterables are supported\.$#'
+			message: '#^Argument of an invalid type \$this\(SP\\Infrastructure\\Http\\Dtos\\JsonMessage\) supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
-			path: src/Domain/Http/Dtos/JsonMessage.php
+			path: src/Infrastructure/Http/Dtos/JsonMessage.php
 
 		-
 			message: '#^Unable to resolve the template type T in call to static method SP\\Domain\\Common\\Adapters\\Serde\:\:deserializeObjectFromJson\(\)$#'
@@ -680,34 +680,34 @@ parameters:
 			path: src/Domain/ItemPreset/Models/Password.php
 
 		-
-			message: '#^Method SP\\Domain\\Log\\Providers\\DatabaseHandler\:\:getEvents\(\) never returns null so it can be removed from the return type\.$#'
+			message: '#^Method SP\\Infrastructure\\Log\\Providers\\DatabaseHandler\:\:getEvents\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
-			path: src/Domain/Log/Providers/DatabaseHandler.php
+			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
 			identifier: parameter.notFound
 			count: 1
-			path: src/Domain/Log/Providers/DatabaseHandler.php
+			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Core\\Events\\Event\:\:getSource\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Events\\Event\:\:getSource\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: src/Domain/Log/Providers/DatabaseHandler.php
+			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
 			identifier: parameter.notFound
 			count: 1
-			path: src/Domain/Log/Providers/LoggerBase.php
+			path: src/Infrastructure/Log/Providers/LoggerBase.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Core\\Events\\Event\:\:getSource\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Events\\Event\:\:getSource\(\)$#'
 			identifier: argument.templateType
 			count: 1
-			path: src/Domain/Log/Providers/LoggerBase.php
+			path: src/Infrastructure/Log/Providers/LoggerBase.php
 
 		-
 			message: '#^Method SP\\Domain\\Plugin\\Models\\PluginData\:\:decrypt\(\) has invalid return type SP\\Domain\\Core\\Models\\EncryptedModel\.$#'
@@ -824,7 +824,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Api/Bootstrap.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Core\\Bootstrap\\BootstrapBase\:\:buildInstanceFor\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Bootstrap\\BootstrapBase\:\:buildInstanceFor\(\)$#'
 			identifier: argument.templateType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Bootstrap.php
@@ -842,19 +842,19 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Api/Controllers/Account/EditPassController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Controllers/UserGroup/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Controllers/UserGroup/EditController.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Api\\Init\:\:\$language \(SP\\Core\\Language\) does not accept SP\\Domain\\Core\\LanguageInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Api\\Init\:\:\$language \(SP\\Infrastructure\\Language\) does not accept SP\\Domain\\Core\\LanguageInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Init.php
@@ -884,7 +884,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Cli/Commands/InstallCommand.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Cli\\Init\:\:\$language \(SP\\Core\\Language\) does not accept SP\\Domain\\Core\\LanguageInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Cli\\Init\:\:\$language \(SP\\Infrastructure\\Language\) does not accept SP\\Domain\\Core\\LanguageInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Cli/Init.php
@@ -902,19 +902,19 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
 
 		-
-			message: '#^PHPDoc tag @var with type SP\\Domain\\Common\\Dtos\\ActionResponse is not subtype of native type SP\\Domain\\Http\\Ports\\ResponseService\.$#'
+			message: '#^PHPDoc tag @var with type SP\\Domain\\Common\\Dtos\\ActionResponse is not subtype of native type SP\\Infrastructure\\Http\\Ports\\ResponseService\.$#'
 			identifier: varTag.nativeType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
 
 		-
-			message: '#^Parameter \#3 \$response of method SP\\Infrastructure\\Adapter\\In\\Web\\Bootstrap\:\:buildResponse\(\) expects SP\\Domain\\Http\\Ports\\ResponseService, SP\\Domain\\Common\\Dtos\\ActionResponse given\.$#'
+			message: '#^Parameter \#3 \$response of method SP\\Infrastructure\\Adapter\\In\\Web\\Bootstrap\:\:buildResponse\(\) expects SP\\Infrastructure\\Http\\Ports\\ResponseService, SP\\Domain\\Common\\Dtos\\ActionResponse given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Core\\Bootstrap\\BootstrapBase\:\:buildInstanceFor\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Bootstrap\\BootstrapBase\:\:buildInstanceFor\(\)$#'
 			identifier: argument.templateType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
@@ -944,13 +944,13 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountSaveBase.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\AccountViewBase\:\:\$icons \(SP\\Core\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\AccountViewBase\:\:\$icons \(SP\\Infrastructure\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/AccountViewBase.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\DeleteController\:\:\$icons \(SP\\Core\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\DeleteController\:\:\$icons \(SP\\Infrastructure\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/DeleteController.php
@@ -968,7 +968,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
@@ -980,13 +980,13 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\ViewLinkController\:\:\$icons \(SP\\Core\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Account\\ViewLinkController\:\:\$icons \(SP\\Infrastructure\\UI\\ThemeIcons\) does not accept SP\\Domain\\Core\\UI\\ThemeIconsInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
@@ -998,7 +998,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccountFile/DeleteController.php
 
 		-
-			message: '#^Parameter \#2 \$default of method SP\\Domain\\Http\\Ports\\RequestService\:\:analyzeInt\(\) expects int\|null, false given\.$#'
+			message: '#^Parameter \#2 \$default of method SP\\Infrastructure\\Http\\Ports\\RequestService\:\:analyzeInt\(\) expects int\|null, false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/AccountFile/ListController.php
@@ -1124,31 +1124,31 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Client/SearchController.php
 
 		-
-			message: '#^Parameter \#2 \$value of method SP\\Domain\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
+			message: '#^Parameter \#2 \$value of method SP\\Infrastructure\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigBackup/DownloadBackupAppController.php
 
 		-
-			message: '#^Parameter \#2 \$value of method SP\\Domain\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
+			message: '#^Parameter \#2 \$value of method SP\\Infrastructure\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigBackup/DownloadBackupDbController.php
 
 		-
-			message: '#^Parameter \#2 \$value of method SP\\Domain\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
+			message: '#^Parameter \#2 \$value of method SP\\Infrastructure\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigBackup/DownloadExportController.php
 
 		-
-			message: '#^Parameter \#2 \$value of method SP\\Domain\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int\<0, max\> given\.$#'
+			message: '#^Parameter \#2 \$value of method SP\\Infrastructure\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int\<0, max\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/DownloadConfigBackupController.php
 
 		-
-			message: '#^Parameter \#2 \$value of method SP\\Domain\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
+			message: '#^Parameter \#2 \$value of method SP\\Infrastructure\\Http\\Ports\\ResponseService\:\:header\(\) expects string, int given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ConfigGeneral/DownloadLogController.php
@@ -1418,7 +1418,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ItemPreset/ViewController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LoginController.php
@@ -1490,7 +1490,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/SecurityManager/IndexController.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\SimpleControllerBase\:\:\$eventDispatcher \(SP\\Core\\Events\\EventDispatcher\) does not accept SP\\Domain\\Core\\Events\\EventDispatcherInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\SimpleControllerBase\:\:\$eventDispatcher \(SP\\Infrastructure\\Events\\EventDispatcher\) does not accept SP\\Domain\\Core\\Events\\EventDispatcherInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/SimpleControllerBase.php
@@ -1532,7 +1532,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Track/SearchController.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Upgrade\\IndexController\:\:\$actions \(SP\\Core\\Acl\\Actions\) does not accept SP\\Domain\\Core\\Acl\\ActionsInterface\.$#'
+			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Upgrade\\IndexController\:\:\$actions \(SP\\Infrastructure\\Acl\\Actions\) does not accept SP\\Domain\\Core\\Acl\\ActionsInterface\.$#'
 			identifier: assign.propertyType
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Upgrade/IndexController.php
@@ -1544,7 +1544,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/DeleteController.php
@@ -1562,7 +1562,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/SaveEditController.php
@@ -1586,7 +1586,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/DeleteController.php
@@ -1604,7 +1604,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/SaveEditController.php
@@ -1622,7 +1622,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/UserGroupViewBase.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserPassReset/SaveResetController.php
@@ -1634,7 +1634,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/DeleteController.php
@@ -1652,7 +1652,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/SaveEditController.php
@@ -1994,7 +1994,7 @@ parameters:
 			path: src/Infrastructure/Database/Database.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 3
 			path: src/Infrastructure/Database/Database.php

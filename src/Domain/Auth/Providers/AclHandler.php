@@ -27,10 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;

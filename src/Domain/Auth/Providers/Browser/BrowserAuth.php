@@ -28,7 +28,7 @@ namespace SP\Domain\Auth\Providers\Browser;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Providers\AuthService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 
 /**
  * Class Browser

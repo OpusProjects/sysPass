@@ -35,7 +35,7 @@ use DOMNodeList;
 use ReflectionObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Infrastructure\Storage\Ports\XmlFileStorageService;
 
 use function SP\__u;
 use function SP\logger;

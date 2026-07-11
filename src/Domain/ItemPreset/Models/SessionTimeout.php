@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\ItemPreset\Models;
 
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Domain\Http\Adapters\Address;
+use SP\Infrastructure\Http\Adapters\Address;
 
 /**
  * Class SessionTimeout

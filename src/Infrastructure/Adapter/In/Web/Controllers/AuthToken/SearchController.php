@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Services\AuthException;

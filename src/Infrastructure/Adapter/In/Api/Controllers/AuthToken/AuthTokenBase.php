@@ -2,8 +2,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\AuthToken;
 
-use SP\Core\Bootstrap\Router;
-use SP\Core\Application;
+use SP\Infrastructure\Bootstrap\Router;
+use SP\Infrastructure\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
