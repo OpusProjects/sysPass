@@ -28,7 +28,7 @@ namespace SP\Infrastructure;
 
 use SP\Domain\Core\File\MimeType;
 use SP\Domain\Core\File\MimeTypesService;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 

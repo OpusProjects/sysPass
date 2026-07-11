@@ -23,30 +23,14 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Image\Ports;
+namespace SP\Domain\Log\Ports;
 
-use SP\Domain\Core\Exceptions\InvalidImageException;
+use SP\Domain\Core\Events\EventReceiver;
 
 /**
- * Interface ImageService
+ * Interface FileHandlerProvider
  */
-interface ImageService
+interface FileHandlerProvider extends EventReceiver
 {
-    /**
-     * Build a thumbnail form an image
-     *
-     * @param string $image A raw image
-     * @return string A base64 encode image string
-     * @throws InvalidImageException
-     */
-    public function createThumbnail(string $image): string;
 
-    /**
-     * Convert a test into an image
-     *
-     * @param string $text
-     *
-     * @return false|string
-     */
-    public function convertText(string $text): bool|string;
 }

@@ -23,14 +23,17 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Log\Ports;
-
-use SP\Domain\Core\Events\EventReceiver;
+namespace SP\Domain\Database\Ports;
 
 /**
- * Interface FileHandlerProvider
+ * Interface DatabaseFileInterface
  */
-interface FileHandlerProvider extends EventReceiver
+interface DatabaseFileInterface
 {
-
+    /**
+     * Parses a database script file and returns an array of lines parsed
+     *
+     * @return iterable<string>
+     */
+    public function parse(string $delimiter = ';'): iterable;
 }

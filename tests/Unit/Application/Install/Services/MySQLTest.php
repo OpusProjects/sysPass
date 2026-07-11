@@ -35,7 +35,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\Ports\DatabaseFileInterface;
+use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Services\MysqlSetup;

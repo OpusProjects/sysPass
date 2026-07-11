@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Storage\Ports;
+namespace SP\Domain\Storage\Ports;
 
 use SP\Domain\Core\Exceptions\FileException;
 

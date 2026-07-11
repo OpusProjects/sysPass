@@ -32,7 +32,7 @@ use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Providers\Image;
 use SP\Application\Export\Ports\XmlVerifyService;
 use SP\Application\Export\Services\XmlVerify;
-use SP\Infrastructure\Image\Ports\ImageService;
+use SP\Domain\Image\Ports\ImageService;
 use SP\Application\Import\Ports\ImportHelperInterface;
 use SP\Application\Import\Services\ImportHelper;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\SimpleRepository;

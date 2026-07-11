@@ -55,7 +55,7 @@ use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
-use SP\Infrastructure\Log\Ports\ProviderInterface;
+use SP\Domain\Log\Ports\ProviderInterface;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;

@@ -23,11 +23,28 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Log\Ports;
+namespace SP\Domain\Storage\Ports;
+
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
- * ProviderInterface
+ * Interface XmlFileStorageService
  */
-interface ProviderInterface
+interface XmlFileStorageService
 {
+    /**
+     * @return mixed[]
+     * @throws FileException
+     */
+    public function load(string $node = 'root'): array;
+
+    /**
+     * @param mixed[]|object $data Data to be saved
+     * @param string $node
+     *
+     * @throws FileException
+     */
+    public function save(array|object $data, string $node = 'root'): XmlFileStorageService;
+
+    public function getFileTime(): int;
 }

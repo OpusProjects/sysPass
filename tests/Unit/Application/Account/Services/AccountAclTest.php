@@ -41,7 +41,7 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserToUserGroup;

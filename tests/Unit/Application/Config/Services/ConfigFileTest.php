@@ -36,8 +36,8 @@ use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConfigException;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
-use SP\Infrastructure\Storage\Ports\XmlFileStorageService;
+use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
