@@ -66,6 +66,8 @@ final class Util
 
     /**
      * Adapter to convert a string of IDs into an array
+     *
+     * @return int[]
      */
     public static function itemsIdAdapter(string $itemsId, string $delimiter = ','): array
     {
@@ -89,8 +91,8 @@ final class Util
     /**
      * @param string $class
      * @param string $method
-     * @param array $parametersValue
-     * @return array
+     * @param array<int, int|float|string|null> $parametersValue
+     * @return array<int, mixed>
      * @throws ReflectionException
      */
     public static function mapScalarParameters(string $class, string $method, array $parametersValue): array

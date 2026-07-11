@@ -86,7 +86,7 @@ final readonly class PathsContext implements ArrayAccess
     }
 
     /**
-     * @param array $paths
+     * @param array<int, array{Path, string}> $paths
      * @return void
      */
     public function addPaths(array $paths): void

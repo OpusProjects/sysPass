@@ -39,17 +39,23 @@ use SP\Domain\Core\Messages\MessageInterface;
 class EventMessage implements MessageInterface
 {
     /**
-     * @var array Action details in the format "detail : description"
+     * @var array<array{string, string}> Action details in the format "detail : description"
      */
     private array $details            = [];
     private int   $descriptionCounter = 0;
     private int   $detailsCounter     = 0;
+    /**
+     * @var string[]
+     */
     private array $description        = [];
+    /**
+     * @var array<string, array<mixed>>
+     */
     private array $extra              = [];
 
     /**
      * @param string|null $description
-     * @return EventMessage
+     * @return EventMessage<mixed>
      */
     public static function build(?string $description = null): EventMessage
     {
@@ -64,6 +70,8 @@ class EventMessage implements MessageInterface
 
     /**
      * Sets the description of the performed action
+     *
+     * @return EventMessage<T>
      */
     public function addDescription(string $description = ''): EventMessage
     {
@@ -84,6 +92,8 @@ class EventMessage implements MessageInterface
 
     /**
      * Sets the details of the performed action
+     *
+     * @return EventMessage<T>
      */
     public function addDetail(string $key, string|int|null $value): EventMessage
     {
@@ -173,7 +183,7 @@ class EventMessage implements MessageInterface
 
     /**
      * @param string $type
-     * @return array|null
+     * @return array<mixed>|null
      */
     public function getExtra(string $type): array|null
     {
@@ -182,8 +192,8 @@ class EventMessage implements MessageInterface
 
     /**
      * @param string $type
-     * @param array $data
-     * @return EventMessage
+     * @param array<mixed> $data
+     * @return EventMessage<T>
      */
     public function setExtra(string $type, array $data): EventMessage
     {
@@ -201,6 +211,7 @@ class EventMessage implements MessageInterface
      *
      * @param class-string<T> $type
      * @param array<T>|string|int|bool $data
+     * @return EventMessage<T>
      */
     public function addExtra(string $type, array|string|int|bool|null $data): EventMessage
     {

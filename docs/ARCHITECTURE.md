@@ -135,7 +135,8 @@ on each request.
 | Path | Purpose |
 |---|---|
 | `public/themes/material-blue/` | The single UI theme (MDL-based) |
-| `public/vendor/`, `public/js/` | Vendored front-end libraries (no npm) |
+| `public/vendor/js/` | Third-party libraries, npm-vendored (`npm run vendor` copies dist files from `node_modules` per the `MAP` in `scripts/vendor-assets.mjs`); nothing to install to run the app |
+| `public/js/` | Hand-authored app code — `app-*.min.js`, `toasts.min.js`, `zxcvbn-async.min.js`, `selectize-plugins.min.js` — no `*.js` source, no build step; served via `JsController::JS_APP_MIN_FILES` |
 | `resources/` | Locale `.po`/`.mo` files, action/mimetype YAML |
 | `schemas/` | Database schema (`dbstructure.sql`) and XML config schema |
 | `config/` | Runtime config (`config.xml`, keys) — gitignored |

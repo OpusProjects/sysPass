@@ -59,7 +59,9 @@ final class Language implements LanguageInterface
      */
     protected static bool $appSet = false;
     /**
-     *  Available languages
+     * Available languages
+     *
+     * @var array<string, string>
      */
     private static array $langs = [
         'es_ES' => 'Español',

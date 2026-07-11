@@ -147,6 +147,9 @@ final class DomainDefinitions
         'SP\Application\Install\Ports\InstallerService' => 'SP\Application\Install\Services\Installer',
     ];
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefinitions(): array
     {
         $sources = [

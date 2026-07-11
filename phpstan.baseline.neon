@@ -90,20 +90,8 @@ parameters:
 			path: src/Application/Category/Services/Category.php
 
 		-
-			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:getAllForUser\(\) should return array\<SP\\Domain\\Common\\Models\\Simple\> but returns array\<SP\\Domain\\Client\\Models\\Client\>\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Application/Client/Services/Client.php
-
-		-
 			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Client\\Models\\Client\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Client\\Models\\Client\>\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Application/Client/Services/Client.php
-
-		-
-			message: '#^Return type \(array\<SP\\Domain\\Common\\Models\\Simple\>\) of method SP\\Application\\Client\\Services\\Client\:\:getAllForUser\(\) should be compatible with return type \(array\<SP\\Domain\\Common\\Models\\Item\>\) of method SP\\Application\\Client\\Ports\\ClientService\:\:getAllForUser\(\)$#'
-			identifier: method.childReturnType
 			count: 1
 			path: src/Application/Client/Services/Client.php
 
@@ -221,8 +209,13 @@ parameters:
 			path: src/Core/Bootstrap/BootstrapBase.php
 
 		-
-			message: '#^Method SP\\Core\\Bootstrap\\PathsContext\:\:addPaths\(\) has parameter \$paths with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
+			# Surfaced by this PR's annotation pass, not a runtime bug: now that addPaths()'s
+			# $paths is precisely array<int, array{Path, string}>, PHPStan can see each
+			# $pathSpec is always a 2-tuple, so the defensive is_array() guard below is
+			# provably always true. Left in place (defends against a malformed 'paths' DI
+			# entry at runtime, which PHPStan can't see); see PR body.
+			message: '#^Call to function is_array\(\) with array\{SP\\Core\\Bootstrap\\Path, string\} will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
 			count: 1
 			path: src/Core/Bootstrap/PathsContext.php
 
@@ -234,52 +227,10 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Core\\Context\\ContextBase\:\:setContextReference\(\) has parameter \$context with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Context/ContextBase.php
-
-		-
-			message: '#^Class SP\\Core\\Context\\ContextCollection extends generic class SP\\Core\\DataCollection but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Context/ContextCollection.php
-
-		-
 			message: '#^Type mixed in generic type ArrayObject\<mixed, mixed\> in PHPDoc tag @extends is not subtype of template type TKey of \(int\|string\) of class ArrayObject\.$#'
 			identifier: generics.notSubtype
 			count: 1
 			path: src/Core/DataCollection.php
-
-		-
-			message: '#^Method SP\\Core\\Definitions\\CoreDefinitions\:\:getDefinitions\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Definitions/CoreDefinitions.php
-
-		-
-			message: '#^Method SP\\Core\\Definitions\\CoreDefinitions\:\:getPaths\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Definitions/CoreDefinitions.php
-
-		-
-			message: '#^Method SP\\Core\\Definitions\\DomainDefinitions\:\:getDefinitions\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Definitions/DomainDefinitions.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\Event\:\:__construct\(\) has parameter \$eventMessage with generic class SP\\Core\\Events\\EventMessage but does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/Event.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\Event\:\:getEventMessage\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/Event.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventName$#'
@@ -288,119 +239,11 @@ parameters:
 			path: src/Core/Events/EventDispatcherBase.php
 
 		-
-			message: '#^Property SP\\Core\\Events\\EventDispatcherBase\:\:\$receivers with generic class SplObjectStorage does not specify its types\: TObject, TData$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventDispatcherBase.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:addDescription\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:addDetail\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:addExtra\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:build\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:getExtra\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:setExtra\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Method SP\\Core\\Events\\EventMessage\:\:setExtra\(\) return type with generic class SP\\Core\\Events\\EventMessage does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Property SP\\Core\\Events\\EventMessage\:\:\$description type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Property SP\\Core\\Events\\EventMessage\:\:\$details type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Property SP\\Core\\Events\\EventMessage\:\:\$extra type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Events/EventMessage.php
-
-		-
-			message: '#^Function SP\\initModule\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Functions.php
-
-		-
 			message: '#^Negated boolean expression is always true\.$#'
 			identifier: booleanNot.alwaysTrue
 			count: 1
 			path: src/Core/Functions.php
 
-
-		-
-			message: '#^Property SP\\Core\\Language\:\:\$langs type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Language.php
-
-		-
-			message: '#^Method SP\\Core\\Messages\\MessageBase\:\:getFooter\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Messages/MessageBase.php
-
-		-
-			message: '#^Method SP\\Core\\Messages\\MessageBase\:\:setDescription\(\) has parameter \$description with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Messages/MessageBase.php
-
-		-
-			message: '#^Method SP\\Core\\Messages\\MessageBase\:\:setFooter\(\) has parameter \$footer with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Messages/MessageBase.php
-
-		-
-			message: '#^Property SP\\Core\\Messages\\MessageBase\:\:\$description type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Messages/MessageBase.php
-
-		-
-			message: '#^Property SP\\Core\\Messages\\MessageBase\:\:\$footer type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Messages/MessageBase.php
 
 		-
 			message: '#^Unsafe usage of new static\(\)\.$#'
@@ -415,24 +258,6 @@ parameters:
 			path: src/Core/PhpExtensionChecker.php
 
 		-
-			message: '#^Method SP\\Core\\PhpExtensionChecker\:\:__call\(\) has parameter \$arguments with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/PhpExtensionChecker.php
-
-		-
-			message: '#^Property SP\\Core\\PhpExtensionChecker\:\:\$available type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/PhpExtensionChecker.php
-
-		-
-			message: '#^Method SP\\Core\\UI\\Theme\:\:getInfo\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/UI/Theme.php
-
-		-
 			message: '#^Method SP\\Core\\UI\\Theme\:\:getThemeName\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
@@ -445,32 +270,8 @@ parameters:
 			path: src/Core/Util/Chainable.php
 
 		-
-			message: '#^Property SP\\Core\\Util\\Chainable\:\:\$args type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Util/Chainable.php
-
-		-
 			message: '#^Method SP\\Core\\Util\\Util\:\:getMethodParameterTypes\(\) should return array\<ReflectionNamedType\> but returns array\<ReflectionType\>\.$#'
 			identifier: return.type
-			count: 1
-			path: src/Core/Util/Util.php
-
-		-
-			message: '#^Method SP\\Core\\Util\\Util\:\:itemsIdAdapter\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Util/Util.php
-
-		-
-			message: '#^Method SP\\Core\\Util\\Util\:\:mapScalarParameters\(\) has parameter \$parametersValue with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Core/Util/Util.php
-
-		-
-			message: '#^Method SP\\Core\\Util\\Util\:\:mapScalarParameters\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
 			count: 1
 			path: src/Core/Util/Util.php
 
@@ -645,12 +446,25 @@ parameters:
 			path: src/Domain/Common/Adapters/Date.php
 
 		-
+			# Landmine (Serde templates, see PR body): deserialize()'s @return is the union
+			# `T&object|array`. Tried parenthesizing to `(T&object)|array<mixed>`, which does
+			# parse and does clear this entry and the phpDoc.parseError one below it — but
+			# doing so makes PHPStan actually attempt template resolution at every call site
+			# (previously skipped because the tag failed to parse), and none of deserialize()'s
+			# current callers supply a proper class-string<T> argument (ConfigBackup::
+			# configToJson() omits $class entirely; SerializedModel::deserializeWithFallback()
+			# passes a plain `string $class`, not `class-string<T>`), so "fixing" this trades
+			# 2 baseline entries for 7 new "Unable to resolve the template type T" ones with no
+			# real type-safety gain. Reverted; left baselined.
 			message: '#^Method SP\\Domain\\Common\\Adapters\\Serde\:\:deserialize\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Domain/Common/Adapters/Serde.php
 
 		-
+			# Same root cause as the missingType.iterableValue entry above: the parenthesized
+			# form that would satisfy the parser reintroduces template-resolution errors at
+			# every call site (see PR body). Left baselined.
 			message: '#^PHPDoc tag @return has invalid value \(T&object\|array\)\: Unexpected token "\|", expected TOKEN_OTHER at offset 241 on line 7$#'
 			identifier: phpDoc.parseError
 			count: 1
@@ -855,6 +669,10 @@ parameters:
 			path: src/Domain/Core/UI/ThemeContextInterface.php
 
 		-
+			# Landmine (see PR body): same root cause as Infrastructure\Database\Database's
+			# runQuery() entry below — the row class is chosen at runtime via
+			# QueryData::getMapClassName(): string (a plain string, not class-string<T>), so
+			# QueryResult's T genuinely cannot be bound in this interface method either.
 			message: '#^Method SP\\Domain\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
@@ -883,12 +701,6 @@ parameters:
 			identifier: property.unusedType
 			count: 1
 			path: src/Domain/ItemPreset/Models/Password.php
-
-		-
-			message: '#^Method SP\\Domain\\ItemPreset\\Ports\\ItemPresetRepository\:\:deleteByIdBatch\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Domain/ItemPreset/Ports/ItemPresetRepository.php
 
 		-
 			message: '#^Method SP\\Domain\\Log\\Providers\\DatabaseHandler\:\:getEvents\(\) never returns null so it can be removed from the return type\.$#'
@@ -2275,32 +2087,6 @@ parameters:
 			identifier: property.notFound
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/UserViewBase.php
-
-		-
-			# Real mismatch, not fixed here (out of this PR's PHPDoc-only, src/Infrastructure-
-			# only scope): Domain\Client\Ports\ClientRepository::getAllForFilter() declares
-			# @return QueryResult<T> (T=Client), but the implementation maps rows to
-			# SP\Domain\Common\Models\Item (Account.id + Client.name AS clientName — not a
-			# Client at all). Annotated here with the TRUE type read from the code. No known
-			# runtime impact: the only caller (Application\Client::getAllForUser()) calls
-			# ->getDataAsArray() without a $dataType check. See PR body; recommend a follow-up
-			# fixing the Domain interface's declared T.
-			message: '#^Return type \(SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Item\>\) of method SP\\Infrastructure\\Adapter\\Out\\Client\\Repositories\\Client\:\:getAllForFilter\(\) should be compatible with return type \(SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Client\\Models\\Client\>\) of method SP\\Domain\\Client\\Ports\\ClientRepository\<T of SP\\Domain\\Client\\Models\\Client\>\:\:getAllForFilter\(\)$#'
-			identifier: method.childReturnType
-			count: 1
-			path: src/Infrastructure/Adapter/Out/Client/Repositories/Client.php
-
-		-
-			# Same root cause as getAllForFilter() above: ClientRepository::deleteByIdBatch()
-			# declares @return QueryResult<T> (T=Client), but the implementation issues a bare
-			# delete with no mapper (QueryData::build(), same as delete() a few lines below,
-			# which correctly declares QueryResult<Simple>) — rows, if any, hydrate as Simple,
-			# never as Client. Annotated with the TRUE type. See PR body.
-			message: '#^Return type \(SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\>\) of method SP\\Infrastructure\\Adapter\\Out\\Client\\Repositories\\Client\:\:deleteByIdBatch\(\) should be compatible with return type \(SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Client\\Models\\Client\>\) of method SP\\Domain\\Client\\Ports\\ClientRepository\<T of SP\\Domain\\Client\\Models\\Client\>\:\:deleteByIdBatch\(\)$#'
-			identifier: method.childReturnType
-			count: 1
-			path: src/Infrastructure/Adapter/Out/Client/Repositories/Client.php
-
 
 		-
 			# Not a bug: SP\Domain\Common\Models\Simple is a deliberately dynamic bag

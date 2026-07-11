@@ -67,6 +67,8 @@ final class PhpExtensionChecker implements PhpExtensionCheckerService
 
     /**
      * Available extensions
+     *
+     * @var array<int, string>|null
      */
     private ?array $available = null;
 
@@ -90,6 +92,7 @@ final class PhpExtensionChecker implements PhpExtensionCheckerService
     }
 
     /**
+     * @param array<int, mixed> $arguments
      * @throws CheckException
      */
     public function __call(string $name, array $arguments)

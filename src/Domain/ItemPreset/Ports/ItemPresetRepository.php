@@ -87,7 +87,7 @@ interface ItemPresetRepository extends Repository
      * Deletes all the items for given ids
      *
      * @param int[] $itemPresetIds
-     * @return QueryResult
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */

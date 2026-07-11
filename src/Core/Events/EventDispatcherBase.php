@@ -38,6 +38,9 @@ use function SP\logger;
  */
 abstract class EventDispatcherBase implements EventDispatcherInterface
 {
+    /**
+     * @var SplObjectStorage<EventReceiver, null>
+     */
     protected SplObjectStorage $receivers;
 
     final public function __construct()

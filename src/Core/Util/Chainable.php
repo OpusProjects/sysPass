@@ -32,6 +32,9 @@ use Closure;
  */
 final class Chainable
 {
+    /**
+     * @var array<int, mixed>
+     */
     private array $args;
 
     public function __construct(private readonly Closure $next, private readonly object $bindTo, ...$args)

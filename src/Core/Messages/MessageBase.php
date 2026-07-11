@@ -36,7 +36,13 @@ use SP\Domain\Core\Messages\MessageInterface;
 abstract class MessageBase implements MessageInterface
 {
     protected string $title = '';
+    /**
+     * @var string[]
+     */
     protected array $footer = [];
+    /**
+     * @var string[]
+     */
     protected array $description = [];
 
     public static function factory(): MessageBase
@@ -61,6 +67,9 @@ abstract class MessageBase implements MessageInterface
         bool               $translate
     ): string;
 
+    /**
+     * @param string[] $description
+     */
     public function setDescription(array $description): MessageBase
     {
         $this->description = $description;
@@ -75,11 +84,17 @@ abstract class MessageBase implements MessageInterface
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
     public function getFooter(): array
     {
         return $this->footer;
     }
 
+    /**
+     * @param string[] $footer
+     */
     public function setFooter(array $footer): MessageBase
     {
         $this->footer = $footer;

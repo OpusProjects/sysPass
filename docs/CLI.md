@@ -179,11 +179,19 @@ BACKUP_PATH=/var/backups/syspass php bin/cli.php sp:backup
 
 Rotates the master password: decrypts all stored data with the current master
 password and re-encrypts it with a new one. The command is **locked** so two
-runs cannot overlap. The instance must already be installed.
+runs cannot overlap. The instance must already be installed **and be in
+maintenance mode** — the command aborts with `Maintenance mode not enabled` if not.
 
 ```
 php bin/cli.php sp:crypt:update-master-password [options]
 ```
+
+**Prerequisite — enable maintenance mode first:** while enabled, nobody can log
+into the application. There's no CLI switch for it; enable it either from the
+web UI (**Configuration → General**, "Maintenance" section, the "Maintenance
+mode" toggle) or by setting `<maintenance>1</maintenance>` directly in
+`config.xml`. Remember to disable it again the same way once the rotation
+finishes.
 
 **Options:**
 
