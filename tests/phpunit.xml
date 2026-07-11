@@ -56,6 +56,7 @@
         </exclude>
     </source>
     <php>
+        <ini name="memory_limit" value="-1"/>
         <ini name="zend.assertions" value="1"/>
         <!-- Keep PHP from echoing notices/deprecations (e.g. PHP 8.4 implicitly-nullable
              deprecations from test-only vendor deps) to stdout: any such output marks
