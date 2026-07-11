@@ -193,9 +193,11 @@ class Stateless extends ContextBase
 
     public function setPluginKey(string $pluginName, string $key, mixed $value): mixed
     {
-        $ctxKey = $this->getContextKey('plugins');
+        $ctxKey = $this->getContextKey('plugins', []);
 
         $ctxKey[$pluginName][$key] = $value;
+
+        $this->setContextKey('plugins', $ctxKey);
 
         return $value;
     }
