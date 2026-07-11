@@ -23,15 +23,10 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Messages;
-
-use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Domain\Core\Messages\MessageInterface;
+namespace SP\Domain\Core\Messages;
 
 /**
  * Class MessageBase
- *
- * @package SP\Infrastructure\Messages
  */
 abstract class MessageBase implements MessageInterface
 {

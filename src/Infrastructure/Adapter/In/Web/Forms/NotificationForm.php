@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Forms;
 
-use SP\Infrastructure\Messages\NotificationMessage;
+use SP\Domain\Core\Messages\NotificationMessage;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Notification\Models\Notification;
