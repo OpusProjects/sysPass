@@ -20,7 +20,7 @@ final class CreateController extends AuthTokenBase
         $tokenData = new AuthToken([
             'userId'   => $this->apiService->getParamInt('userId', true),
             'actionId' => $this->apiService->getParamInt('actionId', true),
-            'hash'     => $this->apiService->getParamString('password'),
+            'hash'     => $this->apiService->getParamRaw('password'),
         ]);
 
         $id = $this->authTokenService->create($tokenData);
