@@ -5,7 +5,7 @@
  * @var callable $_getvar
  */
 
-use SP\Infrastructure\Html\Html;
+use SP\Domain\Core\Html\Html;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 if (!isset($data)) {

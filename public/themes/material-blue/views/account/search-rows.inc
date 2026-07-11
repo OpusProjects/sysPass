@@ -28,7 +28,7 @@ use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Infrastructure\Html\Html;
+use SP\Domain\Core\Html\Html;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionBase;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridTab;
 

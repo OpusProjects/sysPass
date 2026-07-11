@@ -15,6 +15,7 @@ jobs:
     name: Unit tests (${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php: ['8.4', '8.5']
     steps:
@@ -25,7 +26,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1, memory_limit=-1
 
       - name: Setup locales
         uses: ./.github/actions/setup-locales
@@ -42,6 +43,7 @@ jobs:
     name: Integration tests (${{ matrix.php }})
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         php: ['8.4', '8.5']
     services:
@@ -66,7 +68,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1, memory_limit=-1
 
       - name: Setup locales
         uses: ./.github/actions/setup-locales
