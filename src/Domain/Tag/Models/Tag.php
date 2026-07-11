@@ -41,7 +41,7 @@ class Tag extends Model implements ItemWithIdAndNameModel
 
     public function getId(): ?int
     {
-        return (int)$this->id;
+        return $this->id;
     }
 
     public function getName(): ?string
