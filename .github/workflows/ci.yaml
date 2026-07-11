@@ -25,7 +25,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1, memory_limit=-1
 
       - name: Setup locales
         uses: ./.github/actions/setup-locales
@@ -66,7 +66,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: pdo_mysql, gd, ldap, gettext, zip, intl, mbstring
           coverage: none
-          ini-values: zend.assertions=1
+          ini-values: zend.assertions=1, memory_limit=-1
 
       - name: Setup locales
         uses: ./.github/actions/setup-locales
