@@ -69,7 +69,11 @@ final readonly class AppLock implements AppLockHandler
     {
         $data = ['time' => time(), 'userId' => $userId, 'subject' => $subject];
 
-        $file = new FileHandler($this->lockFile);
+        // 'c+' creates the lock file on first use (FileHandler/SplFileObject open eagerly
+        // in the constructor and the default 'r' mode requires the file to already exist).
+        // No truncation happens here: save() rewinds and ftruncate(0)s before writing, so a
+        // shorter new payload can't leave trailing bytes from a previous longer one.
+        $file = new FileHandler($this->lockFile, 'c+');
         $file->save(Serde::serializeJson($data));
 
         logger('Application locked out');
