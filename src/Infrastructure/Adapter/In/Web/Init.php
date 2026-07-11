@@ -64,6 +64,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap\GetEnvironmentControl
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseErrorController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\IndexController as ErrorIndexController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Error\MaintenanceErrorController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Index\IndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\CheckConnectionController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Install\IndexController as InstallIndexController;
@@ -106,6 +107,7 @@ final class Init extends HttpModuleBase
         UpgradeController::class,
         DatabaseConnectionController::class,
         DatabaseErrorController::class,
+        MaintenanceErrorController::class,
         ErrorIndexController::class,
     ];
     /**
