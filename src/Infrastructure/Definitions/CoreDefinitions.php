@@ -99,6 +99,7 @@ use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Application\Crypt\Ports\SecureSessionService;
 use SP\Application\Crypt\Services\SecureSession;
+use SP\Domain\Database\Ports\DatabaseFileFactory;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
@@ -132,6 +133,7 @@ use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
 use SP\Domain\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlFileParser;
+use SP\Infrastructure\Database\MysqlFileParserFactory;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
@@ -223,6 +225,7 @@ final class CoreDefinitions
                     create(FileHandler::class)
                         ->constructor(factory(static fn(PathsContext $pathsContext) => $pathsContext[Path::SQL_FILE]))
                 ),
+            DatabaseFileFactory::class => autowire(MysqlFileParserFactory::class),
             DbStorageHandler::class => autowire(MysqlHandler::class),
             DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>

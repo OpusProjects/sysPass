@@ -35,8 +35,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
-use SP\Infrastructure\Database\MysqlFileParser;
-use SP\Infrastructure\File\FileHandler;
+use SP\Domain\Database\Ports\DatabaseFileFactory;
 use SP\Domain\File\FileSystem;
 
 use function SP\__;
@@ -51,9 +50,10 @@ use function SP\processException;
 final class UpgradeDatabase extends Service implements UpgradeHandlerService
 {
     public function __construct(
-        Application                        $application,
-        private readonly DatabaseInterface $database,
-        private readonly string $sqlPath
+        Application                            $application,
+        private readonly DatabaseInterface     $database,
+        private readonly DatabaseFileFactory   $databaseFileFactory,
+        private readonly string                $sqlPath
     ) {
         parent::__construct($application);
     }
@@ -115,7 +115,7 @@ final class UpgradeDatabase extends Service implements UpgradeHandlerService
         $filename = FileSystem::buildPath($this->sqlPath, str_replace('.', '', $version) . '.sql');
 
         try {
-            return (new MysqlFileParser(new FileHandler($filename)))->parse('$$');
+            return $this->databaseFileFactory->fromPath($filename)->parse('$$');
         } catch (Exception $e) {
             processException($e);
 
