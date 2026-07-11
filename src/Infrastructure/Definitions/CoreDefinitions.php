@@ -48,6 +48,7 @@ use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\CryptPKI;
 use SP\Infrastructure\Crypt\CryptSessionHandler;
 use SP\Infrastructure\Crypt\RequestBasedPassword;
+use SP\Infrastructure\Crypt\Session as CryptSession;
 use SP\Infrastructure\Crypt\UuidCookie;
 use SP\Infrastructure\Events\EventDispatcher;
 use SP\Infrastructure\Language;
@@ -84,6 +85,7 @@ use SP\Domain\Core\Bootstrap\RouteContextData;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
@@ -347,6 +349,7 @@ final class CoreDefinitions
             QueryFactory::class => create(QueryFactory::class)
                 ->constructor('mysql'),
             CryptInterface::class => create(Crypt::class),
+            SessionKeyService::class => autowire(CryptSession::class),
             CryptPKIHandler::class => factory(static function (PathsContext $pathsContext) {
                 $publicKeyPath = FileSystem::buildPath(
                     $pathsContext[Path::CONFIG],

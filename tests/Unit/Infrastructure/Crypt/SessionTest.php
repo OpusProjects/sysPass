@@ -45,6 +45,7 @@ class SessionTest extends UnitaryTestCase
 {
 
     private SessionContext|MockObject $sessionContext;
+    private Session $session;
 
     /**
      * @throws Exception
@@ -72,7 +73,7 @@ class SessionTest extends UnitaryTestCase
             ->method('getSidStartTime')
             ->willReturn($sidStartTime);
 
-        self::assertEquals('data', Session::getSessionKey($this->sessionContext));
+        self::assertEquals('data', $this->session->getSessionKey($this->sessionContext));
     }
 
     /**
@@ -110,7 +111,7 @@ class SessionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('setVault');
 
-        Session::reKey($this->sessionContext);
+        $this->session->reKey($this->sessionContext);
     }
 
     /**
@@ -127,7 +128,7 @@ class SessionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('setVault');
 
-        Session::saveSessionKey(self::$faker->name(), $this->sessionContext);
+        $this->session->saveSessionKey(self::$faker->name(), $this->sessionContext);
     }
 
     protected function setUp(): void
@@ -135,6 +136,7 @@ class SessionTest extends UnitaryTestCase
         parent::setUp();
 
         $this->sessionContext = $this->createMock(SessionContext::class);
+        $this->session = new Session();
     }
 
 }

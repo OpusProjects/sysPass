@@ -44,7 +44,6 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Crypt\Session as CryptSession;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\SPException;
@@ -154,9 +153,9 @@ final class Login extends LoginBase implements LoginService
             // re-encrypting the vault under the new seed; fall back to the bare PHP call
             // if the context is not a SessionContext or the vault has not been set yet.
             if (session_status() === PHP_SESSION_ACTIVE) {
-                if ($this->context instanceof SessionContext) {
+                if ($this->context instanceof SessionContext && $this->sessionKeyService !== null) {
                     try {
-                        CryptSession::reKey($this->context);
+                        $this->sessionKeyService->reKey($this->context);
                     } catch (CryptException $e) {
                         logger($e->getMessage());
                         session_regenerate_id(true);
