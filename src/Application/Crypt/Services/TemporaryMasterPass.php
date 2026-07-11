@@ -28,7 +28,7 @@ namespace SP\Application\Crypt\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Infrastructure\Messages\MailMessage;
