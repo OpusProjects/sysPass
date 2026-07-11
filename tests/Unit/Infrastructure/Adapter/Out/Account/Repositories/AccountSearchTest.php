@@ -34,7 +34,7 @@ use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Account\Repositories\AccountSearch;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\UnitaryTestCase;

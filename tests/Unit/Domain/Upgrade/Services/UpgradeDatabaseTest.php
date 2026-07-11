@@ -32,7 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Tests\Support\UnitaryTestCase;

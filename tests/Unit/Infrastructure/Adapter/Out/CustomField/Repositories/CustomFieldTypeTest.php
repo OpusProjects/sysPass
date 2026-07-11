@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\CustomField\Models\CustomFieldType as CustomFieldTypeModel;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\CustomField\Repositories\CustomFieldType;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\UnitaryTestCase;

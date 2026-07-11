@@ -23,22 +23,18 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database\Ports;
+namespace SP\Domain\Database\Ports;
 
 use Aura\SqlQuery\QueryInterface;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\QueryData;
 
-/**
- * Class QueryData
- */
 interface QueryDataInterface
 {
     public function getQuery(): QueryInterface;
 
     public function getMapClassName(): string;
 
-    public function setMapClassName(string $class): QueryData;
+    public function setMapClassName(string $class): static;
 
     /**
      * @throws QueryException
@@ -47,5 +43,5 @@ interface QueryDataInterface
 
     public function getOnErrorMessage(): string;
 
-    public function setOnErrorMessage(string $onErrorMessage): QueryData;
+    public function setOnErrorMessage(string $onErrorMessage): static;
 }
