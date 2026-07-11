@@ -35,7 +35,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Account\Repositories\PublicLink;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;

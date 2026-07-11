@@ -98,7 +98,7 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Application\Crypt\Ports\SecureSessionService;
 use SP\Application\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;

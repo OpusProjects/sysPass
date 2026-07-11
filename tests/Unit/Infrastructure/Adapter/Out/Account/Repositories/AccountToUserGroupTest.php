@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Account\Repositories\AccountToUserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;

@@ -62,9 +62,9 @@ use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
-use SP\Infrastructure\Database\Ports\QueryDataInterface;
+use SP\Domain\Database\Ports\QueryDataInterface;
 
 use function SP\__u;
 use function SP\logger;

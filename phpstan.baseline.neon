@@ -115,7 +115,7 @@ parameters:
 			path: src/Application/CustomField/Services/CustomFieldType.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:doFetchWithOptions\(\) invoked with 4 parameters, 1 required\.$#'
+			message: '#^Method SP\\Domain\\Database\\Ports\\DatabaseInterface\:\:doFetchWithOptions\(\) invoked with 4 parameters, 1 required\.$#'
 			identifier: arguments.count
 			count: 1
 			path: src/Application/Export/Services/BackupFile.php
@@ -638,10 +638,10 @@ parameters:
 			# runQuery() entry below — the row class is chosen at runtime via
 			# QueryData::getMapClassName(): string (a plain string, not class-string<T>), so
 			# QueryResult's T genuinely cannot be bound in this interface method either.
-			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Domain\\Common\\Dtos\\QueryResult does not specify its types\: T$#'
+			message: '#^Method SP\\Domain\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Domain\\Common\\Dtos\\QueryResult does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
-			path: src/Infrastructure/Database/Ports/DatabaseInterface.php
+			path: src/Domain/Database/Ports/DatabaseInterface.php
 
 		-
 			message: '#^PHPDoc tag @return with type resource is incompatible with native type SP\\Domain\\File\\Ports\\FileHandlerInterface\.$#'

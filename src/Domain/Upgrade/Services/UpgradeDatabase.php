@@ -33,7 +33,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\UpgradeVersion;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileHandler;

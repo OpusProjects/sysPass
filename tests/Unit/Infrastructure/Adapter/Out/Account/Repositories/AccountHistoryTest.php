@@ -37,7 +37,7 @@ use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Account\Repositories\AccountHistory;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;

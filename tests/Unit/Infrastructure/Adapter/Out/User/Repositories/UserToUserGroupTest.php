@@ -34,7 +34,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Database\Ports\DatabaseInterface;
+use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserToUserGroup as UserToUserGroupModel;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;
