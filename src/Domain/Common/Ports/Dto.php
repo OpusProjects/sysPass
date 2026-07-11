@@ -25,7 +25,7 @@
 namespace SP\Domain\Common\Ports;
 
 use SP\Domain\Common\Models\Model;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Interface Dto

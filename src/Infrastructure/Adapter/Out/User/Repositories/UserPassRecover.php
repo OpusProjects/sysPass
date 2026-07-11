@@ -33,7 +33,7 @@ use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\User\Ports\UserPassRecoverRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__u;
 

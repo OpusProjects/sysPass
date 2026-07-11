@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\In\Web\DataGrid;
 
 use SP\Domain\Core\UI\IconInterface;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class DataGridDataBase for setting the matrix data source

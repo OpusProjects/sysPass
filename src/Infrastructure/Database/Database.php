@@ -57,6 +57,7 @@ use PDOStatement;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventDispatcher;
 use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;

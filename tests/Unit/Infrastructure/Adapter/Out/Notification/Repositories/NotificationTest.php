@@ -40,7 +40,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\Adapter\Out\Notification\Repositories\Notification;
 use SP\Tests\Support\Generators\NotificationDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;

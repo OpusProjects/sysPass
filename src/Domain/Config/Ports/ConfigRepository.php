@@ -30,7 +30,7 @@ use SP\Domain\Config\Models\Config as ConfigModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Common\Models\Simple;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Interface ConfigRepository

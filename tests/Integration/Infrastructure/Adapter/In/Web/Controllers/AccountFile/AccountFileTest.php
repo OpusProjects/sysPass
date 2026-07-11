@@ -35,7 +35,7 @@ use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Account\Models\FileList;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\FileDataGenerator;

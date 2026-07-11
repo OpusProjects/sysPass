@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class AccountSearch

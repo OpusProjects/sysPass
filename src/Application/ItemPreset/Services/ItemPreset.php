@@ -36,7 +36,7 @@ use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Ports\ItemPresetRepository;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__u;
 

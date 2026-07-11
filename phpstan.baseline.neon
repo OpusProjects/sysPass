@@ -13,7 +13,7 @@ parameters:
 			path: src/Application/Account/Services/AccountMasterPassword.php
 
 		-
-			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:getByFilter\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Account\\Models\\AccountSearchView\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Account\\Models\\AccountSearchView\>\.$#'
+			message: '#^Method SP\\Application\\Account\\Services\\AccountSearch\:\:getByFilter\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Account\\Models\\AccountSearchView\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Account\\Models\\AccountSearchView\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/Account/Services/AccountSearch.php
@@ -85,13 +85,13 @@ parameters:
 			path: src/Application/Auth/Services/LdapCheck.php
 
 		-
-			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Category\\Models\\Category\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Category\\Models\\Category\>\.$#'
+			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Category\\Models\\Category\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Category\\Models\\Category\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/Category/Services/Category.php
 
 		-
-			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Client\\Models\\Client\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Client\\Models\\Client\>\.$#'
+			message: '#^Method SP\\Application\\Client\\Services\\Client\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Client\\Models\\Client\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Client\\Models\\Client\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/Client/Services/Client.php
@@ -160,7 +160,7 @@ parameters:
 			path: src/Application/Import/Services/LdapImport.php
 
 		-
-			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\ItemPreset\\Models\\ItemPreset\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\ItemPreset\\Models\\ItemPreset\>\.$#'
+			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\ItemPreset\\Models\\ItemPreset\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\ItemPreset\\Models\\ItemPreset\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/ItemPreset/Services/ItemPreset.php
@@ -179,13 +179,13 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Notification\\Models\\Notification\>\.$#'
+			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Notification\\Models\\Notification\>\.$#'
 			identifier: return.type
 			count: 2
 			path: src/Application/Notification/Services/Notification.php
 
 		-
-			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:searchForUserId\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Notification\\Models\\Notification\>\.$#'
+			message: '#^Method SP\\Application\\Notification\\Services\\Notification\:\:searchForUserId\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Notification\\Models\\Notification\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/Notification/Services/Notification.php
@@ -198,7 +198,7 @@ parameters:
 
 
 		-
-			message: '#^Method SP\\Application\\User\\Services\\UserGroup\:\:search\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\User\\Models\\UserGroup\> but returns SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\User\\Models\\UserGroup\>\.$#'
+			message: '#^Method SP\\Application\\User\\Services\\UserGroup\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\User\\Models\\UserGroup\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\User\\Models\\UserGroup\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Application/User/Services/UserGroup.php
@@ -650,7 +650,7 @@ parameters:
 			# runQuery() entry below — the row class is chosen at runtime via
 			# QueryData::getMapClassName(): string (a plain string, not class-string<T>), so
 			# QueryResult's T genuinely cannot be bound in this interface method either.
-			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
+			message: '#^Method SP\\Infrastructure\\Database\\Ports\\DatabaseInterface\:\:runQuery\(\) return type with generic class SP\\Domain\\Common\\Dtos\\QueryResult does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/Infrastructure/Database/Ports/DatabaseInterface.php
@@ -1988,7 +1988,7 @@ parameters:
 			# Landmine (see PR body): the row class is chosen at runtime via
 			# QueryData::getMapClassName(): string (a plain string, not class-string<T>), so
 			# QueryResult's T genuinely cannot be bound in this method's return type.
-			message: '#^Method SP\\Infrastructure\\Database\\Database\:\:runQuery\(\) return type with generic class SP\\Infrastructure\\Database\\QueryResult does not specify its types\: T$#'
+			message: '#^Method SP\\Infrastructure\\Database\\Database\:\:runQuery\(\) return type with generic class SP\\Domain\\Common\\Dtos\\QueryResult does not specify its types\: T$#'
 			identifier: missingType.generics
 			count: 1
 			path: src/Infrastructure/Database/Database.php
@@ -2103,127 +2103,127 @@ parameters:
 			# static-analysis-only false positive, not a real type error — same pre-existing
 			# pattern PluginData::getByNameBatch() already had before this PR (its `<T>`
 			# variant of the same issue). See PR body.
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\Account\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\Account\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Account/Repositories/Account.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\Account\:\:updateBulk\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Account\\Repositories\\Account\:\:updateBulk\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Account/Repositories/Account.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Auth\\Repositories\\AuthToken\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Auth\\Repositories\\AuthToken\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Auth/Repositories/AuthToken.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Category\\Repositories\\Category\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Category\\Repositories\\Category\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Category/Repositories/Category.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Client\\Repositories\\Client\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Client\\Repositories\\Client\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Client/Repositories/Client.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\CustomField\\Repositories\\CustomFieldData\:\:deleteBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\CustomField\\Repositories\\CustomFieldData\:\:deleteBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/CustomField/Repositories/CustomFieldData.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\CustomField\\Repositories\\CustomFieldDefinition\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\CustomField\\Repositories\\CustomFieldDefinition\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/CustomField/Repositories/CustomFieldDefinition.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\ItemPreset\\Repositories\\ItemPreset\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\ItemPreset\\Repositories\\ItemPreset\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/ItemPreset/Repositories/ItemPreset.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:deleteAdminBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:deleteAdminBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Notification/Repositories/Notification.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Notification/Repositories/Notification.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:getByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Notification\\Repositories\\Notification\:\:getByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Notification\\Models\\Notification\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Notification/Repositories/Notification.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\Plugin\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\Plugin\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Plugin/Repositories/Plugin.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\PluginData\:\:deleteByNameBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\PluginData\:\:deleteByNameBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Plugin/Repositories/PluginData.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\PluginData\:\:getByNameBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\Plugin\\Models\\PluginData\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Plugin\\Repositories\\PluginData\:\:getByNameBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Plugin\\Models\\PluginData\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Plugin/Repositories/PluginData.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Tag\\Repositories\\Tag\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\Tag\\Repositories\\Tag\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/Tag/Repositories/Tag.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\User\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\User\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/User.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\User\:\:getUserEmailById\(\) should return SP\\Infrastructure\\Database\\QueryResult\<T of SP\\Domain\\User\\Models\\User\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\User\:\:getUserEmailById\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\User\\Models\\User\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/User.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserGroup\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserGroup\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/UserGroup.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserProfile\:\:deleteByIdBatch\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserProfile\:\:deleteByIdBatch\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/UserProfile.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserToUserGroup\:\:add\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserToUserGroup\:\:add\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/UserToUserGroup.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserToUserGroup\:\:update\(\) should return SP\\Infrastructure\\Database\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Infrastructure\\Database\\QueryResult\<object\>\.$#'
+			message: '#^Method SP\\Infrastructure\\Adapter\\Out\\User\\Repositories\\UserToUserGroup\:\:update\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Common\\Models\\Simple\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<object\>\.$#'
 			identifier: return.type
 			count: 1
 			path: src/Infrastructure/Adapter/Out/User/Repositories/UserToUserGroup.php

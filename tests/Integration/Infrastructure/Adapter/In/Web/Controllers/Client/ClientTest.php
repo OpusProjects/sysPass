@@ -32,7 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Client\Models\Client;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\ClientGenerator;
 use SP\Tests\Support\IntegrationTestCase;

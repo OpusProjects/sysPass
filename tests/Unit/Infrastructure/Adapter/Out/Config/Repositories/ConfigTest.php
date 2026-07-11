@@ -39,7 +39,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Config\Repositories\Config;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\ConfigGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 

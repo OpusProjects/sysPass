@@ -39,7 +39,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\processException;
 

@@ -46,7 +46,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\PublicLinkDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 

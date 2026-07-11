@@ -16,7 +16,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Adapter\In\Api\Controllers\AuthToken\SearchController;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\UnitaryTestCase;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

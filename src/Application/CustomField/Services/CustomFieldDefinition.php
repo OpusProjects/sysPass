@@ -35,7 +35,7 @@ use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionM
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__u;
 

@@ -37,7 +37,7 @@ use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__u;
 

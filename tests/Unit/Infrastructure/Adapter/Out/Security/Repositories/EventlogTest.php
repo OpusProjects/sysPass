@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Security\Models\Eventlog as EventlogModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\Adapter\Out\Security\Repositories\Eventlog;
 use SP\Tests\Support\Generators\EventlogGenerator;
 use SP\Tests\Support\UnitaryTestCase;

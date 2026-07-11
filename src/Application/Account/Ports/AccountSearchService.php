@@ -30,7 +30,7 @@ use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class AccountSearchService for managing account searches

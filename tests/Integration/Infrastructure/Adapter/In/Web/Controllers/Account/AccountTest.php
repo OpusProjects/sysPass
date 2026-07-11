@@ -48,7 +48,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\PublicLinkDataGenerator;

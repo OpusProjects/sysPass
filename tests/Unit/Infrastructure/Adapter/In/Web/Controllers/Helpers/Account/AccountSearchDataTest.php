@@ -44,7 +44,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountSearchData;
 use SP\Tests\Support\Generators\AccountDataGenerator;

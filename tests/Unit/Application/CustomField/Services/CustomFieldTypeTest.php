@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Ports\CustomFieldTypeRepository;
 use SP\Application\CustomField\Ports\CustomFieldTypeService;
 use SP\Application\CustomField\Services\CustomFieldType;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\CustomFieldTypeGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 use TypeError;

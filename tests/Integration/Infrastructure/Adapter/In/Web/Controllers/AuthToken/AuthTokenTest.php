@@ -33,7 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Models\AuthTokenList;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
 use SP\Tests\Support\IntegrationTestCase;

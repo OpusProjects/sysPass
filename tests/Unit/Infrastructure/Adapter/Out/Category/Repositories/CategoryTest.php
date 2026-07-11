@@ -43,7 +43,7 @@ use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Category\Repositories\Category;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\CategoryGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 

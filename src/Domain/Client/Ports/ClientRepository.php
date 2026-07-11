@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class ClientRepository

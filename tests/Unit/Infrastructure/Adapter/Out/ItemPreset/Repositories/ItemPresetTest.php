@@ -41,7 +41,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\Adapter\Out\ItemPreset\Repositories\ItemPreset;
 use SP\Tests\Support\Generators\ItemPresetDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;

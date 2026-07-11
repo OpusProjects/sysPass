@@ -32,7 +32,7 @@ use SP\Domain\Account\Models\AccountHistoryView;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Common\Models\Simple;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class AccountHistoryRepository

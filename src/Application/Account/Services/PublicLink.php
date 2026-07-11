@@ -50,7 +50,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Providers\Uri;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__u;
 

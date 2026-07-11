@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Common\Models\Simple;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class PluginRepository

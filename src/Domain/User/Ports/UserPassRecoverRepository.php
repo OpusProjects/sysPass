@@ -30,7 +30,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Models\UserPassRecover as UserPassRecoverModel;
 use SP\Domain\Common\Models\Simple;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Class UserPassRecoverRepository
