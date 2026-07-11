@@ -35,7 +35,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Application\Api\Ports\ApiRequestService;
 use SP\Application\Api\Services\Api;
 use SP\Domain\Auth\Models\AuthToken;

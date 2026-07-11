@@ -29,7 +29,7 @@ namespace SP\Application\Crypt\Services;
 use Defuse\Crypto\Key;
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;

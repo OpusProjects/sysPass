@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Crypt;
 
+use SP\Domain\Crypt\Vault;
 use SP\Infrastructure\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Exceptions\CryptException;

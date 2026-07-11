@@ -27,7 +27,7 @@ namespace SP\Tests\Unit\Infrastructure\Crypt;
 
 use RuntimeException;
 use SP\Infrastructure\Crypt\Crypt;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\Support\UnitaryTestCase;
 use PHPUnit\Framework\Attributes\Group;
