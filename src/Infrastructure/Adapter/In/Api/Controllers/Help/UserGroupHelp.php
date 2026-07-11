@@ -2,6 +2,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Help;
 
+use SP\Domain\Api\Ports\HelpInterface;
+
 use function SP\__;
 
 final class UserGroupHelp implements HelpInterface
