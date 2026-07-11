@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Config\Adapters;
 
-use SP\Infrastructure\DataCollection;
+use SP\Domain\Core\DataCollection;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;

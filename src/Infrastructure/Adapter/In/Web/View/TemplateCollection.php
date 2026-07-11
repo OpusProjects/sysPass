@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\In\Web\View;
 
-use SP\Infrastructure\DataCollection;
+use SP\Domain\Core\DataCollection;
 
 /**
  * Class TemplateCollection

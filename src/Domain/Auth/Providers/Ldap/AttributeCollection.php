@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers\Ldap;
 
-use SP\Infrastructure\DataCollection;
+use SP\Domain\Core\DataCollection;
 
 /**
  * Class AttributeCollection
