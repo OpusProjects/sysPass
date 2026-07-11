@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\ItemPreset\Models\Password;
-use SP\Infrastructure\Adapter\In\Web\Validators\PasswordValidator;
+use SP\Domain\Common\Validators\PasswordValidator;
 
 /**
  * Class PasswordValidatorTest

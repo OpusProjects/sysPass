@@ -34,7 +34,7 @@ use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\ItemPreset\Services\ItemPresetRequest;
-use SP\Infrastructure\Adapter\In\Web\Validators\Validator;
+use SP\Domain\Common\Validators\Validator;
 
 use function SP\__u;
 
