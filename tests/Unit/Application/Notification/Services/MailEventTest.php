@@ -32,7 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Infrastructure\Messages\MailMessage;
+use SP\Domain\Core\Messages\MailMessage;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Infrastructure\Http\Ports\RequestService;

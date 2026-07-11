@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 /**
  * sysPass
@@ -23,18 +24,21 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Messages;
-
-use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Domain\Core\Messages\HtmlFormatter;
+namespace SP\Domain\Core\Messages;
 
 /**
- * Class NoticeMessage
- *
- * @package SP\Infrastructure\Messages
+ * Class MailMessage
  */
-final class NotificationMessage extends MessageBase
+final class MailMessage extends MessageBase
 {
+    /**
+     * Adds a blank description line
+     */
+    public function addDescriptionLine(): void
+    {
+        $this->description[] = '';
+    }
+
     /**
      * Composes a message in HTML format
      */
@@ -42,20 +46,10 @@ final class NotificationMessage extends MessageBase
     {
         $formatter = new HtmlFormatter();
 
-        $message = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
-
-        if ($this->title) {
-            $message .= '<h3>' . $this->title . '</h3>';
-        }
-
-        if (!empty($this->description)) {
-            $message .= '<div class="notice-description">' . $this->getDescription($formatter) . '</div>';
-        }
-
-        if (!empty($this->footer)) {
-            $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
-        }
-
+        $message = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
+        $message .= '<h3>' . $this->title . '</h3>';
+        $message .= '<div class="mail-description">' . $this->getDescription($formatter, true) . '</div>';
+        $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
         $message .= '</div>';
 
         return $message;
@@ -63,7 +57,7 @@ final class NotificationMessage extends MessageBase
 
     public function getDescription(
         FormatterInterface $formatter,
-        bool               $translate = true
+        bool               $translate
     ): string {
         return $formatter->formatDescription($this->description, $translate);
     }
@@ -73,20 +67,12 @@ final class NotificationMessage extends MessageBase
      */
     public function composeText(string $delimiter = PHP_EOL): string
     {
-        $parts = [];
+        $formatter = new TextFormatter($delimiter);
 
-        if ($this->title) {
-            $parts[] = $this->title;
-        }
-
-        if (!empty($this->description)) {
-            $parts[] = implode($delimiter, $this->description);
-        }
-
-        if (!empty($this->footer)) {
-            $parts[] = implode($delimiter, $this->footer);
-        }
-
-        return implode($delimiter, $parts);
+        return $this->title
+               . $delimiter
+               . $this->getDescription($formatter, true)
+               . $delimiter
+               . implode($delimiter, $this->footer);
     }
 }

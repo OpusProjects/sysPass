@@ -250,7 +250,7 @@ parameters:
 			message: '#^Unsafe usage of new static\(\)\.$#'
 			identifier: new.static
 			count: 1
-			path: src/Infrastructure/Messages/MessageBase.php
+			path: src/Domain/Core/Messages/MessageBase.php
 
 		-
 			message: '#^Method SP\\Infrastructure\\PhpExtensionChecker\:\:__call\(\) has no return type specified\.$#'

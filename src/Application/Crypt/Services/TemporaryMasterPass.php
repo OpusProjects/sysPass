@@ -31,7 +31,7 @@ use SP\Application\Application;
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
-use SP\Infrastructure\Messages\MailMessage;
+use SP\Domain\Core\Messages\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
