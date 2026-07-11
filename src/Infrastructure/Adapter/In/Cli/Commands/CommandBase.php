@@ -31,6 +31,8 @@ use SP\Application\Config\Services\ConfigFile;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 
+use function SP\getFromEnv;
+
 /**
  * Class CommandBase
  *
@@ -73,7 +75,17 @@ abstract class CommandBase extends Command
      */
     protected static function getEnvVarForOption(string $option)
     {
-        return getenv(static::$envVarsMapping[$option]);
+        // .env is loaded with Dotenv::createImmutable(), which populates $_ENV / $_SERVER
+        // but not getenv(); getFromEnv() reads those first, falling back to getenv() for a
+        // real environment variable. No $default is passed here: getFromEnv() would otherwise
+        // type-coerce the value to match a non-null $default's type (e.g. a bool default runs
+        // it through filter_var(FILTER_VALIDATE_BOOL), which would corrupt option values that
+        // aren't password/path strings by turning them into false), and callers of this method
+        // rely on getting the raw string back (some do their own Util::boolval() conversion).
+        // getFromEnv() returns null for an unset/empty variable; coalesce that back to false to
+        // preserve this method's original getenv()-based `string|false` contract, since callers
+        // compare the result with `=== false` / `!== false` and with the falsy `?:` operator.
+        return getFromEnv(static::$envVarsMapping[$option]) ?? false;
     }
 
     /**
