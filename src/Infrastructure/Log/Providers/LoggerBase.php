@@ -28,7 +28,7 @@ namespace SP\Infrastructure\Log\Providers;
 
 use Exception;
 use Psr\Log\LoggerInterface;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;

@@ -3,7 +3,7 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\PublicLink;
 
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Domain\Core\Acl\AclInterface;

@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Common\Models\Model;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;

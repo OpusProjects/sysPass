@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;

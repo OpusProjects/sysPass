@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure;
 
+use SP\Application\Application;
 use RuntimeException;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Exceptions\SPException;

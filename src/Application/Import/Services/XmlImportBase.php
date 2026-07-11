@@ -28,7 +28,7 @@ namespace SP\Application\Import\Services;
 use DOMDocument;
 use DOMElement;
 use Iterator;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Application\Import\Ports\ImportHelperInterface;

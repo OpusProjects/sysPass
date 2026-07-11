@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigMail;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;

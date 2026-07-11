@@ -29,7 +29,7 @@ namespace SP\Application\Export\Services;
 
 use Exception;
 use PDO;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Services\Service;

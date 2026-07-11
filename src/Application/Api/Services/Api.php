@@ -30,7 +30,7 @@ use SP\Domain\Api\Services\ApiStatuses;
 use SP\Infrastructure\Http\Code;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Context\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\Hash;

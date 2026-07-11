@@ -28,7 +28,7 @@ namespace SP\Application\Export\Services;
 
 use DOMElement;
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Application\Category\Ports\CategoryService;

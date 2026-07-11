@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Category;
 
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Category\Ports\CategoryAdapter;
 use SP\Application\Category\Ports\CategoryService;

@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\EventDispatcher;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;

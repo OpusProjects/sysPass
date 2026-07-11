@@ -52,7 +52,7 @@ use Faker\Factory;
 use Faker\Generator;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Context\ContextException;
 use SP\Infrastructure\Context\Stateless;

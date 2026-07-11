@@ -31,7 +31,7 @@ use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;

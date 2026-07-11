@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\UI\ThemeIcons;
 use SP\Application\Account\Ports\AccountService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountHelper;

@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Core\Acl\AclActionsInterface;

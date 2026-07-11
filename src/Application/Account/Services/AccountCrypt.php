@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Application\Account\Ports\AccountCryptService;
 use SP\Domain\Common\Services\Service;

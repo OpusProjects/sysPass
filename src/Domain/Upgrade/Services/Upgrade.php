@@ -29,7 +29,7 @@ namespace SP\Domain\Upgrade\Services;
 use Psr\Container\ContainerInterface;
 use ReflectionAttribute;
 use ReflectionClass;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Attributes\UpgradeVersion;

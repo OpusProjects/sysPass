@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Status;
 
 use GuzzleHttp\ClientInterface;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 

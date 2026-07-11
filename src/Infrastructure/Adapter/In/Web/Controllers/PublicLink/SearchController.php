@@ -28,7 +28,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;

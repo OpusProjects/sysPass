@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Notification\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;

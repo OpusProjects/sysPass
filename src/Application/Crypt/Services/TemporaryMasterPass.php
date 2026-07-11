@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\Crypt\Services;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;

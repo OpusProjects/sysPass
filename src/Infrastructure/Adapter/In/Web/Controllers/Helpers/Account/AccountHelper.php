@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;

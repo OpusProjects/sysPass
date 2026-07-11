@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers;
 
 use Exception;
 use LogicException;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;
 use SP\Domain\Auth\Services\AuthException;

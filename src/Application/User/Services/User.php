@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\User\Services;
 
 use JsonException;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;

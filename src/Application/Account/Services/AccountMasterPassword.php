@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\Account\Services;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Account\Dtos\EncryptedPassword;

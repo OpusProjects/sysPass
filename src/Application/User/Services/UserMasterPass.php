@@ -29,7 +29,7 @@ namespace SP\Application\User\Services;
 use SP\Domain\User\Services\UserMasterPassStatus;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Domain\Auth\Dtos\UserLoginDto;

@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Cli\Commands;
 
+use SP\Application\Application;
 use Exception;
 use Psr\Log\LoggerInterface;
 use RuntimeException;

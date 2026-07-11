@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Client\Ports\ClientAdapter;
 use SP\Application\Client\Ports\ClientService;

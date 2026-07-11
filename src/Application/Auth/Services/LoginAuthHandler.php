@@ -28,7 +28,7 @@ namespace SP\Application\Auth\Services;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;

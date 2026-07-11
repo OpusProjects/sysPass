@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Items;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
