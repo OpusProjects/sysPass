@@ -84,6 +84,35 @@ class BackupCommandTest extends CliTestCase
     }
 
     /**
+     * .env is loaded with Dotenv::createImmutable(), which populates $_ENV/$_SERVER
+     * only, never getenv() (see CliTestCase::buildContainer(), which relies on the
+     * same $_ENV-only mechanism for CONFIG_PATH). Confirm a dotenv-only variable is
+     * picked up too, not just one exported into the real process environment via
+     * putenv(), as covered by testBackupFromEnvironmentVarIsSuccessful() above.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testBackupFromDotEnvVariableIsSuccessful(): void
+    {
+        $this->setupDatabase();
+
+        $_ENV[BackupCommand::$envVarsMapping['path']] = $this->getBackupPath();
+
+        $commandTester = $this->executeCommandTest(
+            BackupCommand::class,
+            null,
+            false
+        );
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Application and database backup completed successfully', $output);
+
+        $this->checkBackupFilesAreCreated();
+    }
+
+    /**
      * --path must control where the backup is written, not just where old
      * backups are pruned.
      *
@@ -167,6 +196,7 @@ class BackupCommandTest extends CliTestCase
     {
         foreach (BackupCommand::$envVarsMapping as $envVar) {
             putenv($envVar);
+            unset($_ENV[$envVar], $_SERVER[$envVar]);
         }
     }
 }
