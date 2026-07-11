@@ -29,7 +29,7 @@ namespace SP\Infrastructure\Log\Providers;
 use Exception;
 use Psr\Log\LoggerInterface;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;
 use SP\Domain\Core\Events\EventReceiver;

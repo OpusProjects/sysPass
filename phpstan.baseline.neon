@@ -692,7 +692,7 @@ parameters:
 			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Events\\Event\:\:getSource\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Domain\\Core\\Events\\Event\:\:getSource\(\)$#'
 			identifier: argument.templateType
 			count: 1
 			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
@@ -704,7 +704,7 @@ parameters:
 			path: src/Infrastructure/Log/Providers/LoggerBase.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Events\\Event\:\:getSource\(\)$#'
+			message: '#^Unable to resolve the template type T in call to method SP\\Domain\\Core\\Events\\Event\:\:getSource\(\)$#'
 			identifier: argument.templateType
 			count: 1
 			path: src/Infrastructure/Log/Providers/LoggerBase.php
@@ -842,13 +842,13 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Api/Controllers/Account/EditPassController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Controllers/UserGroup/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Api/Controllers/UserGroup/EditController.php
@@ -968,7 +968,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
@@ -980,7 +980,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
@@ -1418,7 +1418,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/ItemPreset/ViewController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LoginController.php
@@ -1544,7 +1544,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/DeleteController.php
@@ -1562,7 +1562,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/SaveEditController.php
@@ -1586,7 +1586,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/DeleteController.php
@@ -1604,7 +1604,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/SaveEditController.php
@@ -1622,7 +1622,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserGroup/UserGroupViewBase.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserPassReset/SaveResetController.php
@@ -1634,7 +1634,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/DeleteController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/DeleteController.php
@@ -1652,7 +1652,7 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/SaveEditController.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/UserProfile/SaveEditController.php
@@ -1994,7 +1994,7 @@ parameters:
 			path: src/Infrastructure/Database/Database.php
 
 		-
-			message: '#^Parameter \#1 \$type of method SP\\Infrastructure\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
+			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 3
 			path: src/Infrastructure/Database/Database.php

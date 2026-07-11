@@ -28,7 +28,7 @@ namespace SP\Tests\Unit\Domain\Auth\Providers\Ldap;
 
 use ArrayIterator;
 use EmptyIterator;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;

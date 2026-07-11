@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;

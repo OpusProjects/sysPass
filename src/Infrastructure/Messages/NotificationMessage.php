@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Messages;
 
 use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\HtmlFormatter;
 
 /**
  * Class NoticeMessage

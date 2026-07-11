@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Infrastructure\UI\ThemeIcons;
 use SP\Domain\Account\Dtos\AccountViewDto;
 use SP\Application\Account\Ports\AccountService;

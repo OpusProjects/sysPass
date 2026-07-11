@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Infrastructure\UI\ThemeIcons;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Application\Account\Ports\AccountService;

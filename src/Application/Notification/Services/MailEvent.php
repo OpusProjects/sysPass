@@ -28,9 +28,9 @@ namespace SP\Application\Notification\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Infrastructure\Messages\MailMessage;
-use SP\Infrastructure\Messages\TextFormatter;
+use SP\Domain\Core\Messages\TextFormatter;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;

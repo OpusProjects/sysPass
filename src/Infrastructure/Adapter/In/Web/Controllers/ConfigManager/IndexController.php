@@ -28,7 +28,7 @@ use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Crypt\CryptSessionHandler;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Infrastructure\Language;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Auth\Providers\Ldap\LdapMsAds;

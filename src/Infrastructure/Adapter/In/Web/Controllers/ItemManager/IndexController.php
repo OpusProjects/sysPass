@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ItemManager;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Application\Account\Ports\AccountFileService;
 use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Application\Account\Ports\AccountService;

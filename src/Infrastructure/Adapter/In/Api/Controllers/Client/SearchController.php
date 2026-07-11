@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Client;
 
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
