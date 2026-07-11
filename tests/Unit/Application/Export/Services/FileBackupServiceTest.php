@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Infrastructure\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;

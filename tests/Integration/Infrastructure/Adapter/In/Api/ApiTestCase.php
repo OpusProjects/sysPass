@@ -32,7 +32,7 @@ use Psr\Container\ContainerInterface;
 use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\Path;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;

@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Install;
 
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Language;
 use SP\Infrastructure\PhpExtensionChecker;
 use SP\Domain\Common\Attributes\Action;

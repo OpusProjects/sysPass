@@ -72,8 +72,8 @@ class BaseBootstrapTest extends TestCase
                 exit(1);
             }
             // A config-free service: validates the container actually resolves.
-            $paths = $c->get(\SP\Infrastructure\Bootstrap\PathsContext::class);
-            echo $paths instanceof \SP\Infrastructure\Bootstrap\PathsContext ? 'RESOLVE_OK' : 'BAD_RESOLVE';
+            $paths = $c->get(\SP\Domain\Core\Bootstrap\PathsContext::class);
+            echo $paths instanceof \SP\Domain\Core\Bootstrap\PathsContext ? 'RESOLVE_OK' : 'BAD_RESOLVE';
             PHP;
 
         $command = sprintf(

@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Infrastructure\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;

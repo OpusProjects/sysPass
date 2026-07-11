@@ -32,7 +32,7 @@ use Exception;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Infrastructure\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\UuidCookie;

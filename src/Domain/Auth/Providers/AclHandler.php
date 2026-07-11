@@ -28,8 +28,8 @@ namespace SP\Domain\Auth\Providers;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Providers\EventsTrait;
 use SP\Domain\Common\Providers\Provider;

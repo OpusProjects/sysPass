@@ -22,7 +22,7 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Bootstrap;
+namespace SP\Domain\Core\Bootstrap;
 
 /**
  * Enum Path

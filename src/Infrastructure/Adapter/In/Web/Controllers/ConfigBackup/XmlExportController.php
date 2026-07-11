@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigBackup;
 
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Context\Session;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;

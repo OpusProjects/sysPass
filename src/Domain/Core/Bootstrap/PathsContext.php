@@ -24,7 +24,7 @@
 
 declare(strict_types=1);
 
-namespace SP\Infrastructure\Bootstrap;
+namespace SP\Domain\Core\Bootstrap;
 
 use ArrayAccess;
 use SplObjectStorage;

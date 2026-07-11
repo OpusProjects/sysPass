@@ -26,8 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Definitions;
 
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Providers\Image;
 use SP\Application\Export\Ports\XmlVerifyService;

@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Application\Account\Services;
 
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
