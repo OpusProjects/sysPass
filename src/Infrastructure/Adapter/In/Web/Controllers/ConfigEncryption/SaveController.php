@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\Crypt\Services\MasterPass;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 

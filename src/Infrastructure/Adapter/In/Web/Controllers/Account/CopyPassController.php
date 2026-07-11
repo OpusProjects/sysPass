@@ -34,7 +34,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

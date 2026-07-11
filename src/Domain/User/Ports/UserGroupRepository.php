@@ -30,7 +30,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 

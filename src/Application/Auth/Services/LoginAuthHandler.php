@@ -48,7 +48,7 @@ use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 
 use function SP\__;
 use function SP\__u;

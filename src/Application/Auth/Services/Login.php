@@ -55,7 +55,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 use function SP\logger;

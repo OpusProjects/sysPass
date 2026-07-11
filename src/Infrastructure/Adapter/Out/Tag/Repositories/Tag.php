@@ -32,7 +32,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\RepositoryItemTrait;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

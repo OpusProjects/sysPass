@@ -35,7 +35,7 @@ use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginCompatilityService;
 use SP\Domain\Plugin\Ports\PluginManagerService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 

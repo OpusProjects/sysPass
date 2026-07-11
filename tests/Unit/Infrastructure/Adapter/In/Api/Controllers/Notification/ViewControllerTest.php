@@ -16,7 +16,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Notification\ViewController;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Support\UnitaryTestCase;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

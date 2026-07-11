@@ -44,7 +44,7 @@ use SP\Application\Import\Services\CsvImport;
 use SP\Domain\Import\Services\ImportException;
 use SP\Application\Import\Services\ImportHelper;
 use SP\Application\Tag\Ports\TagService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 

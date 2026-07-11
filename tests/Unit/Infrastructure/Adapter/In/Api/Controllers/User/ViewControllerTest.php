@@ -14,7 +14,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Adapter\In\Api\Controllers\User\ViewController;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;

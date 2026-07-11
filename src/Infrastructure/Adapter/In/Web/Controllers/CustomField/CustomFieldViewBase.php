@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Application\CustomField\Ports\CustomFieldTypeService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;

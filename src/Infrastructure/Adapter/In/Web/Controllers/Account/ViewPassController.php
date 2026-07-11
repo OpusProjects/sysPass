@@ -39,7 +39,7 @@ use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountPasswordHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

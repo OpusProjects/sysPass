@@ -33,7 +33,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemPresetHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

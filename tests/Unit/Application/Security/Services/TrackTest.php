@@ -39,7 +39,7 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Domain\Security\Ports\TrackRepository;
 use SP\Application\Security\Services\Track;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Support\UnitaryTestCase;
 

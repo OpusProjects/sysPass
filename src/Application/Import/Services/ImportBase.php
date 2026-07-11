@@ -51,8 +51,8 @@ use SP\Application\Import\Ports\ImportHelperInterface;
 use SP\Application\Import\Ports\ImportService;
 use SP\Domain\Tag\Models\Tag;
 use SP\Application\Tag\Ports\TagService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
 

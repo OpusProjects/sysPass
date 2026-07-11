@@ -57,7 +57,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\ItemSearchDataGenerator;

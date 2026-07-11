@@ -51,7 +51,7 @@ use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Application\Security\Ports\TrackService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\AccountHelp;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\Generators\UserProfileDataGenerator;

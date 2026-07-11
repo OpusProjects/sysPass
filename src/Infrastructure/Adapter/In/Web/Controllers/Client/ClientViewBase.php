@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

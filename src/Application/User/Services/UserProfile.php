@@ -36,8 +36,8 @@ use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Domain\User\Ports\UserProfileRepository;
 use SP\Application\User\Ports\UserProfileService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;
