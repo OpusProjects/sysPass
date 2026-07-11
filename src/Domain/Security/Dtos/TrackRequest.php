@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Security\Dtos;
 
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Infrastructure\Http\Adapters\Address;
+use SP\Domain\Http\Adapters\Address;
 
 /**
  * Class TrackRequest

@@ -28,7 +28,7 @@ namespace SP\Domain\Auth\Providers\Ldap;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Adapters\Address;
+use SP\Domain\Http\Adapters\Address;
 
 use function SP\__u;
 use function SP\logger;
