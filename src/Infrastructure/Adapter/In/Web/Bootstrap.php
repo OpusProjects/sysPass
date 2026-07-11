@@ -43,7 +43,7 @@ use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Code;
+use SP\Domain\Http\Code;
 use SP\Infrastructure\Http\Header;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Util\Util;
