@@ -325,18 +325,6 @@ parameters:
 			path: src/Domain/Account/Models/Account.php
 
 		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateAdd\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Domain/Account/Models/AccountHistory.php
-
-		-
-			message: '#^Method SP\\Domain\\Account\\Models\\AccountHistory\:\:getDateEdit\(\) should return int\|null but returns string\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Domain/Account/Models/AccountHistory.php
-
-		-
 			message: '#^Template type T of method SP\\Domain\\Account\\Ports\\AccountSearchRepository\:\:getByFilter\(\) is not referenced in a parameter\.$#'
 			identifier: method.templateTypeNotInParameter
 			count: 1
