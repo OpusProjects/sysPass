@@ -27,13 +27,13 @@ namespace SP\Domain\Core\UI;
 
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\UI\IconInterface;
-use SP\Infrastructure\File\FileCache;
+use SP\Domain\Storage\Ports\FileCacheService;
 
 interface ThemeIconsInterface
 {
     public static function loadIcons(
         Context $context,
-        FileCache             $cache,
+        FileCacheService      $cache,
         ThemeContextInterface $themeContext
     ): ThemeIconsInterface;
 
