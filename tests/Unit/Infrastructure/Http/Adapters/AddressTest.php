@@ -30,7 +30,7 @@ use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
-use SP\Infrastructure\Http\Adapters\Address;
+use SP\Domain\Http\Adapters\Address;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
