@@ -24,12 +24,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Events;
+namespace SP\Domain\Core\Events;
 
-use SP\Infrastructure\Messages\HtmlFormatter;
-use SP\Infrastructure\Messages\TextFormatter;
 use SP\Domain\Core\Messages\FormatterInterface;
+use SP\Domain\Core\Messages\HtmlFormatter;
 use SP\Domain\Core\Messages\MessageInterface;
+use SP\Domain\Core\Messages\TextFormatter;
 
 /**
  * Class EventMessage

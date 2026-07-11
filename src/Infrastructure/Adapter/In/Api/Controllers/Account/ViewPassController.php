@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountAdapter;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;

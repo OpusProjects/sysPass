@@ -23,17 +23,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Messages;
-
-use SP\Domain\Core\Messages\FormatterInterface;
-use SP\Infrastructure\Html\Html;
+namespace SP\Domain\Core\Messages;
 
 use function SP\__;
 
 /**
  * Class HtmlFormatter
- *
- * @package SP\Infrastructure\Messages
  */
 final class HtmlFormatter implements FormatterInterface
 {
@@ -70,7 +65,9 @@ final class HtmlFormatter implements FormatterInterface
             return sprintf(
                 '<a href="%s">%s</a>',
                 $matches[0],
-                Html::truncate($matches[0], 30)
+                mb_strlen($matches[0]) > 30
+                    ? trim(mb_substr($matches[0], 0, 30)) . '...'
+                    : $matches[0]
             );
         }
 

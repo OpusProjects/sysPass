@@ -30,7 +30,7 @@ use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Application\User\Ports\UserService;

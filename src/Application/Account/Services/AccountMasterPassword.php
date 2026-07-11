@@ -28,8 +28,8 @@ namespace SP\Application\Account\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\EncryptedPassword;
 use SP\Domain\Account\Models\Account;
 use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;

@@ -24,16 +24,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Messages;
-
-use SP\Domain\Core\Messages\FormatterInterface;
+namespace SP\Domain\Core\Messages;
 
 use function SP\__;
 
 /**
  * Class TextFormatter
- *
- * @package SP\Infrastructure\Messages
  */
 final class TextFormatter implements FormatterInterface
 {

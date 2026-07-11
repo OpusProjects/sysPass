@@ -26,8 +26,8 @@ declare(strict_types=1);
 namespace SP\Domain\Plugin\Services;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;

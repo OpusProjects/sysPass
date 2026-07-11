@@ -29,8 +29,8 @@ use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Application\Auth\Ports\LoginAuthHandlerService;

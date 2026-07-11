@@ -29,8 +29,8 @@ namespace SP\Tests\Unit\Infrastructure\Events;
 use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use stdClass;
 

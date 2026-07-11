@@ -28,8 +28,8 @@ namespace SP\Application\Security\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;

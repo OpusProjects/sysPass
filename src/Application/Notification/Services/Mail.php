@@ -27,8 +27,8 @@ namespace SP\Application\Notification\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Infrastructure\Messages\MailMessage;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

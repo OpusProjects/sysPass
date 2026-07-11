@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Account\Dtos\AccountHistoryViewDto;
 use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Domain\Common\Attributes\Action;

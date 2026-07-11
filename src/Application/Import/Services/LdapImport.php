@@ -28,8 +28,8 @@ namespace SP\Application\Import\Services;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;

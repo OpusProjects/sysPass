@@ -30,8 +30,8 @@ use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
-use SP\Infrastructure\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventMessage;
 use SP\Application\Auth\Ports\LoginService;
 use SP\Application\Auth\Services\Login;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;

@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AccountManager;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Application\Client\Ports\ClientService;

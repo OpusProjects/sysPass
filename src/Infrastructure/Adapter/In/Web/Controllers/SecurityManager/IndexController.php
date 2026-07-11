@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\SecurityManager;
 
 use SP\Application\Application;
-use SP\Infrastructure\Events\Event;
+use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
