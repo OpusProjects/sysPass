@@ -364,6 +364,15 @@ final class Api extends Service implements ApiService
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
+            if (!is_array($value)) {
+                throw new ServiceException(
+                    __u('Wrong parameters'),
+                    SPException::ERROR,
+                    $this->getHelpHint($this->apiRequest->getMethod()),
+                    Code::BAD_REQUEST->value
+                );
+            }
+
             return Filter::getArray($value);
         }
 
