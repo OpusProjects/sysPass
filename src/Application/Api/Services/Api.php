@@ -31,7 +31,7 @@ use SP\Infrastructure\Http\Code;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Infrastructure\Crypt\Vault;

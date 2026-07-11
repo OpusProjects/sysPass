@@ -59,7 +59,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsHelper;

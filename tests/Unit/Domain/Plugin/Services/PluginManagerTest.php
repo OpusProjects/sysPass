@@ -28,7 +28,7 @@ namespace SP\Tests\Unit\Domain\Plugin\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;

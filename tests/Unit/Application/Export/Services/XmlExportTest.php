@@ -38,7 +38,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -53,7 +53,7 @@ use SP\Application\Export\Ports\XmlTagExportService;
 use SP\Application\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 

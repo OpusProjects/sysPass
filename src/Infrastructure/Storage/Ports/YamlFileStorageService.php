@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Storage\Ports;
 
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Interface YamlFileStorageService

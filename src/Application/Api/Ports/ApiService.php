@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\Api\Ports;
 
 use Exception;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;

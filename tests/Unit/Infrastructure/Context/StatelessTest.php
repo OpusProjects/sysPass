@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Infrastructure\Context;
 
 use PHPUnit\Framework\Attributes\Group;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Context\Stateless;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Support\UnitaryTestCase;

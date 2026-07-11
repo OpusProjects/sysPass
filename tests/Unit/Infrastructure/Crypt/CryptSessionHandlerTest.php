@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SessionHandler;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\CryptSessionHandler;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;

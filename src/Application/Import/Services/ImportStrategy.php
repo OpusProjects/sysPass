@@ -37,7 +37,7 @@ use SP\Application\Import\Ports\ImportHelperInterface;
 use SP\Application\Import\Ports\ImportStrategyService;
 use SP\Application\Import\Ports\ItemsImportService;
 use SP\Application\Import\Ports\XmlFileService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\Util\Util;
 
 use function SP\__;

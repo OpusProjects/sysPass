@@ -42,7 +42,7 @@ use SP\Application\Import\Services\ImportStrategy;
 use SP\Application\Import\Services\KeepassImport;
 use SP\Application\Import\Services\SyspassImport;
 use SP\Domain\Import\Services\XmlFormat;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

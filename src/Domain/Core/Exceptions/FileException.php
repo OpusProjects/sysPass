@@ -5,7 +5,7 @@ declare(strict_types=1);
  *
  * @author nuxsmin
  * @link https://syspass.org
- * @copyright 2012-2021, Rubén Domínguez nuxsmin@$syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
  *
  * This file is part of sysPass.
  *
@@ -23,16 +23,12 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Context;
-
-use SP\Domain\Core\Exceptions\SPException;
+namespace SP\Domain\Core\Exceptions;
 
 /**
- * Class ContextException
- *
- * @package SP\Infrastructure\Context
+ * Class FileException
  */
-final class ContextException extends SPException
+final class FileException extends SPException
 {
 
 }

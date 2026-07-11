@@ -33,7 +33,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\UuidCookie;
 use SP\Infrastructure\Crypt\Vault;
@@ -43,7 +43,7 @@ use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Application\Crypt\Services\SecureSession;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

@@ -30,7 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Messages\MailMessage;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Application\Config\Ports\ConfigFileService;

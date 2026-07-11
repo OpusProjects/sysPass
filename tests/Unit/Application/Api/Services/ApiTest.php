@@ -33,7 +33,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Crypt\Vault;
 use SP\Application\Api\Ports\ApiRequestService;

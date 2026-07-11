@@ -32,7 +32,7 @@ use SP\Domain\Import\Services\ImportException;
 use DOMDocument;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Application\Import\Ports\XmlFileService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use ValueError;
 
 use function SP\__u;

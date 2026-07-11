@@ -33,7 +33,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
@@ -45,7 +45,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 use stdClass;
 

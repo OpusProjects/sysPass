@@ -32,13 +32,13 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Acl\Actions;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Models\Action;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
 use function PHPUnit\Framework\once;

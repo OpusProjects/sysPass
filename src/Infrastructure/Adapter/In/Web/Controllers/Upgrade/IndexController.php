@@ -30,7 +30,7 @@ use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\ActionsInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 

@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Api;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Application\Application;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\HttpModuleBase;
 use SP\Infrastructure\Language;
 use SP\Infrastructure\ProvidersHelper;
@@ -38,7 +38,7 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Database\DatabaseUtil;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\logger;
 

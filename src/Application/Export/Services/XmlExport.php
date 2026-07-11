@@ -51,7 +51,7 @@ use SP\Application\Export\Ports\XmlClientExportService;
 use SP\Application\Export\Ports\XmlExportService;
 use SP\Application\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\__u;

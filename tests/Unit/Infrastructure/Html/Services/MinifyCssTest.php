@@ -34,7 +34,7 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Http\Header;
 use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 use TypeError;
 

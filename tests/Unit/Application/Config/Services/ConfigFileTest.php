@@ -31,14 +31,14 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Services\ConfigFile;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\XmlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

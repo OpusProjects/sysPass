@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Database;
 
 use SP\Infrastructure\Database\Ports\DatabaseFileInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Class MysqlFileParser

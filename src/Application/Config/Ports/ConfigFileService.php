@@ -28,7 +28,7 @@ namespace SP\Application\Config\Ports;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * This class is responsible for reading and writing the configuration of the config.php file

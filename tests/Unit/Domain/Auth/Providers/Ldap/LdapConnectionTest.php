@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Events\Event;
 use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapException;

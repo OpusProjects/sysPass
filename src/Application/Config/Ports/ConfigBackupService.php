@@ -28,7 +28,7 @@ namespace SP\Application\Config\Ports;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 /**
  * Interface ConfigBackupService

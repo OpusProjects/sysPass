@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Cli;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Language;
 use SP\Infrastructure\ModuleBase;
 use SP\Infrastructure\ProvidersHelper;
