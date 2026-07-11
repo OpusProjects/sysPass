@@ -42,7 +42,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Domain\Common\Adapters\SelectItemAdapter;
 
 /**

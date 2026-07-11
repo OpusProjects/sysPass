@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\AuthTokenGrid;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SearchGridControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**

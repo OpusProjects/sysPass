@@ -33,7 +33,7 @@ use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\AuthTokenForm;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**

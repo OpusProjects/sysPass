@@ -38,7 +38,7 @@ use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Domain\Common\Adapters\SelectItemAdapter;
 

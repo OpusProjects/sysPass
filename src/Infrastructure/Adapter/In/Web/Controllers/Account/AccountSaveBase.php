@@ -31,7 +31,7 @@ use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
 use SP\Infrastructure\Adapter\In\Web\Forms\FormInterface;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 /**
