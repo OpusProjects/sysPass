@@ -21,7 +21,7 @@ final class EditController extends AuthTokenBase
             'id'       => $this->apiService->getParamInt('id', true),
             'userId'   => $this->apiService->getParamInt('userId', true),
             'actionId' => $this->apiService->getParamInt('actionId', true),
-            'hash'     => $this->apiService->getParamString('password'),
+            'hash'     => $this->apiService->getParamRaw('password'),
         ]);
 
         $this->authTokenService->update($tokenData);
