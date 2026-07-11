@@ -30,7 +30,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\Constraint\Constraint;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 /**
  * Trait PHPUnitHelper

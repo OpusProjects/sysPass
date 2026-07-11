@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\File;
 
+use SP\Domain\File\FileSystem;
 use SP\Application\Export\Ports\BackupHandlersFactory;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;

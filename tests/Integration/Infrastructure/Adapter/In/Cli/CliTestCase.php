@@ -36,7 +36,7 @@ use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use Symfony\Component\Console\Tester\CommandTester;
 
 use function SP\Tests\getDbHandler;

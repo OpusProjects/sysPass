@@ -41,7 +41,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Image\Ports\ImageService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__u;
 

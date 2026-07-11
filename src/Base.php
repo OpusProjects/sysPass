@@ -26,7 +26,7 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\getFromEnv;
 use function SP\initModule;

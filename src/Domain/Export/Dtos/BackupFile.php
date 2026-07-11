@@ -28,7 +28,7 @@ namespace SP\Domain\Export\Dtos;
 
 use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\Core\AppInfoInterface;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 /**
  * Class BackupFile

@@ -42,7 +42,7 @@ use SP\Application\Import\Services\ImportStrategy;
 use SP\Domain\Plugin\Models\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 

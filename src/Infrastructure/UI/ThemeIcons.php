@@ -35,7 +35,7 @@ use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Domain\Core\UI\FontIcon;
 use SP\Domain\Core\UI\IconInterface;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;

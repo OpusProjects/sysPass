@@ -72,7 +72,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\File\ArchiveHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\Bootstrap;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\Generators\UserProfileDataGenerator;

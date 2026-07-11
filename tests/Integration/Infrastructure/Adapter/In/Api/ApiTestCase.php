@@ -47,7 +47,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Adapter\In\Api\Bootstrap;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Tests\Support\DatabaseTrait;
 use stdClass;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;

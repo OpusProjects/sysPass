@@ -31,7 +31,7 @@ use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Infrastructure\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 /**
  * Class CssController

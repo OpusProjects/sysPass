@@ -38,7 +38,7 @@ use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Application\Crypt\Ports\SecureSessionService;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\logger;
 use function SP\processException;

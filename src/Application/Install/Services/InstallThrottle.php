@@ -30,7 +30,7 @@ namespace SP\Application\Install\Services;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Http\Ports\RequestService;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use Throwable;
 
 use function SP\processException;
