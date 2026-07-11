@@ -59,7 +59,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserProfileService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap\GetEnvironmentController;

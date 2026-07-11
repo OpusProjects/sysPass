@@ -35,7 +35,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 
 use function SP\__u;

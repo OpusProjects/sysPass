@@ -35,8 +35,8 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Domain\Tag\Ports\TagRepository;
 use SP\Application\Tag\Ports\TagService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;

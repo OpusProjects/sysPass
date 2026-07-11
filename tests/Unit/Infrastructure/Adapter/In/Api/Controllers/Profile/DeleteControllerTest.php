@@ -15,7 +15,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\User\Models\UserProfile;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Profile\DeleteController;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Support\UnitaryTestCase;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 

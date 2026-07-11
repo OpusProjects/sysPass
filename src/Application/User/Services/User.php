@@ -42,8 +42,8 @@ use SP\Domain\User\Models\UserPreferences;
 use SP\Application\User\Ports\UserMasterPassService;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 
 use function SP\__u;

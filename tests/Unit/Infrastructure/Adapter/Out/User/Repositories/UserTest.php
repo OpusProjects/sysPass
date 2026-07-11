@@ -44,7 +44,7 @@ use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserList as UserListModel;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Infrastructure\Adapter\Out\User\Repositories\User;

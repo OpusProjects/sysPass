@@ -36,7 +36,7 @@ use SP\Application\Config\Services\Config;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\Crypt\Services\MasterPass;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Cli\Commands\CommandBase;
 use SP\Infrastructure\Adapter\In\Cli\Commands\Validators;
 use SP\Infrastructure\Util\Util;

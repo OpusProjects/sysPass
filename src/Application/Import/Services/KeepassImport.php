@@ -38,7 +38,7 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Application\Import\Ports\ItemsImportService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SplObjectStorage;
 
 use function SP\__u;

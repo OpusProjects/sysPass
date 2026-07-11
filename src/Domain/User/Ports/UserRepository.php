@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserList as UserListModel;
 use SP\Domain\User\Models\UserPreferences;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 

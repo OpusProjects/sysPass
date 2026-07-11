@@ -33,7 +33,7 @@ use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Domain\Plugin\Ports\Plugin;
 use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\Plugin\Services\PluginRegister;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

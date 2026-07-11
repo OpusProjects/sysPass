@@ -63,7 +63,7 @@ use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;

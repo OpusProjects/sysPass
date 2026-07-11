@@ -36,7 +36,7 @@ use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Application\Config\Services\ConfigBackup;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\File\FileException;
 use SP\Tests\Support\UnitaryTestCase;
 

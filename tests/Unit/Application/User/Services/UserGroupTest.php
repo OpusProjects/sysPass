@@ -36,7 +36,7 @@ use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Ports\UserGroupRepository;
 use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Application\User\Services\UserGroup;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 use SP\Tests\Support\Generators\UserGroupGenerator;
 use SP\Tests\Support\Stubs\UserGroupRepositoryStub;

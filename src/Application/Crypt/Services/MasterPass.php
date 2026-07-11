@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\CustomField\Ports\CustomFieldCryptService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\processException;
 

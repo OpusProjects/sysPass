@@ -45,7 +45,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Application\Crypt\Ports\TemporaryMasterPassService;
 use SP\Application\Notification\Ports\MailService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 use function SP\__u;
