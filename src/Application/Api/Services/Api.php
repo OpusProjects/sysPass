@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\Api\Services;
 
 use SP\Domain\Api\Services\ApiStatuses;
-use SP\Infrastructure\Http\Code;
+use SP\Domain\Http\Code;
 
 use Exception;
 use SP\Application\Application;

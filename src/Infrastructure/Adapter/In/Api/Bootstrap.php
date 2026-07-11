@@ -33,7 +33,7 @@ use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Code;
+use SP\Domain\Http\Code;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use Throwable;

@@ -8,7 +8,7 @@ use SP\Domain\Account\Models\File;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Infrastructure\Http\Code;
+use SP\Domain\Http\Code;
 
 use function SP\__;
 use function SP\__u;
