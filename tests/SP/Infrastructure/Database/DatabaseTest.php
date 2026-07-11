@@ -341,6 +341,88 @@ class DatabaseTest extends UnitaryTestCase
     }
 
     /**
+     * An array-bound param whose name is a strict prefix of another bind in the same
+     * query (":id" vs ":idOwner") must not corrupt the longer token when the array is
+     * expanded into placeholders.
+     *
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testRunQueryWithArrayBindDoesNotCorruptPrefixedParam()
+    {
+        $pdo = $this->createMock(PDO::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
+        $query = $this->createMock(QueryInterface::class);
+
+        $query->expects($this->atLeastOnce())
+              ->method('getStatement')
+              ->willReturn('SELECT * FROM test WHERE id IN (:id) AND idOwner = :idOwner');
+
+        $query->expects($this->once())
+              ->method('getBindValues')
+              ->willReturn(['id' => [1, 2], 'idOwner' => 5]);
+
+        $pdo->expects($this->once())
+            ->method('prepare')
+            ->with('SELECT * FROM test WHERE id IN (:id_0, :id_1) AND idOwner = :idOwner', [])
+            ->willReturn($pdoStatement);
+
+        $counter = new InvokedCount(3);
+        $pdoStatement->expects($counter)
+                     ->method('bindValue')
+                     ->with(
+                         self::callback(static function (string $arg) use ($counter) {
+                             return match ($counter->numberOfInvocations()) {
+                                 1 => $arg === 'id_0',
+                                 2 => $arg === 'id_1',
+                                 3 => $arg === 'idOwner',
+                             };
+                         }),
+                         self::callback(static function (mixed $arg) use ($counter) {
+                             return match ($counter->numberOfInvocations()) {
+                                 1 => $arg === 1,
+                                 2 => $arg === 2,
+                                 3 => $arg === 5,
+                             };
+                         }),
+                         self::callback(static fn(int $arg) => $arg === PDO::PARAM_INT),
+                     );
+
+        $pdoStatement->expects($this->once())
+                     ->method('execute');
+
+        $pdoStatement->expects($this->never())
+                     ->method('fetchAll');
+
+        $pdoStatement->expects($this->once())
+                     ->method('rowCount')
+                     ->willReturn(2);
+
+        $this->dbStorageHandler
+            ->expects($this->once())
+            ->method('getConnection')
+            ->willReturn($pdo);
+
+        $pdo->expects($this->once())
+            ->method('lastInsertId')
+            ->willReturn('1');
+
+        $queryData = $this->createMock(QueryDataInterface::class);
+
+        $queryData->expects($this->once())
+                  ->method('getQuery')
+                  ->willReturn($query);
+
+        $queryData->expects($this->never())
+                  ->method('getMapClassName');
+
+        $out = $this->database->runQuery($queryData);
+
+        $this->assertEquals(2, $out->getAffectedNumRows());
+    }
+
+    /**
      * @throws Exception
      */
     public function testEndTransaction()

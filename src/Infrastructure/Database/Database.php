@@ -160,7 +160,14 @@ final class Database implements DatabaseInterface
                         $placeholders[] = ':' . $key;
                         $expandedBinds[$key] = $v;
                     }
-                    $sql = str_replace(':' . $param, implode(', ', $placeholders), $sql);
+                    // Word-boundary guarded: a plain str_replace would also match a longer
+                    // bind name that has this param as a strict prefix (e.g. :id vs :idOwner),
+                    // corrupting it. Same negative-lookahead guard as the final bind filter below.
+                    $sql = preg_replace(
+                        '/:' . preg_quote($param, '/') . '(?![a-zA-Z0-9_])/',
+                        addcslashes(implode(', ', $placeholders), '\\$'),
+                        $sql
+                    );
                 } else {
                     $expandedBinds[$param] = $value;
                 }
