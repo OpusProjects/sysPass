@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web;
 
+use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use LogicException;
 use SP\Core\Bootstrap\Router;
@@ -60,6 +61,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
+use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap\GetEnvironmentController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseConnectionController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Error\DatabaseErrorController;
@@ -178,6 +180,8 @@ final class Init extends HttpModuleBase
      * @throws SPException
      * @throws ContextException
      * @throws ConfigException
+     * @throws FileException
+     * @throws EnvironmentIsBrokenException
      */
     public function initialize(string $controller): void
     {
@@ -236,7 +240,14 @@ final class Init extends HttpModuleBase
                 throw new InitializationException('Maintenance mode');
             }
 
+            // Checks if the application or its database schema need to be upgraded
             if ($this->checkUpgradeNeeded()) {
+                logger('Upgrade needed', 'INFO');
+
+                $this->config->generateUpgradeKey();
+
+                $this->router->response()->redirect($this->getUriFor(self::ROUTE_UPGRADE))->send();
+
                 throw new InitializationException('Upgrade needed');
             }
 

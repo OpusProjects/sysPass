@@ -28,6 +28,7 @@ namespace SP\Core;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -84,8 +85,26 @@ abstract class ModuleBase implements ModuleInterface
         }
     }
 
+    /**
+     * Checks whether the application code or its database schema are ahead of the
+     * version recorded in the config (i.e. an upgrade needs to run).
+     *
+     * The stored app/database versions are set at install time and bumped as
+     * upgrades are applied, so a fresh install (where both are written as the
+     * current version) correctly reports no upgrade needed. A missing/empty
+     * stored version is treated as needing an upgrade, mirroring the legacy
+     * behaviour that fixed the v2 -> v3 upgrade path.
+     */
     protected function checkUpgradeNeeded(): bool
     {
-        return false;
+        $currentVersion = Version::getVersionStringNormalized();
+
+        return $this->isVersionOutdated($this->configData->getDatabaseVersion(), $currentVersion)
+               || $this->isVersionOutdated($this->configData->getAppVersion(), $currentVersion);
+    }
+
+    private function isVersionOutdated(?string $storedVersion, string $currentVersion): bool
+    {
+        return empty($storedVersion) || Version::checkVersion($storedVersion, $currentVersion);
     }
 }

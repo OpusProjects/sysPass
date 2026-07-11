@@ -50,6 +50,7 @@ use SP\Core\UI\ThemeContext;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Application\Account\Ports\AccountAclService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
@@ -245,7 +246,13 @@ abstract class IntegrationTestCase extends TestCase
             'isInstalled' => true,
             'isMaintenance' => false,
             'getDbName' => self::$faker->colorName(),
-            'getPasswordSalt' => $this->passwordSalt
+            'getPasswordSalt' => $this->passwordSalt,
+            // A stub method not listed here defaults to '' for a string return
+            // type, which Init::checkUpgradeNeeded() reads as "needs an upgrade".
+            // Keep these at the current version so the fixture represents an
+            // up-to-date install, like every other integration test expects.
+            'getAppVersion' => Version::getVersionStringNormalized(),
+            'getDatabaseVersion' => Version::getVersionStringNormalized(),
         ];
     }
 

@@ -36,6 +36,7 @@ use SP\Core\Bootstrap\Path;
 use SP\Core\Definitions\CoreDefinitions;
 use SP\Core\Definitions\DomainDefinitions;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
@@ -143,12 +144,22 @@ abstract class ApiTestCase extends TestCase
 
         // The fixture config.xml is not "installed" and has no DB name; patch it so
         // Init's checkInstalled / checkDatabaseTables pass (the actual DB connection
-        // is the real getDbHandler() override, so the creds here are not used).
+        // is the real getDbHandler() override, so the creds here are not used). It
+        // also predates the appVersion/databaseVersion fields (both empty), which
+        // Init's checkUpgradeNeeded() reads as an outdated install; set them to the
+        // current version so these tests represent an up-to-date instance.
         $dbConn = DatabaseConnectionData::getFromEnvironment();
+        $currentVersion = Version::getVersionStringNormalized();
         $config = getResource('config', 'config.xml');
         $config = preg_replace('#<installed>.*?</installed>#', '<installed>1</installed>', $config);
         $config = preg_replace('#<dbName>.*?</dbName>#', '<dbName>' . $dbConn->getDbName() . '</dbName>', $config);
         $config = preg_replace('#<dbHost>.*?</dbHost>#', '<dbHost>' . $dbConn->getDbHost() . '</dbHost>', $config);
+        $config = preg_replace('#<appVersion>.*?</appVersion>#', "<appVersion>{$currentVersion}</appVersion>", $config);
+        $config = preg_replace(
+            '#<databaseVersion>.*?</databaseVersion>#',
+            "<databaseVersion>{$currentVersion}</databaseVersion>",
+            $config
+        );
 
         file_put_contents(FileSystem::buildPath($this->configPath, 'config.xml'), $config);
     }
