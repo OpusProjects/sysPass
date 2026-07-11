@@ -29,7 +29,7 @@ use Aura\SqlQuery\Common\Select;
 use Aura\SqlQuery\QueryInterface;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Database\Ports\QueryDataInterface;
+use SP\Infrastructure\Database\Ports\QueryDataInterface;
 
 use function SP\__u;
 

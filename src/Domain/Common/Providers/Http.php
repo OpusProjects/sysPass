@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Providers;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 
 /**
  * Class Http

@@ -38,7 +38,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

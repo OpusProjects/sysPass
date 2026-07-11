@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Crypt\Dtos;
 
-use SP\Core\Crypt\Hash;
+use SP\Infrastructure\Crypt\Hash;
 
 /**
  * Class UpdateMasterPassRequest

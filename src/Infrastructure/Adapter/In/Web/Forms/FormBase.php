@@ -24,11 +24,11 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Forms;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 
 /**
  * Class FormBase

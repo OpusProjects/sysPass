@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;

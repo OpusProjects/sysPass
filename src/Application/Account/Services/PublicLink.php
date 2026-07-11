@@ -28,8 +28,8 @@ namespace SP\Application\Account\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Application;
-use SP\Core\Crypt\Vault;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Vault;
 use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;
@@ -47,8 +47,8 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Providers\Uri;
+use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use SP\Infrastructure\Database\QueryResult;
 

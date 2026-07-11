@@ -27,7 +27,7 @@ namespace SP\Application\Export\Services;
 
 use DOMDocument;
 use DOMElement;
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Application\Export\Ports\XmlExportEntityService;
 

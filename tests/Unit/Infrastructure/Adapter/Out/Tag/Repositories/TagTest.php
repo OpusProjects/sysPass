@@ -39,7 +39,7 @@ use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Tag\Models\Tag as TagModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;

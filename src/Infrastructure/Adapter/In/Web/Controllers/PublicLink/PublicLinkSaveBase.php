@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\PublicLink;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\PublicLinkForm;

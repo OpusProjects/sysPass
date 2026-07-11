@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
@@ -51,7 +51,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Domain\ItemPreset\Models\AccountPermission as AccountPermissionPreset;
 use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;

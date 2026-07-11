@@ -29,9 +29,9 @@ namespace SP\Application\Import\Services;
 use SP\Domain\Import\Services\ImportException;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;

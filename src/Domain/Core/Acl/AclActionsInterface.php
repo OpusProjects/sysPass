@@ -28,7 +28,7 @@ namespace SP\Domain\Core\Acl;
 /**
  * Interface ActionsInterface for the definition of available action constants.
  *
- * @package SP\Core\Acl
+ * @package SP\Infrastructure\Acl
  */
 interface AclActionsInterface
 {

@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Account;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Common\Attributes\Action;

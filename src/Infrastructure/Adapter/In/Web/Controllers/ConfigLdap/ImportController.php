@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Auth\Providers\Ldap\LdapException;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Common\Attributes\Action;

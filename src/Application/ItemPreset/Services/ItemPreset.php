@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\ItemPreset\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;

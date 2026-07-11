@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AccountManager;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Application\Account\Ports\AccountSearchService;
 use SP\Domain\Auth\Services\AuthException;

@@ -24,8 +24,8 @@
 
 use DI\ContainerBuilder;
 use Dotenv\Dotenv;
-use SP\Core\Definitions\CoreDefinitions;
-use SP\Core\Definitions\DomainDefinitions;
+use SP\Infrastructure\Definitions\CoreDefinitions;
+use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Infrastructure\File\FileSystem;
 
 use function SP\getFromEnv;
@@ -42,7 +42,7 @@ define('APP_PATH', APP_ROOT);
 
 // Functions.php defines MODULES_PATH/LOG_FILE from APP_PATH at load time, so it
 // must be required after APP_PATH is defined.
-require __DIR__ . '/Core/Functions.php';
+require __DIR__ . '/Infrastructure/Functions.php';
 
 $dotenv = Dotenv::createImmutable(APP_ROOT);
 $dotenv->load();

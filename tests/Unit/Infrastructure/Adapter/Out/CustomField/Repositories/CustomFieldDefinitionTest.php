@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionModel;
 use SP\Domain\CustomField\Models\CustomFieldDefinitionList as CustomFieldDefinitionListModel;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\CustomField\Repositories\CustomFieldDefinition;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

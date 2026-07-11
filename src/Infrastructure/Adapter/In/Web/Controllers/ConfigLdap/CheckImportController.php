@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Auth\Ports\LdapCheckService;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Common\Attributes\Action;

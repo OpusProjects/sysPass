@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Category\Models\Category;
 use SP\Application\Category\Ports\CategoryService;

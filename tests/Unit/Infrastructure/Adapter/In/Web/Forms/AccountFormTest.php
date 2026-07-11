@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
 use SP\Tests\Support\UnitaryTestCase;
 

@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName as AccountPassItemWithIdAndNameModel;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;

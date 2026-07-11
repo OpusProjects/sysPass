@@ -28,9 +28,9 @@ namespace SP\Application\Export\Services;
 
 use DOMElement;
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Services\ServiceException;

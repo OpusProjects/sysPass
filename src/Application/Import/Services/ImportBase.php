@@ -28,8 +28,8 @@ namespace SP\Application\Import\Services;
 
 use SP\Domain\Import\Services\ImportException;
 
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;

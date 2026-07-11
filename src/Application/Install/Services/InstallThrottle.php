@@ -27,9 +27,9 @@ declare(strict_types=1);
 
 namespace SP\Application\Install\Services;
 
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\File\FileSystem;
 use Throwable;
 

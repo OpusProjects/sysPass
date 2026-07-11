@@ -24,11 +24,11 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Install;
 
-use SP\Core\Application;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Language;
-use SP\Core\PhpExtensionChecker;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Infrastructure\Language;
+use SP\Infrastructure\PhpExtensionChecker;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

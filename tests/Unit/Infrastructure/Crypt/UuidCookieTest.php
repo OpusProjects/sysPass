@@ -1,0 +1,159 @@
+<?php
+declare(strict_types=1);
+/*
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2023, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+namespace SP\Tests\Unit\Infrastructure\Crypt;
+
+use Symfony\Component\HttpFoundation\Request;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
+use SP\Infrastructure\Crypt\Hash;
+use SP\Infrastructure\Crypt\UuidCookie;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
+use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Tests\Support\UnitaryTestCase;
+
+/**
+ * Class UuidCookieTest
+ *
+ */
+#[Group('unitary')]
+#[AllowMockObjectsWithoutExpectations]
+class UuidCookieTest extends UnitaryTestCase
+{
+
+    private RequestService|MockObject $requestInterface;
+    private UriContextInterface|MockObject $uriContext;
+
+
+    /**
+     * @throws Exception
+     */
+    public function testLoad()
+    {
+        $key = self::$faker->sha1();
+        $message = base64_encode('test');
+        $data = sprintf('%s;%s', Hash::signMessage($message, $key), $message);
+
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
+
+        $this->requestInterface
+            ->expects(self::once())
+            ->method('getRequest')
+            ->willReturn($request);
+
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+
+        self::assertEquals('test', $cookie->load($key));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testLoadWithNoData()
+    {
+        $key = self::$faker->sha1();
+
+        $request = new Request();
+
+        $this->requestInterface
+            ->expects(self::once())
+            ->method('getRequest')
+            ->willReturn($request);
+
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+
+        self::assertFalse($cookie->load($key));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testLoadWithInvalidData()
+    {
+        $key = self::$faker->sha1();
+        $data = self::$faker->text();
+
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
+
+        $this->requestInterface
+            ->expects(self::once())
+            ->method('getRequest')
+            ->willReturn($request);
+
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+
+        self::assertFalse($cookie->load($key));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testLoadWithInvalidSignature()
+    {
+        $key = self::$faker->sha1();
+        $data = sprintf('%s;%s', Hash::signMessage(base64_encode('invalid'), $key), base64_encode('test'));
+
+        $request = new Request(cookies: ['SYSPASS_UUID' => $data]);
+
+        $this->requestInterface
+            ->expects(self::once())
+            ->method('getRequest')
+            ->willReturn($request);
+
+        $cookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+
+        self::assertFalse($cookie->load($key));
+    }
+
+    public function testCreate()
+    {
+        $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+
+        $key = self::$faker->sha1();
+        $cookie = $uuidCookie->create($key);
+
+        self::assertNotEmpty($cookie);
+    }
+
+    public function testSign()
+    {
+        $key = self::$faker->sha1();
+        $uuidCookie = UuidCookie::factory($this->requestInterface, $this->uriContext);
+        $cookieData = $uuidCookie->sign('test', $key);
+        $out = $uuidCookie->getCookieData($cookieData, $key);
+
+        self::assertEquals('test', $out);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->requestInterface = $this->createMock(RequestService::class);
+        $this->uriContext = $this->createStub(UriContextInterface::class);
+    }
+}

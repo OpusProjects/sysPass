@@ -8,7 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Adapter\In\Web\Forms\UserProfileForm;
 use SP\Tests\Support\UnitaryTestCase;

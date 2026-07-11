@@ -39,8 +39,8 @@ use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
-use SP\Domain\Storage\Ports\FileCacheService;
-use SP\Domain\Storage\Ports\XmlFileStorageService;
+use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Infrastructure\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\File\FileException;
 
 use function SP\logger;

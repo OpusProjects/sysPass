@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Core\Context\ContextException;
+use SP\Infrastructure\Context\ContextException;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Dtos\ConfigRequest;
 use SP\Application\Config\Ports\ConfigService;

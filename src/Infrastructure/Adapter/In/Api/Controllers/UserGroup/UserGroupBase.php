@@ -24,8 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\UserGroup;
 
-use SP\Core\Bootstrap\Router;
-use SP\Core\Application;
+use SP\Infrastructure\Bootstrap\Router;
+use SP\Infrastructure\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\InvalidClassException;

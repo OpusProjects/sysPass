@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AccountFile;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Application\Account\Ports\AccountFileService;
 use SP\Application\Account\Services\AccountFileAcl;
 use SP\Domain\Auth\Services\AuthException;

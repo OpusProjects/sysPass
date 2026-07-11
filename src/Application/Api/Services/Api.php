@@ -27,14 +27,14 @@ declare(strict_types=1);
 namespace SP\Application\Api\Services;
 
 use SP\Domain\Api\Services\ApiStatuses;
-use SP\Domain\Http\Code;
+use SP\Infrastructure\Http\Code;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\Crypt\Crypt;
-use SP\Core\Crypt\Hash;
-use SP\Core\Crypt\Vault;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Context\ContextException;
+use SP\Infrastructure\Crypt\Crypt;
+use SP\Infrastructure\Crypt\Hash;
+use SP\Infrastructure\Crypt\Vault;
 use SP\Application\Api\Ports\ApiRequestService;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;

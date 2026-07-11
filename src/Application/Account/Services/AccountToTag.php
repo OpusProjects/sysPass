@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Application\Account\Ports\AccountToTagService;
 use SP\Domain\Common\Models\Item;

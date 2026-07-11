@@ -29,9 +29,9 @@ namespace SP\Application\User\Services;
 use SP\Domain\User\Services\UserMasterPassStatus;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Hash;
+use SP\Infrastructure\Events\Event;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

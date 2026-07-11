@@ -28,9 +28,9 @@ namespace SP\Application\Export\Services;
 
 use DOMElement;
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Common\Services\ServiceException;

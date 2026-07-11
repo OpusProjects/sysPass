@@ -24,12 +24,12 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\UnauthorizedPageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\Crypt\Ports\MasterPassService;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;

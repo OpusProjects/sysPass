@@ -27,11 +27,11 @@ declare(strict_types=1);
 namespace SP\Application\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
-use SP\Core\Messages\MailMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Hash;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
+use SP\Infrastructure\Messages\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

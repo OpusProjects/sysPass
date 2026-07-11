@@ -24,7 +24,7 @@
 
 use SP\Application\Api\Ports\ApiRequestService;
 use SP\Application\Api\Services\RestApiRequest;
-use SP\Core\Bootstrap\Router;
+use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Infrastructure\Adapter\In\Api\Bootstrap;

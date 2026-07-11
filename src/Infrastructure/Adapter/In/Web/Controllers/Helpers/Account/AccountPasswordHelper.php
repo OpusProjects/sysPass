@@ -24,16 +24,16 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
-use SP\Core\Application;
-use SP\Core\Crypt\Session as CryptSession;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Session as CryptSession;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Application\Crypt\Ports\MasterPassService;
-use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Image\Ports\ImageService;
+use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Infrastructure\Image\Ports\ImageService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperException;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;

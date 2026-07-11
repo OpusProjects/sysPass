@@ -28,7 +28,7 @@ namespace SP\Infrastructure\File;
 
 use RuntimeException;
 use SP\Domain\File\Ports\FileHandlerInterface;
-use SP\Core\Util\Util;
+use SP\Infrastructure\Util\Util;
 use SplFileObject;
 use ValueError;
 

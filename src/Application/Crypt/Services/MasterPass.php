@@ -27,8 +27,8 @@ declare(strict_types=1);
 namespace SP\Application\Crypt\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Hash;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Hash;
 use SP\Application\Account\Ports\AccountMasterPasswordService;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Common\Services\Service;

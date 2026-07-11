@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Application\Account\Ports\AccountToUserGroupService;
 use SP\Domain\Common\Models\Item;

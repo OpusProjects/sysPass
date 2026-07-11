@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Application\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;

@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\Account\Services;
 
 use Exception;
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView as AccountSearchViewModel;
 use SP\Domain\Account\Ports\AccountSearchConstants;

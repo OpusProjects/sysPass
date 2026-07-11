@@ -38,7 +38,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Plugin\Models\Plugin as PluginModel;
 use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Database\QueryResult;

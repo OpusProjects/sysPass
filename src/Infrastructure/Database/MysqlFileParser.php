@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Database;
 
-use SP\Domain\Database\Ports\DatabaseFileInterface;
+use SP\Infrastructure\Database\Ports\DatabaseFileInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\File\FileException;
 

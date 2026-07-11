@@ -31,7 +31,7 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Domain\Http\Providers\Uri;
+use SP\Infrastructure\Http\Providers\Uri;
 
 use function SP\__u;
 use function SP\logger;

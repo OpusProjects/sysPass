@@ -27,14 +27,14 @@ namespace SP\Infrastructure\Adapter\In\Api;
 use Closure;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use SP\Core\Bootstrap\BootstrapBase;
+use SP\Infrastructure\Bootstrap\BootstrapBase;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Adapters\Serde;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Code;
-use SP\Domain\Http\Ports\ResponseService;
+use SP\Infrastructure\Http\Code;
+use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\NoSuchItemException;
 use Throwable;
 

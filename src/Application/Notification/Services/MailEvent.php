@@ -27,15 +27,15 @@ declare(strict_types=1);
 namespace SP\Application\Notification\Services;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Messages\MailMessage;
-use SP\Core\Messages\TextFormatter;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Messages\MailMessage;
+use SP\Infrastructure\Messages\TextFormatter;
 use SP\Domain\Common\Attributes\EventReceiver as EventReceiverAttribute;
 use SP\Domain\Common\Services\EventReceiver as EventReceiverTrait;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Events\EventReceiver;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Application\Notification\Ports\MailService;
 
 use function SP\__;

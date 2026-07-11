@@ -24,12 +24,12 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Resource;
 
-use SP\Core\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\Path;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Domain\Common\Enums\ResponseType;
-use SP\Domain\Http\Services\Request as HttpRequest;
+use SP\Infrastructure\Http\Services\Request as HttpRequest;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\File\FileSystem;
 

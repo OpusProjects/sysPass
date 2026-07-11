@@ -24,10 +24,10 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers;
 
-use SP\Core\Bootstrap\Router;
+use SP\Infrastructure\Bootstrap\Router;
 use League\Fractal\Manager;
-use SP\Core\Application;
-use SP\Core\Bootstrap\BootstrapBase;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Bootstrap\BootstrapBase;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;

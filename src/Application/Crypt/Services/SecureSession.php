@@ -28,15 +28,15 @@ namespace SP\Application\Crypt\Services;
 
 use Defuse\Crypto\Key;
 use Exception;
-use SP\Core\Application;
-use SP\Core\Crypt\Vault;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Crypt\Vault;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Crypt\RequestBasedPasswordInterface;
 use SP\Domain\Core\Crypt\UuidCookieInterface;
 use SP\Application\Crypt\Ports\SecureSessionService;
-use SP\Domain\Storage\Ports\FileCacheService;
+use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Infrastructure\File\FileException;
 use SP\Infrastructure\File\FileSystem;
 

@@ -27,10 +27,10 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\Context\Session as SessionContext;
-use SP\Core\Crypt\Session as CryptSession;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Context\ContextException;
+use SP\Infrastructure\Context\Session as SessionContext;
+use SP\Infrastructure\Crypt\Session as CryptSession;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;

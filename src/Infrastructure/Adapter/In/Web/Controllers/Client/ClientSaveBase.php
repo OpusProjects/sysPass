@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Client\Ports\ClientService;
 use SP\Domain\Core\Exceptions\SessionTimeout;

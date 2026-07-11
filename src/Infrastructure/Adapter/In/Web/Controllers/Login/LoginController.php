@@ -29,9 +29,9 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Application\Auth\Ports\LoginService;
 use SP\Application\Auth\Services\Login;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;

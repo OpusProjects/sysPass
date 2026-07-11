@@ -35,10 +35,9 @@ tests/
   phpunit.xml          ← configuration (suites, bootstrap, coverage)
   bootstrap.php        ← test bootstrap (constants, autoloader, env)
   Unit/                ← unit tests — no DB, no external services
-    Core/              ← mirrors src/Core/
     Domain/            ← mirrors src/Domain/
     Application/       ← mirrors src/Application/
-    Infrastructure/    ← mirrors src/Infrastructure/
+    Infrastructure/    ← mirrors src/Infrastructure/ (includes former Core/ tests)
   Integration/         ← database-backed tests — need a seeded MariaDB
     Infrastructure/    ← Api/Web/Cli adapter tests + DatabaseUtil
   Support/             ← shared test infrastructure (not tests)
@@ -206,8 +205,8 @@ with these jobs:
 
 | Job | What it does |
 |---|---|
-| `unit` | `--group unitary --testsuite core`, matrixed over **PHP 8.4 and 8.5** |
-| `integration` | `--group integration`, same PHP matrix, against a **MariaDB 11.8** service container (schema seeded from `schemas/dbstructure.sql` before the run) |
+| `unit` | `--testsuite unit`, matrixed over **PHP 8.4 and 8.5** |
+| `integration` | `--testsuite integration`, same PHP matrix, against a **MariaDB 11.8** service container (schema seeded from `schemas/dbstructure.sql` before the run) |
 | `lint` | The three gates in ["Static analysis"](#static-analysis) above: PHPStan level 6, PHPCS (PSR2), and the vendored-assets drift check |
 | `e2e` | Playwright suite (`tests/e2e/`) against the Dockerised app stack |
 | `build-image` | Builds (and, on push, publishes) the Docker image; depends on `unit` and `integration` passing |

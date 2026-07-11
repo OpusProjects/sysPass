@@ -28,8 +28,8 @@ namespace SP\Tests\Support;
 
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\Constraint\Constraint;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\File\FileSystem;
 
 /**

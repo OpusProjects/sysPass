@@ -22,16 +22,16 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-use SP\Core\Bootstrap\Path;
-use SP\Core\Bootstrap\PathsContext;
-use SP\Core\Context\Session;
-use SP\Core\Crypt\Csrf;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Infrastructure\Context\Session;
+use SP\Infrastructure\Crypt\Csrf;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CsrfHandler;
-use SP\Domain\Html\Services\MinifyCss;
-use SP\Domain\Html\Services\MinifyJs;
+use SP\Infrastructure\Html\Services\MinifyCss;
+use SP\Infrastructure\Html\Services\MinifyJs;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\Bootstrap;

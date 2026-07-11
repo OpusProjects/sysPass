@@ -29,7 +29,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 
 use Exception;
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Upgrade\Ports\UpgradeService;

@@ -24,9 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
-use SP\Core\Application;
-use SP\Core\Events\Event;
-use SP\Core\Language;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Language;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -35,8 +35,8 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Providers\Uri;
+use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;

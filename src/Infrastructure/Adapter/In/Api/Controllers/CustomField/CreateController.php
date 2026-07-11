@@ -2,8 +2,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\CustomField;
 
-use SP\Core\Events\Event;
-use SP\Core\Events\EventMessage;
+use SP\Infrastructure\Events\Event;
+use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;

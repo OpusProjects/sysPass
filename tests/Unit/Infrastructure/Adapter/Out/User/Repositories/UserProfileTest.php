@@ -37,7 +37,7 @@ use SP\Domain\Common\Models\Simple as SimpleModel;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Database\Ports\DatabaseInterface;
+use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\User\Models\UserProfile as UserProfileModel;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
 use SP\Infrastructure\Database\QueryData;

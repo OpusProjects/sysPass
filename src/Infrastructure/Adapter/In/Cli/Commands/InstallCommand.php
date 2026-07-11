@@ -25,13 +25,13 @@
 namespace SP\Infrastructure\Adapter\In\Cli\Commands;
 
 use Psr\Log\LoggerInterface;
-use SP\Core\Language;
+use SP\Infrastructure\Language;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InstallError;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Application\Install\Ports\InstallerService;
-use SP\Core\Util\Util;
+use SP\Infrastructure\Util\Util;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

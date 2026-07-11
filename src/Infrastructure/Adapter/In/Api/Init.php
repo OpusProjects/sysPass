@@ -25,18 +25,18 @@
 namespace SP\Infrastructure\Adapter\In\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Core\Bootstrap\Router;
-use SP\Core\Application;
-use SP\Core\Context\ContextException;
-use SP\Core\HttpModuleBase;
-use SP\Core\Language;
-use SP\Core\ProvidersHelper;
+use SP\Infrastructure\Bootstrap\Router;
+use SP\Infrastructure\Application;
+use SP\Infrastructure\Context\ContextException;
+use SP\Infrastructure\HttpModuleBase;
+use SP\Infrastructure\Language;
+use SP\Infrastructure\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
-use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\File\FileException;
 

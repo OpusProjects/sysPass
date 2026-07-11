@@ -28,7 +28,7 @@ namespace SP\Tests;
 
 use org\bovigo\vfs\vfsStream;
 use RuntimeException;
-use SP\Core\UI\ThemeIcons;
+use SP\Infrastructure\UI\ThemeIcons;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Database\DatabaseConnectionData;
@@ -99,7 +99,7 @@ define('SELF_IP_ADDRESS', getRealIpAddress());
 define('SELF_HOSTNAME', gethostbyaddr(SELF_IP_ADDRESS));
 
 require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
-require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR . 'Functions.php';
+require_once REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Infrastructure' . DIRECTORY_SEPARATOR . 'Functions.php';
 
 logger('APP_PATH=' . APP_PATH);
 logger('TEST_ROOT=' . TEST_ROOT);

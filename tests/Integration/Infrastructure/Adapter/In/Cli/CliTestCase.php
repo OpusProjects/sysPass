@@ -31,11 +31,11 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use SP\Core\Bootstrap\Path;
-use SP\Core\Definitions\CoreDefinitions;
-use SP\Core\Definitions\DomainDefinitions;
+use SP\Infrastructure\Bootstrap\Path;
+use SP\Infrastructure\Definitions\CoreDefinitions;
+use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;
-use SP\Domain\Database\Ports\DbStorageHandler;
+use SP\Infrastructure\Database\Ports\DbStorageHandler;
 use SP\Infrastructure\File\FileSystem;
 use Symfony\Component\Console\Tester\CommandTester;
 

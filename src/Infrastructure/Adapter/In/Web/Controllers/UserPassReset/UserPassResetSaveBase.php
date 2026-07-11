@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserPassReset;
 
 use Exception;
 use JsonException;
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;

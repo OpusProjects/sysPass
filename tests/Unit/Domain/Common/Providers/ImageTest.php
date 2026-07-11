@@ -30,7 +30,7 @@ use GdImage;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
-use SP\Core\Bootstrap\PathsContext;
+use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Domain\Common\Providers\Image;
 use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;

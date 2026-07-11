@@ -27,13 +27,13 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
 use Closure;
-use SP\Core\Bootstrap\Router;
+use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Http\Dtos\JsonMessage;
-use SP\Domain\Http\Ports\RequestService;
-use SP\Domain\Http\Providers\Uri;
-use SP\Domain\Http\Services\JsonResponse;
+use SP\Infrastructure\Http\Dtos\JsonMessage;
+use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Infrastructure\Http\Providers\Uri;
+use SP\Infrastructure\Http\Services\JsonResponse;
 
 use function SP\__u;
 use function SP\processException;

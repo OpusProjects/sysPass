@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
-use SP\Core\Application;
+use SP\Infrastructure\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
