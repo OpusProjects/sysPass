@@ -96,6 +96,15 @@ final class CsvImport extends ImportBase implements ItemsImportService
             $line++;
             $numfields = count($fields);
 
+            // A trailing newline at the end of the file (virtually every editor and
+            // Excel write one) makes SplFileObject::fgetcsv() yield one phantom final
+            // row holding a single null/empty field. It isn't a data row, so skip it
+            // instead of aborting the whole import over it. $line still counts it so
+            // that line numbers reported for any real errors stay accurate.
+            if ($numfields === 1 && ($fields[0] === null || $fields[0] === '')) {
+                continue;
+            }
+
             if ($numfields !== self::NUM_FIELDS) {
                 throw ImportException::error(
                     sprintf(__('Wrong number of fields (%d)'), $numfields),
