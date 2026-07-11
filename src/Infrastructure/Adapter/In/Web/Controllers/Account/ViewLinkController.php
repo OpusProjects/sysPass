@@ -44,7 +44,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Providers\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Image\Ports\ImageService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Util\ErrorUtil;

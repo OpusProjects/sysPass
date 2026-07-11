@@ -34,7 +34,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Infrastructure\Http\Providers\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;

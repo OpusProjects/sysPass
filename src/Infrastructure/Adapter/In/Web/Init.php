@@ -52,7 +52,7 @@ use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Infrastructure\Http\Adapters\Address;
 use SP\Infrastructure\Http\Ports\RequestService;
-use SP\Infrastructure\Http\Providers\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;

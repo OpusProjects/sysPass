@@ -33,7 +33,7 @@ use SP\Application\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Infrastructure\Http\Ports\RequestService;
-use SP\Infrastructure\Http\Providers\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Application\Security\Ports\TrackService;
 

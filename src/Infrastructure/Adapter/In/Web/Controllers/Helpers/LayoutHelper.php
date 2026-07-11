@@ -36,7 +36,7 @@ use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeInterface;
 use SP\Infrastructure\Http\Ports\RequestService;
-use SP\Infrastructure\Http\Providers\Uri;
+use SP\Domain\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
