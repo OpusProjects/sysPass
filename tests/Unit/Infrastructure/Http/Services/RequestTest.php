@@ -31,7 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Method;

@@ -30,7 +30,7 @@ use SP\Domain\User\Services\UserMasterPassStatus;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Common\Services\Service;

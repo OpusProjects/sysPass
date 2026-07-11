@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigEncryption;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;

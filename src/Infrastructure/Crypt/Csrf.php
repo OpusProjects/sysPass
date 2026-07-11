@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Crypt;
 
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;

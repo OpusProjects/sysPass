@@ -35,7 +35,7 @@ use DOMNode;
 use DOMNodeList;
 use DOMXPath;
 use Exception;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;

@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Http\Services;
 
 use Exception;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;

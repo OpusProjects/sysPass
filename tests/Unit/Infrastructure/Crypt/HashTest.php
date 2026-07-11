@@ -27,7 +27,7 @@ namespace SP\Tests\Unit\Infrastructure\Crypt;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\Group;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

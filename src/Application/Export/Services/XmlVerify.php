@@ -33,7 +33,7 @@ use DOMDocument;
 use DOMElement;
 use DOMXPath;
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;

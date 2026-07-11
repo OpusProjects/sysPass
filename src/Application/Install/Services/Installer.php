@@ -34,7 +34,7 @@ use SP\Application\Install\Ports\InstallerService;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Models\Config;
 use SP\Domain\Config\Ports\ConfigDataInterface;

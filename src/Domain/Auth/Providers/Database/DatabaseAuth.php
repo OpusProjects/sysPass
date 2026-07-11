@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers\Database;
 
 use Exception;
-use SP\Infrastructure\Crypt\Hash;
+use SP\Domain\Crypt\Hash;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Application\User\Ports\UserPassService;

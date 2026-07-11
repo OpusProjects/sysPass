@@ -23,7 +23,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Crypt;
+namespace SP\Domain\Crypt;
 
 use function SP\logger;
 
