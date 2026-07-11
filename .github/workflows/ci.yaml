@@ -122,8 +122,8 @@ jobs:
       - name: PHPCS
         run: composer phpcs
 
-      - name: Verify vendored npm assets are current
-        run: npm run vendor && git diff --exit-code public/vendor/
+      - name: Verify vendor JS bundle is current
+        run: npm run build:js && git diff --exit-code public/vendor/js/
 
   e2e:
     name: E2E tests (Playwright)

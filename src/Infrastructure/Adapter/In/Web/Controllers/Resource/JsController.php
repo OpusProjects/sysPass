@@ -40,14 +40,7 @@ final class JsController extends ResourceBase
 {
 
     private const JS_MIN_FILES = [
-        'jquery.min.js',
-        'clipboard.min.js',
-        'selectize.min.js',
-        'jsencrypt.min.js',
-        'spark-md5.min.js',
-        'moment.min.js',
-        'moment-timezone.min.js',
-        'jquery.magnific-popup.min.js',
+        'vendor.bundle.min.js',
     ];
     private const JS_APP_MIN_FILES = [
         'app.min.js',
