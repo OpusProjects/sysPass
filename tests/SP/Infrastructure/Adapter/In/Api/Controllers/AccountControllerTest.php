@@ -165,6 +165,26 @@ class AccountControllerTest extends ApiTestCase
         $this->assertSame('test_123', $view->body->data->password);
     }
 
+    public function testEditPassActionSpecialCharacters(): void
+    {
+        $id = $this->createAccount()->body->itemId;
+
+        $pass = '<p&ss> "quote"& \'apos\' ';
+
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_EDIT_PASS, [
+            'id' => $id,
+            'pass' => $pass,
+            'expireDate' => time() + 86400,
+        ]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame('Password updated', $r->body->message);
+        $this->assertSame($id, $r->body->itemId);
+
+        $view = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, ['id' => $id]);
+        $this->assertSame($pass, $view->body->data->password);
+    }
+
     public function testEditPassActionRequiredParameters(): void
     {
         $id = $this->createAccount()->body->itemId;
