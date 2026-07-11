@@ -33,7 +33,7 @@ use SP\Infrastructure\Context\ContextBase;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Context\Session;
 use SP\Infrastructure\Context\SessionLifecycleHandler;
-use SP\Infrastructure\Crypt\Session as CryptSession;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Infrastructure\HttpModuleBase;
 use SP\Infrastructure\ProvidersHelper;
 use SP\Domain\Common\Providers\Http;
@@ -147,17 +147,18 @@ final class Init extends HttpModuleBase
      * @param ItemPresetService<ItemPresetModel> $itemPresetService
      */
     public function __construct(
-        Application                          $application,
-        ProvidersHelper                      $providersHelper,
-        RequestService                       $request,
-        Router                                $router,
+        Application                            $application,
+        ProvidersHelper                        $providersHelper,
+        RequestService                         $request,
+        Router                                  $router,
         AppLockHandler $appLock,
-        private readonly CsrfHandler         $csrf,
-        private readonly LanguageInterface   $language,
-        private readonly ItemPresetService   $itemPresetService,
-        private readonly DatabaseUtil        $databaseUtil,
-        private readonly UserProfileService  $userProfileService,
-        private readonly UriContextInterface $uriContext,
+        private readonly CsrfHandler           $csrf,
+        private readonly LanguageInterface     $language,
+        private readonly ItemPresetService     $itemPresetService,
+        private readonly DatabaseUtil          $databaseUtil,
+        private readonly UserProfileService    $userProfileService,
+        private readonly UriContextInterface   $uriContext,
+        private readonly ?SessionKeyService    $sessionKeyService = null,
     ) {
         parent::__construct(
             $application,
@@ -337,7 +338,7 @@ final class Init extends HttpModuleBase
                       && $this->context->isLoggedIn()
             ) {
                 try {
-                    CryptSession::reKey($sessionContext);
+                    $this->sessionKeyService?->reKey($sessionContext);
                 } catch (CryptException $e) {
                     logger($e->getMessage());
 

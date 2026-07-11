@@ -29,8 +29,8 @@ namespace SP\Domain\Common\Services;
 use Defuse\Crypto\Exception\CryptoException;
 use SP\Application\Application;
 use SP\Domain\Core\Exceptions\ContextException;
-use SP\Infrastructure\Context\Session as SessionContext;
-use SP\Infrastructure\Crypt\Session as CryptSession;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
@@ -49,12 +49,14 @@ abstract class Service
     protected readonly ConfigFileService        $config;
     protected readonly Context $context;
     protected readonly EventDispatcherInterface $eventDispatcher;
+    protected readonly ?SessionKeyService $sessionKeyService;
 
     public function __construct(Application $application)
     {
         $this->config = $application->getConfig();
         $this->context = $application->getContext();
         $this->eventDispatcher = $application->getEventDispatcher();
+        $this->sessionKeyService = $application->getSessionKeyService();
     }
 
     /**
@@ -64,8 +66,8 @@ abstract class Service
     final protected function getMasterKeyFromContext(): string
     {
         try {
-            if (is_a($this->context, \SP\Domain\Core\Context\SessionContext::class)) {
-                $key = CryptSession::getSessionKey($this->context);
+            if ($this->context instanceof SessionContext && $this->sessionKeyService !== null) {
+                $key = $this->sessionKeyService->getSessionKey($this->context);
             } else {
                 $key = $this->context->getTrasientKey(Context::MASTER_PASSWORD_KEY);
             }
@@ -88,8 +90,8 @@ abstract class Service
     final protected function setMasterKeyInContext(string $masterPass): void
     {
         try {
-            if ($this->context instanceof SessionContext) {
-                CryptSession::saveSessionKey($masterPass, $this->context);
+            if ($this->context instanceof SessionContext && $this->sessionKeyService !== null) {
+                $this->sessionKeyService->saveSessionKey($masterPass, $this->context);
             } else {
                 $this->context->setTrasientKey('_masterpass', $masterPass);
             }

@@ -30,6 +30,7 @@ use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 
 /**
  * The Application helper class. It holds all the needed dependencies for the application
@@ -39,7 +40,8 @@ final readonly class Application
     public function __construct(
         private ConfigFileService        $config,
         private EventDispatcherInterface $eventDispatcher,
-        private Context $context
+        private Context                  $context,
+        private ?SessionKeyService       $sessionKeyService = null
     ) {
     }
 
@@ -56,5 +58,10 @@ final readonly class Application
     public function getContext(): Context|SessionContext
     {
         return $this->context;
+    }
+
+    public function getSessionKeyService(): ?SessionKeyService
+    {
+        return $this->sessionKeyService;
     }
 }

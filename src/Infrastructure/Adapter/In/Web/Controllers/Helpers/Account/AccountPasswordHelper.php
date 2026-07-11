@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account;
 
 use SP\Application\Application;
-use SP\Infrastructure\Crypt\Session as CryptSession;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Domain\Account\Adapters\AccountPassItemWithIdAndName;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
@@ -56,7 +56,8 @@ final class AccountPasswordHelper extends HelperBase
         private readonly AclInterface      $acl,
         private readonly ImageService      $imageUtil,
         private readonly MasterPassService $masterPassService,
-        private readonly CryptInterface    $crypt
+        private readonly CryptInterface    $crypt,
+        private readonly SessionKeyService $sessionKeyService
     ) {
         parent::__construct($application, $template, $request);
     }
@@ -141,7 +142,7 @@ final class AccountPasswordHelper extends HelperBase
             $this->crypt->decrypt(
                 $accountPassItemWithIdAndName->getPass() ?? '',
                 $accountPassItemWithIdAndName->getKey() ?? '',
-                CryptSession::getSessionKey($this->context)
+                $this->sessionKeyService->getSessionKey($this->context)
             )
         );
     }

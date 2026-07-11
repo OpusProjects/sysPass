@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Crypt;
 
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Domain\Crypt\Vault;
 use SP\Infrastructure\Context\SessionLifecycleHandler;
 use SP\Domain\Core\Context\SessionContext;
@@ -39,22 +40,20 @@ use function SP\logger;
  *
  * @package SP\Infrastructure\Crypt
  */
-class Session
+class Session implements SessionKeyService
 {
     /**
-     * Returns the session master key
-     *
      * @throws CryptException
      */
-    public static function getSessionKey(SessionContext $sessionContext): string
+    public function getSessionKey(SessionContext $sessionContext): string
     {
         $vault = $sessionContext->getVault()
             ?? throw new CryptException('Session vault not initialized');
 
-        return $vault->getData(self::getKey($sessionContext));
+        return $vault->getData(self::buildKey($sessionContext));
     }
 
-    private static function getKey(SessionContext $sessionContext): string
+    private static function buildKey(SessionContext $sessionContext): string
     {
         return self::buildSeed(session_id(), (string)$sessionContext->getSidStartTime());
     }
@@ -65,34 +64,23 @@ class Session
     }
 
     /**
-     * Save the master key in the session
-     *
      * @throws CryptException
      */
-    public static function saveSessionKey(string $data, SessionContext $sessionContext): void
+    public function saveSessionKey(string $data, SessionContext $sessionContext): void
     {
-        $sessionContext->setVault(Vault::factory(new Crypt())->saveData($data, self::getKey($sessionContext)));
+        $sessionContext->setVault(Vault::factory(new Crypt())->saveData($data, self::buildKey($sessionContext)));
     }
 
     /**
-     * Regenerate the session key
-     *
-     * Uses session_regenerate_id(true) rather than a commit+restart cycle so
-     * that $_SESSION (and the context reference that aliases it) stays intact
-     * throughout the operation.  The vault is then re-encrypted under the new
-     * seed (new session ID + updated sidStartTime).
-     *
      * @throws CryptException
      * @throws SPException
      */
-    public static function reKey(SessionContext $sessionContext): void
+    public function reKey(SessionContext $sessionContext): void
     {
         logger(__METHOD__);
 
-        $oldSeed = self::getKey($sessionContext);
+        $oldSeed = self::buildKey($sessionContext);
 
-        // Ensure a session is running, then regenerate its ID while keeping
-        // the existing $_SESSION data (and therefore the vault reference) alive.
         SessionLifecycleHandler::start();
         session_regenerate_id(true);
 
