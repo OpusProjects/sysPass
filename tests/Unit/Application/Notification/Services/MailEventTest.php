@@ -35,7 +35,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Core\Messages\MailMessage;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Application\Config\Ports\ConfigFileService;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Application\Notification\Ports\MailService;
 use SP\Application\Notification\Services\MailEvent;
 use SP\Tests\Support\Generators\ConfigDataGenerator;

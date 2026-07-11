@@ -28,7 +28,7 @@ namespace SP\Infrastructure\Html\Services;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Html\Ports\MinifyService;
 use SP\Infrastructure\Http\Header;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\Core\Exceptions\FileException;
 use SplObjectStorage;

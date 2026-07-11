@@ -29,7 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Infrastructure\Crypt\RequestBasedPassword;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

@@ -38,7 +38,7 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Application\Crypt\Ports\TemporaryMasterPassService;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Application\Security\Ports\TrackService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Application\User\Ports\UserMasterPassService;

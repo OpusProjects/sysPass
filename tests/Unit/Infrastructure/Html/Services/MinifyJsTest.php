@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Html\Services;
 
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;

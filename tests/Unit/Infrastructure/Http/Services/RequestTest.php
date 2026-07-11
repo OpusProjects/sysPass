@@ -34,7 +34,7 @@ use RuntimeException;
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Method;
+use SP\Domain\Http\Method;
 use SP\Infrastructure\Http\Services\Request;
 use SP\Tests\Support\UnitaryTestCase;
 use Symfony\Component\HttpFoundation\FileBag;

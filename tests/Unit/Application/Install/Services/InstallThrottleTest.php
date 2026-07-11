@@ -32,7 +32,7 @@ use PHPUnit\Framework\TestCase;
 use SP\Application\Install\Services\InstallThrottle;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Bootstrap\PathsContext;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class InstallThrottleTest

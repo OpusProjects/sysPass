@@ -41,7 +41,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Domain\Install\Adapters\DatabaseHost;
 use SP\Domain\Install\Adapters\InstallData;
 use SP\Domain\Install\Services\DatabaseSetupService;

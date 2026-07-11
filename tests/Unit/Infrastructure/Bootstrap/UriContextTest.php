@@ -28,7 +28,7 @@ namespace SP\Tests\Unit\Infrastructure\Bootstrap;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Infrastructure\Bootstrap\UriContext;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

@@ -23,10 +23,10 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Http\Ports;
+namespace SP\Domain\Http\Ports;
 
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Http\Method;
+use SP\Domain\Http\Method;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

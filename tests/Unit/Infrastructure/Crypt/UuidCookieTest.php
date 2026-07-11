@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Crypt\Hash;
 use SP\Infrastructure\Crypt\UuidCookie;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**

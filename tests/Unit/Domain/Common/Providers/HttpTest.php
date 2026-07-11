@@ -30,7 +30,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Common\Providers\Http;
 use SP\Domain\Config\Ports\ConfigDataInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class HttpUtilTest

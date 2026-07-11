@@ -36,7 +36,7 @@ use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\LanguageInterface;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Log\Providers\LogHandler;
 use SP\Tests\Support\Stubs\ModuleBaseStub;
 use SP\Tests\Support\UnitaryTestCase;

@@ -28,7 +28,7 @@ namespace SP\Domain\Auth\Providers\Ldap;
 
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 use function SP\__u;
 

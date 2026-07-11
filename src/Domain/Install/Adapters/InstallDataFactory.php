@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Install\Adapters;
 
-use SP\Infrastructure\Http\Ports\RequestService;
+use SP\Domain\Http\Ports\RequestService;
 
 /**
  * Class InstallDataAdapter
