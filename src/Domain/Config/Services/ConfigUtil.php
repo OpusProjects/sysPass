@@ -29,7 +29,7 @@ namespace SP\Domain\Config\Services;
 use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;

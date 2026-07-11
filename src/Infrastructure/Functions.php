@@ -26,7 +26,7 @@ namespace SP;
 
 use Exception;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use Throwable;
 
 use const APP_PATH;

@@ -46,7 +46,7 @@ use SP\Infrastructure\Adapter\Out\Common\Repositories\Query;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__u;
 

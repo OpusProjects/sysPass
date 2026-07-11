@@ -36,7 +36,7 @@ use SP\Infrastructure\Image\Ports\ImageService;
 use SP\Application\Import\Ports\ImportHelperInterface;
 use SP\Application\Import\Services\ImportHelper;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\SimpleRepository;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function DI\autowire;
 use function DI\factory;

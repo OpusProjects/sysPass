@@ -28,7 +28,7 @@ namespace SP\Infrastructure\Adapter\In\Web\View;
 
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\UI\ThemeInterface;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__;
 

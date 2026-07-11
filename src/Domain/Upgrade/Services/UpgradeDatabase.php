@@ -37,7 +37,7 @@ use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__;
 use function SP\__u;

@@ -133,7 +133,7 @@ use SP\Infrastructure\Database\MysqlFileParser;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileCache;
 use SP\Infrastructure\File\FileHandler;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\File\XmlFileStorage;
 use SP\Infrastructure\File\YamlFileStorage;
 use SP\Infrastructure\Adapter\In\Web\View\OutputHandler;

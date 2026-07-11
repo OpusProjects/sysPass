@@ -52,7 +52,7 @@ use SP\Application\Export\Ports\XmlExportService;
 use SP\Application\Export\Ports\XmlTagExportService;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__u;
 

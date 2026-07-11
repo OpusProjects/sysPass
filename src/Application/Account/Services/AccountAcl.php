@@ -45,7 +45,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\processException;
 

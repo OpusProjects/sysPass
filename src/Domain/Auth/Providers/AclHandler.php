@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserProfileService;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\__u;
 use function SP\logger;

@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Header;
 use SP\Infrastructure\Http\Method;
 use SP\Infrastructure\Http\Ports\RequestService;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Util\Util;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\InputBag;

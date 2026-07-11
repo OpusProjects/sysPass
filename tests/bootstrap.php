@@ -34,7 +34,7 @@ use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\Database\PDOWrapper;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 
 use function SP\logger;
 

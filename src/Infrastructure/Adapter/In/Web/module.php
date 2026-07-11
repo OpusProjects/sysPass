@@ -33,7 +33,7 @@ use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Infrastructure\Html\Services\MinifyCss;
 use SP\Infrastructure\Html\Services\MinifyJs;
 use SP\Infrastructure\File\FileCache;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\Bootstrap;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Account\AccountSearchData;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Resource\CssController;

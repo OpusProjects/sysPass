@@ -38,7 +38,7 @@ use SP\Domain\Core\UI\ThemeInterface;
 use SP\Infrastructure\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Providers\Uri;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
-use SP\Infrastructure\File\FileSystem;
+use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;
