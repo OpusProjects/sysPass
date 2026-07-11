@@ -54,7 +54,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\PathsContext;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Context\Stateless;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;

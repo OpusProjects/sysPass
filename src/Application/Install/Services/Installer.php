@@ -50,7 +50,7 @@ use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
 use SP\Infrastructure\Database\DatabaseConnectionData;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 use Throwable;
 
 use function SP\__u;

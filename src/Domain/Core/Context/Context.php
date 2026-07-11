@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Context;
 
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;

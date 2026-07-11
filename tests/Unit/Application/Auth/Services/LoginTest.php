@@ -32,7 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Application\Auth\Ports\LoginAuthHandlerService;

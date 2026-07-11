@@ -33,7 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Log\LoggerInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Context\ContextException;
+use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Language;
 use SP\Infrastructure\ProvidersHelper;
 use SP\Domain\Common\Providers\Version;

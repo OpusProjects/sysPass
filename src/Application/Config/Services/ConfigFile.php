@@ -41,7 +41,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ConfigException;
 use SP\Infrastructure\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\XmlFileStorageService;
-use SP\Infrastructure\File\FileException;
+use SP\Domain\Core\Exceptions\FileException;
 
 use function SP\logger;
 use function SP\processException;
