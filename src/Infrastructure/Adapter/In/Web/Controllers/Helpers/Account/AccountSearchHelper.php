@@ -50,7 +50,7 @@ use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridSort;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridHeaderSort;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridPager;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\HelperBase;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;

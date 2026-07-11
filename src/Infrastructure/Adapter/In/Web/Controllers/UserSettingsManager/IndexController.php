@@ -38,7 +38,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\TabsHelper;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ExtensibleTabControllerInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use SP\Infrastructure\Adapter\In\Web\View\Components\DataTab;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;

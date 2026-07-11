@@ -65,7 +65,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Services\UpdatedMasterPassException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 /**

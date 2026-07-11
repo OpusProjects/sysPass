@@ -35,7 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Http\Services\JsonResponse;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 
 /**
  * Class ClientsController

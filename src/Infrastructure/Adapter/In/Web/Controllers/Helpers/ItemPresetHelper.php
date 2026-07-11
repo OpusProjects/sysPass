@@ -39,7 +39,7 @@ use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 
 use function SP\__;

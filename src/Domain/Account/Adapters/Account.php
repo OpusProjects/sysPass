@@ -43,7 +43,7 @@ use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 
 /**
  * Class Account
