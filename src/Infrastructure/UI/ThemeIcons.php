@@ -31,7 +31,7 @@ use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Core\UI\ThemeIconsInterface;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\UI\FontIcon;
 use SP\Domain\Core\UI\IconInterface;
 use SP\Domain\Core\Exceptions\FileException;

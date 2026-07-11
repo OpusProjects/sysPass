@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Log\Providers;
 
-use SP\Infrastructure\Log\Ports\FileHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 
 /**
  * Class LogHandler

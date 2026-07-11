@@ -23,28 +23,30 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Storage\Ports;
+namespace SP\Domain\Image\Ports;
 
-use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\InvalidImageException;
 
 /**
- * Interface XmlFileStorageService
+ * Interface ImageService
  */
-interface XmlFileStorageService
+interface ImageService
 {
     /**
-     * @return mixed[]
-     * @throws FileException
+     * Build a thumbnail form an image
+     *
+     * @param string $image A raw image
+     * @return string A base64 encode image string
+     * @throws InvalidImageException
      */
-    public function load(string $node = 'root'): array;
+    public function createThumbnail(string $image): string;
 
     /**
-     * @param mixed[]|object $data Data to be saved
-     * @param string $node
+     * Convert a test into an image
      *
-     * @throws FileException
+     * @param string $text
+     *
+     * @return false|string
      */
-    public function save(array|object $data, string $node = 'root'): XmlFileStorageService;
-
-    public function getFileTime(): int;
+    public function convertText(string $text): bool|string;
 }

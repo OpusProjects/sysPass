@@ -36,7 +36,7 @@ use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Models\Action;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;

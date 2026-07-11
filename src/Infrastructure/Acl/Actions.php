@@ -29,7 +29,7 @@ namespace SP\Infrastructure\Acl;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Models\Action;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
 

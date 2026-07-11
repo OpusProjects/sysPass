@@ -36,7 +36,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
-use SP\Infrastructure\Log\Ports\FileHandlerProvider;
+use SP\Domain\Log\Ports\FileHandlerProvider;
 use SP\Domain\Upgrade\Ports\UpgradeHandlerService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeException;

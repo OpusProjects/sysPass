@@ -23,17 +23,11 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database\Ports;
+namespace SP\Domain\Log\Ports;
 
 /**
- * Interface DatabaseFileInterface
+ * ProviderInterface
  */
-interface DatabaseFileInterface
+interface ProviderInterface
 {
-    /**
-     * Parses a database script file and returns an array of lines parsed
-     *
-     * @return iterable<string>
-     */
-    public function parse(string $delimiter = ';'): iterable;
 }

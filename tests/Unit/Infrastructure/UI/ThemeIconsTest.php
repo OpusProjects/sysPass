@@ -32,7 +32,7 @@ use SP\Infrastructure\UI\ThemeIcons;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\UI\ThemeContextInterface;
-use SP\Infrastructure\Storage\Ports\FileCacheService;
+use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Core\UI\FontIcon;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\UnitaryTestCase;
