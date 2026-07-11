@@ -133,12 +133,12 @@ class AccountHistory extends Model
         return $this->notes;
     }
 
-    public function getDateAdd(): ?int
+    public function getDateAdd(): ?string
     {
         return $this->dateAdd;
     }
 
-    public function getDateEdit(): ?int
+    public function getDateEdit(): ?string
     {
         return $this->dateEdit;
     }
