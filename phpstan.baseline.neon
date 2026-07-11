@@ -79,12 +79,6 @@ parameters:
 			path: src/Application/Auth/Services/LdapCheck.php
 
 		-
-			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Infrastructure\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Auth/Services/LdapCheck.php
-
-		-
 			message: '#^Method SP\\Application\\Category\\Services\\Category\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\Category\\Models\\Category\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\Category\\Models\\Category\>\.$#'
 			identifier: return.type
 			count: 1
@@ -152,12 +146,6 @@ parameters:
 			count: 1
 			path: src/Application/Export/Services/XmlVerify.php
 
-
-		-
-			message: '#^Parameter \#1 \$eventDispatcher of static method SP\\Domain\\Auth\\Providers\\Ldap\\LdapBase\:\:factory\(\) expects SP\\Infrastructure\\Events\\EventDispatcher, SP\\Domain\\Core\\Events\\EventDispatcherInterface given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Application/Import/Services/LdapImport.php
 
 		-
 			message: '#^Method SP\\Application\\ItemPreset\\Services\\ItemPreset\:\:search\(\) should return SP\\Domain\\Common\\Dtos\\QueryResult\<T of SP\\Domain\\ItemPreset\\Models\\ItemPreset\> but returns SP\\Domain\\Common\\Dtos\\QueryResult\<SP\\Domain\\ItemPreset\\Models\\ItemPreset\>\.$#'
