@@ -3,7 +3,7 @@
 sysPass uses **PHPUnit 13** with two test suites: a fast unit suite that needs no
 external services, and an integration suite backed by a real MariaDB database.
 
-Both suites pass: **2163 unit tests** and **251 integration tests**.
+Both suites pass: **2239 unit tests** and **253 integration tests**.
 
 ## Quick start (Docker)
 
@@ -15,58 +15,58 @@ docker compose exec app composer install
 
 # Unit suite — no DB required
 docker compose exec -w /var/www/html app \
-  vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
+  vendor/bin/phpunit -c tests/phpunit.xml --testsuite unit --no-coverage
 
 # Integration suite — seed schema, then run
 docker compose exec -T db mariadb -uroot -psyspass syspass < schemas/dbstructure.sql
 docker compose exec \
   -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PASS=syspass -e DB_PORT=3306 \
   -w /var/www/html app \
-  vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
+  vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
 ## Test layout
 
-Tests mirror the `src/` hexagonal structure:
+Tests are physically split by kind; `Unit/` and `Integration/` each mirror the
+`src/` hexagonal structure (PSR-4: `SP\Tests\` → `tests/`):
 
 ```
 tests/
   phpunit.xml          ← configuration (suites, bootstrap, coverage)
-  SP/
-    bootstrap.php      ← test bootstrap (constants, autoloader, env)
+  bootstrap.php        ← test bootstrap (constants, autoloader, env)
+  Unit/                ← unit tests — no DB, no external services
     Core/              ← mirrors src/Core/
     Domain/            ← mirrors src/Domain/
     Application/       ← mirrors src/Application/
     Infrastructure/    ← mirrors src/Infrastructure/
+  Integration/         ← database-backed tests — need a seeded MariaDB
+    Infrastructure/    ← Api/Web/Cli adapter tests + DatabaseUtil
+  Support/             ← shared test infrastructure (not tests)
+    *.php              ← base test cases (UnitaryTestCase, IntegrationTestCase, …)
+    Generators/        ← faker-backed model data generators
+    Stubs/             ← hand-written stubs
   res/                 ← test fixtures (config, datasets, images, imports)
 ```
 
-The `core` testsuite covers `Core/`, `Domain/`, `Application/`, and `Infrastructure/`
-(excluding the Web/Cli adapter tests — this includes the end-to-end REST API tests,
-real container + real DB via `ApiTestCase`, driving the real Bootstrap dispatch with
-crypto-backed auth tokens). The `modules` testsuite covers the two adapter test
-directories `core` leaves out: the Web controller tests (mocked container via
-`IntegrationTestCase`) and the end-to-end CLI command tests (real DI container + real
-database via `CliTestCase`, per-test config and runtime dirs under
-`/tmp/syspass-cli-tests`).
+The `unit` testsuite is everything under `Unit/`. The `integration` testsuite is
+everything under `Integration/`: the end-to-end REST API tests (real container +
+real DB via `ApiTestCase`, driving the real Bootstrap dispatch with crypto-backed
+auth tokens), the Web controller tests (mocked container via `IntegrationTestCase`),
+and the end-to-end CLI command tests (real DI container + real database via
+`CliTestCase`, per-test config and runtime dirs under `/tmp/syspass-cli-tests`).
+Base test cases used by a single suite (`ApiTestCase`, `CliTestCase`) live next to
+their consumers; everything shared lives in `Support/`.
 
-## Test groups
-
-PHPUnit groups control what runs:
-
-| Group | What it covers |
-|---|---|
-| `unitary` | Pure unit tests — no DB, no filesystem side-effects |
-| `integration` | Database-backed tests — need a seeded MariaDB |
-
-Combine group and suite flags to run exactly what you need:
+Suite membership is by directory — the `#[Group('unitary')]`/`#[Group('integration')]`
+attributes remain on the classes for ad-hoc `--group` filtering but no longer decide
+what CI runs.
 
 ```bash
-# Only unit tests in the core suite (fastest)
-vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
+# Only unit tests (fastest)
+vendor/bin/phpunit -c tests/phpunit.xml --testsuite unit --no-coverage
 
 # Only integration tests
-vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
+vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 
 # Everything
 vendor/bin/phpunit -c tests/phpunit.xml --no-coverage
@@ -180,7 +180,8 @@ re-seed the schema before running them again.
 
 ## Writing new tests
 
-- Place tests in `tests/SP/` mirroring the `src/` path of the class under test.
+- Place unit tests in `tests/Unit/` and database-backed tests in `tests/Integration/`,
+  mirroring the `src/` path of the class under test; shared helpers go in `tests/Support/`.
 - Tag unit tests with `#[Group('unitary')]` and integration tests with `#[Group('integration')]`.
 - Use PHPUnit attributes (`#[Test]`, `#[DataProvider]`, `#[Group]`) — the codebase
   uses no legacy `@test`/`@dataProvider` annotations.
