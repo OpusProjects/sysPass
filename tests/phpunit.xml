@@ -61,6 +61,6 @@
         <!-- Keep PHP from echoing notices/deprecations (e.g. PHP 8.4 implicitly-nullable
              deprecations from test-only vendor deps) to stdout: any such output marks
              headers as sent, which breaks tests that exercise setcookie()/session_start(). -->
-        <ini name="display_errors" value="0"/>
+        <ini name="display_errors" value="stderr"/>
     </php>
 </phpunit>

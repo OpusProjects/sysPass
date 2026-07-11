@@ -77,6 +77,7 @@ use SP\Domain\Auth\Providers\Ldap\LdapConnection;
 use SP\Domain\Auth\Providers\Ldap\LdapParams;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Services\ConfigFile;
 use SP\Domain\Core\Acl\AclInterface;
@@ -359,6 +360,8 @@ final class CoreDefinitions
                 ->constructor('mysql'),
             CryptInterface::class => create(Crypt::class),
             SessionKeyService::class => autowire(CryptSession::class),
+            Application::class => autowire(Application::class)
+                ->constructorParameter('sessionKeyService', get(SessionKeyService::class)),
             CryptPKIHandler::class => factory(static function (PathsContext $pathsContext) {
                 $publicKeyPath = FileSystem::buildPath(
                     $pathsContext[Path::CONFIG],
