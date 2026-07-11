@@ -38,7 +38,6 @@ use SP\Application\Import\Ports\ImportStrategyService;
 use SP\Application\Import\Ports\ItemsImportService;
 use SP\Application\Import\Ports\XmlFileService;
 use SP\Domain\Core\Exceptions\FileException;
-use SP\Infrastructure\Util\Util;
 
 use function SP\__;
 use function SP\__u;
@@ -116,7 +115,7 @@ final class ImportStrategy extends Service implements ImportStrategyService
 
             return $fileType;
         } catch (FileException $e) {
-            logger(sprintf('Max. upload size: %s', Util::getMaxUpload()));
+            logger(sprintf('Max. upload size: %s', ini_get('upload_max_filesize')));
 
             throw FileException::error(
                 __u('Internal error while reading the file'),
