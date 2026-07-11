@@ -544,6 +544,27 @@ class ApiTest extends UnitaryTestCase
         $this->checkParam([$this->apiService, 'getParamArray'], ...func_get_args());
     }
 
+    /**
+     * A JSON-RPC client sending a scalar where an array is expected (e.g. "tagsId": 5
+     * instead of [5]) must be rejected as a client error, not blow up with a TypeError
+     * when the scalar reaches Filter::getArray().
+     */
+    public function testGetParamArrayWithScalarValue()
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest
+            ->expects(self::once())
+            ->method('get')
+            ->with($param)
+            ->willReturn(self::$faker->randomNumber());
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Wrong parameters');
+
+        $this->apiService->getParamArray($param);
+    }
+
     #[DataProvider('getParamRawDataProvider')]
     public function testGetParamRaw(mixed $value, mixed $expected, bool $required, bool $present)
     {
