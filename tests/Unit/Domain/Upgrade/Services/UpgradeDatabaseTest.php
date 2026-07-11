@@ -35,6 +35,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Domain\Upgrade\Services\UpgradeException;
+use SP\Infrastructure\Database\MysqlFileParserFactory;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
@@ -118,7 +119,7 @@ class UpgradeDatabaseTest extends UnitaryTestCase
 
         $this->database = $this->createMock(DatabaseInterface::class);
         $this->upgradeDatabase = new UpgradeDatabase(
-            $this->application, $this->database, $this->pathsContext[Path::SQL]
+            $this->application, $this->database, new MysqlFileParserFactory(), $this->pathsContext[Path::SQL]
         );
     }
 }
