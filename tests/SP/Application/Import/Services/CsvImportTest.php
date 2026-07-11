@@ -143,6 +143,54 @@ class CsvImportTest extends UnitaryTestCase
      * @throws ImportException
      * @throws FileException
      */
+    public function testDoImportWithTrailingBlankLine()
+    {
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
+        $accounts = static function () {
+            yield ['Account_name', 'Client_name_1', 'Category_name_1', 'a_url', 'a_login', 'a_password', 'a_note'];
+            yield ['Account_name', 'Client_name_2', 'Category_name_2', 'a_url', 'a_login', 'a_password', 'a_note'];
+            // What SplFileObject::fgetcsv() yields for the trailing newline that
+            // virtually every editor/Excel export leaves at the end of the file.
+            yield [null];
+        };
+
+        $this->fileHandler
+            ->expects(self::once())
+            ->method('readFromCsv')
+            ->with($params->getDelimiter())
+            ->willReturnCallback($accounts);
+
+        $this->clientService
+            ->expects(self::exactly(2))
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->clientService
+            ->expects(self::exactly(2))
+            ->method('create')
+            ->willReturn(100);
+
+        $this->categoryService
+            ->expects(self::exactly(2))
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->categoryService
+            ->expects(self::exactly(2))
+            ->method('create')
+            ->willReturn(200);
+
+        $this->accountService
+            ->expects(self::exactly(2))
+            ->method('create');
+
+        $this->csvImport->doImport($params);
+    }
+
+    /**
+     * @throws ImportException
+     * @throws FileException
+     */
     public function testDoImportWithWrongFields()
     {
         $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
