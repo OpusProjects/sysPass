@@ -31,7 +31,6 @@ use SP\Domain\Core\Exceptions\InvalidImageException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\PhpExtensionCheckerService;
 use SP\Domain\Image\Ports\ImageService;
-use SP\Infrastructure\File\FileHandler;
 
 use function SP\__u;
 use function SP\processException;
@@ -87,11 +86,17 @@ final class Image implements ImageService
         if (($tmpFile = tempnam($this->tempPath, self::TMP_PREFFIX)) !== false
             && imagepng($gdImage, $tmpFile)
         ) {
-            $file = new FileHandler($tmpFile);
-            $out = base64_encode($file->readToString());
-            $file->delete();
+            try {
+                $contents = file_get_contents($tmpFile);
 
-            return $out;
+                if ($contents === false) {
+                    throw SPException::error(__u('Unable to create image'));
+                }
+
+                return base64_encode($contents);
+            } finally {
+                @unlink($tmpFile);
+            }
         }
 
         throw SPException::error(__u('Unable to create image'));
