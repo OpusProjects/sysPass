@@ -32,7 +32,6 @@ use SP\Domain\Http\Code;
 use Exception;
 use SP\Application\Application;
 use SP\Domain\Core\Exceptions\ContextException;
-use SP\Infrastructure\Crypt\Crypt;
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Crypt\Vault;
 use SP\Application\Api\Ports\ApiRequestService;
@@ -288,7 +287,7 @@ final class Api extends Service implements ApiService
             }
 
             /** @var VaultInterface $vault */
-            $vault = unserialize($vaultData, ['allowed_classes' => [Vault::class, Crypt::class]]);
+            $vault = unserialize($vaultData, ['allowed_classes' => [Vault::class, \SP\Infrastructure\Crypt\Crypt::class]]);
 
             $key = $tokenPass . $this->getParam('authToken');
 
