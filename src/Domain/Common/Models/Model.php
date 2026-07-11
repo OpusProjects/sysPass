@@ -187,15 +187,32 @@ abstract class Model implements JsonSerializable, ArrayAccess
     }
 
     /**
-     * Get non-class properties
+     * Get a property's value, either a declared (possibly protected) class property
+     * or a dynamically assigned outer/non-class property
      *
      * @param string $name
      *
-     * @return void
+     * @return mixed
      */
     public function __get(string $name)
     {
+        if (array_key_exists($name, $this->properties)) {
+            return $this->properties[$name];
+        }
+
         return $this->{$name} ?? null;
+    }
+
+    /**
+     * Whether a property (class or outer) is set to a non-null value
+     *
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset(string $name): bool
+    {
+        return $this->__get($name) !== null;
     }
 
     /**
