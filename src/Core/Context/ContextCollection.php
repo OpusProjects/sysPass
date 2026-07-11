@@ -31,6 +31,7 @@ use SP\Core\DataCollection;
  * Class ContextCollection
  *
  * @package SP\Core\Context
+ * @extends DataCollection<string, mixed>
  */
 final class ContextCollection extends DataCollection
 {

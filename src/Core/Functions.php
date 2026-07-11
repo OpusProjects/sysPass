@@ -245,6 +245,7 @@ function getElapsedTime(float $from): float
 /**
  * Initialize module
  *
+ * @return array<string, mixed>
  * @throws SPException
  */
 function initModule(string $module): array

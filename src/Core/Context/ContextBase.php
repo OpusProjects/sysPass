@@ -87,6 +87,7 @@ abstract class ContextBase implements Context
     }
 
     /**
+     * @param array<string, mixed> $context
      * @throws ContextException
      */
     final protected function setContextReference(array &$context): void

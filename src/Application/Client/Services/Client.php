@@ -30,7 +30,7 @@ use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;
 use SP\Application\Client\Ports\ClientService;
-use SP\Domain\Common\Models\Simple;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -182,7 +182,7 @@ final class Client extends Service implements ClientService
     /**
      * Returns all clients visible for a given user
      *
-     * @return Simple[]
+     * @return Item[]
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException

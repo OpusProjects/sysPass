@@ -101,13 +101,7 @@ final readonly class Theme implements ThemeInterface
     /**
      * Get the theme information from the info file
      *
-     * @return array (
-     *          'name' => string
-     *          'creator' => string
-     *          'version' => string
-     *          'js' => array
-     *          'css' => array
-     *  )
+     * @return array{name?: string, creator?: string, version?: string, js?: string[], css?: string[]}
      */
     public function getInfo(): array
     {

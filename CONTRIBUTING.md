@@ -35,6 +35,9 @@ git push -u origin <type>/<short-name>
 - **PHP 8.4+** with `declare(strict_types=1)`.
 - Follow the existing hexagonal structure — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
   Domain code must not depend on Infrastructure.
+- **PSR2** code style, enforced by PHPCS (`composer phpcs`); **PHPStan level 6**
+  static analysis, shrink-only against `phpstan.baseline.neon` — see
+  ["Static analysis"](docs/TESTING.md#static-analysis) in `docs/TESTING.md`.
 - No comments unless the *why* is non-obvious.
 - No feature flags or backwards-compatibility shims — just change the code.
 - `config/config.xml` contains DB credentials and crypto keys — never commit it.
@@ -59,10 +62,21 @@ docker compose exec \
 npm ci
 npx playwright install chromium
 npm run test:e2e
+
+# Lint (also required before merging — see docs/TESTING.md#static-analysis)
+docker compose exec -w /var/www/html app vendor/bin/phpstan clear-result-cache
+docker compose exec -w /var/www/html app vendor/bin/phpstan analyse --level 6 src --no-progress
+docker compose exec -w /var/www/html app composer phpcs
+npm run vendor && git diff --exit-code public/vendor/
 ```
 
-All test suites must pass before merging. See [`docs/TESTING.md`](docs/TESTING.md) for
-details on test layout, groups, and writing new tests.
+All test suites must pass before merging. CI's `lint` job runs three gates:
+**PHPStan** (level 6, shrink-only against `phpstan.baseline.neon`), **PHPCS**
+(PSR2), and the **vendored-assets drift check**. See
+[`docs/TESTING.md`](docs/TESTING.md) for details on test layout, groups, and
+writing new tests, and its ["What CI runs"](docs/TESTING.md#what-ci-runs)
+section for the full CI job map (unit/integration matrix, lint gates, e2e,
+image build).
 
 ## Commit messages
 

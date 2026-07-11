@@ -37,7 +37,7 @@ readonly class Event
     /**
      * @param string $name The event name
      * @param object $source The emitter of the event
-     * @param EventMessage|Closure|null $eventMessage An {@link EventMessage} or a {@link Closure} that returns an {@link EventMessage}
+     * @param EventMessage<mixed>|Closure|null $eventMessage An {@link EventMessage} or a {@link Closure} that returns an {@link EventMessage}
      */
     public function __construct(
         private string                    $name,
@@ -70,6 +70,9 @@ readonly class Event
         return $this->source;
     }
 
+    /**
+     * @return EventMessage<mixed>|null
+     */
     public function getEventMessage(): ?EventMessage
     {
         if ($this->eventMessage instanceof Closure) {

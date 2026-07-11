@@ -2,10 +2,13 @@
 
 ## Requirements
 
-- **PHP 8.4+** with extensions: `pdo_mysql`, `gd`, `gettext`, `mbstring`, `intl`,
-  `dom` / `xml`, `json`, `curl`, `fileinfo`, `zlib`, and `ldap` (optional — only for
-  LDAP / Active Directory authentication).
-- **MariaDB 10.1+** (or MySQL 5.7+).
+- **PHP 8.4+** with extensions: `pdo_mysql`, `gettext`, `mbstring`, `openssl`,
+  `dom` / `xml`, `json`, `fileinfo`, and `ldap` (optional — only for LDAP / Active
+  Directory authentication). `gd`, `curl`, and `zlib` are also optional (some
+  features degrade without them, but the app runs). These are the extensions
+  `PhpExtensionChecker` verifies at runtime; see `src/Core/PhpExtensionChecker.php`.
+- **MariaDB 10.1+** (11.8 is the version tested in CI and the Docker dev stack;
+  or MySQL 5.7+).
 - A **web server** (Apache or Nginx); SSL strongly recommended for production.
 - **[Composer](https://getcomposer.org/)** to install the PHP dependencies.
 
@@ -43,21 +46,23 @@ the web-root path, and the web-server user differ.
 
    - **Debian / Ubuntu:**
      ```bash
-     apt install apache2 libapache2-mod-php php php-mysql php-gd php-curl \
-       php-xml php-mbstring php-intl php-ldap mariadb-server composer
+     apt install apache2 libapache2-mod-php php php-mysql php-xml php-mbstring \
+       php-gd php-curl php-ldap mariadb-server composer
      ```
    - **RHEL / CentOS / Rocky / AlmaLinux:**
      ```bash
-     dnf install httpd php php-mysqlnd php-gd php-curl php-xml \
-       php-mbstring php-intl php-ldap mariadb-server composer
+     dnf install httpd php php-mysqlnd php-xml php-mbstring \
+       php-gd php-curl php-ldap mariadb-server composer
      ```
    - **Arch Linux:**
      ```bash
-     pacman -S apache php php-gd php-intl php-ldap mariadb composer
+     pacman -S apache php php-gd php-ldap mariadb composer
      ```
 
-   The `gettext` and `json` extensions are bundled with the core PHP packages on
-   these distributions — no separate package exists (or is needed) for them.
+   The `gettext`, `json`, and `openssl` extensions are bundled with the core PHP
+   packages on these distributions — no separate package exists (or is needed)
+   for them. `gd` and `curl` above are optional (kept for image/network
+   features some parts of the UI use); drop them if you don't need those.
 
    For Nginx, use PHP-FPM instead of the Apache PHP module.
 
@@ -75,6 +80,11 @@ the web-root path, and the web-server user differ.
    composer install --no-dev
    cp .env.example .env
    ```
+
+   `.env`'s `DEBUG` flag accepts `true`/`false`, `on`/`off`, or `1`/`0`
+   (case-insensitive; parsed with `FILTER_VALIDATE_BOOL`) and **defaults to
+   `false`** if unset. Leave it `false` (or unset) in production — enabling it
+   surfaces stack traces and other diagnostic detail you don't want exposed.
 
 5. Start the database and web server, then open the browser and complete the
    web installer. The installer creates the database schema, sets up the admin

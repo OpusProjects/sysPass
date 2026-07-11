@@ -154,6 +154,9 @@ use function SP\getFromEnv;
  */
 final class CoreDefinitions
 {
+    /**
+     * @return array<string, mixed>
+     */
     public static function getDefinitions(string $rootPath, string $module): array
     {
         return [
@@ -451,6 +454,9 @@ final class CoreDefinitions
         return $configData->getApplicationUrl() ?: $uriContext->getWebUri();
     }
 
+    /**
+     * @return array<int, array{Path, string}>
+     */
     private static function getPaths(string $rootPath): array
     {
         $sqlPath = FileSystem::buildPath($rootPath, 'schemas');

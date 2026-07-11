@@ -33,6 +33,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\DuplicatedItemException;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Models\Simple;
 use SP\Infrastructure\Database\QueryResult;
 
@@ -78,9 +79,12 @@ interface ClientRepository extends Repository
     /**
      * Deletes all the items for given ids
      *
+     * True type, not QueryResult<T>: the implementation issues a bare delete with no
+     * mapper, so rows (if any) hydrate as Simple, never as T. See PR body.
+     *
      * @param int[] $clientIds
      *
-     * @return QueryResult<T>
+     * @return QueryResult<Simple>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -120,8 +124,12 @@ interface ClientRepository extends Repository
     /**
      * Return the clients visible for the current user
      *
+     * True type, not QueryResult<T>: the implementation maps rows to
+     * SP\Domain\Common\Models\Item (Account.id + Client.name AS clientName — not a
+     * Client). See PR body.
+     *
      * @param AccountFilterBuilder $accountFilterUser
-     * @return QueryResult<T>
+     * @return QueryResult<Item>
      * @throws QueryException
      * @throws ConstraintException
      */
