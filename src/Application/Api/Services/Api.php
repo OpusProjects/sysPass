@@ -56,7 +56,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
-use SP\Infrastructure\Adapter\In\Api\Controllers\Help\HelpInterface;
+use SP\Domain\Api\Ports\HelpInterface;
 
 use function SP\__u;
 use function SP\logger;

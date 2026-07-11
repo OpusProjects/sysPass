@@ -22,12 +22,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Adapter\In\Api\Controllers\Help;
+namespace SP\Domain\Api\Ports;
 
 /**
  * Interface HelpInterface
  *
- * @package SP\Infrastructure\Adapter\In\Api\Controllers\Help
+ * @package SP\Domain\Api\Ports
  */
 interface HelpInterface
 {
