@@ -722,7 +722,12 @@ class AccountAclTest extends UnitaryTestCase
                   ->with(self::callback((static fn($path) => is_string($path))))
                   ->willReturn($acl);
 
-        $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
+        $fileCache->expects(self::never())
+                  ->method('save');
+
+        $out = $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
+
+        self::assertSame($acl, $out);
     }
 
     /**

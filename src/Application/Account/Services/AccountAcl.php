@@ -101,7 +101,7 @@ final class AccountAcl extends Service implements AccountAclService
 
             if (null !== $accountAcl) {
                 $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                              || $this->userData->lastUpdate > $accountAcl->getTime();
+                              || (strtotime($this->userData->lastUpdate ?? '') ?: 0) > $accountAcl->getTime();
 
                 if (!$isModified) {
                     $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL HIT')));
