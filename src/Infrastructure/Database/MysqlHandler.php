@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Database;
 
 use PDO;
+use SP\Domain\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\Ports\DbStorageHandler;
 
 use function SP\__u;

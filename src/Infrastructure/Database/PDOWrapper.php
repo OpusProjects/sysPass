@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Database;
 
 use Exception;
 use PDO;
+use SP\Domain\Database\DatabaseConnectionData;
 
 use function SP\__u;
 

@@ -49,7 +49,7 @@ use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup;
 use SP\Domain\User\Models\UserProfile;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\DatabaseConnectionData;
 use SP\Domain\Core\Exceptions\FileException;
 use Throwable;
 

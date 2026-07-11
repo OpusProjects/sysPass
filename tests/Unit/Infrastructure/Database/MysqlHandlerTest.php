@@ -29,7 +29,7 @@ use PDO;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\DatabaseException;
 use SP\Infrastructure\Database\DbStorageDriver;
 use SP\Infrastructure\Database\MysqlHandler;

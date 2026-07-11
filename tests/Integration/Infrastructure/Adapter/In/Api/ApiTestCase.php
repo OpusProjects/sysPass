@@ -46,7 +46,7 @@ use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Adapter\In\Api\Bootstrap;
-use SP\Infrastructure\Database\DatabaseConnectionData;
+use SP\Domain\Database\DatabaseConnectionData;
 use SP\Domain\File\FileSystem;
 use SP\Tests\Support\DatabaseTrait;
 use stdClass;
