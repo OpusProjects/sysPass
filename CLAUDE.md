@@ -182,6 +182,9 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   Use `$model->mutate(['prop' => $value])` to get a new instance with changed properties.
   Constructor accepts `?array $properties`. Exception: `ProfileData` and `ConfigData` still have
   setters.
+- **`Model::__get()`/`__isset()`** — `__get()` proxies both declared (protected) and outer/bag
+  property reads (`null` for anything unknown), and `__isset()` is defined to match, so
+  `$model->prop` and `isset($model->prop)` are safe; only `__set()` throws.
 - **Dtos** (`src/Domain/*/Dtos/`) extend `Dto` — `public readonly` constructor properties, use
   `mutate(array)` for copies.
 - **`SerializedModel` trait** — models with a serialized blob column (e.g. `ItemPreset.data`,

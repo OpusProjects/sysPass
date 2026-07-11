@@ -3,9 +3,10 @@ parameters:
 		-
 			# processAccounts() is shared by both rotation paths (Account[] and AccountHistory[] callers);
 			# the accurate union type surfaces that it reads AccountHistory::$mPassHash (protected) from
-			# outside the class. isset() on an inaccessible property is false in PHP, so the comparison
-			# this guards is dead for AccountHistory callers too — a pre-existing behavior, not a
-			# regression from this annotation pass. See PR body for details; left as-is (no runtime change).
+			# outside the class. This is a real encapsulation violation flagged independently of runtime
+			# behavior: Model::__get()/__isset() proxy protected/bag property reads (see Model.php), so
+			# isset($account->mPassHash) is a live check at runtime, not dead code — the arrow access here
+			# just bypasses the getter. Left as-is (no runtime change).
 			message: '#^Access to protected property SP\\Domain\\Account\\Models\\Account\|SP\\Domain\\Account\\Models\\AccountHistory\:\:\$mPassHash\.$#'
 			identifier: property.protected
 			count: 1
@@ -493,12 +494,6 @@ parameters:
 			identifier: return.phpDocType
 			count: 1
 			path: src/Domain/Common/Models/HydratableModel.php
-
-		-
-			message: '#^Method SP\\Domain\\Common\\Models\\Model\:\:__get\(\) with return type void returns mixed but should not return anything\.$#'
-			identifier: return.void
-			count: 1
-			path: src/Domain/Common/Models/Model.php
 
 		-
 			message: '#^Method SP\\Domain\\Common\\Models\\Model\:\:__set\(\) has parameter \$value with no type specified\.$#'

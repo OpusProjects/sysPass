@@ -63,7 +63,8 @@ class ModelTest extends TestCase
         self::assertEquals($data['name'], $model->getName());
         self::assertEquals($data['name'], $model->name);
         self::assertEquals($data['test'], $model['test']);
-        self::assertNull($model->test);
+        // Outer (non-class) properties are also readable through __get.
+        self::assertEquals($data['test'], $model->test);
     }
 
     #[TestWith(['id', 100])]
@@ -93,6 +94,32 @@ class ModelTest extends TestCase
         self::expectException(Error::class);
 
         $model['test'] = 'a_text';
+    }
+
+    public function testIsset()
+    {
+        $data = [
+            'id' => self::$faker->randomNumber(3),
+            'test' => self::$faker->text()
+        ];
+
+        $model = new ModelStub($data);
+
+        // A declared (protected) class property with a non-null value.
+        self::assertTrue(isset($model->id));
+        // An outer (non-class) property with a non-null value.
+        self::assertTrue(isset($model->test));
+        // A property that was never assigned at all.
+        self::assertFalse(isset($model->missing));
+    }
+
+    public function testIssetWithNullValue()
+    {
+        $model = new ModelStub(['id' => null]);
+
+        // isset() follows PHP's usual semantics: a property explicitly set to null
+        // is still reported as "not set".
+        self::assertFalse(isset($model->id));
     }
 
     public function testGetColsWithPreffix()
