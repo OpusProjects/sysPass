@@ -25,7 +25,7 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/13.2/phpunit.xsd"
          backupGlobals="false"
-         bootstrap="./SP/bootstrap.php"
+         bootstrap="./bootstrap.php"
          colors="true"
          processIsolation="false"
          stopOnFailure="false"
@@ -39,21 +39,11 @@
         </report>
     </coverage>
     <testsuites>
-        <testsuite name="core">
-            <directory suffix=".php">./SP/Core</directory>
-            <directory suffix=".php">./SP/Domain</directory>
-            <directory suffix=".php">./SP/Application</directory>
-            <directory suffix=".php">./SP/Infrastructure</directory>
-            <exclude>./SP/Infrastructure/Adapter/In/Web</exclude>
-            <exclude>./SP/Infrastructure/Adapter/In/Cli</exclude>
-            <exclude>./SP/Infrastructure/Adapter/In/Api/ApiTestCase.php</exclude>
-            <exclude>./SP/Domain/Account/Services/Builders/AccountSearchTokenizerDataTrait.php</exclude>
-            <exclude>./SP/Application/Export/Services/XmlTrait.php</exclude>
+        <testsuite name="unit">
+            <directory suffix="Test.php">./Unit</directory>
         </testsuite>
-        <testsuite name="modules">
-            <directory suffix=".php">./SP/Infrastructure/Adapter/In/Web</directory>
-            <directory suffix=".php">./SP/Infrastructure/Adapter/In/Cli</directory>
-            <exclude>./SP/Infrastructure/Adapter/In/Cli/CliTestCase.php</exclude>
+        <testsuite name="integration">
+            <directory suffix="Test.php">./Integration</directory>
         </testsuite>
     </testsuites>
     <logging/>

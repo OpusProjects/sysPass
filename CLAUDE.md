@@ -69,7 +69,7 @@ A **dependency-bump PR** edits `composer.json` (the constraint) + `composer.lock
 | Runtime-writable | `var/{cache,temp,backup}` |
 | Resources (locales, templates) | `resources/` |
 | DB schema | `schemas/dbstructure.sql` |
-| Tests (PHPUnit 13) — mirrors src | `tests/SP/{Domain,Application,Infrastructure,Core}/` |
+| Tests (PHPUnit 13) — Unit/Integration each mirror src; shared helpers in Support | `tests/{Unit,Integration,Support}/` |
 | Entry points | `public/index.php` (web), `public/api.php` (api), `bin/cli.php` (cli) → require `src/Base.php` |
 
 **UI unchanged from 3.2** — same `material-blue` theme; the front-end diff is plumbing
@@ -93,16 +93,16 @@ docker compose exec app composer install        # include dev deps
 
 # Unit suite — no DB
 docker compose exec -w /var/www/html app \
-  vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
+  vendor/bin/phpunit -c tests/phpunit.xml --testsuite unit --no-coverage
 
 # Integration suite — needs the schema in DB `syspass`
 docker compose exec -T db mariadb -uroot -psyspass syspass < schemas/dbstructure.sql
 docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PASS=syspass -e DB_PORT=3306 \
-  -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
+  -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2128 unit** + **251 integration**. The integration suite includes the
-end-to-end CLI command tests (`tests/SP/Infrastructure/Adapter/In/Cli/`, real DI container +
+Both pass: **2239 unit** + **253 integration**. The integration suite includes the
+end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
 

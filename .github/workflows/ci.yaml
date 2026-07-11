@@ -36,7 +36,7 @@ jobs:
           composer-options: --prefer-dist
 
       - name: Run unit tests
-        run: vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
+        run: vendor/bin/phpunit -c tests/phpunit.xml --testsuite unit --no-coverage
 
   integration:
     name: Integration tests (${{ matrix.php }})
@@ -86,7 +86,7 @@ jobs:
           DB_USER: root
           DB_PASS: syspass
           DB_PORT: 3306
-        run: vendor/bin/phpunit -c tests/phpunit.xml --group integration --no-coverage
+        run: vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 
   lint:
     name: Lint
