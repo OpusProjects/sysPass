@@ -28,7 +28,9 @@ namespace SP\Infrastructure\Database;
 
 use PDO;
 use SP\Domain\Database\DatabaseConnectionData;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\DatabaseException;
+use SP\Domain\Database\DbStorageDriver;
+use SP\Domain\Database\Ports\DbStorageHandler;
 
 use function SP\__u;
 

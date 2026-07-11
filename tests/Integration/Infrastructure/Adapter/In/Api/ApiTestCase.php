@@ -41,7 +41,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;

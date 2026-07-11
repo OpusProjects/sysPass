@@ -1993,7 +1993,7 @@ parameters:
 			count: 1
 			path: src/Infrastructure/Database/Database.php
 		-
-			message: '#^Strict comparison using \=\=\= between SP\\Infrastructure\\Database\\DbStorageDriver and SP\\Infrastructure\\Database\\DbStorageDriver\:\:mysql will always evaluate to true\.$#'
+			message: '#^Strict comparison using \=\=\= between SP\\Domain\\Database\\DbStorageDriver and SP\\Domain\\Database\\DbStorageDriver\:\:mysql will always evaluate to true\.$#'
 			identifier: identical.alwaysTrue
 			count: 1
 			path: src/Infrastructure/Database/Database.php

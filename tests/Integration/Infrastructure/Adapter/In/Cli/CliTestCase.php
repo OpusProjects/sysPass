@@ -35,7 +35,7 @@ use SP\Domain\Core\Bootstrap\Path;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use Symfony\Component\Console\Tester\CommandTester;
 

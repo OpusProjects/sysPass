@@ -65,7 +65,7 @@ use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\UI\ThemeContextInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Application\Notification\Ports\MailService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;

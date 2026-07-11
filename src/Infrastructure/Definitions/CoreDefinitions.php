@@ -102,7 +102,9 @@ use SP\Application\Crypt\Services\SecureSession;
 use SP\Domain\Database\Ports\DatabaseFileFactory;
 use SP\Domain\Database\Ports\DatabaseFileInterface;
 use SP\Domain\Database\Ports\DatabaseInterface;
-use SP\Infrastructure\Database\Ports\DbStorageHandler;
+use SP\Domain\Database\Ports\DatabaseUtilService;
+use SP\Domain\Database\Ports\QueryDataFactory;
+use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
 use SP\Domain\Export\Dtos\BackupType;
@@ -131,8 +133,10 @@ use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
+use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Domain\Database\DatabaseConnectionData;
 use SP\Infrastructure\Database\MysqlFileParser;
+use SP\Infrastructure\Database\QueryDataFactory as InfraQueryDataFactory;
 use SP\Infrastructure\Database\MysqlFileParserFactory;
 use SP\Infrastructure\Database\MysqlHandler;
 use SP\Infrastructure\File\FileCache;
@@ -226,6 +230,8 @@ final class CoreDefinitions
                         ->constructor(factory(static fn(PathsContext $pathsContext) => $pathsContext[Path::SQL_FILE]))
                 ),
             DatabaseFileFactory::class => autowire(MysqlFileParserFactory::class),
+            DatabaseUtilService::class => autowire(DatabaseUtil::class),
+            QueryDataFactory::class => autowire(InfraQueryDataFactory::class),
             DbStorageHandler::class => autowire(MysqlHandler::class),
             DatabaseSetupService::class => autowire(MysqlSetup::class),
             ActionsInterface::class =>

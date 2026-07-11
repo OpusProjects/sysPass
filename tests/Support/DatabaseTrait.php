@@ -27,7 +27,7 @@ namespace SP\Tests\Support;
 
 use PDO;
 use RuntimeException;
-use SP\Infrastructure\Database\DatabaseException;
+use SP\Domain\Database\DatabaseException;
 
 use function SP\processException;
 use function SP\Tests\getDbHandler;
