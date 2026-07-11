@@ -74,7 +74,7 @@ final class QueryData implements QueryDataInterface
         return $this->mapClassName;
     }
 
-    public function setMapClassName(string $class): QueryData
+    public function setMapClassName(string $class): static
     {
         $this->mapClassName = self::checkClassOrDefault($class);
 
@@ -107,7 +107,7 @@ final class QueryData implements QueryDataInterface
         return $this->onErrorMessage ?: __u('Error while querying');
     }
 
-    public function setOnErrorMessage(string $onErrorMessage): QueryData
+    public function setOnErrorMessage(string $onErrorMessage): static
     {
         $this->onErrorMessage = $onErrorMessage;
 
