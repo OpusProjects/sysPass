@@ -37,12 +37,12 @@ This is a PHP project; runtime dependencies live in **Composer** files at the re
 - **`composer.lock`** — fully-resolved pinned versions of every package + transitive dep, what
   `composer install` reproduces. (≈ `package-lock.json`.)
 - **`vendor/`** — installed packages, **gitignored** (≈ `node_modules`).
-- **Front-end libraries are *vendored*** (committed `*.min.js` under `public/vendor/`, `public/js/`;
-  no build step, nothing to install to run the app). A root **`package.json`** (dev/build-only,
-  `node_modules/` gitignored) manages them: bump a version there → `npm install` → `npm run vendor`
-  (recopies dist `*.min.js` into `public/vendor/js/` per `scripts/vendor-assets.mjs`) → commit. The
-  served bundle order lives in `JsController::JS_MIN_FILES`. Same `package.json` also holds the
-  Playwright E2E suite (`npm run test:e2e`, host-run against the Docker app).
+- **Front-end libraries are bundled with esbuild** into a single committed
+  `public/vendor/js/vendor.bundle.min.js`. A root **`package.json`** (dev/build-only,
+  `node_modules/` gitignored) declares them: bump a version there → `npm install` →
+  `npm run build:js` (esbuild, `scripts/build-js.mjs` + entry `scripts/vendor-entry.mjs`) →
+  commit. `zxcvbn.min.js` is kept separate (lazy-loaded at runtime). Same `package.json` also
+  holds the Playwright E2E suite (`npm run test:e2e`, host-run against the Docker app).
 - **Theme CSS is served *pre-minified***: the `resource/css` route (`CssController` + the
   `Minify` service) only *concatenates* the committed `*.min.css` — it does **not** minify at
   runtime (`MinifyCss::minify()` just joins files with a `/* FILE */` header). So after editing a
@@ -248,12 +248,12 @@ Key constraints:
   `CONFIG_BACKUP_RUN` tokens. Do not "harden" it by confining the path to `Path::BACKUP` — that
   breaks the documented, tested feature. (That an admin could target a web-accessible directory is
   operational guidance, not a code bug.)
-- **`jquery-ui` is in `package-lock.json` but not in `package.json` or the vendor MAP — not
-  drift.** It is an `optionalDependencies` entry of `@selectize/selectize` (drag_drop plugin
-  support), locked like any transitive dep (`npm ls jquery-ui` shows the chain; a fresh
-  `npm install` keeps it). It is never vendored into `public/vendor/js/` and never served.
-  Likewise, a locked version ahead of a `^` constraint (e.g. `jsencrypt` `^3.3.2` → lock 3.5.4)
-  is normal semver resolution, and vendored-copy currency is enforced by CI's drift check.
+- **`jquery-ui` is in `package-lock.json` but not in `package.json` — not drift.** It is an
+  `optionalDependencies` entry of `@selectize/selectize` (drag_drop plugin support), locked like
+  any transitive dep (`npm ls jquery-ui` shows the chain; a fresh `npm install` keeps it). It is
+  never imported in the vendor bundle entry and never served. Likewise, a locked version ahead of
+  a `^` constraint (e.g. `jsencrypt` `^3.3.2` → lock 3.5.4) is normal semver resolution, and
+  bundle currency is enforced by CI's drift check.
 
 ## Conventions
 

@@ -138,10 +138,9 @@ docker compose exec -w /var/www/html app \
 PHPStan is one of three gates in CI's `lint` job — the other two are:
 
 - **PHPCS** (`composer phpcs`) — PSR2 code style over `src/`.
-- **Vendored-assets drift check** — `npm run vendor && git diff --exit-code public/vendor/`,
-  confirming the committed `public/vendor/js/` files still match what
-  `scripts/vendor-assets.mjs` would copy from `node_modules` for the versions
-  pinned in `package.json`.
+- **Vendor JS bundle drift check** — `npm run build:js && git diff --exit-code public/vendor/js/`,
+  confirming the committed `vendor.bundle.min.js` and `zxcvbn.min.js` match what
+  `scripts/build-js.mjs` would produce from the versions pinned in `package-lock.json`.
 
 ## Environment requirements
 
