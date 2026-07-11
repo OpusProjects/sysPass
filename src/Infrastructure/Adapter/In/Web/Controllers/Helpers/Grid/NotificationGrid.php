@@ -27,7 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 use SP\Domain\Common\Adapters\Date;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Html\Html;
+use SP\Domain\Core\Html\Html;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridAction;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionInterface;

@@ -31,7 +31,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Infrastructure\Html\Html;
+use SP\Domain\Core\Html\Html;
 use SP\Infrastructure\Http\Dtos\JsonMessage;
 use SP\Infrastructure\Http\Services\JsonResponse;
 use SP\Application\Notification\Ports\NotificationService;

@@ -27,7 +27,7 @@ namespace SP\Tests\Unit\Infrastructure\Html;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use SP\Infrastructure\Html\Html;
+use SP\Domain\Core\Html\Html;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
@@ -60,6 +60,6 @@ class HtmlTest extends UnitaryTestCase
     #[DataProvider('urlProvider')]
     public function testGetSafeUrlEncoded(string $url)
     {
-        $this->assertEquals(0, preg_match('/["<>\']+/', \SP\Infrastructure\Html\Html::getSafeUrl($url)));
+        $this->assertEquals(0, preg_match('/["<>\']+/', Html::getSafeUrl($url)));
     }
 }
