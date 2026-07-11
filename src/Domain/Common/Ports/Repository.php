@@ -29,7 +29,7 @@ use Closure;
 use Exception;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\ServiceException;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Interface Repository

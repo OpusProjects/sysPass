@@ -43,7 +43,7 @@ use SP\Domain\CustomField\Models\CustomFieldDefinition as CustomFieldDefinitionM
 use SP\Domain\CustomField\Ports\CustomFieldDataRepository;
 use SP\Domain\CustomField\Ports\CustomFieldDefinitionRepository;
 use SP\Application\CustomField\Services\CustomFieldData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\CustomFieldDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 use TypeError;

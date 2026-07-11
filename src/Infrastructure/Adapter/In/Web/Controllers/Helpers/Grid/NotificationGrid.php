@@ -37,7 +37,7 @@ use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGrid;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridData;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridHeader;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 use function SP\__;
 use function SP\getElapsedTime;

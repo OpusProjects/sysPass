@@ -39,7 +39,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Database\Ports\DatabaseInterface;
 use SP\Domain\Security\Models\Track as TrackModel;
 use SP\Infrastructure\Database\QueryData;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\Adapter\Out\Security\Repositories\Track;
 use SP\Tests\Support\Generators\TrackGenerator;
 use SP\Tests\Support\UnitaryTestCase;

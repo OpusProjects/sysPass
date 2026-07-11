@@ -11,7 +11,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\IntegrationTestCase;
 

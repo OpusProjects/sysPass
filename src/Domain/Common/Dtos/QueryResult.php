@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Database;
+namespace SP\Domain\Common\Dtos;
 
 use SplFixedArray;
 use TypeError;

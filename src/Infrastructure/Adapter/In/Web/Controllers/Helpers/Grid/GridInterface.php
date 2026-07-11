@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid;
 
 use SP\Domain\Common\Models\Model;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
-use SP\Infrastructure\Database\QueryResult;
+use SP\Domain\Common\Dtos\QueryResult;
 
 /**
  * Interface GridInterface
