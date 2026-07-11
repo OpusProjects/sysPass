@@ -36,7 +36,7 @@ use SP\Domain\Common\Providers\Environment;
 use SP\Domain\Core\LanguageInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
-use SP\Infrastructure\Adapter\In\Web\View\Components\SelectItemAdapter;
+use SP\Domain\Common\Adapters\SelectItemAdapter;
 
 /**
  * Class IndexController
