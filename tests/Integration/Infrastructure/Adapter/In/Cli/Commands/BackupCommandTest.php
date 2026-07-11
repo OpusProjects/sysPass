@@ -28,8 +28,8 @@ namespace SP\Tests\Integration\Infrastructure\Adapter\In\Cli\Commands;
 use DI\DependencyException;
 use DI\NotFoundException;
 use PHPUnit\Framework\Attributes\Group;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Adapter\In\Cli\Commands\BackupCommand;
 use SP\Tests\Integration\Infrastructure\Adapter\In\Cli\CliTestCase;
 

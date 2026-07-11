@@ -31,7 +31,7 @@ use DI\NotFoundException;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
-use SP\Infrastructure\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\Path;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Domain\Core\Context\Context;

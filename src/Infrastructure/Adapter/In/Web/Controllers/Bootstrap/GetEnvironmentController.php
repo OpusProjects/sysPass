@@ -26,8 +26,8 @@ namespace SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap;
 
 use Exception;
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Crypt\CryptPKI;
 use SP\Infrastructure\Language;
 use SP\Domain\Auth\Providers\Browser\BrowserAuthService;

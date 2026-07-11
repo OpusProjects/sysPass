@@ -215,16 +215,16 @@ parameters:
 			# $pathSpec is always a 2-tuple, so the defensive is_array() guard below is
 			# provably always true. Left in place (defends against a malformed 'paths' DI
 			# entry at runtime, which PHPStan can't see); see PR body.
-			message: '#^Call to function is_array\(\) with array\{SP\\Infrastructure\\Bootstrap\\Path, string\} will always evaluate to true\.$#'
+			message: '#^Call to function is_array\(\) with array\{SP\\Domain\\Core\\Bootstrap\\Path, string\} will always evaluate to true\.$#'
 			identifier: function.alreadyNarrowedType
 			count: 1
-			path: src/Infrastructure/Bootstrap/PathsContext.php
+			path: src/Domain/Core/Bootstrap/PathsContext.php
 
 		-
-			message: '#^Method SP\\Infrastructure\\Bootstrap\\PathsContext\:\:offsetGet\(\) never returns null so it can be removed from the return type\.$#'
+			message: '#^Method SP\\Domain\\Core\\Bootstrap\\PathsContext\:\:offsetGet\(\) never returns null so it can be removed from the return type\.$#'
 			identifier: return.unusedType
 			count: 1
-			path: src/Infrastructure/Bootstrap/PathsContext.php
+			path: src/Domain/Core/Bootstrap/PathsContext.php
 
 
 		-

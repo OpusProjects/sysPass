@@ -25,8 +25,8 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigManager;
 
 use SP\Application\Application;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Crypt\CryptSessionHandler;
 use SP\Domain\Core\Events\Event;
 use SP\Infrastructure\Language;

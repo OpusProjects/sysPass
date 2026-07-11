@@ -30,8 +30,8 @@ namespace SP\Tests\Unit\Application\Install\Services;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use SP\Application\Install\Services\InstallThrottle;
-use SP\Infrastructure\Bootstrap\Path;
-use SP\Infrastructure\Bootstrap\PathsContext;
+use SP\Domain\Core\Bootstrap\Path;
+use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Infrastructure\Http\Ports\RequestService;
 
 /**
