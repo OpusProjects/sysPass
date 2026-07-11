@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\User\Services;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Messages\MailMessage;
 use SP\Domain\Common\Providers\Password;
 use SP\Domain\Common\Services\Service;

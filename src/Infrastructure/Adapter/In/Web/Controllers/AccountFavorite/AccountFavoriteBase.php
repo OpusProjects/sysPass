@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AccountFavorite;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;

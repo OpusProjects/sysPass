@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure;
 
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;

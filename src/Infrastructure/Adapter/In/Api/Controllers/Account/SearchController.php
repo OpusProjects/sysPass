@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Ports\AccountSearchConstants;
 use SP\Application\Account\Ports\AccountSearchService;

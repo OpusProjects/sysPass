@@ -28,7 +28,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use LogicException;
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Context\ContextBase;
 use SP\Infrastructure\Context\ContextException;
 use SP\Infrastructure\Context\Session;

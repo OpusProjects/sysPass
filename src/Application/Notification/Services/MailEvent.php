@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Application\Notification\Services;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Messages\MailMessage;
 use SP\Infrastructure\Messages\TextFormatter;

@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Plugin\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Common\Providers\Version;

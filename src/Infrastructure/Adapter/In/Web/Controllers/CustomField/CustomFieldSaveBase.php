@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\CustomField;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Forms\CustomFieldDefForm;

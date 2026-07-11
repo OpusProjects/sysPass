@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers;
 
 use SP\Infrastructure\Bootstrap\Router;
 use League\Fractal\Manager;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\BootstrapBase;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;

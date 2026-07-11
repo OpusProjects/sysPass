@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Common\Services;
 
 use Defuse\Crypto\Exception\CryptoException;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Context\ContextException;
 use SP\Infrastructure\Context\Session as SessionContext;
 use SP\Infrastructure\Crypt\Session as CryptSession;

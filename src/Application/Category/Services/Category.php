@@ -26,7 +26,7 @@ declare(strict_types=1);
 namespace SP\Application\Category\Services;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Category\Models\Category as CategoryModel;
 use SP\Domain\Category\Ports\CategoryRepository;
 use SP\Application\Category\Ports\CategoryService;

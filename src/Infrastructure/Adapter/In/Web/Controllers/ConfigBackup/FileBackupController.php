@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigBackup;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Context\Session;

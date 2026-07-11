@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Ports\AccountToUserRepository;
 use SP\Application\Account\Ports\AccountToUserService;
 use SP\Domain\Common\Models\Item;

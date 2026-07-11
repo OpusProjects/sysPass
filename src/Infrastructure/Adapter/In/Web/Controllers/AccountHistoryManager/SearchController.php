@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AccountHistoryManager;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;

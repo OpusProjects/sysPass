@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Cli\Commands;
 
+use SP\Application\Application;
 use Psr\Log\LoggerInterface;
 use SP\Infrastructure\Language;
 use SP\Application\Config\Ports\ConfigFileService;

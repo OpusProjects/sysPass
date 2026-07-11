@@ -26,7 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Api;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Context\ContextException;
 use SP\Infrastructure\HttpModuleBase;
 use SP\Infrastructure\Language;

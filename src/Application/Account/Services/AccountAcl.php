@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Events\Event;

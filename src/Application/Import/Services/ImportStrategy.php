@@ -28,7 +28,7 @@ namespace SP\Application\Import\Services;
 use SP\Domain\Import\Services\XmlFormat;
 use SP\Domain\Import\Services\ImportException;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\File\Ports\FileHandlerInterface;

@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure;
+namespace SP\Application;
 
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\Context;

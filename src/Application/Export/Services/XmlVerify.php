@@ -32,7 +32,7 @@ use SP\Domain\Export\Services\VerifyResult;
 use DOMDocument;
 use DOMElement;
 use DOMXPath;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Crypt\Hash;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Common\Services\Service;

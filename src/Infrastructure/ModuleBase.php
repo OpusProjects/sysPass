@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure;
 
+use SP\Application\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Common\Providers\Version;

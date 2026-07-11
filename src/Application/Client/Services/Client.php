@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Client\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Client\Models\Client as ClientModel;
 use SP\Domain\Client\Ports\ClientRepository;

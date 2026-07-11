@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\CustomField;
 
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\CustomFields;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;

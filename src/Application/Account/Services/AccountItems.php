@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Account\Services;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Application\Account\Ports\AccountItemsService;

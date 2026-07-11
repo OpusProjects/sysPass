@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade;
 
 use SP\Infrastructure\Acl\Actions;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;

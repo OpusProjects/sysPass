@@ -3,7 +3,7 @@
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\User;
 
 use SP\Infrastructure\Bootstrap\Router;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Application\User\Ports\UserService;

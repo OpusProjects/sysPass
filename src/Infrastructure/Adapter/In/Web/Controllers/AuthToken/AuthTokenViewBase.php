@@ -24,7 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Application\Auth\Ports\AuthTokenActionService;
 use SP\Application\Auth\Ports\AuthTokenService;

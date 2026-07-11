@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Bootstrap;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Crypt\CryptPKI;

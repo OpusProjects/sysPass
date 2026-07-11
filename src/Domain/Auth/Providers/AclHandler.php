@@ -27,7 +27,7 @@ declare(strict_types=1);
 namespace SP\Domain\Auth\Providers;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Path;
 use SP\Infrastructure\Bootstrap\PathsContext;
 use SP\Infrastructure\Events\Event;

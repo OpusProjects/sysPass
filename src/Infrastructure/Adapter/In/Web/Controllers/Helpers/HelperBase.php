@@ -25,7 +25,7 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
 use LogicException;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Context\SessionContext;

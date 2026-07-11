@@ -25,7 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers;
 
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Auth\Dtos\UserLoginDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Providers\Provider;

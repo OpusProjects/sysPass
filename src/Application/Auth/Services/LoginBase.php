@@ -29,7 +29,7 @@ use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Infrastructure\Http\Ports\RequestService;

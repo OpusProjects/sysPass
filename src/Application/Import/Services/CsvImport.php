@@ -29,7 +29,7 @@ namespace SP\Application\Import\Services;
 use SP\Domain\Import\Services\ImportException;
 
 use Exception;
-use SP\Infrastructure\Application;
+use SP\Application\Application;
 use SP\Infrastructure\Events\Event;
 use SP\Infrastructure\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountCreateDto;
