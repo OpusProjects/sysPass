@@ -34,7 +34,7 @@ use SP\Application\Application;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Domain\Crypt\Hash;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Application\Api\Ports\ApiRequestService;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;

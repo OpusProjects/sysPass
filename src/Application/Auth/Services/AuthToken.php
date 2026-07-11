@@ -30,7 +30,7 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
 use SP\Application\Application;
 use SP\Domain\Crypt\Hash;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Auth\Models\AuthTokenList as AuthTokenListModel;
 use SP\Domain\Auth\Ports\AuthTokenRepository;

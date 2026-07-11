@@ -39,7 +39,7 @@ use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Infrastructure\Crypt\Crypt;
-use SP\Infrastructure\Crypt\Vault;
+use SP\Domain\Crypt\Vault;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
