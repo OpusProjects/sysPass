@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Domain\Auth\Providers\Ldap;
 
-use SP\Infrastructure\Events\EventDispatcher;
 use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
@@ -53,7 +52,7 @@ abstract class LdapBase implements LdapService
     abstract protected function pickServer(): string;
 
     /**
-     * @param EventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      * @param LdapConnectionHandler $ldapConnection
      * @param LdapActionsService $ldapActions
      * @param LdapParams $ldapParams
