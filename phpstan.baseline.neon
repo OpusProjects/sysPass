@@ -231,7 +231,7 @@ parameters:
 			message: '#^Type mixed in generic type ArrayObject\<mixed, mixed\> in PHPDoc tag @extends is not subtype of template type TKey of \(int\|string\) of class ArrayObject\.$#'
 			identifier: generics.notSubtype
 			count: 1
-			path: src/Infrastructure/DataCollection.php
+			path: src/Domain/Core/DataCollection.php
 
 		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventName$#'
