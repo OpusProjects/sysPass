@@ -37,7 +37,7 @@ use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\DataGridInterface;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\Grid\ItemPresetGrid;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemTrait;
+use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 use function SP\__u;
 

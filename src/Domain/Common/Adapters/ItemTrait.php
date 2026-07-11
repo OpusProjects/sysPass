@@ -24,7 +24,7 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
+namespace SP\Domain\Common\Adapters;
 
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
