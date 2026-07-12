@@ -6,7 +6,7 @@
   `dom` / `xml`, `json`, `fileinfo`, and `ldap` (optional — only for LDAP / Active
   Directory authentication). `gd`, `curl`, and `zlib` are also optional (some
   features degrade without them, but the app runs). These are the extensions
-  `PhpExtensionChecker` verifies at runtime; see `src/Core/PhpExtensionChecker.php`.
+  `PhpExtensionChecker` verifies at runtime; see `src/Infrastructure/PhpExtensionChecker.php`.
 - **MariaDB 10.1+** (11.8 is the version tested in CI and the Docker dev stack;
   or MySQL 5.7+).
 - A **web server** (Apache or Nginx); SSL strongly recommended for production.

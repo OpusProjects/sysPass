@@ -47,7 +47,7 @@ git push -u origin <type>/<short-name>
 ```bash
 # Unit (fast, no DB)
 docker compose exec -w /var/www/html app \
-  vendor/bin/phpunit -c tests/phpunit.xml --group unitary --testsuite core --no-coverage
+  vendor/bin/phpunit -c tests/phpunit.xml --testsuite unit --no-coverage
 
 # Integration (needs seeded DB)
 docker compose exec -T db mariadb -uroot -psyspass syspass < schemas/dbstructure.sql
@@ -67,7 +67,7 @@ npm run test:e2e
 docker compose exec -w /var/www/html app vendor/bin/phpstan clear-result-cache
 docker compose exec -w /var/www/html app vendor/bin/phpstan analyse --level 6 src --no-progress
 docker compose exec -w /var/www/html app composer phpcs
-npm run vendor && git diff --exit-code public/vendor/
+npm run build:js && git diff --exit-code public/vendor/js/
 ```
 
 All test suites must pass before merging. CI's `lint` job runs three gates:
@@ -93,13 +93,13 @@ at runtime) covers the front-end libraries and the Playwright E2E suite.
 A PHP dependency-bump PR edits `composer.json` (the constraint) and `composer.lock`
 (run `composer update <pkg> -W` in the container), plus any code changes needed.
 
-Front-end libraries are **vendored** under `public/vendor/js/` (committed). To
-update one: bump its version in `package.json`, then
+Front-end libraries are **bundled** into `public/vendor/js/vendor.bundle.min.js`
+(committed). To update one: bump its version in `package.json`, then
 
 ```bash
 npm install
-npm run vendor   # recopies the dist *.min.js into public/vendor/js/
-npm run test:e2e # validate the browser flows still work
+npm run build:js  # rebuilds the esbuild bundle into public/vendor/js/
+npm run test:e2e  # validate the browser flows still work
 ```
 
 **Theme CSS** is served pre-minified: the `resource/css` route concatenates the

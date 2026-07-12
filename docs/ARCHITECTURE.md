@@ -1,15 +1,13 @@
 # Architecture
 
 sysPass follows a **hexagonal (ports & adapters) architecture** organised around
-**Domain-Driven Design (DDD)** principles, with four layers under `src/`. Bounded
+**Domain-Driven Design (DDD)** principles, with three layers under `src/`. Bounded
 contexts (`Account`, `User`, `Auth`, `Config`, …) live in `Domain/` and
 `Application/`; concrete implementations live in `Infrastructure/`. Each layer has
 a strict dependency direction: inner layers never depend on outer layers.
 
 ```
 Domain  ←──  Application  ←──  Infrastructure
-   ↑              ↑                   ↑
-   └──────── Core (shared kernel) ────┘
 ```
 
 ## Layers
@@ -28,8 +26,10 @@ src/Domain/<Context>/
   Adapters/     ← adapter interfaces for external representation
 ```
 
-`Domain/Core/` holds cross-cutting domain contracts: exceptions, ACL definitions,
-event interfaces, UI icon abstractions, and bootstrap interfaces.
+`Domain/Core/` is the **shared kernel** — cross-cutting domain contracts available
+to all layers: ACL definitions, bootstrap interfaces, context ports, cryptography
+ports, event interfaces, exception hierarchy, HTML helpers, message builders, and
+UI icon abstractions.
 
 `Domain/Common/` holds shared base classes: `Model`, `Dto`, `SerializedModel` trait,
 enums, and the `ActionResponse` return type used by all controllers.
@@ -65,24 +65,25 @@ src/Infrastructure/
         Commands/
     Out/                         ← driven adapters (call external systems)
       <Context>/Repositories/    ← database repository implementations
-  Database/                      ← PDO/query-builder helpers
-  File/                          ← filesystem utilities
 ```
 
-### Core (`src/Core/`)
-
-Shared kernel available to all layers — bootstrap, DI definitions, context,
-cryptography, events, UI theme implementation, and utility classes:
+Infrastructure also houses the **shared kernel implementations** — the concrete
+classes that satisfy `Domain/Core/` interfaces:
 
 ```
-src/Core/
+src/Infrastructure/
   Acl/          ← action registry and permission checks
   Bootstrap/    ← router, path resolution, request lifecycle
   Context/      ← session and application state
   Crypt/        ← encryption implementations (AES, RSA/PKI)
+  Database/     ← PDO/query-builder helpers
   Definitions/  ← PHP-DI container definitions
   Events/       ← event dispatcher
-  Messages/     ← notification/message builders
+  File/         ← filesystem utilities
+  Html/         ← HTML rendering helpers
+  Http/         ← HTTP layer (ResponseService, middleware)
+  Log/          ← Monolog logging setup
+  Storage/      ← file-based storage (XML config)
   UI/           ← ThemeIcons implementation
   Util/         ← shared utility classes
 ```
@@ -135,7 +136,7 @@ on each request.
 | Path | Purpose |
 |---|---|
 | `public/themes/material-blue/` | The single UI theme (MDL-based) |
-| `public/vendor/js/` | Third-party libraries, npm-vendored (`npm run vendor` copies dist files from `node_modules` per the `MAP` in `scripts/vendor-assets.mjs`); nothing to install to run the app |
+| `public/vendor/js/` | Third-party libraries bundled by esbuild (`npm run build:js` via `scripts/build-js.mjs` + entry `scripts/vendor-entry.mjs`); committed, nothing to install to run the app |
 | `public/js/` | Hand-authored app code — `app-*.min.js`, `toasts.min.js`, `zxcvbn-async.min.js`, `selectize-plugins.min.js` — no `*.js` source, no build step; served via `JsController::JS_APP_MIN_FILES` |
 | `resources/` | Locale `.po`/`.mo` files, action/mimetype YAML |
 | `schemas/` | Database schema (`dbstructure.sql`) and XML config schema |
@@ -146,8 +147,9 @@ on each request.
 ## Dependency rules
 
 - **Domain** depends on nothing outside `Domain/` (and PHP built-ins).
+  `Domain/Core/` is the shared kernel — all layers may depend on it.
 - **Application** depends on Domain ports, never on Infrastructure.
-- **Infrastructure** depends on Domain, Application, Core, and external libraries.
-- **Core** is the shared kernel — all layers may depend on it.
-- **Templates** (`.inc` files in `public/themes/`) may reference Infrastructure
-  classes (controllers inject data; templates render it).
+- **Infrastructure** depends on Domain, Application, and external libraries.
+- **Templates** (`.inc` files in `public/themes/`) import Domain classes
+  (e.g. `SP\Domain\Core\Html\Html`) — the dependency direction is inward
+  (Infrastructure → Domain), which is correct hexagonal.
