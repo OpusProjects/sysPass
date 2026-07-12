@@ -137,7 +137,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $this->context->getUserProfile()->setAccPermission(false);
+        $this->context->setUserProfile(new ProfileData(['accPermission' => false]));
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
@@ -175,7 +175,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $this->context->getUserProfile()->setAccPermission(false);
+        $this->context->setUserProfile(new ProfileData(['accPermission' => false]));
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
@@ -213,7 +213,7 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $this->context->getUserProfile()->setAccPermission(true);
+        $this->context->setUserProfile(new ProfileData(['accPermission' => true]));
 
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());

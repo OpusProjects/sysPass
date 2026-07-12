@@ -68,30 +68,17 @@ class ProfileDataTest extends TestCase
         self::assertFalse($profile->isAccEdit());
     }
 
-    public function testSettersAreFluent(): void
+    public function testImmutableViaModel(): void
     {
-        $profile = new ProfileData();
+        $profile = new ProfileData(['accView' => true]);
 
-        $result = $profile->setAccView(true);
+        $mutated = $profile->mutate(['accEdit' => true]);
 
-        self::assertSame($profile, $result);
+        self::assertNotSame($profile, $mutated);
         self::assertTrue($profile->isAccView());
-    }
-
-    public function testSettersMutateState(): void
-    {
-        $profile = new ProfileData();
-
-        $profile->setAccView(true)
-            ->setAccEdit(true)
-            ->setMgmUsers(true)
-            ->setConfigGeneral(true);
-
-        self::assertTrue($profile->isAccView());
-        self::assertTrue($profile->isAccEdit());
-        self::assertTrue($profile->isMgmUsers());
-        self::assertTrue($profile->isConfigGeneral());
-        self::assertFalse($profile->isAccDelete());
+        self::assertFalse($profile->isAccEdit());
+        self::assertTrue($mutated->isAccView());
+        self::assertTrue($mutated->isAccEdit());
     }
 
     public function testToArrayIncludesAllPermissions(): void
@@ -118,10 +105,11 @@ class ProfileDataTest extends TestCase
 
     public function testSerializationRoundTrip(): void
     {
-        $profile = new ProfileData();
-        $profile->setAccView(true)
-            ->setMgmUsers(true)
-            ->setEvl(true);
+        $profile = new ProfileData([
+            'accView' => true,
+            'mgmUsers' => true,
+            'evl' => true,
+        ]);
 
         $serialized = serialize($profile);
         $restored = unserialize($serialized);
@@ -135,8 +123,7 @@ class ProfileDataTest extends TestCase
 
     public function testWakeupRenamesUnderscorePrefixedProperties(): void
     {
-        $profile = new ProfileData();
-        $profile->setAccView(true);
+        $profile = new ProfileData(['accView' => true]);
 
         $serialized = serialize($profile);
         $tampered = str_replace('"accView"', '"_accView"', $serialized);

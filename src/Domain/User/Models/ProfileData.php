@@ -68,33 +68,9 @@ class ProfileData extends Model
         return $this->accView;
     }
 
-    /**
-     * @param bool $accView
-     *
-     * @return ProfileData
-     */
-    public function setAccView(bool $accView): ProfileData
-    {
-        $this->accView = $accView;
-
-        return $this;
-    }
-
     public function isAccViewPass(): bool
     {
         return $this->accViewPass;
-    }
-
-    /**
-     * @param bool $accViewPass
-     *
-     * @return ProfileData
-     */
-    public function setAccViewPass(bool $accViewPass): ProfileData
-    {
-        $this->accViewPass = $accViewPass;
-
-        return $this;
     }
 
     public function isAccViewHistory(): bool
@@ -102,33 +78,9 @@ class ProfileData extends Model
         return $this->accViewHistory;
     }
 
-    /**
-     * @param bool $accViewHistory
-     *
-     * @return ProfileData
-     */
-    public function setAccViewHistory(bool $accViewHistory): ProfileData
-    {
-        $this->accViewHistory = $accViewHistory;
-
-        return $this;
-    }
-
     public function isAccEdit(): bool
     {
         return $this->accEdit;
-    }
-
-    /**
-     * @param bool $accEdit
-     *
-     * @return ProfileData
-     */
-    public function setAccEdit(bool $accEdit): ProfileData
-    {
-        $this->accEdit = $accEdit;
-
-        return $this;
     }
 
     public function isAccEditPass(): bool
@@ -136,33 +88,9 @@ class ProfileData extends Model
         return $this->accEditPass;
     }
 
-    /**
-     * @param bool $accEditPass
-     *
-     * @return ProfileData
-     */
-    public function setAccEditPass(bool $accEditPass): ProfileData
-    {
-        $this->accEditPass = $accEditPass;
-
-        return $this;
-    }
-
     public function isAccAdd(): bool
     {
         return $this->accAdd;
-    }
-
-    /**
-     * @param bool $accAdd
-     *
-     * @return ProfileData
-     */
-    public function setAccAdd(bool $accAdd): ProfileData
-    {
-        $this->accAdd = $accAdd;
-
-        return $this;
     }
 
     public function isAccDelete(): bool
@@ -170,33 +98,9 @@ class ProfileData extends Model
         return $this->accDelete;
     }
 
-    /**
-     * @param bool $accDelete
-     *
-     * @return ProfileData
-     */
-    public function setAccDelete(bool $accDelete): ProfileData
-    {
-        $this->accDelete = $accDelete;
-
-        return $this;
-    }
-
     public function isAccFiles(): bool
     {
         return $this->accFiles;
-    }
-
-    /**
-     * @param bool $accFiles
-     *
-     * @return ProfileData
-     */
-    public function setAccFiles(bool $accFiles): ProfileData
-    {
-        $this->accFiles = $accFiles;
-
-        return $this;
     }
 
     public function isAccPrivate(): bool
@@ -204,33 +108,9 @@ class ProfileData extends Model
         return $this->accPrivate;
     }
 
-    /**
-     * @param bool $accPrivate
-     *
-     * @return ProfileData
-     */
-    public function setAccPrivate(bool $accPrivate): ProfileData
-    {
-        $this->accPrivate = $accPrivate;
-
-        return $this;
-    }
-
     public function isAccPrivateGroup(): bool
     {
         return $this->accPrivateGroup;
-    }
-
-    /**
-     * @param bool $accPrivateGroup
-     *
-     * @return ProfileData
-     */
-    public function setAccPrivateGroup(bool $accPrivateGroup): ProfileData
-    {
-        $this->accPrivateGroup = $accPrivateGroup;
-
-        return $this;
     }
 
     public function isAccPermission(): bool
@@ -238,33 +118,9 @@ class ProfileData extends Model
         return $this->accPermission;
     }
 
-    /**
-     * @param bool $accPermission
-     *
-     * @return ProfileData
-     */
-    public function setAccPermission(bool $accPermission): ProfileData
-    {
-        $this->accPermission = $accPermission;
-
-        return $this;
-    }
-
     public function isAccPublicLinks(): bool
     {
         return $this->accPublicLinks;
-    }
-
-    /**
-     * @param bool $accPublicLinks
-     *
-     * @return ProfileData
-     */
-    public function setAccPublicLinks(bool $accPublicLinks): ProfileData
-    {
-        $this->accPublicLinks = $accPublicLinks;
-
-        return $this;
     }
 
     public function isAccGlobalSearch(): bool
@@ -272,33 +128,9 @@ class ProfileData extends Model
         return $this->accGlobalSearch;
     }
 
-    /**
-     * @param bool $accGlobalSearch
-     *
-     * @return ProfileData
-     */
-    public function setAccGlobalSearch(bool $accGlobalSearch): ProfileData
-    {
-        $this->accGlobalSearch = $accGlobalSearch;
-
-        return $this;
-    }
-
     public function isConfigGeneral(): bool
     {
         return $this->configGeneral;
-    }
-
-    /**
-     * @param bool $configGeneral
-     *
-     * @return ProfileData
-     */
-    public function setConfigGeneral(bool $configGeneral): ProfileData
-    {
-        $this->configGeneral = $configGeneral;
-
-        return $this;
     }
 
     public function isConfigEncryption(): bool
@@ -306,33 +138,9 @@ class ProfileData extends Model
         return $this->configEncryption;
     }
 
-    /**
-     * @param bool $configEncryption
-     *
-     * @return ProfileData
-     */
-    public function setConfigEncryption(bool $configEncryption): ProfileData
-    {
-        $this->configEncryption = $configEncryption;
-
-        return $this;
-    }
-
     public function isConfigBackup(): bool
     {
         return $this->configBackup;
-    }
-
-    /**
-     * @param bool $configBackup
-     *
-     * @return ProfileData
-     */
-    public function setConfigBackup(bool $configBackup): ProfileData
-    {
-        $this->configBackup = $configBackup;
-
-        return $this;
     }
 
     public function isConfigImport(): bool
@@ -340,33 +148,9 @@ class ProfileData extends Model
         return $this->configImport;
     }
 
-    /**
-     * @param bool $configImport
-     *
-     * @return ProfileData
-     */
-    public function setConfigImport(bool $configImport): ProfileData
-    {
-        $this->configImport = $configImport;
-
-        return $this;
-    }
-
     public function isMgmUsers(): bool
     {
         return $this->mgmUsers;
-    }
-
-    /**
-     * @param bool $mgmUsers
-     *
-     * @return ProfileData
-     */
-    public function setMgmUsers(bool $mgmUsers): ProfileData
-    {
-        $this->mgmUsers = $mgmUsers;
-
-        return $this;
     }
 
     public function isMgmGroups(): bool
@@ -374,33 +158,9 @@ class ProfileData extends Model
         return $this->mgmGroups;
     }
 
-    /**
-     * @param bool $mgmGroups
-     *
-     * @return ProfileData
-     */
-    public function setMgmGroups(bool $mgmGroups): ProfileData
-    {
-        $this->mgmGroups = $mgmGroups;
-
-        return $this;
-    }
-
     public function isMgmProfiles(): bool
     {
         return $this->mgmProfiles;
-    }
-
-    /**
-     * @param bool $mgmProfiles
-     *
-     * @return ProfileData
-     */
-    public function setMgmProfiles(bool $mgmProfiles): ProfileData
-    {
-        $this->mgmProfiles = $mgmProfiles;
-
-        return $this;
     }
 
     public function isMgmCategories(): bool
@@ -408,33 +168,9 @@ class ProfileData extends Model
         return $this->mgmCategories;
     }
 
-    /**
-     * @param bool $mgmCategories
-     *
-     * @return ProfileData
-     */
-    public function setMgmCategories(bool $mgmCategories): ProfileData
-    {
-        $this->mgmCategories = $mgmCategories;
-
-        return $this;
-    }
-
     public function isMgmCustomers(): bool
     {
         return $this->mgmCustomers;
-    }
-
-    /**
-     * @param bool $mgmCustomers
-     *
-     * @return ProfileData
-     */
-    public function setMgmCustomers(bool $mgmCustomers): ProfileData
-    {
-        $this->mgmCustomers = $mgmCustomers;
-
-        return $this;
     }
 
     public function isMgmApiTokens(): bool
@@ -442,33 +178,9 @@ class ProfileData extends Model
         return $this->mgmApiTokens;
     }
 
-    /**
-     * @param bool $mgmApiTokens
-     *
-     * @return ProfileData
-     */
-    public function setMgmApiTokens(bool $mgmApiTokens): ProfileData
-    {
-        $this->mgmApiTokens = $mgmApiTokens;
-
-        return $this;
-    }
-
     public function isMgmPublicLinks(): bool
     {
         return $this->mgmPublicLinks;
-    }
-
-    /**
-     * @param bool $mgmPublicLinks
-     *
-     * @return ProfileData
-     */
-    public function setMgmPublicLinks(bool $mgmPublicLinks): ProfileData
-    {
-        $this->mgmPublicLinks = $mgmPublicLinks;
-
-        return $this;
     }
 
     public function isMgmAccounts(): bool
@@ -476,33 +188,9 @@ class ProfileData extends Model
         return $this->mgmAccounts;
     }
 
-    /**
-     * @param bool $mgmAccounts
-     *
-     * @return ProfileData
-     */
-    public function setMgmAccounts(bool $mgmAccounts): ProfileData
-    {
-        $this->mgmAccounts = $mgmAccounts;
-
-        return $this;
-    }
-
     public function isMgmTags(): bool
     {
         return $this->mgmTags;
-    }
-
-    /**
-     * @param bool $mgmTags
-     *
-     * @return ProfileData
-     */
-    public function setMgmTags(bool $mgmTags): ProfileData
-    {
-        $this->mgmTags = $mgmTags;
-
-        return $this;
     }
 
     public function isMgmFiles(): bool
@@ -510,33 +198,9 @@ class ProfileData extends Model
         return $this->mgmFiles;
     }
 
-    /**
-     * @param bool $mgmFiles
-     *
-     * @return ProfileData
-     */
-    public function setMgmFiles(bool $mgmFiles): ProfileData
-    {
-        $this->mgmFiles = $mgmFiles;
-
-        return $this;
-    }
-
     public function isMgmItemsPreset(): bool
     {
         return $this->mgmItemsPreset;
-    }
-
-    /**
-     * @param bool $mgmItemsPreset
-     *
-     * @return ProfileData
-     */
-    public function setMgmItemsPreset(bool $mgmItemsPreset): ProfileData
-    {
-        $this->mgmItemsPreset = $mgmItemsPreset;
-
-        return $this;
     }
 
     public function isEvl(): bool
@@ -544,33 +208,9 @@ class ProfileData extends Model
         return $this->evl;
     }
 
-    /**
-     * @param bool $evl
-     *
-     * @return ProfileData
-     */
-    public function setEvl(bool $evl): ProfileData
-    {
-        $this->evl = $evl;
-
-        return $this;
-    }
-
     public function isMgmCustomFields(): bool
     {
         return $this->mgmCustomFields;
-    }
-
-    /**
-     * @param bool $mgmCustomFields
-     *
-     * @return ProfileData
-     */
-    public function setMgmCustomFields(bool $mgmCustomFields): ProfileData
-    {
-        $this->mgmCustomFields = $mgmCustomFields;
-
-        return $this;
     }
 
     /**
