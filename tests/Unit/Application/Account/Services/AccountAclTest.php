@@ -43,6 +43,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserToUserGroup;
 use SP\Application\User\Ports\UserToUserGroupService;
@@ -184,17 +185,17 @@ class AccountAclTest extends UnitaryTestCase
     #[Group('acl:admin')]
     public function testGetAclForAdminApp(): void
     {
-        $this->context
-            ->getUserProfile()
-            ->setAccAdd(true)
-            ->setAccView(true)
-            ->setAccViewPass(true)
-            ->setAccEdit(true)
-            ->setAccEditPass(true)
-            ->setAccFiles(true)
-            ->setAccDelete(true)
-            ->setAccPermission(true)
-            ->setAccViewHistory(true);
+        $this->context->setUserProfile(new ProfileData([
+            'accAdd' => true,
+            'accView' => true,
+            'accViewPass' => true,
+            'accEdit' => true,
+            'accEditPass' => true,
+            'accFiles' => true,
+            'accDelete' => true,
+            'accPermission' => true,
+            'accViewHistory' => true,
+        ]));
 
         $this->checkForUserByExample(
             $this->setUpAccountEnvironment(
@@ -395,17 +396,17 @@ class AccountAclTest extends UnitaryTestCase
     #[Group('acl:admin')]
     public function testGetAclForAdminAcc(): void
     {
-        $this->context
-            ->getUserProfile()
-            ->setAccAdd(true)
-            ->setAccView(true)
-            ->setAccViewPass(true)
-            ->setAccEdit(true)
-            ->setAccEditPass(true)
-            ->setAccFiles(true)
-            ->setAccDelete(true)
-            ->setAccPermission(true)
-            ->setAccViewHistory(true);
+        $this->context->setUserProfile(new ProfileData([
+            'accAdd' => true,
+            'accView' => true,
+            'accViewPass' => true,
+            'accEdit' => true,
+            'accEditPass' => true,
+            'accFiles' => true,
+            'accDelete' => true,
+            'accPermission' => true,
+            'accViewHistory' => true,
+        ]));
 
         $exampleAcl = $this->getExampleAclForAdmin()->setShowLink(false);
 
@@ -442,9 +443,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccViewPass($shouldView);
+        $this->context->setUserProfile(new ProfileData(['accViewPass' => $shouldView]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -477,9 +476,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccDelete($shouldView);
+        $this->context->setUserProfile(new ProfileData(['accDelete' => $shouldView]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -512,9 +509,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccEditPass($shouldEdit);
+        $this->context->setUserProfile(new ProfileData(['accEditPass' => $shouldEdit]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -547,9 +542,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccEdit($shouldEdit);
+        $this->context->setUserProfile(new ProfileData(['accEdit' => $shouldEdit]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -583,9 +576,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccPermission($shouldEdit);
+        $this->context->setUserProfile(new ProfileData(['accPermission' => $shouldEdit]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -618,9 +609,7 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccFiles($shouldEdit);
+        $this->context->setUserProfile(new ProfileData(['accFiles' => $shouldEdit]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)
@@ -653,10 +642,10 @@ class AccountAclTest extends UnitaryTestCase
     ): void {
         $shouldViewOrEdit = $shouldView || $shouldEdit;
 
-        $this->context
-            ->getUserProfile()
-            ->setAccView($shouldViewOrEdit)
-            ->setAccEdit($shouldEdit);
+        $this->context->setUserProfile(new ProfileData([
+            'accView' => $shouldViewOrEdit,
+            'accEdit' => $shouldEdit,
+        ]));
 
         $example = (new AccountPermission(0))
             ->setCompiledAccountAccess(true)

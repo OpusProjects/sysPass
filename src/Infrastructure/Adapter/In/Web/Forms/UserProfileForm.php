@@ -24,7 +24,6 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Forms;
 
-use ReflectionClass;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -83,76 +82,73 @@ final class UserProfileForm extends FormBase implements FormInterface
         ]))->dehydrate($profileData);
     }
 
-    /**
-     * @return \SP\Domain\User\Models\ProfileData
-     */
     private function getProfileDataFromRequest(): ProfileData
     {
-        $profileData = new ProfileData();
-        $profileData->setAccAdd($this->request->analyzeBool('profile_accadd', false));
-        $profileData->setAccView($this->request->analyzeBool('profile_accview', false));
-        $profileData->setAccViewPass($this->request->analyzeBool('profile_accviewpass', false));
-        $profileData->setAccViewHistory($this->request->analyzeBool('profile_accviewhistory', false));
-        $profileData->setAccEdit($this->request->analyzeBool('profile_accedit', false));
-        $profileData->setAccEditPass($this->request->analyzeBool('profile_acceditpass', false));
-        $profileData->setAccDelete($this->request->analyzeBool('profile_accdel', false));
-        $profileData->setAccFiles($this->request->analyzeBool('profile_accfiles', false));
-        $profileData->setAccPublicLinks($this->request->analyzeBool('profile_accpublinks', false));
-        $profileData->setAccPrivate($this->request->analyzeBool('profile_accprivate', false));
-        $profileData->setAccPrivateGroup($this->request->analyzeBool('profile_accprivategroup', false));
-        $profileData->setAccPermission($this->request->analyzeBool('profile_accpermissions', false));
-        $profileData->setAccGlobalSearch($this->request->analyzeBool('profile_accglobalsearch', false));
-        $profileData->setConfigGeneral($this->request->analyzeBool('profile_config', false));
-        $profileData->setConfigEncryption($this->request->analyzeBool('profile_configmpw', false));
-        $profileData->setConfigBackup($this->request->analyzeBool('profile_configback', false));
-        $profileData->setConfigImport($this->request->analyzeBool('profile_configimport', false));
-        $profileData->setMgmCategories($this->request->analyzeBool('profile_categories', false));
-        $profileData->setMgmCustomers($this->request->analyzeBool('profile_customers', false));
-        $profileData->setMgmCustomFields($this->request->analyzeBool('profile_customfields', false));
-        $profileData->setMgmUsers($this->request->analyzeBool('profile_users', false));
-        $profileData->setMgmGroups($this->request->analyzeBool('profile_groups', false));
-        $profileData->setMgmProfiles($this->request->analyzeBool('profile_profiles', false));
-        $profileData->setMgmApiTokens($this->request->analyzeBool('profile_apitokens', false));
-        $profileData->setMgmPublicLinks($this->request->analyzeBool('profile_publinks', false));
-        $profileData->setMgmAccounts($this->request->analyzeBool('profile_accounts', false));
-        $profileData->setMgmFiles($this->request->analyzeBool('profile_files', false));
-        $profileData->setMgmItemsPreset($this->request->analyzeBool('profile_items_preset', false));
-        $profileData->setMgmTags($this->request->analyzeBool('profile_tags', false));
-        $profileData->setEvl($this->request->analyzeBool('profile_eventlog', false));
+        $profileData = new ProfileData([
+            'accAdd' => $this->request->analyzeBool('profile_accadd', false),
+            'accView' => $this->request->analyzeBool('profile_accview', false),
+            'accViewPass' => $this->request->analyzeBool('profile_accviewpass', false),
+            'accViewHistory' => $this->request->analyzeBool('profile_accviewhistory', false),
+            'accEdit' => $this->request->analyzeBool('profile_accedit', false),
+            'accEditPass' => $this->request->analyzeBool('profile_acceditpass', false),
+            'accDelete' => $this->request->analyzeBool('profile_accdel', false),
+            'accFiles' => $this->request->analyzeBool('profile_accfiles', false),
+            'accPublicLinks' => $this->request->analyzeBool('profile_accpublinks', false),
+            'accPrivate' => $this->request->analyzeBool('profile_accprivate', false),
+            'accPrivateGroup' => $this->request->analyzeBool('profile_accprivategroup', false),
+            'accPermission' => $this->request->analyzeBool('profile_accpermissions', false),
+            'accGlobalSearch' => $this->request->analyzeBool('profile_accglobalsearch', false),
+            'configGeneral' => $this->request->analyzeBool('profile_config', false),
+            'configEncryption' => $this->request->analyzeBool('profile_configmpw', false),
+            'configBackup' => $this->request->analyzeBool('profile_configback', false),
+            'configImport' => $this->request->analyzeBool('profile_configimport', false),
+            'mgmCategories' => $this->request->analyzeBool('profile_categories', false),
+            'mgmCustomers' => $this->request->analyzeBool('profile_customers', false),
+            'mgmCustomFields' => $this->request->analyzeBool('profile_customfields', false),
+            'mgmUsers' => $this->request->analyzeBool('profile_users', false),
+            'mgmGroups' => $this->request->analyzeBool('profile_groups', false),
+            'mgmProfiles' => $this->request->analyzeBool('profile_profiles', false),
+            'mgmApiTokens' => $this->request->analyzeBool('profile_apitokens', false),
+            'mgmPublicLinks' => $this->request->analyzeBool('profile_publinks', false),
+            'mgmAccounts' => $this->request->analyzeBool('profile_accounts', false),
+            'mgmFiles' => $this->request->analyzeBool('profile_files', false),
+            'mgmItemsPreset' => $this->request->analyzeBool('profile_items_preset', false),
+            'mgmTags' => $this->request->analyzeBool('profile_tags', false),
+            'evl' => $this->request->analyzeBool('profile_eventlog', false),
+        ]);
 
         if (!$this->context->getUserData()->isAdminApp) {
-            $this->constrainProfileToActorPermissions($profileData);
+            $profileData = $this->constrainProfileToActorPermissions($profileData);
         }
 
         return $profileData;
     }
 
     /**
-     * Intersect every permission bit in $profileData with the acting user's own
-     * profile so that a non-admin delegate can never grant permissions they don't
-     * hold themselves. A null actor profile (no profile loaded) → all bits forced off.
+     * Intersect every permission bit with the acting user's own profile so that
+     * a non-admin delegate can never grant permissions they don't hold themselves.
      */
-    private function constrainProfileToActorPermissions(ProfileData $profileData): void
+    private function constrainProfileToActorPermissions(ProfileData $profileData): ProfileData
     {
         $actorProfile = $this->context->getUserProfile();
-        $reflection   = new ReflectionClass(ProfileData::class);
+        $mutations = [];
 
-        foreach ($reflection->getMethods() as $method) {
-            $getter = $method->getName();
-
-            if (!str_starts_with($getter, 'is') || $method->getNumberOfParameters() > 0) {
+        foreach ($profileData->toArray() as $prop => $value) {
+            if (!is_bool($value)) {
                 continue;
             }
 
-            $setter = 'set' . substr($getter, 2);
+            $getter = 'is' . ucfirst($prop);
 
-            if (!$reflection->hasMethod($setter)) {
+            if (!method_exists($profileData, $getter)) {
                 continue;
             }
 
             $actorHasBit = $actorProfile !== null && $actorProfile->$getter();
-            $profileData->$setter($profileData->$getter() && $actorHasBit);
+            $mutations[$prop] = $value && $actorHasBit;
         }
+
+        return $profileData->mutate($mutations);
     }
 
     /**

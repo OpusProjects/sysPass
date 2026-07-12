@@ -35,6 +35,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Services\Builders\AccountFilter;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -210,7 +211,7 @@ class AccountFilterUserTest extends UnitaryTestCase
     public function testBuildFilterWithGlobalSearchForGlobalSearch()
     {
         $this->config->getConfigData()->setGlobalSearch(true);
-        $this->context->getUserProfile()->setAccGlobalSearch(true);
+        $this->context->setUserProfile(new ProfileData(['accGlobalSearch' => true]));
 
         $this->setExpectationForGlobalSearch('Account');
 
@@ -257,7 +258,7 @@ class AccountFilterUserTest extends UnitaryTestCase
     public function testBuildFilterHistoryWithGlobalSearchForGlobalSearch()
     {
         $this->config->getConfigData()->setGlobalSearch(true);
-        $this->context->getUserProfile()->setAccGlobalSearch(true);
+        $this->context->setUserProfile(new ProfileData(['accGlobalSearch' => true]));
 
         $this->setExpectationForGlobalSearch('AccountHistory');
 
