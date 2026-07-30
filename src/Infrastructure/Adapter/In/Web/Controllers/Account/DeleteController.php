@@ -71,7 +71,7 @@ final class DeleteController extends AccountControllerBase
     /**
      * Delete action
      *
-     * @param int|null $id Account's ID
+     * @param int $id Account's ID
      * @throws ServiceException
      * @throws AccountPermissionException
      * @throws UnauthorizedActionException
@@ -83,7 +83,7 @@ final class DeleteController extends AccountControllerBase
      * @throws NoSuchItemException
      */
     #[Action(ResponseType::PLAIN_TEXT)]
-    public function deleteAction(?int $id = null): ActionResponse
+    public function deleteAction(int $id): ActionResponse
     {
         $this->accountHelper->initializeFor(AclActionsInterface::ACCOUNT_DELETE);
 

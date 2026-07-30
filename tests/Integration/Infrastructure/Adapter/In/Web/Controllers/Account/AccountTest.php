@@ -681,6 +681,26 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * Without a route id the dispatcher must refuse the call, the same way it does for the
+     * other single-account actions, instead of passing null into getByIdEnriched(int).
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteWithoutIdIsRejectedNotFatal()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/delete'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/Method parameter expects a value/');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
