@@ -66,6 +66,12 @@ abstract class BootstrapBase implements BootstrapInterface
 
     protected const OOPS_MESSAGE = 'Oops, it looks like this content does not exist...';
 
+    /**
+     * Declared here rather than in each subclass so the module is bound through the
+     * interface's setter instead of a cross-class write to a protected property.
+     */
+    protected ModuleInterface $module;
+
     final public function __construct(
         protected readonly ConfigDataInterface $configData,
         protected readonly Router              $router,
@@ -142,11 +148,19 @@ abstract class BootstrapBase implements BootstrapInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    final public function initializeModule(ModuleInterface $module): void
+    {
+        $this->module = $module;
+    }
+
+    /**
      * Handle the request through the router
      *
      * @return void
      */
-    final protected function handleRequest(): void
+    final public function handleRequest(): void
     {
         $this->router->dispatch($this->request->getRequest(), $this->response);
     }

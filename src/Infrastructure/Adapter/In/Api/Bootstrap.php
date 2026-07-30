@@ -46,8 +46,6 @@ use function SP\processException;
  */
 final class Bootstrap extends BootstrapBase
 {
-    protected ModuleInterface $module;
-
     private const ROUTE_MAP = [
         // Accounts
         ['GET',    '/api/v1/accounts',                'account',   'search'],
@@ -148,7 +146,7 @@ final class Bootstrap extends BootstrapBase
         logger('Boostrap:api');
 
         try {
-            $bootstrap->module = $initModule;
+            $bootstrap->initializeModule($initModule);
             $bootstrap->handleRequest();
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);

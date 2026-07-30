@@ -27,8 +27,20 @@ namespace SP\Domain\Core\Bootstrap;
 
 /**
  * Interface BootstrapInterface
+ *
+ * Both members are what run() needs from the instance the container hands it. They belong on
+ * the contract: reaching for them on a bare BootstrapInterface is only legal when the runtime
+ * class happens to match the calling scope, which is not something the type system enforces.
  */
 interface BootstrapInterface
 {
+    /**
+     * Bind the module whose controllers this bootstrap will dispatch to.
+     */
+    public function initializeModule(ModuleInterface $module): void;
 
+    /**
+     * Dispatch the current request through the configured router.
+     */
+    public function handleRequest(): void;
 }
