@@ -106,6 +106,30 @@ class AccountManagerTest extends IntegrationTestCase
     }
 
     /**
+     * Without "items" the template would implode(null) and fatal, so the request has to be
+     * rejected the same way the delete actions reject an empty selection.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function bulkEditWithNoItems()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountManager/bulkEdit']
+            )
+        );
+
+        $this->expectOutputString('{"status":"ERROR","description":"No items selected","data":null}');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
