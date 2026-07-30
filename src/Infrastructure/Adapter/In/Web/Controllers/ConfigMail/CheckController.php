@@ -69,7 +69,7 @@ final class CheckController extends SimpleControllerBase
     {
         $mailParams = $this->handleMailConfig();
 
-        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients'));
+        $mailRecipients = ConfigUtil::mailAddressesAdapter($this->request->analyzeString('mail_recipients', ''));
 
         if (empty($mailParams->getServer()) || empty($mailParams->getFrom()) || empty($mailRecipients)) {
             throw new ValidationException(__u('Missing Mail parameters'));
@@ -87,17 +87,22 @@ final class CheckController extends SimpleControllerBase
     }
 
     /**
+     * MailParams takes non-nullable strings, but every analyze* getter returns null for a
+     * missing parameter — so these must be coalesced (as Mail::getParamsFromConfig() does)
+     * or a partial request fatals in the constructor before checkAction()'s own
+     * "Missing Mail parameters" validation can report it.
+     *
      * @return MailParams
      */
     private function handleMailConfig(): MailParams
     {
         return new MailParams(
-            $this->request->analyzeString('mail_server'),
+            $this->request->analyzeString('mail_server') ?? '',
             $this->request->analyzeInt('mail_port', 25),
-            $this->request->analyzeString('mail_user'),
-            $this->request->analyzeEncrypted('mail_pass'),
-            $this->request->analyzeString('mail_security'),
-            $this->request->analyzeEmail('mail_from'),
+            $this->request->analyzeString('mail_user') ?? '',
+            $this->request->analyzeEncrypted('mail_pass') ?? '',
+            $this->request->analyzeString('mail_security') ?? '',
+            $this->request->analyzeEmail('mail_from') ?? '',
             $this->request->analyzeBool('mail_auth_enabled', false)
         );
     }
