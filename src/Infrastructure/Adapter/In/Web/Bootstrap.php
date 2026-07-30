@@ -56,15 +56,13 @@ use function SP\processException;
  */
 final class Bootstrap extends BootstrapBase
 {
-    protected ModuleInterface $module;
-
     public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void
     {
         logger('------------');
         logger('Boostrap:web');
 
         try {
-            $bootstrap->module = $initModule;
+            $bootstrap->initializeModule($initModule);
             $bootstrap->handleRequest();
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface $e) {
             processException($e);
