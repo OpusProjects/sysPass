@@ -58,7 +58,12 @@ try {
 
     if (!DEBUG) {
         $cachePath = getFromEnv('CACHE_PATH', FileSystem::buildPath(APP_PATH, 'var', 'cache'));
-        $containerBuilder->enableCompilation($cachePath);
+        // The compiled class name must be per-module. Each module binds BootstrapInterface and
+        // ModuleInterface to its own classes, but php-di reuses an existing compiled file as-is
+        // without revalidating the definitions — so a single shared name means whichever entry
+        // point compiles first wins and the others get its bindings (e.g. api.php receiving
+        // Web\Bootstrap, which then fatals on the protected $module property).
+        $containerBuilder->enableCompilation($cachePath, sprintf('CompiledContainer%s', ucfirst(APP_MODULE)));
         $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($cachePath, 'proxies'));
     }
 
