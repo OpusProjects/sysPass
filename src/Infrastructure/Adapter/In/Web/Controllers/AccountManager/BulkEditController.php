@@ -92,10 +92,18 @@ final class BulkEditController extends ControllerBase
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
+        $itemsId = $this->getItemsIdFromRequest($this->request);
+
+        // The account_bulkedit template implodes this straight into a hidden input, so an
+        // absent "items" parameter has to be rejected here rather than fataling on null.
+        if (empty($itemsId)) {
+            return ActionResponse::error(__u('No items selected'));
+        }
+
         $this->view->assign('header', __('Bulk Update'));
         $this->view->assign('isView', false);
         $this->view->assign('route', 'accountManager/saveBulkEdit');
-        $this->view->assign('itemsId', $this->getItemsIdFromRequest($this->request));
+        $this->view->assign('itemsId', $itemsId);
 
         $this->setViewData();
 
