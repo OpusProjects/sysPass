@@ -73,8 +73,11 @@ final class NotificationForm extends FormBase implements FormInterface
      */
     protected function analyzeRequestData(): void
     {
-        $description = NotificationMessage::factory()
-            ->addDescription($this->request->analyzeString('notification_description'));
+        // addDescription() takes a non-nullable string, and composeHtml() always returns at
+        // least its wrapper <div> — so composing unconditionally both fataled on an absent
+        // field and left checkCommon()'s "A description is needed" unable to ever fire.
+        // Keep it null unless there is actual content, and let checkCommon() report it.
+        $rawDescription = $this->request->analyzeString('notification_description');
 
         $userId = $this->request->analyzeInt('notification_user');
 
@@ -82,7 +85,9 @@ final class NotificationForm extends FormBase implements FormInterface
             'id' => $this->itemId,
             'type' => $this->request->analyzeString('notification_type'),
             'component' => $this->request->analyzeString('notification_component'),
-            'description' => $description->composeHtml(),
+            'description' => empty($rawDescription)
+                ? null
+                : NotificationMessage::factory()->addDescription($rawDescription)->composeHtml(),
             'userId' => $userId,
             'checked' => $this->request->analyzeBool('notification_checkout', false),
         ];
