@@ -100,10 +100,19 @@ final class AuthToken extends Service implements AuthTokenService
     /**
      * @param int $id
      * @return AuthTokenModel
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
      */
     public function getById(int $id): AuthTokenModel
     {
-        return $this->authTokenRepository->getById($id)->getData(AuthTokenModel::class);
+        $result = $this->authTokenRepository->getById($id);
+
+        if ($result->getNumRows() === 0) {
+            throw NoSuchItemException::info(__u('Token not found'));
+        }
+
+        return $result->getData(AuthTokenModel::class);
     }
 
     /**
