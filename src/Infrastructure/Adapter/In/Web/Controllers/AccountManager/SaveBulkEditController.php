@@ -88,7 +88,16 @@ final class SaveBulkEditController extends ControllerBase
             return ActionResponse::error(__u('You don\'t have permission to do this operation'));
         }
 
-        $itemsId = Util::itemsIdAdapter($this->request->analyzeString('itemsId'));
+        $rawItemsId = $this->request->analyzeString('itemsId');
+
+        // itemsIdAdapter() takes a non-nullable string, and an empty one would explode() into
+        // a single "" — i.e. account id 0 — so an absent field has to be rejected here rather
+        // than fataling or silently targeting a bogus id.
+        if (empty($rawItemsId)) {
+            return ActionResponse::error(__u('No items selected'));
+        }
+
+        $itemsId = Util::itemsIdAdapter($rawItemsId);
 
         $accountBulkDto = new AccountUpdateBulkDto(
             $itemsId,

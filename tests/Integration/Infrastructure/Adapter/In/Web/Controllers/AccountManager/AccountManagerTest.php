@@ -255,6 +255,30 @@ class AccountManagerTest extends IntegrationTestCase
     }
 
     /**
+     * Without "itemsId" the update has no targets — it must be rejected rather than
+     * fataling in itemsIdAdapter(string) or, once coalesced, updating account id 0.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveBulkEditWithNoItems()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountManager/saveBulkEdit']
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"No items selected","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
