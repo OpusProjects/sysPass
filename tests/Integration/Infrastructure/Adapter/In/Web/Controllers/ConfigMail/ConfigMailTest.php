@@ -71,6 +71,40 @@ class ConfigMailTest extends IntegrationTestCase
     }
 
     /**
+     * A partial form must be reported as "Missing Mail parameters", not fatal while
+     * building MailParams — whose constructor takes non-nullable strings.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    #[TestWith([null, null, null])]
+    #[TestWith(['test_server', null, null])]
+    #[TestWith([null, 'me@email.com', null])]
+    #[TestWith(['test_server', 'me@email.com', null])]
+    public function checkWithMissingParameters(?string $mailServer, ?string $mailFrom, ?string $mailRecipients)
+    {
+        $data = array_filter(
+            [
+                'mail_enabled' => true,
+                'mail_server' => $mailServer,
+                'mail_from' => $mailFrom,
+                'mail_recipients' => $mailRecipients
+            ],
+            static fn($value) => $value !== null
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configMail/check'], $data),
+        );
+
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"Missing Mail parameters"/');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws Exception
