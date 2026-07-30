@@ -470,6 +470,27 @@ class AuthTokenTest extends UnitaryTestCase
         $this->assertEquals($authToken, $out);
     }
 
+    /**
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function testGetByIdWithUnknownId()
+    {
+        $id = self::$faker->randomNumber();
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([]));
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Token not found');
+
+        $this->authToken->getById($id);
+    }
+
     public function testGetAll()
     {
         $authToken = AuthTokenGenerator::factory()->buildAuthToken();
