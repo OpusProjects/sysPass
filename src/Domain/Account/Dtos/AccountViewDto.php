@@ -43,7 +43,7 @@ class AccountViewDto extends Dto
     public function __construct(
         public readonly int     $id,
         public readonly string  $name,
-        public readonly string  $login,
+        public readonly ?string $login,
         public readonly int     $clientId,
         public readonly int     $categoryId,
         public readonly string  $pass,
@@ -53,8 +53,8 @@ class AccountViewDto extends Dto
         // clears it: the vault holds the already-decrypted password, so the account's crypt key
         // is not — and should not be — carried into a publicly reachable blob.
         public readonly ?string $key,
-        public readonly string  $url,
-        public readonly string  $notes,
+        public readonly ?string $url,
+        public readonly ?string $notes,
         public readonly int     $userEditId,
         public readonly string  $userEditName,
         public readonly string  $userEditLogin,
@@ -106,7 +106,7 @@ class AccountViewDto extends Dto
         return $this->name;
     }
 
-    public function getLogin(): string
+    public function getLogin(): ?string
     {
         return $this->login;
     }
@@ -141,12 +141,12 @@ class AccountViewDto extends Dto
         return $this->key;
     }
 
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    public function getNotes(): string
+    public function getNotes(): ?string
     {
         return $this->notes;
     }
