@@ -184,11 +184,11 @@ abstract class ApiTestCase extends TestCase
      * @return stdClass {status:int, body:stdClass}
      * @throws Exception
      */
-    final protected function callApi(int $actionId, array $params): stdClass
+    final protected function callApi(int $actionId, array $params, ?int $asUserId = null): stdClass
     {
         // Create the auth token first (in its own container) — it persists in the
         // shared real DB for the dispatch container's lookup
-        $token = $this->createToken($actionId);
+        $token = $this->createToken($actionId, $asUserId);
 
         $request = $this->buildRestRequest($actionId, $token, $params);
 
@@ -207,7 +207,7 @@ abstract class ApiTestCase extends TestCase
     /**
      * @throws Exception
      */
-    private function createToken(int $actionId): string
+    private function createToken(int $actionId, ?int $asUserId = null): string
     {
         // One token per call; a repeated action would otherwise duplicate-key
         self::truncateTable('AuthToken');
@@ -224,10 +224,12 @@ abstract class ApiTestCase extends TestCase
 
         $authTokenService = $dic->get(AuthTokenService::class);
 
+        // $asUserId issues the token for another user, so a test can act as somebody who does
+        // not own the account. It defaults to the admin, whose ACL bypass every other test relies on.
         $id = $authTokenService->create(
             new AuthTokenModel([
                 'actionId' => $actionId,
-                'userId' => self::ADMIN_USER_ID,
+                'userId' => $asUserId ?? self::ADMIN_USER_ID,
                 'hash' => self::AUTH_TOKEN_PASS,
                 'createdBy' => self::ADMIN_USER_ID,
             ])

@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
 use function SP\__;
@@ -47,6 +48,13 @@ final class DeleteController extends AccountBase
         $id = $this->apiService->getParamInt('id', true);
 
         $accountDetails = $this->accountService->getByIdEnriched($id);
+
+        $this->checkAccountAccess(
+            AclActionsInterface::ACCOUNT_DELETE,
+            $this->accountService->withUserGroups(
+                $this->accountService->withUsers(new AccountEnrichedDto($accountDetails))
+            )
+        );
 
         $this->accountService->delete($id);
 
