@@ -28,6 +28,7 @@ namespace SP\Tests\Integration\Infrastructure\Adapter\In\Web\Controllers\ConfigI
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -71,6 +72,55 @@ class ConfigImportTest extends IntegrationTestCase
             'importMasterPwd' => self::$faker->password(),
             'csvDelimiter' => ';',
         ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
+        );
+
+        $this->expectOutputString(
+            '{"status":"OK","description":"Import finished","data":"Please check out the event log for more details"}'
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * ImportParamsDto's `string $delimiter = ';'` default can't apply when the analyzed value is
+     * passed positionally, so an absent or empty csvDelimiter has to fall back here instead of
+     * reaching the constructor as null.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    #[TestWith([null])]
+    #[TestWith([''])]
+    public function importWithoutCsvDelimiter(?string $delimiter)
+    {
+        $file = sprintf('%s.csv', self::$faker->filePath());
+
+        file_put_contents($file, getResource('import', 'data.csv'));
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/plain'
+            ]
+        ];
+
+        $data = [
+            'import_defaultuser' => self::$faker->randomNumber(3),
+            'import_defaultgroup' => self::$faker->randomNumber(3),
+            'importPwd' => self::$faker->password(),
+            'importMasterPwd' => self::$faker->password(),
+        ];
+
+        if ($delimiter !== null) {
+            $data['csvDelimiter'] = $delimiter;
+        }
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
