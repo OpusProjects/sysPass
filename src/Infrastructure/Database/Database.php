@@ -242,7 +242,16 @@ final class Database implements DatabaseInterface
                 );
             }
 
-            throw QueryException::critical($e->getMessage(), (string)$e->getCode(), (int)$e->getCode(), $e);
+            // Same split as the constraint branch above: a translated summary as the message,
+            // the raw driver text as the hint. Passing $e->getMessage() as the message put
+            // "SQLSTATE[22003]: ... column 'userId' ..." in front of the user (and the SQLSTATE
+            // in the hint, where the detail belongs) for everything that isn't a 23000.
+            throw QueryException::critical(
+                __u('Error while doing the query'),
+                $e->getMessage(),
+                (int)$e->getCode(),
+                $e
+            );
         }
     }
 
