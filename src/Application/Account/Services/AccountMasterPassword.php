@@ -242,8 +242,21 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
 
             [$eventMessage, $errorCount] = $this->processAccounts(
                 $this->accountHistoryService->getAccountsPassData(),
-                function (int $accountId, EncryptedPassword $encryptedPassword) {
-                    $this->accountHistoryService->updatePasswordMasterPass($accountId, $encryptedPassword);
+                function (int $accountId, EncryptedPassword $encryptedPassword) use ($updateMasterPassRequest) {
+                    // AccountHistory.mPassHash is NOT NULL, and getPasswordEncrypted() builds an
+                    // EncryptedPassword without a hash — writing that null aborted the whole
+                    // rotation. The column records which master password a row is encrypted
+                    // under (processAccounts() skips rows whose hash doesn't match the current
+                    // one), and this row has just been re-encrypted under the new password, so
+                    // stamp its hash. Live accounts need no equivalent: Account has no such column.
+                    $this->accountHistoryService->updatePasswordMasterPass(
+                        $accountId,
+                        new EncryptedPassword(
+                            $encryptedPassword->getPass(),
+                            $encryptedPassword->getKey(),
+                            $updateMasterPassRequest->getHash()
+                        )
+                    );
                 },
                 $updateMasterPassRequest
             );

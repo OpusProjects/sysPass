@@ -215,6 +215,45 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
+     * AccountHistory.mPassHash is NOT NULL, and it records which master password a row is
+     * encrypted under — processAccounts() skips rows whose hash doesn't match the current one.
+     * getPasswordEncrypted() builds an EncryptedPassword without a hash, so the re-encrypted row
+     * has to be stamped with the new password's hash before it is written; passing the bare value
+     * through aborted the whole rotation on the database's NOT NULL constraint.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateHistoryMasterPasswordStampsTheNewMasterPassHash(): void
+    {
+        $request = new UpdateMasterPassRequest(
+            self::$faker->password(),
+            self::$faker->password(),
+            self::$faker->sha1()
+        );
+
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willReturn([AccountDataGenerator::factory()->buildAccountHistoryData()]);
+
+        $this->accountCrypt->expects(self::once())
+                           ->method('getPasswordEncrypted')
+                           ->willReturn(new EncryptedPassword('a_password', 'a_key'));
+
+        $this->accountHistory->expects(self::once())
+                             ->method('updatePasswordMasterPass')
+                             ->with(
+                                 self::anything(),
+                                 self::callback(
+                                     static fn(EncryptedPassword $encryptedPassword) => $encryptedPassword->getHash() === $request->getHash()
+                                         && $encryptedPassword->getPass() === 'a_password'
+                                         && $encryptedPassword->getKey() === 'a_key'
+                                 )
+                             );
+
+        $this->accountMasterPassword->updateHistoryMasterPassword($request);
+    }
+
+    /**
      * @throws ServiceException
      */
     public function testUpdateHistoryMasterPasswordWithNoAccounts(): void
