@@ -83,7 +83,6 @@ class ConfigImportTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
     }
-
     /**
      * ImportParamsDto's `string $delimiter = ';'` default can't apply when the analyzed value is
      * passed positionally, so an absent or empty csvDelimiter has to fall back here instead of
@@ -131,5 +130,30 @@ class ConfigImportTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * Posting no file is the failure path, so it must not be reported with the success string.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function importWithoutFileIsNotReportedAsSuccess()
+    {
+        $data = [
+            'import_defaultuser' => self::$faker->randomNumber(3),
+            'import_defaultgroup' => self::$faker->randomNumber(3),
+            'csvDelimiter' => ';',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"File does not exist"/');
     }
 }
