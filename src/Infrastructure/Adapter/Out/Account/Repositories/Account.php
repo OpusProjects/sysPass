@@ -110,13 +110,13 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
-     * @param int $accountId
+     * @param int $id A history entry's own id, not the account's
      *
      * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getPasswordHistoryForId(int $accountId): QueryResult
+    public function getPasswordHistoryForId(int $id): QueryResult
     {
         $query = $this->accountFilterUser
             ->buildFilterHistory()
@@ -129,8 +129,11 @@ final class Account extends BaseRepository implements AccountRepository
                        'AccountHistory.parentId',
                        'AccountHistory.mPassHash',
                    ])
-            ->where('AccountHistory.accountId = :accountId')
-            ->bindValues(['accountId' => $accountId]);
+            // The callers pass the id of one history entry — that is what the view's history
+            // select is keyed by. Filtering on accountId instead matched every entry of an
+            // account, and QueryResult::getData() only returns a row when exactly one matched.
+            ->where('AccountHistory.id = :id')
+            ->bindValues(['id' => $id]);
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPassItemWithIdAndNameModel::class));
     }
