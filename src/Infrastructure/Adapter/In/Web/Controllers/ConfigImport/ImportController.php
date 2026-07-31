@@ -103,7 +103,11 @@ final class ImportController extends SimpleControllerBase
             $this->request->analyzeInt('import_defaultgroup', $this->session->getUserData()->userGroupId),
             $this->request->analyzeEncrypted('importPwd'),
             $this->request->analyzeEncrypted('importMasterPwd'),
-            $this->request->analyzeString('csvDelimiter')
+            // ImportParamsDto declares `string $delimiter = ';'`, but passing the analyzed value
+            // positionally defeats that default: analyzeString() returns null for an absent field.
+            // ?: rather than a default argument, because an empty delimiter is no more usable —
+            // it reaches fgetcsv(), which requires exactly one character.
+            $this->request->analyzeString('csvDelimiter') ?: ';'
         );
     }
 
