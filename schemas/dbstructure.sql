@@ -378,6 +378,21 @@ CREATE TABLE `CustomFieldType`
   COLLATE = utf8mb3_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+-- Reference data, not user data: CustomFieldDefinition.typeId is a foreign key onto this table,
+-- so without these rows no custom field can be defined at all. The ids are fixed — existing
+-- installs and XML exports refer to them — and match this table's AUTO_INCREMENT = 11.
+INSERT INTO `CustomFieldType` (`id`, `name`, `text`)
+VALUES (1, 'text', 'Text'),
+       (2, 'password', 'Password'),
+       (3, 'date', 'Date'),
+       (4, 'number', 'Number'),
+       (5, 'email', 'Email'),
+       (6, 'telephone', 'Phone'),
+       (7, 'url', 'URL'),
+       (8, 'color', 'Color'),
+       (9, 'wiki', 'Wiki'),
+       (10, 'textarea', 'Text Area');
+
 --
 -- Table structure for table `EventLog`
 --
