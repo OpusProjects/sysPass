@@ -54,6 +54,8 @@ class KeepassImportTest extends UnitaryTestCase
 
     private const KEEPASS_FILE = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' . DIRECTORY_SEPARATOR .
                                  'data_keepass.xml';
+    private const KEEPASS_EMPTY_GROUP_FILE = RESOURCE_PATH . DIRECTORY_SEPARATOR . 'import' .
+                                             DIRECTORY_SEPARATOR . 'data_keepass_empty_group.xml';
     private KeepassImport              $keepassImport;
     private AccountService|MockObject  $accountService;
     private MockObject|CategoryService $categoryService;
@@ -144,6 +146,66 @@ class KeepassImportTest extends UnitaryTestCase
             ->willThrowException(SPException::error('test'));
 
         $this->keepassImport->doImport($importParamsDto);
+    }
+
+    /**
+     * An empty <Name/> has no child text node, so DOMNodeList::item(0) returns null. That used
+     * to reach setItem(string $groupName) and fatal; the group is simply skipped instead.
+     *
+     * @throws Exception
+     * @throws SPException
+     */
+    public function testDoImportWithEmptyGroupName()
+    {
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+
+        $this->clientService
+            ->expects(self::once())
+            ->method('getByName')
+            ->with('KeePass')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->clientService
+            ->expects(self::once())
+            ->method('create')
+            ->willReturn(100);
+
+        $this->categoryService
+            ->expects(self::exactly(8))
+            ->method('getByName')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->accountService
+            ->expects(self::exactly(5))
+            ->method('create');
+
+        // One fewer category than the intact fixture's 9: the nameless group is skipped, and
+        // no category is ever created with an empty name.
+        $this->categoryService
+            ->expects(self::exactly(8))
+            ->method('create')
+            ->with(self::callback(static fn(Category $category) => !empty($category->getName())))
+            ->willReturn(200);
+
+        $document = new DOMDocument();
+        $document->load(self::KEEPASS_EMPTY_GROUP_FILE, LIBXML_NOBLANKS);
+
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->createStub(TagService::class),
+            $this->createStub(ConfigService::class)
+        );
+
+        $keepassImport = new KeepassImport(
+            $this->application,
+            $importHelper,
+            $this->createStub(CryptInterface::class),
+            $document
+        );
+
+        $keepassImport->doImport($importParamsDto);
     }
 
     protected function setUp(): void
