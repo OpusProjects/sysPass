@@ -37,6 +37,8 @@ use stdClass;
 #[Group('integration')]
 class AccountControllerTest extends ApiTestCase
 {
+    private const OTHER_USER_ID = 3;
+
     private const PARAMS = [
         'name' => 'API test',
         'categoryId' => 2,
@@ -57,6 +59,20 @@ class AccountControllerTest extends ApiTestCase
     private function createAccount(?array $params = null): stdClass
     {
         return $this->callApi(AclActionsInterface::ACCOUNT_CREATE, $params ?? self::PARAMS);
+    }
+
+    /**
+     * PARAMS puts the account in group 2, which OTHER_USER_ID also belongs to — that user would
+     * then legitimately reach it through group access. Own it by the admin (group 1) so the
+     * access tests exercise a user with no relationship to the account at all.
+     */
+    private function createAccountOwnedByAdmin(): stdClass
+    {
+        $params = self::PARAMS;
+        $params['userId'] = 1;
+        $params['userGroupId'] = 1;
+
+        return $this->createAccount($params);
     }
 
     public function testCreateAction(): void
@@ -131,12 +147,17 @@ class AccountControllerTest extends ApiTestCase
         $this->assertSame(self::PARAMS['pass'], $r->body->data->password);
     }
 
+    /**
+     * The account is now loaded to authorise the caller before its password is fetched, so an
+     * unknown id is reported by getByIdEnriched() rather than by getPasswordForId(). Both are
+     * not-found errors; only the wording differs.
+     */
     public function testViewPassActionRequiredParamater(): void
     {
         $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, []);
 
         $this->assertSame(404, $r->status);
-        $this->assertSame('Account not found', $r->body->error->message);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
     public function testViewPassActionNonExistant(): void
@@ -144,7 +165,7 @@ class AccountControllerTest extends ApiTestCase
         $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW_PASS, ['id' => 10]);
 
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Account not found', $r->body->error->message);
+        $this->assertSame("The account doesn't exist", $r->body->error->message);
     }
 
     public function testEditPassAction(): void
@@ -391,5 +412,75 @@ class AccountControllerTest extends ApiTestCase
     public static function getUnsetParams(): array
     {
         return [['name'], ['clientId'], ['categoryId']];
+    }
+
+    /**
+     * setupApi() only proves the token carries the action — it says nothing about whether this
+     * user may touch this account. Without a per-account check the API let any token holder read,
+     * edit and delete accounts belonging to anybody else, including private ones; the equivalent
+     * web controllers have always gone through AccountHelper::checkAccess().
+     *
+     * User 3 (user_a) is a plain user: not isAdminApp, not isAdminAcc, and in a different group
+     * from the admin who owns the account created here, with no permission granted on it.
+     *
+     * @throws Exception
+     */
+    #[DataProvider('getAccountActionsRequiringAccess')]
+    public function testAccountActionIsRefusedForAUserWithoutAccessToIt(int $actionId, array $extraParams): void
+    {
+        $id = $this->createAccountOwnedByAdmin()->body->itemId;
+
+        $r = $this->callApi($actionId, ['id' => $id] + $extraParams, self::OTHER_USER_ID);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame("You don't have permission to access this account", $r->body->error->message);
+    }
+
+    /**
+     * The refusal must also leave the account untouched — a denied delete that still deleted, or a
+     * denied edit that still wrote, would be worse than the disclosure.
+     *
+     * @throws Exception
+     */
+    public function testRefusedDeleteLeavesTheAccountInPlace(): void
+    {
+        $id = $this->createAccountOwnedByAdmin()->body->itemId;
+
+        $this->callApi(AclActionsInterface::ACCOUNT_DELETE, ['id' => $id], self::OTHER_USER_ID);
+
+        // Still readable by its owner.
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, ['id' => $id]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->data->name);
+    }
+
+    /**
+     * The owner must keep working — the guard has to reject the stranger, not everybody.
+     *
+     * @throws Exception
+     */
+    public function testAccountActionIsAllowedForItsOwner(): void
+    {
+        $id = $this->createAccountOwnedByAdmin()->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::ACCOUNT_VIEW, ['id' => $id]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame(self::PARAMS['name'], $r->body->data->data->name);
+    }
+
+    public static function getAccountActionsRequiringAccess(): array
+    {
+        return [
+            'view' => [AclActionsInterface::ACCOUNT_VIEW, []],
+            'viewPass' => [AclActionsInterface::ACCOUNT_VIEW_PASS, []],
+            'delete' => [AclActionsInterface::ACCOUNT_DELETE, []],
+            'edit' => [
+                AclActionsInterface::ACCOUNT_EDIT,
+                ['name' => 'hijacked', 'categoryId' => 1, 'clientId' => 1],
+            ],
+            'editPass' => [AclActionsInterface::ACCOUNT_EDIT_PASS, ['pass' => 'hijacked_pass']],
+        ];
     }
 }

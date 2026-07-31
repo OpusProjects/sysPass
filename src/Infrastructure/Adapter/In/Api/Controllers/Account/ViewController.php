@@ -55,11 +55,15 @@ final class ViewController extends AccountBase
 
         $accountDetails = $this->accountService->getByIdEnriched($id);
 
-        $this->accountService->incrementViewCounter($id);
-
         $accountEnrichedDto = new AccountEnrichedDto($accountDetails);
         $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
         $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
+
+        // Before the counter is touched, so a refused read leaves no trace on the account.
+        $this->checkAccountAccess(AclActionsInterface::ACCOUNT_VIEW, $accountEnrichedDto);
+
+        $this->accountService->incrementViewCounter($id);
+
         $accountEnrichedDto = $this->accountService->withTags($accountEnrichedDto);
 
         $this->eventDispatcher->notify(new Event(

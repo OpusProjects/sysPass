@@ -29,11 +29,13 @@ use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Ports\AccountAdapter;
+use SP\Application\Account\Ports\AccountAclService;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Api\Ports\ApiService;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
@@ -62,9 +64,10 @@ final class ViewPassController extends AccountBase
         AccountService         $accountService,
         CustomFieldDataService $customFieldService,
         AccountAdapter         $accountAdapter,
+        AccountAclService      $accountAclService,
         CryptInterface         $crypt
     ) {
-        parent::__construct($application, $router, $apiService, $acl, $accountPresetService, $accountService, $customFieldService, $accountAdapter);
+        parent::__construct($application, $router, $apiService, $acl, $accountPresetService, $accountService, $customFieldService, $accountAdapter, $accountAclService);
 
         $this->crypt = $crypt;
     }
@@ -77,6 +80,17 @@ final class ViewPassController extends AccountBase
         $this->setupApi(AclActionsInterface::ACCOUNT_VIEW_PASS);
 
         $id = $this->apiService->getParamInt('id', true);
+
+        // Authorise before the password is decrypted or the counter moves.
+        $this->checkAccountAccess(
+            AclActionsInterface::ACCOUNT_VIEW_PASS,
+            $this->accountService->withUserGroups(
+                $this->accountService->withUsers(
+                    new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
+                )
+            )
+        );
+
         $accountPassData = $this->accountService->getPasswordForId($id);
         $password = $this->crypt->decrypt(
             $accountPassData->getPass() ?? '',

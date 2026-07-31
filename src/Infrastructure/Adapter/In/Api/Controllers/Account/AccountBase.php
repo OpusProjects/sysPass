@@ -26,11 +26,17 @@ namespace SP\Infrastructure\Adapter\In\Api\Controllers\Account;
 
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Application\Application;
+use SP\Domain\Account\Dtos\AccountAclDto;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Ports\AccountAdapter;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Application\Account\Ports\AccountAclService;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
@@ -49,6 +55,7 @@ abstract class AccountBase extends ControllerBase
      */
     protected CustomFieldDataService $customFieldService;
     protected AccountAdapter $accountAdapter;
+    protected AccountAclService $accountAclService;
 
     /**
      * @param CustomFieldDataService<CustomFieldDataModel> $customFieldService
@@ -62,7 +69,8 @@ abstract class AccountBase extends ControllerBase
         AccountPresetService    $accountPresetService,
         AccountService          $accountService,
         CustomFieldDataService $customFieldService,
-        AccountAdapter $accountAdapter
+        AccountAdapter $accountAdapter,
+        AccountAclService $accountAclService
     ) {
         parent::__construct($application, $router, $apiService, $acl);
 
@@ -70,7 +78,32 @@ abstract class AccountBase extends ControllerBase
         $this->accountService = $accountService;
         $this->customFieldService = $customFieldService;
         $this->accountAdapter = $accountAdapter;
+        $this->accountAclService = $accountAclService;
 
         $this->apiService->setHelpClass(AccountHelp::class);
+    }
+
+    /**
+     * Authorise the caller against this specific account.
+     *
+     * setupApi() only validates that the token carries the action; it says nothing about whether
+     * this user may touch this account. The web controllers get that from
+     * AccountHelper::checkAccess(), and without the equivalent here a token holder could read,
+     * edit or delete any account by id — including other users' private ones.
+     *
+     * @throws AccountPermissionException
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    final protected function checkAccountAccess(int $actionId, AccountEnrichedDto $accountEnrichedDto): void
+    {
+        $accountPermission = $this->accountAclService->getAcl(
+            $actionId,
+            AccountAclDto::makeFromAccount($accountEnrichedDto)
+        );
+
+        if ($accountPermission->checkAccountAccess($actionId) === false) {
+            throw new AccountPermissionException();
+        }
     }
 }

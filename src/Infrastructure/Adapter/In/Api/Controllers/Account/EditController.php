@@ -29,6 +29,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Dtos\AccountUpdateDto;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
 use function SP\__;
@@ -47,6 +48,16 @@ final class EditController extends AccountBase
         $this->setupApi(AclActionsInterface::ACCOUNT_EDIT);
 
         $accountUpdateDto = $this->buildAccountUpdateDto();
+
+        // Authorise against the stored account before any of it is overwritten.
+        $this->checkAccountAccess(
+            AclActionsInterface::ACCOUNT_EDIT,
+            $this->accountService->withUserGroups(
+                $this->accountService->withUsers(
+                    new AccountEnrichedDto($this->accountService->getByIdEnriched($accountUpdateDto->id))
+                )
+            )
+        );
 
         $this->accountService->update($accountUpdateDto->id, $accountUpdateDto);
 
