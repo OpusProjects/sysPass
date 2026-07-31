@@ -28,6 +28,7 @@ namespace SP\Tests\Integration\Infrastructure\Adapter\In\Web\Controllers\ConfigA
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
@@ -68,6 +69,51 @@ class ConfigAccountTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+    }
+
+    /**
+     * account_expire_time is in days and gets multiplied up to seconds, so an unbounded value
+     * overflowed int arithmetic into a float that setAccountExpireTime(?int) refused.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[TestWith(['99999999999999999999'])]
+    #[TestWith(['-1'])]
+    #[TestWith([''])]
+    public function saveWithOutOfRangeExpireTime(string $expireTime)
+    {
+        $data = [
+            'account_expire_enabled' => true,
+            'account_expire_time' => $expireTime,
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+    }
+
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveWithoutExpireTime()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configAccount/save'], [])
         );
 
         IntegrationTestCase::runApp($container);
