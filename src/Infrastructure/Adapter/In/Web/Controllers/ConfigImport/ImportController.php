@@ -120,8 +120,10 @@ final class ImportController extends SimpleControllerBase
         $file = $this->request->getFile('inFile');
 
         if (!is_array($file)) {
+            // This branch is the *failure* path — nothing was uploaded — so it can't report
+            // 'File successfully uploaded', which is what the user was being shown.
             throw FileException::error(
-                __u('File successfully uploaded'),
+                __u('File does not exist'),
                 __u('Please check the web server user permissions')
             );
         }
