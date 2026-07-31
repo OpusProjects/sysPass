@@ -141,6 +141,19 @@ abstract class Model implements JsonSerializable, ArrayAccess
         return array_keys((new static())->toArray(null, $exclude));
     }
 
+    /**
+     * Assign an outer (non-class) property.
+     *
+     * Only for models that deliberately accept dynamic assignment — currently just Simple, which
+     * PDO::FETCH_CLASS populates through __set(). It has to land in the same bag toArray() reads,
+     * or the values are invisible to toArray()/mutate()/Dto::fromModel(). Model::__set() itself
+     * still throws: models stay immutable.
+     */
+    protected function setOuterProperty(string $name, mixed $value): void
+    {
+        $this->properties[$name] = $value;
+    }
+
     public function offsetExists(mixed $offset): bool
     {
         return array_key_exists($offset, $this->properties);
@@ -170,7 +183,10 @@ abstract class Model implements JsonSerializable, ArrayAccess
      */
     final public function mutate(array $properties): static
     {
-        return new static(array_merge($this->toArray(), $properties));
+        // includeOuter, or a model whose values live in the outer bag (a joined column, or any
+        // Simple) comes back holding nothing but $properties — changing one field silently
+        // discarded every other one.
+        return new static(array_merge($this->toArray(includeOuter: true), $properties));
     }
 
     /**

@@ -49,7 +49,10 @@ class AccountViewDto extends Dto
         public readonly string  $pass,
         public readonly int     $userId,
         public readonly string  $userName,
-        public readonly string  $key,
+        // Nullable because the only producer, PublicLink::getSecuredLinkData(), deliberately
+        // clears it: the vault holds the already-decrypted password, so the account's crypt key
+        // is not — and should not be — carried into a publicly reachable blob.
+        public readonly ?string $key,
         public readonly string  $url,
         public readonly string  $notes,
         public readonly int     $userEditId,
@@ -133,7 +136,7 @@ class AccountViewDto extends Dto
         return $this->userName;
     }
 
-    public function getKey(): string
+    public function getKey(): ?string
     {
         return $this->key;
     }

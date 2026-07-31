@@ -32,6 +32,7 @@ use Faker\Generator;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
+use SP\Domain\Common\Models\Simple;
 use SP\Tests\Support\Stubs\ModelStub;
 
 /**
@@ -185,5 +186,45 @@ class ModelTest extends TestCase
         $model = new ModelStub(['id' => 1, 'name' => 'red', 'extra' => 'outer']);
 
         self::assertSame($model->toArray(), $model->jsonSerialize());
+    }
+
+    /**
+     * Changing one field must not discard the outer (non-class) properties — for a Simple, whose
+     * values are all outer, that used to leave the mutated model holding only what was passed in.
+     */
+    public function testMutateKeepsOuterProperties()
+    {
+        $model = new ModelStub(['id' => 1, 'name' => 'red', 'extra' => 'outer']);
+
+        $mutated = $model->mutate(['name' => 'blue']);
+
+        self::assertSame(1, $mutated->getId());
+        self::assertSame('blue', $mutated->getName());
+        self::assertSame('outer', $mutated['extra']);
+    }
+
+    /**
+     * Simple has no class properties: PDO::FETCH_CLASS hydrates it through __set(), and those
+     * values have to land in the bag toArray(includeOuter: true) reads. They previously went to a
+     * private array of Simple's own, invisible to the parent, so every model round-tripped through
+     * toArray() — mutate(), Dto::fromModel() — silently came back empty.
+     */
+    public function testSimpleExposesDynamicallyAssignedProperties()
+    {
+        $simple = new Simple();
+        $simple->id = 7;
+        $simple->name = 'blue';
+
+        self::assertSame(['id' => 7, 'name' => 'blue'], $simple->toArray(null, null, true));
+
+        // Accessors keep working through the inherited implementations.
+        self::assertSame(7, $simple->id);
+        self::assertTrue(isset($simple->name));
+        self::assertSame('blue', $simple['name']);
+
+        self::assertSame(
+            ['id' => 7, 'name' => 'blue', 'pass' => 'secret'],
+            $simple->mutate(['pass' => 'secret'])->toArray(null, null, true)
+        );
     }
 }
