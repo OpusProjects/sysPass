@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -134,7 +135,7 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
      *
      * @param int $id the account ID
      *
-     * @return QueryResult<Item>
+     * @return QueryResult<AccountPermissionItem>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -154,6 +155,6 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
             ->bindValues(['accountId' => $id])
             ->orderBy(['User.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
     }
 }

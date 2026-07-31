@@ -29,6 +29,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Application\Account\Services\AccountToUserGroup;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -59,11 +60,13 @@ class AccountToUserGroupTest extends UnitaryTestCase
         $result =
             new QueryResult(
                 [
-                    new Item(
+                    // The repository maps these rows to AccountPermissionItem: it declares the
+                    // isEdit the permission queries select, which plain Item does not.
+                    new AccountPermissionItem(
                         [
                             'id' => self::$faker->randomNumber(),
                             'name' => self::$faker->colorName(),
-                            'isEdit' => self::$faker->boolean(),
+                            'isEdit' => self::$faker->numberBetween(0, 1),
                         ]
                     ),
                 ]
@@ -76,7 +79,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
             ->willReturn($result);
 
         $actual = $this->accountToUserGroup->getUserGroupsByAccountId($accountId);
-        $expected = $result->getData(Item::class)->toArray(null, null, true);
+        $expected = $result->getData(AccountPermissionItem::class)->toArray(null, null, true);
 
         $this->assertTrue($actual[0] instanceof Item);
         $this->assertEquals($expected, $actual[0]->toArray(null, null, true));

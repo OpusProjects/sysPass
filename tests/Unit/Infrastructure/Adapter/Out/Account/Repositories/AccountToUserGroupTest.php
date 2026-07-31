@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -85,7 +86,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['accountId'] === $id
-                       && $arg->getMapClassName() === Item::class
+                       && $arg->getMapClassName() === AccountPermissionItem::class
                        && !empty($query->getStatement());
             }
         );
@@ -216,7 +217,7 @@ class AccountToUserGroupTest extends UnitaryTestCase
                 $query = $arg->getQuery();
 
                 return $query->getBindValues()['userGroupId'] === $id
-                       && $arg->getMapClassName() === Item::class
+                       && $arg->getMapClassName() === AccountPermissionItem::class
                        && !empty($query->getStatement());
             }
         );
