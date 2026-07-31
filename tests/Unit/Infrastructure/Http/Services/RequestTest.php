@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Infrastructure\Http\Services;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -460,6 +461,42 @@ class RequestTest extends UnitaryTestCase
         $out = $request->analyzeInt('test', 456);
 
         $this->assertEquals(456, $out);
+    }
+
+    /**
+     * A present-but-unparseable value must fall back to the default too — otherwise callers
+     * asking for "an int or 456" get null, which then hits their non-nullable int parameters.
+     */
+    #[DataProvider('unparseableIntProvider')]
+    public function testAnalyzeIntWithUnparseableValueUsesDefault(string $value)
+    {
+        $this->ensureGet();
+
+        $this->paramsGet->set('test', $value);
+
+        $request = new Request($this->symfonyRequest, $this->cryptPKI);
+
+        $this->assertSame(456, $request->analyzeInt('test', 456));
+    }
+
+    public static function unparseableIntProvider(): array
+    {
+        return [['abc'], [''], ['   ']];
+    }
+
+    /**
+     * With no default there is nothing to fall back to, so null is still the right answer —
+     * the callers that omit it rely on that to drive their own validation.
+     */
+    public function testAnalyzeIntWithUnparseableValueAndNoDefaultIsNull()
+    {
+        $this->ensureGet();
+
+        $this->paramsGet->set('test', 'abc');
+
+        $request = new Request($this->symfonyRequest, $this->cryptPKI);
+
+        $this->assertNull($request->analyzeInt('test'));
     }
 
     public function testIsHttps()
