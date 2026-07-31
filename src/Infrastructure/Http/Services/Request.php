@@ -296,7 +296,11 @@ class Request implements RequestService
             return $default;
         }
 
-        return Filter::getInt($this->params->get($param));
+        // Filter::getInt() yields null for anything it can't read as an int ("abc", ""), so a
+        // present-but-unusable value has to fall back to $default too. A caller writing
+        // analyzeInt('mail_port', 25) is asking for an int or 25; handing it null instead only
+        // pushes the failure into the non-nullable int parameters these values feed.
+        return Filter::getInt($this->params->get($param)) ?? $default;
     }
 
     /**
