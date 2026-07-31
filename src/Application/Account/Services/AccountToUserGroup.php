@@ -28,6 +28,7 @@ namespace SP\Application\Account\Services;
 use SP\Application\Application;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Application\Account\Ports\AccountToUserGroupService;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -57,7 +58,7 @@ final class AccountToUserGroup extends Service implements AccountToUserGroupServ
     public function getUserGroupsByAccountId(int $id): array
     {
         return $this->accountToUserGroupRepository->getUserGroupsByAccountId($id)->getDataAsArray(
-            Item::class
+            AccountPermissionItem::class
         );
     }
 }

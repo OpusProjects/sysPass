@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -49,7 +50,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      *
      * @param int $id the account ID
      *
-     * @return QueryResult<Item>
+     * @return QueryResult<AccountPermissionItem>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -68,7 +69,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['accountId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
     }
 
     /**
@@ -76,7 +77,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
      *
      * @param int $id
      *
-     * @return QueryResult<Item>
+     * @return QueryResult<AccountPermissionItem>
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -95,7 +96,7 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
             ->bindValues(['userGroupId' => $id])
             ->orderBy(['UserGroup.name ASC']);
 
-        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
     }
 
     /**

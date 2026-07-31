@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Domain\Account\Ports;
 
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Domain\Common\Models\Item;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -79,7 +80,7 @@ interface AccountToUserRepository extends Repository
      *
      * @param int $id the account ID
      *
-     * @return QueryResult<Item>
+     * @return QueryResult<AccountPermissionItem>
      * @throws ConstraintException
      * @throws QueryException
      */
