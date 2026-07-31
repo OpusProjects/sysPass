@@ -50,11 +50,15 @@ use SP\Application\Export\Ports\XmlCategoryExportService;
 use SP\Application\Export\Ports\XmlClientExportService;
 use SP\Application\Export\Ports\XmlExportService;
 use SP\Application\Export\Ports\XmlTagExportService;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Application\User\Ports\UserGroupService;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\File\FileSystem;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class XmlExport
@@ -67,6 +71,7 @@ final class XmlExport extends Service implements XmlExportService
     private DOMDocument $document;
 
     /**
+     * @param UserGroupService<UserGroupModel> $userGroupService
      * @throws ServiceException
      */
     public function __construct(
@@ -76,7 +81,8 @@ final class XmlExport extends Service implements XmlExportService
         private readonly XmlAccountExportService    $xmlAccountExportService,
         private readonly XmlCategoryExportService   $xmlCategoryExportService,
         private readonly XmlTagExportService        $xmlTagExportService,
-        private readonly CryptInterface             $crypt
+        private readonly CryptInterface             $crypt,
+        private readonly UserGroupService           $userGroupService
     ) {
         parent::__construct($application);
 
@@ -188,7 +194,7 @@ final class XmlExport extends Service implements XmlExportService
             $nodeUser->setAttribute('id', (string)$userDto->id);
 
             $nodeUserGroup = $this->document->createElement('Group');
-            $nodeUserGroup->appendChild($this->document->createTextNode($userDto->userGroupName ?? ''));
+            $nodeUserGroup->appendChild($this->document->createTextNode($this->resolveUserGroupName($userDto)));
             $nodeUserGroup->setAttribute('id', (string)$userDto->userGroupId);
 
 
@@ -204,6 +210,33 @@ final class XmlExport extends Service implements XmlExportService
             $this->document->documentElement->appendChild($nodeMeta);
         } catch (Exception $e) {
             throw ServiceException::error($e->getMessage(), __u('Please check out the event log for more details'));
+        }
+    }
+
+    /**
+     * The session's UserDto carries no userGroupName: it is built from UserRepository::getByLogin(),
+     * which selects only the User table's own columns. Writing it produced an empty <Group>, and the
+     * export then failed its own schema — syspass.xsd types that element as NonEmptyString — so every
+     * export ended in "Invalid XML schema".
+     *
+     * Resolve the name from the id instead. It always yields something: User.userGroupId is NOT NULL,
+     * UserGroup.name is NOT NULL, and getByLogin() inner-joins UserGroup, so a logged-in user's group
+     * necessarily exists.
+     *
+     * @throws ServiceException
+     */
+    private function resolveUserGroupName(UserDto $userDto): string
+    {
+        if (!empty($userDto->userGroupName)) {
+            return $userDto->userGroupName;
+        }
+
+        try {
+            return $this->userGroupService->getById($userDto->userGroupId)->getName() ?? '';
+        } catch (Exception $e) {
+            processException($e);
+
+            return '';
         }
     }
 
