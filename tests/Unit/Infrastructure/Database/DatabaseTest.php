@@ -667,7 +667,7 @@ class DatabaseTest extends UnitaryTestCase
             ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(QueryException::class);
-        $this->expectExceptionMessage('test');
+        $this->expectExceptionMessage('Error while doing the query');
 
         $this->database->runQuery($queryData);
     }
@@ -700,7 +700,7 @@ class DatabaseTest extends UnitaryTestCase
             ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(QueryException::class);
-        $this->expectExceptionMessage('test');
+        $this->expectExceptionMessage('Error while doing the query');
 
         $this->database->runQuery($queryData);
     }
@@ -737,9 +737,53 @@ class DatabaseTest extends UnitaryTestCase
                      ->willThrowException(new RuntimeException('test'));
 
         $this->expectException(QueryException::class);
-        $this->expectExceptionMessage('test');
+        $this->expectExceptionMessage('Error while doing the query');
 
         $this->database->runQuery($queryData);
+    }
+
+    /**
+     * The driver text must not be lost when it stops being the message — it moves to the hint,
+     * which is what the API surfaces as error.detail.
+     *
+     * @throws Exception
+     */
+    public function testRunQueryKeepsDriverDetailAsHint()
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdoStatement = $this->createStub(PDOStatement::class);
+        $query = $this->createStub(QueryInterface::class);
+        $queryData = $this->createStub(QueryDataInterface::class);
+
+        $queryData->method('getOnErrorMessage')
+                  ->willReturn('an_error');
+
+        $query->method('getStatement')
+              ->willReturn('test_query');
+
+        $queryData->method('getQuery')
+                  ->willReturn($query);
+
+        $this->dbStorageHandler
+            ->method('getConnection')
+            ->willReturn($pdo);
+
+        $pdo->method('prepare')
+            ->willReturn($pdoStatement);
+
+        $driverMessage = "SQLSTATE[22003]: Numeric value out of range: 1264 Out of range value for column 'userId' at row 1";
+
+        $pdoStatement->method('execute')
+                     ->willThrowException(new RuntimeException($driverMessage, 22003));
+
+        try {
+            $this->database->runQuery($queryData);
+            self::fail('Expected a QueryException');
+        } catch (QueryException $e) {
+            $this->assertSame('Error while doing the query', $e->getMessage());
+            $this->assertSame($driverMessage, $e->getHint());
+            $this->assertSame(22003, $e->getCode());
+        }
     }
 
     /**
