@@ -576,22 +576,23 @@ final class Account extends BaseRepository implements AccountRepository
      */
     public function getDataForLink(int $accountId): QueryResult
     {
+        // The row is serialized into the public link's vault and rebuilt as an AccountViewDto,
+        // whose constructor parameters are non-nullable — and Dto::fromArray() passes
+        // `$properties[$name] ?? null` for every one of them, so a column that isn't selected
+        // arrives as null rather than falling back to a default. Selecting the account view
+        // (which already resolves the client/category/user/group names) keeps this projection in
+        // step with what that DTO requires; only pass/key have to come from Account itself.
         $query = $this->queryFactory
             ->newSelect()
-            ->from(AccountModel::TABLE)
-            ->cols([
-                       'Account.name',
-                       'Account.login',
-                       'Account.pass',
-                       'Account.key',
-                       'Account.url',
-                       'Account.notes',
-                       'Client.name AS clientName',
-                       'Category.name AS categoryName',
-                   ])
-            ->join('INNER', 'Client', 'Account.clientId = Client.id')
-            ->join('INNER', 'Category', 'Account.categoryId = Category.id')
-            ->where('Account.id = :id')
+            ->from(AccountViewModel::TABLE)
+            ->cols(
+                array_merge(
+                    AccountViewModel::getColsWithPreffix(AccountViewModel::TABLE),
+                    ['Account.pass', 'Account.key']
+                )
+            )
+            ->join('INNER', AccountModel::TABLE, 'account_data_v.id = Account.id')
+            ->where('account_data_v.id = :id')
             ->bindValues(['id' => $accountId]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while retrieving account\'s data'));

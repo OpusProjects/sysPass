@@ -34,39 +34,18 @@ namespace SP\Domain\Common\Models;
  */
 final class Simple extends Model
 {
-    /** @var array<string, mixed> */
-    private array $dynamicProperties = [];
-
+    /**
+     * Values assigned here (PDO::FETCH_CLASS hydrates rows this way) go into the same outer-property
+     * bag the parent exposes, so toArray(includeOuter: true) — and therefore mutate() and
+     * Dto::fromModel() — can see them. They used to live in a private array of this class instead,
+     * which get_object_vars() in the parent scope cannot reach: every one of those round-trips
+     * silently returned an empty model.
+     *
+     * The parent's __get()/__isset()/offsetGet()/offsetExists() already read that bag, so this class
+     * needs no accessor overrides of its own.
+     */
     public function __set(string $name, mixed $value): void
     {
-        $this->dynamicProperties[$name] = $value;
-    }
-
-    public function __get(string $name): mixed
-    {
-        if (array_key_exists($name, $this->dynamicProperties)) {
-            return $this->dynamicProperties[$name];
-        }
-
-        return parent::offsetGet($name);
-    }
-
-    public function __isset(string $name): bool
-    {
-        return isset($this->dynamicProperties[$name]) || parent::offsetExists($name);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        if (array_key_exists($offset, $this->dynamicProperties)) {
-            return $this->dynamicProperties[$offset];
-        }
-
-        return parent::offsetGet($offset);
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return isset($this->dynamicProperties[$offset]) || parent::offsetExists($offset);
+        $this->setOuterProperty($name, $value);
     }
 }
