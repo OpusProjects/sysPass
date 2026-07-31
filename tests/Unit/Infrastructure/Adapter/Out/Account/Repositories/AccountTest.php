@@ -104,7 +104,7 @@ class AccountTest extends UnitaryTestCase
                 $params = $query->getBindValues();
 
                 return count($params) === 1
-                       && $params['accountId'] === 1
+                       && $params['id'] === 1
                        && $arg->getMapClassName() === AccountPassItemWithIdAndName::class
                        && !empty($query->getStatement());
             }

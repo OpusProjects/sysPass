@@ -64,13 +64,13 @@ interface AccountRepository extends Repository
     public function getPasswordForId(int $accountId): QueryResult;
 
     /**
-     * @param int $accountId
+     * @param int $id A history entry's own id, not the account's
      *
      * @return QueryResult<AccountPassItemWithIdAndNameModel>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function getPasswordHistoryForId(int $accountId): QueryResult;
+    public function getPasswordHistoryForId(int $id): QueryResult;
 
     /**
      * Increments the password-view counter of an account in the database
