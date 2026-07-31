@@ -474,10 +474,14 @@ final class Account extends BaseRepository implements AccountRepository
      */
     public function getAll(): QueryResult
     {
+        // pass/key are included deliberately: this feeds AccountService::getAllBasic(), whose only
+        // consumer is the XML export, and syspass.xsd types both of those elements as NonEmptyString.
+        // Excluding them exported every account without its password and failed schema validation.
+        // Table-qualified so Aura quotes the columns: bare `key` is a reserved word.
         $query = $this->queryFactory
             ->newSelect()
             ->from(AccountModel::TABLE)
-            ->cols(AccountModel::getCols(['pass', 'key']));
+            ->cols(AccountModel::getColsWithPreffix(AccountModel::TABLE));
 
         return $this->db->runQuery(QueryData::buildWithMapper($query, AccountModel::class));
     }

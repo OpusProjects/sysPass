@@ -597,8 +597,15 @@ class AccountTest extends UnitaryTestCase
     {
         $callback = new Callback(
             static function (QueryData $arg) {
+                $statement = $arg->getQuery()->getStatement();
+
+                // getAllBasic() -> the XML export is this query's only consumer, and syspass.xsd
+                // types <pass>/<key> as NonEmptyString, so both columns have to be selected.
+                // Table-qualified because bare `key` is a reserved word.
                 return $arg->getMapClassName() === AccountModel::class
-                       && !empty($arg->getQuery()->getStatement());
+                       && !empty($statement)
+                       && str_contains($statement, '`Account`.`pass`')
+                       && str_contains($statement, '`Account`.`key`');
             }
         );
 

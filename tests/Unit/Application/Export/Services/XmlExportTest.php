@@ -50,6 +50,7 @@ use SP\Application\Export\Ports\XmlAccountExportService;
 use SP\Application\Export\Ports\XmlCategoryExportService;
 use SP\Application\Export\Ports\XmlClientExportService;
 use SP\Application\Export\Ports\XmlTagExportService;
+use SP\Application\User\Ports\UserGroupService;
 use SP\Application\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDto;
@@ -72,6 +73,7 @@ class XmlExportTest extends UnitaryTestCase
     private XmlAccountExportService|MockObject    $xmlAccountExportService;
     private XmlCategoryExportService|MockObject   $xmlCategoryExportService;
     private XmlTagExportService|MockObject        $xmlTagExportService;
+    private UserGroupService|MockObject $userGroupService;
     private CryptInterface|MockObject             $crypt;
     private XmlExport                             $xmlExport;
 
@@ -527,6 +529,7 @@ class XmlExportTest extends UnitaryTestCase
         $this->xmlCategoryExportService = $this->createMock(XmlCategoryExportService::class);
         $this->xmlTagExportService = $this->createMock(XmlTagExportService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
+        $this->userGroupService = $this->createStub(UserGroupService::class);
 
         $this->xmlExport = new XmlExport(
             $this->application,
@@ -535,7 +538,8 @@ class XmlExportTest extends UnitaryTestCase
             $this->xmlAccountExportService,
             $this->xmlCategoryExportService,
             $this->xmlTagExportService,
-            $this->crypt
+            $this->crypt,
+            $this->userGroupService
         );
     }
 }
