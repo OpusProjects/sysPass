@@ -48,6 +48,15 @@ final class SaveController extends SimpleControllerBase
 
     private const MAX_FILES_SIZE = 16384;
 
+    private const SECONDS_PER_DAY = 24 * 3600;
+
+    /**
+     * The expiry field is bounded to three digits in the form (configManager/accounts.inc), and
+     * the days -> seconds conversion has to stay within int range: an unbounded value overflows
+     * to float, which setAccountExpireTime(?int) rejects.
+     */
+    private const MAX_ACCOUNT_EXPIRE_DAYS = 999;
+
     /**
      * @return ActionResponse
      * @throws ValidationException
@@ -85,7 +94,20 @@ final class SaveController extends SimpleControllerBase
         $configData->setAccountCount($this->request->analyzeInt('account_count', 10));
         $configData->setResultsAsCards($this->request->analyzeBool('account_resultsascards_enabled', false));
         $configData->setAccountExpireEnabled($this->request->analyzeBool('account_expire_enabled', false));
-        $configData->setAccountExpireTime($this->request->analyzeInt('account_expire_time', 10368000) * 24 * 3600);
+
+        // The form field is in days ("Expire time (days)"; the template renders the stored value
+        // divided by a day) while the config stores seconds. The fallback has to be in days as
+        // well — it used to be 10368000, the *seconds* default, so a missing or cleared field
+        // stored 10368000 days and effectively disabled password expiry. Falling back to the
+        // configured value keeps the form's own units and can't drift from that default.
+        $expireDays = $this->request->analyzeInt(
+            'account_expire_time',
+            (int)($configData->getAccountExpireTime() / self::SECONDS_PER_DAY)
+        );
+
+        $configData->setAccountExpireTime(
+            min(max($expireDays, 0), self::MAX_ACCOUNT_EXPIRE_DAYS) * self::SECONDS_PER_DAY
+        );
     }
 
     /**
