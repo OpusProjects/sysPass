@@ -105,7 +105,15 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
 
         /** @var DOMElement $tag */
         foreach ($nodesList as $tag) {
-            $this->setItem($tag->childNodes->item(0)->nodeValue);
+            // An empty <Name/> has no child text node, so item(0) is null. Skip it rather than
+            // feeding null to setItem(string) — there is no category name to create.
+            $groupName = $tag->childNodes->item(0)?->nodeValue;
+
+            if ($groupName === null) {
+                continue;
+            }
+
+            $this->setItem($groupName);
         }
     }
 
@@ -146,13 +154,24 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
 
             /** @var DOMElement $string */
             foreach ($DOMXPath->query($path . '/String') as $string) {
-                $key = $string->childNodes->item(0)->nodeValue;
-                $value = $string->childNodes->item(1)->nodeValue;
+                // A <String> missing its <Key>/<Value> pair yields null from item(): without a
+                // key there is nothing to index the field by, so drop it.
+                $key = $string->childNodes->item(0)?->nodeValue;
 
-                $entryData[$key] = $value;
+                if ($key === null) {
+                    continue;
+                }
+
+                $entryData[$key] = $string->childNodes->item(1)?->nodeValue;
             }
 
-            $groupName = $DOMXPath->query($path . '/../Name')->item(0)->nodeValue;
+            $groupName = $DOMXPath->query($path . '/../Name')->item(0)?->nodeValue;
+
+            if ($groupName === null) {
+                // Same outcome getEntryFor() already produces for an unknown group: skip the
+                // entry, rather than passing null into the string-typed helpers below.
+                continue;
+            }
 
             $this->getEntryFor($groupName)?->offsetSet($this->mapEntryToAccount($entryData, $groupName));
         }
