@@ -146,10 +146,15 @@ final class CustomFieldData extends Service implements CustomFieldDataService
      */
     private function isEncrypted(CustomFieldDataModel $customFieldData): ?int
     {
+        // getData() is null when the definition doesn't exist — a stale form still holding a
+        // since-deleted definition id submits one. Chaining through it fataled with
+        // "Call to a member function getIsEncrypted() on null" before the value ever reached the
+        // database, where fk_CustomFieldData_definitionId reports it as a referenced-record error.
+        // The declared ?int return already allows the unknown case.
         return $this->customFieldDefinitionRepository
             ->getById($customFieldData->getDefinitionId())
             ->getData(CustomFieldDefinitionModel::class)
-            ->getIsEncrypted();
+            ?->getIsEncrypted();
     }
 
     /**

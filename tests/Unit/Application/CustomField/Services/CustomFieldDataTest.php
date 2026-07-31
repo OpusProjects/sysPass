@@ -198,6 +198,38 @@ class CustomFieldDataTest extends UnitaryTestCase
     }
 
     /**
+     * A value can arrive for a definition that no longer exists — a form rendered before the
+     * definition was deleted still submits its id. Reading the encryption flag off that missing
+     * row used to fatal ("Call to a member function getIsEncrypted() on null") before the value
+     * reached the database, where the foreign key reports it properly.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws ContextException
+     */
+    public function testCreateWithMissingDefinitionDoesNotFatal()
+    {
+        $customFieldData = CustomFieldDataGenerator::factory()->buildCustomFieldData();
+
+        $this->customFieldDefinitionRepository
+            ->expects(self::once())
+            ->method('getById')
+            ->with($customFieldData->getDefinitionId())
+            ->willReturn(new QueryResult([]));
+
+        $this->crypt->expects(self::never())->method('makeSecuredKey');
+        $this->crypt->expects(self::never())->method('encrypt');
+
+        // Left to the repository, whose FK constraint is what actually rejects it.
+        $this->customFieldDataRepository
+            ->expects(self::once())
+            ->method('create')
+            ->with($customFieldData);
+
+        $this->customFieldData->create($customFieldData);
+    }
+
+    /**
      * @throws Exception
      * @throws ServiceException
      * @throws ContextException
