@@ -191,6 +191,54 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * Account.login/url/notes are nullable columns, and an account created without them is
+     * ordinary — the generator populates all three, so the case never reached AccountViewDto,
+     * whose parameters were typed as non-nullable strings.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function viewLinkWithNullableFieldsUnset()
+    {
+        $account = serialize(
+            Simple::buildFromSimpleModel(
+                AccountDataGenerator::factory()
+                                    ->buildAccount()
+                                    ->mutate(['login' => null, 'url' => null, 'notes' => null])
+            )
+        );
+
+        $publicLinkKey = new PublicLinkKey($this->passwordSalt);
+        $vault = Vault::factory(new Crypt())->saveData($account, $publicLinkKey->getKey());
+
+        $publicLink = PublicLinkDataGenerator::factory()
+                                             ->buildPublicLink()
+                                             ->mutate(
+                                                 [
+                                                     'dateExpire' => time() + 100,
+                                                     'maxCountViews' => 3,
+                                                     'countViews' => 0,
+                                                     'hash' => $publicLinkKey->getHash(),
+                                                     'data' => $vault->getSerialized()
+                                                 ]
+                                             );
+
+        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/box-popup|account-link|<html/i');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
