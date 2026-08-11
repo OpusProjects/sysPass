@@ -6,6 +6,7 @@ use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Api\Dtos\ApiResponse;
+use SP\Domain\Account\PublicLinkType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
 use function SP\__;
@@ -19,6 +20,9 @@ final class CreateController extends PublicLinkBase
 
         $linkData = new PublicLink([
             'itemId'        => $this->apiService->getParamInt('itemId', true),
+            // NOT NULL on the table, and set by both web paths. Leaving it out made every
+            // call fail on the insert.
+            'typeId'        => PublicLinkType::Account->value,
             'notify'        => (bool) $this->apiService->getParamInt('notify'),
             'dateExpire'    => $this->apiService->getParamInt('dateExpire'),
             'maxCountViews' => $this->apiService->getParamInt('maxCountViews'),
