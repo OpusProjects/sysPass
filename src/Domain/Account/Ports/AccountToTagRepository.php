@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\Account\Ports;
 
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Ports\Repository;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -48,6 +49,21 @@ interface AccountToTagRepository extends Repository
      * @throws QueryException
      */
     public function getTagsByAccountId(int $id): QueryResult;
+
+    /**
+     * Return the tags of several accounts in one query.
+     *
+     * Rows carry the owning account in an `accountId` column, so they are mapped to
+     * {@see Simple} rather than {@see Item}: models reject dynamic properties, and Simple is the
+     * one that accepts the extra joined column.
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<Simple>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getTagsByAccountIds(array $ids): QueryResult;
 
     /**
      * Delete the tags of an account

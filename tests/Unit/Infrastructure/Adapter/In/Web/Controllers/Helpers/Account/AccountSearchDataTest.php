@@ -37,7 +37,9 @@ use SP\Application\Account\Ports\AccountAclService;
 use SP\Application\Account\Ports\AccountCacheService;
 use SP\Application\Account\Ports\AccountToFavoriteService;
 use SP\Domain\Account\Ports\AccountToTagRepository;
+use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -106,16 +108,57 @@ class AccountSearchDataTest extends UnitaryTestCase
                 })
             );
 
+        // One query for the whole page, not one per result.
         $this->accountToTagRepository
-            ->expects(exactly($numResults))
-            ->method('getTagsByAccountId')
-            ->willReturn(new QueryResult([1, 2, 3]));
+            ->expects(once())
+            ->method('getTagsByAccountIds')
+            ->with(array_map(static fn(AccountSearchView $a) => $a->getId(), $accountSearchView))
+            ->willReturn(new QueryResult([]));
 
         $this->fileCache
             ->expects(exactly($numResults))
             ->method('save');
 
         $this->accountSearchDataBuilder->buildFrom($queryResult);
+    }
+
+    /**
+     * The page's tags come back in a single query, so they have to be handed to the account they
+     * actually belong to.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
+     */
+    public function testBuildFromGroupsTagsByAccount(): void
+    {
+        $first = AccountDataGenerator::factory()->buildAccountSearchView()->mutate(['id' => 1]);
+        $second = AccountDataGenerator::factory()->buildAccountSearchView()->mutate(['id' => 2]);
+
+        $this->accountCacheService
+            ->method('getCacheForAccount')
+            ->willReturn(new AccountCacheDto(0, [], []));
+
+        $this->accountToTagRepository
+            ->expects(once())
+            ->method('getTagsByAccountIds')
+            ->with([1, 2])
+            ->willReturn(
+                new QueryResult([
+                    new Simple(['accountId' => 2, 'id' => 7, 'name' => 'beta']),
+                    new Simple(['accountId' => 2, 'id' => 9, 'name' => 'gamma']),
+                ])
+            );
+
+        $result = $this->accountSearchDataBuilder
+            ->buildFrom(new QueryResult([$first, $second]))
+            ->getDataAsArray();
+
+        self::assertSame([], $result[0]->getTags());
+        self::assertEquals(
+            [new Item(['id' => 7, 'name' => 'beta']), new Item(['id' => 9, 'name' => 'gamma'])],
+            array_values($result[1]->getTags())
+        );
     }
 
     /**
@@ -145,10 +188,11 @@ class AccountSearchDataTest extends UnitaryTestCase
             ->expects(exactly($numResults))
             ->method('getAcl');
 
+        // One query for the whole page, not one per result.
         $this->accountToTagRepository
-            ->expects(exactly($numResults))
-            ->method('getTagsByAccountId')
-            ->willReturn(new QueryResult([1, 2, 3]));
+            ->expects(once())
+            ->method('getTagsByAccountIds')
+            ->willReturn(new QueryResult([]));
 
         $this->fileCache
             ->expects(exactly($numResults))
