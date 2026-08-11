@@ -185,8 +185,12 @@ final class GetEnvironmentController extends SimpleControllerBase
      */
     private function getCSRF(): ?string
     {
-        logger(sprintf('CSRF key (get): %s', $this->session->getCSRF() ?? ''));
+        $csrf = $this->session->getCSRF();
 
-        return $this->session->getCSRF();
+        // Log only whether a token exists. It authorises every state-changing request for the
+        // session, so it must not be written to the log even under DEBUG.
+        logger(sprintf('CSRF token (get): %s', $csrf === null ? 'not set' : 'set'));
+
+        return $csrf;
     }
 }

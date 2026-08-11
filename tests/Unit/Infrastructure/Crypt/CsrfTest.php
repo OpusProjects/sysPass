@@ -30,8 +30,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Crypt\Csrf;
-use SP\Domain\Crypt\Hash;
-use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Http\Method;
 use SP\Domain\Http\Ports\RequestService;
@@ -46,10 +44,9 @@ use SP\Tests\Support\UnitaryTestCase;
 class CsrfTest extends UnitaryTestCase
 {
 
-    private SessionContext|MockObject      $sessionContext;
-    private RequestService|MockObject      $requestInterface;
-    private ConfigDataInterface|MockObject $configData;
-    private Csrf                               $csrf;
+    private SessionContext|MockObject $sessionContext;
+    private RequestService|MockObject $requestInterface;
+    private Csrf                      $csrf;
 
     public static function httpMethodDataProvider(): array
     {
@@ -71,40 +68,50 @@ class CsrfTest extends UnitaryTestCase
             ->method('getCSRF')
             ->willReturn(null);
 
-        $key = $this->checkGetKey();
+        $token = null;
 
         $this->sessionContext
             ->expects(self::once())
             ->method('setCSRF')
-            ->with($key);
+            ->with(
+                self::callback(static function (string $value) use (&$token): bool {
+                    $token = $value;
+
+                    return true;
+                })
+            );
 
         $this->csrf->initialize();
+
+        self::assertMatchesRegularExpression('/^[0-9a-f]{64}$/', (string)$token);
     }
 
-    private function checkGetKey(): string
+    /**
+     * The token must carry its own entropy. Deriving it from request data gave every client
+     * sharing a User-Agent and address the same token.
+     */
+    public function testInitializeIssuesADifferentTokenEachTime()
     {
-        $salt = self::$faker->sha1();
-        $userAgent = self::$faker->userAgent();
+        $tokens = [];
 
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getHeader')
-            ->with('User-Agent')
-            ->willReturn($userAgent);
+        $this->sessionContext->method('isLoggedIn')->willReturn(true);
+        $this->sessionContext->method('getCSRF')->willReturn(null);
+        $this->sessionContext
+            ->expects(self::exactly(2))
+            ->method('setCSRF')
+            ->with(
+                self::callback(static function (string $value) use (&$tokens): bool {
+                    $tokens[] = $value;
 
-        $ipv4 = self::$faker->ipv4();
+                    return true;
+                })
+            );
 
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getClientAddress')
-            ->willReturn($ipv4);
+        $this->csrf->initialize();
+        $this->csrf->initialize();
 
-        $this->configData
-            ->expects(self::once())
-            ->method('getPasswordSalt')
-            ->willReturn($salt);
-
-        return Hash::signMessage(sha1($userAgent . $ipv4), $salt);
+        self::assertCount(2, $tokens);
+        self::assertNotSame($tokens[0], $tokens[1]);
     }
 
     /**
@@ -113,10 +120,7 @@ class CsrfTest extends UnitaryTestCase
     #[DataProvider('httpMethodDataProvider')]
     public function testCheckWithValidToken(Method $method, string $header)
     {
-        $salt = self::$faker->sha1();
-        $userAgent = self::$faker->userAgent();
-        $ipv4 = self::$faker->ipv4();
-        $key = Hash::signMessage(sha1($userAgent . $ipv4), $salt);
+        $sessionToken = bin2hex(random_bytes(32));
 
         $this->requestInterface
             ->expects(self::once())
@@ -124,20 +128,10 @@ class CsrfTest extends UnitaryTestCase
             ->willReturn($method);
 
         $this->requestInterface
-            ->expects(self::exactly(3))
+            ->expects(self::exactly(2))
             ->method('getHeader')
-            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF'], ['User-Agent']))
-            ->willReturn($header, $key, $userAgent);
-
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getClientAddress')
-            ->willReturn($ipv4);
-
-        $this->configData
-            ->expects(self::once())
-            ->method('getPasswordSalt')
-            ->willReturn($salt);
+            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF']))
+            ->willReturn($header, $sessionToken);
 
         $this->sessionContext
             ->expects(self::once())
@@ -147,17 +141,21 @@ class CsrfTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getCSRF')
-            ->willReturn(self::$faker->sha1());
+            ->willReturn($sessionToken);
 
         self::assertTrue($this->csrf->check());
     }
 
-
     /**
+     * A token that does not match the one held in the session is rejected, and the User-Agent
+     * and client address are never consulted: the client address comes from the caller-supplied
+     * Forwarded header, so binding the token to it both weakened it and broke sessions whenever
+     * that value changed.
+     *
      * @return void
      */
     #[DataProvider('httpMethodDataProvider')]
-    public function testCheckWithInvalidToken(Method $method, string $header)
+    public function testCheckIsBoundToTheSessionTokenOnly(Method $method, string $header)
     {
         $this->requestInterface
             ->expects(self::once())
@@ -165,20 +163,14 @@ class CsrfTest extends UnitaryTestCase
             ->willReturn($method);
 
         $this->requestInterface
-            ->expects(self::exactly(3))
+            ->expects(self::exactly(2))
             ->method('getHeader')
-            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF'], ['User-Agent']))
-            ->willReturn($header, self::$faker->sha1(), self::$faker->userAgent());
+            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF']))
+            ->willReturn($header, bin2hex(random_bytes(32)));
 
         $this->requestInterface
-            ->expects(self::once())
-            ->method('getClientAddress')
-            ->willReturn(self::$faker->ipv4());
-
-        $this->configData
-            ->expects(self::once())
-            ->method('getPasswordSalt')
-            ->willReturn(self::$faker->sha1());
+            ->expects(self::never())
+            ->method('getClientAddress');
 
         $this->sessionContext
             ->expects(self::once())
@@ -188,7 +180,7 @@ class CsrfTest extends UnitaryTestCase
         $this->sessionContext
             ->expects(self::once())
             ->method('getCSRF')
-            ->willReturn(self::$faker->sha1());
+            ->willReturn(bin2hex(random_bytes(32)));
 
         self::assertFalse($this->csrf->check());
     }
@@ -282,8 +274,7 @@ class CsrfTest extends UnitaryTestCase
 
         $this->sessionContext = $this->createMock(SessionContext::class);
         $this->requestInterface = $this->createMock(RequestService::class);
-        $this->configData = $this->createMock(ConfigDataInterface::class);
 
-        $this->csrf = new Csrf($this->sessionContext, $this->requestInterface, $this->configData);
+        $this->csrf = new Csrf($this->sessionContext, $this->requestInterface);
     }
 }
