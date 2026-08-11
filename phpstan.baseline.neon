@@ -1378,12 +1378,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LoginController.php
 
 		-
-			message: '#^Property SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Login\\LoginController\:\:\$loginService \(SP\\Application\\Auth\\Services\\Login\) does not accept SP\\Application\\Auth\\Ports\\LoginService\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Login/LoginController.php
-
-		-
 			message: '#^Method SP\\Infrastructure\\Adapter\\In\\Web\\Controllers\\Notification\\DeleteController\:\:processCustomFields\(\) has no return type specified\.$#'
 			identifier: missingType.return
 			count: 1

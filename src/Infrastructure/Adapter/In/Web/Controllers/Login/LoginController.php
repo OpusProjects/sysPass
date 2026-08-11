@@ -33,7 +33,6 @@ use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Application\Auth\Ports\LoginService;
-use SP\Application\Auth\Services\Login;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
@@ -47,7 +46,7 @@ use function SP\processException;
 final class LoginController extends ControllerBase
 {
 
-    private Login $loginService;
+    private LoginService $loginService;
 
     public function __construct(
         Application  $application,
