@@ -100,7 +100,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2238 unit** + **253 integration**. The integration suite includes the
+Both pass: **2252 unit** + **279 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -132,6 +132,16 @@ so these runtime contracts are easy to break:
 - **DI definition order** (`src/Base.php`): `DomainDefinitions` → `CoreDefinitions` → module
   `module.php`, and **php-di gives later sources precedence** — the specific entry overrides the
   `SP\Domain\*\Ports\*Service` wildcard auto-wiring; the module overrides CoreDefinitions. Keep this order.
+- **Optional constructor params are never auto-wired.** php-di skips any parameter that has a
+  default value, *even when the container has a binding for its type* — `?FooService $foo = null`
+  stays **null** unless a definition passes it explicitly
+  (`autowire(X::class)->constructorParameter('foo', get(FooService::class))`, or a `factory()`).
+  This fails silently: no error, no log, and mocked tests that inject the dependency by hand still
+  pass, so a whole feature can be dead in production while looking wired and tested (this is exactly
+  how `AccountAcl`'s per-account ACL file cache never ran). `Application` and `ProvidersHelper` in
+  `CoreDefinitions` show the explicit form. Prefer a required parameter for anything that must be
+  present; to check an existing one, probe the real container
+  (`$dic = require 'src/Base.php';`) rather than reading the class.
 - **Compilation:** when `!DEBUG` the container is **compiled and lazy proxies are written**
   (`enableCompilation`/`writeProxiesToFile`); when `DEBUG` it's built live. So (1) every definition
   must be **compilable** — never bind a literal object; use `create()`/`autowire()`/`factory()`

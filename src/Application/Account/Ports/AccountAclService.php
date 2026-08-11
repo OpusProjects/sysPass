@@ -61,14 +61,4 @@ interface AccountAclService
      * @throws QueryException
      */
     public function getAcl(int $actionId, AccountAclDto $accountAclDto, bool $isHistory = false): AccountPermission;
-
-    /**
-     * Resturns an stored ACL
-     *
-     * @param int $accountId
-     * @param int $actionId
-     *
-     * @return AccountPermission|null
-     */
-    public function getAclFromCache(int $accountId, int $actionId): ?AccountPermission;
 }
