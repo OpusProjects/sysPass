@@ -37,6 +37,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\AllowedMimeType;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Infrastructure\File\FileHandler;
@@ -162,14 +163,12 @@ final class UploadController extends ControllerBase
     {
         $serverType = $fileHandler->getFileType();
 
-        if (in_array($serverType, $this->configData->getFilesAllowedMime(), true)) {
-            return $serverType;
+        $resolved = AllowedMimeType::resolve($serverType, $type, $this->configData->getFilesAllowedMime());
+
+        if ($resolved === null) {
+            throw SPException::error(__u('File type not allowed'), sprintf(__('MIME type: %s'), $serverType));
         }
 
-        if (in_array($type, $this->configData->getFilesAllowedMime(), true)) {
-            return $type;
-        }
-
-        throw SPException::error(__u('File type not allowed'), sprintf(__('MIME type: %s'), $serverType));
+        return $resolved;
     }
 }

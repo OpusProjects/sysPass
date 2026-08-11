@@ -7,6 +7,7 @@ use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\File\AllowedMimeType;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Http\Code;
 
@@ -49,11 +50,9 @@ final class UploadController extends AccountFileBase
         $detected   = (new \finfo(FILEINFO_MIME_TYPE))->buffer($content);
         $serverType = $detected !== false ? $detected : 'application/octet-stream';
 
-        if (in_array($serverType, $filesAllowedMime, true)) {
-            $resolvedType = $serverType;
-        } elseif (in_array($clientType, $filesAllowedMime, true)) {
-            $resolvedType = $clientType;
-        } else {
+        $resolvedType = AllowedMimeType::resolve($serverType, $clientType, $filesAllowedMime);
+
+        if ($resolvedType === null) {
             throw ServiceException::error(
                 __u('File type not allowed'),
                 sprintf(__('MIME type: %s'), $serverType),
