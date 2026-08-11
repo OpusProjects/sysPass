@@ -48,6 +48,8 @@ final class AccountAcl extends Service implements AccountAclService
     private ?AccountAclDto     $accountAclDto     = null;
     private ?AccountPermission $accountPermission = null;
     private UserDto $userData;
+    /** @var array<int, int[]> Request-scoped memo of each user's group ids */
+    private array $userGroupIds = [];
 
     public function __construct(
         Application                             $application,
@@ -158,10 +160,7 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Analyze user's groups
         // Groups in which the user is listed in
-        $userGroups = array_map(
-            static fn($value) => (int)$value->getUserGroupId(),
-            $this->userToUserGroupService->getGroupsForUser($this->userData->id ?? 0)
-        );
+        $userGroups = $this->getGroupIdsForUser($this->userData->id ?? 0);
 
         // Check out if user groups match with account's main group
         if ($this->getUserGroupsInMainGroup($userGroups)) {
@@ -185,6 +184,28 @@ final class AccountAcl extends Service implements AccountAclService
             $this->accountPermission->setResultView(true);
             $this->accountPermission->setResultEdit((int)$userGroupsInSecondaryUserGroups[0]['isEdit'] === 1);
         }
+    }
+
+    /**
+     * The ids of the groups the user belongs to.
+     *
+     * Account listings build one ACL per row, and every one of them asks for the groups of the
+     * same logged-in user — the only query in the whole ACL computation, repeated once per
+     * account. Memoise it for the lifetime of the service, which is the request: the answer
+     * cannot change while a single request is being served. Keyed by user id because the API
+     * path authenticates after this service is constructed, so getAcl() re-reads the user from
+     * the context on every call.
+     *
+     * @param int $userId
+     *
+     * @return int[]
+     */
+    private function getGroupIdsForUser(int $userId): array
+    {
+        return $this->userGroupIds[$userId] ??= array_map(
+            static fn($value) => (int)$value->getUserGroupId(),
+            $this->userToUserGroupService->getGroupsForUser($userId)
+        );
     }
 
     /**

@@ -659,6 +659,61 @@ class AccountAclTest extends UnitaryTestCase
         $this->checkForUserByExample($this->setUpAccountEnvironment($accountId, $userId, $groupId), $example);
     }
 
+    /**
+     * An account listing compiles one ACL per row, and each one needs the logged-in user's
+     * groups — the only query in the whole ACL computation. It must be issued once per request,
+     * not once per account.
+     *
+     * @throws Exception
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGroupsForUserAreQueriedOncePerRequest(): void
+    {
+        $userId = 2;
+        $account = self::$accounts[2];
+
+        $userToUserGroupService = $this->createMock(UserToUserGroupService::class);
+        $userToUserGroupService->expects(self::once())
+                               ->method('getGroupsForUser')
+                               ->with($userId)
+                               ->willReturn([new UserToUserGroup(['userGroupId' => $account['userGroupId']])]);
+
+        $this->context->setUserData(
+            UserDto::fromModel(
+                new User(
+                    [
+                        'id' => $userId,
+                        'userGroupId' => 99,
+                        'isAdminApp' => false,
+                        'isAdminAcc' => false
+                    ]
+                )
+            )
+        );
+
+        $accountAclService = new AccountAcl($this->application, $this->acl, $userToUserGroupService);
+
+        foreach (range(1, 5) as $accountId) {
+            $accountAcl = $accountAclService->getAcl(
+                AclActionsInterface::ACCOUNT_VIEW,
+                new AccountAclDto(
+                    $accountId,
+                    $account['userId'],
+                    $account['users'],
+                    $account['userGroupId'],
+                    $account['groups'],
+                    self::$faker->unixTime()
+                )
+            );
+
+            // Access is granted through the group membership, i.e. the memoised value is the
+            // one actually driving the result — not just an unused cache entry.
+            self::assertTrue($accountAcl->isUserInGroups());
+            self::assertTrue($accountAcl->isResultView());
+        }
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
