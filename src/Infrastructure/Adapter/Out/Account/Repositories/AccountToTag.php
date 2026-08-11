@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\Out\Account\Repositories;
 
 use SP\Domain\Account\Ports\AccountToTagRepository;
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Infrastructure\Adapter\Out\Common\Repositories\BaseRepository;
@@ -67,6 +68,42 @@ final class AccountToTag extends BaseRepository implements AccountToTagRepositor
             ->orderBy(['Tag.name ASC']);
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(Item::class));
+    }
+
+    /**
+     * Return the tags for several accounts in one query
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<Simple>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getTagsByAccountIds(array $ids): QueryResult
+    {
+        if (empty($ids)) {
+            // An untyped empty result would widen this method's return to QueryResult<object>,
+            // which is the false positive several sibling deleteByIdBatch() methods carry in the
+            // baseline. Stating the row type here keeps it off the baseline instead.
+            /** @var QueryResult<Simple> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                       'AccountToTag.accountId',
+                       'Tag.id',
+                       'Tag.name',
+                   ])
+            ->from('AccountToTag')
+            ->join('INNER', 'Tag', 'Tag.id = AccountToTag.tagId')
+            ->where('AccountToTag.accountId IN (:accountIds)', ['accountIds' => $ids])
+            ->orderBy(['Tag.name ASC']);
+
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(Simple::class));
     }
 
     /**

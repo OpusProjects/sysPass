@@ -63,6 +63,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Common\Models\Item;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\FileException;
 
@@ -144,11 +145,14 @@ final class AccountSearchData
         $userId = $this->context->getUserData()->id;
         $favorites = $userId !== null ? $this->accountToFavoriteService->getForUserId($userId) : [];
 
+        $tagsByAccount = $this->getTagsFor($queryResult);
+
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (
                 $maxTextLength,
                 $accountLinkEnabled,
-                $favorites
+                $favorites,
+                $tagsByAccount
             ): AccountSearchItem {
                 $cache = $this->accountCacheService->getCacheForAccount(
                     $accountSearchView->getId(),
@@ -165,9 +169,7 @@ final class AccountSearchData
                     )
                 );
 
-                $tags = $this->accountToTagRepository
-                    ->getTagsByAccountId($accountSearchView->getId())
-                    ->getDataAsArray();
+                $tags = $tagsByAccount[$accountSearchView->getId()] ?? [];
 
                 $users = !$accountSearchView->getIsPrivate() ? $cache->getUsers() : null;
                 $userGroups = !$accountSearchView->getIsPrivate() ? $cache->getUserGroups() : null;
@@ -187,6 +189,45 @@ final class AccountSearchData
                 );
             }
         );
+    }
+
+    /**
+     * The tags of every account on the page, grouped by account id.
+     *
+     * Fetched in a single query rather than one per row: a listing renders one item per result,
+     * and asking for each account's tags separately made the page cost a query per account.
+     * Rows come back as {@see Simple} because they carry the joined accountId, and are rebuilt
+     * into the {@see Item}s the search item expects.
+     *
+     * @param QueryResult<AccountSearchView> $queryResult
+     *
+     * @return array<int, Item[]>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function getTagsFor(QueryResult $queryResult): array
+    {
+        $accountIds = array_values(
+            array_filter(
+                array_map(
+                    static fn(AccountSearchView $account) => $account->getId(),
+                    $queryResult->getDataAsArray()
+                ),
+                static fn(?int $id) => $id !== null
+            )
+        );
+
+        $tagsByAccount = [];
+
+        foreach ($this->accountToTagRepository->getTagsByAccountIds($accountIds)->getDataAsArray() as $row) {
+            // Simple holds every column in its outer bag; read it as an array rather than through
+            // __get(), which is dynamic-property access as far as static analysis is concerned.
+            $tag = $row->toArray(includeOuter: true);
+
+            $tagsByAccount[(int)$tag['accountId']][] = new Item(['id' => $tag['id'], 'name' => $tag['name']]);
+        }
+
+        return $tagsByAccount;
     }
 
     private function pickAccountColor(int $id): string

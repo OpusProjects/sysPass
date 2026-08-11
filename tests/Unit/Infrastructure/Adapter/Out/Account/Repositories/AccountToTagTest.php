@@ -33,6 +33,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Models\Item;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Database\Ports\DatabaseInterface;
@@ -72,6 +73,44 @@ class AccountToTagTest extends UnitaryTestCase
             ->willReturn(new QueryResult());
 
         $this->accountToTag->getTagsByAccountId($id);
+    }
+
+    public function testGetTagsByAccountIds(): void
+    {
+        $ids = [self::$faker->randomNumber(), self::$faker->randomNumber()];
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($ids) {
+                $query = $arg->getQuery();
+
+                // Aura expands an array binding into one numbered placeholder per value.
+                // Rows carry the joined accountId, which only Simple accepts: models reject
+                // dynamic properties, so mapping these to Item would fail at hydration.
+                return array_values($query->getBindValues()) === $ids
+                       && $arg->getMapClassName() === Simple::class
+                       && !empty($query->getStatement());
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callback)
+            ->willReturn(new QueryResult());
+
+        $this->accountToTag->getTagsByAccountIds($ids);
+    }
+
+    /**
+     * No accounts means nothing to look up — and an empty IN () list is not valid SQL.
+     */
+    public function testGetTagsByAccountIdsWithNoIdsSkipsTheQuery(): void
+    {
+        $this->database
+            ->expects(self::never())
+            ->method('runQuery');
+
+        self::assertSame(0, $this->accountToTag->getTagsByAccountIds([])->getNumRows());
     }
 
     /**
