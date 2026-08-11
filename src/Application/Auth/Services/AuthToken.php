@@ -65,6 +65,11 @@ final class AuthToken extends Service implements AuthTokenService
         AclActionsInterface::ACCOUNT_VIEW_PASS,
         AclActionsInterface::ACCOUNT_EDIT_PASS,
         AclActionsInterface::ACCOUNT_CREATE,
+        // Both wrap the account's own data in the link's vault, by way of
+        // PublicLink::buildPublicLink() -> getSecuredLinkData(), so both need the master
+        // password to be loaded onto the API context.
+        AclActionsInterface::PUBLICLINK_CREATE,
+        AclActionsInterface::PUBLICLINK_REFRESH,
     ];
 
     private const CAN_USE_SECURE_TOKEN_ACTIONS = [

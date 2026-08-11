@@ -111,6 +111,11 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::CUSTOMFIELD_VIEW   => ['GET', '/api/v1/custom-fields/{id}'],
         AclActionsInterface::CUSTOMFIELD_EDIT   => ['PUT', '/api/v1/custom-fields/{id}'],
         AclActionsInterface::CUSTOMFIELD_DELETE => ['DELETE', '/api/v1/custom-fields/{id}'],
+        AclActionsInterface::PUBLICLINK_SEARCH  => ['GET', '/api/v1/public-links'],
+        AclActionsInterface::PUBLICLINK_CREATE  => ['POST', '/api/v1/public-links'],
+        AclActionsInterface::PUBLICLINK_VIEW    => ['GET', '/api/v1/public-links/{id}'],
+        AclActionsInterface::PUBLICLINK_DELETE  => ['DELETE', '/api/v1/public-links/{id}'],
+        AclActionsInterface::PUBLICLINK_REFRESH => ['POST', '/api/v1/public-links/{id}/refresh'],
         AclActionsInterface::CONFIG_BACKUP_RUN => ['POST', '/api/v1/config/backup'],
         AclActionsInterface::CONFIG_EXPORT_RUN => ['POST', '/api/v1/config/export'],
     ];
