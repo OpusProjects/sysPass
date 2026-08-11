@@ -868,18 +868,6 @@ parameters:
 
 
 		-
-			message: '#^PHPDoc tag @var with type SP\\Domain\\Common\\Dtos\\ActionResponse is not subtype of native type SP\\Infrastructure\\Http\\Ports\\ResponseService\.$#'
-			identifier: varTag.nativeType
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
-
-		-
-			message: '#^Parameter \#3 \$response of method SP\\Infrastructure\\Adapter\\In\\Web\\Bootstrap\:\:buildResponse\(\) expects SP\\Infrastructure\\Http\\Ports\\ResponseService, SP\\Domain\\Common\\Dtos\\ActionResponse given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Bootstrap.php
-
-		-
 			message: '#^Unable to resolve the template type T in call to method SP\\Infrastructure\\Bootstrap\\BootstrapBase\:\:buildInstanceFor\(\)$#'
 			identifier: argument.templateType
 			count: 1

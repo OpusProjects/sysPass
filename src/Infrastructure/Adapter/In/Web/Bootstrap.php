@@ -114,7 +114,7 @@ final class Bootstrap extends BootstrapBase
                     )
                 );
 
-                /** @var ActionResponse $response */
+                /** @var ActionResponse $actionResponse */
                 $actionResponse = $method->invokeArgs(
                     $this->buildInstanceFor($controllerClass),
                     Util::mapScalarParameters(
