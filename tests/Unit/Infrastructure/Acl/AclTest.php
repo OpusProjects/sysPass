@@ -30,6 +30,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Models\Action;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\User\Models\ProfileData;
@@ -83,6 +85,13 @@ class AclTest extends UnitaryTestCase
             'read the event log' => [AclActionsInterface::EVENTLOG, 'evl'],
             'encryption config' => [AclActionsInterface::CONFIG_CRYPT, 'configEncryption'],
             'backup config' => [AclActionsInterface::CONFIG_BACKUP, 'configBackup'],
+            'general config' => [AclActionsInterface::CONFIG_GENERAL, 'configGeneral'],
+            'import config' => [AclActionsInterface::CONFIG_IMPORT, 'configImport'],
+            'manage clients' => [AclActionsInterface::CLIENT, 'mgmCustomers'],
+            'manage custom fields' => [AclActionsInterface::CUSTOMFIELD, 'mgmCustomFields'],
+            'manage files' => [AclActionsInterface::FILE, 'mgmFiles'],
+            'manage presets' => [AclActionsInterface::ITEMPRESET, 'mgmItemsPreset'],
+            'view a custom field password' => [AclActionsInterface::CUSTOMFIELD_VIEW_PASS, 'accViewPass'],
         ];
     }
 
@@ -124,6 +133,72 @@ class AclTest extends UnitaryTestCase
         self::assertTrue(
             $this->acl(['accAdd' => true, 'accView' => true])->checkUserAccess(AclActionsInterface::ACCOUNT_COPY)
         );
+    }
+
+    /**
+     * Administering accounts is reachable either by the management grant or by being an account
+     * administrator, so both routes are covered.
+     *
+     * @throws Exception
+     */
+    public function testAccountAdministrationIsReachableByEitherRoute(): void
+    {
+        self::assertTrue(
+            $this->acl(['mgmAccounts' => true])->checkUserAccess(AclActionsInterface::ACCOUNTMGR)
+        );
+        self::assertTrue(
+            $this->acl([], ['isAdminAcc' => true])->checkUserAccess(AclActionsInterface::ACCOUNTMGR)
+        );
+        self::assertFalse($this->acl([])->checkUserAccess(AclActionsInterface::ACCOUNTMGR));
+    }
+
+    /**
+     * The name and route of an action are read from the registry, and both fall back rather than
+     * raising when the registry does not know it — a missing action must not break a page that
+     * only wanted to render a link.
+     *
+     * @throws Exception
+     */
+    public function testActionNameAndRouteComeFromTheRegistry(): void
+    {
+        $action = new Action(1, 'some_action', 'Some action', 'some/route');
+        $actions = $this->createStub(ActionsInterface::class);
+        $actions->method('getActionById')->willReturn($action);
+
+        $acl = new Acl($this->context, $this->application->getEventDispatcher(), $actions);
+
+        self::assertSame('Some action', $acl->getInfoFor(AclActionsInterface::ACCOUNT_VIEW, false));
+        self::assertSame('Some action', $acl->getInfoFor(AclActionsInterface::ACCOUNT_VIEW));
+        self::assertSame('some/route', $acl->getRouteFor(AclActionsInterface::ACCOUNT_VIEW));
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testAnUnknownActionHasNoNameOrRoute(): void
+    {
+        $acl = new Acl($this->context, $this->application->getEventDispatcher(), $this->unknownActions());
+
+        self::assertSame('', $acl->getInfoFor(-1));
+        self::assertSame('', $acl->getRouteFor(-1));
+    }
+
+    /**
+     * Refusing an action reports which one was denied. When the registry cannot name it the
+     * refusal still stands, rather than the lookup failure escaping from the permission check.
+     *
+     * @throws Exception
+     */
+    public function testAnActionTheRegistryCannotNameIsStillRefused(): void
+    {
+        $this->context->setUserProfile(new ProfileData());
+        $this->context->setUserData(
+            $this->context->getUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+        );
+
+        $acl = new Acl($this->context, $this->application->getEventDispatcher(), $this->unknownActions());
+
+        self::assertFalse($acl->checkUserAccess(-1));
     }
 
     /**
@@ -284,5 +359,18 @@ class AclTest extends UnitaryTestCase
     private function actions(): ActionsInterface
     {
         return $this->createStub(ActionsInterface::class);
+    }
+
+    /**
+     * A registry that knows nothing, so the lookups take their failure path.
+     *
+     * @throws Exception
+     */
+    private function unknownActions(): ActionsInterface
+    {
+        $actions = $this->createStub(ActionsInterface::class);
+        $actions->method('getActionById')->willThrowException(new ActionNotFoundException('Unknown'));
+
+        return $actions;
     }
 }
