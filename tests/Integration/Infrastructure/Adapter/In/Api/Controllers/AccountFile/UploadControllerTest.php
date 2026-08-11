@@ -129,11 +129,51 @@ class UploadControllerTest extends ApiTestCase
         );
     }
 
+    /**
+     * Declaring an allowed type must not launder content the server identified as something
+     * else. Before, detection failing the allow-list simply handed the decision to the caller,
+     * so this PHP script was stored as application/pdf.
+     */
+    public function testDeclaredTypeCannotLaunderIdentifiedContent(): void
+    {
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'      => 'invoice.pdf',
+            'content'   => base64_encode('<?php system($_GET[0]); ?>'),
+            'type'      => 'application/pdf',
+            'extension' => 'PDF',
+        ]);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('File type not allowed', $r->body->error->message);
+    }
+
+    /**
+     * Content the server cannot identify is still stored under the declared type: attachments
+     * here are often keystores and certificates, which have no signature to match.
+     */
+    public function testUnidentifiableContentFallsBackToTheDeclaredType(): void
+    {
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'      => 'blob.pdf',
+            'content'   => base64_encode("\x00\x01\x02\xff\xfe" . random_bytes(48)),
+            'type'      => 'application/pdf',
+            'extension' => 'PDF',
+        ]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame('File uploaded', $r->body->message);
+    }
+
     public function testDisallowedMimeTypeIsRejected(): void
     {
         $accountId = $this->createAccount();
 
-        // PNG magic bytes — finfo detects as image/png, which is not in the allow-list.
+        // A truncated PNG: too little to identify, so it comes back inconclusive. The declared
+        // image/png is not on the allow-list either, so there is nothing to fall back to.
         $pngPayload = "\x89PNG\r\n\x1a\n" . str_repeat("\x00", 50);
 
         $r = $this->upload($accountId, [
