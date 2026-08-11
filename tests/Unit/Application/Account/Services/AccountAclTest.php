@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Account\Services;
 
-use DateTime;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
@@ -41,13 +40,11 @@ use SP\Domain\Core\Acl\ActionsInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
-use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserToUserGroup;
 use SP\Application\User\Ports\UserToUserGroupService;
-use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -222,8 +219,7 @@ class AccountAclTest extends UnitaryTestCase
         $accountAcl = new AccountAcl(
             $this->application,
             $this->acl,
-            $this->userToUserGroupService,
-            $this->pathsContext
+            $this->userToUserGroupService
         );
 
         foreach (self::ACTIONS as $action) {
@@ -661,189 +657,6 @@ class AccountAclTest extends UnitaryTestCase
             );
 
         $this->checkForUserByExample($this->setUpAccountEnvironment($accountId, $userId, $groupId), $example);
-    }
-
-    /**
-     * @throws Exception
-     * @throws ConstraintException
-     * @throws QueryException
-     * @throws SPException
-     */
-    public function testCacheIsUsedWithHit(): void
-    {
-        $dto = new AccountAclDto(
-            self::$faker->randomNumber(),
-            1,
-            [],
-            self::$faker->randomNumber(),
-            [],
-            self::$faker->unixTime()
-        );
-
-        $userToUserGroupService = $this->createStub(UserToUserGroupService::class);
-        $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheService::class);
-        $actions = $this->createStub(ActionsInterface::class);
-
-        $lastUpdate = DateTime::createFromFormat('U', (string)($dto->getDateEdit() + 10))->format('Y-m-d H:i:s');
-
-        $this->context->setUserData(
-            UserDto::fromModel(
-                UserDataGenerator::factory()
-                                 ->buildUserData()
-                                 ->mutate(['lastUpdate' => $lastUpdate])
-            )
-        );
-
-        $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
-            $userToUserGroupService,
-            $this->pathsContext,
-            $fileCache
-        );
-
-        $acl = new AccountPermission(self::$faker->randomNumber());
-        $acl->setTime($dto->getDateEdit() + 10);
-
-        $fileCache->expects(self::once())
-                  ->method('load')
-                  ->with(self::callback((static fn($path) => is_string($path))))
-                  ->willReturn($acl);
-
-        $fileCache->expects(self::never())
-                  ->method('save');
-
-        $out = $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
-
-        self::assertSame($acl, $out);
-    }
-
-    /**
-     * @throws Exception
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function testCacheIsUsedWithMiss(): void
-    {
-        $dto = new AccountAclDto(
-            self::$faker->randomNumber(),
-            1,
-            [],
-            self::$faker->randomNumber(),
-            [],
-            self::$faker->unixTime()
-        );
-
-        $userToUserGroupService = $this->createStub(UserToUserGroupService::class);
-        $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheService::class);
-        $actions = $this->createStub(ActionsInterface::class);
-
-        $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
-            $userToUserGroupService,
-            $this->pathsContext,
-            $fileCache
-        );
-
-        $acl = new AccountPermission(self::$faker->randomNumber());
-
-        $fileCache->expects(self::once())
-                  ->method('load')
-                  ->with(self::callback((static fn($path) => is_string($path))))
-                  ->willReturn($acl);
-
-        $fileCache->expects(self::once())
-                  ->method('save')
-                  ->with(
-                      self::callback(
-                          (static fn($acl) => $acl instanceof AccountPermission)
-                      ),
-                      self::callback((static fn($path) => is_string($path)))
-                  );
-
-        $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
-    }
-
-    /**
-     * @throws Exception
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function testCacheLoadThrowsExceptionAndLogged(): void
-    {
-        $dto = new AccountAclDto(
-            self::$faker->randomNumber(),
-            1,
-            [],
-            self::$faker->randomNumber(),
-            [],
-            self::$faker->unixTime()
-        );
-
-        $userToUserGroupService = $this->createStub(UserToUserGroupService::class);
-        $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheService::class);
-        $actions = $this->createStub(ActionsInterface::class);
-
-        $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
-            $userToUserGroupService,
-            $this->pathsContext,
-            $fileCache
-        );
-
-        $fileCache->expects(self::once())
-                  ->method('load')
-                  ->with(self::callback((static fn($path) => is_string($path))))
-                  ->willThrowException(new FileException('test'));
-
-        $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
-    }
-
-    /**
-     * @throws Exception
-     * @throws ConstraintException
-     * @throws QueryException
-     */
-    public function testCacheSaveThrowsExceptionAndLogged(): void
-    {
-        $dto = new AccountAclDto(
-            self::$faker->randomNumber(),
-            1,
-            [],
-            self::$faker->randomNumber(),
-            [],
-            self::$faker->unixTime()
-        );
-
-        $userToUserGroupService = $this->createStub(UserToUserGroupService::class);
-        $userToUserGroupService->method('getGroupsForUser')->willReturn([]);
-        $fileCache = $this->createMock(FileCacheService::class);
-        $actions = $this->createStub(ActionsInterface::class);
-
-        $accountAclService = new AccountAcl(
-            $this->application,
-            new Acl($this->context, $this->application->getEventDispatcher(), $actions),
-            $userToUserGroupService,
-            $this->pathsContext,
-            $fileCache
-        );
-
-        $fileCache->expects(self::once())
-                  ->method('save')
-                  ->with(
-                      self::callback(
-                          (static fn($acl) => $acl instanceof AccountPermission)
-                      ),
-                      self::callback((static fn($path) => is_string($path)))
-                  )
-                  ->willThrowException(new FileException('test'));
-
-        $accountAclService->getAcl(self::$faker->randomNumber(), $dto);
     }
 
     protected function setUp(): void

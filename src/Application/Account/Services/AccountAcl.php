@@ -27,10 +27,6 @@ declare(strict_types=1);
 namespace SP\Application\Account\Services;
 
 use SP\Application\Application;
-use SP\Domain\Core\Bootstrap\Path;
-use SP\Domain\Core\Bootstrap\PathsContext;
-use SP\Domain\Core\Events\Event;
-use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Application\Account\Ports\AccountAclService;
@@ -40,14 +36,9 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
-use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserToUserGroupService;
-use SP\Domain\Core\Exceptions\FileException;
-use SP\Domain\File\FileSystem;
-
-use function SP\processException;
 
 /**
  * Class AccountAcl
@@ -61,9 +52,7 @@ final class AccountAcl extends Service implements AccountAclService
     public function __construct(
         Application                             $application,
         private readonly AclInterface           $acl,
-        private readonly UserToUserGroupService $userToUserGroupService,
-        private readonly PathsContext $pathsContext,
-        private readonly ?FileCacheService      $fileCache = null
+        private readonly UserToUserGroupService $userToUserGroupService
     ) {
         parent::__construct($application);
 
@@ -96,25 +85,6 @@ final class AccountAcl extends Service implements AccountAclService
 
         $this->accountAclDto = $accountAclDto;
 
-        if (null !== $this->fileCache) {
-            $accountAcl = $this->getAclFromCache($accountAclDto->getAccountId(), $actionId);
-
-            if (null !== $accountAcl) {
-                $isModified = $accountAclDto->getDateEdit() > $accountAcl->getTime()
-                              || (strtotime($this->userData->lastUpdate ?? '') ?: 0) > $accountAcl->getTime();
-
-                if (!$isModified) {
-                    $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL HIT')));
-
-                    return $accountAcl;
-                }
-
-                $this->accountPermission->setModified(true);
-            }
-        }
-
-        $this->eventDispatcher->notify(new Event('get.acl', $this, EventMessage::build()->addDescription('Account ACL MISS')));
-
         $this->accountPermission->setAccountId($accountAclDto->getAccountId());
 
         return $this->buildAcl();
@@ -136,49 +106,6 @@ final class AccountAcl extends Service implements AccountAclService
     }
 
     /**
-     * Resturns an stored ACL
-     *
-     * @param int $accountId
-     * @param int $actionId
-     *
-     * @return AccountPermission|null
-     */
-    public function getAclFromCache(int $accountId, int $actionId): ?AccountPermission
-    {
-        try {
-            $acl = $this->fileCache->load($this->getCacheFileForAcl($accountId, $actionId));
-
-            if ($acl instanceof AccountPermission) {
-                return $acl;
-            }
-        } catch (FileException $e) {
-            processException($e);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param int $accountId
-     * @param int $actionId
-     *
-     * @return string
-     */
-    private function getCacheFileForAcl(int $accountId, int $actionId): string
-    {
-        $userId = $this->context->getUserData()->id ?? 0;
-
-        return FileSystem::buildPath(
-            $this->pathsContext[Path::CACHE],
-            'accountAcl',
-            (string)$userId,
-            (string)$accountId,
-            md5($userId . $accountId . $actionId),
-            '.cache'
-        );
-    }
-
-    /**
      * Create the ACL for an account
      *
      * @throws ConstraintException
@@ -193,8 +120,6 @@ final class AccountAcl extends Service implements AccountAclService
         $this->accountPermission->setCompiledShowAccess(true);
 
         $this->accountPermission->setTime(time());
-
-        $this->saveAclInCache($this->accountPermission);
 
         return $this->accountPermission;
     }
@@ -358,28 +283,5 @@ final class AccountAcl extends Service implements AccountAclService
 
         // Show the copy-account action
         $this->accountPermission->setShowCopy($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_COPY));
-    }
-
-    /**
-     * Saves the ACL
-     *
-     * @param AccountPermission $accountAcl
-     *
-     * @return void
-     */
-    private function saveAclInCache(AccountPermission $accountAcl): void
-    {
-        if (null === $this->fileCache) {
-            return;
-        }
-
-        try {
-            $this->fileCache->save(
-                $accountAcl,
-                $this->getCacheFileForAcl($accountAcl->getAccountId(), $accountAcl->getActionId())
-            );
-        } catch (FileException $e) {
-            processException($e);
-        }
     }
 }
