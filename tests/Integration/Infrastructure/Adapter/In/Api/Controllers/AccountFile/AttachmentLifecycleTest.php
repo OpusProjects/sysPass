@@ -46,6 +46,9 @@ class AttachmentLifecycleTest extends ApiTestCase
 {
     private const CONTENT = 'the contents of the attachment';
 
+    /** A PNG header followed by bytes that are not valid UTF-8. */
+    private const BINARY_CONTENT = "\x89PNG\r\n\x1a\n\xff\xfe\x00\x01";
+
     /**
      * The fixture install allows no mime types at all, so nothing can be attached until one is.
      */
@@ -59,7 +62,7 @@ class AttachmentLifecycleTest extends ApiTestCase
             $configFile,
             preg_replace(
                 '#<filesAllowedMime></filesAllowedMime>#',
-                "<filesAllowedMime>\n  <item type=\"filesAllowedMime\">text/plain</item>\n</filesAllowedMime>",
+                "<filesAllowedMime>\n  <item type=\"filesAllowedMime\">text/plain</item>\n  <item type=\"filesAllowedMime\">application/octet-stream</item>\n</filesAllowedMime>",
                 file_get_contents($configFile)
             )
         );
@@ -114,8 +117,8 @@ class AttachmentLifecycleTest extends ApiTestCase
 
         self::assertSame(200, $response->status);
         self::assertSame('notes.txt', $response->body->data->name);
-        // The content comes back as it was stored, not re-encoded.
-        self::assertSame(self::CONTENT, $response->body->data->content);
+        // Encoded on the way out, the way the upload takes it in.
+        self::assertSame(self::CONTENT, base64_decode($response->body->data->content));
     }
 
     /**
@@ -182,6 +185,61 @@ class AttachmentLifecycleTest extends ApiTestCase
     }
 
     /**
+     * An attachment is as likely to be a PDF or an image as a text file, and the upload documents
+     * its content as base64. Reading one back has to work for those too — the response cannot carry
+     * raw bytes.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aBinaryAttachmentIsReadBackByteForByte()
+    {
+        $accountId = $this->givenAnAccount();
+        $fileId = $this->givenABinaryAttachmentOn($accountId);
+
+        $response = $this->viewAttachment($accountId, $fileId);
+
+        self::assertSame(200, $response->status);
+        self::assertSame(self::BINARY_CONTENT, base64_decode($response->body->data->content));
+    }
+
+    /**
+     * And one binary attachment must not take the whole listing with it. The listing carries every
+     * attachment's content, so a single unreadable one used to fail the response for the account.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aBinaryAttachmentDoesNotBreakTheListing()
+    {
+        $accountId = $this->givenAnAccount();
+        $this->givenAnAttachmentOn($accountId, 'notes.txt');
+        $this->givenABinaryAttachmentOn($accountId);
+
+        $response = $this->searchAttachmentsOf($accountId);
+
+        self::assertSame(200, $response->status);
+        self::assertCount(2, $response->body->data);
+    }
+
+    /**
+     * Nor when it is removed — the delete answers with what it removed.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aBinaryAttachmentIsRemovedWithoutBreakingTheResponse()
+    {
+        $accountId = $this->givenAnAccount();
+        $fileId = $this->givenABinaryAttachmentOn($accountId);
+
+        $response = $this->deleteAttachment($accountId, $fileId);
+
+        self::assertSame(200, $response->status);
+        self::assertSame('blob.bin', $response->body->data->name);
+    }
+
+    /**
      * @throws Exception
      */
     private function givenAnAccount(): int
@@ -219,6 +277,27 @@ class AttachmentLifecycleTest extends ApiTestCase
         );
 
         self::assertSame(200, $response->status, 'the attachment under test could not be uploaded');
+
+        return $response->body->itemId;
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function givenABinaryAttachmentOn(int $accountId): int
+    {
+        $response = $this->callApi(
+            AclActionsInterface::ACCOUNT_FILE_UPLOAD,
+            [
+                'id' => $accountId,
+                'name' => 'blob.bin',
+                'content' => base64_encode(self::BINARY_CONTENT),
+                'type' => 'application/octet-stream',
+                'extension' => 'BIN',
+            ]
+        );
+
+        self::assertSame(200, $response->status, 'the binary attachment under test could not be uploaded');
 
         return $response->body->itemId;
     }

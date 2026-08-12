@@ -29,6 +29,6 @@ final class ViewController extends AccountFileBase
                 ->addDetail('ID', $fileId)
         ));
 
-        return ApiResponse::makeSuccess($fileData);
+        return ApiResponse::makeSuccess(self::withEncodedContent($fileData));
     }
 }
