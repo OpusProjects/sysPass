@@ -30,6 +30,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use SP\Domain\Core\UI\IconInterface;
+use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionSearch;
 use SP\Infrastructure\Adapter\In\Web\DataGrid\Layout\DataGridPager;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -145,5 +146,102 @@ class DataGridPagerTest extends UnitaryTestCase
         self::assertSame($icon, $pager->getIconPrev());
         self::assertSame($icon, $pager->getIconNext());
         self::assertSame($icon, $pager->getIconLast());
+    }
+
+    /**
+     * The offsets behind the four navigation buttons. These are what the next request pages from,
+     * so an off-by-one here skips or repeats a row rather than failing.
+     */
+    #[DataProvider('navigationOffsetProvider')]
+    public function testTheNavigationOffsets(int $start, int $count, int $total, string $button, int $expected): void
+    {
+        $pager = (new DataGridPager())->setLimitStart($start)->setLimitCount($count)->setTotalRows($total);
+
+        self::assertSame($expected, $pager->{'get' . $button}());
+    }
+
+    /**
+     * @return array<string, array{int, int, int, string, int}>
+     */
+    public static function navigationOffsetProvider(): array
+    {
+        return [
+            'first always goes back to the top' => [40, 10, 95, 'First', 0],
+            'next is a page further on' => [40, 10, 95, 'Next', 50],
+            'prev is a page back' => [40, 10, 95, 'Prev', 30],
+            // 95 rows in pages of ten: the last page starts at 90 and holds five.
+            'last is the start of the final partial page' => [40, 10, 95, 'Last', 90],
+            // An exact fit has no partial page, so the last one starts a full page from the end.
+            'last is a whole page back when the rows fit exactly' => [40, 10, 90, 'Last', 80],
+        ];
+    }
+
+    /**
+     * The buttons are rendered as a javascript call, and the offset is appended as its last
+     * argument — that is how the page the button leads to is expressed.
+     */
+    public function testEachButtonCallsTheFunctionWithItsOffset(): void
+    {
+        $pager = (new DataGridPager())
+            ->setOnClickFunction('account/search')
+            ->setLimitStart(40)
+            ->setLimitCount(10)
+            ->setTotalRows(95);
+
+        self::assertSame('account/search(0)', $pager->getOnClickFirst());
+        self::assertSame('account/search(30)', $pager->getOnClickPrev());
+        self::assertSame('account/search(50)', $pager->getOnClickNext());
+        self::assertSame('account/search(90)', $pager->getOnClickLast());
+    }
+
+    /**
+     * Arguments set on the pager come before the offset, and a non-numeric one is quoted so it
+     * reaches the function as a string rather than as an identifier the browser would evaluate.
+     */
+    public function testTheConfiguredArgumentsArePassedAheadOfTheOffset(): void
+    {
+        $pager = (new DataGridPager())
+            ->setOnClickFunction('account/search')
+            ->setOnClickArgs('this')
+            ->setOnClickArgs('tblAccounts')
+            ->setOnClickArgs('7')
+            ->setLimitStart(10)
+            ->setLimitCount(10)
+            ->setTotalRows(50);
+
+        // 'this' is the element itself and 7 is a number, so neither is quoted.
+        self::assertSame("account/search(this,'tblAccounts',7,20)", $pager->getOnClickNext());
+    }
+
+    /**
+     * With no offset appended — the plain call, used where the button is not a page jump.
+     */
+    public function testThePlainCallCarriesOnlyTheConfiguredArguments(): void
+    {
+        $pager = (new DataGridPager())->setOnClickFunction('account/search')->setOnClickArgs('tblAccounts');
+
+        self::assertSame("account/search('tblAccounts')", $pager->getOnClick());
+    }
+
+    /**
+     * And with no arguments at all it is the bare function name, not a call with empty parentheses
+     * the browser would choke on.
+     */
+    public function testThePlainCallWithoutArgumentsIsJustTheFunction(): void
+    {
+        self::assertSame('account/search', (new DataGridPager())->setOnClickFunction('account/search')->getOnClick());
+    }
+
+    /**
+     * The pager carries the search action it belongs to, which is what the template submits when a
+     * page button is pressed.
+     *
+     * @throws Exception
+     */
+    public function testThePagerCarriesTheSearchActionItPagesThrough(): void
+    {
+        $action = new DataGridActionSearch();
+
+        self::assertSame($action, (new DataGridPager())->setSourceAction($action)->getSourceAction());
     }
 }
