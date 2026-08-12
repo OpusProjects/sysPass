@@ -48,6 +48,7 @@ use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Log\Providers\LogHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Index\IndexController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Install\InstallController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Login\LoginController;
 use SP\Infrastructure\Adapter\In\Web\Init;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -57,9 +58,12 @@ use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 /**
  * Class InitTest
  *
- * Covers the upgrade-needed wiring in the web Init: detecting an outdated
- * config version must persist the upgrade key and redirect to the upgrade
- * route, while an up-to-date config must fall through unaffected.
+ * Covers the guards every request passes on the way in.
+ *
+ * Each one ends the request the same way — a redirect to the page that explains it, and an
+ * exception so nothing downstream runs — and they are ordered, so an installation that is not
+ * installed must not be asked for a database connection. A guard that redirected without raising
+ * would let the controller run anyway and answer into a response already sent.
  */
 #[Group('unitary')]
 #[AllowMockObjectsWithoutExpectations]
@@ -130,6 +134,182 @@ class InitTest extends UnitaryTestCase
         // LoginController skips both the user-session bootstrap and the final
         // Session::close() call, keeping the fixture free of PHP session state.
         $this->buildInit()->initialize(LoginController::class);
+    }
+
+    /**
+     * An installation that has not been installed is sent to the installer, and nothing else is
+     * asked of it — there is no database to ask.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testInitializeRedirectsToTheInstallerWhenNotInstalled(): void
+    {
+        $this->configData->setInstalled(false);
+
+        $this->databaseUtil->expects(self::never())->method('checkDatabaseConnection');
+        $this->csrf->expects(self::never())->method('check');
+
+        $this->expectsRedirectTo('https://example.test?r=install');
+
+        $this->expectException(InitializationException::class);
+        $this->expectExceptionMessage('Not installed');
+
+        $this->buildInit()->initialize(IndexController::class);
+    }
+
+    /**
+     * A database that cannot be reached is its own page, and the schema is not then asked about —
+     * the answer would be meaningless.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testInitializeRedirectsWhenTheDatabaseCannotBeReached(): void
+    {
+        $this->givenAnInstalledUpToDateConfig();
+
+        $this->databaseUtil->expects(self::once())->method('checkDatabaseConnection')->willReturn(false);
+        $this->databaseUtil->expects(self::never())->method('checkDatabaseTables');
+
+        $this->expectsRedirectTo('https://example.test?r=error%2FdatabaseConnection');
+
+        $this->expectException(InitializationException::class);
+        $this->expectExceptionMessage('Database connection error');
+
+        $this->buildInit()->initialize(IndexController::class);
+    }
+
+    /**
+     * Maintenance mode turns everybody away, which is what makes it safe to re-encrypt every
+     * account behind it.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testInitializeRedirectsWhenInMaintenanceMode(): void
+    {
+        $this->givenAnInstalledUpToDateConfig();
+        $this->configData->setMaintenance(true);
+
+        $this->databaseUtil->expects(self::once())->method('checkDatabaseConnection')->willReturn(true);
+        $this->csrf->expects(self::never())->method('check');
+
+        $this->expectsRedirectTo('https://example.test?r=error%2FmaintenanceError');
+
+        $this->expectException(InitializationException::class);
+        $this->expectExceptionMessage('Maintenance mode');
+
+        $this->buildInit()->initialize(IndexController::class);
+    }
+
+    /**
+     * A database that is reachable but holds no schema is a different failure from one that cannot
+     * be reached, and gets its own page — the two are fixed differently.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testInitializeRedirectsWhenTheSchemaIsMissing(): void
+    {
+        $this->givenAnInstalledUpToDateConfig();
+
+        $this->databaseUtil->expects(self::once())->method('checkDatabaseConnection')->willReturn(true);
+        $this->databaseUtil->expects(self::once())->method('checkDatabaseTables')->willReturn(false);
+
+        $this->expectsRedirectTo('https://example.test?r=error%2FdatabaseError');
+
+        $this->expectException(InitializationException::class);
+        $this->expectExceptionMessage('Database checking error');
+
+        $this->buildInit()->initialize(IndexController::class);
+    }
+
+    /**
+     * A request whose token does not check out is refused outright — no redirect, since a page to
+     * look at is not what a forged request needs, and no new token is issued for it.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testInitializeRefusesARequestWithAnInvalidToken(): void
+    {
+        $this->givenAnInstalledUpToDateConfig();
+
+        $this->databaseUtil->method('checkDatabaseConnection')->willReturn(true);
+        $this->databaseUtil->method('checkDatabaseTables')->willReturn(true);
+
+        $this->csrf->expects(self::once())->method('check')->willReturn(false);
+        $this->csrf->expects(self::never())->method('initialize');
+
+        $this->response->expects(self::never())->method('redirect');
+
+        $this->expectException(InitializationException::class);
+        $this->expectExceptionMessage('Invalid request token');
+
+        $this->buildInit()->initialize(LoginController::class);
+    }
+
+    /**
+     * A browser reload reloads the configuration, so a setting changed by another session is
+     * picked up rather than served from the copy this one started with.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testAReloadReloadsTheConfiguration(): void
+    {
+        $this->givenAnInstalledUpToDateConfig();
+
+        $this->request = $this->createMock(RequestService::class);
+        $this->request->method('checkReload')->willReturn(true);
+
+        $this->databaseUtil->method('checkDatabaseConnection')->willReturn(true);
+        $this->databaseUtil->method('checkDatabaseTables')->willReturn(true);
+        $this->csrf->method('check')->willReturn(true);
+
+        $this->configMock->expects(self::once())->method('reload');
+
+        $this->buildInit()->initialize(LoginController::class);
+    }
+
+    /**
+     * The install route is served without any of the guards — it is what a fresh installation is
+     * redirected to, so a guard in front of it would be a loop.
+     *
+     * @throws Exception
+     * @throws InitializationException
+     */
+    public function testTheInstallerItselfSkipsTheGuards(): void
+    {
+        $this->configData->setInstalled(false);
+
+        $this->databaseUtil->expects(self::never())->method('checkDatabaseConnection');
+        $this->response->expects(self::never())->method('redirect');
+        $this->csrf->expects(self::never())->method('check');
+
+        $this->buildInit()->initialize(InstallController::class);
+    }
+
+    private function givenAnInstalledUpToDateConfig(): void
+    {
+        $currentVersion = Version::getVersionStringNormalized();
+
+        $this->configData->setInstalled(true);
+        $this->configData->setMaintenance(false);
+        $this->configData->setAppVersion($currentVersion);
+        $this->configData->setDatabaseVersion($currentVersion);
+    }
+
+    /**
+     * Each guard redirects and sends before raising, so the browser is given the page that explains
+     * what happened rather than an empty response. The route is url-encoded into the query, so the
+     * separator arrives as %2F.
+     */
+    private function expectsRedirectTo(string $uri): void
+    {
+        $this->response->expects(self::once())->method('redirect')->with($uri)->willReturnSelf();
+        $this->response->expects(self::once())->method('send');
     }
 
     /**
