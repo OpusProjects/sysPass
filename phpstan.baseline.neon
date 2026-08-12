@@ -331,18 +331,6 @@ parameters:
 			count: 1
 			path: src/Domain/Auth/Models/AuthToken.php
 
-		-
-			message: '#^Method SP\\Domain\\Auth\\Providers\\AclHandler\:\:clearAcl\(\) has parameter \$userId with no type specified\.$#'
-			identifier: missingType.parameter
-			count: 1
-			path: src/Domain/Auth/Providers/AclHandler.php
-
-		-
-			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
-			identifier: parameter.notFound
-			count: 1
-			path: src/Domain/Auth/Providers/AclHandler.php
-
 
 		-
 			message: '#^Parameter \#2 \$authData of class SP\\Domain\\Auth\\Providers\\AuthResult constructor expects SP\\Domain\\Auth\\Providers\\Browser\\BrowserAuthData\|SP\\Domain\\Auth\\Providers\\Database\\DatabaseAuthData\|SP\\Domain\\Auth\\Providers\\Ldap\\LdapAuthData, SP\\Domain\\Auth\\Providers\\AuthDataBase given\.$#'

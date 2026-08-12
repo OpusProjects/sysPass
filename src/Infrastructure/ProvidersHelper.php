@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure;
 
-use SP\Domain\Auth\Providers\AclHandler;
 use SP\Infrastructure\Log\Providers\DatabaseHandler;
 use SP\Infrastructure\Log\Providers\LogHandler;
 use SP\Application\Notification\Services\MailEvent;
@@ -42,7 +41,6 @@ final readonly class ProvidersHelper
         private LogHandler         $logHandler,
         private ?DatabaseHandler   $databaseLogHandler = null,
         private ?MailEvent         $mailHandler = null,
-        private ?AclHandler          $aclHandler = null,
         private ?NotificationEvent $notificationHandler = null
     ) {
     }
@@ -60,11 +58,6 @@ final readonly class ProvidersHelper
     public function getMailHandler(): ?MailEvent
     {
         return $this->mailHandler;
-    }
-
-    public function getAclHandler(): ?AclHandler
-    {
-        return $this->aclHandler;
     }
 
     public function getNotificationHandler(): ?NotificationEvent
