@@ -33,6 +33,8 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Infrastructure\Http\Ports\ResponseService;
+use SP\Infrastructure\Http\Services\Response;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -90,18 +92,25 @@ class IndexControllerTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    public function aHalfAuthenticatedRequestIsNotGivenTheApplication()
+    public function aHalfAuthenticatedRequestIsSentToTheLoginPage()
     {
         $this->authCompleted = false;
 
+        // Asserted on the redirect rather than on the absence of a body: an empty response is
+        // also what a route that failed outright produces, so it distinguishes nothing on its
+        // own.
+        $response = $this->getMockBuilder(Response::class)->onlyMethods(['redirect'])->getMock();
+        $response->expects(self::once())
+                 ->method('redirect')
+                 ->with('index.php?r=login')
+                 ->willReturnSelf();
+
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'index/index'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'index/index']),
+            [ResponseService::class => $response]
         );
 
         IntegrationTestCase::runApp($container);
-
-        // The shell is never rendered; the response is the redirect, which carries no body.
-        $this->expectOutputString('');
     }
 
     /**
