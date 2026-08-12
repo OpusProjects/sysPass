@@ -61,6 +61,10 @@ class BootstrapTest extends IntegrationTestCase
     {
         $json = json_decode($output);
 
+        // With the body in the message: an environment call that fails answers with an error page,
+        // and "null has no property lang" says nothing about why.
+        self::assertNotNull($json, sprintf('The environment call did not answer with a payload: %s', $output));
+
         $properties = [
             'lang',
             'locale',
