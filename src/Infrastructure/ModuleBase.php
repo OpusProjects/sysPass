@@ -77,10 +77,6 @@ abstract class ModuleBase implements ModuleInterface
             $this->eventDispatcher->attach($mail);
         }
 
-        if ($acl = $this->providersHelper->getAclHandler()) {
-            $this->eventDispatcher->attach($acl);
-        }
-
         if ($notification = $this->providersHelper->getNotificationHandler()) {
             $this->eventDispatcher->attach($notification);
         }

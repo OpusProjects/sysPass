@@ -62,7 +62,6 @@ use SP\Domain\Auth\Ports\LdapActionsService;
 use SP\Domain\Auth\Ports\LdapAuthService;
 use SP\Domain\Auth\Ports\LdapConnectionHandler;
 use SP\Domain\Auth\Ports\LdapService;
-use SP\Domain\Auth\Providers\AclHandler;
 use SP\Domain\Auth\Providers\AuthProvider;
 use SP\Domain\Auth\Providers\AuthProviderService;
 use SP\Domain\Auth\Providers\AuthType;
@@ -352,7 +351,6 @@ final class CoreDefinitions
                     $c->get(LogHandler::class),
                     $c->get(DatabaseHandler::class),
                     $c->get(MailEvent::class),
-                    $c->get(AclHandler::class),
                     $c->get(NotificationEvent::class)
                 );
             }),
