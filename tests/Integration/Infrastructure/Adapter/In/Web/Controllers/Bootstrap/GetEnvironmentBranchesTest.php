@@ -33,6 +33,7 @@ use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -110,27 +111,47 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
      */
     private function whenAsking(): void
     {
+        // The payload carries the RSA public key, which the real handler generates on disk the
+        // first time it is asked. None of these tests care about it, and generating it is the one
+        // step here that can fail for reasons of its own — which surfaces as an error page instead
+        // of the payload, and only sometimes. Stubbed out so these assert what they are about.
+        $cryptPKI = self::createStub(CryptPKIHandler::class);
+        $cryptPKI->method('getPublicKey')->willReturn('a-public-key');
+
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment'])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment']),
+            [CryptPKIHandler::class => $cryptPKI]
         );
 
         IntegrationTestCase::runApp($container);
     }
 
-    private function outputCheckerNotificationsOff(string $output): void
+    /**
+     * The payload, with the body in the failure message — an environment call that fails answers
+     * with an error page, and 'null is not OK' says nothing about why.
+     */
+    private function payload(string $output): object
     {
         $json = json_decode($output);
 
-        self::assertEquals('OK', $json->status);
+        self::assertNotNull($json, sprintf('The environment call did not answer with a payload: %s', $output));
+        self::assertEquals('OK', $json->status, $output);
+
+        return $json;
+    }
+
+    private function outputCheckerNotificationsOff(string $output): void
+    {
+        $json = $this->payload($output);
+
         self::assertFalse($json->data->check_notifications);
         self::assertFalse($json->data->loggedin);
     }
 
     private function outputCheckerNotificationsOn(string $output): void
     {
-        $json = json_decode($output);
+        $json = $this->payload($output);
 
-        self::assertEquals('OK', $json->status);
         self::assertTrue($json->data->check_notifications);
         self::assertTrue($json->data->loggedin);
     }
@@ -141,9 +162,8 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
      */
     private function outputCheckerRemoteChecksOff(string $output): void
     {
-        $json = json_decode($output);
+        $json = $this->payload($output);
 
-        self::assertEquals('OK', $json->status);
         self::assertFalse($json->data->check_updates);
         self::assertFalse($json->data->check_notices);
     }
