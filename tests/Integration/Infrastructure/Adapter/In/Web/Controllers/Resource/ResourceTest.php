@@ -41,43 +41,13 @@ use SP\Tests\Support\IntegrationTestCase;
  * These are among the few controllers that run before the install and session checks, so they
  * answer on a request that has not been through any of that.
  *
- * The served bytes are not asserted here: the minifier writes them straight to the shared
- * response rather than through the body hook this suite observes, so the assertions below are
- * that each route dispatches cleanly, plus full cover of the guard that decides which directory
- * may be served from.
+ * What is covered here is the guard deciding which directory may be served from. The routes
+ * themselves are exercised in AssetVariantsTest, which signs its requests — an unsigned one
+ * never reaches the controller.
  */
 #[Group('integration')]
 class ResourceTest extends IntegrationTestCase
 {
-    /**
-     * Dispatching the asset routes raises nothing: a failure anywhere in the chain would be
-     * rendered as an error page by the dispatcher, so an empty response is the pass condition.
-     *
-     * @throws ContainerExceptionInterface
-     * @throws Exception
-     * @throws NotFoundExceptionInterface
-     */
-    #[Test]
-    #[DataProvider('assetRouteProvider')]
-    public function assetRouteDispatchesCleanly(string $route)
-    {
-        $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => $route])
-        );
-
-        IntegrationTestCase::runApp($container);
-
-        $this->expectOutputString('');
-    }
-
-    /**
-     * @return array<int, array<int, string>>
-     */
-    public static function assetRouteProvider(): array
-    {
-        return [['resource/css'], ['resource/js']];
-    }
-
     /**
      * The directory to serve from arrives in the query string, so it is resolved through the
      * app-path guard. Anything landing outside the application resolves to nothing, and the
