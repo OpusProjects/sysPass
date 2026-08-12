@@ -177,4 +177,65 @@ class SerdeTest extends UnitaryTestCase
 
         \SP\Domain\Common\Adapters\Serde::deserializeJson($data);
     }
+
+    /**
+     * A string that was never produced by serialize() (corrupted storage, a truncated file, a
+     * caller passing the wrong value) makes PHP's unserialize() return false. That must surface as
+     * a clear exception rather than a false value being handed to code that expects an object or
+     * array.
+     */
+    public function testDeserializeWithInvalidDataThrowsException()
+    {
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Couldn\'t deserialize the data');
+
+        Serde::deserialize('this-is-not-a-serialized-value');
+    }
+
+    /**
+     * This is how a preset or plugin's JSON blob is turned back into its object without calling the
+     * constructor (SerializedModel::hydrate()). Every property the JSON carries and the class
+     * declares must land on the instance, or a stored setting would silently come back empty.
+     *
+     * @throws SPException
+     */
+    public function testDeserializeObjectFromJsonBuildsAnInstanceViaReflection()
+    {
+        $data = '{"id":42,"label":"a label"}';
+
+        $out = Serde::deserializeObjectFromJson($data, SerdeDeserializeObjectFromJsonTestSubject::class);
+
+        $this->assertInstanceOf(SerdeDeserializeObjectFromJsonTestSubject::class, $out);
+        $this->assertSame(42, $out->id);
+        $this->assertSame('a label', $out->label);
+    }
+
+    /**
+     * A class can evolve and drop a property while old data on disk still carries it (a plugin or
+     * preset's schema changing between sysPass versions). Hydration must skip that stale key instead
+     * of failing, or every record saved under the old schema would become unreadable.
+     *
+     * @throws SPException
+     */
+    public function testDeserializeObjectFromJsonIgnoresPropertiesTheClassNoLongerHas()
+    {
+        $data = '{"id":42,"label":"a label","removedInAnOlderSchema":"stale"}';
+
+        $out = Serde::deserializeObjectFromJson($data, SerdeDeserializeObjectFromJsonTestSubject::class);
+
+        $this->assertSame(42, $out->id);
+        $this->assertSame('a label', $out->label);
+    }
+}
+
+/**
+ * A minimal target class for Serde::deserializeObjectFromJson(), so the reflective property
+ * population is exercised without depending on a specific domain type.
+ *
+ * @see SerdeTest::testDeserializeObjectFromJsonBuildsAnInstanceViaReflection()
+ */
+final class SerdeDeserializeObjectFromJsonTestSubject
+{
+    public int $id;
+    public string $label;
 }
