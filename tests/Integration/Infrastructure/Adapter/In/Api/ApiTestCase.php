@@ -215,6 +215,53 @@ abstract class ApiTestCase extends TestCase
     }
 
     /**
+     * Drive the REST dispatch with a request built by hand, for the cases callApi() cannot
+     * express: a path that matches no route, a method the path does not accept, or a call with a
+     * token that is missing or wrong.
+     *
+     * @param array<string, mixed> $params
+     * @return stdClass {status:int, body:stdClass|null}
+     * @throws Exception
+     */
+    final protected function callApiPath(
+        string  $method,
+        string  $path,
+        array   $params = [],
+        ?string $authorization = null
+    ): stdClass {
+        $request = $method === 'GET'
+            ? SymfonyRequest::create($path, $method, $params)
+            : SymfonyRequest::create($path, $method, [], [], [], [], json_encode($params, JSON_THROW_ON_ERROR));
+
+        $request->headers->set('Content-Type', 'application/json');
+
+        if ($authorization !== null) {
+            $request->headers->set('Authorization', $authorization);
+        }
+
+        $dic = $this->buildContainer($request);
+
+        Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class));
+
+        $response = $dic->get(ResponseService::class)->getResponse();
+
+        return (object)[
+            'status' => $response->getStatusCode(),
+            'body' => json_decode($response->getContent(), false),
+        ];
+    }
+
+    /**
+     * A real token for the given action, for a test that then sends it by hand.
+     *
+     * @throws Exception
+     */
+    final protected function issueToken(int $actionId, ?int $asUserId = null): string
+    {
+        return $this->createToken($actionId, $asUserId);
+    }
+
+    /**
      * @throws Exception
      */
     private function createToken(int $actionId, ?int $asUserId = null): string
