@@ -50,6 +50,9 @@ class UploadControllerTest extends IntegrationTestCase
 {
     private const ALLOWED_SIZE_KB = 1;
 
+    /** @var string[] The MIME types the installation accepts */
+    private array $allowedMime = ['text/plain'];
+
     /** @var string[] */
     private array $tempFiles = [];
 
@@ -58,7 +61,7 @@ class UploadControllerTest extends IntegrationTestCase
         return array_merge(
             parent::getConfigData(),
             [
-                'getFilesAllowedMime' => ['text/plain'],
+                'getFilesAllowedMime' => $this->allowedMime,
                 'getFilesAllowedSize' => self::ALLOWED_SIZE_KB,
             ]
         );
@@ -162,6 +165,38 @@ class UploadControllerTest extends IntegrationTestCase
     }
 
     /**
+     * An installation that accepts no MIME types accepts no attachments. Without this check the
+     * allow-list would be empty and every type would resolve against nothing.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerNoAllowedTypes')]
+    public function anInstallationWithNoAllowedTypesRefusesEverything()
+    {
+        $this->allowedMime = [];
+
+        $this->whenUploading($this->givenAFile('notes.txt', 'Some notes'));
+    }
+
+    /**
+     * A file with no name is refused rather than stored under an empty one, which would give the
+     * attachment no extension to be served with and nothing for the listing to show.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerInvalidFile')]
+    public function aFileWithoutANameIsRefused()
+    {
+        $this->whenUploading($this->givenAFile('', 'Some notes'));
+    }
+
+    /**
      * These refusals are raised as exceptions, so the response carries the trace as data; the
      * status and the message are the contract.
      */
@@ -178,6 +213,16 @@ class UploadControllerTest extends IntegrationTestCase
     private function outputCheckerInvalidQuery(string $output): void
     {
         $this->assertRefusedWith($output, 'INVALID QUERY');
+    }
+
+    private function outputCheckerNoAllowedTypes(string $output): void
+    {
+        $this->assertRefusedWith($output, 'There aren\'t any allowed MIME types');
+    }
+
+    private function outputCheckerInvalidFile(string $output): void
+    {
+        $this->assertRefusedWith($output, 'Invalid file');
     }
 
     private function assertRefusedWith(string $output, string $message): void
