@@ -101,6 +101,22 @@ class SessionTest extends UnitaryTestCase
     }
 
     /**
+     * A session already holding something that is not a context is refused rather than used. That
+     * is what an upgraded install's leftover session looks like, and treating it as a context would
+     * mean reading whatever it does hold as the signed-in user.
+     */
+    #[Test]
+    public function aSessionHoldingSomethingElseIsRefused()
+    {
+        session_start();
+        $_SESSION['context'] = 'not a context';
+
+        $this->expectException(ContextException::class);
+
+        (new Session())->initialize();
+    }
+
+    /**
      * Read before the context is bound, an accessor answers with its default rather than raising.
      * These are called from template helpers that run whether or not a session was started.
      */

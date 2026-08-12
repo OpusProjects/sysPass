@@ -27,17 +27,99 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Infrastructure\Context;
 
 use PHPUnit\Framework\Attributes\Group;
+use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\Context\Stateless;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
- * Class StatelessTest
+ * The request-scoped context, and through it the behaviour every context shares.
+ *
+ * The transient collection is where the master password is held for the length of a request. It is
+ * kept under a protected key precisely so that nothing later in the request can quietly swap it —
+ * an account encrypted with a substituted master password could not be decrypted afterwards.
  */
 #[Group('unitary')]
 class StatelessTest extends UnitaryTestCase
 {
+    /**
+     * A protected key — one whose name starts with an underscore, as the master password's does —
+     * cannot be changed once it holds a value.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testAProtectedKeyCannotBeChanged(): void
+    {
+        $context = new Stateless();
+        $context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'the-master-password');
+
+        $this->expectException(ContextException::class);
+
+        $context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'another-password');
+    }
+
+    /**
+     * Setting it to the value it already holds is not a change, so the request that re-derives the
+     * same master password is not refused.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testAProtectedKeyMayBeSetToTheValueItAlreadyHolds(): void
+    {
+        $context = new Stateless();
+        $context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'the-master-password');
+
+        $context->setTrasientKey(Context::MASTER_PASSWORD_KEY, 'the-master-password');
+
+        $this->assertSame('the-master-password', $context->getTrasientKey(Context::MASTER_PASSWORD_KEY));
+    }
+
+    /**
+     * An ordinary key is not protected and can be changed as often as the request needs.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testAnOrdinaryKeyCanBeChanged(): void
+    {
+        $context = new Stateless();
+
+        $context->setTrasientKey('actionName', 'first');
+        $context->setTrasientKey('actionName', 'second');
+
+        $this->assertSame('second', $context->getTrasientKey('actionName'));
+    }
+
+    /**
+     * A key that was never set reads as its default, and a numeric default types the answer — the
+     * callers use these as counters and timestamps.
+     */
+    public function testAKeyThatWasNeverSetReadsAsItsDefault(): void
+    {
+        $context = new Stateless();
+
+        $this->assertNull($context->getTrasientKey('nothing'));
+        $this->assertSame(0, $context->getTrasientKey('nothing', 0));
+    }
+
+    /**
+     * Whether the context has been bound at all. The request-scoped one is usable from the start,
+     * since there is no session for it to wait on.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheRequestScopedContextIsUsableFromTheStart(): void
+    {
+        $context = new Stateless();
+        $context->initialize();
+
+        $this->assertTrue($context->isInitialized());
+    }
+
     /**
      * setPluginKey() must persist the value in the underlying context so a
      * subsequent getPluginKey() call in the same request can read it back.
