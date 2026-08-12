@@ -34,6 +34,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -46,6 +49,25 @@ use SP\Tests\Support\IntegrationTestCase;
 class GetEnvironmentBranchesTest extends IntegrationTestCase
 {
     private bool $loggedIn = true;
+    private bool $checkNotifications = true;
+
+    /**
+     * Whether the browser is told to poll follows the user's own preference, which the fixture
+     * generates at random. Pinned per test, so each case asserts the branch it is about rather than
+     * whichever value the generator produced.
+     *
+     * @throws SPException
+     */
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(
+            [
+                'preferences' => UserDataGenerator::factory()
+                                                  ->buildUserPreferencesData()
+                                                  ->mutate(['checkNotifications' => $this->checkNotifications])
+            ]
+        );
+    }
 
     protected function getContext(): SessionContext|Stub
     {
@@ -67,7 +89,7 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[BodyChecker('outputCheckerNotificationsOff')]
+    #[BodyChecker('outputCheckerSignedOut')]
     public function aSignedOutBrowserIsNotToldToPollForNotifications()
     {
         $this->loggedIn = false;
@@ -86,6 +108,23 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerNotificationsOn')]
     public function aSignedInBrowserIsToldToPollForNotifications()
     {
+        $this->whenAsking();
+    }
+
+    /**
+     * Unless they have turned it off. It is the user's own preference, so a browser that was told
+     * to poll anyway would be polling on behalf of somebody who asked it not to.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerNotificationsOff')]
+    public function aUserWhoTurnedNotificationsOffIsNotToldToPoll()
+    {
+        $this->checkNotifications = false;
+
         $this->whenAsking();
     }
 
@@ -140,12 +179,12 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
         return $json;
     }
 
+    /**
+     * Signed out, or signed in having turned it off — either way, no polling.
+     */
     private function outputCheckerNotificationsOff(string $output): void
     {
-        $json = $this->payload($output);
-
-        self::assertFalse($json->data->check_notifications);
-        self::assertFalse($json->data->loggedin);
+        self::assertFalse($this->payload($output)->data->check_notifications);
     }
 
     private function outputCheckerNotificationsOn(string $output): void
@@ -154,6 +193,14 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
 
         self::assertTrue($json->data->check_notifications);
         self::assertTrue($json->data->loggedin);
+    }
+
+    private function outputCheckerSignedOut(string $output): void
+    {
+        $json = $this->payload($output);
+
+        self::assertFalse($json->data->check_notifications);
+        self::assertFalse($json->data->loggedin);
     }
 
     /**
