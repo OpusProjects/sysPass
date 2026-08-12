@@ -167,10 +167,12 @@ final class ViewLinkController extends AccountControllerBase
                                 ->addExtra('notify', $publicLink->isNotify())
             ));
         } else {
+            // Not rendered here: the action returns the rendered view below, and echoing it
+            // as well sends the page twice.
             ErrorUtil::showErrorInView(
                 $this->view,
                 ErrorUtil::ERR_PAGE_NO_PERMISSION,
-                true,
+                false,
                 'account-link'
             );
         }
