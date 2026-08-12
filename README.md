@@ -27,8 +27,7 @@ All original copyright and the GNU GPLv3 license are retained.
 - **RSA key exchange**: passwords leave the browser already encrypted
 - **Two-factor authentication**: TOTP-based 2FA via the separate
   [`syspass/plugin-authenticator`](https://packagist.org/packages/syspass/plugin-authenticator)
-  plugin (a suggested, not bundled, Composer package — core ships the plugin
-  framework only)
+  plugin
 - **HTML5 / Ajax UI**: single-page interface, no full-page reloads
 - **Access control**: users, groups and profiles with up to 29 access levels
 - **Authentication backends**: local, OpenLDAP and Active Directory
