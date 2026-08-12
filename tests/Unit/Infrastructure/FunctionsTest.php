@@ -29,7 +29,12 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
+use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\_t;
+use function SP\getElapsedTime;
 use function SP\getFromEnv;
+use function SP\initModule;
 use function SP\mb_ucfirst;
 
 /**
@@ -132,5 +137,86 @@ class FunctionsTest extends TestCase
     public function testMbUcfirst(string $input, string $expected): void
     {
         $this->assertSame($expected, mb_ucfirst($input));
+    }
+
+    /**
+     * The plugin translations go through their own gettext domain. Everything the function refuses
+     * to translate has to come back as it was, since the message is what is shown either way.
+     */
+    public function testAMessageFromAnUnknownDomainComesBackAsItIs(): void
+    {
+        $this->assertSame('Some message', _t('a-plugin', 'Some message'));
+    }
+
+    public function testTranslationCanBeTurnedOff(): void
+    {
+        $this->assertSame('Some message', _t('a-plugin', 'Some message', false));
+    }
+
+    /**
+     * gettext is given neither an empty message — which would return the catalogue header — nor an
+     * unreasonably long one.
+     */
+    public function testAnEmptyMessageIsNotLookedUp(): void
+    {
+        $this->assertSame('', _t('a-plugin', ''));
+    }
+
+    public function testAnOverlongMessageIsNotLookedUp(): void
+    {
+        $message = str_repeat('a', 4096);
+
+        $this->assertSame($message, _t('a-plugin', $message));
+    }
+
+    /**
+     * The rendering time is measured from a mark taken at the start of the request. A mark that was
+     * never taken reads as no time at all, rather than as the seconds since 1970.
+     */
+    public function testAnUnsetStartMarkMeasuresNoTime(): void
+    {
+        $this->assertSame(0.0, getElapsedTime(0.0));
+    }
+
+    public function testTheElapsedTimeIsMeasuredFromTheMark(): void
+    {
+        $elapsed = getElapsedTime(microtime(true) - 0.5);
+
+        $this->assertGreaterThanOrEqual(0.5, $elapsed);
+        $this->assertLessThan(30.0, $elapsed);
+    }
+
+    /**
+     * Each entry point builds its container from its module's definitions, so a module that cannot
+     * be loaded has to say so rather than yielding an empty container that fails later, one missing
+     * service at a time.
+     *
+     * @throws SPException
+     */
+    #[DataProvider('moduleProvider')]
+    public function testEachModuleOffersItsDefinitions(string $module): void
+    {
+        $this->assertNotEmpty(initModule($module));
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function moduleProvider(): array
+    {
+        return ['web' => ['web'], 'api' => ['api'], 'cli' => ['cli']];
+    }
+
+    /**
+     * The module name reaches this from the entry point, so a name that is not one is refused
+     * rather than silently building nothing.
+     *
+     * @throws SPException
+     */
+    public function testAnUnknownModuleIsRefused(): void
+    {
+        $this->expectException(SPException::class);
+
+        initModule('not-a-module');
     }
 }
