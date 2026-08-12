@@ -243,4 +243,176 @@ class FileHandlerTest extends TestCase
         self::assertSame($this->dir, $handler->getBase());
         self::assertSame(sha1('abc'), $handler->getHash());
     }
+
+    /**
+     * open() hands back a second handle on the same path rather than reopening this one, which is
+     * how a file written through one handle is then read through another.
+     *
+     * @throws FileException
+     */
+    public function testOpenReturnsAHandleOnTheSameFile(): void
+    {
+        file_put_contents($this->file, 'body');
+        $handler = new FileHandler($this->file);
+
+        $opened = $handler->open('rb');
+
+        self::assertNotSame($handler, $opened);
+        self::assertSame($this->file, $opened->getFile());
+        self::assertSame('body', $opened->readToString());
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testOpenCanTakeALock(): void
+    {
+        file_put_contents($this->file, 'body');
+
+        self::assertSame('body', (new FileHandler($this->file))->open('rb', true)->readToString());
+    }
+
+    /**
+     * The constructor of the underlying SplFileObject raises a RuntimeException for a file that is
+     * not there; open() turns that into the application's own exception, so a caller does not have
+     * to catch both.
+     */
+    public function testOpenThrowsWhenTheFileIsMissing(): void
+    {
+        $handler = new FileHandler($this->file, 'c');
+        unlink($this->file);
+
+        $this->expectException(FileException::class);
+
+        $handler->open('rb');
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testCheckIsWritableReturnsSelf(): void
+    {
+        file_put_contents($this->file, 'x');
+        $handler = new FileHandler($this->file);
+
+        self::assertSame($handler, $handler->checkIsWritable());
+    }
+
+    /**
+     * A file that is not there cannot be written to, and the check says so instead of letting the
+     * write fail later.
+     */
+    public function testCheckIsWritableThrowsWhenTheFileIsMissing(): void
+    {
+        $handler = new FileHandler($this->file, 'c');
+        unlink($this->file);
+
+        $this->expectException(FileException::class);
+
+        $handler->checkIsWritable();
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testGetFileTypeReturnsTheMimeType(): void
+    {
+        file_put_contents($this->file, "just some text\n");
+
+        self::assertSame('text/plain', (new FileHandler($this->file))->getFileType());
+    }
+
+    public function testGetFileTypeThrowsWhenTheFileIsMissing(): void
+    {
+        $handler = new FileHandler($this->file, 'c');
+        unlink($this->file);
+
+        $this->expectException(FileException::class);
+
+        $handler->getFileType();
+    }
+
+    /**
+     * @throws FileException
+     */
+    public function testGetFileTimeReturnsTheModificationTime(): void
+    {
+        file_put_contents($this->file, 'x');
+        touch($this->file, 1700000000);
+
+        self::assertSame(1700000000, (new FileHandler($this->file))->getFileTime());
+    }
+
+    public function testGetFileTimeThrowsWhenTheFileIsMissing(): void
+    {
+        $handler = new FileHandler($this->file, 'c');
+        unlink($this->file);
+
+        $this->expectException(FileException::class);
+
+        $handler->getFileTime();
+    }
+
+    /**
+     * The stat cache is what makes a file just written still look empty; clearing it is fluent, so
+     * it chains in front of the read that needs the fresh size.
+     */
+    public function testClearCacheIsFluent(): void
+    {
+        file_put_contents($this->file, 'x');
+        $handler = new FileHandler($this->file);
+
+        self::assertSame($handler, $handler->clearCache());
+    }
+
+    /**
+     * Downloads are streamed rather than read into memory, so the whole file has to come out of the
+     * chunks in order.
+     *
+     * @throws FileException
+     */
+    public function testReadChunkedHandsEveryChunkToTheCallback(): void
+    {
+        file_put_contents($this->file, str_repeat('abcde', 20));
+
+        $chunks = [];
+        (new FileHandler($this->file))->readChunked(static function (string $chunk) use (&$chunks) {
+            $chunks[] = $chunk;
+        }, 10);
+
+        self::assertGreaterThan(1, count($chunks), 'the file is read in chunks, not in one read');
+        self::assertSame(str_repeat('abcde', 20), implode('', $chunks));
+    }
+
+    /**
+     * A rate above what the memory limit allows is capped rather than honoured, so a caller cannot
+     * ask for the whole of a large file at once.
+     *
+     * @throws FileException
+     */
+    public function testReadChunkedCapsAnOversizedRate(): void
+    {
+        file_put_contents($this->file, 'small body');
+
+        $chunks = [];
+        (new FileHandler($this->file))->readChunked(static function (string $chunk) use (&$chunks) {
+            $chunks[] = $chunk;
+        }, PHP_INT_MAX);
+
+        self::assertSame('small body', implode('', $chunks));
+    }
+
+    /**
+     * With no callback the chunks are printed, which is how a file is handed to the browser.
+     *
+     * @throws FileException
+     */
+    public function testReadChunkedPrintsWhenGivenNoCallback(): void
+    {
+        file_put_contents($this->file, 'printed body');
+
+        $this->expectOutputString('printed body');
+
+        (new FileHandler($this->file))->readChunked(null, 4);
+    }
 }
