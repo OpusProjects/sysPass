@@ -25,7 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Crypt;
 
+use Defuse\Crypto\Key;
+use Defuse\Crypto\KeyProtectedByPassword;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\Support\UnitaryTestCase;
@@ -43,9 +46,10 @@ class CryptTest extends UnitaryTestCase
      */
     public function testMakeSecuredKey()
     {
-        (new Crypt())->makeSecuredKey(self::$faker->password());
+        $key = (new Crypt())->makeSecuredKey(self::$faker->password());
 
-        $this->assertTrue(true);
+        $this->assertIsString($key, 'the key is stored as text, so it has to be text');
+        $this->assertNotEmpty($key);
     }
 
     /**
@@ -55,9 +59,10 @@ class CryptTest extends UnitaryTestCase
      */
     public function testMakeSecuredKeyNoAscii()
     {
-        (new Crypt())->makeSecuredKey(self::$faker->password(), false);
-
-        $this->assertTrue(true);
+        $this->assertInstanceOf(
+            KeyProtectedByPassword::class,
+            (new Crypt())->makeSecuredKey(self::$faker->password(), false)
+        );
     }
 
     /**
@@ -98,5 +103,104 @@ class CryptTest extends UnitaryTestCase
         $this->expectException(CryptException::class);
 
         $crypt->decrypt($data, $key, 'test');
+    }
+
+    /**
+     * A key that was never protected by a password is used as it is. This is the form the session
+     * key takes, so every account password shown in a session goes through it.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function aPlainKeyRoundTripsWithoutAPassword()
+    {
+        $crypt = new Crypt();
+        $key = Key::createNewRandomKey();
+
+        self::assertSame('the secret', $crypt->decrypt($crypt->encrypt('the secret', $key), $key));
+    }
+
+    /**
+     * The same key stored as text — how it is held between requests.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function aPlainKeyRoundTripsInItsStoredForm()
+    {
+        $crypt = new Crypt();
+        $key = Key::createNewRandomKey()->saveToAsciiSafeString();
+
+        self::assertSame('the secret', $crypt->decrypt($crypt->encrypt('the secret', $key), $key));
+    }
+
+    /**
+     * And a password-protected key handed over as the object rather than as text, which is what
+     * makeSecuredKey() returns when it is not asked for the ascii form.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function aPasswordProtectedKeyObjectDecrypts()
+    {
+        $crypt = new Crypt();
+        $password = 'the-key-password';
+
+        /** @var KeyProtectedByPassword $key */
+        $key = $crypt->makeSecuredKey($password, false);
+
+        $encrypted = $crypt->encrypt('the secret', $key->unlockKey($password));
+
+        self::assertSame('the secret', $crypt->decrypt($encrypted, $key, $password));
+    }
+
+    /**
+     * Ciphertext that has been altered is refused rather than decrypted into something else. This
+     * is the check that makes a stored password tamper-evident: the row cannot be edited in the
+     * database to change what the account's password decrypts to.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function alteredCiphertextIsRefused()
+    {
+        $crypt = new Crypt();
+        $key = Key::createNewRandomKey()->saveToAsciiSafeString();
+
+        $encrypted = $crypt->encrypt('the secret', $key);
+
+        $this->expectException(CryptException::class);
+
+        $crypt->decrypt(substr($encrypted, 0, -2) . 'ff', $key);
+    }
+
+    /**
+     * A key that is not a key at all is refused rather than being used as one.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function somethingThatIsNotAKeyIsRefused()
+    {
+        $this->expectException(CryptException::class);
+
+        (new Crypt())->encrypt('the secret', 'not-a-key');
+    }
+
+    /**
+     * Encrypting with the wrong password for the key fails at the unlock, so nothing is encrypted
+     * under a key the caller did not actually hold.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function encryptingWithTheWrongKeyPasswordIsRefused()
+    {
+        $crypt = new Crypt();
+        $key = $crypt->makeSecuredKey('the-key-password');
+
+        $this->expectException(CryptException::class);
+
+        $crypt->encrypt('the secret', $key, 'not-the-key-password');
     }
 }
