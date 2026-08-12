@@ -100,7 +100,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2553 unit** + **566 integration**. The integration suite includes the
+Both pass: **2579 unit** + **580 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -119,27 +119,30 @@ gotchas (the image provides these):
 
 ### Coverage: what is covered, and what deliberately is not
 
-Line coverage is **~93%** (`20807/22342`). Measure it by installing pcov in the container
+Line coverage is **~94%** (`20921/22342`). Measure it by installing pcov in the container
 (`pecl install pcov && docker-php-ext-enable pcov`), running the suites with
 `--coverage-clover`, and removing the ini again — the image does not ship a coverage driver, and
 leaving one enabled slows every later run.
 
-The remaining ~1500 statements are not a backlog to burn down uniformly. They fall into groups
-with different reasons, and two of them are **not reachable by this suite at all**:
+The remaining ~1400 statements are not a backlog to burn down uniformly. What is left:
 
-- **Bootstrap and session (~320 statements).** `Infrastructure/Context/Session.php`,
-  `Adapter/In/Web/Init.php`, `Base.php`, `Infrastructure/{Bootstrap,Context}/*Base.php`,
-  `Adapter/In/Cli/Init.php`, `Definitions/CoreDefinitions.php`. These drive PHP's real session
-  (`session_start`, `session_regenerate_id`) or run *before* the container the tests build —
-  `Base.php` is what constructs it. The integration harness deliberately bypasses them so the
-  whole suite can share one process. Covering them needs per-test process isolation with a real
-  session, which is a different test architecture rather than an addition to this one.
+- **Bootstrap (~90 statements).** `Base.php`, `Definitions/CoreDefinitions.php`, `Adapter/In/Cli/Init.php`,
+  `Bootstrap/BootstrapBase.php`. These run *before* the container the tests build — `Base.php` is
+  what constructs it — or are wiring the entry point exercises live. The containers themselves are
+  compiled in the suite (`CompilableContainerTest`), which is what catches the failure mode that
+  once broke production.
 - **LDAP providers (~46).** Need a directory server to connect to.
 - **Permission denials, in the integration suite.** `IntegrationTestCase` stubs `AclInterface`
   with `checkUserAccess()` always returning `true`, so no integration test can exercise a refusal,
   and one that appears to is passing for another reason. Cover a refusal in a **unit** test
   instead, with the ACL mocked closed — that is how `AccountPasswordHelper`'s are pinned. The
   mapping itself is unit-tested too: `Infrastructure/Acl/Acl.php` is at 100%.
+
+The session and the request guards are **no longer** in that list: `Infrastructure/Context/Session.php`
+is covered against a real PHP session under `#[RunClassInSeparateProcess]` (the technique
+`SessionLifecycleHandlerTest` already used), and `Adapter/In/Web/Init.php`'s guards are covered as
+plain unit tests. Neither needed a different test architecture — reach for a separate process
+before assuming something is unreachable.
 
 Two harness details bite when writing an integration test against a real branch:
 
@@ -148,9 +151,12 @@ Two harness details bite when writing an integration test against a real branch:
   the menu?") never matches. Override the `AclInterface` definition for that one action.
 - `$this->databaseQueryResolver` must **not** be a static closure — the harness binds it with
   `Closure::call()`, which a static one cannot accept, and it then silently returns `null`.
+- The vfs filesystem is built **once per process** and shared by every test, so a test that writes
+  into `Path::BACKUP` (or any other runtime dir) has to key its files on something unique to it —
+  otherwise it either finds another test's leftovers or leaves its own for the next one.
 
-The rest is genuinely reachable, and is a long tail rather than a few large files: ~1170
-statements across **310** files, averaging under four statements each — individual error branches,
+The rest is genuinely reachable, and is a long tail rather than a few large files: ~1250
+statements across **320** files, averaging under four statements each — individual error branches,
 rarely-hit conditionals and unused accessors. Worth picking off when touching the surrounding
 code; not worth a campaign.
 
