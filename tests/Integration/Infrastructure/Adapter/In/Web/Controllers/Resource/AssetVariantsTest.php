@@ -32,14 +32,17 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Crypt\Hash;
+use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
- * Covers the bundles each asset route can serve. Only the default bundle was exercised.
+ * Covers the bundles each asset route can serve.
  *
- * A request may name its own files and directory, which is the branch that reaches the app-path
- * guard, and the JS route additionally serves the application's own bundle rather than the
- * vendor one. Each variant is a separate branch through the controller.
+ * These routes verify a signed URI before doing anything, so a request has to carry the
+ * signature to reach the controller at all. An unsigned one dies in the base class, and because
+ * these actions answer with a callback that refusal writes no body — so an unsigned request is
+ * indistinguishable from a served bundle unless the assertion reads the content.
  */
 #[Group('integration')]
 class AssetVariantsTest extends IntegrationTestCase
@@ -57,15 +60,67 @@ class AssetVariantsTest extends IntegrationTestCase
      */
     #[Test]
     #[DataProvider('bundleProvider')]
-    public function aBundleIsServedWithoutRaising(string $route, array $params): void
+    #[BodyChecker('outputCheckerBundle')]
+    public function aBundleIsConcatenatedAndServed(string $route, array $params): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', array_merge(['r' => $route], $params))
+            IntegrationTestCase::buildRequest('get', 'index.php', $this->sign(['r' => $route] + $params))
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * A request that is not signed never reaches the controller. Without this the signature
+     * could be dropped from the tests above and they would still pass, because the refusal
+     * produces no body at all.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function anUnsignedRequestIsRefusedBeforeTheBundleIsBuilt(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'resource/css'])
         );
 
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('');
+    }
+
+    /**
+     * Mirrors Uri::getUriSigned(), which the request verifies against: `key=urlencode(value)`
+     * joined by '&', keyed by the configured salt.
+     *
+     * @param array<string, string|int> $params
+     *
+     * @return array<string, string|int>
+     */
+    private function sign(array $params): array
+    {
+        $uri = implode(
+            '&',
+            array_map(
+                static fn($name, $value) => sprintf('%s=%s', $name, urlencode((string)$value)),
+                array_keys($params),
+                $params
+            )
+        );
+
+        return $params + ['h' => Hash::signMessage($uri, $this->passwordSalt)];
+    }
+
+    /**
+     * The concatenator prefixes each joined file with a comment naming it, so a served bundle
+     * says what it is made of — which is what tells it apart from an empty response.
+     */
+    private function outputCheckerBundle(string $output): void
+    {
+        self::assertNotEmpty($output);
+        self::assertMatchesRegularExpression('/\.(css|js)/', $output);
     }
 
     /**
@@ -79,15 +134,15 @@ class AssetVariantsTest extends IntegrationTestCase
             'the application script bundle' => ['resource/js', ['g' => 1]],
             'stylesheets named by the request' => [
                 'resource/css',
-                ['f' => urlencode('reset.min.css'), 'b' => urlencode('public/vendor/css')],
+                ['f' => 'reset.min.css', 'b' => 'public/vendor/css'],
             ],
             'scripts named by the request' => [
                 'resource/js',
-                ['f' => urlencode('app-util.min.js'), 'b' => urlencode('public/js')],
+                ['f' => 'app-util.min.js', 'b' => 'public/js'],
             ],
             'several files named at once' => [
                 'resource/js',
-                ['f' => urlencode('app-util.min.js,app-main.min.js'), 'b' => urlencode('public/js')],
+                ['f' => 'app-util.min.js,app-main.min.js', 'b' => 'public/js'],
             ],
         ];
     }
@@ -108,12 +163,14 @@ class AssetVariantsTest extends IntegrationTestCase
             IntegrationTestCase::buildRequest(
                 'get',
                 'index.php',
-                ['r' => 'resource/css', 'f' => urlencode('passwd'), 'b' => urlencode($base)]
+                $this->sign(['r' => 'resource/css', 'f' => 'passwd', 'b' => $base])
             )
         );
 
         IntegrationTestCase::runApp($container);
 
+        // The request is signed, so it reaches the controller; the directory resolves to nothing
+        // and there is no file to serve.
         $this->expectOutputString('');
     }
 
