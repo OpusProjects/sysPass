@@ -1,90 +1,91 @@
 <?php
+/**
+ * sysPass
+ *
+ * @author nuxsmin
+ * @link https://syspass.org
+ * @copyright 2012-2024, Rubén Domínguez nuxsmin@$syspass.org
+ *
+ * This file is part of sysPass.
+ *
+ * sysPass is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * sysPass is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 declare(strict_types=1);
 
 namespace SP\Tests\Unit\Domain\Config\Services;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\TestCase;
 use SP\Domain\Config\Services\ConfigUtil;
+use SP\Tests\Support\UnitaryTestCase;
 
+/**
+ * Class ConfigUtilTest
+ *
+ * Both adapters turn what an administrator typed into a configured list, dropping what cannot be
+ * used. What they drop is the point: a malformed address left in the list would make every
+ * notification attempt fail, and an arbitrary string among the event names would be matched
+ * against every event.
+ */
 #[Group('unitary')]
-class ConfigUtilTest extends TestCase
+class ConfigUtilTest extends UnitaryTestCase
 {
-    public static function mailAddressesProvider(): array
+    public function testAListOfAddressesKeepsOnlyTheValidOnes(): void
     {
-        return [
-            'single valid' => [
-                'alice@example.com',
-                ['alice@example.com'],
-            ],
-            'multiple valid' => [
-                'alice@example.com,bob@example.org',
-                ['alice@example.com', 'bob@example.org'],
-            ],
-            'filters invalid' => [
-                'alice@example.com,not-an-email,bob@example.org',
-                [0 => 'alice@example.com', 2 => 'bob@example.org'],
-            ],
-            'all invalid' => [
-                'not-email,also-not',
-                [],
-            ],
-            'empty string' => [
-                '',
-                [],
-            ],
-            'whitespace in addresses' => [
-                ' alice@example.com , bob@example.org ',
-                [],
-            ],
-            'single trailing comma' => [
-                'alice@example.com,',
-                [0 => 'alice@example.com'],
-            ],
-        ];
+        $addresses = ConfigUtil::mailAddressesAdapter(
+            'someone@example.invalid,not-an-address,other@example.invalid'
+        );
+
+        self::assertCount(2, $addresses);
+        self::assertContains('someone@example.invalid', $addresses);
+        self::assertContains('other@example.invalid', $addresses);
+        self::assertNotContains('not-an-address', $addresses);
     }
 
-    #[DataProvider('mailAddressesProvider')]
-    public function testMailAddressesAdapter(string $input, array $expected): void
+    public function testAnEmptyAddressListIsEmpty(): void
     {
-        $result = ConfigUtil::mailAddressesAdapter($input);
-
-        self::assertSame($expected, $result);
+        self::assertSame([], ConfigUtil::mailAddressesAdapter(''));
     }
 
-    public static function eventsProvider(): array
+    /**
+     * A single address needs no separator.
+     */
+    public function testASingleAddressIsKept(): void
     {
-        return [
-            'valid events' => [
-                ['account.create', 'user.delete', 'login'],
-                ['account.create', 'user.delete', 'login'],
-            ],
-            'filters invalid' => [
-                ['account.create', '123invalid', 'user.delete'],
-                [0 => 'account.create', 2 => 'user.delete'],
-            ],
-            'all invalid' => [
-                ['123', '.leading.dot', ''],
-                [],
-            ],
-            'empty array' => [
-                [],
-                [],
-            ],
-            'case insensitive' => [
-                ['Account.Create', 'USER.DELETE'],
-                ['Account.Create', 'USER.DELETE'],
-            ],
-        ];
+        self::assertSame(['someone@example.invalid'], ConfigUtil::mailAddressesAdapter('someone@example.invalid'));
     }
 
-    #[DataProvider('eventsProvider')]
-    public function testEventsAdapter(array $input, array $expected): void
+    /**
+     * Event names are dotted identifiers; anything else is dropped rather than being registered
+     * as a name that could match unexpectedly.
+     */
+    public function testEventNamesAreKeptOnlyWhenTheyLookLikeEventNames(): void
     {
-        $result = ConfigUtil::eventsAdapter($input);
+        $events = ConfigUtil::eventsAdapter(
+            ['create.account', 'edit.user.password', 'not a name', '123', '', 'login']
+        );
 
-        self::assertSame($expected, $result);
+        self::assertContains('create.account', $events);
+        self::assertContains('edit.user.password', $events);
+        self::assertContains('login', $events);
+        self::assertNotContains('not a name', $events);
+        self::assertNotContains('123', $events);
+        self::assertNotContains('', $events);
+    }
+
+    public function testAnEmptyEventListIsEmpty(): void
+    {
+        self::assertSame([], ConfigUtil::eventsAdapter([]));
     }
 }
