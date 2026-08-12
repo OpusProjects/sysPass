@@ -100,7 +100,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2252 unit** + **279 integration**. The integration suite includes the
+Both pass: **2378 unit** + **481 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -116,6 +116,33 @@ gotchas (the image provides these):
 - `AccountPresetTest::testAddPresetPermissions` was flaky (faker-data collisions with the
   logged-in user's id/userGroupId); fixed by applying the same `array_diff` exclusion in test
   expectations that the production code uses.
+
+### Coverage: what is covered, and what deliberately is not
+
+Line coverage is **~90%** (`20177/22392`). Measure it by installing pcov in the container
+(`pecl install pcov && docker-php-ext-enable pcov`), running the suites with
+`--coverage-clover`, and removing the ini again — the image does not ship a coverage driver, and
+leaving one enabled slows every later run.
+
+The remaining ~2200 statements are not a backlog to burn down uniformly. They fall into groups
+with different reasons, and two of them are **not reachable by this suite at all**:
+
+- **Bootstrap and session (~340 statements).** `Infrastructure/Context/Session.php`,
+  `Adapter/In/Web/Init.php`, `Base.php`, `Infrastructure/Functions.php`. These drive PHP's real
+  session (`session_start`, `session_regenerate_id`) or run *before* the container the tests
+  build — `Base.php` is what constructs it. The integration harness deliberately bypasses them so
+  481 tests can share one process. Covering them needs per-test process isolation with a real
+  session, which is a different test architecture rather than an addition to this one.
+- **LDAP providers (~40).** Need a directory server to connect to.
+- **Permission denials, everywhere.** `IntegrationTestCase` stubs `AclInterface` with
+  `checkUserAccess()` always returning `true`, so no integration test can exercise a refusal, and
+  one that appears to is passing for another reason. The mapping itself is unit-tested instead —
+  `Infrastructure/Acl/Acl.php` is at 100%.
+
+The rest is genuinely reachable, and is a long tail rather than a few large files: ~1350
+statements across **226** web files, averaging six statements each — individual error branches,
+rarely-hit conditionals and unused accessors. Worth picking off when touching the surrounding
+code; not worth a campaign.
 
 ## Web request flow & DI container
 
