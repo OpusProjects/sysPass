@@ -268,6 +268,131 @@ class AccountSearchItemTest extends UnitaryTestCase
     }
 
     /**
+     * Whether the row is one of the user's favourites, which is what the star on it reflects.
+     *
+     * @throws Exception
+     */
+    public function testWhetherTheRowIsAFavouriteIsCarried(): void
+    {
+        self::assertFalse($this->item()->isFavorite());
+        self::assertTrue($this->item(favorite: true)->isFavorite());
+    }
+
+    /**
+     * Whether the account is published as a public link. Unset is not the same as no — the listing
+     * only knows when it was asked to look.
+     *
+     * @throws Exception
+     */
+    public function testWhetherTheAccountIsPubliclyLinkedIsCarried(): void
+    {
+        self::assertNull($this->item()->getLink());
+        self::assertTrue($this->item(link: true)->getLink());
+        self::assertFalse($this->item(link: false)->getLink());
+    }
+
+    /**
+     * The attachment count is shown only while attachments are switched on, so turning the feature
+     * off takes the paperclip off every row rather than leaving a count that leads nowhere.
+     *
+     * @throws Exception
+     */
+    public function testTheAttachmentCountIsHiddenWhileAttachmentsAreOff(): void
+    {
+        self::assertSame(3, $this->item(['num_files' => 3])->getNumFiles());
+        self::assertSame(0, $this->item(['num_files' => 3], filesEnabled: false)->getNumFiles());
+    }
+
+    /**
+     * The optional links are offered on a row the user may see, and only while the setting that
+     * hides them behind a menu is off.
+     *
+     * @throws Exception
+     */
+    public function testTheOptionalLinksFollowTheSettingAndThePermission(): void
+    {
+        // A show flag only sticks once the underlying result allows it, so the view result has to
+        // be set first — the same order the ACL service builds a permission in.
+        $allowed = (new AccountPermission(AclActionsInterface::ACCOUNT_SEARCH))
+            ->setResultView(true)
+            ->setShowView(true);
+
+        self::assertTrue($this->item(permission: $allowed)->isShowOptional());
+
+        AccountSearchItem::$optionalActions = true;
+
+        self::assertFalse($this->item(permission: $allowed)->isShowOptional());
+        self::assertFalse($this->item()->isShowOptional(), 'a row the user cannot see offers nothing');
+    }
+
+    /**
+     * The notes are shortened for the row and escaped, and their line breaks are turned into
+     * markup — they are printed into the page, so an account whose notes contain markup must not
+     * be able to inject any.
+     *
+     * @throws Exception
+     */
+    public function testTheNotesAreShortenedAndEscaped(): void
+    {
+        $short = $this->item(['notes' => "<b>first</b>\nsecond"])->getShortNotes();
+
+        self::assertStringContainsString('&lt;b&gt;first&lt;/b&gt;', $short);
+        self::assertStringContainsString('<br', $short, 'a line break in the notes is shown as one');
+    }
+
+    /**
+     * An account with no notes shows nothing rather than an empty piece of markup.
+     *
+     * @throws Exception
+     */
+    public function testAnAccountWithoutNotesShowsNothing(): void
+    {
+        self::assertSame('', $this->item()->getShortNotes());
+    }
+
+    /**
+     * A password is expired once its change date has passed, and only while the expiry feature is
+     * on. An account with no date set never expires — otherwise every account without one would
+     * show as expired the moment the feature was switched on.
+     *
+     * @throws Exception
+     */
+    #[DataProvider('expiryProvider')]
+    public function testWhenAPasswordCountsAsExpired(bool $enabled, int $changeDate, bool $expected): void
+    {
+        $item = $this->item(['passDateChange' => $changeDate], expiryEnabled: $enabled);
+
+        self::assertSame($expected, $item->isPasswordExpired());
+    }
+
+    /**
+     * @return array<string, array{bool, int, bool}>
+     */
+    public static function expiryProvider(): array
+    {
+        return [
+            'a date in the past, with expiry on' => [true, 1000, true],
+            'a date in the future' => [true, 4102444800, false],
+            'no date set' => [true, 0, false],
+            'a date in the past, with expiry off' => [false, 1000, false],
+        ];
+    }
+
+    /**
+     * The wiki link is only offered on the accounts whose name the configured filter matches, so a
+     * listing does not link every row into a wiki that has nothing for it.
+     *
+     * @throws Exception
+     */
+    public function testTheWikiLinkFollowsTheConfiguredFilter(): void
+    {
+        $item = $this->item(['name' => 'srv-web-01']);
+
+        self::assertTrue($item->isWikiMatch('srv'));
+        self::assertFalse($item->isWikiMatch('db'));
+    }
+
+    /**
      * @param array<string, mixed> $account
      * @param Item[] $tags
      * @param Item[]|null $users
@@ -280,11 +405,16 @@ class AccountSearchItemTest extends UnitaryTestCase
         ?AccountPermission $permission = null,
         array $tags = [],
         ?array $users = null,
-        ?array $userGroups = null
+        ?array $userGroups = null,
+        bool $favorite = false,
+        ?bool $link = null,
+        bool $filesEnabled = true,
+        bool $expiryEnabled = false
     ): AccountSearchItem {
         $configData = $this->createStub(ConfigDataInterface::class);
         $configData->method('getWikiSearchurl')->willReturn('https://wiki.invalid/?q=');
-        $configData->method('isFilesEnabled')->willReturn(true);
+        $configData->method('isFilesEnabled')->willReturn($filesEnabled);
+        $configData->method('isAccountExpireEnabled')->willReturn($expiryEnabled);
 
         $uriContext = $this->createStub(UriContextInterface::class);
         $uriContext->method('getWebUri')->willReturn('https://syspass.invalid');
@@ -297,9 +427,11 @@ class AccountSearchItemTest extends UnitaryTestCase
             $uriContext,
             $tags,
             self::MAX_LENGTH,
-            false,
+            $favorite,
             $users,
-            $userGroups
+            $userGroups,
+            null,
+            $link
         );
     }
 }
