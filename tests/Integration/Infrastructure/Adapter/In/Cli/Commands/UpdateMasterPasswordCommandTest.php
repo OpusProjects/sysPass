@@ -235,6 +235,12 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
 
         parent::setUp();
 
+        // A run that was interrupted (or a tearDown that could not finish) leaves the test database
+        // behind, and the install below then answers "The database already exists" — which fails
+        // every test in this class, not only the one that was interrupted. Start from a clean slate
+        // rather than assuming one.
+        DatabaseUtil::dropDatabase(self::TEST_DB);
+
         // Bootstrap an installed sysPass with the current master password
         $commandTester = $this->executeCommandTest(
             InstallCommand::class,
