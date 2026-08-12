@@ -43,7 +43,9 @@ final class IndexController extends ControllerBase
         $this->layoutHelper->getCustomLayout('request', strtolower($this->routeContextData->actionName));
 
         if (!$this->configData->isMailEnabled()) {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'request');
+            // Not rendered here: the action returns the rendered view below, and echoing it as
+            // well sends the page twice.
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, false, 'request');
         }
 
         return ActionResponse::ok($this->render());

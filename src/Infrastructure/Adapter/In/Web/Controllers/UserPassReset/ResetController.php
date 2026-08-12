@@ -47,7 +47,9 @@ final class ResetController extends ControllerBase
         if ($hash !== null && $this->configData->isMailEnabled()) {
             $this->view->assign('hash', $hash);
         } else {
-            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, true, 'reset');
+            // Not rendered here: the action returns the rendered view below, and echoing it as
+            // well sends the page twice.
+            ErrorUtil::showErrorInView($this->view, self::ERR_UNAVAILABLE, false, 'reset');
         }
 
         return ActionResponse::ok($this->render());
