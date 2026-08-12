@@ -32,6 +32,6 @@ final class DeleteController extends AccountFileBase
                 ->addDetail('ID', $fileId)
         ));
 
-        return ApiResponse::makeSuccess($fileData, __('File removed'), $fileId);
+        return ApiResponse::makeSuccess(self::withEncodedContent($fileData), __('File removed'), $fileId);
     }
 }

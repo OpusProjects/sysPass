@@ -19,7 +19,10 @@ final class SearchController extends AccountFileBase
         $this->eventDispatcher->notify(new Event('search.accountFile', $this));
 
         return ApiResponse::makeSuccess(
-            $this->accountFileService->getByAccountId($accountId)
+            array_map(
+                static fn($file) => self::withEncodedContent($file),
+                $this->accountFileService->getByAccountId($accountId)
+            )
         );
     }
 }
