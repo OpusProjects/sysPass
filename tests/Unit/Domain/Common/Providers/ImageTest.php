@@ -77,6 +77,33 @@ class ImageTest extends TestCase
     }
 
     /**
+     * A very wide, very short image — a banner strip, a signature, a spacer — is an ordinary thing
+     * to attach to an account, and scaling it to the thumbnail's width leaves it less than a pixel
+     * tall.
+     *
+     * Regression: the height was floored to zero and handed to imagecreatetruecolor(), which raises
+     * a ValueError for that rather than returning false, so it escaped the class as an unhandled
+     * error instead of the exception the method documents. Attaching such an image to an account
+     * failed with an internal error.
+     *
+     * @throws InvalidImageException
+     * @throws SPException
+     */
+    public function testCreateThumbnailOfAVeryShortImage()
+    {
+        $source = imagecreatetruecolor(200, 1);
+
+        ob_start();
+        imagepng($source);
+        $bytes = (string)ob_get_clean();
+
+        $thumbnail = imagecreatefromstring(base64_decode($this->imageUtil->createThumbnail($bytes)));
+
+        $this->assertInstanceOf(GdImage::class, $thumbnail);
+        $this->assertSame(1, imagesy($thumbnail), 'a thumbnail is at least one pixel tall');
+    }
+
+    /**
      * A source image can decode fine yet still be unusable: an extreme aspect ratio
      * (e.g. a 1px-wide banner thousands of pixels tall) scales up to a destination canvas
      * so large that GD itself refuses to allocate it. createThumbnail() must turn that GD
