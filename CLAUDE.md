@@ -142,7 +142,9 @@ The remaining ~1000 statements are not a backlog to burn down uniformly. What is
   what constructs it — or are wiring the entry point exercises live. The containers themselves are
   compiled in the suite (`CompilableContainerTest`), which is what catches the failure mode that
   once broke production.
-- **LDAP providers (~46).** Need a directory server to connect to.
+- **LDAP providers.** Only the parts that actually open a connection. `LdapAuth` takes its
+  directory as an injected interface and is unit-tested against a double — do not assume a branch
+  here needs a server without checking what it depends on.
 - **Permission denials, in the integration suite.** `IntegrationTestCase` stubs `AclInterface`
   with `checkUserAccess()` always returning `true`, so no integration test can exercise a refusal,
   and one that appears to is passing for another reason. Cover a refusal in a **unit** test
@@ -177,6 +179,12 @@ A few harness details bite when writing an integration test against a real branc
   the generator on each invocation, so a test that has to know who is signed in — anything asserting
   an ownership check — must override it to memoize, or it will compare against a different user than
   the one in the container's context.
+- **`isShow()` is false for every account in the integration harness.** `IntegrationTestCase` stubs
+  `AccountAclService`, and its `getAcl()` returns an `AccountPermission` with `resultView`/`resultEdit`
+  set but **none of the `setShow*()` flags** — which are the only thing `isShow()` reads. Everything
+  in a search row past the account's name sits behind that, so a test asserting any of it renders
+  must override `AccountAclService` for itself (see `SearchFiltersTest`). Owning the fixture account
+  does nothing; two attempts were lost to that before the cause was found.
 - **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.

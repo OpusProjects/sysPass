@@ -24,35 +24,63 @@ declare(strict_types=1);
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SP\Tests\Unit\Domain\Auth\Providers\Ldap;
+namespace SP\Domain\Auth\Providers\Ldap {
 
-use ArrayIterator;
-use EmptyIterator;
-use SP\Domain\Core\Events\Event;
-use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
-use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
-use PHPUnit\Framework\MockObject\MockObject;
-use SP\Domain\Auth\Ports\LdapActionsService;
-use SP\Domain\Auth\Ports\LdapConnectionHandler;
-use SP\Domain\Auth\Providers\Ldap\LdapException;
-use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
-use SP\Domain\Auth\Providers\Ldap\LdapParams;
-use SP\Domain\Auth\Providers\Ldap\LdapResults;
-use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
-use SP\Domain\Auth\Providers\Ldap\LdapUtil;
-use SP\Domain\Core\Events\EventDispatcherInterface;
-use SP\Domain\Core\Exceptions\SPException;
-use SP\Tests\Support\UnitaryTestCase;
+    /**
+     * Holds the DNS_NS records the shadowed dns_get_record() below should hand back to
+     * LdapMsAds::pickServer(). Defaults to `false` (i.e. "the zone query found nothing"), which is
+     * also what a real query for a non-existent/unreachable zone returns, so tests that don't
+     * touch this run exactly like they did before the shadow existed.
+     */
+    final class DnsRecordsState
+    {
+        /** @var array<int, array<string, mixed>>|false */
+        public static array|false $records = false;
+    }
 
-/**
- * Class LdapMsAdsTest
- *
- */
-#[Group('unitary')]
-#[AllowMockObjectsWithoutExpectations]
-class LdapMsAdsTest extends UnitaryTestCase
-{
+    /**
+     * Shadows the global dns_get_record() for code running in the
+     * SP\Domain\Auth\Providers\Ldap namespace (i.e. LdapMsAds::pickServer()). PHP resolves
+     * unqualified function calls to the current namespace first, so this is picked up instead of
+     * the real DNS lookup — which would otherwise make pickServer() depend on whatever DNS
+     * infrastructure (or lack of it) the test host happens to have.
+     */
+    function dns_get_record(string $hostname, int $type = DNS_ANY): array|false
+    {
+        return DnsRecordsState::$records;
+    }
+}
+
+namespace SP\Tests\Unit\Domain\Auth\Providers\Ldap {
+
+    use ArrayIterator;
+    use EmptyIterator;
+    use SP\Domain\Core\Events\Event;
+    use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+    use PHPUnit\Framework\Attributes\DataProvider;
+    use PHPUnit\Framework\Attributes\Group;
+    use PHPUnit\Framework\MockObject\MockObject;
+    use SP\Domain\Auth\Ports\LdapActionsService;
+    use SP\Domain\Auth\Ports\LdapConnectionHandler;
+    use SP\Domain\Auth\Providers\Ldap\DnsRecordsState;
+    use SP\Domain\Auth\Providers\Ldap\LdapException;
+    use SP\Domain\Auth\Providers\Ldap\LdapMsAds;
+    use SP\Domain\Auth\Providers\Ldap\LdapParams;
+    use SP\Domain\Auth\Providers\Ldap\LdapResults;
+    use SP\Domain\Auth\Providers\Ldap\LdapTypeEnum;
+    use SP\Domain\Auth\Providers\Ldap\LdapUtil;
+    use SP\Domain\Core\Events\EventDispatcherInterface;
+    use SP\Domain\Core\Exceptions\SPException;
+    use SP\Tests\Support\UnitaryTestCase;
+
+    /**
+     * Class LdapMsAdsTest
+     *
+     */
+    #[Group('unitary')]
+    #[AllowMockObjectsWithoutExpectations]
+    class LdapMsAdsTest extends UnitaryTestCase
+    {
 
     private LdapConnectionHandler|MockObject $ldapConnection;
     private LdapActionsService|MockObject    $ldapActions;
@@ -305,6 +333,28 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    /**
+     * A configured "filter user object" overrides the built-in AD person/user filter — used to
+     * narrow (or change) who counts as a matchable user account. testGetUserDnFilter() above only
+     * exercises the built-in default; this pins that an administrator's override actually reaches
+     * the built DN filter.
+     */
+    public function testGetUserDnFilterWithCustomUserObjectFilter()
+    {
+        $this->ldapParams->setFilterUserObject('(objectClass=inetOrgPerson)');
+        $user = self::$faker->userName();
+
+        $out = $this->ldap->getUserDnFilter($user);
+
+        $expected = '(&(|'
+                    . LdapUtil::getAttributesForFilter(LdapMsAds::DEFAULT_FILTER_USER_ATTRIBUTES, $user)
+                    . ')'
+                    . '(objectClass=inetOrgPerson)'
+                    . ')';
+
+        self::assertEquals($expected, $out);
+    }
+
     public function testGetGroupObjectFilter()
     {
         $out = $this->ldap->getGroupObjectFilter();
@@ -371,9 +421,75 @@ class LdapMsAdsTest extends UnitaryTestCase
         self::assertEquals($expected, $out);
     }
 
+    /**
+     * pickServer() recognises a bare IP address and uses it as-is, skipping the DNS site-discovery
+     * query entirely — this is the fixed-server configuration case, and it must never attempt a
+     * network lookup for something that is already an address.
+     */
+    public function testPickServerReturnsAnIpAddressWithoutQueryingDns()
+    {
+        $ip = '10.20.30.40';
+
+        $ldapParams = new LdapParams($ip, LdapTypeEnum::ADS, self::$faker->userName(), self::$faker->password());
+        $ldap = new LdapMsAds($this->ldapConnection, $this->ldapActions, $ldapParams, $this->eventDispatcher);
+
+        self::assertSame($ip, $ldap->getServer());
+    }
+
+    /**
+     * A configured server with no dot (e.g. a bare hostname) can't be turned into a "_msdcs.<zone>"
+     * DNS query, so pickServer() must fall back to using it directly instead of building a
+     * malformed query.
+     */
+    public function testPickServerReturnsTheServerDirectlyWhenItHasNoDomainPart()
+    {
+        $server = 'adserver';
+
+        $ldapParams = new LdapParams(
+            $server,
+            LdapTypeEnum::ADS,
+            self::$faker->userName(),
+            self::$faker->password()
+        );
+        $ldap = new LdapMsAds($this->ldapConnection, $this->ldapActions, $ldapParams, $this->eventDispatcher);
+
+        self::assertSame($server, $ldap->getServer());
+    }
+
+    /**
+     * When the "_msdcs.<zone>" query does return NS records, pickServer() must use one of the
+     * targets the query actually returned, not the originally configured server — that's the
+     * entire point of the site-discovery query (Active Directory advertises the nearest domain
+     * controller this way).
+     */
+    public function testPickServerUsesADnsReturnedTargetWhenTheZoneQueryFindsRecords()
+    {
+        $resolvedServer = 'dc1.ad.example.com';
+        DnsRecordsState::$records = [
+            ['target' => $resolvedServer],
+        ];
+
+        try {
+            $ldapParams = new LdapParams(
+                'ad.example.com',
+                LdapTypeEnum::ADS,
+                self::$faker->userName(),
+                self::$faker->password()
+            );
+            $ldap = new LdapMsAds($this->ldapConnection, $this->ldapActions, $ldapParams, $this->eventDispatcher);
+
+            self::assertSame($resolvedServer, $ldap->getServer());
+        } finally {
+            DnsRecordsState::$records = false;
+        }
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
+
+        // Make sure no earlier test left a DNS response behind for tests that don't set one.
+        DnsRecordsState::$records = false;
 
         $this->ldapConnection = $this->createMock(LdapConnectionHandler::class);
         $this->ldapActions = $this->createMock(LdapActionsService::class);
@@ -393,4 +509,5 @@ class LdapMsAdsTest extends UnitaryTestCase
             $this->eventDispatcher
         );
     }
+}
 }
