@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\User\Models\UserGroup;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
@@ -99,6 +100,30 @@ class UserGroupTest extends IntegrationTestCase
     }
 
     /**
+     * Editing a group id that no longer exists must not render a blank form:
+     * UserGroupService::getById() raises NoSuchItemException when the lookup returns no
+     * rows, and EditController's generic catch(Exception) has to turn that into an error
+     * response instead of letting it bubble up as a fatal.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function editNotFound()
+    {
+        // No addDatabaseMapperResolver() call: the harness default answers with an empty
+        // result set, which is exactly the "no such group" case.
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'userGroup/edit/100'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Group not found","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -113,6 +138,31 @@ class UserGroupTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Group deleted","data":null}');
+    }
+
+    /**
+     * A group id that is already gone must be reported, not swallowed as success:
+     * UserGroupService::delete() raises NoSuchItemException when the DELETE affects no rows,
+     * which DeleteController's generic catch(Exception) turns into an error response.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteNotFound()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            return new QueryResult([], 0, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'userGroup/delete/100'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Group not found","data":null}');
     }
 
     /**
@@ -139,6 +189,36 @@ class UserGroupTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Groups deleted","data":null}');
+    }
+
+    /**
+     * If fewer rows are removed than ids were requested, deleteByIdBatch() raises a
+     * ServiceException — a batch delete either fully succeeds or is reported as failed, it
+     * never silently drops part of the selection.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultiplePartialFailure()
+    {
+        // Two ids requested, only one actually removed.
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            return new QueryResult([], 1, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'userGroup/delete', 'items' => [100, 200]]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while deleting the groups","data":null}');
     }
 
     /**
@@ -181,6 +261,92 @@ class UserGroupTest extends IntegrationTestCase
     }
 
     /**
+     * A group name that already exists must not silently overwrite anything: the
+     * repository's pre-insert uniqueness check raises a DuplicatedItemException. It is
+     * created inside UserGroupService::create()'s transactionAware() wrapper, which
+     * re-throws it as a ServiceException carrying the same message — either way,
+     * SaveCreateController's generic catch(Exception) has to surface it as an error instead
+     * of inserting a second row.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateDuplicateName()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            // The uniqueness check: answering it with a row simulates an existing group
+            // with the same name.
+            if (str_contains($statement, 'UPPER(name)')) {
+                return new QueryResult([new Simple(['id' => 999])]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userGroup/saveCreate'],
+                ['name' => self::$faker->colorName(), 'description' => self::$faker->sentence()]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Duplicated group name","data":null}');
+    }
+
+    /**
+     * A group is how accounts get shared, so the membership submitted alongside the group's
+     * own fields has to actually reach the pivot table, not just the group row itself.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreatePersistsSelectedUsers()
+    {
+        $capturedUserIds = null;
+
+        $this->databaseQueryResolver = function (QueryData $queryData) use (&$capturedUserIds): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'INSERT') && str_contains($statement, 'UserToUserGroup')) {
+                $capturedUserIds = array_values($queryData->getQuery()->getBindValues());
+            }
+
+            return new QueryResult([], 1, 555);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userGroup/saveCreate'],
+                [
+                    'name' => self::$faker->colorName(),
+                    'description' => self::$faker->sentence(),
+                    'users' => [11, 22],
+                ]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Group added","data":null}');
+
+        self::assertNotNull($capturedUserIds, 'Selecting users on create must insert into the pivot table.');
+        self::assertContains(11, $capturedUserIds);
+        self::assertContains(22, $capturedUserIds);
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -188,6 +354,80 @@ class UserGroupTest extends IntegrationTestCase
     #[Test]
     public function saveEdit()
     {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userGroup/saveEdit/100'],
+                ['name' => self::$faker->colorName(), 'description' => self::$faker->sentence()]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Group updated","data":null}');
+    }
+
+    /**
+     * A group name colliding with another group's must not silently rename onto it: the
+     * repository's pre-update uniqueness check raises a DuplicatedItemException, wrapped by
+     * UserGroupService::update()'s transactionAware() into a ServiceException with the same
+     * message, which SaveEditController's generic catch(Exception) surfaces as an error.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditDuplicateName()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, 'UPPER(name)')) {
+                return new QueryResult([new Simple(['id' => 999])]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userGroup/saveEdit/100'],
+                ['name' => self::$faker->colorName(), 'description' => self::$faker->sentence()]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Duplicated group name","data":null}');
+    }
+
+    /**
+     * Unlike UserProfileService::update(), UserGroupService::update() does not check how many
+     * rows the UPDATE affected, so editing an id that no longer exists still reports success.
+     * This pins down that actual (asymmetric) behaviour rather than assuming it matches the
+     * profile side.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditSucceedsEvenWhenNoRowsAffected()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'UPDATE')) {
+                return new QueryResult([], 0, 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
                 'post',
