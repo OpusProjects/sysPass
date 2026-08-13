@@ -535,8 +535,11 @@ class UserTest extends IntegrationTestCase
             'name' => self::$faker->name(),
             'login' => self::$faker->userName(),
             'email' => self::$faker->email(),
-            'usergroup_id' => self::$faker->randomNumber(2),
-            'userprofile_id' => self::$faker->randomNumber(2),
+            // Not randomNumber(): it can roll a zero, and the form reads a zero group or profile
+            // as "none given" and refuses the save. Once in a hundred runs, on CI, in whichever
+            // pull request happened to be open at the time.
+            'usergroup_id' => self::$faker->numberBetween(1, 99),
+            'userprofile_id' => self::$faker->numberBetween(1, 99),
             'notes' => self::$faker->sentence(),
         ];
     }
