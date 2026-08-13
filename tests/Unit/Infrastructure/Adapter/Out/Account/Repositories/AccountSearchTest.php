@@ -27,6 +27,7 @@ namespace SP\Tests\Unit\Infrastructure\Adapter\Out\Account\Repositories;
 
 use Aura\SqlQuery\QueryFactory;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -34,6 +35,7 @@ use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Account\Ports\AccountFilterBuilder;
 use SP\Domain\Account\Ports\AccountSearchConstants;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Infrastructure\Adapter\Out\Account\Repositories\AccountSearch;
 use SP\Infrastructure\Database\QueryData;
@@ -252,6 +254,96 @@ class AccountSearchTest extends UnitaryTestCase
         $query = '(`Account`.`passDateChange` > 0 AND UNIX_TIMESTAMP() > `Account`.`passDateChange`)';
 
         $this->checkQueryRegex($out->getStatement(), $query);
+    }
+
+    /**
+     * When the user picks "match any" (OR), the dimension conditions (text, category, client,
+     * tags) must be OR-ed together rather than AND-ed — and the tag check itself has to switch
+     * from "has every tag" (a COUNT) to "has any tag" (an EXISTS), since under OR a single
+     * matching tag is enough. Both are driven by the same filterOperator, so one filter with
+     * text + tags set to OR exercises both branches together.
+     */
+    public function testGetByFilterCombinesDimensionsWithOrAndUsesExistsForTags(): void
+    {
+        $accountSearchFilter = AccountSearchFilterDto::build('test');
+        $accountSearchFilter->setCleanTxtSearch('test');
+        $accountSearchFilter->setTagsId([7, 8]);
+        $accountSearchFilter->setFilterOperator(AccountSearchConstants::FILTER_CHAIN_OR);
+
+        $captured = null;
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->willReturnCallback(function (QueryData $queryData) use (&$captured) {
+                $captured = $queryData;
+
+                return new QueryResult();
+            });
+
+        $this->accountSearch->getByFilter($accountSearchFilter);
+
+        $statement = preg_replace('/[\n\s]+/', ' ', $captured->getQuery()->getStatement());
+
+        // The text-search clause and the tags clause are chained with "or" (the operator glue),
+        // not "and" (the default) — and the tags side is the EXISTS form, not the AND-only COUNT.
+        self::assertStringContainsString(
+            '(`Account`.`name` LIKE :name OR `Account`.`login` LIKE :login OR `Account`.`url` LIKE :url OR `Account`.`notes` LIKE :notes)'
+            . ' or EXISTS (SELECT 1 FROM AccountToTag',
+            $statement
+        );
+        self::assertStringNotContainsString('COUNT(DISTINCT', $statement);
+
+        self::assertSame(
+            [
+                'name' => '%test%',
+                'login' => '%test%',
+                'url' => '%test%',
+                'notes' => '%test%',
+                '__1__' => 7,
+                '__2__' => 8,
+            ],
+            $captured->getQuery()->getBindValues()
+        );
+    }
+
+    /**
+     * @return array<string, array{0: int, 1: string}>
+     */
+    public static function sortKeyDataProvider(): array
+    {
+        return [
+            'name' => [AccountSearchConstants::SORT_NAME, '`Account`.`name`'],
+            'login' => [AccountSearchConstants::SORT_LOGIN, '`Account`.`login`'],
+            'url' => [AccountSearchConstants::SORT_URL, '`Account`.`url`'],
+            'client' => [AccountSearchConstants::SORT_CLIENT, '`Account`.`clientName`'],
+        ];
+    }
+
+    /**
+     * Each sort key the user can pick orders by a different column; the default (no key chosen)
+     * is covered by testGetByFilter already, so this covers the rest of the match().
+     */
+    #[DataProvider('sortKeyDataProvider')]
+    public function testGetByFilterOrdersByTheChosenSortKey(int $sortKey, string $expectedColumn): void
+    {
+        $accountSearchFilter = AccountSearchFilterDto::build(null);
+        $accountSearchFilter->setSortKey($sortKey);
+
+        $captured = null;
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->willReturnCallback(function (QueryData $queryData) use (&$captured) {
+                $captured = $queryData;
+
+                return new QueryResult();
+            });
+
+        $this->accountSearch->getByFilter($accountSearchFilter);
+
+        $statement = preg_replace('/[\n\s]+/', ' ', $captured->getQuery()->getStatement());
+
+        // The DTO defaults sortOrder to ASC, so this also covers the sort-direction match()'s
+        // "default" arm (only DESC is exercised elsewhere), alongside the sort-key column.
+        self::assertStringContainsString(sprintf('ORDER BY %s ASC', $expectedColumn), $statement);
     }
 
     protected function setUp(): void
