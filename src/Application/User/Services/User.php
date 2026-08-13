@@ -286,10 +286,20 @@ final class User extends Service implements UserService
      * @throws ConstraintException
      * @throws QueryException
      * @throws JsonException
+     * @throws ServiceException
      */
     public function updatePreferencesById(int $userId, UserPreferences $userPreferences): int
     {
-        return $this->userRepository->updatePreferencesById($userId, $userPreferences);
+        $affected = $this->userRepository->updatePreferencesById($userId, $userPreferences);
+
+        // An update whose WHERE matched nothing has saved nothing. Reporting success for it told
+        // the user their preferences had been stored — and the caller then refreshed the session
+        // with them, so the page even looked right until the next sign-in.
+        if ($affected === 0) {
+            throw ServiceException::error(__u('Error while updating the preferences'));
+        }
+
+        return $affected;
     }
 
     /**

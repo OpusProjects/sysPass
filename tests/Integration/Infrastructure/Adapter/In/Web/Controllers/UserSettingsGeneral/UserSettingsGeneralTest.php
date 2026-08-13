@@ -312,6 +312,49 @@ class UserSettingsGeneralTest extends IntegrationTestCase
     }
 
     /**
+     * And the same when the update raises nothing at all but simply matches no row — the user's
+     * own row deleted from another session, say. It saved nothing, so it is reported as a failure
+     * and the session is left alone, rather than the page showing settings that exist nowhere.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveIsReportedAsFailedWhenTheUpdateMatchesNoRow()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'UPDATE') && str_contains($statement, 'preferences')) {
+                return new QueryResult([], 0, 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userSettingsGeneral/save'],
+                self::fullPreferencesFields()
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"Error while updating the preferences","data":null}'
+        );
+
+        self::assertNull(
+            $this->refreshedSessionUserData,
+            'the session must not be refreshed with preferences that were never actually written'
+        );
+    }
+
+    /**
      * Registers a resolver that captures the bind values of the UPDATE issued against the
      * preferences column into {@see $capturedUpdateBindValues}. Every other query on the
      * request (the session/user lookups the framework issues on its own, event logging, and
