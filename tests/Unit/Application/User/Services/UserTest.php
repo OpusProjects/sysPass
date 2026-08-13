@@ -142,6 +142,30 @@ class UserTest extends UnitaryTestCase
         $this->assertEquals(10, $out);
     }
 
+    /**
+     * A user whose row is no longer there has not had their preferences saved, and saying so beats
+     * reporting success — the caller refreshes the session with what it thinks was stored, so
+     * without this the page looks right until the next sign-in throws it away.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     */
+    public function testUpdatePreferencesByIdOfAUserThatIsNotThereIsReported()
+    {
+        $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData();
+
+        $this->userRepository
+            ->expects($this->once())
+            ->method('updatePreferencesById')
+            ->with(100, $userPreferences)
+            ->willReturn(0);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while updating the preferences');
+
+        $this->user->updatePreferencesById(100, $userPreferences);
+    }
+
     public function testGetAll()
     {
         $user = UserDataGenerator::factory()->buildUserData();
