@@ -185,6 +185,64 @@ class LdapActionsTest extends UnitaryTestCase
     }
 
     /**
+     * A search that matches the LDAP entry (no LdapException) but yields no entry at all — as
+     * opposed to a search error — must come back as an empty AttributeCollection so the caller
+     * (LdapAuth::getAttributes()) can tell "user not found" apart from "search failed" and fail
+     * the login closed either way.
+     *
+     * @throws LdapException
+     * @throws Exception
+     */
+    public function testGetAttributesReturnsAnEmptyCollectionWhenNothingMatches(): void
+    {
+        $this->ldap->expects(self::once())
+                   ->method('search')
+                   ->with(
+                       'a_filter',
+                       null,
+                       Ldap::SEARCH_SCOPE_SUB,
+                       [],
+                   )
+            ->willReturn(new ArrayIterator([]));
+
+        $out = $this->ldapActions->getAttributes('a_filter');
+
+        self::assertEquals(new AttributeCollection(), $out);
+    }
+
+    /**
+     * Directories represent a single-valued attribute as either a bare scalar or as an array with
+     * a "count" of 1 (LDAP's native multi-value shape, just with one value). Only the "count > 1"
+     * case stores the whole array; this pins that the single-value array shape still yields the
+     * plain value, not the wrapper array, so it isn't mistaken for a genuinely multi-valued one.
+     *
+     * @throws LdapException
+     * @throws Exception
+     */
+    public function testGetAttributesUnwrapsASingleValuedArrayAttribute(): void
+    {
+        $attributes = $this->buildAttributes();
+        $mail = $attributes['mail'];
+        $attributes['mail'] = ['count' => 1, 0 => $mail];
+
+        $iterator = new ArrayIterator([$attributes]);
+
+        $this->ldap->expects(self::once())
+                   ->method('search')
+                   ->with(
+                       'a_filter',
+                       null,
+                       Ldap::SEARCH_SCOPE_SUB,
+                       [],
+                   )
+            ->willReturn($iterator);
+
+        $out = $this->ldapActions->getAttributes('a_filter');
+
+        self::assertSame($mail, $out->get('mail'));
+    }
+
+    /**
      * @throws LdapException
      * @throws Exception
      */
@@ -212,6 +270,97 @@ class LdapActionsTest extends UnitaryTestCase
         $out = $this->ldapActions->searchGroupsDn($filter);
 
         self::assertEquals($expected[1]['dn'], $out[0]);
+    }
+
+    /**
+     * A directory entry that isn't shaped as an array (e.g. a stray scalar in the result set)
+     * must be dropped rather than crash the mapping — searchGroupsDn() only knows how to pull a
+     * "dn" out of an array-shaped entry.
+     *
+     * @throws LdapException
+     * @throws Exception
+     */
+    public function testSearchGroupsDnIgnoresNonArrayResultEntries(): void
+    {
+        $groupDn = self::$faker->name();
+        $filter = 'test';
+        $iterator = new ArrayIterator([
+                                          'not-an-array-entry',
+                                          ['dn' => $groupDn],
+                                      ]);
+
+        $this->ldap->expects(self::once())
+                   ->method('search')
+                   ->with(
+                       '(&(cn=\2a)test)',
+                       null,
+                       Ldap::SEARCH_SCOPE_SUB,
+                       ['dn'],
+                   )
+            ->willReturn($iterator);
+
+        $out = $this->ldapActions->searchGroupsDn($filter);
+
+        self::assertSame([$groupDn], $out);
+    }
+
+    /**
+     * When the configured "group" is given as a full DN (starts with "cn="), the search filter
+     * must use only the plain CN, not the whole DN — a DN embedded raw into a "(cn=...)" filter
+     * term would never match anything on the directory.
+     *
+     * @throws LdapException
+     * @throws Exception
+     */
+    public function testSearchGroupsDnUsesTheCnWhenGroupIsGivenAsADn(): void
+    {
+        $ldapActions = new LdapActions($this->ldap, $this->eventDispatcher, null, 'cn=Admins,dc=example,dc=com');
+
+        $groupDn = self::$faker->name();
+        $iterator = new ArrayIterator([['dn' => $groupDn]]);
+
+        $this->ldap->expects(self::once())
+                   ->method('search')
+                   ->with(
+                       '(&(cn=Admins)test)',
+                       null,
+                       Ldap::SEARCH_SCOPE_SUB,
+                       ['dn'],
+                   )
+            ->willReturn($iterator);
+
+        $out = $ldapActions->searchGroupsDn('test');
+
+        self::assertSame([$groupDn], $out);
+    }
+
+    /**
+     * A configured "group" that isn't a DN (doesn't start with "cn=") is used as-is as the CN —
+     * this is the plain "group name" configuration case, as opposed to the full-DN case above.
+     *
+     * @throws LdapException
+     * @throws Exception
+     */
+    public function testSearchGroupsDnUsesThePlainGroupNameWhenNotGivenAsADn(): void
+    {
+        $ldapActions = new LdapActions($this->ldap, $this->eventDispatcher, null, 'AdminsGroup');
+
+        $groupDn = self::$faker->name();
+        $iterator = new ArrayIterator([['dn' => $groupDn]]);
+
+        $this->ldap->expects(self::once())
+                   ->method('search')
+                   ->with(
+                       '(&(cn=AdminsGroup)test)',
+                       null,
+                       Ldap::SEARCH_SCOPE_SUB,
+                       ['dn'],
+                   )
+            ->willReturn($iterator);
+
+        $out = $ldapActions->searchGroupsDn('test');
+
+        self::assertSame([$groupDn], $out);
     }
 
     /**
