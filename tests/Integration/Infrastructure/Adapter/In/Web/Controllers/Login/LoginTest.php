@@ -35,6 +35,14 @@ use SP\Application\Auth\Ports\LoginService;
 use SP\Domain\Auth\Dtos\LoginResponseDto;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginStatus;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\MockObject\Stub;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Messages\TextFormatter;
+use SP\Infrastructure\Events\EventDispatcher;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -50,6 +58,30 @@ use SP\Tests\Support\IntegrationTestCase;
 class LoginTest extends IntegrationTestCase
 {
     private const REDIRECT = 'index.php?r=index';
+
+    /** Where the user was when their session sent them to the login page, if anywhere. */
+    private ?string $interruptedAt = null;
+    private bool $demoEnabled = false;
+    /** @var Event[] */
+    private array $recordedEvents = [];
+
+    protected function getContext(): SessionContext|Stub
+    {
+        $context = parent::getContext();
+        $context->method('getTrasientKey')->willReturnCallback(
+            fn(string $key) => $key === 'redirect' ? $this->interruptedAt : null
+        );
+
+        return $context;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isDemoEnabled' => $this->demoEnabled]);
+    }
 
     /**
      * @throws ContainerExceptionInterface
@@ -109,6 +141,84 @@ class LoginTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
+    /**
+     * Where a user is sent after signing in is the session's business first: if they were bounced
+     * to the login page from somewhere, that is where they go back to, and only otherwise to
+     * wherever the login service would have sent them. The wrong way round drops a user on the
+     * home page every time their session expires mid-task.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerReturnedToWhereTheyWere')]
+    public function aUserBouncedToTheLoginPageGoesBackToWhereTheyWere()
+    {
+        $this->interruptedAt = 'index.php?r=account/view/100';
+
+        $this->whenSigningIn();
+    }
+
+    /**
+     * A sign-in that arrived through a proxy records where it was forwarded from, so an operator
+     * reading the log sees the client rather than the proxy. On a demo instance the address is
+     * masked instead — that log is readable by whoever is trying the demo out.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('forwardedProvider')]
+    public function aForwardedSignInRecordsWhereItCameFrom(bool $demo, string $expected)
+    {
+        $this->demoEnabled = $demo;
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '192.0.2.43, 198.51.100.7';
+
+        try {
+            $this->whenSigningIn();
+        } finally {
+            unset($_SERVER['HTTP_X_FORWARDED_FOR']);
+        }
+
+        $forwarded = $this->recordedEventsNamed('login.info');
+
+        self::assertCount(1, $forwarded, 'a forwarded sign-in is recorded');
+        self::assertStringContainsString(
+            $expected,
+            $forwarded[0]->getEventMessage()->getDetails(new TextFormatter(), false)
+        );
+    }
+
+    /**
+     * @return array<string, array{bool, string}>
+     */
+    public static function forwardedProvider(): array
+    {
+        return [
+            'an ordinary instance logs the client address' => [false, '192.0.2.43'],
+            'a demo instance masks it' => [true, '***'],
+        ];
+    }
+
+    /**
+     * A sign-in that did not arrive through a proxy records nothing extra — there is nothing to
+     * say, and an empty detail in the log is noise.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerRedirect')]
+    public function anOrdinarySignInRecordsNoForwardedAddress()
+    {
+        $this->whenSigningIn();
+
+        self::assertEmpty($this->recordedEventsNamed('login.info'));
+    }
+
     #[Test]
     #[BodyChecker('outputCheckerLoginPage')]
     public function index()
@@ -140,6 +250,73 @@ class LoginTest extends IntegrationTestCase
      * The browser is told where to go next; without it a successful sign-in leaves the user on
      * the login form.
      */
+    /**
+     * Signing in with a stubbed login service that always succeeds, against a real event
+     * dispatcher whose events this test records — the dispatcher is final and typed concretely on
+     * the controller, so it cannot be doubled.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    private function whenSigningIn(): void
+    {
+        $loginService = $this->createStub(LoginService::class);
+        $loginService->method('doLogin')->willReturn(new LoginResponseDto(LoginStatus::OK, self::REDIRECT));
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->attach(
+            new class ($this->recordedEvents) implements EventReceiver {
+                /**
+                 * @param Event[] $recorded
+                 */
+                public function __construct(private array &$recorded)
+                {
+                }
+
+                public function update(Event $event): void
+                {
+                    $this->recorded[] = $event;
+                }
+
+                public function getEvents(): ?string
+                {
+                    return '*';
+                }
+            }
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'login/login'],
+                ['user' => self::$faker->userName(), 'pass' => self::$faker->password()]
+            ),
+            [LoginService::class => $loginService, EventDispatcherInterface::class => $eventDispatcher]
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * @return Event[]
+     */
+    private function recordedEventsNamed(string $name): array
+    {
+        return array_values(
+            array_filter($this->recordedEvents, static fn(Event $event) => $event->getName() === $name)
+        );
+    }
+
+    private function outputCheckerReturnedToWhereTheyWere(string $output): void
+    {
+        $json = json_decode($output);
+
+        self::assertEquals('OK', $json->status);
+        self::assertSame($this->interruptedAt, $json->data->url);
+    }
+
     private function outputCheckerRedirect(string $output): void
     {
         $json = json_decode($output);
