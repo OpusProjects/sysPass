@@ -31,8 +31,11 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Application\Notification\Ports\MailService;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\User\Models\User;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Models\UserList;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
@@ -63,6 +66,34 @@ class UserTest extends IntegrationTestCase
     }
 
     /**
+     * If a picker's data (the user group list, here) cannot be loaded, the create form
+     * must degrade to a JSON error response rather than leaking an unhandled exception.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function createFailsWhenGroupsCannotBeLoaded()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getMapClassName() === UserGroupModel::class) {
+                throw ConstraintException::error('Unable to load user groups');
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/create'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Unable to load user groups","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -78,6 +109,29 @@ class UserTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * Editing an id that no longer exists must surface an error instead of rendering
+     * whatever the lookup happened to return: the controller has to check the result,
+     * not assume the row is there because an id was passed on the route.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function editUnknownUser()
+    {
+        // No mapper resolver registered for User::class: the lookup comes back empty,
+        // exactly as it would for an id that was deleted after the row was listed.
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/edit/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"User does not exist","data":null}');
     }
 
     /**
@@ -120,6 +174,26 @@ class UserTest extends IntegrationTestCase
     }
 
     /**
+     * Same lookup guard as the main edit form: the password form must not render for
+     * a user id that isn't there instead of quietly showing an unrelated blank form.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function editPassUnknownUser()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/editPass/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"User does not exist","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -134,6 +208,34 @@ class UserTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"User deleted","data":null}');
+    }
+
+    /**
+     * Deleting an id with no matching row must be reported as an error, not treated as
+     * a no-op success — otherwise a caller can't tell a real deletion from a typo'd id.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteSingleNotFound()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getOnErrorMessage() === 'Error while deleting the user') {
+                return new QueryResult([], 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/delete/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"User not found","data":null}');
     }
 
     /**
@@ -156,6 +258,36 @@ class UserTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Users deleted","data":null}');
+    }
+
+    /**
+     * The batch delete counts affected rows against the ids sent; when fewer rows were
+     * removed than requested (one id had already gone, say) it must report the mismatch
+     * instead of claiming every user was deleted.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultiplePartialFailure()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getOnErrorMessage() === 'Error while deleting the users') {
+                // Two ids were requested but only one row was actually removed.
+                return new QueryResult([], 1, 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/delete', 'items' => [100, 200]])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while deleting the users","data":null}');
     }
 
     /**
@@ -198,6 +330,36 @@ class UserTest extends IntegrationTestCase
     }
 
     /**
+     * Checking "force password change" on create must actually kick off the recovery
+     * mail, not just be accepted and dropped: this is the only place "changepass_enabled"
+     * is read after the form parses it.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateTriggersPasswordChangeMail()
+    {
+        $mailService = $this->createMock(MailService::class);
+        $mailService->expects($this->once())->method('send');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'user/saveCreate'],
+                self::userFields() + self::passwordFields() + ['changepass_enabled' => '1']
+            ),
+            [MailService::class => $mailService]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"User added","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -212,6 +374,58 @@ class UserTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"User updated","data":null}');
+    }
+
+    /**
+     * The edit form enforces the same required fields as create; without a login the
+     * save must be refused rather than silently persisting a blank one.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditWithoutLogin()
+    {
+        $fields = self::userFields();
+        unset($fields['login']);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'user/saveEdit/100'], $fields)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"A login is needed","data":null}');
+    }
+
+    /**
+     * If the update statement touches no rows (the user was removed between opening
+     * the form and submitting it, say) the save must report the failure instead of
+     * quietly returning success for a write that never happened.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditFailsWhenNoRowsAffected()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getOnErrorMessage() === 'Error while updating the user') {
+                return new QueryResult([], 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'user/saveEdit/100'], self::userFields())
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while updating the user","data":null}');
     }
 
     /**
