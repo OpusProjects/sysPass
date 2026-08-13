@@ -69,8 +69,11 @@ final class AccountSearch extends Service implements AccountSearchService
      */
     public function getByFilter(AccountSearchFilterDto $accountSearchFilter): QueryResult
     {
-        if (!empty($accountSearchFilter->getTxtSearch())) {
-            $tokens = (new AccountSearchTokenizer())->tokenizeFrom($accountSearchFilter->getTxtSearch());
+        // Not empty(): PHP reads the string "0" as empty, and an account search for 0 is a search
+        // like any other. Dropping it here left the request with no text filter at all, so it came
+        // back as the whole unfiltered list rather than as no matches.
+        if (($txtSearch = $accountSearchFilter->getTxtSearch()) !== null && $txtSearch !== '') {
+            $tokens = (new AccountSearchTokenizer())->tokenizeFrom($txtSearch);
 
             if (null !== $tokens) {
                 $accountSearchFilter->setFilterOperator($tokens->getOperator());

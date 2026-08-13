@@ -89,7 +89,10 @@ final class AccountSearchTokenizer
             );
         }
 
-        if (empty($searchWithoutFilters) && empty($filtersAndConditions)) {
+        // Not empty(): PHP reads the string "0" as empty, and searching for 0 is a search. With
+        // nothing else in the query, returning null here dropped the term entirely and the caller
+        // came back with the whole unfiltered list.
+        if ($searchWithoutFilters === '' && empty($filtersAndConditions)) {
             return null;
         }
 

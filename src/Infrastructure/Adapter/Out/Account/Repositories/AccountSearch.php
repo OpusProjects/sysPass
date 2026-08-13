@@ -170,7 +170,8 @@ final class AccountSearch extends BaseRepository implements AccountSearchReposit
         // Sets the search text depending on whether special search filters are being used
         $searchText = $accountSearchFilter->getCleanTxtSearch();
 
-        if (empty($searchText)) {
+        // Same reason as the service's own guard: "0" is a search term, not an absent one.
+        if ($searchText === null || $searchText === '') {
             return null;
         }
 
