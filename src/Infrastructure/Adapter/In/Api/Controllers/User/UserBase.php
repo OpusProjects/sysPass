@@ -9,6 +9,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\UserHelp;
 
 abstract class UserBase extends ControllerBase
 {
@@ -23,6 +24,8 @@ abstract class UserBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->userService = $userService;
+
+        $this->apiService->setHelpClass(UserHelp::class);
     }
 
     /**
