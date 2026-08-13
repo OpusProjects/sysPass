@@ -428,6 +428,38 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
+     * A request that names no token at all (rather than a wrong or expired one) must be refused
+     * the same way: before this was covered, the null check on line 117 was reachable code that
+     * nothing exercised, so a request missing the `authToken` parameter entirely was only
+     * assumed to be refused, never actually proven to be.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testSetupMissingToken()
+    {
+        $actionId = self::$faker->randomNumber();
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $this->apiRequest->expects(self::once())->method('get')->with('authToken')->willReturn(null);
+
+        // A missing token never reaches the token lookup at all.
+        $this->authTokenService->expects(self::never())->method('getTokenByToken');
+
+        $this->trackService->expects(self::once())->method('add')->with($this->trackRequest);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Unauthorized access');
+
+        $this->apiService->setup($actionId);
+    }
+
+    /**
      * @throws ServiceException
      * @throws SPException
      */
@@ -532,6 +564,129 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->setup($actionId);
     }
 
+    /**
+     * A token that passed every earlier check (valid, issued for this action, correct
+     * `tokenPass` hash) but was persisted without a vault at all cannot yield a master
+     * password — there is nothing to decrypt. This is a distinct failure from a wrong
+     * `tokenPass` (caught earlier by the hash check) or a wrong vault key (caught by the
+     * decrypt failing below): here the token record itself is incomplete, and that has to be
+     * refused rather than fall through to a null master password being handed out.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testSetupWithMasterPassMissingVault()
+    {
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $authToken = self::$faker->password();
+        $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
+
+        // Only 'authToken' (setup) and 'tokenPass' (the hash check) are read; the missing
+        // vault is caught before a third call would build the decryption key.
+        $this->apiRequest->expects(self::exactly(2))
+                         ->method('get')
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken);
+
+        $userId = self::$faker->randomNumber();
+
+        $authTokenData =
+            new AuthToken(
+                ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => null]
+            );
+
+        $this->authTokenService
+            ->expects(self::once())
+            ->method('getTokenByToken')
+            ->with($actionId, $authToken)
+            ->willReturn($authTokenData);
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['isDisabled' => false]);
+
+        $this->userService->expects(self::once())->method('getById')->with($userId)->willReturn($userData);
+        $this->userProfileService->expects(self::once())
+                                 ->method('getById')
+                                 ->with($userData->getUserProfileId())
+                                 ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->apiRequest->expects(self::once())->method('exists')->with('tokenPass')->willReturn(true);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->apiService->setup($actionId);
+    }
+
+    /**
+     * A vault that decrypts cleanly but yields an empty master password must be refused the
+     * same as a decryption failure — `Vault::getData()` only throws on a wrong key, so an
+     * empty stored value is the one way the vault lookup can fail silently (falsy, no
+     * exception) rather than loudly. Without this check, an empty string would have been
+     * handed back to the caller as a "valid" master password.
+     *
+     * @throws CryptException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testSetupWithMasterPassEmptyVaultData()
+    {
+        $actionId = AclActionsInterface::ACCOUNT_VIEW_PASS;
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('checkTracking')
+            ->with($this->trackRequest)
+            ->willReturn(false);
+
+        $authToken = self::$faker->password();
+        $authTokenHash = password_hash($authToken, PASSWORD_BCRYPT);
+
+        $this->apiRequest->expects(self::exactly(3))
+                         ->method('get')
+                         ->willReturnOnConsecutiveCalls($authToken, $authToken, $authToken);
+
+        $vaultKey = $authToken . $authToken;
+
+        // The key matches, so decryption succeeds — it is the decrypted value itself that is
+        // empty, which is what forces the fallthrough to "Internal error" rather than
+        // returning a usable (if wrong) master password.
+        $vault = Vault::factory(new Crypt())->saveData('', $vaultKey);
+
+        $userId = self::$faker->randomNumber();
+
+        $authTokenData =
+            new AuthToken(
+                ['actionId' => $actionId, 'userId' => $userId, 'hash' => $authTokenHash, 'vault' => serialize($vault)]
+            );
+
+        $this->authTokenService
+            ->expects(self::once())
+            ->method('getTokenByToken')
+            ->with($actionId, $authToken)
+            ->willReturn($authTokenData);
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['isDisabled' => false]);
+
+        $this->userService->expects(self::once())->method('getById')->with($userId)->willReturn($userData);
+        $this->userProfileService->expects(self::once())
+                                 ->method('getById')
+                                 ->with($userData->getUserProfileId())
+                                 ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->apiRequest->expects(self::once())->method('exists')->with('tokenPass')->willReturn(true);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->apiService->setup($actionId);
+    }
+
     #[DataProvider('getParamStringDataProvider')]
     public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present): void
     {
@@ -565,10 +720,43 @@ class ApiTest extends UnitaryTestCase
         $this->apiService->getParamArray($param);
     }
 
+    /**
+     * An optional array parameter the caller simply did not send (the underlying value is
+     * null, not present-but-wrong) must come back as null rather than an empty array — a
+     * caller distinguishing "no tags were sent" from "tags were cleared" depends on that.
+     *
+     * @throws ServiceException
+     */
+    public function testGetParamArrayReturnsNullWhenAbsent()
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest->expects(self::once())->method('get')->with($param)->willReturn(null);
+
+        $this->assertNull($this->apiService->getParamArray($param));
+    }
+
     #[DataProvider('getParamRawDataProvider')]
     public function testGetParamRaw(mixed $value, mixed $expected, bool $required, bool $present)
     {
         $this->checkParam([$this->apiService, 'getParamRaw'], ...func_get_args());
+    }
+
+    /**
+     * An optional raw parameter that was not sent falls back to the caller's own default
+     * rather than null, so a caller relying on `getParamRaw($p, false, 'foo')` gets 'foo'
+     * back instead of having to null-check every optional field itself.
+     *
+     * @throws ServiceException
+     */
+    public function testGetParamRawReturnsDefaultWhenAbsent()
+    {
+        $param = self::$faker->colorName();
+        $default = self::$faker->password();
+
+        $this->apiRequest->expects(self::once())->method('get')->with($param)->willReturn(null);
+
+        $this->assertSame($default, $this->apiService->getParamRaw($param, false, $default));
     }
 
     public function testGetRequestId()
