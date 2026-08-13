@@ -127,6 +127,28 @@ class DataGridTest extends UnitaryTestCase
     }
 
     /**
+     * A grid built without a pager (e.g. a listing too short to page) must not blow up when
+     * asked to update one -- updatePager() is called unconditionally by the controllers that
+     * build a grid, whether or not that grid ever got a pager attached.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function updatingThePagerIsANoOpWhenNoPagerWasSet()
+    {
+        $data = new DataGridData();
+        $data->addDataRowSource('name');
+        $data->setData(QueryResult::withTotalNumRows([], 0));
+
+        $grid = $this->buildGrid();
+        $grid->setData($data);
+
+        self::assertNull($grid->getPager());
+        self::assertSame($grid, $grid->updatePager());
+        self::assertNull($grid->getPager());
+    }
+
+    /**
      * Every action counts towards the listing's own total, which the template uses to size the
      * actions column, and the menu keeps its own count.
      *
@@ -189,6 +211,36 @@ class DataGridTest extends UnitaryTestCase
         $grid->setDataActionsTemplate('no-such-template');
 
         self::assertNull($grid->getDataActionsTemplate());
+    }
+
+    /**
+     * A template that does exist is resolved to its full path and kept, so the screen renders
+     * that section instead of silently skipping it. Covers both branches of the template path
+     * (with and without a base subdirectory) that a missing-template test cannot reach, since
+     * that one never gets past the is_readable() check.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aReadableTemplateIsResolvedToItsFullPathAndKept()
+    {
+        // Keyed on something unique to this test: TMP_PATH's vfs filesystem is shared by
+        // every test in the process.
+        $viewsPath = TMP_PATH . '/datagrid_template_test_' . uniqid();
+        mkdir($viewsPath . '/rows', 0755, true);
+        file_put_contents($viewsPath . '/header.inc', 'header content');
+        file_put_contents($viewsPath . '/rows/row.inc', 'row content');
+
+        $theme = $this->createStub(ThemeInterface::class);
+        $theme->method('getViewsPath')->willReturn($viewsPath);
+
+        $grid = new DataGrid($theme);
+
+        $grid->setDataHeaderTemplate('header');
+        $grid->setDataRowTemplate('row', 'rows');
+
+        self::assertSame($viewsPath . '/header.inc', $grid->getDataHeaderTemplate());
+        self::assertSame($viewsPath . '/rows/row.inc', $grid->getDataRowTemplate());
     }
 
     /**
