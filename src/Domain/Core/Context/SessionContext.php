@@ -127,11 +127,11 @@ interface SessionContext extends Context
     public function getStartActivity(): int;
 
     /**
-     * Return the color associated with an account
+     * Return the colors associated with the accounts, keyed by the id they belong to
      *
-     * @return string
+     * @return array<int, string>
      */
-    public function getAccountColor(): string;
+    public function getAccountColor(): array;
 
     /**
      * Set the color associated with an account

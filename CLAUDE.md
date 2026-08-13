@@ -127,15 +127,19 @@ gotchas (the image provides these):
 
 ### Coverage: what is covered, and what deliberately is not
 
-Line coverage is **95.4%** (`21368/22399`). Measure it by installing pcov in the container
+Line coverage is **96.6%** (`21648/22402`). Measure it by installing pcov in the container
 (`pecl install pcov && docker-php-ext-enable pcov` — the enable step is separate, and a previous
 session's `pecl install` leaves it *installed but disabled*, so a `pecl list | grep pcov` guard
 skips it and every file reports zero), running both suites with `--coverage-clover`, and removing
 the ini again — the image does not ship a coverage driver, and leaving one enabled slows every
 later run. When merging two clover files, read `//file` by xpath: clover nests files inside
-`<package>` elements, so `$xml->project->file` only ever finds the namespace-less ones.
+`<package>` elements, so `$xml->project->file` only ever finds the namespace-less ones. The two
+runs also disagree about which lines *are* statements in a handful of files (9 of 995, 31
+statements — `Application/Account/Services/AccountSearch.php` worst at 48 vs 61), so a merge that
+treats "absent from one report" as uncovered overstates those files. Confirm a per-file gap with a
+focused `--coverage-clover` run before sending anyone to fix it: that file is at 100%.
 
-The remaining ~1000 statements are not a backlog to burn down uniformly. What is left:
+The remaining ~750 statements are not a backlog to burn down uniformly. What is left:
 
 - **Bootstrap (~90 statements).** `Base.php`, `Definitions/CoreDefinitions.php`, `Adapter/In/Cli/Init.php`,
   `Bootstrap/BootstrapBase.php`. These run *before* the container the tests build — `Base.php` is
@@ -189,8 +193,8 @@ A few harness details bite when writing an integration test against a real branc
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
 
-The rest is genuinely reachable, and is a long tail rather than a few large files: ~1000
-statements across **295** files, averaging under four statements each — individual error branches,
+The rest is genuinely reachable, and is a long tail rather than a few large files: ~660
+statements across **270** files, averaging under three statements each — individual error branches,
 rarely-hit conditionals and unused accessors. Worth picking off when touching the surrounding
 code; not worth a campaign.
 

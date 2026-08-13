@@ -483,6 +483,45 @@ class SessionTest extends UnitaryTestCase
     }
 
     /**
+     * The account colours go in as an array and come back as one. Declared as a string, this
+     * raised a TypeError on the way out the first time anybody read back what had been stored —
+     * nothing in the application did, which is the only reason it went unnoticed.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theAccountColoursAreCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertSame([], $session->getAccountColor(), 'a session with none set has none');
+
+        $session->setAccountColor([100 => '#ff0000', 200 => '#00ff00']);
+
+        self::assertSame([100 => '#ff0000', 200 => '#00ff00'], $session->getAccountColor());
+    }
+
+    /**
+     * And the theme is a string even before one has been chosen — read from a session that has not
+     * been given one, it used to return null from a method declared to return a string.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theThemeIsCarriedAndIsAlwaysAString()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertSame('', $session->getTheme());
+
+        $session->setTheme('material-blue');
+
+        self::assertSame('material-blue', $session->getTheme());
+    }
+
+    /**
      * @throws ContextException
      * @throws SPException
      */

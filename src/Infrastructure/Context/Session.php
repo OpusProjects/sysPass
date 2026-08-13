@@ -72,7 +72,9 @@ class Session extends ContextBase implements SessionContext
      */
     public function getTheme(): string
     {
-        return $this->getContextKey('theme');
+        // Defaulted, because a session that has not been given a theme yet would otherwise return
+        // null from a method declared to return a string, and raise on the way out.
+        return $this->getContextKey('theme', '');
     }
 
     /**
@@ -298,11 +300,16 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Returns the color associated with an account
+     * Returns the colors associated with the accounts, keyed by the id they belong to.
+     *
+     * An array, because that is what setAccountColor() stores: declared as a string, this raised
+     * on its way out the first time anybody read it back.
+     *
+     * @return array<int, string>
      */
-    public function getAccountColor(): string
+    public function getAccountColor(): array
     {
-        return $this->getContextKey('accountcolor');
+        return $this->getContextKey('accountcolor', []);
     }
 
     /**
