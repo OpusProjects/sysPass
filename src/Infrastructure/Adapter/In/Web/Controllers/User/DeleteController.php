@@ -66,6 +66,12 @@ final class DeleteController extends UserSaveBase
                     return ActionResponse::error(__u('No items selected'));
                 }
 
+                // Every id in the batch goes through the same guard a single delete does, so a
+                // selection cannot do what deleting one at a time refuses.
+                foreach ($ids as $itemId) {
+                    $this->form->validateFor(AclActionsInterface::USER_DELETE, (int)$itemId);
+                }
+
                 $this->userService->deleteByIdBatch($ids);
                 $this->deleteCustomFieldsForItem(AclActionsInterface::USER, $ids, $this->customFieldService);
 
@@ -79,6 +85,8 @@ final class DeleteController extends UserSaveBase
 
                 return ActionResponse::ok(__u('Users deleted'));
             }
+
+            $this->form->validateFor(AclActionsInterface::USER_DELETE, $id);
 
             $this->userService->delete($id);
 
