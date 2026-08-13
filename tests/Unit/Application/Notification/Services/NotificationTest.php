@@ -409,7 +409,17 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testUpdate()
     {
-        $notification = NotificationDataGenerator::factory()->buildNotification();
+        $notification = NotificationDataGenerator::factory()
+                                                 ->buildNotification()
+                                                 ->mutate(['userId' => $this->context->getUserData()->id]);
+
+        // Reading it back is how ownership is established, so the update path has to go through
+        // the repository's getById() first.
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with($notification->getId())
+            ->willReturn(new QueryResult([$notification], 1));
 
         $this->notificationRepository
             ->expects($this->once())
@@ -420,6 +430,34 @@ class NotificationTest extends UnitaryTestCase
         $out = $this->notification->update($notification);
 
         $this->assertEquals(100, $out);
+    }
+
+    /**
+     * An id that belongs to somebody else is refused, and refused as "not found" rather than as a
+     * denial, so an id cannot be probed for existence. Without this the update is by id alone and
+     * anybody who may edit their own notifications may rewrite everybody's.
+     *
+     * @throws Exception
+     */
+    public function testUpdateRefusesANotificationBelongingToSomebodyElse()
+    {
+        $notification = NotificationDataGenerator::factory()
+                                                 ->buildNotification()
+                                                 ->mutate(['userId' => $this->context->getUserData()->id + 1]);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->willReturn(new QueryResult([$notification], 1));
+
+        $this->notificationRepository
+            ->expects($this->never())
+            ->method('update');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Notification not found');
+
+        $this->notification->update($notification);
     }
 
     /**

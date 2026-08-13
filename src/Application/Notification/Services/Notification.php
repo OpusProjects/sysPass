@@ -75,9 +75,16 @@ final class Notification extends Service implements NotificationService
      *
      * @throws ConstraintException
      * @throws QueryException
+     * @throws NoSuchItemException
      */
     public function update(NotificationModel $notification): int
     {
+        // The update is by id alone, so without this an id is all it takes to rewrite somebody
+        // else's notification — or to reassign it. getById() applies the same rule the rest of
+        // this service does: an administrator may touch any notification, anybody else only
+        // their own, and an id that is not theirs is reported as not found.
+        $this->getById($notification->getId() ?? 0);
+
         return $this->notificationRepository->update($notification);
     }
 
