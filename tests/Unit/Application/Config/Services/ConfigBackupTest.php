@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Application\Config\Services\ConfigBackup;
@@ -66,6 +67,82 @@ class ConfigBackupTest extends UnitaryTestCase
             );
 
         $this->configBackup->backup($this->config->getConfigData());
+    }
+
+    /**
+     * The two halves of this class are tested apart from each other above and below: backup()
+     * against "some string was saved", restore() against a blob the test packs itself. Neither
+     * says the halves agree, so a change to how the configuration is packed — a different
+     * compression, an added encoding step — would leave both green while every backup already
+     * stored became unreadable. Nobody would find out until a restore was needed.
+     *
+     * So: back a configuration up, feed back exactly what was stored, and require the same
+     * configuration out the other side.
+     *
+     * @throws Exception
+     * @throws FileException
+     * @throws SPException
+     * @throws ServiceException
+     */
+    public function testAConfigurationSurvivesTheRoundTrip()
+    {
+        $configData = new ConfigData();
+        $configData->setDbName('a-database');
+        $configData->setSessionTimeout(4321);
+        $configData->setSiteTheme('material-blue');
+        $configData->setMailEnabled(true);
+        $configData->setFilesAllowedMime(['text/plain', 'application/pdf']);
+
+        $stored = null;
+
+        $this->configService
+            ->method('save')
+            ->willReturnCallback(function (string $param, string $value) use (&$stored): bool {
+                if ($param === 'config_backup') {
+                    $stored = $value;
+                }
+
+                return true;
+            });
+
+        $this->configBackup->backup($configData);
+
+        self::assertNotNull($stored, 'the backup has to have stored something to read back');
+
+        // Whatever it wrote, verbatim — not a blob this test packed the way it thinks it should.
+        $this->configService
+            ->expects(self::once())
+            ->method('getByParam')
+            ->with('config_backup')
+            ->willReturn($stored);
+
+        $restored = null;
+
+        $configFile = $this->createMock(ConfigFileService::class);
+        $configFile->expects(self::once())
+                   ->method('save')
+                   ->willReturnCallback(
+                       function (ConfigDataInterface $data) use ($configFile, &$restored): ConfigFileService {
+                           $restored = $data;
+
+                           return $configFile;
+                       }
+                   );
+        // A closure, not an arrow function: an arrow function captures by value when it is
+        // created, and at that point nothing has been restored yet.
+        $configFile->expects(self::once())
+                   ->method('getConfigData')
+                   ->willReturnCallback(static function () use (&$restored): ConfigDataInterface {
+                       return $restored;
+                   });
+
+        $out = $this->configBackup->restore($configFile);
+
+        self::assertEquals($configData, $out);
+        self::assertSame('a-database', $out->getDbName());
+        self::assertSame(4321, $out->getSessionTimeout());
+        self::assertTrue($out->isMailEnabled());
+        self::assertSame(['text/plain', 'application/pdf'], $out->getFilesAllowedMime());
     }
 
     public function testBackupError()
