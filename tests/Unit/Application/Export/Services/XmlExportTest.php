@@ -54,6 +54,7 @@ use SP\Application\User\Ports\UserGroupService;
 use SP\Application\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
@@ -511,6 +512,222 @@ class XmlExportTest extends UnitaryTestCase
         $this->expectExceptionMessage('test');
 
         $this->xmlExport->export($exportPath, $password);
+    }
+
+    /**
+     * The session's UserDto only carries a userGroupName when the login flow copied it in
+     * explicitly; the common case is a session with just a userGroupId. If XmlExport wrote
+     * that gap straight into the <Group> node the file would fail its own XSD (which types
+     * the element as NonEmptyString), so every export from such a session would break with
+     * "Invalid XML schema" until the user re-logs in. Resolving the name from the group
+     * service instead is what keeps those exports working.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     * @throws FileException
+     * @throws CheckException
+     * @throws DOMException
+     * @throws SPException
+     */
+    public function testExportResolvesGroupNameFromServiceWhenSessionHasNoGroupName()
+    {
+        $userGroupId = self::$faker->randomNumber(3);
+
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroupId' => $userGroupId,
+                                     ]
+                                 )
+            )
+        );
+
+        $this->userGroupService
+            ->method('getById')
+            ->willReturn(new UserGroupModel(['id' => $userGroupId, 'name' => 'service_group']));
+
+        $exportPath = $this->createMock(DirectoryHandlerService::class);
+        $exportPath->expects(self::once())
+                   ->method('checkOrCreate');
+        $exportPath->method('getPath')
+                   ->willReturn(TMP_PATH);
+
+        $this->xmlCategoryExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestCategories'));
+
+        $this->xmlClientExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestClients'));
+
+        $this->xmlTagExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestTags'));
+
+        $this->xmlAccountExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestAccounts'));
+
+        $out = $this->xmlExport->export($exportPath);
+
+        $xml = new DOMDocument();
+        $xml->load($out, LIBXML_NOBLANKS);
+
+        $groupNode = $xml->documentElement->getElementsByTagName('Group')->item(0);
+
+        $this->assertSame('service_group', $groupNode->nodeValue);
+    }
+
+    /**
+     * If the group service lookup itself fails (e.g. the user's group was deleted between
+     * login and export), the export must not blow up: it degrades to an empty group name
+     * (still an XSD violation on re-import, but the export -- and everything else in it,
+     * the actual account data -- is not lost). Losing the whole backup over a cosmetic
+     * <Group> field would be a worse outcome for someone relying on this export.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     * @throws FileException
+     * @throws CheckException
+     * @throws DOMException
+     * @throws SPException
+     */
+    public function testExportUsesEmptyGroupNameWhenServiceLookupFails()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroupId' => self::$faker->randomNumber(3),
+                                     ]
+                                 )
+            )
+        );
+
+        $this->userGroupService
+            ->method('getById')
+            ->willThrowException(new RuntimeException('user group service unavailable'));
+
+        $exportPath = $this->createMock(DirectoryHandlerService::class);
+        $exportPath->expects(self::once())
+                   ->method('checkOrCreate');
+        $exportPath->method('getPath')
+                   ->willReturn(TMP_PATH);
+
+        $this->xmlCategoryExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestCategories'));
+
+        $this->xmlClientExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestClients'));
+
+        $this->xmlTagExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestTags'));
+
+        $this->xmlAccountExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestAccounts'));
+
+        $out = $this->xmlExport->export($exportPath);
+
+        $xml = new DOMDocument();
+        $xml->load($out, LIBXML_NOBLANKS);
+
+        $groupNode = $xml->documentElement->getElementsByTagName('Group')->item(0);
+
+        $this->assertSame('', $groupNode->nodeValue);
+    }
+
+    /**
+     * DOMDocument::save() fails silently (returns false, no exception) when the target
+     * path can't be opened -- e.g. the export directory doesn't actually exist because
+     * DirectoryHandlerService::checkOrCreate() no-ops or a concurrent cleanup removed it.
+     * Without this check that failure would be swallowed: export() would report success
+     * (return the path) for a backup file that was never written, and the operator would
+     * only discover the missing backup when they needed to restore from it.
+     *
+     * @throws CheckException
+     * @throws Exception
+     * @throws FileException
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testExportThrowsWhenXmlFileCannotBeSaved()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(
+                                     [
+                                         'login' => 'test_user',
+                                         'userGroupName' => 'test_group',
+                                     ]
+                                 )
+            )
+        );
+
+        $exportPath = $this->createMock(DirectoryHandlerService::class);
+        $exportPath->expects(self::once())
+                   ->method('checkOrCreate');
+        // A directory that checkOrCreate() never actually created on the virtual
+        // filesystem: DOMDocument::save() then fails to open the target stream.
+        $exportPath->method('getPath')
+                   ->willReturn(TMP_PATH . '/does-not-exist');
+
+        $this->xmlCategoryExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestCategories'));
+
+        $this->xmlClientExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestClients'));
+
+        $this->xmlTagExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestTags'));
+
+        $this->xmlAccountExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willReturn($this->createNode('TestAccounts'));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while creating the XML file');
+
+        // DOMDocument::save() reports the failed stream open as a PHP warning (it does not
+        // throw). That warning is expected here -- it is the exact condition under test --
+        // so swallow it locally rather than letting it register as a stray suite issue.
+        // set_error_handler() pushes onto PHPUnit's own handler stack, so it must be popped
+        // with restore_error_handler() (not another set_error_handler() call) or PHPUnit
+        // flags the test as risky for leaving the stack unbalanced.
+        set_error_handler(static fn(): bool => true);
+
+        try {
+            $this->xmlExport->export($exportPath);
+        } finally {
+            restore_error_handler();
+        }
     }
 
     /**
