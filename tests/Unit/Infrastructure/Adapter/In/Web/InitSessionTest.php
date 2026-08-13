@@ -212,11 +212,60 @@ class InitSessionTest extends UnitaryTestCase
         $this->configData->setDatabaseVersion($currentVersion);
         $this->configData->setSessionTimeout(3600);
 
-        // A fresh, NOT-yet-initialized session: initialize() itself calls Context::initialize()
-        // as its first step (Session::initialize() refuses to bind twice), unlike every other test
-        // in this class, which bypasses that call by invoking the private methods directly against
-        // the already-initialized $this->session built in buildContext().
         $freshSession = new Session();
+
+        $init = $this->buildInitForAFreshSession($freshSession);
+
+        $init->initialize(IndexController::class);
+
+        self::assertGreaterThan(0, $freshSession->getLastActivity());
+    }
+
+    /**
+     * PHP's own session collector is free to delete a session file older than
+     * session.gc_maxlifetime, whatever the application thinks. Telling it the configured timeout
+     * therefore has to happen before the session is started: PHP refuses the change once one is
+     * active, and the attempt that used to be made afterwards silently did nothing at all — so an
+     * installation configured for a long session could still have its files collected at whatever
+     * the platform default happened to be.
+     *
+     * @throws Exception
+     */
+    public function testTheConfiguredSessionTimeoutReachesPhpsOwnCollector(): void
+    {
+        $currentVersion = Version::getVersionStringNormalized();
+        $this->configData->setInstalled(true);
+        $this->configData->setMaintenance(false);
+        $this->configData->setAppVersion($currentVersion);
+        $this->configData->setDatabaseVersion($currentVersion);
+        $this->configData->setSessionTimeout(4321);
+
+        // Built first: it closes the session the harness started, which is also what lets the
+        // baseline below be set at all.
+        $init = $this->buildInitForAFreshSession(new Session());
+
+        ini_set('session.gc_maxlifetime', '1440');
+
+        $init->initialize(IndexController::class);
+
+        self::assertSame('4321', ini_get('session.gc_maxlifetime'));
+    }
+
+
+    /**
+     * Everything Init needs to reach session bookkeeping for an ordinary controller, against a
+     * session that has not been initialized yet — initialize() calls Context::initialize() itself
+     * as its first step, and Session::initialize() refuses to bind twice.
+     *
+     * @throws Exception
+     */
+    private function buildInitForAFreshSession(Session $freshSession): Init
+    {
+        // The harness builds its context — and so starts a session — in setUp, whereas a real
+        // request reaches initialize() with none active. Close it, so these tests ask what
+        // production asks, including of anything that has to happen before a session exists.
+        session_write_close();
+
         $freshApplication = new Application(
             $this->configMock,
             $this->createStub(EventDispatcherInterface::class),
@@ -264,9 +313,8 @@ class InitSessionTest extends UnitaryTestCase
             $this->sessionKeyService
         );
 
-        $init->initialize(IndexController::class);
 
-        self::assertGreaterThan(0, $freshSession->getLastActivity());
+        return $init;
     }
 
     /**
