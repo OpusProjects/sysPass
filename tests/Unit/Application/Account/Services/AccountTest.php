@@ -439,6 +439,93 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * When an update payload omits the new owner or group (e.g. an edit form that only
+     * touches unrelated fields), the account must keep its EXISTING owner/group instead of
+     * being silently reassigned to null — a null owner/group would break the ACL checks
+     * that key off those ids and could make the account inaccessible.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateDefaultsOmittedOwnerAndGroupToTheAccountsCurrentOnes()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()
+                                                  ->mutate(['userGroupId' => null, 'userId' => null]);
+        $account = $accountDataGenerator->buildAccount();
+
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+            )
+        );
+
+        $this->configService->expects(self::once())->method('getByParam')
+                            ->with('masterPwd')->willReturn(self::$faker->password());
+        $this->accountHistoryService->expects(self::once())->method('create');
+        $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
+                                ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+                                ->willReturn(null);
+        $this->accountRepository->expects(self::exactly(2))->method('getById')
+                                ->with($id)
+                                ->willReturn(new QueryResult([$account]));
+
+        $expectedDto = $accountUpdateDto->mutate(
+            ['userGroupId' => $account->getUserGroupId(), 'userId' => $account->getUserId()]
+        );
+
+        $this->accountRepository->expects(self::once())->method('update')
+            ->with($id, AccountModel::update($expectedDto), true, true);
+        $this->accountItemsService->expects(self::once())->method('updateItems')
+                                  ->with(true, $id, $expectedDto);
+        $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
+     * If an update payload doesn't say who is making the edit (e.g. a caller that omits
+     * userEditId), the account must record the CURRENT session user as the editor —
+     * leaving it blank would break the "last edited by" audit trail every account edit
+     * relies on.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateDefaultsOmittedUserEditIdToTheCurrentSessionUser()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate(['userEditId' => null]);
+
+        $userData = UserDto::fromModel(
+            UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => true])
+        );
+        $this->context->setUserData($userData);
+
+        $this->configService->expects(self::once())->method('getByParam')
+                            ->with('masterPwd')->willReturn(self::$faker->password());
+        $this->accountHistoryService->expects(self::once())->method('create');
+        $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
+                                ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+                                ->willReturn(null);
+        $this->accountRepository->expects(self::exactly(2))->method('getById')
+                                ->with($id)
+                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+
+        $expectedDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
+
+        $this->accountRepository->expects(self::once())->method('update')
+            ->with($id, AccountModel::update($expectedDto), true, true);
+        $this->accountItemsService->expects(self::once())->method('updateItems')
+                                  ->with(true, $id, $expectedDto);
+        $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException
@@ -789,6 +876,44 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * Same audit-trail guarantee as update(), but for the bulk-edit path: any account
+     * whose dto omits userEditId in a bulk update must still be attributed to the user who
+     * triggered the bulk action, rather than left without a recorded editor.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateBulkDefaultsOmittedUserEditIdToTheCurrentSessionUser()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->mutate(['userEditId' => null]);
+        $accountUpdateBulkDto = new AccountUpdateBulkDto([$id], [$accountUpdateDto]);
+
+        $userData = UserDto::fromModel(
+            UserDataGenerator::factory()
+                             ->buildUserData()
+                             ->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+        );
+        $this->context->setUserData($userData);
+
+        $this->accountRepository->expects(self::once())->method('getById')
+                                ->with($id)
+                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+        $this->configService->expects(self::once())->method('getByParam')
+                            ->with('masterPwd')->willReturn(self::$faker->password());
+
+        $expectedDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
+
+        $this->accountRepository->expects(self::once())->method('updateBulk')
+            ->with($id, AccountModel::update($expectedDto), false, false);
+        $this->accountItemsService->expects(self::once())->method('updateItems')
+                                  ->with(false, $id, $expectedDto);
+
+        $this->account->updateBulk($accountUpdateBulkDto);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException
@@ -1020,6 +1145,48 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('editPassword')
             ->with($id, AccountModel::updatePassword($accountUpdateDto));
+
+        $this->account->editPassword($id, $accountUpdateDto);
+    }
+
+    /**
+     * The password-rotation path has its own audit-trail guarantee: a caller that rotates
+     * a password without stating who did it must still have the current session user
+     * recorded as the editor, exactly like a full account update would.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testEditPasswordDefaultsOmittedUserEditIdToTheCurrentSessionUser()
+    {
+        $id = self::$faker->randomNumber();
+        $account = AccountDataGenerator::factory()->buildAccount();
+        $accountUpdateDto = AccountUpdateDto::fromModel($account)->mutate(['userEditId' => null]);
+
+        $password = self::$faker->password();
+
+        $this->configService->expects(self::once())->method('getByParam')
+                            ->with('masterPwd')->willReturn($password);
+
+        $this->accountRepository->expects(self::once())->method('getById')
+                                ->with($id)->willReturn(new QueryResult([$account]));
+
+        $accountHistoryCreateDto = new AccountHistoryCreateDto($account, true, false, $password);
+
+        $this->accountHistoryService->expects(self::once())->method('create')
+                                    ->with($accountHistoryCreateDto);
+
+        $userData = $this->context->getUserData();
+        $expectedDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
+
+        $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
+            ->with($expectedDto->pass)
+                                  ->willReturn(
+                                      new EncryptedPassword($expectedDto->pass, $expectedDto->key)
+                                  );
+
+        $this->accountRepository->expects(self::once())->method('editPassword')
+            ->with($id, AccountModel::updatePassword($expectedDto));
 
         $this->account->editPassword($id, $accountUpdateDto);
     }
@@ -1357,6 +1524,55 @@ class AccountTest extends UnitaryTestCase
                                                        ->withPrivate(false)
                                                        ->withPrivateGroup(true)
                                   );
+
+        $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
+
+        $this->account->create($accountCreateDto);
+    }
+
+    /**
+     * A create payload that omits the owner or group (e.g. an API caller that doesn't
+     * specify them) must not end up with a null owner/group on the new account — it must
+     * default to the user who is creating it, or the account would be created
+     * inaccessible under the ACL checks that key off those ids.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testCreateDefaultsOmittedOwnerAndGroupToTheCreatingUser()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $accountCreateDto = $accountDataGenerator->buildAccountCreateDto()
+                                                  ->mutate(['userGroupId' => null, 'userId' => null]);
+
+        $userData = UserDto::fromModel(
+            UserDataGenerator::factory()
+                             ->buildUserData()
+                             ->mutate(['isAdminApp' => true, 'isAdminAcc' => false])
+        );
+        $this->context->setUserData($userData);
+
+        $encryptedPassword = new EncryptedPassword(self::$faker->password(), self::$faker->password());
+
+        $this->accountCryptService->expects(self::once())->method('getPasswordEncrypted')
+            ->with($accountCreateDto->pass)
+                                  ->willReturn($encryptedPassword);
+
+        $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
+                                ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
+                                ->willReturn(null);
+
+        $expectedDto = $accountCreateDto
+            ->mutate(['userGroupId' => $userData->userGroupId, 'userId' => $userData->id])
+            ->withEncryptedPassword($encryptedPassword);
+
+        $this->accountRepository->expects(self::once())->method('create')
+            ->with(AccountModel::create($expectedDto))
+            ->willReturn(new QueryResult(null, 0, $id));
+
+        $this->accountItemsService->expects(self::once())->method('addItems')
+                                  ->with(true, $id, $expectedDto);
 
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
