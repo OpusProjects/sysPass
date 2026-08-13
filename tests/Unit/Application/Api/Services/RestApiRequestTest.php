@@ -343,4 +343,40 @@ class RestApiRequestTest extends UnitaryTestCase
 
         self::assertSame('real-token', $apiRequest->get('authToken'));
     }
+
+    /**
+     * And it cannot be smuggled in when there is no header either. An authToken in the query
+     * string used to survive an absent or malformed Authorization header — nothing was assigned,
+     * so whatever the caller had put in the parameter bag stayed there and was handed to the
+     * service as the token. It had to match a stored token to be worth anything, so nothing was
+     * exploitable by it; the guarantee this class states was simply not one.
+     *
+     * @throws SPException
+     */
+    #[DataProvider('unusableAuthorizationHeaderProvider')]
+    public function testAClientSuppliedAuthTokenIsNeverUsedWhateverTheHeaderSays(?string $header): void
+    {
+        $request = Request::create('/api/v1/accounts?authToken=forged-token', 'GET');
+
+        if ($header !== null) {
+            $request->headers->set('Authorization', $header);
+        }
+
+        $apiRequest = RestApiRequest::buildFromSymfonyRequest($request);
+
+        self::assertNull($apiRequest->get('authToken'));
+    }
+
+    /**
+     * @return array<string, array{string|null}>
+     */
+    public static function unusableAuthorizationHeaderProvider(): array
+    {
+        return [
+            'no header at all' => [null],
+            'another scheme' => ['Basic dXNlcjpwYXNz'],
+            'Bearer with nothing after it' => ['Bearer '],
+            'a bare token without the scheme' => ['real-looking-token'],
+        ];
+    }
 }
