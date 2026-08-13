@@ -31,6 +31,14 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use RuntimeException;
+use SP\Application\Config\Ports\ConfigFileService;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Context\Context;
+use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Infrastructure\Database\QueryData;
+use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -92,5 +100,126 @@ class BootstrapTest extends IntegrationTestCase
         foreach ($properties as $property) {
             self::assertObjectHasProperty($property, $json->data);
         }
+    }
+
+    /**
+     * A route whose action segment names no real controller class is refused before any guard or
+     * controller runs at all — method_exists() is checked ahead of everything else in
+     * manageWebRequest(), so this is a plain 404, not a 500 from trying to instantiate a class that
+     * does not exist.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aRouteNamingNoRealControllerAnswersNotFoundWithTheOopsMessage(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'index/thisControllerDoesNotExist'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $response = $container->get(ResponseService::class)->getResponse();
+
+        self::assertSame(404, $response->getStatusCode());
+        self::assertSame('Oops, it looks like this content does not exist...', $response->getContent());
+    }
+
+    /**
+     * An exception raised while a controller action runs — after Init's guards already passed and
+     * before anything has been sent — is not allowed to reach the browser as a fatal error: it is
+     * turned into a normal ActionResponse::error(), rendered through the same #[Action] contract the
+     * successful response would have used, with a 500 status. CategoriesController's categoriesAction
+     * is PLAIN_TEXT, so the body is the bare exception message.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function anExceptionDuringDispatchBecomesAPlainText500(): void
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): never {
+            throw new RuntimeException('category lookup failed');
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'items/categories'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $response = $container->get(ResponseService::class)->getResponse();
+
+        self::assertSame(500, $response->getStatusCode());
+        self::assertSame('category lookup failed', $response->getContent());
+    }
+
+    /**
+     * Maintenance mode is one of Init's guards that already sends its own redirect before throwing
+     * (so the browser lands on the maintenance page rather than nothing), and the exception it
+     * throws to stop the request is caught by the very same handler the test above exercises. The
+     * two must not collide: manageWebRequest()'s isSent() check is what stops the second handler
+     * from overwriting the redirect that was already on the wire with a 500 error page.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aMaintenanceRedirectAlreadySentIsNotOverwrittenByTheExceptionHandler(): void
+    {
+        $configData = self::createConfiguredStub(
+            ConfigDataInterface::class,
+            array_merge($this->getConfigData(), ['isMaintenance' => true])
+        );
+        $configFileService = $this->createStub(ConfigFileService::class);
+        $configFileService->method('getConfigData')->willReturn($configData);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'items/categories']),
+            [ConfigFileService::class => $configFileService]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $response = $container->get(ResponseService::class)->getResponse();
+
+        self::assertTrue($response->isRedirect());
+        self::assertStringContainsString('r=error%2FmaintenanceError', (string)$response->headers->get('Location'));
+    }
+
+    /**
+     * A controller that requires a completed login (ControllerBase::checkLoggedIn()) throws
+     * SessionTimeout when it is not signed in — manageWebRequest() has a dedicated catch for
+     * exactly this exception, separate from the general error handler above: it is not a server
+     * error, so it is not turned into a 500 or an ActionResponse::error() body at all. Nothing about
+     * the request is a bug; the response is whatever was already on the wire (nothing, here), left
+     * alone.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aSessionTimeoutDuringDispatchIsCaughtSeparatelyFromOtherExceptions(): void
+    {
+        $context = self::createStub(SessionContext::class);
+        $context->method('isLoggedIn')->willReturn(false);
+        $context->method('getUserData')->willReturn(new UserDto());
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'accountManager/search']),
+            [Context::class => $context]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $response = $container->get(ResponseService::class)->getResponse();
+
+        self::assertSame('', $response->getContent());
+        self::assertNotSame(500, $response->getStatusCode());
     }
 }
