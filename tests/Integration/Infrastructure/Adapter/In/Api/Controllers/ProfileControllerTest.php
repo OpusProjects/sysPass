@@ -76,6 +76,8 @@ class ProfileControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('name', $r->body->error->detail);
+        $this->assertStringContainsString('profile', $r->body->error->detail);
     }
 
     /**
@@ -89,6 +91,7 @@ class ProfileControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('profile', $r->body->error->detail);
     }
 
     /**
@@ -105,6 +108,7 @@ class ProfileControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('profile', $r->body->error->detail);
     }
 
     public function testCreateActionDuplicateName(): void

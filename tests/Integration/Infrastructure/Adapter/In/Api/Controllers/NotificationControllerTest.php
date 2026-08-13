@@ -91,6 +91,7 @@ class NotificationControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString($missingParam, $r->body->error->detail);
     }
 
     public static function requiredParameterProvider(): array
@@ -192,6 +193,7 @@ class NotificationControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString($missingParam, $r->body->error->detail);
     }
 
     /**

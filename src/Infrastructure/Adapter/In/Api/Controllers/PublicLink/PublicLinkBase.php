@@ -8,6 +8,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\PublicLinkHelp;
 
 abstract class PublicLinkBase extends ControllerBase
 {
@@ -22,5 +23,7 @@ abstract class PublicLinkBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->publicLinkService = $publicLinkService;
+
+        $this->apiService->setHelpClass(PublicLinkHelp::class);
     }
 }

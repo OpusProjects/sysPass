@@ -66,9 +66,9 @@ class CustomFieldControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
-
-        // Unlike tags or categories, this group ships no Help class, so the refusal carries no
-        // parameter listing to guide the caller — only the refusal itself is the contract here.
+        $this->assertStringContainsString('name', $r->body->error->detail);
+        $this->assertStringContainsString('typeId', $r->body->error->detail);
+        $this->assertStringContainsString('moduleId', $r->body->error->detail);
     }
 
     public function testViewAction(): void

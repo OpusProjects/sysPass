@@ -8,6 +8,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Application\Security\Ports\EventlogService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\EventlogHelp;
 
 abstract class EventlogBase extends ControllerBase
 {
@@ -22,5 +23,7 @@ abstract class EventlogBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->eventlogService = $eventlogService;
+
+        $this->apiService->setHelpClass(EventlogHelp::class);
     }
 }
