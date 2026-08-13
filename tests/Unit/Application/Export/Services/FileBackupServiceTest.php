@@ -35,12 +35,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Core\AppInfoInterface;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Database\Ports\DatabaseInterface;
 use SP\Application\Export\Ports\BackupHandlersFactory;
 use SP\Application\Export\Services\BackupFile;
 use SP\Domain\Export\Dtos\BackupHandlers;
 use SP\Domain\File\Ports\ArchiveHandlerInterface;
+use SP\Domain\File\FileSystem;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Database\Ports\DatabaseUtilService;
 use SP\Domain\Database\Ports\QueryDataInterface;
@@ -182,6 +184,46 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->expectExceptionObject($exception);
 
         $this->fileBackupService->doBackup($this->pathsContext[Path::TMP], $this->pathsContext[Path::APP]);
+    }
+
+    /**
+     * A backup that fails part-way must leave the previous one where it was. The old archives used
+     * to be deleted before the new ones were written, so an unreadable table or a directory that
+     * could not be archived took the last backup with it and left the installation with none.
+     *
+     * A real directory, not the harness's virtual one: the cleanup uses glob(), which does not see
+     * a stream wrapper, so against vfs this would pass without proving anything.
+     *
+     * @throws Exception
+     */
+    public function testAFailedBackupLeavesThePreviousOneInPlace(): void
+    {
+        $this->config->getConfigData()->setDbName('a_db');
+
+        $directory = FileSystem::buildPath(
+            sys_get_temp_dir(),
+            'syspass-backup-ordering-' . bin2hex(random_bytes(6))
+        );
+        mkdir($directory);
+
+        $previous = FileSystem::buildPath($directory, AppInfoInterface::APP_NAME . '_db-previous.tar.gz');
+        file_put_contents($previous, 'the last good backup');
+
+        $this->dbFileHandler
+            ->method('write')
+            ->willThrowException(FileException::error('Filexception'));
+
+        try {
+            $this->fileBackupService->doBackup($directory, $this->pathsContext[Path::APP]);
+            self::fail('the backup was expected to fail');
+        } catch (ServiceException) {
+            // What survives it is the point.
+        }
+
+        self::assertFileExists($previous, 'a failed backup must not take the last good one with it');
+
+        unlink($previous);
+        rmdir($directory);
     }
 
     /**
