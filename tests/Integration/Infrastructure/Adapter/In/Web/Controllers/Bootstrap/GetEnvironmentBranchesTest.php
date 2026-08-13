@@ -34,7 +34,9 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
+use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Plugin\Ports\PluginManagerService;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\BodyChecker;
@@ -50,6 +52,7 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
 {
     private bool $loggedIn = true;
     private bool $checkNotifications = true;
+    private bool $installed = true;
 
     /**
      * Whether the browser is told to poll follows the user's own preference, which the fixture
@@ -67,6 +70,11 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
                                                   ->mutate(['checkNotifications' => $this->checkNotifications])
             ]
         );
+    }
+
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isInstalled' => $this->installed]);
     }
 
     protected function getContext(): SessionContext|Stub
@@ -144,11 +152,77 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
     }
 
     /**
+     * Before the app is installed, GetEnvironmentController is on Init's partial-init list (it is
+     * how the install wizard's own page gets its JS strings), so the request still reaches it. With
+     * nothing in session yet, the language is inferred from the browser's Accept-Language header —
+     * here, no header at all, which Language::resolveLanguage() falls back on rather than rejecting.
+     * The only externally visible effect is that the call still succeeds instead of failing partway
+     * through locale setup; the session-provided-locale side of the same fallback (the install
+     * wizard's own choice, once made) has no other observable difference in this payload, so only
+     * one side of it is covered here.
+     *
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
-    private function whenAsking(): void
+    #[Test]
+    #[BodyChecker('outputCheckerOk')]
+    public function aBrowserAskingBeforeInstallStillGetsAnEnvironmentPayload(): void
+    {
+        $this->installed = false;
+
+        $this->whenAsking();
+    }
+
+    /**
+     * The list of enabled plugins comes from a real service call; if it fails (a broken plugin, a
+     * storage error) the environment call must still answer rather than turn into an error page —
+     * the browser is simply told there are no plugins.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerPluginsEmptyOnFailure')]
+    public function aFailingPluginManagerIsReportedAsNoPluginsRatherThanAnErrorPage(): void
+    {
+        $pluginManager = self::createStub(PluginManagerService::class);
+        $pluginManager->method('getEnabled')->willThrowException(new \Exception('boom'));
+
+        $this->whenAsking([PluginManagerService::class => $pluginManager]);
+    }
+
+    /**
+     * The public key normally comes straight from the session once cached, or otherwise from the
+     * PKI handler reading it off disk. When that read fails (a permissions problem, a corrupted
+     * key file), the environment call still answers — with an empty key — rather than failing the
+     * whole request the front-end depends on for every page load.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerPublicKeyEmptyOnFailure')]
+    public function aBrokenPkiKeyOnDiskFallsBackToAnEmptyPublicKeyRatherThanAnErrorPage(): void
+    {
+        $cryptPKI = self::createStub(CryptPKIHandler::class);
+        $cryptPKI->method('getPublicKey')->willThrowException(FileException::error('cannot read key'));
+
+        $this->whenAsking([CryptPKIHandler::class => $cryptPKI]);
+    }
+
+    /**
+     * @param array<string, mixed> $extraDefinitions Overrides layered on top of the default,
+     *                                                non-failing CryptPKIHandler stub — pass a
+     *                                                replacement under the same key to override it.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    private function whenAsking(array $extraDefinitions = []): void
     {
         // The payload carries the RSA public key, which the real handler generates on disk the
         // first time it is asked. None of these tests care about it, and generating it is the one
@@ -159,7 +233,7 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'bootstrap/getEnvironment']),
-            [CryptPKIHandler::class => $cryptPKI]
+            array_merge([CryptPKIHandler::class => $cryptPKI], $extraDefinitions)
         );
 
         IntegrationTestCase::runApp($container);
@@ -213,5 +287,29 @@ class GetEnvironmentBranchesTest extends IntegrationTestCase
 
         self::assertFalse($json->data->check_updates);
         self::assertFalse($json->data->check_notices);
+    }
+
+    /**
+     * A bare "the call succeeded" check — used where the branch under test has no other
+     * externally observable effect on this payload (see aBrowserAskingBeforeInstallStillGetsAn
+     * EnvironmentPayload).
+     */
+    private function outputCheckerOk(string $output): void
+    {
+        $this->payload($output);
+    }
+
+    private function outputCheckerPluginsEmptyOnFailure(string $output): void
+    {
+        $json = $this->payload($output);
+
+        self::assertSame([], $json->data->plugins);
+    }
+
+    private function outputCheckerPublicKeyEmptyOnFailure(string $output): void
+    {
+        $json = $this->payload($output);
+
+        self::assertSame('', $json->data->pki_key);
     }
 }
