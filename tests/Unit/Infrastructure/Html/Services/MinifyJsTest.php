@@ -262,6 +262,77 @@ class MinifyJsTest extends UnitaryTestCase
         $this->minifyJs->getMinified();
     }
 
+    /**
+     * A file that is not already minified (no ".min.js"/"pack.js" suffix) and was added with
+     * minify=true is exactly the case the compressor exists for: block comments, full-line and
+     * inline "// " comments, and all indentation/line breaks are stripped from the body that ends
+     * up in the response, while the code itself survives. Files added with minify=false (every
+     * other test in this class) never exercise jsCompress() at all.
+     *
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testAddFileNeedingMinificationCompressesTheContent()
+    {
+        $source = "/* block\n * comment */\n// full line comment\nvar total = 1;   \n\tvar next = total + 1; // inline note\n";
+
+        $file = $this->buildFileNeedingMinification($source);
+
+        $this->request->method('getHeader')->willReturn(self::$faker->sha1());
+        $this->response->method('isSent')->willReturn(false);
+
+        $captured = null;
+        $this->response->expects(self::once())
+                       ->method('body')
+                       ->willReturnCallback(function (string $body) use (&$captured) {
+                           $captured = $body;
+
+                           return $this->response;
+                       });
+
+        $this->minifyJs->addFile($file, true);
+        $this->minifyJs->getMinified();
+
+        self::assertStringContainsString('MINIFIED FILE: ' . $file->getName(), $captured);
+        self::assertStringNotContainsString('block', $captured);
+        self::assertStringNotContainsString('comment', $captured);
+        self::assertStringNotContainsString('inline note', $captured);
+        self::assertStringContainsString('var total = 1;', $captured);
+        self::assertStringContainsString('var next = total + 1;', $captured);
+        // jsCompress() strips every tab and line break from the compressed portion of the body.
+        self::assertStringNotContainsString("\t", $captured);
+    }
+
+    /**
+     * The fixture is a real file on disk, inside a directory literally named "js" — the only kind
+     * MinifyFile::getName() (via Request::getSecureAppFile()) will resolve at all — so it is
+     * removed again once the test is done with it.
+     *
+     * @throws Exception
+     */
+    private function buildFileNeedingMinification(string $content): FileHandlerInterface|MockObject
+    {
+        $base = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid('sp_minifyjs_', true) . DIRECTORY_SEPARATOR . 'js';
+        mkdir($base, 0777, true);
+
+        $fileName = 'app-source.js';
+        file_put_contents($base . DIRECTORY_SEPARATOR . $fileName, $content);
+
+        $this->tempDirs[] = dirname($base);
+
+        $file = $this->createMock(FileHandlerInterface::class);
+        $file->method('getHash')->willReturn(self::$faker->sha1());
+        $file->method('getBase')->willReturn($base);
+        $file->method('getName')->willReturn($fileName);
+        $file->method('readToString')->willReturn($content);
+        $file->method('checkFileExists');
+
+        return $file;
+    }
+
+    /** @var string[] */
+    private array $tempDirs = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -270,6 +341,26 @@ class MinifyJsTest extends UnitaryTestCase
         $this->request = $this->createMock(RequestService::class);
 
         $this->minifyJs = new \SP\Infrastructure\Html\Services\MinifyJs($this->response, $this->request);
+    }
+
+    protected function tearDown(): void
+    {
+        foreach ($this->tempDirs as $dir) {
+            if (is_dir($dir)) {
+                $files = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($dir, \FilesystemIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($files as $fileInfo) {
+                    $fileInfo->isDir() ? rmdir($fileInfo->getPathname()) : unlink($fileInfo->getPathname());
+                }
+
+                rmdir($dir);
+            }
+        }
+
+        parent::tearDown();
     }
 
 }
