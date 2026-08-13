@@ -28,6 +28,7 @@ namespace SP\Tests\Unit\Infrastructure\Database;
 use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryInterface;
 use PDO;
+use PDOException;
 use PDOStatement;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -822,6 +823,240 @@ class DatabaseTest extends UnitaryTestCase
         $this->expectExceptionCode(23000);
 
         $this->database->runQuery($queryData);
+    }
+
+    /**
+     * MySQL error 1062 (duplicate key) gets a message an operator can act on instead of the raw
+     * "Integrity constraint" fallback used for driver codes that aren't specifically handled.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithConstraintExceptionForDuplicateEntry()
+    {
+        $this->expectExceptionMessage('Duplicate entry');
+
+        $this->runQueryWithDriverConstraintCode(1062);
+    }
+
+    /**
+     * MySQL error 1451 (row referenced by a foreign key elsewhere) is reported as "the record is
+     * in use" rather than the generic constraint message, so a delete failure is self-explanatory.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithConstraintExceptionForRecordInUse()
+    {
+        $this->expectExceptionMessage('The record is in use');
+
+        $this->runQueryWithDriverConstraintCode(1451);
+    }
+
+    /**
+     * MySQL error 1452 (foreign key target missing) is reported as "referenced record not
+     * found" rather than the generic constraint message, distinguishing it from 1451 above.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithConstraintExceptionForReferencedRecordNotFound()
+    {
+        $this->expectExceptionMessage('Referenced record not found');
+
+        $this->runQueryWithDriverConstraintCode(1452);
+    }
+
+    /**
+     * Drives runQuery() into the ConstraintException branch with a real PDOException carrying
+     * the given MySQL driver error code in errorInfo[1], the way the PDO MySQL driver actually
+     * reports it (a plain exception code of 23000 alone never carries the specific 1062/1451/1452
+     * distinction — only errorInfo does).
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    private function runQueryWithDriverConstraintCode(int $driverCode): void
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdoStatement = $this->createStub(PDOStatement::class);
+        $query = $this->createStub(QueryInterface::class);
+        $queryData = $this->createStub(QueryDataInterface::class);
+
+        $queryData->method('getOnErrorMessage')
+                  ->willReturn('an_error');
+
+        $query->method('getStatement')
+              ->willReturn('test_query');
+
+        $queryData->method('getQuery')
+                  ->willReturn($query);
+
+        $this->dbStorageHandler
+            ->method('getConnection')
+            ->willReturn($pdo);
+
+        $pdo->method('prepare')
+            ->willReturn($pdoStatement);
+
+        $pdoException = new PDOException('constraint violated', 23000);
+        $pdoException->errorInfo = ['23000', $driverCode, 'driver detail'];
+
+        $pdoStatement->method('execute')
+                     ->willThrowException($pdoException);
+
+        $this->expectException(ConstraintException::class);
+        $this->expectExceptionCode(23000);
+
+        $this->database->runQuery($queryData);
+    }
+
+    /**
+     * The same named parameter appearing more than once in a query (e.g. "WHERE a = :x OR
+     * b = :x") is something PDO's native prepared statements reject outright — binding the same
+     * name twice throws. The second and later occurrences are renamed to :x__2, :x__3, ... and
+     * each copy is bound to the same value, so the caller can write the natural SQL without
+     * worrying about repeats.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithRepeatedNamedParameterIsDeduplicated()
+    {
+        $pdo = $this->createMock(PDO::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
+        $query = $this->createMock(QueryInterface::class);
+
+        $query->expects($this->atLeastOnce())
+              ->method('getStatement')
+              ->willReturn('SELECT * FROM test WHERE a = :x OR b = :x');
+
+        $query->expects($this->once())
+              ->method('getBindValues')
+              ->willReturn(['x' => 5]);
+
+        $pdo->expects($this->once())
+            ->method('prepare')
+            ->with('SELECT * FROM test WHERE a = :x OR b = :x__2', [])
+            ->willReturn($pdoStatement);
+
+        $counter = new InvokedCount(2);
+        $pdoStatement->expects($counter)
+                     ->method('bindValue')
+                     ->with(
+                         self::callback(static function (string $arg) use ($counter) {
+                             return match ($counter->numberOfInvocations()) {
+                                 1 => $arg === 'x',
+                                 2 => $arg === 'x__2',
+                             };
+                         }),
+                         self::callback(static fn(mixed $arg) => $arg === 5),
+                         self::callback(static fn(int $arg) => $arg === PDO::PARAM_INT),
+                     );
+
+        $pdoStatement->expects($this->once())
+                     ->method('execute');
+
+        $pdoStatement->expects($this->never())
+                     ->method('fetchAll');
+
+        $pdoStatement->expects($this->once())
+                     ->method('rowCount')
+                     ->willReturn(1);
+
+        $this->dbStorageHandler
+            ->expects($this->once())
+            ->method('getConnection')
+            ->willReturn($pdo);
+
+        $pdo->expects($this->once())
+            ->method('lastInsertId')
+            ->willReturn('1');
+
+        $queryData = $this->createMock(QueryDataInterface::class);
+
+        $queryData->expects($this->once())
+                  ->method('getQuery')
+                  ->willReturn($query);
+
+        $queryData->expects($this->never())
+                  ->method('getMapClassName');
+
+        $out = $this->database->runQuery($queryData);
+
+        $this->assertEquals(1, $out->getAffectedNumRows());
+    }
+
+    /**
+     * A bound value that has no matching :placeholder left in the final SQL text (e.g. a
+     * repository builds a WHERE clause conditionally and ends up passing a now-unused key) is
+     * dropped before reaching PDO. Binding a parameter PDO can't find in the statement throws
+     * "SQLSTATE[HY093]: Invalid parameter number", which would turn an unrelated, harmless extra
+     * value into a hard query failure.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryDropsABoundValueWithNoMatchingPlaceholder()
+    {
+        $pdo = $this->createMock(PDO::class);
+        $pdoStatement = $this->createMock(PDOStatement::class);
+        $query = $this->createMock(QueryInterface::class);
+
+        $query->expects($this->atLeastOnce())
+              ->method('getStatement')
+              ->willReturn('SELECT * FROM test WHERE a = :a');
+
+        $query->expects($this->once())
+              ->method('getBindValues')
+              ->willReturn(['a' => 1, 'unused' => 2]);
+
+        $pdo->expects($this->once())
+            ->method('prepare')
+            ->with('SELECT * FROM test WHERE a = :a', [])
+            ->willReturn($pdoStatement);
+
+        $pdoStatement->expects($this->once())
+                     ->method('bindValue')
+                     ->with('a', 1, PDO::PARAM_INT);
+
+        $pdoStatement->expects($this->once())
+                     ->method('execute');
+
+        $pdoStatement->expects($this->never())
+                     ->method('fetchAll');
+
+        $pdoStatement->expects($this->once())
+                     ->method('rowCount')
+                     ->willReturn(1);
+
+        $this->dbStorageHandler
+            ->expects($this->once())
+            ->method('getConnection')
+            ->willReturn($pdo);
+
+        $pdo->expects($this->once())
+            ->method('lastInsertId')
+            ->willReturn('1');
+
+        $queryData = $this->createMock(QueryDataInterface::class);
+
+        $queryData->expects($this->once())
+                  ->method('getQuery')
+                  ->willReturn($query);
+
+        $queryData->expects($this->never())
+                  ->method('getMapClassName');
+
+        $out = $this->database->runQuery($queryData);
+
+        $this->assertEquals(1, $out->getAffectedNumRows());
     }
 
     protected function setUp(): void
