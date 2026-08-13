@@ -155,11 +155,17 @@ final readonly class LdapAuth implements LdapAuthService
             $ldapAuthData->setEmail((string)(is_array($mail) ? $mail[0] : $mail));
         }
 
-        $ldapAuthData->setDn((string)($attributes->get('dn') ?? ''));
+        // The same value both times: reading the attribute raw here instead handed null to a
+        // string parameter when a directory answered without a dn, and the TypeError that raised
+        // is not an LdapException, so authenticate() did not catch it — the request died rather
+        // than the sign-in failing. An empty dn belongs to no group, so it fails closed.
+        $dn = (string)($attributes->get('dn') ?? '');
+
+        $ldapAuthData->setDn($dn);
         $ldapAuthData->setExpire((int)($attributes->get('expire') ?? 0));
         $ldapAuthData->setInGroup(
             $this->ldap->isUserInGroup(
-                $attributes['dn'],
+                $dn,
                 $userLogin,
                 (array)$attributes->get('group')
             )

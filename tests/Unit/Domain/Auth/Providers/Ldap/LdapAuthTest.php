@@ -238,6 +238,61 @@ class LdapAuthTest extends UnitaryTestCase
     }
 
     /**
+     * A directory that answers without a dn used to take the request down with it: the dn was read
+     * raw and handed to a string parameter, and the TypeError that raised is not an LdapException,
+     * so authenticate()'s catch did not see it. The sign-in now fails the ordinary way — an empty
+     * dn belongs to no group, so it fails closed rather than crashing.
+     *
+     * @throws Exception
+     */
+    public function testAuthenticateWithoutADnFailsInsteadOfCrashing()
+    {
+        $userLoginData = new UserLoginDto();
+        $userLoginData->setLoginUser(self::$faker->userName());
+        $userLoginData->setLoginPass(self::$faker->password());
+
+        $ldapActions = $this->createMock(LdapActionsService::class);
+
+        $this->ldap->expects(self::once())->method('connect')->with(null, null);
+
+        $filter = 'test';
+
+        $this->ldap
+            ->expects(self::once())
+            ->method('getUserDnFilter')
+            ->with($userLoginData->getLoginUser())
+            ->willReturn($filter);
+
+        $this->ldap->expects(self::once())->method('actions')->willReturn($ldapActions);
+
+        $attributes = new AttributeCollection(
+            [
+                'group' => [self::$faker->company()],
+                'fullname' => self::$faker->name(),
+                'mail' => self::$faker->email(),
+            ]
+        );
+
+        $ldapActions
+            ->expects(self::once())
+            ->method('getAttributes')
+            ->with($filter)
+            ->willReturn($attributes);
+
+        // The empty dn reaches the group check as a string, not as null.
+        $this->ldap
+            ->expects(self::once())
+            ->method('isUserInGroup')
+            ->with('', $userLoginData->getLoginUser(), $attributes->get('group'))
+            ->willReturn(false);
+
+        $out = $this->ldapAuth->authenticate($userLoginData);
+
+        self::assertFalse($out->isOk());
+        self::assertSame(LdapAuthService::ACCOUNT_NO_GROUPS, $out->getStatusCode());
+    }
+
+    /**
      * @throws Exception
      */
     public function testAuthenticateFailConnect()
