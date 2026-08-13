@@ -247,7 +247,7 @@ final class User extends BaseRepository implements UserRepository
                 sprintf('%s.id = %s.userProfileId', UserProfileModel::TABLE, UserModel::TABLE)
             )
             ->cols(array_merge(
-                UserModel::getColsWithPreffix(UserModel::TABLE, ['hash']),
+                UserModel::getColsWithPreffix(UserModel::TABLE, UserModel::CREDENTIAL_COLS),
                 [
                     sprintf('%s.name AS userProfileName', UserProfileModel::TABLE),
                     sprintf('%s.name AS userGroupName', UserGroupModel::TABLE),
