@@ -172,9 +172,10 @@ class PluginBaseTest extends UnitaryTestCase
             public function getBase(): ?string
             {
                 // bindtextdomain() is a C-level call: it only keeps a binding that points at a
-                // real directory on disk, so this points at one directly — APP_PATH in the test
-                // bootstrap is a vfsStream URL, which gettext cannot read.
-                return '/var/www/html/resources';
+                // real directory on disk, so this points at one — APP_PATH in the test bootstrap is
+                // a vfsStream URL, which gettext cannot read. REAL_APP_ROOT rather than a literal,
+                // since the checkout lives somewhere else on CI.
+                return REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'resources';
             }
 
             public function onLoad()
@@ -194,7 +195,7 @@ class PluginBaseTest extends UnitaryTestCase
         $pluginBase->exposeSetLocales();
 
         self::assertSame(
-            '/var/www/html/resources' . DIRECTORY_SEPARATOR . 'locales',
+            REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'locales',
             bindtextdomain('testplugin', null)
         );
     }
