@@ -247,11 +247,10 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('transactionAware')
             ->with(
-                new Callback(static function (callable $callable) {
-                    $result = $callable();
-
-                    return is_a($result, QueryResult::class) && $result->getLastId() === 100;
-                })
+                // What the transaction hands back is what the service returns, and the service is
+                // declared to return an int — the id of the row it recreated, not the query result
+                // it came from.
+                new Callback(static fn(callable $callable) => $callable() === 100)
             )
             ->willReturn(100);
 
