@@ -33,9 +33,15 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
+use SP\Domain\Core\Messages\TextFormatter;
+use SP\Infrastructure\Events\EventDispatcher;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\IntegrationTestCase;
+use stdClass;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -55,6 +61,8 @@ class UploadControllerTest extends IntegrationTestCase
 
     /** @var string[] */
     private array $tempFiles = [];
+
+    private AccountView $account;
 
     protected function getConfigData(): array
     {
@@ -77,10 +85,9 @@ class UploadControllerTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->addDatabaseMapperResolver(
-            AccountView::class,
-            new QueryResult([AccountDataGenerator::factory()->buildAccountDataView()])
-        );
+        $this->account = AccountDataGenerator::factory()->buildAccountDataView();
+
+        $this->addDatabaseMapperResolver(AccountView::class, new QueryResult([$this->account]));
     }
 
     protected function tearDown(): void
@@ -197,6 +204,71 @@ class UploadControllerTest extends IntegrationTestCase
     }
 
     /**
+     * A temporary file that turns out to be unreadable once the type/size checks have passed
+     * (a permissions change, a filesystem hiccup) must not let the underlying file error — which
+     * would carry the server path — reach the client. The controller reports a generic internal
+     * error instead. Simulated with a stream wrapper that reports the file as unreadable, since
+     * these tests run as root, which ignores real permission bits.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerInternalFileError')]
+    public function aFileThatCannotBeReadReportsAnInternalErrorInsteadOfTheFileDetails()
+    {
+        $this->whenUploading($this->givenAnUnreadableFile('notes.txt', 'Some notes'));
+    }
+
+    /**
+     * The event a successful upload notifies names the file, the account, the client, the MIME
+     * type and the size — and the EventMessage is built lazily inside a closure, so nothing runs
+     * it unless something actually formats it (as a real log listener would). If building it
+     * raised, an otherwise-successful upload's log entry would break.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aSuccessfulUploadRecordsAnEventNamingTheFileAccountClientTypeAndSize()
+    {
+        [$eventDispatcher, $notified] = $this->spyingEventDispatcher();
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'accountFile/upload/100'],
+                [],
+                ['inFile' => $this->givenAFile('notes.txt', 'Some notes')]
+            ),
+            [EventDispatcherInterface::class => $eventDispatcher]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $uploadEvents = array_values(
+            array_filter(
+                $notified->value,
+                static fn(Event $event): bool => $event->getName() === 'upload.accountFile'
+            )
+        );
+
+        self::assertCount(1, $uploadEvents);
+
+        // Formatting the message is what actually runs the closure the controller notified with.
+        $message = $uploadEvents[0]->getEventMessage()->getDetails(new TextFormatter(), false);
+
+        self::assertStringContainsString('File: notes.txt', $message);
+        self::assertStringContainsString('Account: ' . $this->account->getName(), $message);
+        self::assertStringContainsString('Client: ' . $this->account->getClientName(), $message);
+        self::assertStringContainsString('Type: text/plain', $message);
+        self::assertStringContainsString('Size: ', $message);
+    }
+
+    /**
      * These refusals are raised as exceptions, so the response carries the trace as data; the
      * status and the message are the contract.
      */
@@ -225,6 +297,11 @@ class UploadControllerTest extends IntegrationTestCase
         $this->assertRefusedWith($output, 'Invalid file');
     }
 
+    private function outputCheckerInternalFileError(string $output): void
+    {
+        $this->assertRefusedWith($output, 'Internal error while reading the file');
+    }
+
     private function assertRefusedWith(string $output, string $message): void
     {
         $json = json_decode($output);
@@ -246,6 +323,57 @@ class UploadControllerTest extends IntegrationTestCase
     }
 
     /**
+     * A file that opens fine (so the size/name checks and the FileHandler construction succeed)
+     * but is reported unreadable once FileHandler::checkIsReadable() checks it — the branch that
+     * raises FileException and is caught by the controller.
+     */
+    private function givenAnUnreadableFile(string $name, string $contents): UploadedFile
+    {
+        $realPath = tempnam(sys_get_temp_dir(), 'unreadable');
+        file_put_contents($realPath, $contents);
+
+        $this->tempFiles[] = $realPath;
+
+        return new UploadedFile(UnreadableFileStreamWrapper::urlFor($realPath), $name, 'text/plain', null, true);
+    }
+
+    /**
+     * A real EventDispatcher with a receiver attached that records every notified event, so a
+     * test can inspect the event name and its (lazily built) message. EventDispatcher is final
+     * and ControllerBase declares its $eventDispatcher property with the interface, but that
+     * interface can't be doubled here either without losing the real notify()/receiver
+     * mechanics the test relies on, so a real instance with a recording receiver is used instead.
+     *
+     * @return array{0: EventDispatcherInterface, 1: stdClass}
+     */
+    private function spyingEventDispatcher(): array
+    {
+        $captured = new stdClass();
+        $captured->value = [];
+
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->attach(
+            new class ($captured) implements EventReceiver {
+                public function __construct(private readonly stdClass $captured)
+                {
+                }
+
+                public function update(Event $event): void
+                {
+                    $this->captured->value[] = $event;
+                }
+
+                public function getEvents(): ?string
+                {
+                    return '*';
+                }
+            }
+        );
+
+        return [$eventDispatcher, $captured];
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -263,5 +391,98 @@ class UploadControllerTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+}
+
+/**
+ * Mirrors a real temp file for every stream operation except url_stat(), which reports it as
+ * unreadable. This simulates "the file cannot be read" — the scenario
+ * FileHandler::checkIsReadable() guards against — without an actual permission change, since a
+ * test process running as root ignores permission bits on real files.
+ */
+final class UnreadableFileStreamWrapper
+{
+    private const SCHEME = 'sptest-unreadable-upload';
+
+    /** @var array<string, string> virtual path => backing real path */
+    private static array $realPaths = [];
+
+    /** @var resource|null */
+    private $handle;
+
+    /** @var resource|null Required by the stream wrapper API even though it is unused here. */
+    public $context;
+
+    public static function urlFor(string $realPath): string
+    {
+        if (!in_array(self::SCHEME, stream_get_wrappers(), true)) {
+            stream_wrapper_register(self::SCHEME, self::class);
+        }
+
+        $virtualPath = self::SCHEME . '://' . uniqid('', true);
+        self::$realPaths[$virtualPath] = $realPath;
+
+        return $virtualPath;
+    }
+
+    public function stream_open(string $path, string $mode, int $options, ?string &$openedPath): bool
+    {
+        $real = self::$realPaths[$path] ?? null;
+
+        if ($real === null) {
+            return false;
+        }
+
+        $this->handle = fopen($real, $mode);
+
+        return $this->handle !== false;
+    }
+
+    public function stream_read(int $count): string|false
+    {
+        return fread($this->handle, $count);
+    }
+
+    public function stream_eof(): bool
+    {
+        return feof($this->handle);
+    }
+
+    public function stream_close(): void
+    {
+        fclose($this->handle);
+    }
+
+    /**
+     * @return array<int|string, int>|false
+     */
+    public function stream_stat(): array|false
+    {
+        return fstat($this->handle);
+    }
+
+    /**
+     * Reports the backing file as an unreadable regular file (zeroed permission bits) without
+     * touching its real permissions.
+     *
+     * @return array<int|string, int>|false
+     */
+    public function url_stat(string $path, int $flags): array|false
+    {
+        $real = self::$realPaths[$path] ?? null;
+
+        if ($real === null) {
+            return false;
+        }
+
+        $stat = @stat($real);
+
+        if ($stat === false) {
+            return false;
+        }
+
+        $stat['mode'] = $stat[2] = 0100000;
+
+        return $stat;
     }
 }
