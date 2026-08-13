@@ -68,10 +68,7 @@ class ProfileControllerTest extends ApiTestCase
     }
 
     /**
-     * Only the name is enforced by the controller — "profile" is read with
-     * getParamString('profile') and no required flag. The column behind it is NOT NULL, though
-     * (see testCreateActionMissingProfilePayloadFails), so omitting it does not skip validation,
-     * it just fails somewhere else.
+     * Both the name and the permissions are enforced by the controller.
      */
     public function testCreateActionRequiredParameters(): void
     {
@@ -82,17 +79,32 @@ class ProfileControllerTest extends ApiTestCase
     }
 
     /**
-     * "profile" is optional as far as the API's own parameter validation goes, but the column
-     * behind it is declared NOT NULL: omitting it does not fail cleanly with "Wrong parameters",
-     * it fails with a raw database integrity error instead. The permission set is effectively
-     * mandatory, the API just does not say so up front.
+     * The permissions are the profile, and the column behind them is NOT NULL. Omitting them is
+     * refused as the missing parameter it is — it used to reach the database and come back as a
+     * raw integrity error, which told the caller nothing about which parameter to supply.
      */
-    public function testCreateActionMissingProfilePayloadFails(): void
+    public function testCreateActionWithoutPermissionsIsRefused(): void
     {
         $r = $this->callApi(AclActionsInterface::PROFILE_CREATE, ['name' => 'API profile no perms']);
 
-        $this->assertSame(500, $r->status);
-        $this->assertSame('Integrity constraint', $r->body->error->message);
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+    }
+
+    /**
+     * And the same on an edit, where dropping them would have blanked the permissions of a profile
+     * that people are already assigned to.
+     */
+    public function testEditActionWithoutPermissionsIsRefused(): void
+    {
+        $id = $this->createProfile(
+            ['name' => 'API profile to edit', 'profile' => json_encode(['accView' => true])]
+        )->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::PROFILE_EDIT, ['id' => $id, 'name' => 'API profile edited']);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
     }
 
     public function testCreateActionDuplicateName(): void

@@ -19,7 +19,10 @@ final class CreateController extends ProfileBase
 
         $profileData = new UserProfile([
             'name'    => $this->apiService->getParamString('name', true),
-            'profile' => $this->apiService->getParamString('profile'),
+            // Required: the permissions are the profile. UserProfile.profile is NOT NULL, so
+            // leaving it optional meant a caller who omitted it got the database's integrity
+            // error rather than being told which parameter was missing.
+            'profile' => $this->apiService->getParamString('profile', true),
         ]);
 
         $id = $this->profileService->create($profileData);
