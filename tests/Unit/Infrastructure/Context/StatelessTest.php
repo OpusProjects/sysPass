@@ -27,8 +27,12 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Infrastructure\Context;
 
 use PHPUnit\Framework\Attributes\Group;
+use ReflectionProperty;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Exceptions\ContextException;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
+use SP\Infrastructure\Context\ContextBase;
 use SP\Infrastructure\Context\Stateless;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Support\UnitaryTestCase;
@@ -169,5 +173,168 @@ class StatelessTest extends UnitaryTestCase
         $context->initialize();
 
         $this->assertNull($context->getPluginKey('unknownPlugin', 'unknownKey'));
+    }
+
+    /**
+     * The signed-in user gates every access check made for the rest of the request. A freshly
+     * built context (e.g. one used from a CLI or API request that never authenticates) must read
+     * as nobody being signed in, and setting the user data is what flips that.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheSignedInUserIsCarried(): void
+    {
+        $context = new Stateless();
+
+        $this->assertFalse($context->isLoggedIn(), 'nobody is signed in on a fresh context');
+
+        $context->setUserData(new UserDto(id: 7, login: 'someone'));
+
+        $this->assertTrue($context->isLoggedIn());
+        $this->assertSame(7, $context->getUserData()->id);
+    }
+
+    /**
+     * The profile decides what the signed-in user may do, and is read on every request that
+     * checks a permission.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheUserProfileIsCarried(): void
+    {
+        $context = new Stateless();
+
+        $this->assertNull($context->getUserProfile());
+
+        $context->setUserProfile(new ProfileData(['accAdd' => true]));
+
+        $this->assertTrue($context->getUserProfile()->isAccAdd());
+    }
+
+    /**
+     * The response language is read from the context once per request; a locale that was never
+     * set must read back as unset rather than an empty string, so the caller falls back to the
+     * configured default instead of rendering with a blank language.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheLocaleIsCarried(): void
+    {
+        $context = new Stateless();
+
+        $this->assertNull($context->getLocale());
+
+        $context->setLocale('en_US');
+
+        $this->assertSame('en_US', $context->getLocale());
+    }
+
+    /**
+     * The application status is a one-shot flag (e.g. "just reloaded the config"): reading it back
+     * has to be paired with clearing it, otherwise the next unrelated request would be treated as
+     * the same event.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheApplicationStatusIsClearedOnceRead(): void
+    {
+        $context = new Stateless();
+
+        $context->setAppStatus(Stateless::APP_STATUS_RELOADED);
+
+        $this->assertSame(Stateless::APP_STATUS_RELOADED, $context->getAppStatus());
+
+        $context->resetAppStatus();
+
+        $this->assertNull($context->getAppStatus());
+    }
+
+    /**
+     * The accounts cache is what the search listing reuses across the request instead of hitting
+     * the repository again for the same page.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheAccountsCacheIsCarried(): void
+    {
+        $context = new Stateless();
+
+        $this->assertNull($context->getAccountsCache());
+
+        $context->setAccountsCache([1, 2, 3]);
+
+        $this->assertSame([1, 2, 3], $context->getAccountsCache());
+    }
+
+    /**
+     * A temporary master password (set while the real one is being changed) is stored under a
+     * protected key, exactly like the real master password — nothing later in the same request may
+     * quietly swap it for a different value, or a partially-migrated account could be encrypted
+     * with the wrong key.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testSetTemporaryMasterPassStoresItUnderAProtectedKey(): void
+    {
+        $context = new Stateless();
+        $context->setTemporaryMasterPass('temp-pass');
+
+        $this->assertSame('temp-pass', $context->getTrasientKey('_tempmasterpass'));
+
+        $this->expectException(ContextException::class);
+
+        $context->setTemporaryMasterPass('different-pass');
+    }
+
+    /**
+     * The configuration load time is what a caller compares against the config file's own
+     * timestamp to decide whether the in-memory config is stale.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testTheConfigTimeIsCarried(): void
+    {
+        $context = new Stateless();
+
+        $context->setConfigTime(1700000000);
+
+        $this->assertSame(1700000000, $context->getConfigTime());
+    }
+
+    /**
+     * setContextKey()/getContextKey() catch the ContextException the parent class raises when the
+     * context reference is gone, and degrade to a no-op instead of propagating it — a write is
+     * silently dropped and a read comes back as its default, rather than crashing the request over
+     * what is logged as an internal-state problem.
+     *
+     * The context is always bound by the constructor, so the only way to reach this path is to
+     * force the underlying reference back to null, the way a corrupted internal state would.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    public function testAWriteAfterTheContextIsLostIsDroppedRatherThanThrown(): void
+    {
+        $context = new Stateless();
+        $context->setLocale('en_US');
+
+        $this->assertSame('en_US', $context->getLocale());
+
+        $property = new ReflectionProperty(ContextBase::class, 'context');
+        $property->setValue($context, null);
+
+        $context->setLocale('fr_FR');
+
+        $this->assertNull(
+            $context->getLocale(),
+            'the write is silently dropped once the context reference is gone'
+        );
     }
 }

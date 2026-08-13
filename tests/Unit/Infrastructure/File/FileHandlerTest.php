@@ -415,4 +415,108 @@ class FileHandlerTest extends TestCase
 
         (new FileHandler($this->file))->readChunked(null, 4);
     }
+
+    /**
+     * A caller that doesn't pass a rate (e.g. a plain "download this file" call) must still get the
+     * app's own throttle instead of skipping the cap entirely — this exercises the branch that picks
+     * it from Util::getMaxDownloadChunk() rather than the one that only caps an oversized explicit
+     * rate.
+     *
+     * @throws FileException
+     */
+    public function testReadChunkedUsesTheDefaultRateWhenNoneIsGiven(): void
+    {
+        file_put_contents($this->file, 'default rate body');
+
+        $chunks = [];
+        (new FileHandler($this->file))->readChunked(static function (string $chunk) use (&$chunks) {
+            $chunks[] = $chunk;
+        });
+
+        self::assertSame('default rate body', implode('', $chunks));
+    }
+
+    /**
+     * write() must raise the application's own exception rather than let a failed fwrite() pass
+     * silently — e.g. code that reuses a handle that was opened for reading only.
+     *
+     * @throws FileException
+     */
+    public function testWriteThrowsWhenTheHandleIsReadOnly(): void
+    {
+        file_put_contents($this->file, 'existing');
+        $handler = new FileHandler($this->file, 'r');
+
+        $this->expectException(FileException::class);
+
+        // The underlying fwrite() emits a PHP notice for the failed write; @ mirrors how the
+        // production write() call site itself does not (and cannot) suppress it, since the
+        // exception below is what the caller is meant to rely on instead.
+        @$handler->write('more');
+    }
+
+    /**
+     * save() truncates and rewrites the file; if the handle cannot be written to (e.g. it was
+     * opened read-only) the failure must surface as the application's own exception rather than
+     * leaving the caller believing the save succeeded.
+     *
+     * @throws FileException
+     */
+    public function testSaveThrowsWhenTheHandleIsReadOnly(): void
+    {
+        file_put_contents($this->file, 'existing');
+        $handler = new FileHandler($this->file, 'r');
+
+        $this->expectException(FileException::class);
+
+        @$handler->save('more');
+    }
+
+    /**
+     * chmod() has to report a missing file through the same exception every other accessor uses,
+     * rather than letting the underlying PHP warning pass unnoticed.
+     */
+    public function testChmodThrowsWhenTheFileIsMissing(): void
+    {
+        $handler = new FileHandler($this->file, 'c');
+        unlink($this->file);
+
+        $this->expectException(FileException::class);
+
+        @$handler->chmod(0600);
+    }
+
+    /**
+     * Cleanup code that calls delete() after the file may already have been removed by an earlier
+     * step (e.g. a failed operation's own rollback) must not blow up on the second call — delete()
+     * is a no-op, not an error, when there is nothing left to delete.
+     *
+     * @throws FileException
+     */
+    public function testDeleteIsANoOpWhenTheFileIsAlreadyGone(): void
+    {
+        file_put_contents($this->file, 'x');
+        $handler = new FileHandler($this->file);
+        unlink($this->file);
+
+        $result = $handler->delete();
+
+        self::assertSame($handler, $result);
+        self::assertFileDoesNotExist($this->file);
+    }
+
+    /**
+     * getFileTime()'s contract is a non-nullable int, so a falsy modification time (e.g. the Unix
+     * epoch itself) must still come back as 0 rather than whatever falsy value getMTime() returned
+     * — the `?:` fallback exists precisely so both cases produce the same, always-int, answer.
+     *
+     * @throws FileException
+     */
+    public function testGetFileTimeFallsBackToZeroForAFalsyModificationTime(): void
+    {
+        file_put_contents($this->file, 'x');
+        touch($this->file, 0);
+
+        self::assertSame(0, (new FileHandler($this->file))->getFileTime());
+    }
 }
