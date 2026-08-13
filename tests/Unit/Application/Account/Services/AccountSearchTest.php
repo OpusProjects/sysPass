@@ -77,6 +77,27 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
+     * "0" is a search term like any other — an account named after a version, a host ending in a
+     * zero, a note mentioning one. It used to be dropped before the tokenizer ran, because PHP
+     * reads the string "0" as empty, and the request then carried no text filter at all: the user
+     * asking for 0 got the entire unfiltered list back instead of the matches.
+     */
+    public function testGetByFilterKeepsASearchForZero()
+    {
+        $accountSearchFilter = AccountSearchFilterDto::build('0');
+
+        $this->accountSearchRepository
+            ->expects(self::once())
+            ->method('getByFilter')
+            ->with($accountSearchFilter)
+            ->willReturn(new QueryResult());
+
+        $this->accountSearch->getByFilter($accountSearchFilter);
+
+        self::assertSame('0', $accountSearchFilter->getCleanTxtSearch());
+    }
+
+    /**
      * @param string $search
      * @param array $expected
      */
