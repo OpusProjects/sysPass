@@ -33,6 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Application\Notification\Ports\MailService;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
@@ -493,6 +494,120 @@ class UserTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Password updated","data":null}');
+    }
+
+    /**
+     * The password-change endpoint enforces its own permission separately from the rest of the
+     * user's data: a caller without USER_EDIT_PASS must be refused before the form is even
+     * looked at, since this is the one action that can lock the target user out of their account.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditPassDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'user/saveEditPass/100'],
+                self::passwordFields()
+            ),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * The confirmation box exists so a typo isn't saved as the new password; a mismatch must
+     * be refused rather than silently taking either value.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditPassMismatchedConfirmationIsRefused()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'user/saveEditPass/100'],
+                ['password' => self::$faker->password(12), 'password_repeat' => self::$faker->password(12)]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Passwords do not match","data":null}');
+    }
+
+    /**
+     * An empty password is the only length/strength rule the form itself enforces (there is no
+     * separate minimum-length or complexity check server-side); it must still be refused rather
+     * than hashing and storing an empty string.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditPassBlankIsRefused()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'user/saveEditPass/100'], [])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Password cannot be blank","data":null}');
+    }
+
+    /**
+     * The form never looks the target user up, so a nonexistent id only ever fails at the
+     * repository's UPDATE, which touches zero rows. UserService::updatePass() checks that count
+     * and throws instead of reporting success — this pins that a failed write is surfaced as an
+     * error rather than a false "Password updated", i.e. the user's real password is left alone.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditPassFailsWhenNoRowsAffected()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getOnErrorMessage() === 'Error while updating the password') {
+                return new QueryResult([], 0);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'user/saveEditPass/999'],
+                self::passwordFields()
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while updating the password","data":null}');
     }
 
     /**

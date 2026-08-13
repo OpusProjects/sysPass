@@ -30,7 +30,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
@@ -62,5 +65,58 @@ class ClearControllerTest extends IntegrationTestCase
         $this->expectOutputString(
             '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
         );
+    }
+
+    /**
+     * The controller never inspects how many rows the DELETE removed — it always reports the
+     * same success message. This pins that clearing an already-empty log is not treated as a
+     * failure (there is nothing left to distinguish "cleared" from "there was nothing to clear").
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    public function testClearReportsSuccessEvenWhenNoRowsWereRemoved(): void
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            return new QueryResult([], 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'eventlog/clear'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Event log cleared","data":null}');
+    }
+
+    /**
+     * A database failure while clearing the log must be surfaced as an error instead of an
+     * unhandled fatal.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    public function testClearFailsWhenTheDeleteQueryErrors(): void
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, 'EventLog')) {
+                throw ConstraintException::error('Unable to clear the event log out');
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'eventlog/clear'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Unable to clear the event log out","data":null}');
     }
 }

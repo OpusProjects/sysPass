@@ -34,6 +34,10 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Auth\Models\AuthToken;
 use SP\Domain\Auth\Models\AuthTokenList;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
 use SP\Tests\Support\IntegrationTestCase;
@@ -192,6 +196,107 @@ class AuthTokenTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
+    }
+
+    /**
+     * A token authorises API access on behalf of a user for one action; editing one to collide
+     * with another must be refused before the update runs, otherwise two tokens would grant the
+     * same access and the caller could no longer tell which one is authoritative.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditDuplicateUserActionPairIsRefused()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            // The pre-update uniqueness check ('id <>' only appears in that query, not in the
+            // create-side check or any other query this request issues): answering it with a
+            // row simulates another token already using this user/action pair.
+            if (str_contains($statement, 'id <>')) {
+                return new QueryResult([new Simple(['id' => 999])]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            'actions' => self::$faker->randomNumber(3),
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        // The controller has no try/catch of its own; the DuplicatedItemException bubbles up to
+        // Bootstrap's outer handler, which attaches a debug trace under "data" the same way an
+        // uncaught ValidationException does (see saveCreateWithoutUserIsRejectedNotFatal above).
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"Authorization already exist"/');
+    }
+
+    /**
+     * Some actions (viewing/editing an account's password, creating an account, refreshing or
+     * creating a public link) hand out a token that can decrypt the vault, so the token's own
+     * password cannot be left blank for those — unlike an ordinary token, which needs none.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditMissingPasswordForSecuredActionIsRejectedNotFatal()
+    {
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            'actions' => AclActionsInterface::ACCOUNT_VIEW_PASS,
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"Password cannot be blank"/');
+    }
+
+    /**
+     * Editing authorises API access, so a caller without AUTHTOKEN_EDIT must be refused outright.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            'actions' => self::$faker->randomNumber(3),
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
     }
 
     /**
