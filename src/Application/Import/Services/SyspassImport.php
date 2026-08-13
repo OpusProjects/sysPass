@@ -153,6 +153,12 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             }
 
             $document = new DOMDocument();
+            // As XmlFile does for the file itself. The export is written with formatOutput on, so
+            // the decrypted fragment is indented: without this the whitespace between elements
+            // arrives as text nodes, is grafted into the main tree, and the first one reaches a
+            // callback typed for elements — a TypeError, which is an Error and so caught by
+            // nothing on the way out. Every encrypted export failed to import on a fatal.
+            $document->preserveWhiteSpace = false;
 
             if ($document->loadXML($xmlDecrypted) === false) {
                 throw ImportException::error(__u('Wrong encryption password'));
