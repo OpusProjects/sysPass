@@ -35,6 +35,7 @@ use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Notification\Models\Notification;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\NotificationDataGenerator;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Support\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -45,6 +46,18 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class NotificationViewsTest extends IntegrationTestCase
 {
+    /**
+     * The harness builds a fresh random user every time it is asked for one, so a test that has to
+     * know who is signed in — the edit does, since it only writes the caller's own notifications —
+     * has to hold on to the first one.
+     */
+    private ?UserDto $signedInUser = null;
+
+    protected function getUserDataDto(): UserDto
+    {
+        return $this->signedInUser ??= parent::getUserDataDto();
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -103,6 +116,20 @@ class NotificationViewsTest extends IntegrationTestCase
     #[Test]
     public function saveEdit()
     {
+        // The save reads the notification back before writing it — that is where it establishes
+        // the row is the signed-in user's to edit — so the lookup has to answer with one of theirs.
+        $this->addDatabaseMapperResolver(
+            Notification::class,
+            new QueryResult(
+                [
+                    NotificationDataGenerator::factory()
+                                             ->buildNotification()
+                                             ->mutate(['id' => 100, 'userId' => $this->getUserDataDto()->id]),
+                ],
+                1
+            )
+        );
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
                 'post',
