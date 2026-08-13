@@ -5,6 +5,7 @@ namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Forms;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\MockObject\MockObject;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -68,5 +69,262 @@ final class AccountFormTest extends UnitaryTestCase
         // AccountDto types both as ?bool, so the form's int cast arrives coerced.
         self::assertTrue($accountDto->isPrivate);
         self::assertTrue($accountDto->isPrivateGroup);
+    }
+
+    /**
+     * An account with no name would be unidentifiable in the listing/search; checkCommon()
+     * must refuse it rather than let a nameless row reach the database.
+     */
+    public function testMissingNameIsRejected(): void
+    {
+        $form = $this->buildForm($this->mockAccountRequest(strings: ['name' => null]));
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('An account name needed');
+
+        $form->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * Every account is billed/organised under a client; without this guard an account
+     * could be saved with no client_id, breaking every client-scoped ACL/listing that
+     * assumes the column is always populated.
+     */
+    public function testMissingClientIsRejected(): void
+    {
+        $form = $this->buildForm($this->mockAccountRequest(ints: ['client_id' => null]));
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('A client is needed');
+
+        $form->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * Same as the client guard, for the category: accounts are grouped/ACL'd by
+     * category, so a missing category_id must be rejected rather than stored.
+     */
+    public function testMissingCategoryIsRejected(): void
+    {
+        $form = $this->buildForm($this->mockAccountRequest(ints: ['category_id' => null]));
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('A category is needed');
+
+        $form->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * A blank password must be rejected for a top-level account — an empty pass column
+     * would leave the vault entry undecryptable/meaningless.
+     */
+    public function testBlankPasswordIsRejected(): void
+    {
+        $form = $this->buildForm($this->mockAccountRequest());
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('A key is needed');
+
+        $form->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * A password/repeat mismatch must be rejected — otherwise a typo in the repeat
+     * field would silently store a password different from the one the user believes
+     * they set, locking them out of their own account.
+     */
+    public function testPasswordMismatchIsRejected(): void
+    {
+        $form = $this->buildForm(
+            $this->mockAccountRequest(password: 'secretA', passwordRepeat: 'secretB')
+        );
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Passwords do not match');
+
+        $form->validateFor(AclActionsInterface::ACCOUNT_CREATE);
+    }
+
+    /**
+     * checkPassword() skips its own checks entirely when parentId > 0: a "child"
+     * account inherits its password from the parent, so requiring one here would make
+     * it impossible to create a linked account with a blank password field.
+     */
+    public function testChildAccountSkipsPasswordChecks(): void
+    {
+        $accountPresetService = $this->createStub(AccountPresetService::class);
+        $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+
+        $form = new AccountForm(
+            $this->application,
+            $this->mockAccountRequest(ints: ['parent_account_id' => 5]),
+            $accountPresetService
+        );
+
+        $accountDto = $form->validateFor(AclActionsInterface::ACCOUNT_CREATE)->getItemData();
+
+        $this->assertSame(5, $accountDto->parentId);
+        $this->assertNull($accountDto->pass);
+    }
+
+    /**
+     * ACCOUNT_EDIT_PASS is a distinct switch arm (checkPassword + checkPasswordPreset,
+     * no analyzeItems/checkCommon) that no other test reaches; a valid, matching
+     * password pair on an existing account must be accepted.
+     */
+    public function testEditPassSucceedsWithMatchingPasswords(): void
+    {
+        $accountPresetService = $this->createStub(AccountPresetService::class);
+        $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+
+        $form = new AccountForm(
+            $this->application,
+            $this->mockAccountRequest(password: 'newSecret', passwordRepeat: 'newSecret'),
+            $accountPresetService
+        );
+
+        $result = $form->validateFor(AclActionsInterface::ACCOUNT_EDIT_PASS, 42);
+
+        $this->assertSame($form, $result);
+        $this->assertSame('newSecret', $form->getItemData()->pass);
+    }
+
+    /**
+     * ACCOUNT_EDIT is a distinct switch arm (analyzeItems + checkCommon, no
+     * checkPassword/checkPasswordPreset) that no other test reaches. It also exercises
+     * three of analyzeItems()'s five independent "*_update === 1" branches: without the
+     * "=== 1" flag, a submitted permission array must be silently ignored (Chainable
+     * carries the *previous* dto forward — a bug here would either drop legitimate
+     * permission edits or apply them when the operator didn't ask to change them).
+     */
+    public function testEditUpdatesOnlyFlaggedPermissionLists(): void
+    {
+        $form = $this->buildForm(
+            $this->mockAccountRequest(
+                ints: [
+                    'other_users_view_update' => 1,
+                    'other_usergroups_edit_update' => 1,
+                    'tags_update' => 1,
+                    // Deliberately NOT 1: must be left untouched (stays null).
+                    'other_users_edit_update' => 0,
+                ],
+                arrays: [
+                    'other_users_view' => [11, 12],
+                    'other_usergroups_edit' => [21],
+                    'tags' => [31, 32, 33],
+                    'other_users_edit' => [99],
+                ]
+            )
+        );
+
+        $accountDto = $form->validateFor(AclActionsInterface::ACCOUNT_EDIT, 42)->getItemData();
+
+        $this->assertSame([11, 12], $accountDto->usersView);
+        $this->assertSame([21], $accountDto->userGroupsEdit);
+        $this->assertSame([31, 32, 33], $accountDto->tags);
+        $this->assertNull($accountDto->usersEdit, 'update flag was not 1, list must be left untouched');
+    }
+
+    /**
+     * ACCOUNTMGR_BULK_EDIT is a distinct switch arm (analyzeItems + analyzeBulkEdit)
+     * that no other test reaches. It exercises analyzeBulkEdit()'s four independent
+     * "clear_permission_*" branches on BOTH sides: only two of the four flags are set,
+     * so a bulk edit must clear exactly the lists it was told to and leave the other
+     * two (populated moments earlier by analyzeItems()) untouched — a bug that ORs the
+     * conditions together, or clears unconditionally, would either wipe permissions the
+     * operator did not ask to touch or fail to clear the ones they did.
+     */
+    public function testBulkEditClearsOnlyFlaggedPermissionLists(): void
+    {
+        $form = $this->buildForm(
+            $this->mockAccountRequest(
+                ints: [
+                    'other_users_edit_update' => 1,
+                    'other_usergroups_view_update' => 1,
+                ],
+                arrays: [
+                    'other_users_edit' => [40],
+                    'other_usergroups_view' => [50],
+                ],
+                bools: [
+                    'clear_permission_users_view' => true,
+                    'clear_permission_usergroups_edit' => true,
+                    // clear_permission_users_edit / clear_permission_usergroups_view
+                    // deliberately left false (default): must NOT clear those lists.
+                ]
+            )
+        );
+
+        $accountDto = $form->validateFor(AclActionsInterface::ACCOUNTMGR_BULK_EDIT, 42)->getItemData();
+
+        $this->assertSame([], $accountDto->usersView, 'flagged for clearing, was never set by analyzeItems');
+        $this->assertSame([], $accountDto->userGroupsEdit, 'flagged for clearing, was never set by analyzeItems');
+        $this->assertSame([40], $accountDto->usersEdit, 'not flagged for clearing, must keep analyzeItems() value');
+        $this->assertSame(
+            [50],
+            $accountDto->userGroupsView,
+            'not flagged for clearing, must keep analyzeItems() value'
+        );
+    }
+
+    // ── helpers ──────────────────────────────────────────────────────────────
+
+    private function buildForm(RequestService $request): AccountForm
+    {
+        $accountPresetService = $this->createStub(AccountPresetService::class);
+        $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+
+        return new AccountForm($this->application, $request, $accountPresetService);
+    }
+
+    /**
+     * Configures a RequestService stub with valid defaults for name/client/category
+     * (so checkCommon() passes); password/password_repeat default to null (blank),
+     * letting each test override just the field(s) it wants to exercise.
+     *
+     * @param array<string, int|null> $ints
+     * @param array<string, string|null> $strings
+     * @param array<string, bool> $bools
+     * @param array<string, array|null> $arrays
+     */
+    private function mockAccountRequest(
+        array $ints = [],
+        array $strings = [],
+        array $bools = [],
+        array $arrays = [],
+        ?string $password = null,
+        ?string $passwordRepeat = null
+    ): RequestService|MockObject {
+        $ints = array_merge(['client_id' => 1, 'category_id' => 1], $ints);
+        $strings = array_merge(['name' => 'an_account'], $strings);
+
+        $request = $this->createStub(RequestService::class);
+
+        $request->method('analyzeInt')->willReturnCallback(
+            static fn(string $param, ?int $default = null) => array_key_exists($param, $ints)
+                ? $ints[$param]
+                : $default
+        );
+        $request->method('analyzeString')->willReturnCallback(
+            static fn(string $param, ?string $default = null) => array_key_exists($param, $strings)
+                ? $strings[$param]
+                : $default
+        );
+        $request->method('analyzeBool')->willReturnCallback(
+            static fn(string $param, ?bool $default = false) => $bools[$param] ?? $default
+        );
+        $request->method('analyzeArray')->willReturnCallback(
+            static fn(string $param, ?callable $mapper = null, mixed $default = null) => $arrays[$param] ?? $default
+        );
+        $request->method('analyzeUnsafeString')->willReturn(null);
+        $request->method('analyzeEncrypted')->willReturnCallback(
+            static fn(string $param) => match ($param) {
+                'password' => $password,
+                'password_repeat' => $passwordRepeat,
+                default => null,
+            }
+        );
+
+        return $request;
     }
 }
