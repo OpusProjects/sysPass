@@ -58,6 +58,7 @@ class AccountActionsHelperTest extends IntegrationTestCase
     private const VIEWER_ID = 500;
 
     private bool $publicLinksEnabled = true;
+    private bool $mailRequestsEnabled = false;
 
     /**
      * Pinned rather than left to the fixture's random id, since one of the tests turns on whether
@@ -72,7 +73,13 @@ class AccountActionsHelperTest extends IntegrationTestCase
 
     protected function getConfigData(): array
     {
-        return array_merge(parent::getConfigData(), ['isPublinksEnabled' => $this->publicLinksEnabled]);
+        return array_merge(
+            parent::getConfigData(),
+            [
+                'isPublinksEnabled' => $this->publicLinksEnabled,
+                'isMailRequestsEnabled' => $this->mailRequestsEnabled,
+            ]
+        );
     }
 
     /**
@@ -194,6 +201,196 @@ class AccountActionsHelperTest extends IntegrationTestCase
 
         self::assertSame('View Current', $back->getName());
         self::assertArrayHasKey('item-id', $back->getData());
+    }
+
+    /**
+     * Editing the password is its own button, offered alongside editing the rest of the account —
+     * but, like the edit button itself, only on top of the underlying edit access. Granting
+     * setShowEditPass() without resultEdit is silently dropped by the permission object, so the
+     * button never appears for a viewer who could not act on it anyway.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function editingThePasswordRequiresTheUnderlyingEditAccess(): void
+    {
+        $withoutAccess = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $withoutAccess->setShowEditPass(true);
+
+        $withoutIds = $this->actionIds(
+            $this->helper()->getActionsForAccount($withoutAccess, new AccountActionsDto(self::ACCOUNT_ID))
+        );
+
+        self::assertNotContains(AclActionsInterface::ACCOUNT_EDIT_PASS, $withoutIds);
+
+        $withAccess = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $withAccess->setResultEdit(true);
+        $withAccess->setShowEditPass(true);
+
+        $withActions = $this->helper()->getActionsForAccount($withAccess, new AccountActionsDto(self::ACCOUNT_ID));
+        $withIds = $this->actionIds($withActions);
+
+        self::assertContains(AclActionsInterface::ACCOUNT_EDIT_PASS, $withIds);
+
+        $editPass = $withActions[array_search(AclActionsInterface::ACCOUNT_EDIT_PASS, $withIds, true)];
+        self::assertSame(self::ACCOUNT_ID, $editPass->getData()['item-id']);
+    }
+
+    /**
+     * Requesting a modification is the fallback offered to a viewer who cannot edit directly: it
+     * only appears on the account view itself, only when the viewer has no edit access, and only
+     * when the instance has mail requests turned on. Any one of the three missing drops the button.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function requestingAModificationIsOfferedOnlyToAViewerWhoCannotEditWithMailRequestsOn(): void
+    {
+        $this->mailRequestsEnabled = true;
+
+        $viewOnly = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $viewOnly->setResultView(true);
+
+        $ids = $this->actionIds(
+            $this->helper()->getActionsForAccount($viewOnly, new AccountActionsDto(self::ACCOUNT_ID))
+        );
+
+        self::assertContains(AclActionsInterface::ACCOUNT_REQUEST, $ids, 'a view-only visitor gets the fallback');
+    }
+
+    /**
+     * A viewer who can already edit the account has no use for the request-modification fallback —
+     * it is only offered in place of the edit button, never alongside it.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function requestingAModificationIsNotOfferedToAViewerWhoCanAlreadyEdit(): void
+    {
+        $this->mailRequestsEnabled = true;
+
+        $editable = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $editable->setResultEdit(true);
+        $editable->setShowEdit(true);
+
+        $ids = $this->actionIds(
+            $this->helper()->getActionsForAccount($editable, new AccountActionsDto(self::ACCOUNT_ID))
+        );
+
+        self::assertNotContains(AclActionsInterface::ACCOUNT_REQUEST, $ids);
+    }
+
+    /**
+     * With mail requests switched off instance-wide, no view-only visitor is offered the fallback,
+     * whatever their permissions.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function requestingAModificationIsNotOfferedWhileMailRequestsAreOff(): void
+    {
+        // $this->mailRequestsEnabled defaults to false.
+        $viewOnly = new AccountPermission(AclActionsInterface::ACCOUNT_VIEW);
+        $viewOnly->setResultView(true);
+
+        $ids = $this->actionIds(
+            $this->helper()->getActionsForAccount($viewOnly, new AccountActionsDto(self::ACCOUNT_ID))
+        );
+
+        self::assertNotContains(AclActionsInterface::ACCOUNT_REQUEST, $ids);
+    }
+
+    /**
+     * Restoring a historical entry is offered only on the history view itself, and only on top of
+     * the underlying edit access — the same "no flag without the access" rule as edit and edit-pass.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aHistoricalEntryWithRestoreRightsOffersTheRestoreButton(): void
+    {
+        $permission = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $permission->setResultEdit(true);
+        $permission->setShowRestore(true);
+
+        $actions = $this->helper()->getActionsForAccount(
+            $permission,
+            new AccountActionsDto(self::ACCOUNT_ID, self::HISTORY_ID)
+        );
+        $ids = $this->actionIds($actions);
+
+        self::assertContains(AclActionsInterface::ACCOUNT_EDIT_RESTORE, $ids);
+
+        $restore = $actions[array_search(AclActionsInterface::ACCOUNT_EDIT_RESTORE, $ids, true)];
+        self::assertSame(self::ACCOUNT_ID, $restore->getData()['item-id']);
+        self::assertSame(self::HISTORY_ID, $restore->getData()['history-id']);
+    }
+
+    /**
+     * Restoring requires the underlying edit access, same as the other edit-shaped buttons: the
+     * flag alone is not enough.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function restoringRequiresTheUnderlyingEditAccess(): void
+    {
+        $permission = new AccountPermission(AclActionsInterface::ACCOUNT_HISTORY_VIEW, true);
+        $permission->setShowRestore(true);
+
+        $ids = $this->actionIds(
+            $this->helper()->getActionsForAccount(
+                $permission,
+                new AccountActionsDto(self::ACCOUNT_ID, self::HISTORY_ID)
+            )
+        );
+
+        self::assertNotContains(AclActionsInterface::ACCOUNT_EDIT_RESTORE, $ids);
+    }
+
+    /**
+     * The save button follows the form the viewer is on — offered while editing, creating or
+     * copying an account, and absent from a plain view. Reaching this helper with one of those
+     * three actions already implies the caller resolved edit access upstream (AccountHelper's
+     * checkAccess()/actionGranted gates), so the button tracking the action id rather than a
+     * separate permission flag does not, on its own, expose it to an unauthorized viewer.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function theSaveButtonIsOfferedOnEditCreateAndCopyFormsOnly(): void
+    {
+        $editing = $this->actionIds(
+            $this->helper()->getActionsForAccount(
+                new AccountPermission(AclActionsInterface::ACCOUNT_EDIT),
+                new AccountActionsDto(self::ACCOUNT_ID)
+            )
+        );
+
+        self::assertContains(AclActionsInterface::ACCOUNT, $editing, 'editing offers a way to save');
+
+        $viewing = $this->actionIds(
+            $this->helper()->getActionsForAccount(
+                new AccountPermission(AclActionsInterface::ACCOUNT_VIEW),
+                new AccountActionsDto(self::ACCOUNT_ID)
+            )
+        );
+
+        self::assertNotContains(AclActionsInterface::ACCOUNT, $viewing, 'a plain view has nothing to save');
     }
 
     /**
