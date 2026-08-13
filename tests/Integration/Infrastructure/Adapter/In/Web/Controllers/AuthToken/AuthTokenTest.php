@@ -40,6 +40,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
+use SP\Tests\Support\InjectVault;
 use SP\Tests\Support\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -47,6 +48,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * Class AuthTokenTest
  */
 #[Group('integration')]
+#[InjectVault]
 class AuthTokenTest extends IntegrationTestCase
 {
     /**
@@ -297,6 +299,60 @@ class AuthTokenTest extends IntegrationTestCase
         $this->expectOutputString(
             '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
         );
+    }
+
+    /**
+     * Refreshing a token takes a different persistence path than a plain edit: it regenerates
+     * the user's token and re-encrypts their vault under it (AuthTokenSaveBase's isRefresh()
+     * branch), instead of just updating the edited fields. The response text is identical
+     * either way, so the branch is told apart by which repository queries actually ran:
+     * refreshTokenByUserId() and refreshVaultByUserId() both update by userId, unlike the plain
+     * edit path, which updates by id.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditRefreshRegeneratesTokenAndVault()
+    {
+        $refreshQueriesRan = 0;
+
+        $this->databaseQueryResolver = function (QueryData $queryData) use (&$refreshQueriesRan): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+            $bindValues = $queryData->getQuery()->getBindValues();
+
+            // The plain edit's UPDATE also binds 'userId' (as a SET column), but keyed by 'id'
+            // in the WHERE clause; only refreshTokenByUserId()/refreshVaultByUserId() look up
+            // by userId with no 'id' bind at all.
+            if (str_starts_with($statement, 'UPDATE')
+                && array_key_exists('userId', $bindValues)
+                && !array_key_exists('id', $bindValues)
+            ) {
+                $refreshQueriesRan++;
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $data = [
+            'users' => self::$faker->randomNumber(3),
+            // Not a real ACL action id, so neither secured nor "can use secure token" — keeps
+            // the injected data on the plain (non-vault) path so only the refresh queries below
+            // are the ones tied to userId.
+            'actions' => 999999,
+            'pass' => self::$faker->sha1(),
+            'refreshtoken' => 1,
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveEdit/100'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame(2, $refreshQueriesRan, 'refreshing must regenerate both the token and the vault');
+        $this->expectOutputString('{"status":"OK","description":"Authorization updated","data":null}');
     }
 
     /**
