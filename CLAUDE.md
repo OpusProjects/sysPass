@@ -100,7 +100,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2579 unit** + **580 integration**. The integration suite includes the
+Both pass: **2953 unit** + **719 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -127,12 +127,15 @@ gotchas (the image provides these):
 
 ### Coverage: what is covered, and what deliberately is not
 
-Line coverage is **~94%** (`20921/22342`). Measure it by installing pcov in the container
-(`pecl install pcov && docker-php-ext-enable pcov`), running the suites with
-`--coverage-clover`, and removing the ini again — the image does not ship a coverage driver, and
-leaving one enabled slows every later run.
+Line coverage is **95.4%** (`21368/22399`). Measure it by installing pcov in the container
+(`pecl install pcov && docker-php-ext-enable pcov` — the enable step is separate, and a previous
+session's `pecl install` leaves it *installed but disabled*, so a `pecl list | grep pcov` guard
+skips it and every file reports zero), running both suites with `--coverage-clover`, and removing
+the ini again — the image does not ship a coverage driver, and leaving one enabled slows every
+later run. When merging two clover files, read `//file` by xpath: clover nests files inside
+`<package>` elements, so `$xml->project->file` only ever finds the namespace-less ones.
 
-The remaining ~1400 statements are not a backlog to burn down uniformly. What is left:
+The remaining ~1000 statements are not a backlog to burn down uniformly. What is left:
 
 - **Bootstrap (~90 statements).** `Base.php`, `Definitions/CoreDefinitions.php`, `Adapter/In/Cli/Init.php`,
   `Bootstrap/BootstrapBase.php`. These run *before* the container the tests build — `Base.php` is
@@ -170,11 +173,23 @@ A few harness details bite when writing an integration test against a real branc
 - **Stubbing `ConfigDataInterface` cannot show a save.** A `createConfiguredStub()` does not keep
   what its setters were handed, so a test asserting a controller stored something must pass a real
   `ConfigData` through a stubbed `ConfigFileService` and read it back afterwards.
+- **The harness mints a fresh random user every time it is asked for one.** `getUserDataDto()` calls
+  the generator on each invocation, so a test that has to know who is signed in — anything asserting
+  an ownership check — must override it to memoize, or it will compare against a different user than
+  the one in the container's context.
+- **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
+  drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
+  request happened to be open. Use `numberBetween(1, …)`.
 
-The rest is genuinely reachable, and is a long tail rather than a few large files: ~1250
-statements across **320** files, averaging under four statements each — individual error branches,
+The rest is genuinely reachable, and is a long tail rather than a few large files: ~1000
+statements across **295** files, averaging under four statements each — individual error branches,
 rarely-hit conditionals and unused accessors. Worth picking off when touching the surrounding
 code; not worth a campaign.
+
+Writing the first test for an endpoint has been the most reliable way to find a real defect here:
+the REST user, notification and auth-token endpoints each had one — a credential leak, an
+authorization gap and a create that answered with nothing usable — and none of them had a test
+before. Prefer an untested surface over an uncovered branch in a tested one.
 
 ## Web request flow & DI container
 

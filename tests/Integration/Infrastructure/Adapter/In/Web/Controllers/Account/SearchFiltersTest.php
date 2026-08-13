@@ -38,6 +38,8 @@ use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Context\SessionContext;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\UserPreferences;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\IntegrationTestCase;
@@ -55,6 +57,8 @@ class SearchFiltersTest extends IntegrationTestCase
     private const ACCOUNT_NAME = 'an-account';
 
     private ?AccountSearchFilterDto $savedFilter = null;
+    private ?int                    $resultsPerPageOverride = null;
+    private ?int                    $accountCountOverride = null;
 
     protected function getContext(): SessionContext|Stub
     {
@@ -62,6 +66,31 @@ class SearchFiltersTest extends IntegrationTestCase
         $context->method('getSearchFilters')->willReturn($this->savedFilter);
 
         return $context;
+    }
+
+    protected function getUserDataDto(): UserDto
+    {
+        $userDto = parent::getUserDataDto();
+
+        if ($this->resultsPerPageOverride === null) {
+            return $userDto;
+        }
+
+        $preferences = ($userDto->preferences ?? new UserPreferences())
+            ->mutate(['resultsPerPage' => $this->resultsPerPageOverride]);
+
+        return $userDto->mutate(['preferences' => $preferences]);
+    }
+
+    protected function getConfigData(): array
+    {
+        $data = parent::getConfigData();
+
+        if ($this->accountCountOverride !== null) {
+            $data['getAccountCount'] = $this->accountCountOverride;
+        }
+
+        return $data;
     }
 
     /**
@@ -97,6 +126,35 @@ class SearchFiltersTest extends IntegrationTestCase
         $this->savedFilter = $this->savedFilterFor('the-saved-term');
 
         $this->whenSearchingFor('a-new-term');
+    }
+
+    /**
+     * A user who never set a "results per page" preference is not left with an unbounded (or
+     * zero-row) listing: the page size falls back to the site-wide default. That number is what
+     * actually caps how many accounts show on the page, so it has to be the configured one, not
+     * whatever a zero preference would otherwise produce.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function theListingFallsBackToTheSiteDefaultPageSizeWhenTheUserHasNoPreference()
+    {
+        $this->resultsPerPageOverride = 0;
+        $this->accountCountOverride = 4;
+
+        $this->givenAnAccountToList();
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/index'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        // The pager renders "<first page> / <last page> (<page size>)" — the page size shown to
+        // the user has to be the site default, not a zero-row page.
+        $this->expectOutputRegex('/\d+ \/ \d+ \(4\)/');
     }
 
     /**
