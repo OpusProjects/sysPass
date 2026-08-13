@@ -76,11 +76,58 @@ class ImageTest extends TestCase
         $this->imageUtil->createThumbnail('');
     }
 
+    /**
+     * A source image can decode fine yet still be unusable: an extreme aspect ratio
+     * (e.g. a 1px-wide banner thousands of pixels tall) scales up to a destination canvas
+     * so large that GD itself refuses to allocate it. createThumbnail() must turn that GD
+     * failure into the documented "Unable to create image" error instead of letting it
+     * escape unhandled, or an unusual-but-decodable upload would crash the request instead
+     * of failing gracefully.
+     *
+     * @throws InvalidImageException
+     * @throws SPException
+     */
+    public function testCreateThumbnailWithAnExtremeAspectRatioReportsAnError(): void
+    {
+        // 1px wide, 950,000px tall: scaled to the fixed 48px thumbnail width, the
+        // destination canvas overflows GD's ~2^31 pixel-count ceiling. The height is kept
+        // just under libpng's own ~1,000,000px per-axis limit so the fixture itself can
+        // still be encoded and decoded.
+        $source = imagecreatetruecolor(1, 950000);
+        ob_start();
+        imagepng($source);
+        $image = ob_get_clean();
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Unable to create image');
+
+        // GD reports the allocation failure with a PHP warning (not an exception), and the
+        // production call site does not suppress it; silence it here so the assertion is on
+        // the resulting SPException rather than on that expected warning.
+        @$this->imageUtil->createThumbnail($image);
+    }
+
     public function testConvertText()
     {
         $out = $this->imageUtil->convertText('test');
 
         $this->assertTrue(imagecreatefromstring(base64_decode($out)) instanceof GdImage);
+    }
+
+    /**
+     * convertText()'s canvas width is proportional to the text length, so a caller that
+     * hands it an unexpectedly huge string can overflow GD's pixel-count limit the same way
+     * an extreme image does in createThumbnail(). Unlike createThumbnail(), convertText()
+     * declares no thrown exceptions and must degrade to `false` instead, since callers (e.g.
+     * building an account's fallback avatar) rely on a falsy result rather than a catch.
+     */
+    public function testConvertTextReturnsFalseWhenTheCanvasCannotBeAllocated(): void
+    {
+        // width = strlen($text) * 10 against a fixed 30px height: long enough to push the
+        // canvas past GD's pixel-count ceiling.
+        $text = str_repeat('a', 10_000_000);
+
+        $this->assertFalse($this->imageUtil->convertText($text));
     }
 
     /**
