@@ -31,7 +31,15 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Application\Config\Ports\ConfigFileService;
+use SP\Domain\Common\Providers\Version;
+use SP\Domain\Config\Adapters\ConfigData;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
@@ -119,5 +127,176 @@ class ConfigAccountTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+    }
+
+    /**
+     * A file size over the 16MB cap is refused before anything is persisted — the request
+     * never reaches saveConfig(), so the previously stored settings are left untouched.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function savingWithAnOversizedFileLimitIsRejected()
+    {
+        $configData = $this->newConfigData();
+        $configData->setFilesEnabled(false);
+        $configData->setFilesAllowedSize(1024);
+
+        $container = $this->buildConfigAccountContainer(
+            $configData,
+            ['files_enabled' => true, 'files_allowed_size' => 16385]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"Maximum size per file is 16MB","data":null}'
+        );
+
+        self::assertFalse($configData->isFilesEnabled(), 'the rejected save must not enable files');
+        self::assertSame(1024, $configData->getFilesAllowedSize(), 'the previous limit must be left alone');
+    }
+
+    /**
+     * Submitting the form with the files toggle off, when files were previously enabled,
+     * actually flips the stored flag off and records why — not just an "OK" that leaves the
+     * feature silently enabled underneath.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function disablingFilesTurnsOffTheFlagAndRecordsWhy()
+    {
+        $configData = $this->newConfigData();
+        $configData->setFilesEnabled(true);
+        $configData->setFilesAllowedSize(2048);
+
+        $container = $this->buildConfigAccountContainer($configData, []);
+        $receiver = $this->attachEventRecorder($container);
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+
+        self::assertFalse($configData->isFilesEnabled());
+
+        $events = $this->savedConfigEvents($receiver);
+        self::assertCount(1, $events);
+        self::assertStringContainsString('Files disabled', (string)$events[0]->getEventMessage()?->composeText());
+    }
+
+    /**
+     * The same disable-and-record behaviour applies to public links independently of files.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function disablingPublicLinksTurnsOffTheFlagAndRecordsWhy()
+    {
+        $configData = $this->newConfigData();
+        $configData->setPublinksEnabled(true);
+
+        $container = $this->buildConfigAccountContainer($configData, []);
+        $receiver = $this->attachEventRecorder($container);
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
+
+        self::assertFalse($configData->isPublinksEnabled());
+
+        $events = $this->savedConfigEvents($receiver);
+        self::assertCount(1, $events);
+        self::assertStringContainsString(
+            'Public links disabled',
+            (string)$events[0]->getEventMessage()?->composeText()
+        );
+    }
+
+    /**
+     * A `ConfigData` populated with just enough to satisfy the framework's own bootstrap
+     * checks (installed, not in maintenance, a current app/database version) so the request
+     * reaches the controller instead of being redirected by them.
+     */
+    private function newConfigData(): ConfigData
+    {
+        $configData = new ConfigData();
+        $configData->setInstalled(true);
+        $configData->setMaintenance(false);
+        $configData->setDbName(self::$faker->colorName());
+        $configData->setPasswordSalt($this->passwordSalt);
+        $configData->setAppVersion(Version::getVersionStringNormalized());
+        $configData->setDatabaseVersion(Version::getVersionStringNormalized());
+
+        return $configData;
+    }
+
+    /**
+     * Wires the given, real `ConfigData` instance as the one the controller reads and writes
+     * back into, so a test can assert on it directly after the request runs.
+     *
+     * @param array<string, mixed> $postFields
+     *
+     * @throws Exception
+     */
+    private function buildConfigAccountContainer(ConfigDataInterface $configData, array $postFields): ContainerInterface
+    {
+        $configFileService = self::createStub(ConfigFileService::class);
+        $configFileService->method('getConfigData')->willReturn($configData);
+
+        return $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configAccount/save'], $postFields),
+            [ConfigFileService::class => $configFileService]
+        );
+    }
+
+    /**
+     * Attaches a recorder to the container's real event dispatcher (it is injected as its
+     * concrete, final class, so it cannot be doubled) so a test can check what the controller
+     * notified.
+     */
+    private function attachEventRecorder(ContainerInterface $container): EventReceiver
+    {
+        $eventDispatcher = $container->get(EventDispatcherInterface::class);
+
+        $receiver = new class implements EventReceiver {
+            /** @var Event[] */
+            public array $events = [];
+
+            public function update(Event $event): void
+            {
+                $this->events[] = $event;
+            }
+
+            public function getEvents(): ?string
+            {
+                return '*';
+            }
+        };
+
+        $eventDispatcher->attach($receiver);
+
+        return $receiver;
+    }
+
+    /**
+     * @param EventReceiver&object{events: Event[]} $receiver
+     *
+     * @return Event[]
+     */
+    private function savedConfigEvents(EventReceiver $receiver): array
+    {
+        return array_values(
+            array_filter(
+                $receiver->events,
+                static fn(Event $event): bool => $event->getName() === 'save.config.account'
+            )
+        );
     }
 }

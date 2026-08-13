@@ -44,6 +44,13 @@ use function SP\Tests\getResource;
 #[InjectVault]
 class ConfigImportTest extends IntegrationTestCase
 {
+    private bool $demoEnabled = false;
+
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isDemoEnabled' => $this->demoEnabled]);
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
@@ -155,5 +162,176 @@ class ConfigImportTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputRegex('/\{"status":"ERROR","description":"File does not exist"/');
+    }
+
+    /**
+     * The demo instance refuses the import outright, before the upload is even inspected.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function importIsRefusedOnADemoInstance()
+    {
+        $this->demoEnabled = true;
+
+        $file = sprintf('%s.csv', self::$faker->filePath());
+
+        file_put_contents($file, getResource('import', 'data.csv'));
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/plain'
+            ]
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configImport/import'],
+                ['csvDelimiter' => ';'],
+                $files
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"WARNING","description":"Ey, this is a DEMO!!","data":null}'
+        );
+    }
+
+    /**
+     * A file whose real content is not one of the supported types (sniffed from its bytes, not
+     * its extension or the client-supplied Content-Type) is refused rather than misread as CSV
+     * or XML.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function aFileOfAnUnsupportedTypeIsRefused()
+    {
+        $file = sprintf('%s.csv', self::$faker->filePath());
+
+        // A GIF signature: mime_content_type() sniffs actual bytes, so this is genuinely
+        // detected as image/gif rather than merely mislabeled by name or extension.
+        file_put_contents($file, 'GIF89a' . str_repeat("\0", 20));
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/plain'
+            ]
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configImport/import'],
+                ['csvDelimiter' => ';'],
+                $files
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/\{"status":"ERROR","description":"Mime type not supported/');
+    }
+
+    /**
+     * An encrypted sysPass export refuses to import with the wrong password: the file carries a
+     * hash of its real password, checked before anything is decrypted, so a caller cannot fish
+     * for the right one by reading account data back out of a near-miss.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function aWrongImportPasswordIsRefused()
+    {
+        $file = sprintf('%s.xml', self::$faker->filePath());
+
+        file_put_contents($file, getResource('import', 'data_syspass_encrypted.xml'));
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/xml'
+            ]
+        ];
+
+        $data = [
+            'importPwd' => 'definitely-the-wrong-password',
+            'csvDelimiter' => ';',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"Wrong encryption password","data":null}'
+        );
+    }
+
+    /**
+     * The import can run to completion and still add nothing: every CSV row here is missing its
+     * client/category, so each is skipped individually (as its own caught, logged error) rather
+     * than aborting the whole file, and the run ends by reporting nothing was imported instead of
+     * a false "Import finished".
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function noAccountsImportedIsReportedWhenEveryRowFails()
+    {
+        $file = sprintf('%s.csv', self::$faker->filePath());
+
+        // 7 fields (matches CsvImport::NUM_FIELDS) but client and category are both blank,
+        // so CsvImport::processAccounts() catches an exception for the row and moves on.
+        file_put_contents($file, '"Broken account";"";"";"http://test.me";"login";"pass";"notes"' . "\n");
+
+        $files = [
+            'inFile' => [
+                'name' => self::$faker->name(),
+                'tmp_name' => $file,
+                'size' => filesize($file),
+                'type' => 'text/plain'
+            ]
+        ];
+
+        $data = [
+            'import_defaultuser' => self::$faker->randomNumber(3),
+            'import_defaultgroup' => self::$faker->randomNumber(3),
+            'csvDelimiter' => ';',
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configImport/import'], $data, $files)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"WARNING","description":"No accounts were imported",'
+            . '"data":"Please check out the event log for more details"}'
+        );
     }
 }

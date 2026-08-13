@@ -36,9 +36,13 @@ use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Common\Models\Simple;
+use SP\Domain\Core\Events\Event;
+use SP\Domain\Core\Events\EventDispatcherInterface;
+use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Vault;
 use SP\Infrastructure\Crypt\Crypt;
+use SP\Infrastructure\Events\EventDispatcher;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\PublicLinkDataGenerator;
@@ -58,6 +62,120 @@ use SP\Tests\Support\IntegrationTestCase;
 class ViewLinkRefusalsTest extends IntegrationTestCase
 {
     private const ACCOUNT_NAME = 'a-shared-account';
+
+    private bool $publinksImageEnabled = false;
+    private bool $demoEnabled = false;
+
+    protected function getConfigData(): array
+    {
+        return array_merge(
+            parent::getConfigData(),
+            [
+                'isPublinksImageEnabled' => $this->publinksImageEnabled,
+                'isDemoEnabled' => $this->demoEnabled,
+            ]
+        );
+    }
+
+    /**
+     * A hash that was never issued is not the same as one that expired: no PublicLink mapper
+     * resolver is registered, so the lookup sees 0 rows exactly as it would for an id nobody
+     * ever created, and PublicLinkService::getByHash() throws NoSuchItemException("Link not
+     * found") rather than returning a model to check the expiry/count limits against.
+     *
+     * That exception is never caught inside ViewLinkController, so it reaches Bootstrap's
+     * generic Throwable handler — which still renders through the action's own PLAIN_TEXT
+     * response type (Bootstrap.php buildResponse(), used on both the normal and the error path).
+     * The result is the bare string "Link not found", not the rendered "You don't have
+     * permission..." HTML page an expired or exhausted link answers with. A caller can therefore
+     * tell "this hash never existed" apart from "this hash existed but is no longer valid" by
+     * response shape alone, even without ever seeing account data.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aLinkThatWasNeverIssuedAnswersDifferentlyFromAnExpiredOne()
+    {
+        $this->whenFollowingTheLink();
+
+        $this->expectOutputString('Link not found');
+    }
+
+    /**
+     * When the config enables rendering the password as an image, a still-valid link's response
+     * carries the base64 PNG the template embeds instead of the plain password field.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerImage')]
+    public function aValidLinkRendersThePasswordAsAnImageWhenConfigured()
+    {
+        $this->publinksImageEnabled = true;
+
+        $this->givenALink(['dateExpire' => time() + 100, 'maxCountViews' => 3, 'countViews' => 0]);
+
+        $this->whenFollowingTheLink();
+    }
+
+    /**
+     * On a demo instance, the viewer's address is masked before it reaches the audit event
+     * ("show.account.link") rather than recording the real one — the same masking
+     * ViewLinkController applies is asserted here directly on the event, since the address
+     * itself is never part of the rendered page.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws CryptException
+     * @throws EnvironmentIsBrokenException
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerIgnored')]
+    public function aValidLinkMasksTheViewerAddressInTheAuditEventOnADemoInstance()
+    {
+        $this->demoEnabled = true;
+
+        $this->givenALink(['dateExpire' => time() + 100, 'maxCountViews' => 3, 'countViews' => 0]);
+
+        $recordedEvents = [];
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->attach(
+            new class ($recordedEvents) implements EventReceiver {
+                /**
+                 * @param Event[] $recorded
+                 */
+                public function __construct(private array &$recorded)
+                {
+                }
+
+                public function update(Event $event): void
+                {
+                    $this->recorded[] = $event;
+                }
+
+                public function getEvents(): ?string
+                {
+                    return '*';
+                }
+            }
+        );
+
+        $this->whenFollowingTheLink([EventDispatcherInterface::class => $eventDispatcher]);
+
+        $linkViewed = array_values(
+            array_filter($recordedEvents, static fn(Event $event) => $event->getName() === 'show.account.link')
+        );
+
+        self::assertNotEmpty($linkViewed, 'the link-viewed audit event must fire for a valid link');
+        self::assertStringContainsString('***', (string)$linkViewed[0]->getEventMessage()?->composeText());
+    }
 
     /**
      * A link past its expiry date shows the refusal page instead of the account.
@@ -151,14 +269,17 @@ class ViewLinkRefusalsTest extends IntegrationTestCase
     }
 
     /**
+     * @param array<string, mixed> $definitionsOverride
+     *
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
-    private function whenFollowingTheLink(): void
+    private function whenFollowingTheLink(array $definitionsOverride = []): void
     {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()])
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/viewLink/' . self::$faker->sha1()]),
+            $definitionsOverride
         );
 
         IntegrationTestCase::runApp($container);
@@ -178,5 +299,24 @@ class ViewLinkRefusalsTest extends IntegrationTestCase
     {
         self::assertStringContainsString(self::ACCOUNT_NAME, $output);
         self::assertStringNotContainsString('You don\'t have permission to access this page', $output);
+    }
+
+    /**
+     * The image markup replaces the plain password field entirely, rather than both appearing.
+     */
+    private function outputCheckerImage(string $output): void
+    {
+        self::assertStringContainsString('account-pass-image', $output);
+        self::assertStringContainsString('data:image/png;base64,', $output);
+        self::assertStringNotContainsString('id="password"', $output);
+    }
+
+    /**
+     * The rendered page is irrelevant to this test — it only asserts on the audit event — but
+     * the body still has to be consumed via a checker rather than left to print to the console.
+     */
+    private function outputCheckerIgnored(string $output): void
+    {
+        self::assertNotEmpty($output);
     }
 }
