@@ -144,7 +144,14 @@ final class UserGroup extends Service implements UserGroupService
     {
         $this->userGroupRepository->transactionAware(
             function () use ($userGroup) {
-                $this->userGroupRepository->update($userGroup);
+                // An update whose WHERE matched nothing has not updated anything, and answering
+                // the caller with success for it reports an edit of something that has since been
+                // deleted as saved. The repository already counts the rows; this is the check
+                // UserProfile's own update() has always made. Inside the transaction, so the
+                // members are not written either.
+                if ($this->userGroupRepository->update($userGroup) === 0) {
+                    throw ServiceException::error(__u('Error while updating the group'));
+                }
 
                 $users = $userGroup->getUsers();
 

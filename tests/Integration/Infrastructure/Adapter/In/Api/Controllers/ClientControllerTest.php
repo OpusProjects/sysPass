@@ -148,6 +148,10 @@ class ClientControllerTest extends ApiTestCase
         $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
+    /**
+     * An edit whose id matches nothing is reported as the failure it is, rather than answered with
+     * a success for an update that touched no rows.
+     */
     public function testEditActionNonExistant(): void
     {
         $params = [
@@ -158,8 +162,8 @@ class ClientControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::CLIENT_EDIT, $params);
 
-        $this->assertSame(200, $r->status);
-        $this->assertSame('Client updated', $r->body->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Error while updating the client', $r->body->error->message);
     }
 
     #[DataProvider('searchProvider')]

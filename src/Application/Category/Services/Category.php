@@ -153,7 +153,13 @@ final class Category extends Service implements CategoryService
      */
     public function update(CategoryModel $category): void
     {
-        $this->categoryRepository->update($category);
+        // An update whose WHERE matched nothing has not updated anything, and answering the
+        // caller with success for it means an edit of something that has since been deleted is
+        // reported as saved. The repository already counts the rows; this is the check
+        // UserProfile's own update() has always made.
+        if ($this->categoryRepository->update($category) === 0) {
+            throw ServiceException::error(__u('Error while updating the category'));
+        }
     }
 
     /**

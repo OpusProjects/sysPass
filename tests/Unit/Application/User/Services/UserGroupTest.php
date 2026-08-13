@@ -149,7 +149,8 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroupRepository
             ->expects($this->once())
             ->method('update')
-            ->with($userGroup);
+            ->with($userGroup)
+            ->willReturn(1);
 
         $this->userToUserGroupService
             ->expects($this->once())
@@ -169,11 +170,37 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroupRepository
             ->expects($this->once())
             ->method('update')
-            ->with($userGroup);
+            ->with($userGroup)
+            ->willReturn(1);
 
         $this->userToUserGroupService
             ->expects($this->never())
             ->method('update');
+
+        $this->userGroup->update($userGroup);
+    }
+
+    /**
+     * A group that is no longer there cannot be edited, and saying so beats reporting a save that
+     * touched nothing — the members are not written either, since the whole thing is one
+     * transaction.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateOfAGroupThatIsNotThereIsReported()
+    {
+        $userGroup = UserGroupGenerator::factory()->buildUserGroupData();
+
+        $this->userGroupRepository
+            ->expects($this->once())
+            ->method('update')
+            ->with($userGroup)
+            ->willReturn(0);
+
+        $this->userToUserGroupService->expects($this->never())->method('update');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while updating the group');
 
         $this->userGroup->update($userGroup);
     }
