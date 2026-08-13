@@ -77,8 +77,6 @@ final class BackupFile extends Service implements BackupFileService
         set_time_limit(0);
 
         try {
-            $this->deleteOldBackups($backupPath);
-
             $this->eventDispatcher->notify(new Event('run.backup.start', $this, EventMessage::build()->addDescription(__u('Make Backup'))));
 
             $configData = $this->config->getConfigData();
@@ -92,6 +90,11 @@ final class BackupFile extends Service implements BackupFileService
             $this->backupApp($applicationPath, $handlers);
 
             $this->config->save($configData->setBackupHash($hash));
+
+            // Only once this run's archives exist. Deleting first meant a backup that failed
+            // part-way — an unreadable table, a full disk, a directory it could not archive —
+            // took the previous backup with it and left the installation with none at all.
+            $this->deleteOldBackups($backupPath, $hash);
         } catch (Exception $e) {
             $this->eventDispatcher->notify(new Event('exception', $e));
 
@@ -107,10 +110,13 @@ final class BackupFile extends Service implements BackupFileService
     /**
      * Delete the previous backups
      */
-    private function deleteOldBackups(string $backupPath): void
+    private function deleteOldBackups(string $backupPath, string $keepHash): void
     {
-        FileSystem::deleteByPattern(
+        FileSystem::deleteByPatternExcept(
             $backupPath,
+            // This run's own archives are named with its hash, whatever extension the archive
+            // handler settled on.
+            static fn(string $file) => str_contains($file, $keepHash),
             AppInfoInterface::APP_NAME . '_db-*',
             AppInfoInterface::APP_NAME . '_app-*',
             AppInfoInterface::APP_NAME . '*.sql',

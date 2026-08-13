@@ -117,9 +117,25 @@ class FileSystem
      */
     public static function deleteByPattern(string $path, string...$patterns): void
     {
+        self::deleteByPatternExcept($path, static fn() => false, ...$patterns);
+    }
+
+    /**
+     * Delete everything matching the patterns except what the caller wants kept — for replacing a
+     * previous artefact once its replacement exists, without deleting the replacement too.
+     *
+     * @param callable(string): bool $keep
+     */
+    public static function deleteByPatternExcept(string $path, callable $keep, string...$patterns): void
+    {
         array_map(
             static fn(string $file) => @unlink($file),
-            array_merge(...array_map(static fn(string $pattern) => glob(self::buildPath($path, $pattern)), $patterns))
+            array_filter(
+                array_merge(
+                    ...array_map(static fn(string $pattern) => glob(self::buildPath($path, $pattern)), $patterns)
+                ),
+                static fn(string $file) => !$keep($file)
+            )
         );
     }
 
