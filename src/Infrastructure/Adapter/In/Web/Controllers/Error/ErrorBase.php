@@ -24,12 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Error;
 
-use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\LayoutHelper;
 use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
-
-use function SP\processException;
-use function SP\__;
 
 /**
  * Class ErrorBase
@@ -49,21 +45,5 @@ abstract class ErrorBase
     {
         $this->view = $template;
         $this->layoutHelper = $layoutHelper;
-    }
-
-    /**
-     * Display the template data
-     */
-    final protected function view(): void
-    {
-        try {
-            echo $this->view->render();
-        } catch (FileNotFoundException $e) {
-            processException($e);
-
-            echo __($e->getMessage());
-        }
-
-        die();
     }
 }
