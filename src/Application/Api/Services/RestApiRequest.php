@@ -78,10 +78,16 @@ final class RestApiRequest implements ApiRequestService
             }
         }
 
-        // Authorization: Bearer <token>
+        // Authorization: Bearer <token> — the only source.
         $authHeader = $request->headers->get('Authorization', '');
+
         if (preg_match('/^Bearer\s+(.+)$/i', $authHeader, $matches)) {
             $params['authToken'] = $matches[1];
+        } else {
+            // Dropped rather than left alone: a caller can put an authToken in the query string
+            // or the body, and leaving theirs in place when the header is absent or malformed
+            // made the token something other than header-sourced, whatever this class says.
+            unset($params['authToken']);
         }
 
         $restRequest->data = new ApiRequestData($params);
