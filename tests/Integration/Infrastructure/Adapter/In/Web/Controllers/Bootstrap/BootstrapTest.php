@@ -158,6 +158,47 @@ class BootstrapTest extends IntegrationTestCase
     }
 
     /**
+     * A JSON action that throws answers with the message and nothing else. The trace used to be
+     * handed to the response as its data, which a JSON action serialises straight to the browser:
+     * every frame's file, class and function, and — wherever the platform is configured to keep
+     * them — the arguments each was called with. In a password manager those arguments are the
+     * worst possible thing to put in an error page.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function anExceptionInAJsonActionDoesNotCarryTheStackTrace(): void
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): never {
+            throw new RuntimeException('category lookup failed');
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'category/search'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $response = $container->get(ResponseService::class)->getResponse();
+        $body = $response->getContent();
+
+        self::assertSame(500, $response->getStatusCode());
+
+        $json = json_decode($body);
+
+        self::assertEquals('ERROR', $json->status);
+        self::assertSame('category lookup failed', $json->description);
+        self::assertEmpty($json->data, 'the response carries no trace');
+
+        // Belt and braces: whatever shape a trace took, it would name this file and the framework
+        // path it ran from.
+        self::assertStringNotContainsString('/var/www/html', $body);
+        self::assertStringNotContainsString('Bootstrap.php', $body);
+    }
+
+    /**
      * Maintenance mode is one of Init's guards that already sends its own redirect before throwing
      * (so the browser lands on the maintenance page rather than nothing), and the exception it
      * throws to stop the request is caught by the very same handler the test above exercises. The

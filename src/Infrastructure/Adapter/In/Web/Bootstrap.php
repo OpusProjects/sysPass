@@ -135,11 +135,13 @@ final class Bootstrap extends BootstrapBase
                 // A handler (e.g. Init's not-installed/maintenance redirect) may have already
                 // sent the response; don't overwrite that 3xx with a 500 error page.
                 if (!$response->isSent()) {
-                    $this->buildResponse(
-                        $method,
-                        ActionResponse::error($e->getMessage(), $e->getTrace()),
-                        $response
-                    );
+                    // The message only. The trace used to be passed as the response's data, and a
+                    // JSON action serialises that straight to the browser — server paths, the
+                    // internal call graph, and the arguments each frame was called with wherever
+                    // the platform keeps them. processException() has already written it to the
+                    // log, which is where it belongs; the API entry point has only ever sent the
+                    // message.
+                    $this->buildResponse($method, ActionResponse::error($e->getMessage()), $response);
 
                     $response->code(Code::INTERNAL_SERVER_ERROR->value);
                 }
