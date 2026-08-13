@@ -77,6 +77,35 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
+     * An empty search text skips the tokenizer entirely: no advanced filter, no condition and no
+     * text-search value is ever set on the repository, which is handed the filter dto as-is.
+     */
+    public function testGetByFilterWithoutASearchTextSkipsAllFiltering()
+    {
+        $accountSearchFilter = AccountSearchFilterDto::build('');
+        $queryResult = new QueryResult();
+
+        $this->accountSearchRepository
+            ->expects(self::once())
+            ->method('getByFilter')
+            ->with($accountSearchFilter)
+            ->willReturn($queryResult);
+
+        $this->accountSearchRepository->expects(self::never())->method('withFilterForUser');
+        $this->accountSearchRepository->expects(self::never())->method('withFilterForOwner');
+        $this->accountSearchRepository->expects(self::never())->method('withFilterForGroup');
+        $this->accountSearchRepository->expects(self::never())->method('withFilterForIsExpired');
+        $this->accountSearchRepository->expects(self::never())->method('withFilterForIsPrivate');
+
+        $out = $this->accountSearch->getByFilter($accountSearchFilter);
+
+        $this->assertSame($queryResult, $out);
+        // Never tokenized, so the "clean" search text used for the free-text WHERE clause was
+        // never set either.
+        $this->assertNull($accountSearchFilter->getCleanTxtSearch());
+    }
+
+    /**
      * @param string $search
      * @param array $expected
      */
