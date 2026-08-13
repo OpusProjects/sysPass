@@ -52,6 +52,7 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__;
 use function SP\__u;
+use function SP\logger;
 
 /**
  * Class ViewLinkController
@@ -82,16 +83,26 @@ final class ViewLinkController extends AccountControllerBase
      * @throws CryptException
      * @throws QueryException
      * @throws SPException
-     * @throws NoSuchItemException
      */
     #[Action(ResponseType::PLAIN_TEXT)]
     public function viewLinkAction(string $hash): ActionResponse
     {
         $this->layoutHelper->getPublicLayout('account-link', 'account');
 
-        $publicLink = $this->publicLinkService->getByHash($hash);
+        // A hash nobody ever issued is answered exactly like one that has expired or been used
+        // up. Letting the not-found exception out instead produced a different response for the
+        // two — a bare error string rather than this page — which told whoever was holding the
+        // hash whether it had ever been real.
+        $publicLink = null;
 
-        if (time() < $publicLink->getDateExpire()
+        try {
+            $publicLink = $this->publicLinkService->getByHash($hash);
+        } catch (NoSuchItemException) {
+            logger(sprintf('Public link not found: %s', $hash));
+        }
+
+        if ($publicLink !== null
+            && time() < $publicLink->getDateExpire()
             && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
         ) {
             $this->publicLinkService->addLinkView($publicLink);
