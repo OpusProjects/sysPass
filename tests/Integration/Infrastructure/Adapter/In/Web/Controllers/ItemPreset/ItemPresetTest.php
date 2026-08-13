@@ -37,6 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
@@ -68,6 +69,69 @@ class ItemPresetTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * Creating is gated on its own permission, checked before the form is even read.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function createDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'itemPreset/create/' . ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT]
+            ),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * Building the create form loads the users/groups/profiles pickers before rendering; a
+     * database failure there must be reported as an error rather than surface as an unhandled
+     * exception — this is the controller's own generic catch(Exception).
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function createFailsWhenLoadingUsersErrors()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if ($queryData->getMapClassName() === UserModel::class) {
+                throw ConstraintException::error('Unable to load the users');
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                ['r' => 'itemPreset/create/' . ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Unable to load the users","data":null}');
     }
 
     /**

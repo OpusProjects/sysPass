@@ -32,6 +32,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\CustomField\Models\CustomFieldDefinitionList;
 use SP\Infrastructure\Database\QueryData;
@@ -123,6 +125,52 @@ class CustomFieldTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * Viewing is gated on its own permission, checked before the definition is even read.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function viewDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/view/100']),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * Mirrors editNotFound above: viewing a definition id that no longer exists must fail with
+     * a clear message instead of rendering a view around an empty/default definition.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function viewNotFound()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/view/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field not found","data":null}');
     }
 
     /**
@@ -358,6 +406,73 @@ class CustomFieldTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"ERROR","description":"Field module not set","data":null}');
+    }
+
+    /**
+     * Creating is gated on its own permission, checked before the form is even read.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveCreate'],
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+            ),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
+    }
+
+    /**
+     * A database failure while creating must be reported as an error rather than surfaced as
+     * an unhandled exception — this is the controller's own generic catch(Exception), distinct
+     * from the ValidationException branch the missing-field tests above exercise.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateFailsWhenTheInsertQueryErrors()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'INSERT')) {
+                throw ConstraintException::error('Unable to create the field');
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveCreate'],
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Unable to create the field","data":null}');
     }
 
     /**
