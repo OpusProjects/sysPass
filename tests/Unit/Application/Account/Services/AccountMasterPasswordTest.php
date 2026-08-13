@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use RuntimeException;
 use SP\Domain\Account\Dtos\EncryptedPassword;
+use SP\Domain\Account\Models\AccountHistory;
 use SP\Application\Account\Ports\AccountCryptService;
 use SP\Application\Account\Ports\AccountHistoryService;
 use SP\Application\Account\Ports\AccountService;
@@ -173,6 +174,34 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
+     * sysPass ships a public demo mode; a visitor there can drive the master-password-change flow,
+     * but it must not actually touch the database — otherwise one demo visitor could re-key (and
+     * effectively lock) every other visitor's accounts. Demo mode has to make rotation a pure
+     * no-op: every account is reported OK without ever being decrypted or re-encrypted.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateMasterPasswordDoesNotTouchAccountsInDemoMode(): void
+    {
+        $this->config->getConfigData()->setDemoEnabled(true);
+
+        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 4));
+
+        $this->account->expects(self::once())
+                      ->method('getAccountsPassData')
+                      ->willReturn($accountData);
+        $this->crypt->expects(self::never())
+                    ->method('decrypt');
+        $this->accountCrypt->expects(self::never())
+                           ->method('getPasswordEncrypted');
+        $this->account->expects(self::never())
+                      ->method('updatePasswordMasterPass');
+
+        $this->accountMasterPassword->updateMasterPassword($request);
+    }
+
+    /**
      * @throws ServiceException
      */
     public function testUpdateMasterPasswordThrowException(): void
@@ -254,6 +283,41 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
+     * AccountHistory.mPassHash records which master password a row is currently encrypted under.
+     * A row whose hash doesn't match the one being rotated away from (e.g. left over from an
+     * earlier, aborted rotation) is skipped rather than decrypted with the wrong key — decrypting
+     * it under the current master pass would produce garbage, not the real password. Skipping it
+     * is also not counted as an error, so a rotation full of such rows still completes rather than
+     * aborting.
+     *
+     * @throws ServiceException
+     */
+    public function testUpdateHistoryMasterPasswordSkipsARowWhoseHashDoesNotMatch(): void
+    {
+        $request = new UpdateMasterPassRequest(
+            self::$faker->password(),
+            self::$faker->password(),
+            'the-current-master-pass-hash'
+        );
+
+        $mismatched = AccountDataGenerator::factory()
+                                           ->buildAccountHistoryData()
+                                           ->mutate(['mPassHash' => 'a-different-master-pass-hash']);
+
+        $this->accountHistory->expects(self::once())
+                             ->method('getAccountsPassData')
+                             ->willReturn([$mismatched]);
+        $this->crypt->expects(self::never())
+                    ->method('decrypt');
+        $this->accountCrypt->expects(self::never())
+                           ->method('getPasswordEncrypted');
+        $this->accountHistory->expects(self::never())
+                             ->method('updatePasswordMasterPass');
+
+        $this->accountMasterPassword->updateHistoryMasterPassword($request);
+    }
+
+    /**
      * @throws ServiceException
      */
     public function testUpdateHistoryMasterPasswordWithNoAccounts(): void
@@ -319,6 +383,34 @@ class AccountMasterPasswordTest extends UnitaryTestCase
         $this->expectExceptionMessageMatches('/could not be re-encrypted/');
 
         $this->accountMasterPassword->updateHistoryMasterPassword($request);
+    }
+
+    /**
+     * processAccounts() reports this estimate to the log every 100 accounts during a live
+     * rotation, which can run across tens of thousands of accounts — it is how an operator judges
+     * whether a rotation is going to take seconds or hours. With items already processed and a
+     * non-zero total, the estimate has to come from the actual elapsed-time/throughput math, not
+     * from the "nothing processed yet" fallback (which always reports zero).
+     */
+    public function testGetETAEstimatesFromElapsedTimeAndThroughput(): void
+    {
+        [$eta, $rate] = AccountMasterPassword::getETA(time(), 5, 10);
+
+        self::assertIsInt($eta);
+        self::assertGreaterThanOrEqual(0, $eta);
+        // Only the "nothing processed yet" branch can ever report a zero rate; 5 of 10 items
+        // processed must come out strictly positive, proving the elapsed-time branch ran.
+        self::assertGreaterThan(0, $rate);
+    }
+
+    /**
+     * With nothing processed yet (or nothing to process), there is no throughput to measure —
+     * the estimate must be reported as zero rather than dividing by zero or extrapolating from
+     * no data.
+     */
+    public function testGetETAWithNothingProcessedYetReturnsZero(): void
+    {
+        self::assertSame([0, 0], AccountMasterPassword::getETA(time(), 0, 10));
     }
 
     protected function setUp(): void

@@ -40,6 +40,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\UnitaryTestCase;
+use Error;
 use TypeError;
 use ValueError;
 
@@ -86,6 +87,23 @@ class DtoTest extends UnitaryTestCase
         $mutated = (new DtoTestSubject(1, 'first', 'kept'))->mutate(['nonexistent' => 'x']);
 
         self::assertSame('first', $mutated->name);
+    }
+
+    /**
+     * mutate() rebuilds through reflection's newInstanceArgs(), which — unlike a plain `new` —
+     * requires the constructor to be public; it isn't a runtime possibility for any real Dto in
+     * the app (every constructor is public), but the fallback exists as a defensive path. Pinning
+     * it shows that a Dto that somehow can't be reflected into fails hard (an uncaught Error)
+     * rather than the copy silently coming back null or half-built.
+     *
+     * @throws SPException
+     */
+    #[Test]
+    public function mutatingFailsHardWhenTheConstructorIsNotPublic()
+    {
+        $this->expectException(Error::class);
+
+        PrivateConstructorDtoTestSubject::create(1)->mutate(['id' => 2]);
     }
 
     #[Test]
@@ -175,6 +193,38 @@ class DtoTest extends UnitaryTestCase
         $this->expectExceptionMessage('Cannot mutate a class without a constructor');
 
         ConstructorlessDtoTestSubject::fromArray(['whatever' => 1]);
+    }
+
+    /**
+     * Same reflection limitation as mutate(): fromArray() also falls back to a bare `new static()`
+     * when newInstanceArgs() can't reach a non-public constructor, and that fallback fails just as
+     * hard, for the same visibility reason.
+     *
+     * @throws SPException
+     */
+    #[Test]
+    public function buildingFromAnArrayFailsHardWhenTheConstructorIsNotPublic()
+    {
+        $this->expectException(Error::class);
+
+        PrivateConstructorDtoTestSubject::fromArray(['id' => 1]);
+    }
+
+    /**
+     * setBatch() is declared on the Dto interface and implemented here, but nothing in the
+     * application calls it (confirmed by grep across src/ and tests/) — and this is why: it hands
+     * the whole properties array to the constructor as a single positional argument
+     * (`new static($array)`), not spread as named arguments. Every real Dto in the app takes
+     * individual named/typed constructor parameters (scalars, or in one case a single strongly
+     * typed object), so an array in that first slot is a guaranteed TypeError, not a working build
+     * path. This documents that reality rather than pretending the method has a usable call shape.
+     */
+    #[Test]
+    public function setBatchCannotBuildADtoWithNamedConstructorParameters()
+    {
+        $this->expectException(TypeError::class);
+
+        (new DtoTestSubject(1, 'first', 'kept'))->setBatch(['id', 'name', 'note'], [2, 'second', 'changed']);
     }
 
     /**
@@ -285,4 +335,26 @@ final class DtoTestSubject extends Dto
  */
 final class ConstructorlessDtoTestSubject extends Dto
 {
+}
+
+/**
+ * A non-public constructor is not something any real Dto in the app has (they are all built via
+ * fromArray()/fromModel()/mutate(), which need reflection to reach the constructor), but it is
+ * exactly the shape that makes ReflectionClass::newInstanceArgs() refuse to instantiate — so this
+ * fixture exercises fromArray()'s and mutate()'s reflection-failure fallback. create() is test-only
+ * scaffolding to obtain an instance without going through the very reflection path being tested.
+ *
+ * @see DtoTest::buildingFromAnArrayFailsHardWhenTheConstructorIsNotPublic()
+ * @see DtoTest::mutatingFailsHardWhenTheConstructorIsNotPublic()
+ */
+final class PrivateConstructorDtoTestSubject extends Dto
+{
+    private function __construct(public readonly int $id)
+    {
+    }
+
+    public static function create(int $id): self
+    {
+        return new self($id);
+    }
 }
