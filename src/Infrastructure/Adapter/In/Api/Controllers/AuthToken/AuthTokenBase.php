@@ -30,4 +30,16 @@ abstract class AuthTokenBase extends ControllerBase
         parent::__construct($application, $router, $apiService, $acl);
         $this->authTokenService = $authTokenService;
     }
+
+    /**
+     * A row from a listing, without the secrets on it. The permission to search authorisations is
+     * coarser than the permission to view one: a caller holding only the first would otherwise
+     * harvest every bearer token in the installation in a single call.
+     *
+     * @return array<string, mixed>
+     */
+    protected static function withoutSecrets(AuthTokenModel $authToken): array
+    {
+        return $authToken->toArray(null, AuthTokenModel::SECRET_COLS, true);
+    }
 }

@@ -24,7 +24,11 @@ final class CreateController extends AuthTokenBase
         ]);
 
         $id = $this->authTokenService->create($tokenData);
-        $tokenData = $tokenData->mutate(['id' => $id]);
+
+        // The token is generated inside the service and only exists on the stored row, so the
+        // request model the caller sent back would carry a null one. Creating a token a caller
+        // cannot read is creating nothing: this is the one moment it is theirs to see.
+        $tokenData = $this->authTokenService->getById($id);
 
         $this->eventDispatcher->notify(new Event(
             'create.authToken',

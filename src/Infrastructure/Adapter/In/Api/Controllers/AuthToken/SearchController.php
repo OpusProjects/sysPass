@@ -22,7 +22,10 @@ final class SearchController extends AuthTokenBase
         $this->eventDispatcher->notify(new Event('search.authToken', $this));
 
         return ApiResponse::makeSuccess(
-            $this->authTokenService->search($itemSearchData)->getDataAsArray()
+            array_map(
+                self::withoutSecrets(...),
+                $this->authTokenService->search($itemSearchData)->getDataAsArray()
+            )
         );
     }
 }
