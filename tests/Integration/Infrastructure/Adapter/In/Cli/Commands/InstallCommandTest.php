@@ -33,6 +33,7 @@ use SP\Domain\Database\DatabaseException;
 use SP\Infrastructure\Adapter\In\Cli\Commands\InstallCommand;
 use SP\Tests\Support\DatabaseUtil;
 use SP\Tests\Integration\Infrastructure\Adapter\In\Cli\CliTestCase;
+use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * End-to-end test of the CLI installer against a real database.
@@ -94,6 +95,55 @@ class InstallCommandTest extends CliTestCase
     }
 
     /**
+     * checkForceInstall() only consults configData->isInstalled(); every other test
+     * in this class runs against a config that starts fresh (never installed), so
+     * this refusal has never seen a config that says otherwise. Install for real
+     * once, then try again without --forceInstall against the SAME container the
+     * first install just wrote its config into.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     * @throws DatabaseException
+     */
+    public function testInstallAlreadyInstalledIsRefused(): void
+    {
+        $inputData = array_merge(
+            self::$commandInputData,
+            [
+                'databaseHost' => getenv('DB_SERVER'),
+                'databaseUser' => getenv('DB_USER'),
+                '--databasePassword' => getenv('DB_PASS'),
+                '--forceInstall' => null,
+            ]
+        );
+
+        $firstRun = $this->executeCommandTest(InstallCommand::class, $inputData);
+        $this->assertStringContainsString('Installation finished', $firstRun->getDisplay());
+
+        // CommandBase snapshots configData in its constructor, and
+        // executeCommandTest() resolves the command through the container's cached
+        // singleton — which would still hold the pre-install "not installed"
+        // snapshot taken before the run above. A real second CLI invocation is
+        // always a brand new process (and container); make() (bypassing the cache,
+        // unlike get()) gets a fresh instance that picks up the just-written config,
+        // simulating that.
+        unset($inputData['--forceInstall']);
+        $secondCommandTester = new CommandTester(self::$dic->make(InstallCommand::class));
+        $secondCommandTester->execute($inputData, ['interactive' => false]);
+
+        $this->assertStringContainsString(
+            "sysPass is already installed. Use '--forceInstall' to install it again.",
+            $secondCommandTester->getDisplay()
+        );
+
+        $configData = self::$dic->get(ConfigFileService::class)->getConfigData();
+
+        // Cleanup database and the DB user created by the first (real) install
+        DatabaseUtil::dropDatabase(self::$commandInputData['databaseName']);
+        self::dropTestUser((string)$configData->getDbUser());
+    }
+
+    /**
      * @throws DependencyException
      * @throws NotFoundException
      */
@@ -133,6 +183,81 @@ class InstallCommandTest extends CliTestCase
         // the output of the command in the console
         $output = $commandTester->getDisplay();
         $this->assertStringContainsString('Master password cannot be blank', $output);
+    }
+
+    /**
+     * getAdminPassword()/getMasterPassword() only catch a BLANK password before the
+     * installer ever runs; every other still-blank field (starting with the admin
+     * login) is validated by a second, independent layer — Installer::checkData() —
+     * which throws InvalidArgumentException, a different exception type with its own
+     * catch block in the command. Omitting the optional adminLogin argument reaches
+     * that layer without needing a real database (checkData() runs before any
+     * connection is attempted).
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testInstallMissingAdminLoginIsRejected(): void
+    {
+        $inputData = self::$commandInputData;
+        unset($inputData['adminLogin']);
+
+        $commandTester = $this->executeCommandTest(InstallCommand::class, $inputData);
+
+        // the output of the command in the console
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Please, enter the admin username', $output);
+    }
+
+    /**
+     * Typing the admin password and its confirmation differently must abort before
+     * ever touching a database: installing with an admin password nobody actually
+     * confirmed would lock the fresh install's only account out from the start.
+     * CliTestCase::executeCommandTest() always runs non-interactively (a
+     * non-interactive question returns its empty default immediately, so two
+     * separate answers can never come out different), so this needs its own
+     * interactive CommandTester.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testInstallAdminPasswordConfirmationMismatch(): void
+    {
+        $inputData = self::$commandInputData;
+        unset($inputData['--adminPassword']);
+
+        $commandTester = $this->executeInteractiveCommandTest(
+            InstallCommand::class,
+            $inputData,
+            ['admin123', uniqid('', true)]
+        );
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Passwords do not match', $output);
+    }
+
+    /**
+     * Same as above, for the master password: mistyping its confirmation must abort
+     * rather than installing with whichever of the two typed answers happened to be
+     * read first — the admin would then not actually know the master password
+     * protecting the data they are about to store.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testInstallMasterPasswordConfirmationMismatch(): void
+    {
+        $inputData = self::$commandInputData;
+        unset($inputData['--masterPassword']);
+
+        $commandTester = $this->executeInteractiveCommandTest(
+            InstallCommand::class,
+            $inputData,
+            ['12345678900', uniqid('', true)]
+        );
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Passwords do not match', $output);
     }
 
     /**
@@ -438,5 +563,24 @@ class InstallCommandTest extends CliTestCase
         foreach (InstallCommand::$envVarsMapping as $envVar) {
             putenv($envVar);
         }
+    }
+
+    /**
+     * Runs a command interactively, feeding canned answers to its hidden-question
+     * prompts. CliTestCase::executeCommandTest() always runs with 'interactive' =>
+     * false, which is the right default for scripted/env-var runs but cannot reach a
+     * "the two typed answers differ" branch — a non-interactive question returns its
+     * (empty) default immediately, so both answers always come out equal.
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    private function executeInteractiveCommandTest(string $commandClass, array $inputData, array $answers): CommandTester
+    {
+        $commandTester = new CommandTester(self::$dic->get($commandClass));
+        $commandTester->setInputs($answers);
+        $commandTester->execute($inputData, ['interactive' => true]);
+
+        return $commandTester;
     }
 }
