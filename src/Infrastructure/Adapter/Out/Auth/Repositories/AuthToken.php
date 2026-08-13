@@ -159,7 +159,6 @@ final class AuthToken extends BaseRepository implements AuthTokenRepository
                        'AuthToken.id',
                        'AuthToken.userId',
                        'AuthToken.actionId',
-                       'AuthToken.token',
                        'User.name AS userName',
                        'User.login AS userLogin'
                    ])

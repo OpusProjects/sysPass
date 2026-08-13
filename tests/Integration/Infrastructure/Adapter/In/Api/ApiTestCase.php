@@ -129,6 +129,18 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::USER_DELETE       => ['DELETE', '/api/v1/users/{id}'],
         AclActionsInterface::CONFIG_BACKUP_RUN => ['POST', '/api/v1/config/backup'],
         AclActionsInterface::CONFIG_EXPORT_RUN => ['POST', '/api/v1/config/export'],
+        AclActionsInterface::PROFILE_SEARCH    => ['GET', '/api/v1/profiles'],
+        AclActionsInterface::PROFILE_CREATE    => ['POST', '/api/v1/profiles'],
+        AclActionsInterface::PROFILE_VIEW      => ['GET', '/api/v1/profiles/{id}'],
+        AclActionsInterface::PROFILE_EDIT      => ['PUT', '/api/v1/profiles/{id}'],
+        AclActionsInterface::PROFILE_DELETE    => ['DELETE', '/api/v1/profiles/{id}'],
+        AclActionsInterface::AUTHTOKEN_SEARCH  => ['GET', '/api/v1/auth-tokens'],
+        AclActionsInterface::AUTHTOKEN_CREATE  => ['POST', '/api/v1/auth-tokens'],
+        AclActionsInterface::AUTHTOKEN_VIEW    => ['GET', '/api/v1/auth-tokens/{id}'],
+        AclActionsInterface::AUTHTOKEN_EDIT    => ['PUT', '/api/v1/auth-tokens/{id}'],
+        AclActionsInterface::AUTHTOKEN_DELETE  => ['DELETE', '/api/v1/auth-tokens/{id}'],
+        AclActionsInterface::EVENTLOG_SEARCH   => ['GET', '/api/v1/event-log'],
+        AclActionsInterface::EVENTLOG_CLEAR    => ['DELETE', '/api/v1/event-log'],
     ];
 
     private static ?array $apiModuleDefinitions = null;

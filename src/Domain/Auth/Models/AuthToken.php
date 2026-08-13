@@ -35,6 +35,15 @@ class AuthToken extends Model
 {
     use SerializedModel;
 
+    /**
+     * The bearer token itself, the hash of the password it is unlocked with, and the vault that
+     * password seals. A caller who just created a token is shown it, and one who asks for a
+     * particular token by id is shown it; a listing is not a way to read everybody's.
+     *
+     * @var string[]
+     */
+    public const SECRET_COLS = ['token', 'hash', 'vault'];
+
     protected ?int    $id        = null;
     protected ?int    $userId    = null;
     protected ?string $token     = null;
