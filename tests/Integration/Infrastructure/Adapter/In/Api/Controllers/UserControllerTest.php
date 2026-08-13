@@ -260,10 +260,12 @@ class UserControllerTest extends ApiTestCase
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
 
-        // Unlike the group, category, client and tag endpoints, the user ones have no help class,
-        // so the answer says a parameter is wrong without saying which. Recorded rather than
-        // asserted as desirable: it is a gap, not a decision.
-        $this->assertSame('', $r->body->error->detail);
+        // And the answer says which parameters the endpoint takes, as the group, category, client
+        // and tag ones have always done. It used to come back empty, so a caller was told a
+        // parameter was wrong and left to guess which.
+        $this->assertStringContainsString('help', $r->body->error->detail);
+        $this->assertStringContainsString('login', $r->body->error->detail);
+        $this->assertStringContainsString('userGroupId', $r->body->error->detail);
     }
 
     /**
