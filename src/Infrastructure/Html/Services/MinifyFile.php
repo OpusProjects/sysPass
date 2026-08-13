@@ -29,6 +29,8 @@ use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Infrastructure\Http\Services\Request as HttpRequest;
 use SP\Domain\Core\Exceptions\FileException;
 
+use function SP\__u;
+
 /**
  * Class MinifyFile
  */
@@ -60,6 +62,18 @@ final readonly class MinifyFile
      */
     public function getContent(): string
     {
+        // getName() comes back empty when the file resolved outside the application, or outside a
+        // css/js directory within it. That check was only labelling the concatenated output: the
+        // content was read and served regardless, so a request naming ../../../../etc/passwd was
+        // answered with the file under an empty label. Nothing outside those directories is
+        // servable, so an unnamed file is not read at all.
+        if ($this->getName() === '') {
+            throw FileException::error(
+                __u('File not found'),
+                __u('The file is not within the application\'s resource directories')
+            );
+        }
+
         return $this->fileHandler->readToString();
     }
 }
