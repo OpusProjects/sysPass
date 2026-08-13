@@ -732,6 +732,419 @@ class SyspassImportTest extends UnitaryTestCase
     }
 
     /**
+     * An encrypted export cannot be processed without its password: the <Data> blobs are
+     * still ciphertext at this point. Without this upfront refusal, doImport() would carry
+     * on into checkIntegrity()/processCategories()/etc. and try to read categories, clients
+     * and account passwords out of what is still encrypted noise, rather than failing loudly
+     * with a clear "you need the password" message.
+     *
+     * @throws Exception
+     */
+    public function testDoImportRefusesEncryptedFileWithNoPasswordSupplied()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->load(self::SYSPASS_ENCRYPTED_FILE, LIBXML_NOBLANKS);
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getPassword')->willReturn('');
+
+        $this->crypt
+            ->expects(self::never())
+            ->method('decrypt');
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Encryption password not set');
+
+        $sysPassImport->doImport($importParamsDto);
+    }
+
+    /**
+     * sysPass switched how <Data> ciphertext is stored at 3.2.0: exports from >= 3.2.0 keep
+     * the bytes as-is, while older exports (<= 3.1.x, still handled above 2.10) base64-wrap
+     * them first. Running a >= 3.2.0 blob through the legacy base64_decode() path would
+     * corrupt it before it ever reaches Crypt::decrypt(), turning a perfectly good backup
+     * into one that can't be restored. Assert the raw bytes reach decrypt() unmodified.
+     *
+     * @throws ImportException
+     * @throws Exception
+     */
+    public function testDoImportDecryptsRawDataForModernFormatWithoutBase64Decoding()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>320.24010101</Version></Meta>
+                <Encrypted>
+                    <Data key="somekey">raw-ciphertext-marker</Data>
+                </Encrypted>
+            </Root>'
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getPassword')->willReturn('a_password');
+        $importParamsDto->method('getDefaultUser')->willReturn(100);
+        $importParamsDto->method('getDefaultGroup')->willReturn(200);
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('decrypt')
+            ->with(self::identicalTo('raw-ciphertext-marker'), 'somekey', 'a_password')
+            ->willReturn('<Dummy/>');
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $out = $sysPassImport->doImport($importParamsDto);
+
+        $this->assertEquals(0, $out->getCounter());
+    }
+
+    /**
+     * Files exported by sysPass <= 2.10 used a since-abandoned encryption scheme. Neither
+     * of the two supported decodings (base64-wrapped for 2.10-3.1.x, raw for >= 3.2.0) apply
+     * to them, so decrypting the blob as either would hand Crypt::decrypt() garbage and
+     * either fail confusingly or -- worse -- "succeed" into corrupted account passwords.
+     * Refuse the file outright with a clear message instead.
+     *
+     * @throws Exception
+     */
+    public function testDoImportRejectsFilesEncryptedByOldSysPassVersions()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>0.1</Version></Meta>
+                <Encrypted>
+                    <Data key="somekey">whatever</Data>
+                </Encrypted>
+            </Root>'
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getPassword')->willReturn('a_password');
+
+        $this->crypt
+            ->expects(self::never())
+            ->method('decrypt');
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('The file was exported with an old sysPass version (<= 2.10).');
+
+        $sysPassImport->doImport($importParamsDto);
+    }
+
+    /**
+     * Crypt::decrypt() only throws CryptException when the underlying library detects
+     * corruption (e.g. a bad HMAC); it can still return successfully for a wrong password
+     * and hand back bytes that simply are not XML. If that garbage were then merged into
+     * the document as-is, the rest of the import would silently process whatever DOM nodes
+     * happened to survive rather than failing. Treat "decrypted but not XML" the same as a
+     * wrong password.
+     *
+     * @throws Exception
+     */
+    public function testDoImportTreatsUndecodableDecryptedDataAsWrongPassword()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>320.24010101</Version></Meta>
+                <Encrypted>
+                    <Data key="somekey">ciphertext</Data>
+                </Encrypted>
+            </Root>'
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getPassword')->willReturn('a_password');
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('decrypt')
+            ->willReturn('this is not xml');
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Wrong encryption password');
+
+        // DOMDocument::loadXML() reports the malformed input as a PHP warning rather than
+        // throwing (it returns false instead); that warning is the exact condition under
+        // test, so swallow it locally instead of letting it register as a stray suite issue.
+        set_error_handler(static fn(): bool => true);
+
+        try {
+            $sysPassImport->doImport($importParamsDto);
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    /**
+     * An account whose <categoryId> points at a category id absent from the file's own
+     * <Categories> catalog cannot be assigned a category at all -- getOrSetCache() has
+     * nothing cached under that id and, called here with no builder callback, returns null.
+     * ImportBase::addAccount() must refuse that account rather than create it with a missing
+     * category (which the accounts table's schema disallows, but the failure should be a
+     * clear import-time refusal, not a fallthrough to a DB constraint error).
+     *
+     * @throws Exception
+     */
+    public function testDoImportAbortsWhenAccountReferencesUnknownCategory()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>300.18071701</Version></Meta>
+                <Accounts>
+                    <Account id="1">
+                        <name>Orphan Category Account</name>
+                        <clientId>1</clientId>
+                        <categoryId>999</categoryId>
+                        <login>user</login>
+                    </Account>
+                </Accounts>
+            </Root>',
+            LIBXML_NOBLANKS
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getDefaultUser')->willReturn(100);
+        $importParamsDto->method('getDefaultGroup')->willReturn(200);
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Category Id not set. Unable to import account.');
+
+        $sysPassImport->doImport($importParamsDto);
+    }
+
+    /**
+     * Same refusal as the orphaned-category case above, but for <clientId>: an account
+     * referencing a client id that was never declared in <Clients> must abort the import
+     * rather than be created with no client.
+     *
+     * @throws Exception
+     */
+    public function testDoImportAbortsWhenAccountReferencesUnknownClient()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>300.18071701</Version></Meta>
+                <Categories>
+                    <Category id="1"><name>Cat1</name></Category>
+                </Categories>
+                <Accounts>
+                    <Account id="1">
+                        <name>Orphan Client Account</name>
+                        <clientId>999</clientId>
+                        <categoryId>1</categoryId>
+                        <login>user</login>
+                    </Account>
+                </Accounts>
+            </Root>',
+            LIBXML_NOBLANKS
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getDefaultUser')->willReturn(100);
+        $importParamsDto->method('getDefaultGroup')->willReturn(200);
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('getByName')
+            ->with('Cat1')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('create')
+            ->willReturn(1);
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Client Id not set. Unable to import account.');
+
+        $sysPassImport->doImport($importParamsDto);
+    }
+
+    /**
+     * A per-account password encrypted by sysPass <= 2.10 uses a format this importer does
+     * not support decrypting (see ImportBase::addAccount()'s version guard). Without it, an
+     * old export's still-encrypted ciphertext could be handed to Crypt::decrypt() as if it
+     * were a supported format and produce corrupted plaintext saved as the account password
+     * instead of a clear refusal.
+     *
+     * @throws Exception
+     */
+    public function testDoImportRejectsEncryptedAccountsFromOldSysPassVersions()
+    {
+        $importHelper = new ImportHelper(
+            $this->accountService,
+            $this->categoryService,
+            $this->clientService,
+            $this->tagService,
+            $this->configService
+        );
+
+        $document = new DOMDocument();
+        $document->loadXML(
+            '<?xml version="1.0" encoding="UTF-8"?>
+            <Root>
+                <Meta><Version>0.1</Version></Meta>
+                <Categories>
+                    <Category id="1"><name>Cat1</name></Category>
+                </Categories>
+                <Clients>
+                    <Client id="1"><name>Client1</name></Client>
+                </Clients>
+                <Accounts>
+                    <Account id="1">
+                        <name>Old Format Account</name>
+                        <clientId>1</clientId>
+                        <categoryId>1</categoryId>
+                        <login>user</login>
+                        <pass>ciphertext</pass>
+                        <key>somekey</key>
+                    </Account>
+                </Accounts>
+            </Root>',
+            LIBXML_NOBLANKS
+        );
+
+        $importParamsDto = $this->createStub(ImportParamsDto::class);
+        $importParamsDto->method('getDefaultUser')->willReturn(100);
+        $importParamsDto->method('getDefaultGroup')->willReturn(200);
+        $importParamsDto->method('getMasterPassword')->willReturn('a_password');
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('getByName')
+            ->with('Cat1')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->categoryService
+            ->expects(self::once())
+            ->method('create')
+            ->willReturn(1);
+
+        $this->clientService
+            ->expects(self::once())
+            ->method('getByName')
+            ->with('Client1')
+            ->willThrowException(NoSuchItemException::error('test'));
+
+        $this->clientService
+            ->expects(self::once())
+            ->method('create')
+            ->willReturn(1);
+
+        $this->configService
+            ->expects(self::once())
+            ->method('getByParam')
+            ->with('masterPwd')
+            ->willReturn(password_hash('a_password', PASSWORD_BCRYPT));
+
+        $this->crypt
+            ->expects(self::never())
+            ->method('decrypt');
+
+        $this->accountService
+            ->expects(self::never())
+            ->method('create');
+
+        $sysPassImport = new SyspassImport($this->application, $importHelper, $this->crypt, $document);
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('The file was exported with an old sysPass version (<= 2.10).');
+
+        $sysPassImport->doImport($importParamsDto);
+    }
+
+    /**
      * @throws ImportException
      * @throws Exception
      */
