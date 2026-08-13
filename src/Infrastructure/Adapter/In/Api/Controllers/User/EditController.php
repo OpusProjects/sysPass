@@ -29,7 +29,7 @@ final class EditController extends UserBase
                 ->addDetail('ID', $userData->getId())
         ));
 
-        return ApiResponse::makeSuccess($userData, __('User updated'), $userData->getId());
+        return ApiResponse::makeSuccess(self::withoutCredentials($userData), __('User updated'), $userData->getId());
     }
 
     private function buildUserData(): User

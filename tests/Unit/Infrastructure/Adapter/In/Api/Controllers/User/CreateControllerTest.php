@@ -38,6 +38,7 @@ class CreateControllerTest extends UnitaryTestCase
             ['login', true, null, 'testuser'],
             ['email', false, null, 'test@example.com'],
             ['notes', false, null, 'Test notes'],
+            ['pass', true, null, 'a-provisioned-password'],
         ];
 
         $paramIntMap = [
@@ -85,6 +86,7 @@ class CreateControllerTest extends UnitaryTestCase
             ['login', true, null, 'testuser'],
             ['email', false, null, 'test@example.com'],
             ['notes', false, null, null],
+            ['pass', true, null, 'a-provisioned-password'],
         ]);
 
         // Non-admin actor; both flags requested as 1.
@@ -129,6 +131,7 @@ class CreateControllerTest extends UnitaryTestCase
             ['login', true, null, 'testuser'],
             ['email', false, null, 'test@example.com'],
             ['notes', false, null, null],
+            ['pass', true, null, 'a-provisioned-password'],
         ]);
 
         $this->apiService->method('getParamInt')->willReturnMap([
