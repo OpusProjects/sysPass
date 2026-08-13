@@ -916,12 +916,6 @@ parameters:
 			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/SaveRequestController.php
 
 		-
-			message: '#^Cannot call method getData\(\) on array\|object\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Infrastructure/Adapter/In/Web/Controllers/Account/ViewLinkController.php
-
-		-
 			message: '#^Parameter \#1 \$type of method SP\\Domain\\Core\\Events\\EventMessage\<mixed\>\:\:addExtra\(\) expects class\-string\<mixed\>, string given\.$#'
 			identifier: argument.type
 			count: 2

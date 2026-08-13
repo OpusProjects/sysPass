@@ -110,6 +110,7 @@ final class ViewLinkController extends AccountControllerBase
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 
+            /** @var Vault $vault The stored blob is a Vault; Serde answers with whatever it holds. */
             $vault = Serde::deserialize($publicLink->getData() ?? '', Vault::class, Crypt::class);
 
             $accountViewDto = AccountViewDto::fromModel(
