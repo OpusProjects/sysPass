@@ -67,7 +67,10 @@ final class Image implements ImageService
         $width = imagesx($im) ?: self::IMAGE_WIDTH;
         $height = imagesy($im) ?: self::IMAGE_WIDTH;
 
-        $newHeight = (int)floor($height * (self::IMAGE_WIDTH / $width));
+        // At least one pixel: a very wide, very short image (a banner strip, a spacer) scales to a
+        // height of zero, and imagecreatetruecolor() throws a ValueError for that rather than
+        // returning false — which would escape as an unhandled error from an ordinary upload.
+        $newHeight = max(1, (int)floor($height * (self::IMAGE_WIDTH / $width)));
 
         if (($tempImage = imagecreatetruecolor(self::IMAGE_WIDTH, $newHeight)) === false
             || !imagecopyresized($tempImage, $im, 0, 0, 0, 0, self::IMAGE_WIDTH, $newHeight, $width, $height)
