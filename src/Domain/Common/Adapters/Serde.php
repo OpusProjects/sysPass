@@ -69,8 +69,11 @@ final class Serde
      *
      * @throws SPException
      */
-    public static function deserialize(string $data, ?string $class = null, string ...$nestedClasses): object|array
-    {
+    public static function deserialize(
+        string $data,
+        ?string $class = null,
+        string ...$nestedClasses
+    ): object|array|string|int {
         $value = @unserialize(
             $data,
             ['allowed_classes' => $class !== null ? [$class, ...$nestedClasses] : true]

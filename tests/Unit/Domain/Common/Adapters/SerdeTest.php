@@ -85,6 +85,21 @@ class SerdeTest extends UnitaryTestCase
     }
 
     /**
+     * serialize() takes a scalar — the provider above passes a string and an int through it — so
+     * deserialize() has to hand one back. Declared as object|array, it raised a TypeError on the
+     * way out instead: anything that cached a bare string, the file cache included, could store it
+     * and never read it again.
+     *
+     * @throws SPException
+     */
+    #[DataProvider('serializeDataProvider')]
+    public function testDeserializeReturnsWhateverWasSerialized(mixed $data, string $serialized)
+    {
+        // Equals, not same: an object comes back as a copy, which is the point of serializing it.
+        self::assertEquals($data, Serde::deserialize($serialized));
+    }
+
+    /**
      * @throws SPException
      */
     public function testDeserializeWithClass()
