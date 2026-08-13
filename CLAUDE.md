@@ -152,7 +152,7 @@ is covered against a real PHP session under `#[RunClassInSeparateProcess]` (the 
 plain unit tests. Neither needed a different test architecture — reach for a separate process
 before assuming something is unreachable.
 
-Two harness details bite when writing an integration test against a real branch:
+A few harness details bite when writing an integration test against a real branch:
 
 - The stubbed ACL answers `getRouteFor()` with the **action id**, not the route, so any production
   code comparing a request's `r` against a route (e.g. `AccountSearchHelper`'s "was I reached from
@@ -162,6 +162,14 @@ Two harness details bite when writing an integration test against a real branch:
 - The vfs filesystem is built **once per process** and shared by every test, so a test that writes
   into `Path::BACKUP` (or any other runtime dir) has to key its files on something unique to it —
   otherwise it either finds another test's leftovers or leaves its own for the next one.
+- **`EventDispatcher` cannot be doubled.** `SimpleControllerBase::$eventDispatcher` is typed as the
+  concrete `final` class, so injecting a mock of `EventDispatcherInterface` fails at controller
+  construction with a property-type `TypeError` — which surfaces as an `ERROR` JSON body and masks
+  whatever the test meant to assert. To spy on events, build a real `EventDispatcher` and `attach()`
+  an `EventReceiver` double whose `getEvents()` returns `'*'`.
+- **Stubbing `ConfigDataInterface` cannot show a save.** A `createConfiguredStub()` does not keep
+  what its setters were handed, so a test asserting a controller stored something must pass a real
+  `ConfigData` through a stubbed `ConfigFileService` and read it back afterwards.
 
 The rest is genuinely reachable, and is a long tail rather than a few large files: ~1250
 statements across **320** files, averaging under four statements each — individual error branches,
