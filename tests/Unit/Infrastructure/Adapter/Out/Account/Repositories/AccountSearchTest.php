@@ -306,6 +306,38 @@ class AccountSearchTest extends UnitaryTestCase
     }
 
     /**
+     * The other half of the same trap: even with a search text of "0" reaching this far, the
+     * filter used to be dropped here too, and the query went out with no text condition at all —
+     * so a search for 0 answered with every account rather than with the ones matching.
+     */
+    public function testGetByFilterKeepsATextFilterForZero(): void
+    {
+        $accountSearchFilter = AccountSearchFilterDto::build('0');
+        $accountSearchFilter->setCleanTxtSearch('0');
+
+        $captured = null;
+        $this->database->expects(self::once())
+            ->method('runQuery')
+            ->willReturnCallback(function (QueryData $queryData) use (&$captured) {
+                $captured = $queryData;
+
+                return new QueryResult();
+            });
+
+        $this->accountSearch->getByFilter($accountSearchFilter);
+
+        self::assertSame(
+            [
+                'name' => '%0%',
+                'login' => '%0%',
+                'url' => '%0%',
+                'notes' => '%0%',
+            ],
+            $captured->getQuery()->getBindValues()
+        );
+    }
+
+    /**
      * @return array<string, array{0: int, 1: string}>
      */
     public static function sortKeyDataProvider(): array
