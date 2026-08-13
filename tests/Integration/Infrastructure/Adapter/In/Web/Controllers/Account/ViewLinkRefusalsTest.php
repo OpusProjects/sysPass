@@ -78,29 +78,22 @@ class ViewLinkRefusalsTest extends IntegrationTestCase
     }
 
     /**
-     * A hash that was never issued is not the same as one that expired: no PublicLink mapper
-     * resolver is registered, so the lookup sees 0 rows exactly as it would for an id nobody
-     * ever created, and PublicLinkService::getByHash() throws NoSuchItemException("Link not
-     * found") rather than returning a model to check the expiry/count limits against.
+     * A hash nobody ever issued is answered exactly like one that has expired or been used up.
      *
-     * That exception is never caught inside ViewLinkController, so it reaches Bootstrap's
-     * generic Throwable handler — which still renders through the action's own PLAIN_TEXT
-     * response type (Bootstrap.php buildResponse(), used on both the normal and the error path).
-     * The result is the bare string "Link not found", not the rendered "You don't have
-     * permission..." HTML page an expired or exhausted link answers with. A caller can therefore
-     * tell "this hash never existed" apart from "this hash existed but is no longer valid" by
-     * response shape alone, even without ever seeing account data.
+     * It used not to be: the not-found exception escaped to the generic handler, which rendered
+     * it through this action's plain-text type as the bare string "Link not found", where a real
+     * but no-longer-valid link gets this page. On an endpoint reachable without signing in, that
+     * difference told whoever was holding a hash whether it had ever been real.
      *
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    public function aLinkThatWasNeverIssuedAnswersDifferentlyFromAnExpiredOne()
+    #[BodyChecker('outputCheckerRefused')]
+    public function aLinkThatWasNeverIssuedAnswersLikeAnExpiredOne()
     {
         $this->whenFollowingTheLink();
-
-        $this->expectOutputString('Link not found');
     }
 
     /**
