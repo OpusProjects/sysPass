@@ -117,8 +117,6 @@ final class XmlExport extends Service implements XmlExportService
 
         $exportPath->checkOrCreate();
 
-        self::deleteExportFiles($exportPath->getPath());
-
         $file = new BackupFileDto(
             BackupType::export,
             $this->buildAndSaveHashForFile(),
@@ -128,16 +126,24 @@ final class XmlExport extends Service implements XmlExportService
 
         $this->buildAndSaveXml((string)$file, $password);
 
+        // Only once there is a new export to keep. Deleting first meant a run that failed
+        // part-way — an unreadable account, a failure writing the file — took the last good
+        // export with it and left the installation with none at all.
+        self::deleteExportFiles($exportPath->getPath(), (string)$file);
+
         return (string)$file;
     }
 
-    private static function deleteExportFiles(string $path): void
+    private static function deleteExportFiles(string $path, string $keep): void
     {
         $path = FileSystem::buildPath($path, AppInfoInterface::APP_NAME);
 
         array_map(
             static fn($file) => @unlink($file),
-            array_merge(glob($path . '_export-*'), glob($path . '*.xml'))
+            array_filter(
+                array_merge(glob($path . '_export-*'), glob($path . '*.xml')),
+                static fn(string $file) => $file !== $keep
+            )
         );
     }
 
