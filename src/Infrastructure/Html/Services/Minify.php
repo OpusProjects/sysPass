@@ -167,4 +167,17 @@ abstract class Minify implements MinifyService
     {
         return clone $this;
     }
+
+    /**
+     * A clone starts with its own, empty file list.
+     *
+     * PHP's shallow copy left every builder sharing the storage of whatever it was built from, so
+     * adding a file to one added it to the other — which is the opposite of what asking for a
+     * builder means. Each request happens to call builder() once on a fresh service today, which
+     * is the only reason nothing has tripped over it.
+     */
+    public function __clone(): void
+    {
+        $this->files = new SplObjectStorage();
+    }
 }
