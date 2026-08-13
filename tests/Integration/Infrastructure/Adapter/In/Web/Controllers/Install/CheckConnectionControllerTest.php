@@ -35,6 +35,7 @@ use SP\Application\Install\Services\InstallThrottle;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Bootstrap\PathsContext;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\Database\DatabaseConnectionData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -196,7 +197,18 @@ class CheckConnectionControllerTest extends IntegrationTestCase
     #[Test]
     public function validCredentialsAgainstAReachableHostSucceed()
     {
-        $this->whenChecking(['dbhost' => 'db', 'dbuser' => 'root', 'dbpass' => 'syspass']);
+        $connection = DatabaseConnectionData::getFromEnvironment();
+
+        $this->whenChecking(
+            [
+                // The suite's own database, wherever it is: 'db' in the compose network, an
+                // address on CI. Hardcoding either makes this pass in one place and fail in the
+                // other.
+                'dbhost' => $connection->getDbHost(),
+                'dbuser' => $connection->getDbUser(),
+                'dbpass' => $connection->getDbPass(),
+            ]
+        );
 
         $this->expectOutputString(
             '{"status":"OK","description":"Connection successful","data":null}'
@@ -218,7 +230,15 @@ class CheckConnectionControllerTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerAccessDenied')]
     public function wrongCredentialsAgainstAReachableHostRevealMoreThanAnUnreachableHost()
     {
-        $this->whenChecking(['dbhost' => 'db', 'dbuser' => 'root', 'dbpass' => 'definitely-wrong-password']);
+        $connection = DatabaseConnectionData::getFromEnvironment();
+
+        $this->whenChecking(
+            [
+                'dbhost' => $connection->getDbHost(),
+                'dbuser' => $connection->getDbUser(),
+                'dbpass' => 'definitely-wrong-password',
+            ]
+        );
     }
 
     /**
