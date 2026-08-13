@@ -28,6 +28,7 @@ namespace SP\Tests\Unit\Core;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Language;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -190,6 +191,56 @@ class LanguageTest extends UnitaryTestCase
         $this->assertEquals($locale . '.utf8', Language::$localeStatus);
         $this->assertEquals($locale . '.utf8', getenv('LANG'));
         $this->assertEquals($locale . '.utf8', getenv('LANGUAGE'));
+    }
+
+    /**
+     * A first-time visitor has no saved language preference, so the UI language
+     * is picked from the browser's Accept-Language header. Getting this
+     * resolution wrong means visitors either see the wrong language on first
+     * load, or everyone silently falls back to English even when their exact
+     * or a closely related locale is supported.
+     */
+    #[TestWith(['', 'en_US'])]
+    #[TestWith(['de-DE,de;q=0.9,en;q=0.8', 'de_DE'])]
+    #[TestWith(['pt-PT,pt;q=0.8', 'pt_BR'])]
+    #[TestWith(['zz-ZZ,zz;q=0.5', 'en_US'])]
+    public function testResolveLanguage(string $acceptLanguageHeader, string $expected)
+    {
+        $this->assertEquals($expected, Language::resolveLanguage($acceptLanguageHeader));
+    }
+
+    /**
+     * Before installation there is no saved site language, so the browser's
+     * Accept-Language header must drive the language of the installer pages.
+     * Existing coverage only exercised the "already installed" branch of
+     * getGlobalLang(); if the not-installed branch regressed and always fell
+     * through to the (empty) configured site language, the installer would be
+     * stuck showing English regardless of the visitor's browser.
+     */
+    public function testSetLanguageForceWhenNotInstalledUsesBrowserLanguage()
+    {
+        $locale = 'en_US';
+        $browserLocale = 'es_ES';
+
+        $this->context->setLocale($locale);
+        $this->context->setUserData(new UserDto());
+
+        $this->configData
+            ->method('isInstalled')
+            ->willReturn(false);
+        $this->request
+            ->expects(self::once())
+            ->method('getHeader')
+            ->with('Accept-Language')
+            ->willReturn('es-ES,es;q=0.9');
+
+        $this->language->setLanguage(true);
+
+        $this->assertEquals($browserLocale, Language::$globalLang);
+        $this->assertEquals($browserLocale, $this->context->getLocale());
+        $this->assertEquals($browserLocale . '.utf8', Language::$localeStatus);
+        $this->assertEquals($browserLocale . '.utf8', getenv('LANG'));
+        $this->assertEquals($browserLocale . '.utf8', getenv('LANGUAGE'));
     }
 
     protected function setUp(): void
