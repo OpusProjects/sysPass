@@ -146,6 +146,29 @@ class BackupCommandTest extends CliTestCase
     }
 
     /**
+     * getPath() only asks interactively when neither the env var nor --path supplied a
+     * value. CommandTester runs with interactive=false (see executeCommandTest()), and
+     * Symfony's QuestionHelper answers a non-interactive ask() with the question's default
+     * without touching any input stream -- so this exercises the prompt branch without
+     * risking the "blocks forever" trap the other CLI tests warn about, and still ends up
+     * backing up to the same default path as testBackupIsSuccessful().
+     *
+     * @throws DependencyException
+     * @throws NotFoundException
+     */
+    public function testBackupAsksForPathWhenNeitherEnvVarNorOptionIsSet(): void
+    {
+        $this->setupDatabase();
+
+        $commandTester = $this->executeCommandTest(BackupCommand::class, ['--path' => '']);
+
+        $output = $commandTester->getDisplay();
+        $this->assertStringContainsString('Application and database backup completed successfully', $output);
+
+        $this->checkBackupFilesAreCreated();
+    }
+
+    /**
      * Without a reachable database the dump must fail
      *
      * @throws DependencyException
