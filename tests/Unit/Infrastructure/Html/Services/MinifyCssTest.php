@@ -78,7 +78,9 @@ class MinifyCssTest extends UnitaryTestCase
         );
 
         $files = array_map(function () use ($hash) {
-            $filePath = '/path/to/nowhere/test.css';
+            // A real file inside one of the application's resource directories: what is served is
+            // now confined to those, so a made-up path is refused before it is read.
+            $filePath = REAL_APP_ROOT . '/public/vendor/css/jquery-ui.min.css';
 
             $file = $this->createMock(FileHandlerInterface::class);
             $file->expects(self::once())
@@ -149,7 +151,9 @@ class MinifyCssTest extends UnitaryTestCase
         );
 
         $files = array_map(function () use ($hash) {
-            $filePath = '/path/to/nowhere/test.css';
+            // A real file inside one of the application's resource directories: what is served is
+            // now confined to those, so a made-up path is refused before it is read.
+            $filePath = REAL_APP_ROOT . '/public/vendor/css/jquery-ui.min.css';
 
             $file = $this->createMock(FileHandlerInterface::class);
             $file->expects(self::once())

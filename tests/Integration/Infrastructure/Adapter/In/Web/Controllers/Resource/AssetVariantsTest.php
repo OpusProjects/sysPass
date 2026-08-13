@@ -92,6 +92,49 @@ class AssetVariantsTest extends IntegrationTestCase
     }
 
     /**
+     * The directory is sanitised, so a request pointing outside the application resolves to
+     * nothing (above). The file names were not: appended to a directory that does resolve, one of
+     * them could climb back out of it, and the file was read and served under a blank label.
+     *
+     * Serving anything outside the application's css and js directories is what is refused here.
+     * The signature is what kept this out of reach of anybody who does not hold the configured
+     * salt, and it still is — but it should not be the only thing.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('escapingFileProvider')]
+    public function aFileClimbingOutOfItsDirectoryIsNotServed(string $file): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'get',
+                'index.php',
+                $this->sign(['r' => 'resource/css', 'f' => $file, 'b' => 'public/vendor/css'])
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        // Nothing is written: the file is refused before it is read, so the bundle is never built.
+        $this->expectOutputString('');
+    }
+
+    /**
+     * @return array<string, array{string}>
+     */
+    public static function escapingFileProvider(): array
+    {
+        return [
+            'a traversal out of the application' => ['../../../../../../etc/passwd'],
+            'a traversal into a directory that is not css or js' => ['../../../config/config.xml'],
+            'an absolute path' => ['/etc/passwd'],
+        ];
+    }
+
+    /**
      * Mirrors Uri::getUriSigned(), which the request verifies against: `key=urlencode(value)`
      * joined by '&', keyed by the configured salt.
      *
