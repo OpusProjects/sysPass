@@ -151,9 +151,12 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
+    /**
+     * An edit whose id matches nothing is reported as the failure it is, rather than answered with
+     * a success for an update that touched no rows.
+     */
     public function testEditActionNonExistant(): void
     {
-        // Editing a non-existent id is a no-op that still reports success (0 rows)
         $params = [
             'id' => 10,
             'name' => 'API test edit',
@@ -162,8 +165,8 @@ class CategoryControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::CATEGORY_EDIT, $params);
 
-        $this->assertSame(200, $r->status);
-        $this->assertSame('Category updated', $r->body->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Error while updating the category', $r->body->error->message);
     }
 
     #[DataProvider('searchProvider')]

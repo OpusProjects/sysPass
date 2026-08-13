@@ -72,7 +72,17 @@ final class ItemPreset extends Service implements ItemPresetService
      */
     public function update(ItemPresetModel $itemPreset): int
     {
-        return $this->itemPresetRepository->update($itemPreset);
+        // An update whose WHERE matched nothing has not updated anything, and answering the
+        // caller with success for it means an edit of something that has since been deleted is
+        // reported as saved. The repository already counts the rows; this is the check
+        // UserProfile's own update() has always made.
+        $affected = $this->itemPresetRepository->update($itemPreset);
+
+        if ($affected === 0) {
+            throw ServiceException::error(__u('Error while updating the permission'));
+        }
+
+        return $affected;
     }
 
     /**

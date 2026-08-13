@@ -173,12 +173,16 @@ class UserGroupControllerTest extends ApiTestCase
         $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
+    /**
+     * An edit whose id matches nothing is reported as the failure it is, rather than answered with
+     * a success for an update that touched no rows.
+     */
     public function testEditActionNonExistant(): void
     {
         $r = $this->callApi(AclActionsInterface::GROUP_EDIT, ['id' => 10, 'name' => 'API test edit']);
 
-        $this->assertSame(200, $r->status);
-        $this->assertSame('Group updated', $r->body->message);
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Error while updating the group', $r->body->error->message);
     }
 
     #[DataProvider('searchProvider')]

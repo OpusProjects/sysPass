@@ -406,17 +406,16 @@ class UserGroupTest extends IntegrationTestCase
     }
 
     /**
-     * Unlike UserProfileService::update(), UserGroupService::update() does not check how many
-     * rows the UPDATE affected, so editing an id that no longer exists still reports success.
-     * This pins down that actual (asymmetric) behaviour rather than assuming it matches the
-     * profile side.
+     * Editing a group that is no longer there is reported as the failure it is. The update is by
+     * id, so nothing was written; answering "Group updated" told whoever was editing it that their
+     * change had been saved when there was nothing left to save it to.
      *
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    public function saveEditSucceedsEvenWhenNoRowsAffected()
+    public function saveEditFailsWhenNoRowsAffected()
     {
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
             $statement = $queryData->getQuery()->getStatement();
@@ -439,7 +438,9 @@ class UserGroupTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
 
-        $this->expectOutputString('{"status":"OK","description":"Group updated","data":null}');
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"Error while updating the group","data":null}'
+        );
     }
 
     /**
