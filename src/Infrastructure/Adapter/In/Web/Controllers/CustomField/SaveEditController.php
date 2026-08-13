@@ -67,7 +67,7 @@ final class SaveEditController extends CustomFieldSaveBase
             $customFieldDefinition = $this->customFieldDefService->getById($itemData->getId());
 
             if ($customFieldDefinition->getModuleId() !== $itemData->getModuleId()) {
-                $this->customFieldDefService->changeModule($customFieldDefinition);
+                $this->customFieldDefService->changeModule($itemData);
             } else {
                 $this->customFieldDefService->update($itemData);
             }

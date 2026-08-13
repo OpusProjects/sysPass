@@ -83,6 +83,28 @@ class CustomFieldTest extends IntegrationTestCase
     }
 
     /**
+     * Editing a definition id that no longer exists must fail with a clear message instead
+     * of rendering a form around an empty/default definition.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function editNotFound()
+    {
+        // No mapper resolver registered for CustomFieldDefinition::class: the default stub
+        // answers with an empty result set (0 rows), exactly like a lookup for a missing id.
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/edit/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field not found","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -121,6 +143,31 @@ class CustomFieldTest extends IntegrationTestCase
     }
 
     /**
+     * Deleting an id that no longer exists must be reported as a failure rather than a
+     * silent no-op: the repository's DELETE affects zero rows, and the service turns that
+     * into "Field not found" instead of a false "Field deleted".
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteSingleNotFound()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            return new QueryResult([], 0, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/delete/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field not found","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -139,6 +186,61 @@ class CustomFieldTest extends IntegrationTestCase
                 'index.php',
                 ['r' => 'customField/delete', 'items' => [100, 200]]
             )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"OK","description":"Fields deleted","data":null}');
+    }
+
+    /**
+     * Unlike Tag's batch delete (which requires every requested id to be affected),
+     * CustomFieldDefinitionService::deleteByIdBatch() only checks for `$affectedNumRows === 0`
+     * — see CustomFieldDefinition.php lines 77-89 in src/Application/CustomField/Services/.
+     * So when none of the requested ids matched a row, the transactionAware() closure throws,
+     * the transaction rolls back, and the batch is reported as a failure.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultipleNoneFound()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            // Neither of the 2 requested ids matched a row.
+            return new QueryResult([], 0, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/delete', 'items' => [100, 200]])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while deleting the fields","data":null}');
+    }
+
+    /**
+     * ...but a PARTIAL match (some requested ids existed, some didn't) is NOT caught by that
+     * `=== 0` check, so it is reported as a full "Fields deleted" success even though some of
+     * the requested rows were never removed. This pins the current (weaker-than-Tag) behaviour
+     * in place — see the note above for the exact guard that lets it through.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultiplePartialMatchIsNotDetected()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            // Only 1 of the 2 requested ids actually matched a row.
+            return new QueryResult([], 1, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'customField/delete', 'items' => [100, 200]])
         );
 
         IntegrationTestCase::runApp($container);
@@ -186,6 +288,79 @@ class CustomFieldTest extends IntegrationTestCase
     }
 
     /**
+     * The form's first guard: a definition with no name must never reach the repository.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateMissingName()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveCreate'],
+                ['type' => 1, 'module' => 10]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field name not set","data":null}');
+    }
+
+    /**
+     * The type select defaults to a placeholder option that posts 0; the form must refuse
+     * that rather than persist a definition with no real type.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateMissingType()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveCreate'],
+                ['name' => self::$faker->colorName(), 'type' => 0, 'module' => 10]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field type not set","data":null}');
+    }
+
+    /**
+     * Same guard for the module select: 0 means "nothing chosen" and must be refused.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateMissingModule()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveCreate'],
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 0]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field module not set","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -210,6 +385,138 @@ class CustomFieldTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
 
+        $this->expectOutputString('{"status":"OK","description":"Field updated","data":null}');
+    }
+
+    /**
+     * The form's guard applies to edit too: a blank name is refused before any query runs.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditMissingName()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveEdit/100'],
+                ['type' => 1, 'module' => 10]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field name not set","data":null}');
+    }
+
+    /**
+     * saveEditAction loads the definition by id before deciding how to persist it. Editing
+     * an id that no longer exists must fail with "Field not found" instead of the service
+     * silently updating/creating a row for a definition that was never there.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditNotFound()
+    {
+        // No mapper resolver registered for CustomFieldDefinition::class: getById() sees
+        // 0 rows, exactly as it would for a definition deleted moments earlier.
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveEdit/999'],
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Field not found","data":null}');
+    }
+
+    /**
+     * When the submitted module differs from the stored one, saveEditAction takes the
+     * changeModule() branch instead of a plain update — deleting the old row and recreating
+     * it, since the repository's update() deliberately excludes 'moduleId' from its ->cols()
+     * (an in-place UPDATE can never move a field between modules).
+     *
+     * Worth knowing while reading this: the recreated row gets a new id, and CustomFieldData's
+     * definitionId is ON DELETE CASCADE (schemas/dbstructure.sql), so moving a field between
+     * modules discards every value already stored in it. That is the design, not a regression,
+     * and it is left alone here.
+     *
+     * This is the test that found the two defects fixed in this change: the row came back in the
+     * module it started in, and the request answered a 500 afterwards. Both are asserted from the
+     * outside — the module the INSERT actually bound, and the response the user gets.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditChangeModule()
+    {
+        $existing = $this->buildDefinition()->mutate(['id' => 100, 'moduleId' => 10]);
+
+        $deleteRan = null;
+        $insertRan = false;
+        $updateRan = false;
+        $insertedModuleId = null;
+
+        $this->databaseQueryResolver = function (QueryData $queryData) use (
+            $existing,
+            &$deleteRan,
+            &$insertRan,
+            &$updateRan,
+            &$insertedModuleId
+        ): QueryResult {
+            if ($queryData->getMapClassName() === CustomFieldDefinition::class) {
+                return new QueryResult([$existing]);
+            }
+
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'DELETE')) {
+                $deleteRan = $queryData->getQuery()->getBindValues();
+            } elseif (str_starts_with($statement, 'INSERT')) {
+                $insertRan = true;
+                $insertedModuleId = $queryData->getQuery()->getBindValues()['moduleId'] ?? null;
+            } elseif (str_starts_with($statement, 'UPDATE')) {
+                $updateRan = true;
+            }
+
+            return new QueryResult([], 1, 999);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'customField/saveEdit/100'],
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 20]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame(100, $deleteRan['id'] ?? null, 'Moving modules deletes the row being edited');
+        self::assertTrue($insertRan, 'Moving modules must recreate the row');
+        self::assertFalse($updateRan, 'Moving modules must not go through the in-place update path');
+
+        // The whole point of the edit: the recreated row carries the module the user submitted.
+        // It used to carry the pre-edit one, because the controller handed over the row it had
+        // just read back instead of the validated posted values — so the move never happened.
+        self::assertSame(20, $insertedModuleId, 'the field is recreated in the module it was moved to');
+
+        // And the move reports as a plain success. It used to answer a 500 carrying a TypeError,
+        // raised on the way out of a transaction that had already committed the delete and the
+        // insert — so the data had moved and the user was told it had not.
         $this->expectOutputString('{"status":"OK","description":"Field updated","data":null}');
     }
 
