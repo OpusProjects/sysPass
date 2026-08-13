@@ -53,6 +53,8 @@ use SP\Application\Export\Ports\XmlTagExportService;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\Export\Services\XmlExport;
 use SP\Domain\File\Ports\DirectoryHandlerService;
+use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\File\FileSystem;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\Core\Exceptions\FileException;
@@ -300,6 +302,55 @@ class XmlExportTest extends UnitaryTestCase
         $this->expectExceptionMessage('Error while exporting');
 
         $this->xmlExport->export($exportPath, $password);
+    }
+
+    /**
+     * @throws CheckException
+     * @throws Exception
+     * @throws FileException
+     * @throws ServiceException
+     * @throws DOMException
+     * @throws EnvironmentIsBrokenException
+     * @throws SPException
+     */
+    public function testAFailedExportLeavesThePreviousOneInPlace()
+    {
+        $this->context->setUserData(
+            UserDto::fromModel(
+                UserDataGenerator::factory()
+                                 ->buildUserData()
+                                 ->mutate(['login' => 'test_user', 'userGroupName' => 'test_group'])
+            )
+        );
+
+        // A real directory, not the harness's vfs one: the cleanup uses glob(), which does not
+        // see a stream wrapper — against vfs this test would pass without proving anything.
+        $directory = FileSystem::buildPath(sys_get_temp_dir(), 'syspass-export-ordering-' . bin2hex(random_bytes(6)));
+        mkdir($directory);
+
+        $previous = FileSystem::buildPath($directory, AppInfoInterface::APP_NAME . '_export-previous.xml');
+        file_put_contents($previous, '<Root/>');
+
+        $exportPath = $this->createMock(DirectoryHandlerService::class);
+        $exportPath->expects(self::once())->method('checkOrCreate');
+        $exportPath->method('getPath')->willReturn($directory);
+
+        $this->xmlCategoryExportService
+            ->expects(self::once())
+            ->method('export')
+            ->willThrowException(new RuntimeException('test'));
+
+        try {
+            $this->xmlExport->export($exportPath, self::$faker->password());
+            self::fail('the export was expected to fail');
+        } catch (ServiceException) {
+            // The point of the test is what survives it.
+        }
+
+        self::assertFileExists($previous, 'a failed export must not take the last good one with it');
+
+        unlink($previous);
+        rmdir($directory);
     }
 
     /**
