@@ -32,6 +32,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\Stub;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Application\Account\Ports\AccountAclService;
+use SP\Domain\Account\Adapters\AccountPermission;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Account\Models\AccountSearchView;
 use SP\Domain\Common\Dtos\QueryResult;
@@ -55,10 +57,13 @@ use SP\Tests\Support\IntegrationTestCase;
 class SearchFiltersTest extends IntegrationTestCase
 {
     private const ACCOUNT_NAME = 'an-account';
+    private const WIKI_ACCOUNT_NAME = 'wiki-topic';
+    private const WIKI_PAGE_URL = 'https://wiki.example.org/doku.php?id=';
 
     private ?AccountSearchFilterDto $savedFilter = null;
     private ?int                    $resultsPerPageOverride = null;
     private ?int                    $accountCountOverride = null;
+    private bool                    $wikiEnabled = false;
 
     protected function getContext(): SessionContext|Stub
     {
@@ -88,6 +93,12 @@ class SearchFiltersTest extends IntegrationTestCase
 
         if ($this->accountCountOverride !== null) {
             $data['getAccountCount'] = $this->accountCountOverride;
+        }
+
+        if ($this->wikiEnabled) {
+            $data['isWikiEnabled'] = true;
+            $data['getWikiFilter'] = ['wiki'];
+            $data['getWikiPageurl'] = self::WIKI_PAGE_URL;
         }
 
         return $data;
@@ -155,6 +166,78 @@ class SearchFiltersTest extends IntegrationTestCase
         // The pager renders "<first page> / <last page> (<page size>)" — the page size shown to
         // the user has to be the site default, not a zero-row page.
         $this->expectOutputRegex('/\d+ \/ \d+ \(4\)/');
+    }
+
+    /**
+     * When the wiki integration is on, a row whose account name matches the configured filter
+     * gets a link to its wiki page — the wikiFilter/wikiPageUrl the helper hands the view only
+     * matter once a row actually renders one.
+     *
+     * The row only reaches that markup when AccountSearchItem::isShow() is true, which the
+     * harness's default AccountAclService stub can never produce: it always returns an
+     * AccountPermission with resultView/resultEdit hardcoded true but never calls any of the
+     * setShow*() methods, so every showView/showEdit/showViewPass/showCopy/showDelete flag —
+     * and therefore isShow() — stays false regardless of the fixture's userId/userGroupId.
+     * Reaching the branch means overriding AccountAclService::class for this one test with a
+     * permission that actually grants a show action.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function wikiLinkIsRenderedForAMatchingAccountWhenWikiIsEnabled(): void
+    {
+        $this->wikiEnabled = true;
+
+        $this->addDatabaseMapperResolver(
+            AccountSearchView::class,
+            QueryResult::withTotalNumRows(
+                [
+                    AccountDataGenerator::factory()
+                                        ->buildAccountSearchView()
+                                        ->mutate(['name' => self::WIKI_ACCOUNT_NAME]),
+                ],
+                1
+            )
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/index']),
+            $this->withAccountShowable()
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex(
+            '#<a href="' . preg_quote(self::WIKI_PAGE_URL, '#') . self::WIKI_ACCOUNT_NAME
+            . '"\s*target="_blank">\s*<i class="material-icons"\s*title="Link to Wiki">library_books</i>#'
+        );
+    }
+
+    /**
+     * A permission that grants the "view" show-action, so AccountSearchItem::isShow() (and
+     * therefore the wiki link, and everything else gated behind it in search-rows.inc) is
+     * reachable — the harness's default AccountAclService stub never grants one.
+     *
+     * @return array<string, mixed>
+     * @throws Exception
+     */
+    private function withAccountShowable(): array
+    {
+        $accountAcl = self::createStub(AccountAclService::class);
+        $accountAcl->method('getAcl')->willReturnCallback(static function (int $actionId) {
+            $accountPermission = new AccountPermission($actionId);
+            $accountPermission->setCompiledAccountAccess(true);
+            $accountPermission->setCompiledShowAccess(true);
+            $accountPermission->setResultView(true);
+            $accountPermission->setResultEdit(true);
+            $accountPermission->setShowView(true);
+
+            return $accountPermission;
+        });
+
+        return [AccountAclService::class => $accountAcl];
     }
 
     /**
