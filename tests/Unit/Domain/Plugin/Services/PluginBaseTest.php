@@ -119,6 +119,86 @@ class PluginBaseTest extends UnitaryTestCase
         $this->assertEquals($dataUpdate, $this->pluginBase->getData());
     }
 
+    /**
+     * setLocales() is how a plugin registers its own gettext translation domain, so every string
+     * it shows a user can be translated instead of always falling back to the raw (English)
+     * source text. It has no concrete src/ subclass and nothing in this suite exercises it
+     * otherwise, so this pins the two things that make the registration correct: the domain is
+     * the plugin's name lower-cased (gettext domains are matched verbatim), and the directory is
+     * the plugin's base directory plus "locales".
+     *
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function testSetLocalesRegistersThePluginsTranslationDomain(): void
+    {
+        $pluginOperation = $this->createStub(PluginOperationInterface::class);
+        $pluginCompatilityService = $this->createStub(PluginCompatilityService::class);
+        $pluginCompatilityService->method('checkFor')->willReturn(false);
+        $pluginLoaderService = $this->createStub(PluginLoaderService::class);
+
+        $pluginBase = new class($pluginOperation, $pluginCompatilityService, $pluginLoaderService) extends PluginBase {
+
+            public function update(Event $event): void
+            {
+            }
+
+            public function getEvents(): ?string
+            {
+                return null;
+            }
+
+            public function getAuthor(): ?string
+            {
+                return null;
+            }
+
+            public function getVersion(): ?array
+            {
+                return null;
+            }
+
+            public function getCompatibleVersion(): ?array
+            {
+                return null;
+            }
+
+            public function getName(): ?string
+            {
+                return 'TestPlugin';
+            }
+
+            public function getBase(): ?string
+            {
+                // bindtextdomain() is a C-level call: it only keeps a binding that points at a
+                // real directory on disk, so this points at one directly — APP_PATH in the test
+                // bootstrap is a vfsStream URL, which gettext cannot read.
+                return '/var/www/html/resources';
+            }
+
+            public function onLoad()
+            {
+            }
+
+            public function onUpgrade(string $version)
+            {
+            }
+
+            public function exposeSetLocales(): void
+            {
+                $this->setLocales();
+            }
+        };
+
+        $pluginBase->exposeSetLocales();
+
+        self::assertSame(
+            '/var/www/html/resources' . DIRECTORY_SEPARATOR . 'locales',
+            bindtextdomain('testplugin', null)
+        );
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
