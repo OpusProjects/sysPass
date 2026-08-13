@@ -94,6 +94,20 @@ class InstallThrottleTest extends TestCase
     }
 
     /**
+     * A misconfigured PathsContext (the cache path never registered) makes
+     * resolving the store file throw before any file is even touched. The
+     * throttle must still fail open here too, otherwise a deployment mistake
+     * in the pre-auth install path would silently lock every operator out of
+     * installing sysPass at all, rather than just skipping the rate limit.
+     */
+    public function testFailsOpenWhenCachePathIsMissing(): void
+    {
+        $throttle = new InstallThrottle(new PathsContext(), $this->createStub(RequestService::class));
+
+        $this->assertTrue($throttle->isAllowed('192.0.2.1'));
+    }
+
+    /**
      * check() must key on REMOTE_ADDR, not the spoofable Forwarded header that
      * getClientAddress() trusts — otherwise an attacker rotates the header to
      * land in a fresh bucket every request and the limit never fires.

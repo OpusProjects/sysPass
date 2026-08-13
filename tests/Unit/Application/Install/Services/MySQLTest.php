@@ -623,6 +623,23 @@ class MySQLTest extends UnitaryTestCase
     }
 
     /**
+     * Rollback runs after an install has already failed. If it cannot even
+     * obtain a connection (e.g. the admin credentials were themselves the
+     * problem), it must fail open — log and return — rather than attempting
+     * any cleanup statement and masking the original failure with a new one.
+     */
+    public function testRollbackFailsOpenWhenConnectionCannotBeObtained(): void
+    {
+        $this->dbStorage->expects(self::once())
+                        ->method('getConnectionSimple')
+                        ->willThrowException(new SPException('no connection'));
+
+        $this->pdo->expects(self::never())->method('exec');
+
+        $this->mysqlService->rollback();
+    }
+
+    /**
      * @throws SPException
      */
     public function testCreateDBStructureIsSuccessful(): void
@@ -912,6 +929,101 @@ class MySQLTest extends UnitaryTestCase
         $this->expectExceptionMessage(sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user));
 
         $this->mysqlService->createDBUser($user, $pass);
+    }
+
+    /**
+     * The cleanup DROP can itself fail (e.g. the same connection issue that
+     * broke the CREATE). That must not abort the cleanup loop or replace the
+     * original creation error: the caller still needs to see why the user
+     * could not be created, not why the best-effort drop also failed.
+     *
+     * @throws SPException
+     */
+    public function testCreateDBUserDropCleanupFailureIsSwallowed(): void
+    {
+        $this->installData->setDbAuthHostDns(self::$faker->domainName());
+
+        $user = self::$faker->userName();
+        $pass = self::$faker->password();
+
+        $execArguments = [
+            [
+                sprintf(
+                    'CREATE USER %s@%s IDENTIFIED BY %s',
+                    $user,
+                    $this->installData->getDbAuthHost(),
+                    $pass
+                ),
+            ],
+            [
+                sprintf(
+                    'CREATE USER %s@%s IDENTIFIED BY %s',
+                    $user,
+                    $this->installData->getDbAuthHostDns(),
+                    $pass
+                ),
+            ],
+            [
+                sprintf(
+                    'DROP USER IF EXISTS %s@%s',
+                    $user,
+                    $this->installData->getDbAuthHost()
+                ),
+            ],
+        ];
+
+        $matcher = $this->exactly(3);
+
+        $this->pdo->expects($matcher)
+                  ->method('exec')
+                  ->with(...self::withConsecutive(...$execArguments))
+                  ->willReturnCallback(static function () use ($matcher) {
+                      // The DNS-variant CREATE fails, and so does the cleanup DROP of
+                      // the first variant that had already been created
+                      if ($matcher->numberOfInvocations() >= 2) {
+                          throw new PDOException('test');
+                      }
+
+                      return 1;
+                  });
+
+        $this->pdo->method('quote')->willReturnArgument(0);
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage(sprintf(__u('Error while creating the MySQL connection user \'%s\''), $user));
+
+        $this->mysqlService->createDBUser($user, $pass);
+    }
+
+    /**
+     * The table-existence count can fail for the same reasons the USE
+     * selecting the schema succeeds but a later privileged query does not
+     * (e.g. missing rights on information_schema). It must surface as an
+     * SPException the installer can report, not a raw driver exception.
+     *
+     * @throws SPException
+     */
+    public function testCheckDatabaseAvailabilityWrapsDriverErrorWhenCountingExistingTables(): void
+    {
+        $this->installData->setHostingMode(true);
+
+        $this->pdo->expects(self::once())
+                  ->method('exec')
+                  ->with(
+                      sprintf(
+                          'USE `%s`',
+                          $this->installData->getDbName()
+                      )
+                  );
+
+        $this->pdo->expects(self::once())
+                  ->method('prepare')
+                  ->willThrowException(new PDOException('driver down'));
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage(__u('Error while checking the database'));
+
+        $this->mysqlService->checkDatabaseAvailability();
     }
 
     /**

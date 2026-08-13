@@ -296,6 +296,67 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
+     * A TCP connection to 127.0.0.1/::1 arrives from an address that is not
+     * meaningfully "the DB host" (loopback aliasing, Docker's own bridge,
+     * NAT...); granting to that unpredictable source instead of a wildcard
+     * would leave the runtime user unable to authenticate.
+     *
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testTcpLoopbackAddressUsesWildcardAuthHost(): void
+    {
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
+
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        $params = $this->getInstallData();
+        $params->setDbHost('127.0.0.1');
+
+        $installer = $this->getDefaultInstaller();
+
+        $installer->run($params);
+
+        $this->assertEquals('%', $params->getDbAuthHost());
+    }
+
+    /**
+     * On the official Docker image (SYSPASS_DIR is set) the container's own
+     * address is neither stable nor reachable from outside it, so auth must
+     * fall back to a wildcard host rather than a container-local IP the DB
+     * server could never route back to.
+     *
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testDockerEnvironmentUsesWildcardAuthHost(): void
+    {
+        $expectedDbSetup = [self::$faker->userName(), self::$faker->password()];
+
+        $this->databaseSetup->expects($this->once())->method('setupDbUser')->willReturn($expectedDbSetup);
+        $this->userService->expects($this->once())->method('createWithMasterPass')->willReturn(1);
+
+        // setUp() already cleared $_ENV['SYSPASS_DIR'] for the duration of this test;
+        // set it back locally to simulate the Docker signal, and drop it again
+        // regardless of outcome so it can't leak into the next test.
+        $_ENV['SYSPASS_DIR'] = '/var/www/html';
+
+        try {
+            $params = $this->getInstallData();
+            $params->setDbHost(self::$faker->domainName());
+
+            $installer = $this->getDefaultInstaller();
+
+            $installer->run($params);
+
+            $this->assertEquals('%', $params->getDbAuthHost());
+        } finally {
+            unset($_ENV['SYSPASS_DIR']);
+        }
+    }
+
+    /**
      * @throws InvalidArgumentException
      * @throws SPException
      */
@@ -424,6 +485,33 @@ class InstallerTest extends UnitaryTestCase
         $this->expectExceptionMessage('Passwords do not match');
 
         $installer->run($params);
+    }
+
+    /**
+     * The install wizard collects the master password twice; a typo in the
+     * confirmation field must block the install, otherwise the vault could
+     * end up encrypted with a password the admin never actually recorded.
+     *
+     * @throws InvalidArgumentException
+     * @throws SPException
+     **/
+    public function testMasterPasswordDoesNotMatch(): void
+    {
+        $params = $this->getInstallData();
+        $params->setMasterPasswordRepeat('a-different-password');
+
+        $installer = $this->getDefaultInstaller();
+
+        try {
+            $installer->run($params);
+            $this->fail('Expected InvalidArgumentException was not thrown');
+        } catch (InvalidArgumentException $e) {
+            $this->assertSame('Passwords do not match', $e->getMessage());
+            $this->assertSame(
+                'The Master Password and its confirmation must be the same',
+                $e->getHint()
+            );
+        }
     }
 
     /**
