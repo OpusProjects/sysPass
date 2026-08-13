@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Plugin\Models\Plugin;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
@@ -61,6 +62,55 @@ class PluginTest extends IntegrationTestCase
         $this->givenAPlugin();
 
         $this->whenRequesting('plugin/view/100');
+    }
+
+    /**
+     * An id that no longer exists must surface an error instead of rendering whatever the lookup
+     * happened to return.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function viewUnknownPluginReportsNotFound()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'plugin/view/999'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Plugin not found","data":null}');
+    }
+
+    /**
+     * Viewing a plugin's stored data is gated on its own permission, checked before anything is
+     * looked up.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function viewDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $this->givenAPlugin();
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'plugin/view/100']),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
     }
 
     /**

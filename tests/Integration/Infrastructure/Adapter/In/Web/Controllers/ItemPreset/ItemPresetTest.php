@@ -32,6 +32,8 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
@@ -211,6 +213,102 @@ class ItemPresetTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Value updated","data":null}');
+    }
+
+    /**
+     * A preset without a user, group or profile attached would apply to nobody, so editing one
+     * that way must be refused just like the create form. This exercises the edit route's own
+     * catch(ValidationException) branch, which saveCreate's equivalent test (in
+     * ItemsPresetFormTest) does not reach — it posts to a different controller.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditWithoutAnyPermissionsIsRefused()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'itemPreset/saveEdit/100'],
+                ['type' => ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"There aren\'t any defined permissions","data":null}'
+        );
+    }
+
+    /**
+     * A database failure while saving must be reported as an error, not surfaced as an
+     * unhandled exception — this is the edit route's own generic catch(Exception), distinct
+     * from the ValidationException branch above.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditFailsWhenTheUpdateQueryErrors()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_starts_with($statement, 'UPDATE') && str_contains($statement, 'ItemPreset')) {
+                throw ConstraintException::error('Unable to update the item preset');
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'itemPreset/saveEdit/100'],
+                self::sessionTimeoutFields(900)
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Unable to update the item preset","data":null}');
+    }
+
+    /**
+     * Editing a preset is gated on its own permission, checked before the form is even read.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveEditDeniedByAcl()
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturn(false);
+        $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'itemPreset/saveEdit/100'],
+                self::sessionTimeoutFields(900)
+            ),
+            [AclInterface::class => $acl]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"You don\'t have permission to do this operation","data":null}'
+        );
     }
 
     /**
