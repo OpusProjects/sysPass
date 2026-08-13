@@ -325,6 +325,12 @@ class FunctionsTest extends TestCase
      */
     public function testFormatStackTraceRendersInternalFramesAndTypesEachArgument(): void
     {
+        // Whether a trace carries its arguments at all is an ini setting, and it differs between
+        // a development build and a production one — so it is pinned here rather than assumed,
+        // otherwise this passes locally and fails wherever the production ini is in force.
+        $ignoreArgs = ini_get('zend.exception_ignore_args');
+        ini_set('zend.exception_ignore_args', '0');
+
         try {
             array_map(static function ($x) {
                 throw new RuntimeException('boom');
@@ -332,6 +338,8 @@ class FunctionsTest extends TestCase
             $this->fail('the callback was expected to throw');
         } catch (RuntimeException $e) {
             $trace = formatStackTrace($e);
+        } finally {
+            ini_set('zend.exception_ignore_args', (string)$ignoreArgs);
         }
 
         $this->assertStringContainsString(
