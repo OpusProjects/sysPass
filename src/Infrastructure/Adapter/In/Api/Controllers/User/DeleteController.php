@@ -38,6 +38,6 @@ final class DeleteController extends UserBase
                 ->addDetail('ID', $id)
         ));
 
-        return ApiResponse::makeSuccess($userData, __('User removed'), $id);
+        return ApiResponse::makeSuccess(self::withoutCredentials($userData), __('User removed'), $id);
     }
 }

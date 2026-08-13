@@ -22,7 +22,10 @@ final class SearchController extends UserBase
         $this->eventDispatcher->notify(new Event('search.user', $this));
 
         return ApiResponse::makeSuccess(
-            $this->userService->search($itemSearchData)->getDataAsArray()
+            array_map(
+                self::withoutCredentials(...),
+                $this->userService->search($itemSearchData)->getDataAsArray()
+            )
         );
     }
 }

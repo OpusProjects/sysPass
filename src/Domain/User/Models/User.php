@@ -40,6 +40,15 @@ class User extends Model implements ItemWithIdAndNameModel
 
     public const TABLE = 'User';
 
+    /**
+     * The credential material: the password hash and the salt it was made with, and the user's
+     * master password and the key it is sealed with. Everything an offline attack on the vault
+     * would need, and nothing any list, view or API answer has a use for.
+     *
+     * @var string[]
+     */
+    public const CREDENTIAL_COLS = ['pass', 'hashSalt', 'mPass', 'mKey'];
+
     protected ?int    $id              = null;
     protected ?string $pass            = null;
     protected ?string $hashSalt        = null;

@@ -11,6 +11,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Api\Dtos\ApiResponse;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Infrastructure\Adapter\In\Api\Controllers\User\ViewController;
@@ -53,7 +54,15 @@ class ViewControllerTest extends UnitaryTestCase
         $this->assertInstanceOf(ApiResponse::class, $response);
         $result = $response->getResponse();
         $this->assertEquals(0, $result['resultCode']);
-        $this->assertSame($user, $result['result']);
+
+        // Everything the row carries except the credential material: the password hash and its
+        // salt, and the master password and the key it is sealed with, which never leave the
+        // application.
+        $this->assertSame($user->toArray(null, UserModel::CREDENTIAL_COLS, true), $result['result']);
+
+        foreach (UserModel::CREDENTIAL_COLS as $secret) {
+            $this->assertArrayNotHasKey($secret, $result['result']);
+        }
     }
 
     public function testViewActionNotFound(): void

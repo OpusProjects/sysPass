@@ -27,6 +27,6 @@ final class ViewController extends UserBase
                 ->addDetail('ID', $id)
         ));
 
-        return ApiResponse::makeSuccess($userData);
+        return ApiResponse::makeSuccess(self::withoutCredentials($userData));
     }
 }

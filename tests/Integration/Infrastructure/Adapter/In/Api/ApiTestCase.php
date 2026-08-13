@@ -116,6 +116,11 @@ abstract class ApiTestCase extends TestCase
         AclActionsInterface::PUBLICLINK_VIEW    => ['GET', '/api/v1/public-links/{id}'],
         AclActionsInterface::PUBLICLINK_DELETE  => ['DELETE', '/api/v1/public-links/{id}'],
         AclActionsInterface::PUBLICLINK_REFRESH => ['POST', '/api/v1/public-links/{id}/refresh'],
+        AclActionsInterface::USER_SEARCH       => ['GET', '/api/v1/users'],
+        AclActionsInterface::USER_CREATE       => ['POST', '/api/v1/users'],
+        AclActionsInterface::USER_VIEW         => ['GET', '/api/v1/users/{id}'],
+        AclActionsInterface::USER_EDIT         => ['PUT', '/api/v1/users/{id}'],
+        AclActionsInterface::USER_DELETE       => ['DELETE', '/api/v1/users/{id}'],
         AclActionsInterface::CONFIG_BACKUP_RUN => ['POST', '/api/v1/config/backup'],
         AclActionsInterface::CONFIG_EXPORT_RUN => ['POST', '/api/v1/config/export'],
     ];
