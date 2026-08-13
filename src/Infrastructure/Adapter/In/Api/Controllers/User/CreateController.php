@@ -30,7 +30,7 @@ final class CreateController extends UserBase
                 ->addDetail('ID', $id)
         ));
 
-        return ApiResponse::makeSuccess($userData, __('User added'), $id);
+        return ApiResponse::makeSuccess(self::withoutCredentials($userData), __('User added'), $id);
     }
 
     private function buildUserData(): User
@@ -38,6 +38,10 @@ final class CreateController extends UserBase
         return new User([
             'name'          => $this->apiService->getParamString('name', true),
             'login'         => $this->apiService->getParamString('login', true),
+            // Required: User.pass is NOT NULL with no default, so a user built without one cannot
+            // be inserted at all — and an account with an empty password is not something this
+            // endpoint should be able to create quietly either.
+            'pass'          => $this->apiService->getParamString('pass', true),
             'email'         => $this->apiService->getParamString('email'),
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
