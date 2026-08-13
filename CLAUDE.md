@@ -113,6 +113,14 @@ gotchas (the image provides these):
   logged-in user's preference, so `UserDataGenerator` pins `lang` to `en` (it used a random
   `faker->languageCode()`, which made integration tests assert English strings fail intermittently
   with da/is/fo/… responses).
+- **A killed `docker compose exec` keeps running inside the container.** Interrupting the host-side
+  client does not signal the process in the container: it carries on, and a CLI-command test that
+  was mid-run keeps Symfony's `LockableTrait` lock, so every later run of
+  `UpdateMasterPasswordCommandTest` fails with *"The command is already running in another
+  process"* — eight failures with nothing wrong in the code. Kill it inside the container
+  (`docker compose exec app sh -c 'ps -eo pid,cmd | grep phpunit'`, then `kill -9`) and remove
+  `/tmp/sf.*.lock`. The same applies to any interactive prompt: `CommandTester` with fewer inputs
+  than the command has questions blocks forever rather than failing.
 - `AccountPresetTest::testAddPresetPermissions` was flaky (faker-data collisions with the
   logged-in user's id/userGroupId); fixed by applying the same `array_diff` exclusion in test
   expectations that the production code uses.
