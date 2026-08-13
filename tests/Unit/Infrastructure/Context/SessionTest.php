@@ -29,7 +29,9 @@ namespace SP\Tests\Unit\Infrastructure\Context;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\RunClassInSeparateProcess;
 use PHPUnit\Framework\Attributes\Test;
+use SP\Domain\Account\Dtos\AccountCacheDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
+use SP\Domain\Core\Crypt\VaultInterface;
 use SP\Domain\Core\Exceptions\ContextException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\User\Dtos\UserDto;
@@ -292,6 +294,192 @@ class SessionTest extends UnitaryTestCase
         Session::close();
 
         self::assertNotSame(PHP_SESSION_ACTIVE, session_status());
+    }
+
+    /**
+     * A second request landing on a session that already carries a start time does not get that
+     * clock reset — otherwise a session's age (and with it, whether it is due for ID regeneration)
+     * would never advance past "just started" as long as it kept being used.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function reinitializingAnExistingSessionKeepsItsOriginalStartTime()
+    {
+        $session = $this->givenAStartedSession();
+
+        $sidStartTime = $session->getSidStartTime();
+        $startActivity = $session->getStartActivity();
+
+        // Commits and closes the session without destroying it, the way one request's end
+        // leaves it for the next request on the same session to pick back up.
+        session_write_close();
+
+        $next = new Session();
+        $next->initialize();
+
+        self::assertSame($sidStartTime, $next->getSidStartTime());
+        self::assertSame($startActivity, $next->getStartActivity());
+    }
+
+    /**
+     * A write against a session that has already been committed still lands — the context is bound
+     * in memory regardless of whether PHP considers the session "active" — but it is logged, since a
+     * write this late is a sign something upstream (like output already having started) sent the
+     * response before the application was done mutating the session.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function aWriteAfterTheSessionIsCommittedStillLandsButIsLogged()
+    {
+        $session = $this->givenAStartedSession();
+
+        session_write_close();
+
+        self::assertNotSame(PHP_SESSION_ACTIVE, session_status());
+
+        $session->setTheme('material-blue');
+
+        self::assertSame('material-blue', $session->getTheme());
+    }
+
+    /**
+     * The per-account ACL cache is reset by clearing its key outright, rather than by recomputing
+     * it — the next read simply finds nothing there and rebuilds it.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function resettingTheAccountAclClearsIt()
+    {
+        $session = $this->givenAStartedSession();
+
+        $_SESSION['context']->set('accountAcl', 'a-cached-acl');
+
+        $session->resetAccountAcl();
+
+        self::assertNull($_SESSION['context']->get('accountAcl'));
+    }
+
+    /**
+     * Full authorization is a separate flag from being logged in at all — a two-step login (e.g.
+     * pending a second factor) is logged in without yet being fully authorized, and this is the flag
+     * that tells the two states apart.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function fullAuthorizationIsCarriedSeparatelyFromBeingLoggedIn()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertFalse($session->getAuthCompleted(), 'not authorized until explicitly completed');
+
+        $session->setAuthCompleted(true);
+
+        self::assertTrue($session->getAuthCompleted());
+    }
+
+    /**
+     * The temporary master password used while a user is prompted to re-enter it, kept only for the
+     * duration of the session that needs it.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theTemporaryMasterPasswordIsCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertNull($session->getTemporaryMasterPass());
+
+        $session->setTemporaryMasterPass('a-temporary-password');
+
+        self::assertSame('a-temporary-password', $session->getTemporaryMasterPass());
+    }
+
+    /**
+     * The public key handed to the browser for client-side encryption, bound to one session so a
+     * key from another session is never reused.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function thePublicKeyIsCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertNull($session->getPublicKey());
+
+        $session->setPublicKey('a-public-key');
+
+        self::assertSame('a-public-key', $session->getPublicKey());
+    }
+
+    /**
+     * The encrypted master key (vault), kept so it survives from one request to the next without
+     * asking the user to re-enter the master password every time.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theVaultIsCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertNull($session->getVault());
+
+        $vault = $this->createStub(VaultInterface::class);
+        $session->setVault($vault);
+
+        self::assertSame($vault, $session->getVault());
+    }
+
+    /**
+     * The accounts cache, kept so the account list is not rebuilt from the database on every single
+     * page of a search.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theAccountsCacheIsCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertNull($session->getAccountsCache());
+
+        $accountsCache = [$this->createStub(AccountCacheDto::class)];
+        $session->setAccountsCache($accountsCache);
+
+        self::assertSame($accountsCache, $session->getAccountsCache());
+    }
+
+    /**
+     * The configuration load time, used to detect a configuration file that changed on disk since
+     * it was last read into this session.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theConfigLoadTimeIsCarried()
+    {
+        $session = $this->givenAStartedSession();
+
+        self::assertSame(0, $session->getConfigTime());
+
+        $session->setConfigTime(1700000000);
+
+        self::assertSame(1700000000, $session->getConfigTime());
     }
 
     /**
