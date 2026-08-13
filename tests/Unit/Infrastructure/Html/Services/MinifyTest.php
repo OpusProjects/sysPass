@@ -32,10 +32,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Domain\File\Ports\FileHandlerInterface;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Infrastructure\Html\Ports\MinifyService;
 use SP\Infrastructure\Html\Services\Minify;
 use SP\Infrastructure\Html\Services\MinifyCss;
 use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Tests\Support\UnitaryTestCase;
+use ReflectionException;
+use ReflectionProperty;
 use SplObjectStorage;
 
 /**
@@ -139,6 +142,72 @@ class MinifyTest extends UnitaryTestCase
         $this->expectException(FileException::class);
 
         $minify->addFile($fileHandler);
+    }
+
+    /**
+     * A builder is asked for so that files can be gathered without touching what it was built
+     * from. PHP's own shallow clone left both sharing one storage, so a file added to the builder
+     * appeared in the source as well — the css route builds one per request and would have served
+     * the js route's files alongside its own the moment anything reused the service.
+     *
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testABuilderDoesNotShareItsSourcesFiles(): void
+    {
+        $source = new MinifyCss($this->response, $this->request);
+
+        $builder = $source->builder();
+        $builder->addFile($this->existingFileHandler());
+
+        self::assertCount(1, $this->filesOf($builder));
+        self::assertCount(0, $this->filesOf($source), 'the source is left as it was');
+    }
+
+    /**
+     * And two builders from the same source do not share with each other either.
+     *
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testTwoBuildersDoNotShareWithEachOther(): void
+    {
+        $source = new MinifyCss($this->response, $this->request);
+
+        $first = $source->builder();
+        $second = $source->builder();
+
+        $first->addFile($this->existingFileHandler());
+
+        self::assertCount(1, $this->filesOf($first));
+        self::assertCount(0, $this->filesOf($second));
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function existingFileHandler(): FileHandlerInterface
+    {
+        $fileHandler = $this->createMock(FileHandlerInterface::class);
+        $fileHandler->method('checkFileExists');
+        $fileHandler->method('getName')->willReturn('app.min.js');
+        $fileHandler->method('getBase')
+                    ->willReturn(REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'js');
+
+        return $fileHandler;
+    }
+
+    /**
+     * The file list is private, and deliberately so — reading it back is the only way to tell one
+     * builder's contents from another's without rendering both.
+     *
+     * @throws \ReflectionException
+     */
+    private function filesOf(MinifyService $minify): SplObjectStorage
+    {
+        $files = new \ReflectionProperty(Minify::class, 'files');
+
+        return $files->getValue($minify);
     }
 
     /**
