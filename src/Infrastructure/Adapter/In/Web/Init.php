@@ -190,6 +190,12 @@ final class Init extends HttpModuleBase
 
         $this->isIndex = $controller === IndexController::class;
 
+        // PHP refuses to change a session ini setting once a session is active, so this has to
+        // happen before the session is started rather than after — where it used to be, it always
+        // failed silently and the configured timeout never reached PHP's own collector, which was
+        // then free to delete a session file the application still considered valid.
+        ini_set('session.gc_maxlifetime', (string)$this->configData->getSessionTimeout());
+
         $this->context->initialize();
 
         $isReload = $this->request->checkReload();
@@ -331,8 +337,12 @@ final class Init extends HttpModuleBase
 
             // Regenerate session's ID frequently to avoid fixation
             if ($sidStartTime === 0) {
-                // Try to set PHP's session lifetime
-                ini_set('session.gc_maxlifetime', $this->getSessionLifeTime());
+                // Resolve this session's timeout and store it: getSessionLifeTime() writes it into
+                // the session, and for a session this new nothing else has called it yet — the
+                // check above short-circuits while there is no recorded activity. PHP's own
+                // collector was told about the configured lifetime in initialize(), before the
+                // session existed, which is the only moment PHP accepts it.
+                $this->getSessionLifeTime();
             } elseif (!$inMaintenance
                       && SessionLifecycleHandler::needsRegenerate($sidStartTime)
                       && $this->context->isLoggedIn()
