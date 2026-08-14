@@ -8,6 +8,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ProfileHelp;
 
 abstract class ProfileBase extends ControllerBase
 {
@@ -22,5 +23,7 @@ abstract class ProfileBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->profileService = $profileService;
+
+        $this->apiService->setHelpClass(ProfileHelp::class);
     }
 }

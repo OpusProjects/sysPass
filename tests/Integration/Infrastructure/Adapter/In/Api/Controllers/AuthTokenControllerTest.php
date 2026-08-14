@@ -106,6 +106,8 @@ class AuthTokenControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('userId', $r->body->error->detail);
+        $this->assertStringContainsString('actionId', $r->body->error->detail);
     }
 
     /**

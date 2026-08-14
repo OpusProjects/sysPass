@@ -9,6 +9,7 @@ use SP\Application\Notification\Ports\NotificationService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\NotificationHelp;
 
 abstract class NotificationBase extends ControllerBase
 {
@@ -29,5 +30,7 @@ abstract class NotificationBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->notificationService = $notificationService;
+
+        $this->apiService->setHelpClass(NotificationHelp::class);
     }
 }

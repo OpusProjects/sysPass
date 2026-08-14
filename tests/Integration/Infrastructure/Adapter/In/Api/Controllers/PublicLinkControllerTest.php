@@ -64,6 +64,7 @@ class PublicLinkControllerTest extends ApiTestCase
 
         $this->assertSame(400, $r->status);
         $this->assertSame('Wrong parameters', $r->body->error->message);
+        $this->assertStringContainsString('itemId', $r->body->error->detail);
     }
 
     public function testViewAction(): void

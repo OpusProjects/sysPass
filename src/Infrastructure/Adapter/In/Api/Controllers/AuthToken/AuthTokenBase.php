@@ -9,6 +9,7 @@ use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Domain\Auth\Models\AuthToken as AuthTokenModel;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\AuthTokenHelp;
 
 abstract class AuthTokenBase extends ControllerBase
 {
@@ -29,6 +30,8 @@ abstract class AuthTokenBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->authTokenService = $authTokenService;
+
+        $this->apiService->setHelpClass(AuthTokenHelp::class);
     }
 
     /**

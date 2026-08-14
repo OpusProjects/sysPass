@@ -8,6 +8,7 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Application\CustomField\Ports\CustomFieldDefinitionService;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\CustomFieldHelp;
 
 abstract class CustomFieldBase extends ControllerBase
 {
@@ -22,5 +23,7 @@ abstract class CustomFieldBase extends ControllerBase
     ) {
         parent::__construct($application, $router, $apiService, $acl);
         $this->customFieldService = $customFieldService;
+
+        $this->apiService->setHelpClass(CustomFieldHelp::class);
     }
 }
