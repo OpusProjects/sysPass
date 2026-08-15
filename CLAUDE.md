@@ -388,6 +388,14 @@ Key constraints:
   never imported in the vendor bundle entry and never served. Likewise, a locked version ahead of
   a `^` constraint (e.g. `jsencrypt` `^3.3.2` → lock 3.5.4) is normal semver resolution, and
   bundle currency is enforced by CI's drift check.
+- **47 `route:` entries in `resources/actions.yaml` resolve to no controller — audited, and left
+  alone.** Every route the application *hands out* does resolve; those 47 belong to ACL action ids
+  nothing ever passes to `getRouteFor()` (`CATEGORY`, `WIKI_*`, `FILE_*`, the `CONFIG_*` section
+  ids, …), left over from before the rewrite split one controller per action. They exist so
+  permissions can be named, so deleting the actions would drop those permissions, and inventing a
+  controller for each would be inventing a feature. `RoutesAreDispatchableTest` lists them and
+  asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
+  excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
 
 ## Conventions
 
