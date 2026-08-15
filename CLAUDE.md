@@ -100,7 +100,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **2953 unit** + **719 integration**. The integration suite includes the
+Both pass: **3093 unit** + **881 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -150,16 +150,37 @@ The remaining ~750 statements are not a backlog to burn down uniformly. What is 
   directory as an injected interface and is unit-tested against a double — do not assume a branch
   here needs a server without checking what it depends on.
 - **Permission denials, in the integration suite.** `IntegrationTestCase` stubs `AclInterface`
-  with `checkUserAccess()` always returning `true`, so no integration test can exercise a refusal,
-  and one that appears to is passing for another reason. Cover a refusal in a **unit** test
-  instead, with the ACL mocked closed — that is how `AccountPasswordHelper`'s are pinned. The
-  mapping itself is unit-tested too: `Infrastructure/Acl/Acl.php` is at 100%.
+  with `checkUserAccess()` always returning `true`, so no integration test *through that harness*
+  can exercise a refusal, and one that appears to is passing for another reason. Cover a refusal in
+  a **unit** test instead, with the ACL mocked closed — that is how `AccountPasswordHelper`'s are
+  pinned. The mapping itself is unit-tested too: `Infrastructure/Acl/Acl.php` is at 100%. The
+  account ACL *is* exercised for real, in `tests/Integration/Application/Account/AccountAccessTest.php`,
+  by building a container by hand (below) and switching who is signed in.
 
 The session and the request guards are **no longer** in that list: `Infrastructure/Context/Session.php`
 is covered against a real PHP session under `#[RunClassInSeparateProcess]` (the technique
 `SessionLifecycleHandlerTest` already used), and `Adapter/In/Web/Init.php`'s guards are covered as
 plain unit tests. Neither needed a different test architecture — reach for a separate process
 before assuming something is unreachable.
+
+### Which harness to write against
+
+Five, and picking the wrong one is how a test ends up asserting nothing:
+
+| harness | database | use it for |
+|---|---|---|
+| `UnitaryTestCase` | none | a class in isolation |
+| `IntegrationTestCase` | **mocked** | a dispatched web request — controllers, forms, views |
+| `ApiTestCase` | real | the REST dispatch, with a real auth token |
+| `CliTestCase` | real | a console command, installed per test |
+| a container built by hand | real | anything that has to **persist and be read back** |
+
+That last one is not a class: `tests/Integration/Application/**` (the export/import round trip, the
+importers, history restore, brute-force tracking, the password reset, account access) each build
+`DomainDefinitions` + `CoreDefinitions('cli')` + the Cli `module.php` with a real `DbStorageHandler`.
+`IntegrationTestCase` mocks the database away, so a test that creates something and then looks for
+it there is asserting against a mock that answers whatever it was told to. Copy one of those files
+rather than inventing a sixth way.
 
 A few harness details bite when writing an integration test against a real branch:
 
@@ -189,6 +210,16 @@ A few harness details bite when writing an integration test against a real branc
   in a search row past the account's name sits behind that, so a test asserting any of it renders
   must override `AccountAclService` for itself (see `SearchFiltersTest`). Owning the fixture account
   does nothing; two attempts were lost to that before the cause was found.
+- **Every request the harness builds carries a CSRF token**, because `Csrf::check()` only enforces
+  anything when the session holds one and answering `null` switched the guard off for the whole
+  suite. A test that needs a request *without* one passes `csrfToken: null` to `buildRequest()`.
+- **`glob()` cannot see vfsStream.** Anything exercising file cleanup (the export's and the backup's
+  "delete the previous one" passes) must use a real directory, or it passes while proving nothing.
+- **An arrow function captures by value when it is created.** A mock callback that has to see a
+  value assigned later needs `function () use (&$x)`, not `fn() => $x`.
+- **Two test processes sharing the fixture database produce failures that are not yours.** A red
+  integration run while an agent or another shell is mid-run is contention until proven otherwise —
+  re-run it alone before believing it.
 - **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
@@ -328,6 +359,13 @@ Key constraints:
   `session.sid_bits_per_character` was removed from `SessionLifecycleHandler::SESSION_OPTIONS`.
 
 ## Known non-issues — audited, do NOT "fix"
+
+- **A password reset leaves the next sign-in asking for the previous password.** Not a broken
+  reset: the user's master password is sealed with a key derived from their login password, so
+  changing it without the old one leaves the vault unopenable and the login asks for the old one to
+  re-key it. Somebody who used the flow *because they forgot* cannot supply it and needs an
+  administrator to issue a temporary master password, which the login form takes in its place. This
+  is the crypto, not a defect — `PasswordResetFlowTest` records it with the reason.
 
 - **`SP\Domain\Plugin\Ports\PluginDataStorage` has no implementation in `src/` — intentional.**
   It is the `#[Hydratable]` target for `PluginData.data`; the concrete classes ship with the
