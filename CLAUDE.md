@@ -397,6 +397,25 @@ Key constraints:
   asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
   excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
 
+## Known defect — real, and too broad to fix in passing
+
+**The application escapes HTML on input, so every string is stored escaped and rendered escaped
+twice.** `Request::analyzeString()` (every web form) and `Api::getParamString()` (every REST
+parameter) both run `Filter::getString()`, which is `htmlspecialchars()`. Verified end to end:
+creating a category through the API named `Q&A <b>notes</b>` stores — and answers with —
+`Q&amp;A &lt;b&gt;notes&lt;/b&gt;`. The templates then escape again (`search-rows.inc`,
+`files-list.inc`, … all call `htmlspecialchars(..., ENT_QUOTES)` on render), so the UI shows
+`Q&amp;A`, and a JSON client gets entities where the user typed characters. It is 3.2's
+escape-on-input design, carried into the rewrite.
+
+Do not fix it one call site at a time. The escaped form *is* the storage format of every string
+field in the application, so unwinding it means storing raw and auditing every template and every
+non-HTML sink in the same change — and a template missed while values are suddenly raw is an XSS
+in a password manager. Two consequences have been dealt with where they surface instead: the
+download header no longer interpolates a name (`DownloadController::disposition()`), and the
+export/import round trip is pinned against XML-significant and non-ASCII text
+(`ExportImportRoundTripTest`).
+
 ## Conventions
 
 - One logical change per PR; clear title (`old → new` + why) and body.

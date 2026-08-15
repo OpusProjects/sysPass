@@ -247,10 +247,14 @@ final class ExportImportRoundTripTest extends TestCase
         $tagService = $this->dic->get(TagService::class);
         $accountService = $this->dic->get(AccountService::class);
 
-        $categoryName = 'RT Category ' . $suffix;
-        $clientName = 'RT Client ' . $suffix;
-        $tag1Name = 'RT Tag One ' . $suffix;
-        $tag2Name = 'RT Tag Two ' . $suffix;
+        // Everything a vault is allowed to be named that XML is not: the characters the document
+        // has to escape, and text outside ASCII. An export is how somebody moves their vault, so a
+        // name that comes back mangled is silent data loss — and it would be invisible to a fixture
+        // named only in letters and digits.
+        $categoryName = 'RT Category & <Special> ' . $suffix;
+        $clientName = 'RT Client "quoted" & \'apostrophe\' ' . $suffix;
+        $tag1Name = 'RT Tag <One> ' . $suffix;
+        $tag2Name = 'RT Tág Two ☕ ' . $suffix;
 
         $categoryId = $categoryService->create(
             new Category(['name' => $categoryName, 'description' => 'RT category description ' . $suffix])
@@ -261,10 +265,10 @@ final class ExportImportRoundTripTest extends TestCase
         $tag1Id = $tagService->create(new Tag(['name' => $tag1Name]));
         $tag2Id = $tagService->create(new Tag(['name' => $tag2Name]));
 
-        $accountName = 'RT Account ' . $suffix;
+        $accountName = 'RT Account & <Co> "Ltd" ' . $suffix;
         $accountLogin = 'rt-login-' . $suffix;
-        $accountUrl = 'https://example.test/' . $suffix;
-        $accountNotes = "roundtrip notes\nfor " . $suffix;
+        $accountUrl = 'https://example.test/' . $suffix . '?a=1&b=2';
+        $accountNotes = "roundtrip notes\nfor <b>" . $suffix . "</b> & more — ünïcode";
         $accountPass = 'RtPass!' . $suffix . bin2hex(random_bytes(4));
 
         $accountId = $accountService->create(
