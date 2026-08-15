@@ -32,6 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use SP\Application\Account\Ports\AccountCryptService;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Crypt\Ports\MasterPassService;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Database\DatabaseException;
 use SP\Domain\Database\DatabaseConnectionData;
@@ -67,6 +68,7 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     // shared fixture password would not.
     private const ACCOUNT_ONE_PASSWORD = 'correct horse battery staple 1';
     private const ACCOUNT_TWO_PASSWORD = 'Tr0ub4dor&3 the second account';
+    private const CUSTOM_FIELD_VALUE = 'a-custom-field-value';
     private const HISTORY_PASSWORD = 'a historical password, pre-rotation';
 
     /**
@@ -424,6 +426,8 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
             'user-one',
             self::ACCOUNT_ONE_PASSWORD
         );
+        $this->insertCustomFieldValue($pdo, $accountOneId, self::CUSTOM_FIELD_VALUE);
+
         $accountTwoId = $this->insertAccountWithKnownPassword(
             $pdo,
             'Round-trip account two',
@@ -454,6 +458,10 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
             self::HISTORY_PASSWORD,
             $this->readHistoryPassword($pdo, $historyId, self::CURRENT_MASTERPASS)
         );
+        $this->assertSame(
+            self::CUSTOM_FIELD_VALUE,
+            $this->readCustomFieldValue($pdo, $accountOneId, self::CURRENT_MASTERPASS)
+        );
 
         $commandTester = $this->executeCommandTest(
             UpdateMasterPasswordCommand::class,
@@ -472,6 +480,13 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
         $this->assertSame(
             self::ACCOUNT_ONE_PASSWORD,
             $this->readAccountPassword($pdo, $accountOneId, self::NEW_MASTERPASS)
+        );
+        // Custom fields hold whatever an installation decided to keep beside an account — a PIN, a
+        // recovery code, a second credential — encrypted the same way. They are re-encrypted in the
+        // same transaction, and nothing asserted they came through it.
+        $this->assertSame(
+            self::CUSTOM_FIELD_VALUE,
+            $this->readCustomFieldValue($pdo, $accountOneId, self::NEW_MASTERPASS)
         );
         $this->assertSame(
             self::ACCOUNT_TWO_PASSWORD,
@@ -753,6 +768,46 @@ class UpdateMasterPasswordCommandTest extends CliTestCase
     /**
      * Same as readAccountPassword(), for an AccountHistory row.
      */
+    /**
+     * A custom field value against an account, encrypted under the current master password the way
+     * the application stores one. The definition it hangs off is created here too, since the
+     * fixture database ships none.
+     */
+    private function insertCustomFieldValue(PDO $pdo, int $accountId, string $value): void
+    {
+        $pdo->prepare(
+            'INSERT INTO CustomFieldDefinition (moduleId, name, typeId, required, isEncrypted)
+             VALUES (:moduleId, :name, 1, 0, 1)'
+        )->execute(['moduleId' => AclActionsInterface::ACCOUNT, 'name' => 'Round-trip field']);
+
+        $definitionId = (int)$pdo->lastInsertId();
+
+        $encrypted = self::$dic->get(AccountCryptService::class)
+                               ->getPasswordEncrypted($value, self::CURRENT_MASTERPASS);
+
+        $pdo->prepare(
+            'INSERT INTO CustomFieldData (moduleId, itemId, definitionId, data, `key`)
+             VALUES (:moduleId, :itemId, :definitionId, :data, :key)'
+        )->execute(
+            [
+                'moduleId' => AclActionsInterface::ACCOUNT,
+                'itemId' => $accountId,
+                'definitionId' => $definitionId,
+                'data' => $encrypted->getPass(),
+                'key' => $encrypted->getKey(),
+            ]
+        );
+    }
+
+    private function readCustomFieldValue(PDO $pdo, int $accountId, string $masterPassword): string
+    {
+        $statement = $pdo->prepare('SELECT data, `key` FROM CustomFieldData WHERE itemId = :itemId');
+        $statement->execute(['itemId' => $accountId]);
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return self::$dic->get(CryptInterface::class)->decrypt($row['data'], $row['key'], $masterPassword);
+    }
+
     private function readHistoryPassword(PDO $pdo, int $historyId, string $masterPassword): string
     {
         $statement = $pdo->prepare('SELECT pass, `key` FROM AccountHistory WHERE id = :id');
