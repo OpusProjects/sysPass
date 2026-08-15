@@ -392,6 +392,32 @@ test.describe('Account lifecycle', () => {
       });
       await expect(popup).toBeHidden({ timeout: 5_000 });
 
+      // ── 7b. Mark it as a favourite, and check the star stuck ────────────
+      // The favourite toggle answers the same either way — the star flips in the
+      // browser whatever the server did — so the only way to know it was saved
+      // is to ask the database. It used to send its route in the POST body,
+      // where the router never looks, so nothing was ever recorded.
+      const favouriteStar = page.locator(`#btn-favorite-${accountId}`);
+
+      if (await favouriteStar.count()) {
+        await Promise.all([
+          page.waitForResponse(
+            (r) => r.url().includes('accountFavorite') && r.status() === 200,
+            { timeout: 10_000 }
+          ),
+          favouriteStar.click(),
+        ]);
+
+        const favouriteRows = dbQueryOne(
+          `SELECT COUNT(*) FROM AccountToFavorite WHERE accountId = ${accountId}`
+        );
+
+        expect(
+          Number(favouriteRows),
+          'marking an account as a favourite has to reach the database'
+        ).toBe(1);
+      }
+
       // ── 8. Delete the account ────────────────────────────────────────────
       await page.evaluate(() => {
         sysPassApp.actions.getContent({ r: 'account/index' }, 'search');
