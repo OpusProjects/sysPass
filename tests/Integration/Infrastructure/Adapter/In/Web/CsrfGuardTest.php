@@ -56,7 +56,6 @@ use SP\Tests\Support\IntegrationTestCase;
 #[Group('integration')]
 class CsrfGuardTest extends IntegrationTestCase
 {
-    private const SESSION_TOKEN = '5f0c2a6c184c4b6c9c9c9d1e6b1a7c9a0e6a2d1f3b4c5d6e7f8091a2b3c4d5e6';
     private const WRONG_TOKEN   = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
     private const REFUSAL_BODY = '{"status":"ERROR","description":"Invalid request token","data":null}';
@@ -78,7 +77,7 @@ class CsrfGuardTest extends IntegrationTestCase
         $context->method('getAuthCompleted')->willReturn(true);
         $context->method('getUserData')->willReturn($this->getUserDataDto());
         $context->method('getUserProfile')->willReturn($this->getUserProfile());
-        $context->method('getCSRF')->willReturn(self::SESSION_TOKEN);
+        $context->method('getCSRF')->willReturn(self::CSRF_TOKEN);
 
         return $context;
     }
@@ -110,7 +109,8 @@ class CsrfGuardTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'category/saveCreate'],
-                self::categoryFields()
+                self::categoryFields(),
+                csrfToken: null
             )
         );
 
@@ -127,8 +127,6 @@ class CsrfGuardTest extends IntegrationTestCase
     #[Test]
     public function postWithTheWrongCsrfTokenIsRefused(): void
     {
-        $_SERVER['HTTP_X_CSRF'] = self::WRONG_TOKEN;
-
         $this->watchForCategoryInsert();
 
         $container = $this->buildContainer(
@@ -136,7 +134,8 @@ class CsrfGuardTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'category/saveCreate'],
-                self::categoryFields()
+                self::categoryFields(),
+                csrfToken: self::WRONG_TOKEN
             )
         );
 
@@ -156,8 +155,6 @@ class CsrfGuardTest extends IntegrationTestCase
     #[Test]
     public function postWithTheRightCsrfTokenIsServed(): void
     {
-        $_SERVER['HTTP_X_CSRF'] = self::SESSION_TOKEN;
-
         $this->watchForCategoryInsert();
 
         $container = $this->buildContainer(
@@ -195,7 +192,8 @@ class CsrfGuardTest extends IntegrationTestCase
             IntegrationTestCase::buildRequest(
                 'get',
                 'index.php',
-                array_merge(['r' => 'category/saveCreate'], self::categoryFields())
+                array_merge(['r' => 'category/saveCreate'], self::categoryFields()),
+                csrfToken: null
             )
         );
 
