@@ -105,6 +105,12 @@ class AccountSearchItemTest extends UnitaryTestCase
             'a bare host' => ['example.invalid', false],
             'a note' => ['ask the admin', false],
             'empty' => ['', false],
+            // Has a scheme, and even the slashes — in JavaScript they start a comment, so the
+            // payload runs on the line after %0a. Offered as a link, it is a stored XSS against
+            // whoever opens the account somebody shared with them.
+            'javascript' => ['javascript://%0aalert(1)', false],
+            'javascript, mixed case' => ['JaVaScRiPt://%0aalert(1)', false],
+            'data' => ['data://text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg==', false],
         ];
     }
 

@@ -108,9 +108,19 @@ final class AccountSearchItem
         return Html::truncate($this->accountSearchView->getUrl() ?? '', $this->textMaxLength);
     }
 
+    /**
+     * Whether the account's address is offered as a link.
+     *
+     * Having a scheme is not enough. `javascript://%0aalert(1)` has one — and satisfies the `//`
+     * as well, since in JavaScript that starts a comment and the payload runs on the next line —
+     * so the address is also held to being one a browser will fetch rather than execute. An
+     * address that is not is shown as text, which is what the caller does with anything unlinkable.
+     */
     public function isUrlIslink(): bool
     {
-        return preg_match('#^\w+://#', $this->accountSearchView->getUrl() ?? '') === 1;
+        $url = $this->accountSearchView->getUrl() ?? '';
+
+        return preg_match('#^\w+://#', $url) === 1 && Html::isSafeUrl($url);
     }
 
     public function getShortLogin(): string
@@ -160,8 +170,8 @@ final class AccountSearchItem
     public function getAccesses(): array
     {
         $accesses = [
-            '(G*) <em>' . htmlspecialchars($this->accountSearchView->getUserGroupName() ?? '', ENT_QUOTES, 'UTF-8') . '</em>',
-            '(U*) <em>' . htmlspecialchars($this->accountSearchView->getUserLogin() ?? '', ENT_QUOTES, 'UTF-8') . '</em>',
+            '(G*) <em>' . Html::escape($this->accountSearchView->getUserGroupName()) . '</em>',
+            '(U*) <em>' . Html::escape($this->accountSearchView->getUserLogin()) . '</em>',
         ];
 
         $userLabel = $this->accountSearchView->getOtherUserEdit() === 1 ? 'U+' : 'U';
@@ -171,7 +181,7 @@ final class AccountSearchItem
             $accesses[] = sprintf(
                 '(%s) <em>%s</em>',
                 $userGroupLabel,
-                htmlspecialchars($group->getName() ?? '', ENT_QUOTES, 'UTF-8')
+                Html::escape($group->getName())
             );
         }
 
@@ -179,7 +189,10 @@ final class AccountSearchItem
             $accesses[] = sprintf(
                 '(%s) <em>%s</em>',
                 $userLabel,
-                htmlspecialchars($user->login ?? '', ENT_QUOTES, 'UTF-8')
+                // The `?? ''` is not about null — Html::escape() takes it. `login` is reached
+                // through Model::__get(), so without a null-coalesce PHPStan sees a property that
+                // is not declared anywhere.
+                Html::escape($user->login ?? '')
             );
         }
 
@@ -221,7 +234,7 @@ final class AccountSearchItem
     public function getShortNotes(): string
     {
         if ($this->accountSearchView->getNotes()) {
-            return nl2br(htmlspecialchars(Html::truncate($this->accountSearchView->getNotes(), 300), ENT_QUOTES));
+            return nl2br(Html::escape(Html::truncate($this->accountSearchView->getNotes(), 300)));
         }
 
         return '';
