@@ -33,6 +33,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use SP\Domain\Common\Services\ServiceException;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Core\Exceptions\InvalidClassException;
@@ -108,8 +109,13 @@ class UpgradeTest extends UnitaryTestCase
      */
     public function testUpgrade()
     {
-        $configData = $this->createStub(ConfigDataInterface::class);
-        $this->config->expects($this->never())
+        $configData = $this->createMock(ConfigDataInterface::class);
+
+        // Even with nothing to apply, the run records that the application is now at this
+        // version. Without it ModuleBase::checkUpgradeNeeded() keeps answering yes and the
+        // instance is sent back to the upgrade page on the next request.
+        $configData->expects($this->once())->method('setAppVersion')->with(Version::getVersionStringNormalized());
+        $this->config->expects($this->once())
                      ->method('save');
 
         $this->upgrade->upgrade('400.00000000', $configData);
@@ -142,7 +148,8 @@ class UpgradeTest extends UnitaryTestCase
             ->with(UpgradeHandlerStub::class)
             ->willReturn($handler);
 
-        $this->config->expects($this->exactly(2))
+        // Two saves for the two handlers, and a third for the version the run finished at.
+        $this->config->expects($this->exactly(3))
                      ->method('save')
             ->with($configData, true);
 
