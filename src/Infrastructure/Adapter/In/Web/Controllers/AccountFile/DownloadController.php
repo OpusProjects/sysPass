@@ -31,6 +31,7 @@ use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 
 use function SP\__u;
 
@@ -73,14 +74,37 @@ final class DownloadController extends AccountFileBase
 
         $type = strtolower($fileDto->type ?? '');
 
-        if ($type === 'application/pdf') {
-            $disposition = sprintf('inline; filename="%s"', $fileDto->name);
-        } else {
-            $disposition = sprintf('attachment; filename="%s"', $fileDto->name);
-        }
-
-        $response->header('Content-Disposition', $disposition);
+        $response->header(
+            'Content-Disposition',
+            self::disposition(
+                $type === 'application/pdf' ? HeaderUtils::DISPOSITION_INLINE : HeaderUtils::DISPOSITION_ATTACHMENT,
+                $fileDto->name ?? ''
+            )
+        );
 
         return ActionResponse::ok($fileDto->content);
+    }
+
+    /**
+     * The name is whoever uploaded the file's, and it reaches the browser as the name the download
+     * is saved under. Interpolating it into `filename="…"` let that name end the quoted string and
+     * add parameters of its own: `filename*=` takes precedence over `filename=` in every browser,
+     * so an attachment listed as one thing downloaded as another. HeaderUtils encodes it instead,
+     * which also gets a non-ASCII name across correctly rather than emitting it raw.
+     *
+     * It refuses a path separator outright, and a name is not a path — the download is a single
+     * file whatever the name says — so both separators go, along with anything a fallback may not
+     * carry.
+     */
+    private static function disposition(string $disposition, string $name): string
+    {
+        $name = trim(str_replace(['/', '\\'], '_', $name));
+        $fallback = trim((string)preg_replace('/[^A-Za-z0-9._-]/', '_', $name), '_');
+
+        return HeaderUtils::makeDisposition(
+            $disposition,
+            $name === '' ? 'file' : $name,
+            $fallback === '' ? 'file' : $fallback
+        );
     }
 }
