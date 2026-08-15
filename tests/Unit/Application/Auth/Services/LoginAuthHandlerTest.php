@@ -530,7 +530,9 @@ class LoginAuthHandlerTest extends UnitaryTestCase
         $this->trackService
             ->expects($this->atLeast(1))
             ->method('buildTrackRequest')
-            ->with(LoginAuthHandler::class)
+            // Every part of the sign-in flow counts into one bucket: keyed per class, a wrong
+            // password went into a bucket that nothing ever read.
+            ->with('login')
             ->willReturn(
                 new TrackRequest(
                     self::$faker->unixTime(),
