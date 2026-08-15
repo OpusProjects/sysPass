@@ -39,7 +39,7 @@ use function SP\__;
 ?>
 <div id="box-popup" class="box-password-view">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?>&nbsp;
+        echo $_e($_getvar('header')); ?>&nbsp;
         <?php
         if ($_getvar('isLinked')): ?>
             <i title="<?php
@@ -55,7 +55,7 @@ use function SP\__;
             <?php
             if (!$_getvar('isImage')): ?>
                 <td class="dialog-text dialog-user-text"><?php
-                    echo wordwrap($_getvar('login') ?? '', 50, PHP_EOL, true); ?></td>
+                    echo $_e(wordwrap($_getvar('login') ?? '', 50, PHP_EOL, true)); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php
@@ -71,7 +71,7 @@ use function SP\__;
             else: ?>
                 <td class="dialog-user-text">
                     <img src="data:image/png;base64,<?php
-                    echo $_getvar('login'); ?>"/>
+                    echo $_e($_getvar('login')); ?>"/>
                 </td>
                 <td>&nbsp;</td>
             <?php
@@ -81,7 +81,7 @@ use function SP\__;
             <?php
             if (!$_getvar('isImage')): ?>
                 <td class="dialog-text dialog-pass-text"><?php
-                    echo wordwrap($_getvar('pass') ?? '', 50, PHP_EOL, true); ?></td>
+                    echo $_e(wordwrap($_getvar('pass') ?? '', 50, PHP_EOL, true)); ?></td>
                 <td class="dialog-button right">
                     <button class="dialog-clip-button mdl-button mdl-js-button mdl-js-ripple-effect"
                             title="<?php
@@ -97,7 +97,7 @@ use function SP\__;
             else: ?>
                 <td class="dialog-pass-text">
                     <img src="data:image/png;base64,<?php
-                    echo $_getvar('pass'); ?>"/>
+                    echo $_e($_getvar('pass')); ?>"/>
                 </td>
                 <td>&nbsp;</td>
             <?php

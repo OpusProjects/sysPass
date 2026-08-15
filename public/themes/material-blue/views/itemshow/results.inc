@@ -36,14 +36,14 @@ use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
     <table class="popup-data">
         <tbody>
         <tr id="ldap-results">
             <td class="valField">
                 <div class="lowres-title"><?php
-                    echo $_getvar('header'); ?></div>
+                    echo $_e($_getvar('header')); ?></div>
                 <div class="list-wrap"></div>
             </td>
         </tr>

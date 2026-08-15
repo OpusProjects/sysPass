@@ -59,7 +59,7 @@ use function SP\__;
                                         name="other_users_view[]"
                                         multiple="multiple"
                                         class="select-box-tags" <?php
-                                echo $_getvar('disabled'); ?>>
+                                echo $_e($_getvar('disabled')); ?>>
                                     <option value=""><?php
                                         echo __('Select Users'); ?></option>
                                     <?php
@@ -72,7 +72,7 @@ use function SP\__;
                                                 echo $otherUser->getId(); ?>"
                                             <?php
                                             echo $otherUser->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></option>
+                                            echo $_e($otherUser->getName()); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -94,7 +94,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></span>
+                                                    echo $_e($otherUser->getName()); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -112,7 +112,7 @@ use function SP\__;
                                         name="other_users_edit[]"
                                         multiple="multiple"
                                         class="select-box-tags" <?php
-                                echo $_getvar('disabled'); ?>>
+                                echo $_e($_getvar('disabled')); ?>>
                                     <option value=""><?php
                                         echo __('Select Users'); ?></option>
                                     <?php
@@ -125,7 +125,7 @@ use function SP\__;
                                                 echo $otherUser->getId(); ?>"
                                             <?php
                                             echo $otherUser->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></option>
+                                            echo $_e($otherUser->getName()); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -147,7 +147,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUser->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars($otherUser->getName() ?? '', ENT_QUOTES); ?></span>
+                                                    echo $_e($otherUser->getName()); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -172,7 +172,7 @@ use function SP\__;
                                         name="other_usergroups_view[]"
                                         multiple="multiple"
                                         class="select-box-tags" <?php
-                                echo $_getvar('disabled'); ?>>
+                                echo $_e($_getvar('disabled')); ?>>
                                     <option value=""><?php
                                         echo __('Select Groups'); ?></option>
                                     <?php
@@ -185,7 +185,7 @@ use function SP\__;
                                                 echo $otherUserGroup->getId(); ?>"
                                             <?php
                                             echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUserGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                            echo $_e($otherUserGroup->getName()); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -207,10 +207,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars(
-                                                        $otherUserGroup->getName() ?? '',
-                                                        ENT_QUOTES
-                                                    ); ?></span>
+                                                    echo $_e($otherUserGroup->getName()); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -228,7 +225,7 @@ use function SP\__;
                                         name="other_usergroups_edit[]"
                                         multiple="multiple"
                                         class="select-box-tags" <?php
-                                echo $_getvar('disabled'); ?>>
+                                echo $_e($_getvar('disabled')); ?>>
                                     <option value=""><?php
                                         echo __('Select Groups'); ?></option>
                                     <?php
@@ -241,7 +238,7 @@ use function SP\__;
                                                 echo $otherUserGroup->getId(); ?>"
                                             <?php
                                             echo $otherUserGroup->isSelected() ? 'selected' : '' ?>><?php
-                                            echo htmlspecialchars($otherUserGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                            echo $_e($otherUserGroup->getName()); ?></option>
                                     <?php
                                     endforeach; ?>
                                 </select>
@@ -263,10 +260,7 @@ use function SP\__;
                                             <?php
                                             if ($otherUserGroup->isSelected()): ?>
                                                 <span class="tag"><?php
-                                                    echo htmlspecialchars(
-                                                        $otherUserGroup->getName() ?? '',
-                                                        ENT_QUOTES
-                                                    ); ?></span>
+                                                    echo $_e($otherUserGroup->getName()); ?></span>
                                             <?php
                                             endif; ?>
                                         <?php
@@ -306,7 +300,7 @@ use function SP\__;
                 <td class="valField">
                     <select id="owner_id" name="owner_id"
                             class="select-box" <?php
-                    echo $_getvar('disabled'); ?>>
+                    echo $_e($_getvar('disabled')); ?>>
                         <option value=""><?php
                             echo __('Select User'); ?></option>
                         <?php
@@ -317,7 +311,7 @@ use function SP\__;
                                     echo $user->getId(); ?>"
                                 <?php
                                 echo $user->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
+                                echo $_e($user->getName()); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
@@ -340,7 +334,7 @@ use function SP\__;
                 <td class="valField">
                     <select id="main_usergroup_id" name="main_usergroup_id"
                             class="select-box" <?php
-                    echo $_getvar('disabled'); ?>>
+                    echo $_e($_getvar('disabled')); ?>>
                         <option value=""><?php
                             echo __('Select Group'); ?></option>
                         <?php
@@ -351,7 +345,7 @@ use function SP\__;
                                     echo $userGroup->getId(); ?>"
                                 <?php
                                 echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                echo $_e($userGroup->getName()); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
@@ -374,7 +368,7 @@ use function SP\__;
                                id="private_enabled"
                                class="mdl-switch__input" <?php
                         echo $checked ? 'checked' : '';
-                        echo $_getvar('disabled'); ?>/>
+                        echo $_e($_getvar('disabled')); ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Private'); ?></span>
                     </label>
@@ -397,7 +391,7 @@ use function SP\__;
                                id="private_group_enabled"
                                class="mdl-switch__input" <?php
                         echo $checked ? 'checked' : '';
-                        echo $_getvar('disabled'); ?>/>
+                        echo $_e($_getvar('disabled')); ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Private for Group'); ?></span>
                     </label>

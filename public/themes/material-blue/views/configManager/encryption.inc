@@ -63,7 +63,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                         echo __('Last change'); ?></div>
 
                     <?php
-                    echo date('r', $_getvar('lastUpdateMPass')); ?>
+                    echo $_e(date('r', $_getvar('lastUpdateMPass'))); ?>
                 </td>
             </tr>
         <?php
@@ -224,7 +224,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
     if ($_getvar('taskId')): ?>
         <input type="hidden" name="taskId"
                value="<?php
-               echo $_getvar('taskId'); ?>">
+               echo $_e($_getvar('taskId')); ?>">
         <input type="hidden" name="lock" value="masterpass">
     <?php
     endif; ?>
@@ -318,7 +318,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                     echo __('Last change'); ?></div>
 
                 <?php
-                echo ($_getvar('tempMasterPassTime') > 0) ? date('r', $_getvar('tempMasterPassTime')) : __(
+                echo ($_getvar('tempMasterPassTime') > 0) ? $_e(date('r', $_getvar('tempMasterPassTime'))) : __(
                     'Not generated'
                 ); ?>
             </td>
@@ -355,7 +355,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                     echo __('Attempts'); ?></div>
 
                 <?php
-                echo $_getvar('tempMasterAttempts'); ?>
+                echo $_e($_getvar('tempMasterAttempts')); ?>
             </td>
         </tr>
         <tr>
@@ -425,7 +425,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                         <option
                                 value="<?php
                                 echo $userGroup->getId(); ?>"><?php
-                            echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                            echo $_e($userGroup->getName()); ?></option>
                     <?php
                     endforeach; ?>
                 </select>
@@ -443,7 +443,7 @@ $disabled = $configData->isMaintenance() ? '' : 'disabled';
                         echo __('Password'); ?></div>
 
                     <?php
-                    echo $_getvar('tempMasterPass'); ?>
+                    echo $_e($_getvar('tempMasterPass')); ?>
                 </td>
             </tr>
         <?php

@@ -43,15 +43,15 @@ $notification = $_getvar('notification');
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmNotices" id="frmNotices" class="form-action"
           data-onsubmit="notification/save"
           data-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-action-next="<?php
-          echo $_getvar('nextAction'); ?>"
+          echo $_e($_getvar('nextAction')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -64,8 +64,8 @@ $notification = $_getvar('notification');
                                type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($notification->getType() ?? '', ENT_QUOTES); ?>" <?php
-                        echo $_getvar('disabled'); ?>>
+                               echo $_e($notification->getType()); ?>" <?php
+                        echo $_e($_getvar('disabled')); ?>>
                         <label class="mdl-textfield__label"
                                for="notification_type"><?php
                             echo __('Type'); ?></label>
@@ -81,8 +81,8 @@ $notification = $_getvar('notification');
                                name="notification_component" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($notification->getComponent() ?? '', ENT_QUOTES); ?>" <?php
-                        echo $_getvar('disabled'); ?>>
+                               echo $_e($notification->getComponent()); ?>" <?php
+                        echo $_e($_getvar('disabled')); ?>>
                         <label class="mdl-textfield__label"
                                for="notification_component"><?php
                             echo __('Component'); ?></label>
@@ -102,7 +102,7 @@ $notification = $_getvar('notification');
                                    value="<?php
                                    echo Date::getDateFromUnix($notification->getDate() ?? 0); ?>"
                                 <?php
-                                echo $_getvar('disabled'); ?>>
+                                echo $_e($_getvar('disabled')); ?>>
                             <label class="mdl-textfield__label"
                                    for="notification_date"><?php
                                 echo __('Date'); ?></label>
@@ -123,9 +123,9 @@ $notification = $_getvar('notification');
                                     type="text" rows="3"
                                     id="notification_description"
                                     name="notification_description" <?php
-                            echo $_getvar('readonly'); ?>>
+                            echo $_e($_getvar('readonly')); ?>>
                                 <?php
-                                echo htmlspecialchars($notification->getDescription() ?? '', ENT_QUOTES); ?>
+                                echo $_e($notification->getDescription()); ?>
                             </textarea>
                             <label class="mdl-textfield__label"
                                    for="notification_description"><?php
@@ -135,7 +135,7 @@ $notification = $_getvar('notification');
                     else: ?>
                         <div class="notification-description">
                             <?php
-                            echo htmlspecialchars($notification->getDescription() ?? '', ENT_QUOTES); ?>
+                            echo $_e($notification->getDescription()); ?>
                         </div>
                     <?php
                     endif; ?>
@@ -153,7 +153,7 @@ $notification = $_getvar('notification');
 
                         <select id="notification_user" name="notification_user"
                                 class="select-box select-box-deselect" <?php
-                        echo $_getvar('disabled'); ?>>
+                        echo $_e($_getvar('disabled')); ?>>
                             <option value=""><?php
                                 echo __('Select User'); ?></option>
                             <?php
@@ -164,7 +164,7 @@ $notification = $_getvar('notification');
                                     <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>>
                                     <?php
-                                    echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
+                                    echo $_e($user->getName()); ?>
                                 </option>
                             <?php
                             endforeach; ?>
@@ -185,7 +185,7 @@ $notification = $_getvar('notification');
                                    name="notification_sticky" <?php
                             echo $notification->isSticky() ? 'checked'
                                 : ' '; ?> <?php
-                            echo $_getvar('disabled'); ?>/>
+                            echo $_e($_getvar('disabled')); ?>/>
                             <span class="mdl-switch__label"><?php
                                 echo __('Global'); ?></span>
                         </label>
@@ -200,7 +200,7 @@ $notification = $_getvar('notification');
                                 <?php
                                 echo $notification->isOnlyAdmin() ? 'checked' : ' '; ?>
                                 <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             <span class="mdl-switch__label"><?php
                                 echo __('Only Admins'); ?></span>
                         </label>
@@ -215,7 +215,7 @@ $notification = $_getvar('notification');
                                 <?php
                                 echo $notification->isChecked() ? 'checked' : ' '; ?>
                                 <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             <span class="mdl-switch__label"><?php
                                 echo __('Read'); ?></span>
                         </label>

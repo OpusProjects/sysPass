@@ -76,7 +76,7 @@ use function SP\__;
                 </div>
                 <input type="hidden" name="hash"
                        value="<?php
-                       echo $_getvar('hash'); ?>">
+                       echo $_e($_getvar('hash')); ?>">
                 <input type="hidden" name="isAjax" value="1">
             </fieldset>
 

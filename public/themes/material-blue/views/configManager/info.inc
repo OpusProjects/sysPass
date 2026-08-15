@@ -86,7 +86,7 @@ use function SP\__;
     <?php endforeach; ?>
     <tr>
         <td class="descField"><?php echo __('Name'); ?></td>
-        <td class="valField"><?php echo (!$_getvar('isDemo')) ? $_getvar('dbName') : '***'; ?></td>
+        <td class="valField"><?php echo (!$_getvar('isDemo')) ? $_e($_getvar('dbName')) : '***'; ?></td>
     </tr>
 </table>
 
@@ -100,14 +100,14 @@ use function SP\__;
     <tr>
         <td class="descField"><?php echo __('Web Server'); ?></td>
         <td class="valField">
-            <?php echo !$_getvar('isDemo') ? htmlspecialchars($_SERVER['SERVER_SOFTWARE'] ?? '', ENT_QUOTES) : '***'; ?>
+            <?php echo !$_getvar('isDemo') ? $_e($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
         </td>
     </tr>
     <tr>
         <td class="descField"><?php echo __('User'); ?></td>
-        <td class="valField"><?php echo !$_getvar('isDemo')
+        <td class="valField"><?php echo $_e(!$_getvar('isDemo')
             ? (function_exists('posix_geteuid') ? posix_getpwuid(posix_geteuid())['name'] : (get_current_user() ?: trim(shell_exec('whoami') ?? '')))
-            : '***'; ?></td>
+            : '***'); ?></td>
     </tr>
     <tr>
         <td class="descField"><?php echo __('Download rate'); ?></td>
@@ -138,7 +138,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php echo __('Unavailable extensions'); ?></td>
             <td class="valField">
-                <span class="mdl-color-text--red-900"><?php echo implode(', ', $_getvar('missingExtensions')); ?></span>
+                <span class="mdl-color-text--red-900"><?php echo $_e(implode(', ', $_getvar('missingExtensions'))); ?></span>
             </td>
         </tr>
     <?php endif; ?>
@@ -172,7 +172,7 @@ use function SP\__;
                 <p><?php echo __('If it is not installed, you would need install the right operating system locales. More info at Wiki.'); ?></p>
             </div>
         </td>
-        <td class="valField"><?php echo $_getvar('locale'); ?></td>
+        <td class="valField"><?php echo $_e($_getvar('locale')); ?></td>
     </tr>
     <tr>
         <td class="descField">
@@ -227,7 +227,7 @@ use function SP\__;
         <tr>
             <td class="descField"><?php echo __('Configuration Backup'); ?></td>
             <td class="valField">
-                <?php echo $_getvar('configBackupDate'); ?>
+                <?php echo $_e($_getvar('configBackupDate')); ?>
                 <?php if ($_getvar('downloadConfigBackup')): ?>
                     <div>
                         <a href="<?php echo $_getRoute('configGeneral/downloadConfigBackup/json'); ?>"

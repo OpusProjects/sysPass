@@ -54,7 +54,7 @@ if ($data->getData()->getDataCount() > 0):
                 <?php
                 $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
                 <td class="cell-data"><?php
-                    echo $value !== '' ? htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8') : '&nbsp;'; ?></td>
+                    echo $value !== '' ? $_e($value) : '&nbsp;'; ?></td>
             <?php
             endforeach; ?>
         </tr>

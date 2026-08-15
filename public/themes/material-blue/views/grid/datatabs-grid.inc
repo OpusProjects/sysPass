@@ -45,7 +45,7 @@ $tabs = $_getvar('tabs');
         echo $index; ?>"
              class="mdl-tabs__panel"
              data-tab-route="<?php
-             echo $_getvar('tabsRoute'); ?>"
+             echo $_e($_getvar('tabsRoute')); ?>"
              data-tab-index="<?php
              echo $index; ?>">
 
@@ -54,8 +54,7 @@ $tabs = $_getvar('tabs');
         </div>
 
         <script type="text/javascript">
-            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, "<?php echo $data->getTitle(
-            ); ?>", <?php echo $index === $_getvar('activeTab') ? 1 : 0; ?>);
+            sysPassApp.theme.html.tabs.add("#tabsHeader", <?php echo $index; ?>, <?php echo $_j($data->getTitle()); ?>, <?php echo $index === $_getvar('activeTab') ? 1 : 0; ?>);
         </script>
     <?php
     endforeach; ?>

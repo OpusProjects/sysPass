@@ -41,14 +41,14 @@ $category = $_getvar('category');
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmCategories"
           class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -61,7 +61,7 @@ $category = $_getvar('category');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($category->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Category name'); ?></label>
@@ -77,7 +77,7 @@ $category = $_getvar('category');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($category->getDescription() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($category->getDescription()); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php
                             echo __('Category description'); ?></label>

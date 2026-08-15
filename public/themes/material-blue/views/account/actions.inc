@@ -56,7 +56,7 @@ use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionInterface;
                     foreach ($action->getAttributes() as $key => $value): echo ' ' .
                                                                                $key, '="', $value, '"'; endforeach; ?>
                         title="<?php
-                        echo $action->getTitle(); ?>">
+                        echo $_e($action->getTitle()); ?>">
                     <i class="material-icons"><?php
                         echo $action->getIcon()->getIcon(); ?></i>
                 </button>
@@ -89,12 +89,12 @@ use SP\Infrastructure\Adapter\In\Web\DataGrid\Action\DataGridActionInterface;
                             $action->getAttributes() as $key => $value
                         ): echo ' ' . $key, '="', $value, '"'; endforeach; ?>
                         title="<?php
-                        echo $action->getTitle(); ?>">
+                        echo $_e($action->getTitle()); ?>">
                         <i class="material-icons <?php
                         echo $action->getIcon()->getClass(); ?>"><?php
                             echo $action->getIcon()->getIcon(); ?></i>
                         <?php
-                        echo $action->getName(); ?>
+                        echo $_e($action->getName()); ?>
                     </li>
                 <?php
                 endforeach; ?>

@@ -45,13 +45,13 @@ $profileData = $_getvar('profileData');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmProfile" id="frmProfile" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
 
         <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -88,7 +88,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accadd" <?php
                                 echo $profileData->isAccAdd() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -109,7 +109,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accview" <?php
                                 echo $profileData->isAccView() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -130,7 +130,7 @@ $profileData = $_getvar('profileData');
                                    class="mdl-switch__input"
                                    name="profile_accviewpass" <?php
                             echo $profileData->isAccViewPass() ? 'CHECKED' : ''; ?> <?php
-                            echo $_getvar('disabled'); ?>/>
+                            echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -152,7 +152,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accviewhistory" <?php
                                 echo $profileData->isAccViewHistory() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -173,7 +173,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accedit" <?php
                                 echo $profileData->isAccEdit() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -194,7 +194,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_acceditpass" <?php
                                 echo $profileData->isAccEditPass() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -215,7 +215,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accdel" <?php
                                 echo $profileData->isAccDelete() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -236,7 +236,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accfiles" <?php
                                 echo $profileData->isAccFiles() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -257,7 +257,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accpublinks" <?php
                                 echo $profileData->isAccPublicLinks() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -278,7 +278,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accprivate" <?php
                                 echo $profileData->isAccPrivate() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -300,7 +300,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accprivategroup" <?php
                                 echo $profileData->isAccPrivateGroup() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -322,7 +322,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accpermissions" <?php
                                 echo $profileData->isAccPermission() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -344,7 +344,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accglobalsearch" <?php
                                 echo $profileData->isAccGlobalSearch() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -369,7 +369,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_users" <?php
                                 echo $profileData->isMgmUsers() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -390,7 +390,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_groups" <?php
                                 echo $profileData->isMgmGroups() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -411,7 +411,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_profiles" <?php
                                 echo $profileData->isMgmProfiles() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -432,7 +432,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_categories" <?php
                                 echo $profileData->isMgmCategories() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -453,7 +453,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_tags" <?php
                                 echo $profileData->isMgmTags() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -474,7 +474,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_customers" <?php
                                 echo $profileData->isMgmCustomers() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -495,7 +495,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_customfields" <?php
                                 echo $profileData->isMgmCustomFields() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -516,7 +516,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_apitokens" <?php
                                 echo $profileData->isMgmApiTokens() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -537,7 +537,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_publinks" <?php
                                 echo $profileData->isMgmPublicLinks() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -558,7 +558,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_accounts" <?php
                                 echo $profileData->isMgmAccounts() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -579,7 +579,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_files" <?php
                                 echo $profileData->isMgmFiles() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -600,7 +600,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_items_preset" <?php
                                 echo $profileData->isMgmItemsPreset() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -625,7 +625,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_config" <?php
                                 echo $profileData->isConfigGeneral() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -646,7 +646,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_configmpw" <?php
                                 echo $profileData->isConfigEncryption() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -667,7 +667,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_configback" <?php
                                 echo $profileData->isConfigBackup() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -688,7 +688,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_configimport" <?php
                                 echo $profileData->isConfigImport() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -713,7 +713,7 @@ $profileData = $_getvar('profileData');
                                        class="mdl-switch__input"
                                        name="profile_eventlog" <?php
                                 echo $profileData->isEvl() ? 'CHECKED' : ''; ?> <?php
-                                echo $_getvar('disabled'); ?>/>
+                                echo $_e($_getvar('disabled')); ?>/>
                             </label>
                         </span>
                     </li>
@@ -732,9 +732,9 @@ $profileData = $_getvar('profileData');
                                required
                                class="mdl-textfield__input"
                                value="<?php
-                               echo htmlspecialchars($profile->getName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($profile->getName()); ?>"
                                maxlength="50" <?php
-                        echo $_getvar('readonly'); ?>>
+                        echo $_e($_getvar('readonly')); ?>>
                         <label class="mdl-textfield__label"
                                for="profile_name"><?php
                             echo __('Profile name'); ?></label>
@@ -758,7 +758,7 @@ $profileData = $_getvar('profileData');
                                         <span class="mdl-list__item-primary-content">
                                         <i class="material-icons mdl-list__item-icon">person</i>
                                             <?php
-                                            echo htmlspecialchars($user->login ?? '', ENT_QUOTES); ?>
+                                            echo $_e($user->login); ?>
                                         </span>
                                     </li>
                                 <?php

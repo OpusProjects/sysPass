@@ -130,7 +130,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUrl() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getDokuwikiUrl()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_url"><?php
                         echo __('API URL'); ?></label>
@@ -168,7 +168,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="255"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUrlBase() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getDokuwikiUrlBase()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_urlbase"><?php
                         echo __('Base URL'); ?></label>
@@ -197,7 +197,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiUser() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getDokuwikiUser()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_user"><?php
                         echo __('User'); ?></label>
@@ -216,7 +216,7 @@ endif; ?>
                            class="mdl-textfield__input passwordfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiPass() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getDokuwikiPass()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_pass"><?php
                         echo __('Password'); ?></label>
@@ -246,7 +246,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getDokuwikiNamespace() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getDokuwikiNamespace()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="dokuwiki_namespace"><?php
                         echo __('Namespace'); ?></label>

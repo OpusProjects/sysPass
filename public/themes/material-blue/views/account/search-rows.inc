@@ -70,25 +70,22 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         <?php
                         if (null !== $accountSearchItem->getClientLink()): ?>
                             <a href="<?php
-                            echo htmlspecialchars($accountSearchItem->getClientLink() ?? '', ENT_QUOTES, 'UTF-8'); ?>"
+                            echo $_e($accountSearchItem->getClientLink()); ?>"
                                target="_blank"
                                title="<?php
                                echo __('Search in Wiki'); ?>">
                                 <span class="mdl-chip mdl-chip--contact">
                                     <span style="background-color: <?php
-                                    echo htmlspecialchars($accountSearchItem->getColor() ?? '', ENT_QUOTES, 'UTF-8'); ?>;"
+                                    echo $_e($accountSearchItem->getColor()); ?>;"
                                           class="mdl-chip__contact mdl-color-text--white">
                                         <?php
-                                        echo htmlspecialchars(
-                                            mb_ucfirst($accountSearchData->getClientName() ?? ''),
-                                            ENT_QUOTES
-                                        ); ?>
+                                        echo $_e(mb_ucfirst($accountSearchData->getClientName() ?? '')); ?>
                                     </span>
                                     <span class="mdl-chip__text"
                                           title="<?php
-                                          echo htmlspecialchars($accountSearchData->getClientName() ?? '', ENT_QUOTES); ?>">
+                                          echo $_e($accountSearchData->getClientName()); ?>">
                                         <?php
-                                        echo htmlspecialchars($accountSearchItem->getShortClientName() ?? '', ENT_QUOTES); ?>
+                                        echo $_e($accountSearchItem->getShortClientName()); ?>
                                     </span>
                                 </span>
                             </a>
@@ -96,19 +93,16 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                         else: ?>
                             <span class="mdl-chip mdl-chip--contact">
                                 <span style="background-color: <?php
-                                echo htmlspecialchars($accountSearchItem->getColor() ?? '', ENT_QUOTES, 'UTF-8'); ?>;"
+                                echo $_e($accountSearchItem->getColor()); ?>;"
                                       class="mdl-chip__contact mdl-color-text--white">
                                     <?php
-                                    echo htmlspecialchars(
-                                        mb_ucfirst($accountSearchData->getClientName() ?? ''),
-                                        ENT_QUOTES
-                                    ); ?>
+                                    echo $_e(mb_ucfirst($accountSearchData->getClientName() ?? '')); ?>
                                 </span>
                                 <span class="mdl-chip__text"
                                       title="<?php
-                                      echo htmlspecialchars($accountSearchData->getClientName() ?? '', ENT_QUOTES); ?>">
+                                      echo $_e($accountSearchData->getClientName()); ?>">
                                     <?php
-                                    echo htmlspecialchars($accountSearchItem->getShortClientName() ?? '', ENT_QUOTES); ?>
+                                    echo $_e($accountSearchItem->getShortClientName()); ?>
                                 </span>
                             </span>
                         <?php
@@ -127,16 +121,16 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             echo __('Account Details'); ?>"
                                class="btn-action"
                                data-action-route="<?php
-                               echo $_getvar('viewAccountRoute'); ?>"
+                               echo $_e($_getvar('viewAccountRoute')); ?>"
                                data-item-id="<?php
                                echo $accountSearchData->getId(); ?>"
                                data-onclick="account/view"><?php
-                                echo htmlspecialchars($accountSearchData->getName() ?? '', ENT_QUOTES); ?></a>
+                                echo $_e($accountSearchData->getName()); ?></a>
                         <?php
                         else: ?>
                             <div class="field-text">
                                 <?php
-                                echo htmlspecialchars($accountSearchData->getName() ?? '', ENT_QUOTES); ?>
+                                echo $_e($accountSearchData->getName()); ?>
                             </div>
                         <?php
                         endif; ?>
@@ -147,7 +141,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             echo __('Category'); ?></div>
                         <div class="field-text">
                             <?php
-                            echo htmlspecialchars($accountSearchData->getCategoryName() ?? '', ENT_QUOTES); ?>
+                            echo $_e($accountSearchData->getCategoryName()); ?>
                         </div>
                     </div>
 
@@ -158,7 +152,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                 echo __('User'); ?></div>
                             <div class="field-text">
                                 <?php
-                                echo htmlspecialchars($accountSearchItem->getShortLogin() ?? '', ENT_QUOTES); ?>
+                                echo $_e($accountSearchItem->getShortLogin()); ?>
                             </div>
                         </div>
 
@@ -173,18 +167,15 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                    title="<?php
                                    printf(
                                        __('Open link to: %s'),
-                                       htmlspecialchars($accountSearchData->getUrl() ?? '', ENT_QUOTES)
+                                       $_e($accountSearchData->getUrl())
                                    ); ?>">
                                     <?php
-                                    echo htmlspecialchars($accountSearchItem->getShortUrl() ?? '', ENT_QUOTES); ?>
+                                    echo $_e($accountSearchItem->getShortUrl()); ?>
                                 </a>
                             <?php
                             else: ?>
                                 <div class="field-text"><?php
-                                    echo htmlspecialchars(
-                                        $accountSearchItem->getShortUrl() ?? '',
-                                        ENT_QUOTES
-                                    ); ?></div>
+                                    echo $_e($accountSearchItem->getShortUrl()); ?></div>
                             <?php
                             endif; ?>
                         </div>
@@ -203,7 +194,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                   data-tag-id="<?php
                                   echo $tag->id; ?>">
                                 <?php
-                                echo htmlspecialchars($tag->name ?? '', ENT_QUOTES); ?>
+                                echo $_e($tag->name); ?>
                             </span>
                         <?php
                         endforeach; ?>
@@ -397,7 +388,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                             && $accountSearchItem->isWikiMatch($wikiFilter)
                         ): ?>
                             <a href="<?php
-                                echo $_getvar('wikiPageUrl'), urlencode(
+                                echo $_e($_getvar('wikiPageUrl')), urlencode(
                                     $accountSearchData->getName() ?? ''
                                 ); ?>"
                                target="_blank">
@@ -439,7 +430,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                     for="<?php
                                     echo $actionUid; ?>"
                                     class="mdl-tooltip mdl-tooltip--bottom"><?php
-                                echo $action->getTitle(); ?></span>
+                                echo $_e($action->getTitle()); ?></span>
                         <?php
                         endforeach; ?>
 
@@ -473,12 +464,12 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                             <i class="material-icons <?php
                                             echo $actionMenu->getIcon()->getClass(); ?>"
                                                title="<?php
-                                               echo $actionMenu->getTitle(); ?>">
+                                               echo $_e($actionMenu->getTitle()); ?>">
                                                 <?php
                                                 echo $actionMenu->getIcon()->getIcon(); ?>
                                             </i>
                                             <?php
-                                            echo $actionMenu->getName(); ?>
+                                            echo $_e($actionMenu->getName()); ?>
                                         </li>
                                     <?php
                                     endforeach; ?>

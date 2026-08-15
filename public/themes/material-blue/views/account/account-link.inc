@@ -43,9 +43,9 @@ $accountView = $_getvar('accountData');
     <div class="public-link">
         <div id="title" class="titleNormal">
             <i class="material-icons"><?php
-                echo $_getvar('title')['icon']; ?></i>
+                echo $_e($_getvar('title')['icon']); ?></i>
             <?php
-            echo $_getvar('title')['name']; ?>
+            echo $_e($_getvar('title')['name']); ?>
         </div>
         <table class="data">
             <tr>
@@ -57,7 +57,7 @@ $accountView = $_getvar('accountData');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -73,7 +73,7 @@ $accountView = $_getvar('accountData');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getClientName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getClientName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php
@@ -89,7 +89,7 @@ $accountView = $_getvar('accountData');
                         <input id="category" name="category" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getCategoryName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getCategoryName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="category"><?php
@@ -105,7 +105,7 @@ $accountView = $_getvar('accountData');
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getUrl() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getUrl()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="url"><?php
@@ -121,7 +121,7 @@ $accountView = $_getvar('accountData');
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getLogin() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getLogin()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="login"><?php
@@ -140,7 +140,7 @@ $accountView = $_getvar('accountData');
                                 name="notes"
                                 maxlength="1000"
                                 readonly><?php
-                            echo htmlspecialchars($accountView->getNotes() ?? '', ENT_QUOTES); ?></textarea>
+                            echo $_e($accountView->getNotes()); ?></textarea>
                         <label class="mdl-textfield__label"
                                for="notes"><?php
                             echo __('Notes about the account'); ?></label>
@@ -157,14 +157,14 @@ $accountView = $_getvar('accountData');
 
                         <img class="account-pass-image"
                              src="data:image/png;base64,<?php
-                             echo $_getvar('accountPassImage'); ?>"/>
+                             echo $_e($_getvar('accountPassImage')); ?>"/>
                     <?php
                     else: ?>
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input id="password" name="password" type="text"
                                    class="mdl-textfield__input mdl-color-text--indigo-400"
                                    value="<?php
-                                   echo htmlspecialchars($accountView->getPass() ?? '', ENT_QUOTES); ?>"
+                                   echo $_e($accountView->getPass()); ?>"
                                    readonly>
                             <label class="mdl-textfield__label"
                                    for="password"><?php

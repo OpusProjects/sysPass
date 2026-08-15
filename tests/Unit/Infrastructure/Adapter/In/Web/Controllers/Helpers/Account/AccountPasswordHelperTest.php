@@ -154,14 +154,19 @@ class AccountPasswordHelperTest extends UnitaryTestCase
     }
 
     /**
-     * The password reaches the page escaped. It is arbitrary user-stored text on a page that is
-     * built by hand, so an account whose password contains markup must not be able to inject any.
+     * The plaintext reaches the view as it is, and the view is what escapes it.
+     *
+     * The helper used to escape before assigning, which looked safer and was not: the template
+     * wraps the password at 50 characters before showing it, and wrapping an already-escaped
+     * string can break an entity in half. Escaping is the view's job, once, at the point of
+     * output — {@see \SP\Tests\Unit\Infrastructure\Adapter\In\Web\View\ViewpassEscapesTest} renders
+     * the real template and holds it to that.
      *
      * @throws CryptException
      * @throws HelperException
      */
     #[Test]
-    public function theViewEscapesWhatItShows()
+    public function thePlaintextIsHandedToTheViewUntouched()
     {
         $this->givenTheUserMay(true);
         $this->masterPassService->method('checkUserUpdateMPass')->willReturn(true);
@@ -169,8 +174,8 @@ class AccountPasswordHelperTest extends UnitaryTestCase
 
         $this->helper->getPasswordView($this->buildAccountPass('<b>login</b>'), false);
 
-        self::assertSame('&lt;script&gt;alert(1)&lt;/script&gt;', $this->assigned['pass']);
-        self::assertSame('&lt;b&gt;login&lt;/b&gt;', $this->assigned['login']);
+        self::assertSame('<script>alert(1)</script>', $this->assigned['pass']);
+        self::assertSame('<b>login</b>', $this->assigned['login']);
     }
 
     /**

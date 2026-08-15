@@ -42,7 +42,7 @@ $plugin = $_getvar('plugin');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCategories" id="frmPlugins">
@@ -56,8 +56,8 @@ $plugin = $_getvar('plugin');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($plugin->getName() ?? '', ENT_QUOTES); ?>" <?php
-                        echo $_getvar('readonly'); ?>>
+                               echo $_e($plugin->getName()); ?>" <?php
+                        echo $_e($_getvar('readonly')); ?>>
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Plugin name'); ?></label>
@@ -72,8 +72,8 @@ $plugin = $_getvar('plugin');
                         <input id="version" name="version" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($plugin->getVersionLevel() ?? '', ENT_QUOTES); ?>" <?php
-                        echo $_getvar('readonly'); ?>>
+                               echo $_e($plugin->getVersionLevel()); ?>" <?php
+                        echo $_e($_getvar('readonly')); ?>>
                         <label class="mdl-textfield__label"
                                for="version"><?php
                             echo __('Plugin version'); ?></label>
@@ -89,7 +89,7 @@ $plugin = $_getvar('plugin');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
                                echo $plugin->getEnabled() ? __('Yes') : __('No'); ?>" <?php
-                        echo $_getvar('readonly'); ?>>
+                        echo $_e($_getvar('readonly')); ?>>
                         <label class="mdl-textfield__label"
                                for="enabled"><?php
                             echo __('Plugin enabled'); ?></label>
@@ -105,7 +105,7 @@ $plugin = $_getvar('plugin');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
                                echo $plugin->getAvailable() ? __('Yes') : __('No'); ?>" <?php
-                        echo $_getvar('readonly'); ?>>
+                        echo $_e($_getvar('readonly')); ?>>
                         <label class="mdl-textfield__label"
                                for="available"><?php
                             echo __('Plugin available'); ?></label>

@@ -97,7 +97,7 @@ endif; ?>
                             value='<?php
                             echo $lang->getId(); ?>' <?php
                     echo $lang->isSelected() ? 'selected' : ''; ?>><?php
-                        echo $lang->getName(); ?></option>
+                        echo $_e($lang->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -133,7 +133,7 @@ endif; ?>
                             value='<?php
                             echo $theme->getId(); ?>' <?php
                     echo $theme->isSelected() ? 'selected' : ""; ?>><?php
-                        echo $theme->getName(); ?></option>
+                        echo $_e($theme->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -183,7 +183,7 @@ endif; ?>
                        pattern="^https?://.*"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        value="<?php
-                       echo htmlspecialchars($configData->getApplicationUrl() ?? '', ENT_QUOTES); ?>"/>
+                       echo $_e($configData->getApplicationUrl()); ?>"/>
                 <label class="mdl-textfield__label"
                        for="app_url"><?php
                     echo __('Application URL'); ?></label>
@@ -321,7 +321,7 @@ endif; ?>
                 <input id="proxy_server" name="proxy_server" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo htmlspecialchars($configData->getProxyServer() ?? '', ENT_QUOTES); ?>">
+                       value="<?php echo $_e($configData->getProxyServer()); ?>">
                 <label class="mdl-textfield__label" for="proxy_server"><?php echo __('Proxy server'); ?></label>
             </div>
         </td>
@@ -345,7 +345,7 @@ endif; ?>
                 <input id="proxy_user" name="proxy_user" type="text"
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
-                       value="<?php echo htmlspecialchars($configData->getProxyUser() ?? '', ENT_QUOTES); ?>">
+                       value="<?php echo $_e($configData->getProxyUser()); ?>">
                 <label class="mdl-textfield__label" for="proxy_user"><?php echo __('Proxy server user'); ?></label>
             </div>
         </td>

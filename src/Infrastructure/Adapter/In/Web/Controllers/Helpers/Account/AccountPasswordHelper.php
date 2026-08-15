@@ -94,11 +94,11 @@ final class AccountPasswordHelper extends HelperBase
                 $this->imageUtil->convertText($pass)
             );
         } else {
-            $this->view->assign('login', htmlspecialchars($accountData->getLogin() ?? '', ENT_COMPAT));
-            $this->view->assign(
-                'pass',
-                htmlspecialchars($pass, ENT_COMPAT)
-            );
+            // Assigned as they are. The template escapes what it renders, and it has to: the
+            // password is wrapped at 50 characters before it is shown, and wrapping an
+            // already-escaped string can split an entity down the middle.
+            $this->view->assign('login', $accountData->getLogin() ?? '');
+            $this->view->assign('pass', $pass);
         }
 
         return [

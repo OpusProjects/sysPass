@@ -43,14 +43,14 @@ $field = $_getvar('field');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmCustomFields" id="frmCustomFields"
           class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -63,7 +63,7 @@ $field = $_getvar('field');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($field->getName() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($field->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Field name'); ?></label>
@@ -108,7 +108,7 @@ $field = $_getvar('field');
                                     value='<?php
                                     echo $module->getId(); ?>' <?php
                             echo $module->isSelected() ? 'selected' : ''; ?>><?php
-                                echo $module->getName(); ?></option>
+                                echo $_e($module->getName()); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
@@ -122,7 +122,7 @@ $field = $_getvar('field');
                         <input id="help" name="help" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($field->getHelp() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($field->getHelp()); ?>">
                         <label class="mdl-textfield__label"
                                for="help"><?php
                             echo __('Field\'s help'); ?></label>

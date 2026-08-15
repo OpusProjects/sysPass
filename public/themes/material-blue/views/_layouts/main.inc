@@ -11,7 +11,7 @@ use function SP\__;
 ?>
 <!DOCTYPE html>
 <html lang="<?php
-echo $_getvar('lang'); ?>">
+echo $_e($_getvar('lang')); ?>">
 <head>
     <title><?php
         printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
@@ -19,7 +19,7 @@ echo $_getvar('lang'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png"
           href="<?php
-          echo $_getvar('logo_icon'); ?>">
+          echo $_e($_getvar('logo_icon')); ?>">
     <?php
     foreach ($_getvar('cssLinks') as $cssLink) : ?>
         <link rel="stylesheet" href="<?php
@@ -28,7 +28,7 @@ echo $_getvar('lang'); ?>">
     endforeach; ?>
 </head>
 <body class="<?php
-echo $_getvar('page'); ?>">
+echo $_e($_getvar('page')); ?>">
 <div id="wrap">
     <noscript>
         <div id="nojs"><?php
@@ -43,9 +43,9 @@ echo $_getvar('page'); ?>">
 
     <div id="container"
          class="<?php
-         echo $_getvar('page'); ?>"
+         echo $_e($_getvar('page')); ?>"
          data-page="<?php
-         echo $_getvar('page'); ?>"
+         echo $_e($_getvar('page')); ?>"
          data-upgraded="<?php
          echo (int)$_getvar('upgraded'); ?>">
         <?php

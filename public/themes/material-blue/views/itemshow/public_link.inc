@@ -43,13 +43,13 @@ $publicLink = $_getvar('publicLink');
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
     <form method="post" name="frmPublickLink" id="frmPublickLink"
           class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -62,7 +62,7 @@ $publicLink = $_getvar('publicLink');
 
                     <select id="accountId" name="accountId"
                             class="select-box" <?php
-                    echo $_getvar('disabled'); ?>>
+                    echo $_e($_getvar('disabled')); ?>>
                         <option value=""><?php
                             echo __('Select Account'); ?></option>
                         <?php
@@ -76,8 +76,8 @@ $publicLink = $_getvar('publicLink');
                                 <?php
                                 printf(
                                     '%s (%s)',
-                                    htmlspecialchars($account->getName() ?? '', ENT_QUOTES),
-                                    htmlspecialchars($account->getItemProperty('clientName') ?? '', ENT_QUOTES)
+                                    $_e($account->getName()),
+                                    $_e($account->getItemProperty('clientName'))
                                 ); ?>
                             </option>
                         <?php
@@ -97,7 +97,7 @@ $publicLink = $_getvar('publicLink');
                                class="mdl-switch__input mdl-color-text--indigo-400"
                                name="notify" <?php
                         echo $_getvar('isView') && $publicLink->isNotify() ? 'CHECKED' : ''; ?> <?php
-                        echo $_getvar('disabled'); ?>/>
+                        echo $_e($_getvar('disabled')); ?>/>
                         <span class="mdl-switch__label"><?php
                             echo __('Notify'); ?></span>
                     </label>
@@ -135,7 +135,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('User'); ?></div>
 
                         <?php
-                        echo htmlspecialchars($publicLink->getUserLogin() ?? '', ENT_QUOTES); ?>
+                        echo $_e($publicLink->getUserLogin()); ?>
                     </td>
                 </tr>
                 <tr>
@@ -157,7 +157,7 @@ $publicLink = $_getvar('publicLink');
                             echo __('Hash'); ?></div>
 
                         <?php
-                        echo $publicLink->getHash(); ?>
+                        echo $_e($publicLink->getHash()); ?>
                     </td>
                 </tr>
                 <tr>
@@ -168,9 +168,9 @@ $publicLink = $_getvar('publicLink');
                             echo __('URL'); ?></div>
 
                         <a href="<?php
-                        echo $_getvar('publicLinkURL'); ?>"
+                        echo $_e($_getvar('publicLinkURL')); ?>"
                            target="_blank"><?php
-                            echo $_getvar('publicLinkURL'); ?></a>
+                            echo $_e($_getvar('publicLinkURL')); ?></a>
                     </td>
                 </tr>
                 <?php
@@ -192,7 +192,7 @@ $publicLink = $_getvar('publicLink');
                                     <?php
                                     printf(
                                         '%s - %s',
-                                        $_getvar('isDemo') ? '*.*.*.*' : htmlspecialchars($useInfo['who'] ?? '', ENT_QUOTES),
+                                        $_getvar('isDemo') ? '*.*.*.*' : $_e($useInfo['who']),
                                         date('Y-m-d H:i', $useInfo['time'])
                                     ); ?>
                                 </span>

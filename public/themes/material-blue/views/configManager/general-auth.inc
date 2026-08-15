@@ -112,7 +112,7 @@ use function SP\__;
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="128"
                        value="<?php
-                       echo htmlspecialchars($configData->getAuthBasicDomain() ?? '', ENT_QUOTES); ?>">
+                       echo $_e($configData->getAuthBasicDomain()); ?>">
                 <label class="mdl-textfield__label"
                        for="authbasic_domain"><?php
                     echo __('Domain name'); ?></label>
@@ -150,7 +150,7 @@ use function SP\__;
                             value="<?php
                             echo $userGroup->getId(); ?>" <?php
                     echo $userGroup->getId() === $configData->getSsoDefaultGroup() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                        echo $_e($userGroup->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -187,7 +187,7 @@ use function SP\__;
                             value="<?php
                             echo $userProfile->getId(); ?>" <?php
                     echo ($userProfile->getId() === $configData->getSsoDefaultProfile()) ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?></option>
+                        echo $_e($userProfile->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>

@@ -54,9 +54,9 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
 <div class="data-container">
     <div id="title" class="titleNormal">
         <i class="material-icons"><?php
-            echo $_getvar('title')['icon']; ?></i>
+            echo $_e($_getvar('title')['icon']); ?></i>
         <?php
-        echo $_getvar('title')['name']; ?>
+        echo $_e($_getvar('title')['name']); ?>
     </div>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -110,9 +110,9 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
               class="form-action"
               data-onsubmit="account/save"
               data-action-route="<?php
-              echo $_getvar('formRoute') ?: ''; ?>"
+              echo $_e($_getvar('formRoute') ?: ''); ?>"
               data-item-id="<?php
-              echo $_getvar('accountId') ?: ''; ?>"
+              echo $_e($_getvar('accountId') ?: ''); ?>"
               data-hash="">
 
             <input type="hidden" name="sk" value="<?php
@@ -132,10 +132,10 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                        maxlength="100"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES)
+                                           ? $_e($accountView->getName())
                                            : ''; ?>"
                                     <?php
-                                    echo $_getvar('readonly'); ?>
+                                    echo $_e($_getvar('readonly')); ?>
                                 >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -153,7 +153,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                             <select id="client_id" name="client_id"
                                     class="select-box"
                                     required <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Client'); ?></option>
                                 <?php
@@ -168,7 +168,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                             : ''; ?>
                                     >
                                         <?php
-                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?>
+                                        echo $_e($client->getName()); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -179,7 +179,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                    title="<?php
                                    echo __('New Client'); ?>"
                                    data-action-route="<?php
-                                   echo $_getvar('addClientRoute'); ?>"
+                                   echo $_e($_getvar('addClientRoute')); ?>"
                                    data-item-route="items/clients"
                                    data-item-dst="client_id"
                                    data-item-id="0"
@@ -199,7 +199,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                             <select id="category_id" name="category_id"
                                     class="select-box"
                                     required <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Category'); ?></option>
                                 <?php
@@ -214,7 +214,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                             : ''; ?>
                                     >
                                         <?php
-                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>
+                                        echo $_e($category->getName()); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -225,7 +225,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                    title="<?php
                                    echo __('New Category'); ?>"
                                    data-action-route="<?php
-                                   echo $_getvar('addCategoryRoute'); ?>"
+                                   echo $_e($_getvar('addCategoryRoute')); ?>"
                                    data-item-route="items/categories"
                                    data-item-dst="category_id"
                                    data-item-id="0"
@@ -245,10 +245,10 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                        maxlength="255"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getUrl() ?? '', ENT_QUOTES)
+                                           ? $_e($accountView->getUrl())
                                            : ''; ?>"
                                     <?php
-                                    echo $_getvar('readonly'); ?>
+                                    echo $_e($_getvar('readonly')); ?>
                                 >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -266,10 +266,10 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                        maxlength="50"
                                        value="<?php
                                        echo $gotData
-                                           ? htmlspecialchars($accountView->getLogin() ?? '', ENT_QUOTES)
+                                           ? $_e($accountView->getLogin())
                                            : ''; ?>"
                                     <?php
-                                    echo $_getvar('readonly'); ?>
+                                    echo $_e($_getvar('readonly')); ?>
                                 >
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -323,10 +323,10 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                                type="date"
                                                class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                                value="<?php
-                                               echo $_getvar('accountPassDateChange'); ?>"
+                                               echo $_e($_getvar('accountPassDateChange')); ?>"
                                                data-dst-unix="password_date_expire_unix"
                                             <?php
-                                            echo $_getvar('readonly'); ?>
+                                            echo $_e($_getvar('readonly')); ?>
                                         >
                                         <input type='hidden'
                                                name='password_date_expire_unix'
@@ -355,9 +355,9 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                 rows="3" id="notes"
                                 name="notes"
                                 maxlength="5000" <?php
-                        echo $_getvar('readonly'); ?>><?php
+                        echo $_e($_getvar('readonly')); ?>><?php
                             echo $gotData
-                                ? htmlspecialchars($accountView->getNotes() ?? '', ENT_QUOTES) : ''; ?></textarea>
+                                ? $_e($accountView->getNotes()) : ''; ?></textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
                                     echo __('Notes about the account'); ?></label>
@@ -386,7 +386,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                             <?php
                                             echo $tag->isSelected() ? 'selected' : ''; ?>>
                                             <?php
-                                            echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?>
+                                            echo $_e($tag->getName()); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>
@@ -397,7 +397,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                        title="<?php
                                        echo __('New Tag'); ?>"
                                        data-action-route="<?php
-                                       echo $_getvar('addTagRoute'); ?>"
+                                       echo $_e($_getvar('addTagRoute')); ?>"
                                        data-item-route="items/tags"
                                        data-item-dst="tags"
                                        data-item-id="0"
@@ -424,7 +424,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                                 <?php
                                                 if ($tag->isSelected()): ?>
                                                     <span class="tag"><?php
-                                                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></span>
+                                                        echo $_e($tag->getName()); ?></span>
                                                 <?php
                                                 endif; ?>
                                             <?php
@@ -449,12 +449,12 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                 <select id="parent_account_id"
                                         name="parent_account_id"
                                         class="select-box select-box-deselect" <?php
-                                echo $_getvar('disabled'); ?>
+                                echo $_e($_getvar('disabled')); ?>
                                         data-sk="<?php
-                                        echo $_getvar('sk'); ?>"
+                                        echo $_e($_getvar('sk')); ?>"
                                         data-action-route="items/accountsUser"
                                         data-item-id="<?php
-                                        echo $gotData ? $_getvar('accountId') : ''; ?>"
+                                        echo $gotData ? $_e($_getvar('accountId')) : ''; ?>"
                                         data-selected-id="<?php
                                         echo $gotData ? $accountView->getParentId() : ''; ?>">
                                     <option value=""><?php
@@ -489,7 +489,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                                 value="<?php
                                                 echo $history->getId(); ?>">
                                             <?php
-                                            echo htmlspecialchars($history->getName() ?? '', ENT_QUOTES); ?>
+                                            echo $_e($history->getName()); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>
@@ -511,7 +511,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                 printf(
                                     '%s (%s)',
                                     $accountView->getDateEdit(),
-                                    htmlspecialchars($accountView->getUserEditName() ?? '', ENT_QUOTES)
+                                    $_e($accountView->getUserEditName())
                                 ); ?>
                             </td>
                         </tr>
@@ -530,7 +530,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                     echo __('Public Link'); ?></div>
 
                                 <a href="<?php
-                                echo $_getvar('publicLinkUrl'); ?>"
+                                echo $_e($_getvar('publicLinkUrl')); ?>"
                                    target="_blank"
                                    title="<?php
                                    echo __('Public Link'); ?>">
@@ -552,7 +552,7 @@ $showCustomFields = count($_getvar('customFields', [])) > 0;
                                     echo __('Direct Link'); ?></div>
 
                                 <a href="<?php
-                                echo $_getvar('deepLink'); ?>"
+                                echo $_e($_getvar('deepLink')); ?>"
                                    target="_blank"
                                    title="<?php
                                    echo __('Direct Link'); ?>">

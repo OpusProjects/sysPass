@@ -149,7 +149,12 @@ class BackupPanelTest extends IntegrationTestCase
 
     private function outputCheckerNothingYet(string $output): void
     {
-        self::assertStringContainsString('There aren\'t any backups available', $output);
+        // What the page says, not the bytes it is made of: the view escapes what it renders, so
+        // the apostrophe reaches the browser as an entity and is shown as an apostrophe.
+        self::assertStringContainsString(
+            'There aren\'t any backups available',
+            html_entity_decode($output, ENT_QUOTES, 'UTF-8')
+        );
     }
 
     /**

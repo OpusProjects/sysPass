@@ -23,11 +23,11 @@ use function SP\__;
                         <i id="user-type-footer"
                            class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
                         <span for="user-type-footer"
-                              class="mdl-tooltip mdl-tooltip--top"><?php echo $ctx_userType->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $_e($ctx_userType->getTitle()); ?></span>
                     <?php else: ?>
                         <i class="material-icons">face</i>
                     <?php endif; ?>
-                    <span id="user-name-footer"><?php echo $_getvar('ctx_userName'); ?></span>
+                    <span id="user-name-footer"><?php echo $_e($_getvar('ctx_userName')); ?></span>
                     <span for="user-name-footer"
                           class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
                 </span>
@@ -60,9 +60,9 @@ use function SP\__;
             <div id="updates"></div>
             <div id="notices"></div>
 
-            <span id="app-info" class="project"><?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?></span>
+            <span id="app-info" class="project"><?php echo $_e($_getvar('app_name')), ' ', $_e($_getvar('app_version')); ?></span>
             <span for="app-info"
-                  class="mdl-tooltip mdl-tooltip--top"><?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?></span>
+                  class="mdl-tooltip mdl-tooltip--top"><?php echo $_e($_getvar('app_name')), ' ', $_e($_getvar('app_version')); ?></span>
         </div>
     </div>
 </footer> <!-- Close footer -->

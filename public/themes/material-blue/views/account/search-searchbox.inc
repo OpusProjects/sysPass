@@ -49,14 +49,14 @@ $pager = $data->getPager();
     <form method="post" name="frmSearch" id="frmSearch" class="form-action"
           data-onsubmit="account/search"
           data-action-route="<?php
-          echo $_getvar('searchRoute'); ?>">
+          echo $_e($_getvar('searchRoute')); ?>">
         <div class="search-text">
             <div class="mdl-textfield mdl-js-textfield">
                 <input class="mdl-textfield__input mdl-color-text--indigo-400"
                        type="text" id="search"
                        name="search"
                        value="<?php
-                       echo htmlspecialchars($_getvar('searchTxt') ?? '', ENT_QUOTES, 'UTF-8'); ?>"/>
+                       echo $_e($_getvar('searchTxt')); ?>"/>
                 <label class="mdl-textfield__label"
                        for="search"><?php
                     echo __('Text to search for'); ?></label>
@@ -78,7 +78,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $client->getId(); ?>" <?php
                     echo $client->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?></option>
+                        echo $_e($client->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -94,7 +94,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $category->getId(); ?>" <?php
                     echo $category->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?></option>
+                        echo $_e($category->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
@@ -123,7 +123,7 @@ $pager = $data->getPager();
                     </label>
                     <input type="hidden" name="gsearch"
                            value="<?php
-                           echo $_getvar('searchGlobal'); ?>">
+                           echo $_e($_getvar('searchGlobal')); ?>">
                 <?php
                 endif; ?>
             </div>
@@ -203,7 +203,7 @@ $pager = $data->getPager();
                             value="<?php
                             echo $tag->getId(); ?>" <?php
                     echo $tag->isSelected() ? 'selected' : ''; ?>><?php
-                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></option>
+                        echo $_e($tag->getName()); ?></option>
                 <?php
                 endforeach; ?>
             </select>
