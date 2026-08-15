@@ -10,14 +10,19 @@ use SP\Application\Account\Services\AccountFileAcl;
 use SP\Domain\Account\Dtos\FileDto;
 use SP\Domain\Account\Models\File;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Infrastructure\Adapter\In\Api\Controllers\ControllerBase;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\AccountFileHelp;
 
 abstract class AccountFileBase extends ControllerBase
 {
     protected AccountFileService $accountFileService;
     protected AccountFileAcl     $accountFileAcl;
 
+    /**
+     * @throws InvalidClassException
+     */
     public function __construct(
         Application        $application,
         Router             $router,
@@ -29,6 +34,8 @@ abstract class AccountFileBase extends ControllerBase
         parent::__construct($application, $router, $apiService, $acl);
         $this->accountFileService = $accountFileService;
         $this->accountFileAcl = $accountFileAcl;
+
+        $this->apiService->setHelpClass(AccountFileHelp::class);
     }
 
     /**

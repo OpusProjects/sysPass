@@ -58,8 +58,7 @@ final class AccountHelp implements HelpInterface
         return
             [
                 self::getItem('id', __('Account Id'), true),
-                self::getItem('tokenPass', __('Token\'s password'), true),
-                self::getItem('details', __('Send details in the response'))
+                self::getItem('tokenPass', __('Token\'s password'), true)
             ];
     }
 
@@ -97,6 +96,7 @@ final class AccountHelp implements HelpInterface
                 self::getItem('expireDate', __('Password Expiry Date')),
                 self::getItem('parentId', __('Linked Account')),
                 self::getItem('tagsId', __('Array with tags id')),
+                self::getItem('userId', __('Owner Id')),
                 self::getItem('userGroupId', __('Group Id'))
             ];
     }
@@ -120,6 +120,7 @@ final class AccountHelp implements HelpInterface
                 self::getItem('expireDate', __('Password Expiry Date')),
                 self::getItem('parentId', __('Linked Account')),
                 self::getItem('tagsId', __('Array with tags id')),
+                self::getItem('userId', __('Owner Id')),
                 self::getItem('userGroupId', __('Group Id'))
             ];
     }
@@ -136,6 +137,7 @@ final class AccountHelp implements HelpInterface
                 self::getItem('categoryId', __('Category Id to filter on')),
                 self::getItem('clientId', __('Client Id to filter on')),
                 self::getItem('tagsId', __('Array with tags id for filtering')),
+                self::getItem('order', __('Sorting to apply to the results')),
                 self::getItem('op', __('Filtering operator'))
             ];
     }
