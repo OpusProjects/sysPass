@@ -107,12 +107,15 @@ final class Html
         ?string $title = null,
         string  $attribs = ''
     ): string {
+        // The tag is this method's own markup; everything put inside it is a value, and is
+        // escaped for where it lands. $attribs is the one part a caller supplies as markup, and
+        // no caller supplies it from anything a user typed.
         return sprintf(
             '<a href="%s" title="%s" %s>%s</a>',
-            $link ?? $text,
-            $title ?? $text,
+            self::escape(self::isSafeUrl($link ?? $text) ? ($link ?? $text) : 'unsafe_url'),
+            self::escape($title ?? $text),
             $attribs,
-            $text
+            self::escape($text)
         );
     }
 

@@ -77,7 +77,7 @@ class MailEventTest extends UnitaryTestCase
                 ['an_email'],
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
-                        '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
+                        '/\na_description\na_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
                         $mailMessage->composeText()
                     );
 
@@ -114,7 +114,7 @@ class MailEventTest extends UnitaryTestCase
                 ['an_email'],
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
-                        '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
+                        '/\na_description\na_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
                         $mailMessage->composeText()
                     );
 
@@ -198,7 +198,7 @@ class MailEventTest extends UnitaryTestCase
                 ['an_email'],
                 self::callback(static function (MailMessage $mailMessage) {
                     $matches = preg_match(
-                        '/\na_description<br>a_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
+                        '/\na_description\na_detail: a_value\n\nPerformed by: [\w.]+ \([\w.]+\)\nIP Address: [\d.]+/',
                         $mailMessage->composeText()
                     );
 

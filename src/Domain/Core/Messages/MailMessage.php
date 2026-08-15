@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Messages;
 
+use SP\Domain\Core\Html\Html;
+
 /**
  * Class MailMessage
  */
@@ -47,7 +49,7 @@ final class MailMessage extends MessageBase
         $formatter = new HtmlFormatter();
 
         $message = '<div class="mail-message" style="font-family: Helvetica, Arial, sans-serif">';
-        $message .= '<h3>' . $this->title . '</h3>';
+        $message .= '<h3>' . Html::escape($this->title) . '</h3>';
         $message .= '<div class="mail-description">' . $this->getDescription($formatter, true) . '</div>';
         $message .= '<footer>' . implode('<br>', $this->footer) . '</footer>';
         $message .= '</div>';

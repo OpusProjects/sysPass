@@ -147,4 +147,67 @@ class HtmlFormatterTest extends UnitaryTestCase
             $this->formatter->formatDetail([['Browser', 'Firefox 128']], false)
         );
     }
+
+    /**
+     * What lands in a detail is an account's name, a file's name, a login — text somebody typed,
+     * put there by whichever event was raised. This message is composed into an email and into the
+     * notifications panel, so markup in it is markup in both.
+     */
+    public function testADetailValueIsRenderedAsTextAndNotAsMarkup(): void
+    {
+        $html = $this->formatter->formatDetail([['File', '<img src=x onerror=alert(1)>']], false);
+
+        self::assertStringNotContainsString('<img', $html);
+        self::assertStringContainsString('&lt;img src=x onerror=alert(1)&gt;', $html);
+    }
+
+    /**
+     * And so is the label beside it.
+     */
+    public function testADetailLabelIsRenderedAsTextToo(): void
+    {
+        $html = $this->formatter->formatDetail([['<b>File</b>', 'notes.txt']], false);
+
+        self::assertStringNotContainsString('<b>', $html);
+    }
+
+    /**
+     * A description line is the other half of the same message.
+     */
+    public function testADescriptionLineIsRenderedAsText(): void
+    {
+        $html = $this->formatter->formatDescription(['<script>alert(1)</script>'], false);
+
+        self::assertStringNotContainsString('<script>', $html);
+        self::assertStringContainsString('&lt;script&gt;', $html);
+    }
+
+    /**
+     * A value that is an address still becomes a link, and the address inside it cannot end the
+     * attribute it is written into.
+     */
+    public function testAnAnchorsHrefCannotEscapeItsAttribute(): void
+    {
+        $html = $this->formatter->formatDetail(
+            [['Link', 'https://example.invalid/a" onmouseover="alert(1)']],
+            false
+        );
+
+        self::assertStringContainsString('<a href="', $html);
+        self::assertStringNotContainsString('onmouseover="alert(1)"', $html);
+        self::assertStringContainsString('&quot;', $html);
+    }
+
+    /**
+     * A value that merely mentions an anchor is not one. The class used to decide by looking for
+     * `<a` in its own output, so a detail whose text contained that sequence was taken for a link
+     * and sent out as markup; now the question is asked of the value.
+     */
+    public function testAValueThatMentionsAnAnchorIsStillText(): void
+    {
+        $html = $this->formatter->formatDetail([['Note', 'see <a href="#">this</a>']], false);
+
+        self::assertStringNotContainsString('<a href="#">', $html);
+        self::assertStringContainsString('&lt;a href=&quot;#&quot;&gt;', $html);
+    }
 }

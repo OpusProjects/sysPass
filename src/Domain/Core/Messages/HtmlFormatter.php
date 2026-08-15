@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Messages;
 
+use SP\Domain\Core\Html\Html;
+
 use function SP\__;
 
 /**
@@ -39,12 +41,13 @@ final class HtmlFormatter implements FormatterInterface
             '',
             array_map(
                 function ($value) use ($translate) {
-                    $right = $this->buildLink($value[1]);
-                    $left = $translate ? __($value[0]) : $value[0];
+                    $left = Html::escape($translate ? __($value[0]) : $value[0]);
+                    $link = $this->buildLink($value[1]);
 
-                    if (!str_contains($right, '<a')) {
-                        $right = $translate ? __($right) : $right;
-                    }
+                    // A link is markup this class built and already escaped the parts of.
+                    // Everything else is somebody's text — an account's name, a file's name, a
+                    // login — and is rendered as text.
+                    $right = $link ?? Html::escape($translate ? __($value[1]) : $value[1]);
 
                     return '<div class="detail">'
                            . '<span class="detail-left">' . $left . '</span>'
@@ -57,21 +60,26 @@ final class HtmlFormatter implements FormatterInterface
     }
 
     /**
-     * Detects a link within the string and builds an HTML link
+     * An HTML link, when the value is an address; null when it is not.
+     *
+     * Answering null rather than the text back is what lets the caller tell the two apart. It used
+     * to ask by looking for `<a` in the result, which is a question about the answer rather than
+     * about the value, and a detail whose text merely contained `<a` was taken for a link and sent
+     * out as markup.
      */
-    private function buildLink(string $text): string
+    private function buildLink(string $text): ?string
     {
-        if (preg_match('#^https?://.*$#', $text, $matches)) {
-            return sprintf(
-                '<a href="%s">%s</a>',
-                $matches[0],
-                mb_strlen($matches[0]) > 30
-                    ? trim(mb_substr($matches[0], 0, 30)) . '...'
-                    : $matches[0]
-            );
+        if (!preg_match('#^https?://.*$#', $text, $matches)) {
+            return null;
         }
 
-        return $text;
+        $url = $matches[0];
+
+        return sprintf(
+            '<a href="%s">%s</a>',
+            Html::escape($url),
+            Html::escape(mb_strlen($url) > 30 ? trim(mb_substr($url, 0, 30)) . '...' : $url)
+        );
     }
 
     public function formatDescription(
@@ -82,7 +90,9 @@ final class HtmlFormatter implements FormatterInterface
             '',
             array_map(
                 static function ($value) use ($translate) {
-                    return '<div class="description-line">' . ($translate ? __($value) : $value) . '</div>';
+                    return '<div class="description-line">'
+                           . Html::escape($translate ? __($value) : $value)
+                           . '</div>';
                 },
                 $text
             )
