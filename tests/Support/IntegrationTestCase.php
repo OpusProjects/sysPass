@@ -88,6 +88,12 @@ abstract class IntegrationTestCase extends TestCase
     /** Fixed faker seed for reproducible, isolation-independent test data. */
     protected const FAKER_SEED = 1;
 
+    /**
+     * The request token the session holds and every request built here carries, so the guard in
+     * Init is exercised rather than skipped. Its value does not matter; that both ends agree does.
+     */
+    protected const CSRF_TOKEN = 'b8f1c0d2e3a4956871f2c3d4e5b6a7980c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f';
+
     protected static Generator $faker;
     private static array      $definitionsCache;
     private static string     $moduleFile;
@@ -111,12 +117,19 @@ abstract class IntegrationTestCase extends TestCase
         self::$moduleFile = FileSystem::buildPath(REAL_APP_ROOT, 'src', 'Infrastructure', 'Adapter', 'In', 'Web', 'module.php');
     }
 
+    /**
+     * @param string|null $csrfToken The request token the browser would send. Defaults to the one
+     *                               the session holds, so a request built here goes through the
+     *                               guard the way a real one does; pass null to build a request
+     *                               that carries none, which is what a cross-site post looks like.
+     */
     protected static function buildRequest(
-        string $method,
-        string $uri,
-        array  $paramsGet = [],
-        array  $paramsPost = [],
-        array  $files = []
+        string  $method,
+        string  $uri,
+        array   $paramsGet = [],
+        array   $paramsPost = [],
+        array   $files = [],
+        ?string $csrfToken = self::CSRF_TOKEN
     ): Request {
         $server = array_merge(
             $_SERVER,
@@ -129,7 +142,8 @@ abstract class IntegrationTestCase extends TestCase
                 // brute-force counter on REMOTE_ADDR, which must be a valid IP.
                 'REMOTE_ADDR' => '127.0.0.1'
                 //'QUERY_STRING' => $query
-            ]
+            ],
+            $csrfToken !== null ? ['HTTP_X_CSRF' => $csrfToken] : []
         );
 
         return new Request(
@@ -281,6 +295,10 @@ abstract class IntegrationTestCase extends TestCase
     {
         $context = self::createStub(SessionContext::class);
         $context->method('isLoggedIn')->willReturn(true);
+        // Csrf::check() only enforces anything when the session holds a token. Answering null here
+        // switched the guard off for every test in this suite, so a state-changing request could
+        // reach a controller without one — which production would refuse.
+        $context->method('getCSRF')->willReturn(self::CSRF_TOKEN);
         $context->method('getAuthCompleted')->willReturn(true);
         $context->method('getUserData')->willReturn($this->getUserDataDto());
         $context->method('getUserProfile')->willReturn($this->getUserProfile());
