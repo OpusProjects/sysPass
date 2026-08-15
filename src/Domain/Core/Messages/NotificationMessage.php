@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Domain\Core\Messages;
 
+use SP\Domain\Core\Html\Html;
+
 /**
  * Class NotificationMessage
  */
@@ -40,7 +42,7 @@ final class NotificationMessage extends MessageBase
         $message = '<div class="notice-message" style="font-family: Helvetica, Arial, sans-serif">';
 
         if ($this->title) {
-            $message .= '<h3>' . $this->title . '</h3>';
+            $message .= '<h3>' . Html::escape($this->title) . '</h3>';
         }
 
         if (!empty($this->description)) {

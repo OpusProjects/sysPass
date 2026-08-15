@@ -116,7 +116,12 @@ final class MailEvent extends Service implements EventReceiver
                 ) {
                     $mailMessage->addDescription(sprintf(__('Event: %s'), $eventName));
                 } else {
-                    $mailMessage->addDescription($eventMessage->composeText('<br>'));
+                    // One description per line rather than one description carrying `<br>` between
+                    // them. The formatter wraps each in its own element, so the mail reads the
+                    // same — and the message no longer has to be markup for it to.
+                    foreach (explode(PHP_EOL, $eventMessage->composeText(PHP_EOL)) as $line) {
+                        $mailMessage->addDescription($line);
+                    }
                 }
 
                 $mailMessage->addDescriptionLine();
