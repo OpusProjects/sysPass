@@ -42,11 +42,11 @@ use function SP\__;
     <div class="data">
         <div id="list-account-files"
              data-action-route="<?php
-             echo $_getvar('fileListRoute'); ?>"
+             echo $_e($_getvar('fileListRoute')); ?>"
              data-item-id="<?php
-             echo $_getvar('accountId'); ?>"
+             echo $_e($_getvar('accountId')); ?>"
              data-history="<?php
-             echo $_getvar('accountIsHistory', false); ?>"
+             echo $_e($_getvar('accountIsHistory', false)); ?>"
              data-delete="<?php
              echo (int)$accountAcl->isShowDelete(); ?>">
         </div>
@@ -57,11 +57,11 @@ use function SP\__;
                 <div id="drop-account-files"
                      class="round active-tooltip dropzone"
                      data-files-ext="<?php
-                     echo $_getvar('filesAllowedExts'); ?>"
+                     echo $_e($_getvar('filesAllowedExts')); ?>"
                      data-item-id="<?php
-                     echo $_getvar('accountId'); ?>"
+                     echo $_e($_getvar('accountId')); ?>"
                      data-action-route="<?php
-                     echo $_getvar('fileUploadRoute'); ?>"
+                     echo $_e($_getvar('fileUploadRoute')); ?>"
                      data-delete="<?php
                      echo (int)$accountAcl->isShowDelete(); ?>">
                     <i class="material-icons md-60 mdl-color-text--teal-500">cloud_upload</i>

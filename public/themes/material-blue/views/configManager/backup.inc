@@ -72,7 +72,7 @@ endif; ?>
                 echo __('Result'); ?></div>
 
             <?php
-            echo $_getvar('lastBackupTime'); ?>
+            echo $_e($_getvar('lastBackupTime')); ?>
         </td>
     </tr>
     <?php
@@ -180,7 +180,7 @@ endif; ?>
                     echo __('Result'); ?></div>
 
                 <?php
-                echo $_getvar('lastExportTime'); ?>
+                echo $_e($_getvar('lastExportTime')); ?>
             </td>
         </tr>
         <?php
@@ -202,7 +202,7 @@ endif; ?>
                             <button type="button"
                                     class="mdl-button mdl-js-button">
                                 XML <?php
-                                echo $_getvar('siteName'); ?>
+                                echo $_e($_getvar('siteName')); ?>
                             </button>
                         </a>
                     <?php

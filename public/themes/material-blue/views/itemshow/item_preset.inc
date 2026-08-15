@@ -43,7 +43,7 @@ $preset = $_getvar('preset');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -53,14 +53,14 @@ $preset = $_getvar('preset');
                 echo __('General'); ?></a>
             <a href="#presets-panel"
                class="mdl-tabs__tab"><?php
-                echo $_getvar('presetName'); ?></a>
+                echo $_e($_getvar('presetName')); ?></a>
         </div>
 
         <form method="post" name="frmItemPreset" id="frmItemPreset"
               class="form-action"
               data-onsubmit="appMgmt/save"
               data-action-route="<?php
-              echo $_getvar('route', ''); ?>"
+              echo $_e($_getvar('route', '')); ?>"
               data-hash="">
 
             <div class="mdl-tabs__panel is-active" id="general-panel">
@@ -77,7 +77,7 @@ $preset = $_getvar('preset');
                                     class="select-box select-box-deselect"
                                     title="<?php
                                     echo __('User'); ?>" <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select User'); ?></option>
                                 <?php
@@ -87,7 +87,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $user->getId(); ?>" <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($user->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -105,7 +105,7 @@ $preset = $_getvar('preset');
                                     class="select-box select-box-deselect"
                                     title="<?php
                                     echo __('Group'); ?>" <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Group'); ?></option>
                                 <?php
@@ -115,7 +115,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $userGroup->getId(); ?>" <?php
                                     echo $userGroup->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($userGroup->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -133,7 +133,7 @@ $preset = $_getvar('preset');
                                     class="select-box select-box-deselect"
                                     title="<?php
                                     echo __('Profile'); ?>" <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Profile'); ?></option>
                                 <?php
@@ -143,7 +143,7 @@ $preset = $_getvar('preset');
                                             value="<?php
                                             echo $userProfile->getId(); ?>" <?php
                                     echo $userProfile->isSelected() ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($userProfile->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>

@@ -49,9 +49,9 @@ $accountView = $_getvar('accountData');
           class="form-action"
           data-onsubmit="account/request"
           data-action-route="<?php
-          echo $_getvar('formRoute', ''); ?>"
+          echo $_e($_getvar('formRoute', '')); ?>"
           data-item-id="<?php
-          echo $_getvar('accountId', ''); ?>"
+          echo $_e($_getvar('accountId', '')); ?>"
           data-hash="">
         <table class="data">
             <tr>
@@ -62,7 +62,7 @@ $accountView = $_getvar('accountData');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -78,7 +78,7 @@ $accountView = $_getvar('accountData');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getClientName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getClientName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php

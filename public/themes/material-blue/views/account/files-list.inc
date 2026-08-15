@@ -45,7 +45,7 @@ use function SP\__;
             <li class="mdl-list__item">
                 <span class="mdl-list__item-primary-content"
                       title="<?php
-                      echo htmlspecialchars($file->getName() ?? '', ENT_QUOTES); ?>">
+                      echo $_e($file->getName()); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
                     <span><?php
                         printf('%s (%d KB)', Html::truncate($file->getName() ?? '', 50), ($file->getSize() ?? 0) / 1024); ?></span>
@@ -55,12 +55,12 @@ use function SP\__;
                     <?php
                     if ($file->getThumb() !== 'no_thumb'): ?>
                         <span title="<?php
-                        echo htmlspecialchars($file->getName() ?? '', ENT_QUOTES); ?>"
+                        echo $_e($file->getName()); ?>"
                               class="btn-action"
                               data-item-id="<?php
                               echo $file->getId(); ?>"
                               data-action-route="<?php
-                              echo $_getvar('fileViewRoute'); ?>"
+                              echo $_e($_getvar('fileViewRoute')); ?>"
                               data-onclick="file/view">
                             <img src="data:image/png;base64,<?php
                             echo $file->getThumb(); ?>"
@@ -78,7 +78,7 @@ use function SP\__;
                            data-item-id="<?php
                            echo $file->getId(); ?>"
                            data-action-route="<?php
-                           echo $_getvar('fileDeleteRoute'); ?>"
+                           echo $_e($_getvar('fileDeleteRoute')); ?>"
                            data-onclick="file/delete">
                             <?php
                             echo $icons->delete()->getIcon(); ?></i>
@@ -92,7 +92,7 @@ use function SP\__;
                        data-item-id="<?php
                        echo $file->getId(); ?>"
                        data-action-route="<?php
-                       echo $_getvar('fileDownloadRoute'); ?>"
+                       echo $_e($_getvar('fileDownloadRoute')); ?>"
                        data-item-type="<?php
                        echo $extension; ?>"
                        data-onclick="file/download">
@@ -108,7 +108,7 @@ use function SP\__;
                            data-item-id="<?php
                            echo $file->getId(); ?>"
                            data-action-route="<?php
-                           echo $_getvar('fileViewRoute'); ?>"
+                           echo $_e($_getvar('fileViewRoute')); ?>"
                            data-onclick="file/view">
                         <?php
                         echo $icons->view()->getIcon(); ?></i>

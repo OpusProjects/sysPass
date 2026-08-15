@@ -139,7 +139,7 @@ endif; ?>
                             <?php
                             echo $serverType->isSelected() ? 'selected' : ''; ?>>
                             <?php
-                            echo $serverType->getName(); ?>
+                            echo $_e($serverType->getName()); ?>
                         </option>
                     <?php
                     endforeach; ?>
@@ -181,7 +181,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapServer() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapServer()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_server"><?php
                         echo __('Server'); ?></label>
@@ -222,7 +222,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapBindUser() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapBindUser()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_binduser"><?php
                         echo __('User'); ?></label>
@@ -315,7 +315,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapBase() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapBase()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_base"><?php
                         echo __('Search base'); ?></label>
@@ -361,7 +361,7 @@ endif; ?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapGroup() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapGroup()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_group"><?php
                         echo __('Group'); ?></label>
@@ -403,7 +403,7 @@ endif; ?>
                             <?php
                             echo $userGroup->getId() === $configData->getLdapDefaultGroup() ? 'selected' : ''; ?>>
                             <?php
-                            echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?>
+                            echo $_e($userGroup->getName()); ?>
                         </option>
                     <?php
                     endforeach; ?>
@@ -445,7 +445,7 @@ endif; ?>
                             <?php
                             echo ($userProfile->getId() === $configData->getLdapDefaultProfile()) ? 'selected' : ''; ?>>
                             <?php
-                            echo htmlspecialchars($userProfile->getName() ?? '', ENT_QUOTES); ?>
+                            echo $_e($userProfile->getName()); ?>
                         </option>
                     <?php
                     endforeach; ?>
@@ -493,7 +493,7 @@ endif; ?>
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapFilterUserObject() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapFilterUserObject()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_filter_user_object"><?php
                         echo __('Filter'); ?></label>
@@ -536,7 +536,7 @@ endif; ?>
                            type="text"
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            value="<?php
-                           echo htmlspecialchars($configData->getLdapFilterGroupObject() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getLdapFilterGroupObject()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="ldap_filter_group_object"><?php
                         echo __('Filter'); ?></label>
@@ -578,11 +578,11 @@ endif; ?>
                     foreach ($_getvar('userAttributes') ?? [] as $userAttribute): ?>
                         <option
                                 value="<?php
-                                echo $userAttribute->getName(); ?>"
+                                echo $_e($userAttribute->getName()); ?>"
                             <?php
                             echo $userAttribute->isSelected() ? 'selected' : ''; ?>>
                             <?php
-                            echo $userAttribute->getName(); ?>
+                            echo $_e($userAttribute->getName()); ?>
                         </option>
                     <?php
                     endforeach; ?>
@@ -624,11 +624,11 @@ endif; ?>
                     foreach ($_getvar('groupAttributes') ?? [] as $groupAttribute): ?>
                         <option
                                 value="<?php
-                                echo $groupAttribute->getName(); ?>"
+                                echo $_e($groupAttribute->getName()); ?>"
                             <?php
                             echo $groupAttribute->isSelected() ? 'selected' : ''; ?>>
                             <?php
-                            echo $groupAttribute->getName(); ?>
+                            echo $_e($groupAttribute->getName()); ?>
                         </option>
                     <?php
                     endforeach; ?>

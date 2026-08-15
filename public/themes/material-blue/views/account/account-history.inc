@@ -49,9 +49,9 @@ $accountAcl = $_getvar('accountAcl');
         <i class="material-icons"
            title="<?php
            echo __('History'); ?>"><?php
-            echo $_getvar('title')['icon']; ?></i>
+            echo $_e($_getvar('title')['icon']); ?></i>
         <?php
-        echo $_getvar('title')['name']; ?>
+        echo $_e($_getvar('title')['name']); ?>
     </div>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -74,9 +74,9 @@ $accountAcl = $_getvar('accountAcl');
                   class="form-action"
                   data-onsubmit="account/save"
                   data-action-route="<?php
-                  echo $_getvar('formRoute', ''); ?>"
+                  echo $_e($_getvar('formRoute', '')); ?>"
                   data-item-id="<?php
-                  echo $_getvar('accountId', ''); ?>"
+                  echo $_e($_getvar('accountId', '')); ?>"
                   data-hash="">
                 <input type="hidden" name="isAjax" value="1">
 
@@ -91,7 +91,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->name ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($accountView->name); ?>"
                                        tabindex="1" readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -118,7 +118,7 @@ $accountAcl = $_getvar('accountAcl');
                                         <?php
                                         echo $client->isSelected() ? 'selected' : ''; ?>>
                                         <?php
-                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?>
+                                        echo $_e($client->getName()); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -146,7 +146,7 @@ $accountAcl = $_getvar('accountAcl');
                                         <?php
                                         echo $category->isSelected() ? 'selected' : ''; ?>>
                                         <?php
-                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?>
+                                        echo $_e($category->getName()); ?>
                                     </option>
                                 <?php
                                 endforeach; ?>
@@ -162,7 +162,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="255" tabindex="4"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->url ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($accountView->url); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -179,7 +179,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        maxlength="50" tabindex="5"
                                        value="<?php
-                                       echo htmlspecialchars($accountView->login ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($accountView->login); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
@@ -197,7 +197,7 @@ $accountAcl = $_getvar('accountAcl');
                                        class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                        tabindex="8"
                                        value="<?php
-                                       echo $_getvar('accountPassDateChange'); ?>"
+                                       echo $_e($_getvar('accountPassDateChange')); ?>"
                                        readonly>
                                 <label class="mdl-textfield__label"
                                        for="password_date_expire"><?php
@@ -216,7 +216,7 @@ $accountAcl = $_getvar('accountAcl');
                                 name="notes" tabindex="9"
                                 maxlength="5000"
                                 readonly><?php
-                            echo htmlspecialchars($accountView->notes ?? '', ENT_QUOTES); ?>
+                            echo $_e($accountView->notes); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -249,7 +249,7 @@ $accountAcl = $_getvar('accountAcl');
                                             <?php
                                             echo $history->isSelected() ? 'selected' : ''; ?>>
                                             <?php
-                                            echo htmlspecialchars($history->getName() ?? '', ENT_QUOTES); ?>
+                                            echo $_e($history->getName()); ?>
                                         </option>
                                     <?php
                                     endforeach; ?>
@@ -267,8 +267,8 @@ $accountAcl = $_getvar('accountAcl');
                             printf(
                                 '%s (%s)',
                                 $accountView->dateEdit,
-                                htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES)
-                                    ?: htmlspecialchars($accountView->userEditLogin ?? '', ENT_QUOTES)
+                                $_e($accountView->userEditName)
+                                    ?: $_e($accountView->userEditLogin)
                             ); ?>
                         </td>
                     </tr>

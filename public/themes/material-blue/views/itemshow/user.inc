@@ -43,7 +43,7 @@ $user = $_getvar('user');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -67,7 +67,7 @@ $user = $_getvar('user');
         <form method="post" name="frmUsers" id="frmUsers" class="form-action"
               data-onsubmit="appMgmt/save"
               data-action-route="<?php
-              echo $_getvar('route', ''); ?>"
+              echo $_e($_getvar('route', '')); ?>"
               data-hash="">
 
             <div class="mdl-tabs__panel is-active" id="user-panel">
@@ -83,9 +83,9 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($user->getName()); ?>"
                                        maxlength="80" <?php
-                                echo $_getvar('readonly'); ?>>
+                                echo $_e($_getvar('readonly')); ?>>
                                 <label class="mdl-textfield__label"
                                        for="name"><?php
                                     echo __('Full username'); ?></label>
@@ -102,9 +102,9 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getLogin() ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($user->getLogin()); ?>"
                                        maxlength="80" <?php
-                                echo $user->isLdap() ? 'readonly' : $_getvar('readonly'); ?>>
+                                echo $user->isLdap() ? 'readonly' : $_e($_getvar('readonly')); ?>>
                                 <label class="mdl-textfield__label"
                                        for="login"><?php
                                     echo __('Session login'); ?></label>
@@ -132,9 +132,9 @@ $user = $_getvar('user');
                                            type="text"
                                            class="mdl-textfield__input mdl-color-text--indigo-400"
                                            value="<?php
-                                           echo htmlspecialchars($user->getSsoLogin() ?? '', ENT_QUOTES); ?>"
+                                           echo $_e($user->getSsoLogin()); ?>"
                                            maxlength="100" <?php
-                                    echo $_getvar('readonly'); ?>>
+                                    echo $_e($_getvar('readonly')); ?>>
                                     <label class="mdl-textfield__label"
                                            for="login_sso"><?php
                                         echo __('Session login with SSO'); ?></label>
@@ -153,9 +153,9 @@ $user = $_getvar('user');
                                        required
                                        class="mdl-textfield__input mdl-color-text--indigo-400"
                                        value="<?php
-                                       echo htmlspecialchars($user->getEmail() ?? '', ENT_QUOTES); ?>"
+                                       echo $_e($user->getEmail()); ?>"
                                        maxlength="50" <?php
-                                echo $_getvar('readonly'); ?>>
+                                echo $_e($_getvar('readonly')); ?>>
                                 <label class="mdl-textfield__label"
                                        for="email"><?php
                                     echo __('Email address'); ?></label>
@@ -213,7 +213,7 @@ $user = $_getvar('user');
                             <select id="userprofile_id" name="userprofile_id"
                                     class="select-box"
                                     required <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Profile'); ?></option>
                                 <?php
@@ -223,7 +223,7 @@ $user = $_getvar('user');
                                             value="<?php
                                             echo $profile->getId(); ?>" <?php
                                     echo ($profile->getId() === $user->getUserProfileId()) ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($profile->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($profile->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -240,7 +240,7 @@ $user = $_getvar('user');
                             <select id="usergroup_id" name="usergroup_id"
                                     class="select-box"
                                     required <?php
-                            echo $_getvar('disabled'); ?>>
+                            echo $_e($_getvar('disabled')); ?>>
                                 <option value=""><?php
                                     echo __('Select Group'); ?></option>
                                 <?php
@@ -250,7 +250,7 @@ $user = $_getvar('user');
                                             value="<?php
                                             echo $group->getId(); ?>" <?php
                                     echo ($group->getId() === $user->getUserGroupId()) ? 'selected' : ''; ?>><?php
-                                        echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($group->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -265,9 +265,9 @@ $user = $_getvar('user');
                         <textarea class="mdl-textfield__input" rows="3"
                                   id="notes" name="notes"
                                   maxlength="1000" <?php
-                        echo $_getvar('readonly'); ?>>
+                        echo $_e($_getvar('readonly')); ?>>
                             <?php
-                            echo htmlspecialchars($user->getNotes() ?? '', ENT_QUOTES); ?>
+                            echo $_e($user->getNotes()); ?>
                         </textarea>
                                 <label class="mdl-textfield__label"
                                        for="notes"><?php
@@ -304,7 +304,7 @@ $user = $_getvar('user');
                                                        class="mdl-switch__input"
                                                        name="adminapp_enabled" <?php
                                                 echo $user->isAdminApp() ? 'checked' : ' '; ?> <?php
-                                                echo $_getvar('disabled'); ?>/>
+                                                echo $_e($_getvar('disabled')); ?>/>
                                             </label>
                                         </div>
 
@@ -327,7 +327,7 @@ $user = $_getvar('user');
                                                        class="mdl-switch__input"
                                                        name="adminacc_enabled" <?php
                                                 echo $user->isAdminAcc() ? 'checked' : ' '; ?> <?php
-                                                echo $_getvar('disabled'); ?>/>
+                                                echo $_e($_getvar('disabled')); ?>/>
                                             </label>
                                         </div>
 
@@ -354,7 +354,7 @@ $user = $_getvar('user');
                                                        class="mdl-switch__input"
                                                        name="changepass_enabled" <?php
                                                 echo $user->isChangePass() ? 'checked' : ' '; ?> <?php
-                                                echo $_getvar('disabled'); ?>/>
+                                                echo $_e($_getvar('disabled')); ?>/>
                                             </label>
                                         </div>
 
@@ -378,7 +378,7 @@ $user = $_getvar('user');
                                                    class="mdl-switch__input"
                                                    name="disabled" <?php
                                             echo $user->isDisabled() ? 'checked' : ' '; ?> <?php
-                                            echo $_getvar('disabled'); ?>/>
+                                            echo $_e($_getvar('disabled')); ?>/>
                                         </label>
                                     </div>
 
@@ -420,7 +420,7 @@ $user = $_getvar('user');
                                     echo __('Last Access'); ?></div>
 
                                 <?php
-                                echo $user->getLastLogin(); ?>
+                                echo $_e($user->getLastLogin()); ?>
                             </td>
                         </tr>
 
@@ -444,7 +444,7 @@ $user = $_getvar('user');
                                     echo __('Master Password Date'); ?></div>
 
                                 <?php
-                                echo gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass() ?? 0); ?>
+                                echo $_e(gmdate('Y-m-d H:i:s', $user->getLastUpdateMPass() ?? 0)); ?>
                             </td>
                         </tr>
 
@@ -468,7 +468,7 @@ $user = $_getvar('user');
                                                     printf(
                                                         '%s: %s',
                                                         $item->ref,
-                                                        htmlspecialchars($item->name ?? '', ENT_QUOTES) ?: $item->id
+                                                        $_e($item->name) ?: $item->id
                                                     ); ?>
                                                 </span>
                                             </li>

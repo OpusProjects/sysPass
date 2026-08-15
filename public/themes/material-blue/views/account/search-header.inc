@@ -51,12 +51,12 @@ if (!isset($data)) {
                    class="round <?php
                    echo ($data->getPager()->getSortKey() == $field->getSortKey()) ? 'filterOn' : ''; ?>">
                     <?php
-                    echo $field->getName(); ?>
+                    echo $_e($field->getName()); ?>
                 </a>
                 <span for="btn-order-<?php
                 echo $field->getSortKey(); ?>"
                       class="mdl-tooltip mdl-tooltip--bottom"><?php
-                    echo $field->getTitle(); ?></span>
+                    echo $_e($field->getTitle()); ?></span>
                 <?php
                 $classDown = ($data->getPager()->getSortKey() == $field->getSortKey()
                               && $data->getPager()->getSortOrder() ===

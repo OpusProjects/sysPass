@@ -36,12 +36,12 @@ use SP\Infrastructure\Adapter\In\Web\View\TemplateInterface;
     <h3>DEBUG INFO</h3>
     <ul>
         <li>RENDER -> <?php
-            echo $_getvar('time'); ?> sec
+            echo $_e($_getvar('time')); ?> sec
         </li>
         <li>MEM -> Init: <?php
-            echo $_getvar('memInit'); ?> KB -
+            echo $_e($_getvar('memInit')); ?> KB -
             End: <?php
-            echo $_getvar('memEnd'); ?> KB -
+            echo $_e($_getvar('memEnd')); ?> KB -
             Total: <?php
             echo $_getvar('memEnd') - $_getvar('memInit'); ?> KB
         </li>

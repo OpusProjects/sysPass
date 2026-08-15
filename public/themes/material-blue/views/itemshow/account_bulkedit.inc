@@ -45,7 +45,7 @@ use function SP\__;
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
@@ -65,7 +65,7 @@ use function SP\__;
               class="form-action"
               data-onsubmit="appMgmt/save"
               data-action-route="<?php
-              echo $_getvar('route', ''); ?>"
+              echo $_e($_getvar('route', '')); ?>"
               data-hash="">
 
             <div class="mdl-tabs__panel is-active" id="general-panel">
@@ -87,7 +87,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $client->getId(); ?>"><?php
-                                        echo htmlspecialchars($client->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($client->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -110,7 +110,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $category->getId(); ?>"><?php
-                                        echo htmlspecialchars($category->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($category->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -133,7 +133,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $user->getId(); ?>"><?php
-                                        echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($user->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -156,7 +156,7 @@ use function SP\__;
                                     <option
                                             value="<?php
                                             echo $group->getId(); ?>"><?php
-                                        echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($group->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -175,7 +175,7 @@ use function SP\__;
                                 foreach ($_getvar('tags') as $tag): ?>
                                     <option value="<?php
                                     echo $tag->getId(); ?>"><?php
-                                        echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?></option>
+                                        echo $_e($tag->getName()); ?></option>
                                 <?php
                                 endforeach; ?>
                             </select>
@@ -205,7 +205,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $user->getId(); ?>"><?php
-                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
+                                                echo $_e($user->getName()); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -238,7 +238,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $user->getId(); ?>"><?php
-                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?></option>
+                                                echo $_e($user->getName()); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -279,7 +279,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $userGroup->getId(); ?>"><?php
-                                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                                echo $_e($userGroup->getName()); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -312,7 +312,7 @@ use function SP\__;
                                             <option
                                                     value="<?php
                                                     echo $userGroup->getId(); ?>"><?php
-                                                echo htmlspecialchars($userGroup->getName() ?? '', ENT_QUOTES); ?></option>
+                                                echo $_e($userGroup->getName()); ?></option>
                                         <?php
                                         endforeach; ?>
                                     </select>
@@ -398,7 +398,7 @@ use function SP\__;
 
             <input type="hidden" name="itemsId"
                    value="<?php
-                   echo implode(',', $_getvar('itemsId')); ?>">
+                   echo $_e(implode(',', $_getvar('itemsId'))); ?>">
             <input type="hidden" name="isAjax" value="1">
         </form>
     </div>

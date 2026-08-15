@@ -108,7 +108,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailServer() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getMailServer()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_server"><?php
                         echo __('Server'); ?></label>
@@ -169,7 +169,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="50"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailUser() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getMailUser()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_user"><?php
                         echo __('User'); ?></label>
@@ -230,7 +230,7 @@ use function SP\__;
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="128"
                            value="<?php
-                           echo htmlspecialchars($configData->getMailFrom() ?? '', ENT_QUOTES); ?>"/>
+                           echo $_e($configData->getMailFrom()); ?>"/>
                     <label class="mdl-textfield__label"
                            for="mail_from"><?php
                         echo __('Sender email address'); ?></label>
@@ -269,10 +269,10 @@ use function SP\__;
                     foreach ($_getvar('mailEvents') ?? [] as $mailEvent): ?>
                         <option
                                 value="<?php
-                                echo $mailEvent->getName(); ?>"
+                                echo $_e($mailEvent->getName()); ?>"
                             <?php
                             echo $mailEvent->isSelected() ? 'selected' : '' ?>><?php
-                            echo $mailEvent->getName(); ?></option>
+                            echo $_e($mailEvent->getName()); ?></option>
                     <?php
                     endforeach; ?>
                 </select>

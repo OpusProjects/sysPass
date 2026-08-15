@@ -51,7 +51,7 @@ $userPreferences = $_getvar('userPreferences');
       class="form-action"
       data-onsubmit="user/saveSettings"
       data-action-route="<?php
-      echo $_getvar('route'); ?>"
+      echo $_e($_getvar('route')); ?>"
       data-reload="1"
       data-hash="">
 
@@ -72,7 +72,7 @@ $userPreferences = $_getvar('userPreferences');
                                 value='<?php
                                 echo $lang->getId(); ?>' <?php
                         echo $lang->isSelected() ? 'selected' : ""; ?>><?php
-                            echo $lang->getName(); ?></option>
+                            echo $_e($lang->getName()); ?></option>
                     <?php
                     endforeach; ?>
                 </select>
@@ -94,7 +94,7 @@ $userPreferences = $_getvar('userPreferences');
                                 value='<?php
                                 echo $theme->getId(); ?>' <?php
                         echo $theme->isSelected() ? 'selected' : ""; ?>><?php
-                            echo $theme->getName(); ?></option>
+                            echo $_e($theme->getName()); ?></option>
                     <?php
                     endforeach; ?>
                 </select>

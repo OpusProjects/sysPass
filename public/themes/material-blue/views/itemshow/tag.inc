@@ -41,13 +41,13 @@ $tag = $_getvar('tag');
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmTags" id="frmTags" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -60,7 +60,7 @@ $tag = $_getvar('tag');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($tag->getName() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($tag->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Tag name'); ?></label>

@@ -104,7 +104,7 @@ use function SP\__;
                             <option value="<?php
                             echo $lang->getId(); ?>" <?php
                             echo $lang->isSelected() ? 'selected' : ''; ?>><?php
-                                echo $lang->getName(); ?></option>
+                                echo $_e($lang->getName()); ?></option>
                         <?php
                         endforeach; ?>
                     </select>
@@ -134,7 +134,7 @@ use function SP\__;
                             </button>
                             <ul class="req-extensions-list" style="display:none">
                                 <?php foreach ($_getvar('availableRequired') as $module): ?>
-                                    <li><?php echo htmlspecialchars($module); ?></li>
+                                    <li><?php echo $_e($module); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
@@ -149,7 +149,7 @@ use function SP\__;
                             </button>
                             <ul class="req-extensions-list" style="display:none">
                                 <?php foreach ($_getvar('availableOptional') as $module): ?>
-                                    <li><?php echo htmlspecialchars($module); ?></li>
+                                    <li><?php echo $_e($module); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
@@ -163,7 +163,7 @@ use function SP\__;
                             </button>
                             <ul class="req-extensions-list" style="display:none">
                                 <?php foreach ($_getvar('missingRequired') as $module): ?>
-                                    <li><?php echo htmlspecialchars($module); ?></li>
+                                    <li><?php echo $_e($module); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
@@ -178,7 +178,7 @@ use function SP\__;
                             </button>
                             <ul class="req-extensions-list" style="display:none">
                                 <?php foreach ($_getvar('missingOptional') as $module): ?>
-                                    <li><?php echo htmlspecialchars($module); ?></li>
+                                    <li><?php echo $_e($module); ?></li>
                                 <?php endforeach; ?>
                             </ul>
                         </li>
@@ -192,7 +192,7 @@ use function SP\__;
                             <i class="material-icons">expand_more</i>
                         </button>
                         <ul class="req-extensions-list" style="display:none">
-                            <li><?php echo htmlspecialchars($_getvar('configDir')); ?></li>
+                            <li><?php echo $_e($_getvar('configDir')); ?></li>
                         </ul>
                     </li>
 
@@ -205,7 +205,7 @@ use function SP\__;
                         </button>
                         <ul class="req-extensions-list" style="display:none">
                             <?php foreach ($_getvar('varDirs') as $path): ?>
-                                <li><?php echo htmlspecialchars($path); ?></li>
+                                <li><?php echo $_e($path); ?></li>
                             <?php endforeach; ?>
                         </ul>
                     </li>
@@ -474,8 +474,8 @@ use function SP\__;
             var REQUIREMENTS_STEP = parseInt(document.getElementById('requirements').getAttribute('data-step'), 10);
             var MASTER_MIN_LENGTH = 11; // mirrors Installer::checkData()
 
-            var passwordsMismatchMsg = <?php echo json_encode(__('Passwords do not match')); ?>;
-            var masterLengthMsg = <?php echo json_encode(__('The Master Password length need to be at least 11 characters')); ?>;
+            var passwordsMismatchMsg = <?php echo $_j(__('Passwords do not match')); ?>;
+            var masterLengthMsg = <?php echo $_j(__('The Master Password length need to be at least 11 characters')); ?>;
 
             function show(step) {
                 current = step;
@@ -690,13 +690,13 @@ use function SP\__;
             });
 
             var hostingMsgs = {
-                '0': <?php echo json_encode(__('Creates the database and the DB user with the provided credentials')); ?>,
-                '1': <?php echo json_encode(__('Uses the provided credentials directly — the database must already exist')); ?>
+                '0': <?php echo $_j(__('Creates the database and the DB user with the provided credentials')); ?>,
+                '1': <?php echo $_j(__('Uses the provided credentials directly — the database must already exist')); ?>
             };
 
             var dbUserTips = {
-                '0': <?php echo json_encode(__('An user with MySQL admin rights')); ?>,
-                '1': <?php echo json_encode(__('The DB user provided by your hosting')); ?>
+                '0': <?php echo $_j(__('An user with MySQL admin rights')); ?>,
+                '1': <?php echo $_j(__('The DB user provided by your hosting')); ?>
             };
 
             // The selects are enhanced with selectize by the app triggers — wait for it

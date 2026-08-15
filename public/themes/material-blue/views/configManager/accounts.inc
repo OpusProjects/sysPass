@@ -454,10 +454,10 @@ endif; ?>
                     foreach ($_getvar('mimeTypes') ?? [] as $mimeType): ?>
                         <option
                                 value="<?php
-                                echo $mimeType->getName(); ?>"
+                                echo $_e($mimeType->getName()); ?>"
                             <?php
                             echo $mimeType->isSelected() ? 'selected' : '' ?>><?php
-                            echo $mimeType->getName(); ?></option>
+                            echo $_e($mimeType->getName()); ?></option>
                     <?php
                     endforeach; ?>
                 </select>

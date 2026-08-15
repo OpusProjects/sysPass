@@ -72,16 +72,16 @@ $index = $index ?? 0;
                     echo $action->getId(); ?>"
                           class="mdl-tooltip mdl-tooltip--bottom"
                           title="<?php
-                          echo $action->getTitle(); ?>"><?php
-                        echo $action->getName(); ?></span>
+                          echo $_e($action->getTitle()); ?>"><?php
+                        echo $_e($action->getName()); ?></span>
                 </li>
             <?php
             elseif ($action->getType() === DataGridActionType::SEARCH_ITEM): ?>
                 <li class="datagrid-action-search">
                     <form method="post" id="<?php
-                    echo $action->getName(); ?>"
+                    echo $_e($action->getName()); ?>"
                           name="<?php
-                          echo $action->getName(); ?>"
+                          echo $_e($action->getName()); ?>"
                           class="form-action"
                           data-target="#data-table-<?php
                           echo $data->getId(); ?>"
@@ -103,7 +103,7 @@ $index = $index ?? 0;
                             <span for="btn-search-<?php
                             echo $index; ?>"
                                   class="mdl-tooltip mdl-tooltip--bottom"><?php
-                                echo $action->getTitle(); ?></span>
+                                echo $_e($action->getTitle()); ?></span>
 
                             <div class="mdl-textfield__expandable-holder">
                                 <input class="mdl-textfield__input" type="text"
@@ -113,7 +113,7 @@ $index = $index ?? 0;
                                 <label class="mdl-textfield__label"
                                        for="search-<?php
                                        echo $index; ?>"><?php
-                                    echo $action->getTitle(); ?></label>
+                                    echo $_e($action->getTitle()); ?></label>
                             </div>
                         </div>
 
@@ -182,7 +182,7 @@ $index = $index ?? 0;
                     foreach ($data->getDataActionsMenu() as $action): ?>
                         <li class="btn-action mdl-menu__item"
                             title="<?php
-                            echo $action->getTitle(); ?>"
+                            echo $_e($action->getTitle()); ?>"
                             <?php
                             if ($action->isSelection()): ?>
                                 data-selection="#data-table-<?php
@@ -199,7 +199,7 @@ $index = $index ?? 0;
                             echo $action->getIcon()->getClass(); ?>"><?php
                                 echo $action->getIcon()->getIcon(); ?></i>
                             <?php
-                            echo $action->getName(); ?>
+                            echo $_e($action->getName()); ?>
                         </li>
                     <?php
                     endforeach; ?>

@@ -45,7 +45,7 @@ if ($dataGridData->getDataCount() > 0):
                 endif;
                 ?>
                 <td class="cell-data"><?php
-                    echo !empty($value) ? htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8') : '&nbsp;'; ?></td>
+                    echo !empty($value) ? $_e($value) : '&nbsp;'; ?></td>
             <?php
             endforeach; ?>
 
@@ -61,7 +61,7 @@ if ($dataGridData->getDataCount() > 0):
                             <i class="material-icons <?php
                             echo $rowSrcIcon['icon']->getClass(); ?>"
                                title="<?php
-                               echo $rowSrcIcon['icon']->getTitle(); ?>"><?php
+                               echo $_e($rowSrcIcon['icon']->getTitle()); ?>"><?php
                                 echo $rowSrcIcon['icon']->getIcon(); ?></i>
                         <?php
                         endif; ?>
@@ -113,7 +113,7 @@ if ($dataGridData->getDataCount() > 0):
                                         for="<?php
                                         echo $actionUid; ?>"
                                         class="mdl-tooltip mdl-tooltip--top"><?php
-                                    echo $action->getTitle(); ?></span>
+                                    echo $_e($action->getTitle()); ?></span>
                             <?php
                             endif; ?>
                         <?php

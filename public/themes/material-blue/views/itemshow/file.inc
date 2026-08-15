@@ -41,13 +41,13 @@ $fileDto = $_getvar('fileData');
 <?php
 if ($_getvar('isImage')): ?>
     <img alt="<?php
-    echo htmlspecialchars($fileDto->name ?? '', ENT_QUOTES); ?>" src="data:<?php
-    echo htmlspecialchars($fileDto->type ?? '', ENT_QUOTES); ?>;base64, <?php
-    echo $_getvar('data'); ?>" border="0"/>
+    echo $_e($fileDto->name); ?>" src="data:<?php
+    echo $_e($fileDto->type); ?>;base64, <?php
+    echo $_e($_getvar('data')); ?>" border="0"/>
     <div class="title"><?php
-    echo htmlspecialchars($fileDto->name ?? '', ENT_QUOTES); ?></div><?php
+    echo $_e($fileDto->name); ?></div><?php
 else: ?>
     <pre><?php
-        echo $_getvar('data'); ?></pre>
+        echo $_e($_getvar('data')); ?></pre>
 <?php
 endif; ?>

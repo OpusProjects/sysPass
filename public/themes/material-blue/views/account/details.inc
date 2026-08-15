@@ -78,7 +78,7 @@ use function SP\__;
                     printf(
                         '%s (%s)',
                         $accountView->dateEdit,
-                        htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES)
+                        $_e($accountView->userEditName)
                     ); ?>
                 </td>
             </tr>
@@ -93,10 +93,7 @@ use function SP\__;
                     echo __('Owner'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userName ?? '', ENT_QUOTES) ?: htmlspecialchars(
-                    $accountView->login ?? '',
-                    ENT_QUOTES
-                ); ?>
+                echo $_e($accountView->userName) ?: $_e($accountView->login); ?>
             </td>
         </tr>
         <tr>
@@ -107,7 +104,7 @@ use function SP\__;
                     echo __('Main Group'); ?></div>
 
                 <?php
-                echo htmlspecialchars($accountView->userGroupName ?? '', ENT_QUOTES); ?>
+                echo $_e($accountView->userGroupName); ?>
             </td>
         </tr>
 
@@ -132,10 +129,7 @@ use function SP\__;
                         echo __('Editor'); ?></div>
 
                     <?php
-                    echo htmlspecialchars($accountView->userEditName ?? '', ENT_QUOTES) ?: htmlspecialchars(
-                        $accountView->userEditLogin ?? '',
-                        ENT_QUOTES
-                    ); ?>
+                    echo $_e($accountView->userEditName) ?: $_e($accountView->userEditLogin); ?>
                 </td>
             </tr>
         <?php
@@ -149,7 +143,7 @@ use function SP\__;
                     echo __('Password Date'); ?></div>
 
                 <?php
-                echo $_getvar('accountPassDate'); ?>
+                echo $_e($_getvar('accountPassDate')); ?>
             </td>
         </tr>
 
@@ -163,7 +157,7 @@ use function SP\__;
                         echo __('Password Expiry Date'); ?></div>
 
                     <?php
-                    echo $_getvar('accountPassDateChange'); ?>
+                    echo $_e($_getvar('accountPassDateChange')); ?>
                 </td>
             </tr>
         <?php

@@ -30,6 +30,7 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Exceptions\FileNotFoundException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Core\Html\Html;
 use SP\Domain\Core\UI\ThemeIconsInterface;
 use SP\Domain\Http\Providers\Uri;
 
@@ -243,6 +244,12 @@ final class Template implements TemplateInterface
         $icons = $this->themeIcons;
         $_getvar = $this->vars->get(...);
         $_getRoute = $this->getRoute(...);
+        // Escaping is offered as a closure rather than as a class the templates import, for the
+        // same reason $_getvar is: an included file does not inherit the including file's
+        // namespace, so a class reference needs its own `use` line in every one of the hundred
+        // template files — and the one that gets forgotten is the one that matters.
+        $_e = Html::escape(...);
+        $_j = Html::jsValue(...);
         $configData = clone $this->configData;
 
         foreach ($this->templates as $template) {

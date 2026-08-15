@@ -96,10 +96,10 @@ use function SP\__;
                 if ($_getvar('from') && $_getvar('from_hash')): ?>
                     <input type="hidden" name="from"
                            value="<?php
-                           echo $_getvar('from'); ?>"/>
+                           echo $_e($_getvar('from')); ?>"/>
                     <input type="hidden" name="h"
                            value="<?php
-                           echo $_getvar('from_hash'); ?>"/>
+                           echo $_e($_getvar('from_hash')); ?>"/>
                 <?php
                 endif; ?>
 

@@ -45,13 +45,13 @@ $group = $_getvar('group');
 
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmGroups" id="frmGroups" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -64,7 +64,7 @@ $group = $_getvar('group');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($group->getName() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($group->getName()); ?>">
                         <label class="mdl-textfield__label"
                                for="name"><?php
                             echo __('Group name'); ?></label>
@@ -81,7 +81,7 @@ $group = $_getvar('group');
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                maxlength="50"
                                value="<?php
-                               echo htmlspecialchars($group->getDescription() ?? '', ENT_QUOTES); ?>">
+                               echo $_e($group->getDescription()); ?>">
                         <label class="mdl-textfield__label"
                                for="description"><?php
                             echo __('Group description'); ?></label>
@@ -102,7 +102,7 @@ $group = $_getvar('group');
                                 class="select-box"
                                 title="<?php
                                 echo __('Users'); ?>" <?php
-                        echo $_getvar('disabled'); ?>>
+                        echo $_e($_getvar('disabled')); ?>>
                             <option value=""><?php
                                 echo __('Select Users'); ?></option>
                             <?php
@@ -114,7 +114,7 @@ $group = $_getvar('group');
                                     <?php
                                     echo $user->isSelected() ? 'selected' : ''; ?>>
                                     <?php
-                                    echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
+                                    echo $_e($user->getName()); ?>
                                 </option>
                             <?php
                             endforeach; ?>
@@ -131,7 +131,7 @@ $group = $_getvar('group');
                                         if ($user->isSelected()): ?>
                                             <span class="tag">
                                                 <?php
-                                                echo htmlspecialchars($user->getName() ?? '', ENT_QUOTES); ?>
+                                                echo $_e($user->getName()); ?>
                                             </span>
                                         <?php
                                         endif; ?>
@@ -175,16 +175,16 @@ $group = $_getvar('group');
                                                 <?php
                                                 printf(
                                                     '%s (%s)*',
-                                                    htmlspecialchars($user->name ?? '', ENT_QUOTES),
-                                                    htmlspecialchars($user->login ?? '', ENT_QUOTES)
+                                                    $_e($user->name),
+                                                    $_e($user->login)
                                                 ); ?>
                                             <?php
                                             else: ?>
                                                 <?php
                                                 printf(
                                                     '%s (%s)',
-                                                    htmlspecialchars($user->name ?? '', ENT_QUOTES),
-                                                    htmlspecialchars($user->login ?? '', ENT_QUOTES)
+                                                    $_e($user->name),
+                                                    $_e($user->login)
                                                 ); ?>
                                             <?php
                                             endif; ?>

@@ -42,13 +42,13 @@ $authToken = $_getvar('authToken');
 ?>
 <div id="box-popup">
     <h2 class="center"><?php
-        echo $_getvar('header'); ?><i
+        echo $_e($_getvar('header')); ?><i
                 class="btn-popup-close material-icons">close</i></h2>
 
     <form method="post" name="frmTokens" id="frmTokens" class="form-action"
           data-onsubmit="appMgmt/save"
           data-action-route="<?php
-          echo $_getvar('route', ''); ?>"
+          echo $_e($_getvar('route', '')); ?>"
           data-hash="">
         <table class="popup-data">
             <tbody>
@@ -61,7 +61,7 @@ $authToken = $_getvar('authToken');
 
                     <select id="selUsers" name="users" class="select-box"
                             required <?php
-                    echo $_getvar('disabled'); ?>>
+                    echo $_e($_getvar('disabled')); ?>>
                         <option value=""><?php
                             echo __('Select User'); ?></option>
                         <?php
@@ -72,8 +72,8 @@ $authToken = $_getvar('authToken');
                             echo $user->isSelected() ? 'selected' : ''; ?>><?php
                                 printf(
                                     '%s (%s)',
-                                    htmlspecialchars($user->getName() ?? '', ENT_QUOTES),
-                                    htmlspecialchars($user->getItemProperty('login') ?? '', ENT_QUOTES)
+                                    $_e($user->getName()),
+                                    $_e($user->getItemProperty('login'))
                                 ); ?></option>
                         <?php
                         endforeach; ?>
@@ -90,7 +90,7 @@ $authToken = $_getvar('authToken');
                     <select id="selActions" name="actions"
                             class="select-box"
                             required <?php
-                    echo $_getvar('disabled'); ?>>
+                    echo $_e($_getvar('disabled')); ?>>
                         <option value=""><?php
                             echo __('Select Action'); ?></option>
                         <?php
@@ -99,7 +99,7 @@ $authToken = $_getvar('authToken');
                             <option value="<?php
                             echo $action->getId(); ?>" <?php
                             echo $action->isSelected() ? 'selected' : ''; ?>><?php
-                                echo htmlspecialchars($action->getName() ?? '', ENT_QUOTES); ?></option>
+                                echo $_e($action->getName()); ?></option>
                         <?php
                         endforeach; ?>
                     </select>

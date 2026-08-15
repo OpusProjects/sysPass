@@ -82,7 +82,8 @@ final class ViewController extends AccountFileBase
 
         if (in_array($type, self::MIME_VIEW, true)) {
             $this->view->assign('mime', $type);
-            $this->view->assign('data', htmlentities($fileDto->content ?? ''));
+            // The attachment's bytes, as they are — the template escapes what it renders.
+            $this->view->assign('data', $fileDto->content ?? '');
 
             $this->eventDispatcher->notify(new Event(
                 'show.accountFile',

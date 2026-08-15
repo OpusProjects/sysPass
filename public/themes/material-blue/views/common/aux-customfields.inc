@@ -41,7 +41,7 @@ foreach ($customFields as $index => $field):?>
     <tr>
         <td class="descField">
             <?php
-            echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?>
+            echo $_e($field->definitionName); ?>
             <?php
             if ($field->isEncrypted && $field->isValueEncrypted === true): ?>
                 <i class="icon material-icons mdl-color-text--teal-500"
@@ -79,7 +79,7 @@ foreach ($customFields as $index => $field):?>
                      for="help-<?php
                      echo $field->formId; ?>">
                     <p><?php
-                        echo htmlspecialchars($field->help ?? '', ENT_QUOTES); ?></p>
+                        echo $_e($field->help); ?></p>
                 </div>
             <?php
             endif; ?>
@@ -89,7 +89,7 @@ foreach ($customFields as $index => $field):?>
             if ($field->typeName === 'color' && $_getvar('isView')): ?>
                 <span class="round custom-input-color"
                       style="background-color: <?php
-                      echo htmlspecialchars((string)($field->value ?? ''), ENT_QUOTES); ?>;"></span>
+                      echo $_e($field->value); ?>;"></span>
             <?php
             elseif ($field->typeName === 'password'): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -103,16 +103,13 @@ foreach ($customFields as $index => $field):?>
                            data-clipboard="1"
                            maxlength="500"
                            value="<?php
-                           echo !$_getvar('showViewCustomPass') && !empty($field->value) ? '***' : htmlspecialchars(
-                               $field->value ?? '',
-                               ENT_QUOTES
-                           ); ?>" <?php
+                           echo !$_getvar('showViewCustomPass') && !empty($field->value) ? '***' : $_e($field->value); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
-                    echo $_getvar('readonly'); ?>>
+                    echo $_e($_getvar('readonly')); ?>>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
+                        echo $_e($field->definitionName); ?></label>
                 </div>
             <?php
             elseif ($field->typeName === 'textarea'): ?>
@@ -124,12 +121,12 @@ foreach ($customFields as $index => $field):?>
                             echo $field->definitionId; ?>]"
                             id="<?php
                             echo $field->formId; ?>" <?php
-                    echo $_getvar('readonly'); ?>><?php
-                        echo htmlspecialchars($field->value ?? '', ENT_QUOTES); ?></textarea>
+                    echo $_e($_getvar('readonly')); ?>><?php
+                        echo $_e($field->value); ?></textarea>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
+                        echo $_e($field->definitionName); ?></label>
                 </div>
             <?php
             else: ?>
@@ -143,13 +140,13 @@ foreach ($customFields as $index => $field):?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="500"
                            value="<?php
-                           echo htmlspecialchars($field->value ?? '', ENT_QUOTES); ?>" <?php
+                           echo $_e($field->value); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
-                    echo $_getvar('readonly'); ?>>
+                    echo $_e($_getvar('readonly')); ?>>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
-                        echo htmlspecialchars($field->definitionName ?? '', ENT_QUOTES); ?></label>
+                        echo $_e($field->definitionName); ?></label>
                 </div>
             <?php
             endif; ?>

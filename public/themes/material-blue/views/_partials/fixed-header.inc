@@ -17,9 +17,9 @@ use function SP\__;
             <!-- Title -->
             <span class="mdl-layout-icon">
                 <img class="logo btn-menu"
-                     src="<?php echo $_getvar('logo_no_bg_color'); ?>"
+                     src="<?php echo $_e($_getvar('logo_no_bg_color')); ?>"
                      alt="logo"
-                     data-route="<?php echo $_getvar('homeRoute'); ?>"
+                     data-route="<?php echo $_e($_getvar('homeRoute')); ?>"
                      data-view="search"
                      data-historyReset="1"/>
             </span>
@@ -39,7 +39,7 @@ use function SP\__;
                             <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                         </a>
                         <span for="btn-<?php echo $action->getId(); ?>"
-                              class="mdl-tooltip mdl-tooltip--bottom"><?php echo $action->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--bottom"><?php echo $_e($action->getTitle()); ?></span>
                     <?php endforeach; ?>
 
                     <a id="notifications" class="btn-menu mdl-navigation__link"
@@ -69,7 +69,7 @@ use function SP\__;
                                 class="btn-action mdl-menu__item"
                                 data-onclick="appMgmt/show"
                                 data-action-route="user/editPass"
-                                data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
+                                data-item-id="<?php echo $_e($_getvar('ctx_userId')); ?>">
                                 <i class="material-icons">lock</i>
                                 <?php echo __('Change User\'s Password'); ?>
                             </li>
@@ -95,7 +95,7 @@ use function SP\__;
 
     <?php if ($_getvar('useMenu') && $_getvar('loggedIn')): ?>
         <div class="mdl-layout__drawer">
-            <span class="mdl-layout-title"><?php echo $_getvar('app_name'); ?></span>
+            <span class="mdl-layout-title"><?php echo $_e($_getvar('app_name')); ?></span>
             <nav class="mdl-navigation">
                 <?php /** @var DataGridAction $action */
                 foreach ($_getvar('actions') as $action): ?>
@@ -105,7 +105,7 @@ use function SP\__;
                             <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
                         <?php endforeach; ?>>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
-                        <?php echo $action->getTitle(); ?>
+                        <?php echo $_e($action->getTitle()); ?>
                     </a>
                 <?php endforeach; ?>
 
@@ -131,7 +131,7 @@ use function SP\__;
                        title="<?php echo __('Change User\'s Password'); ?>"
                        data-onclick="appMgmt/show"
                        data-action-route="user/editPass"
-                       data-item-id="<?php echo $_getvar('ctx_userId'); ?>">
+                       data-item-id="<?php echo $_e($_getvar('ctx_userId')); ?>">
                         <i class="btn-action material-icons">security</i>
                         <?php echo __('Change User\'s Password'); ?>
                     </a>
@@ -142,7 +142,7 @@ use function SP\__;
                    data-onclick="user/showSettings"
                    data-action-route="userSettingsManager/index">
                     <i class="btn-action material-icons">account_circle</i>
-                    <span id="user-name"><?php echo $_getvar('ctx_userName'); ?></span>
+                    <span id="user-name"><?php echo $_e($_getvar('ctx_userName')); ?></span>
                     <span for="user-name"
                           class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
                     <?php
@@ -153,7 +153,7 @@ use function SP\__;
                         <i id="user-type"
                            class="material-icons"><?php echo $ctx_userType->getIcon(); ?></i>
                         <span for="user-type"
-                              class="mdl-tooltip mdl-tooltip--top"><?php echo $ctx_userType->getTitle(); ?></span>
+                              class="mdl-tooltip mdl-tooltip--top"><?php echo $_e($ctx_userType->getTitle()); ?></span>
                     <?php endif; ?>
                 </a>
 
@@ -182,7 +182,7 @@ use function SP\__;
                         <span class="status-info"><?php echo __('Demo'); ?></span>
                     <?php endif; ?>
 
-                    <?php echo $_getvar('app_name'), ' ', $_getvar('app_version'); ?>
+                    <?php echo $_e($_getvar('app_name')), ' ', $_e($_getvar('app_version')); ?>
                 </a>
             </nav>
         </div>
@@ -190,7 +190,7 @@ use function SP\__;
 
     <main class="mdl-layout__content">
         <div id="content"
-             data-page="<?php echo $_getvar('contentPage', ''); ?>">
+             data-page="<?php echo $_e($_getvar('contentPage', '')); ?>">
             <?php
             foreach ($this->getContentTemplates() as $template) :
                 include $template;

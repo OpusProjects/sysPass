@@ -43,17 +43,17 @@ $accountAcl = $_getvar('accountAcl');
 <div class="data-container">
     <div id="title" class="titleNormal">
         <i class="material-icons"><?php
-            echo $_getvar('title')['icon']; ?></i>
+            echo $_e($_getvar('title')['icon']); ?></i>
         <?php
-        echo $_getvar('title')['name']; ?>
+        echo $_e($_getvar('title')['name']); ?>
     </div>
 
     <form method="post" name="editpass" id="frmEditPass" class="form-action"
           data-onsubmit="account/save"
           data-action-route="<?php
-          echo $_getvar('formRoute', ''); ?>"
+          echo $_e($_getvar('formRoute', '')); ?>"
           data-item-id="<?php
-          echo $_getvar('accountId', ''); ?>"
+          echo $_e($_getvar('accountId', '')); ?>"
           data-hash="">
         <table class="data">
             <tr>
@@ -64,7 +64,7 @@ $accountAcl = $_getvar('accountAcl');
                         <input id="name" name="name" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="name"><?php
@@ -80,7 +80,7 @@ $accountAcl = $_getvar('accountAcl');
                         <input id="client" name="client" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getClientName() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getClientName()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="client"><?php
@@ -96,7 +96,7 @@ $accountAcl = $_getvar('accountAcl');
                         <input id="url" name="url" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getUrl() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getUrl()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="url"><?php
@@ -112,7 +112,7 @@ $accountAcl = $_getvar('accountAcl');
                         <input id="login" name="login" type="text"
                                class="mdl-textfield__input mdl-color-text--indigo-400"
                                value="<?php
-                               echo htmlspecialchars($accountView->getLogin() ?? '', ENT_QUOTES); ?>"
+                               echo $_e($accountView->getLogin()); ?>"
                                readonly>
                         <label class="mdl-textfield__label"
                                for="login"><?php
@@ -161,7 +161,7 @@ $accountAcl = $_getvar('accountAcl');
                                    name="password_date_expire" type="date"
                                    class="mdl-textfield__input mdl-color-text--indigo-400 password-datefield__input"
                                    value="<?php
-                                   echo $_getvar('accountPassDateChange'); ?>"
+                                   echo $_e($_getvar('accountPassDateChange')); ?>"
                                    data-dst-unix="password_date_expire_unix">
                             <input type='hidden'
                                    name='password_date_expire_unix' value=""/>
