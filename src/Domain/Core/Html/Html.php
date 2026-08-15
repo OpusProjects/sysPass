@@ -136,6 +136,37 @@ final class Html
     }
 
     /**
+     * The schemes whose body a browser executes rather than fetches.
+     *
+     * A denylist and not an allowlist on purpose: this is a password manager, and the addresses
+     * people keep in it are `ssh://`, `rdp://`, `sftp://`, `vnc://` and whatever else their estate
+     * uses. Naming the safe ones would break those, and the set that is actually dangerous is
+     * small and well known.
+     */
+    private const EXECUTABLE_SCHEMES = ['javascript', 'data', 'vbscript'];
+
+    /**
+     * Whether a URL can be given to a browser as a link.
+     *
+     * The comparison is made on the address with every space and control character removed and in
+     * lower case, because that is what a browser does before it decides what the scheme is:
+     * `JavaScript:`, ` javascript:` and `java\tscript:` are all the same scheme to it, and only the
+     * literal form differs.
+     */
+    public static function isSafeUrl(string $url): bool
+    {
+        $normalised = strtolower((string)preg_replace('/[\x00-\x20]/', '', $url));
+
+        foreach (self::EXECUTABLE_SCHEMES as $scheme) {
+            if (str_starts_with($normalised, $scheme . ':')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * @param string $url
      *
      * @return string
@@ -146,6 +177,12 @@ final class Html
 
         if ($urlParts === false) {
             return 'malformed_url';
+        }
+
+        // Quoting and tag-stripping do nothing about `javascript:`: there is no markup in it and
+        // no quote to escape, and the browser runs it on click.
+        if (!self::isSafeUrl($url)) {
+            return 'unsafe_url';
         }
 
         return preg_replace_callback(

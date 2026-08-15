@@ -64,6 +64,70 @@ class HtmlTest extends UnitaryTestCase
     }
 
     /**
+     * The addresses a browser executes instead of fetching, in the forms a browser accepts them.
+     * Leading space and an embedded tab are the interesting ones: the scheme is decided after
+     * those are stripped, so a check on the literal text sees something that is not a scheme it
+     * knows and lets it through.
+     *
+     * @return array<string, array{string}>
+     */
+    public static function executableUrlProvider(): array
+    {
+        return [
+            'javascript with slashes' => ['javascript://%0aalert(1)'],
+            'javascript without' => ['javascript:alert(1)'],
+            'mixed case' => ['JaVaScRiPt://%0aalert(1)'],
+            'leading space' => [' javascript:alert(1)'],
+            'an embedded tab' => ["java\tscript://%0aalert(1)"],
+            'a newline in the scheme' => ["java\nscript:alert(1)"],
+            'data' => ['data://text/html;base64,PHNjcmlwdD5hbGVydCgxKTwvc2NyaXB0Pg=='],
+            'vbscript' => ['vbscript:msgbox(1)'],
+        ];
+    }
+
+    /**
+     * A password manager holds addresses of every kind, so the check has to let through the ones
+     * an estate actually uses.
+     *
+     * @return array<string, array{string}>
+     */
+    public static function ordinaryUrlProvider(): array
+    {
+        return [
+            'https' => ['https://example.invalid/path?a=1'],
+            'http' => ['http://example.invalid'],
+            'ssh' => ['ssh://host.invalid'],
+            'rdp' => ['rdp://10.0.0.1'],
+            'sftp' => ['sftp://files.invalid/share'],
+            'a bare host' => ['example.invalid'],
+            'a note' => ['ask the admin'],
+            'a scheme that merely starts alike' => ['javascripthost://example.invalid'],
+        ];
+    }
+
+    #[DataProvider('executableUrlProvider')]
+    public function testAnExecutableUrlIsNotSafe(string $url): void
+    {
+        $this->assertFalse(Html::isSafeUrl($url));
+    }
+
+    #[DataProvider('ordinaryUrlProvider')]
+    public function testAnOrdinaryUrlIsSafe(string $url): void
+    {
+        $this->assertTrue(Html::isSafeUrl($url));
+    }
+
+    /**
+     * And the value that reaches an href carries none of it, so a template that renders a stored
+     * address cannot produce a link that runs anything.
+     */
+    #[DataProvider('executableUrlProvider')]
+    public function testGetSafeUrlRefusesAnExecutableUrl(string $url): void
+    {
+        $this->assertSame('unsafe_url', Html::getSafeUrl($url));
+    }
+
+    /**
      * Every character that can end a tag or an attribute. Both quote styles matter: the templates
      * put escaped values inside `"…"` and inside `'…'`, and a helper that only handled one would
      * be safe in half the theme.
