@@ -46,10 +46,14 @@ use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Crypt\CsrfHandler;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\CryptException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\ItemPreset\Models\ItemPreset;
+use SP\Domain\ItemPreset\Models\SessionTimeout;
+use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Index\IndexController;
 use SP\Infrastructure\Adapter\In\Web\Init;
@@ -367,6 +371,81 @@ class InitSessionTest extends UnitaryTestCase
         $lifetime = $this->invokePrivate($init, 'getSessionLifeTime');
 
         self::assertSame(900, $lifetime);
+    }
+
+    /**
+     * The point of a session-timeout preset: an administrator says sessions from a given address
+     * last a given time, and that is the time the session gets — not the instance-wide default.
+     * Every other test here reaches this code by the preset *not* applying, which cannot tell a
+     * working rule from one that never matches anything.
+     *
+     * @throws Exception
+     */
+    public function testASessionTimeoutPresetForTheClientsAddressIsWhatApplies(): void
+    {
+        $this->configData->setSessionTimeout(1800);
+        $this->session->setUserData(new UserDto(login: 'admin'));
+        $this->givenASessionTimeoutPresetFor('127.0.0.1', 120);
+
+        $init = $this->buildInit();
+        $this->markAsIndexPage($init);
+
+        self::assertSame(120, $this->invokePrivate($init, 'getSessionLifeTime'));
+        self::assertSame(120, $this->session->getSessionTimeout());
+    }
+
+    /**
+     * And it applies by subnet, not by an exact match on the text: a preset written for a range
+     * covers every address in it. Without this the rule above would be satisfied by a comparison
+     * that ignored the mask entirely.
+     *
+     * @throws Exception
+     */
+    public function testAPresetWrittenForARangeCoversAnAddressInIt(): void
+    {
+        $this->configData->setSessionTimeout(1800);
+        $this->session->setUserData(new UserDto(login: 'admin'));
+        $this->givenASessionTimeoutPresetFor('127.0.0.0/8', 300);
+
+        $init = $this->buildInit();
+        $this->markAsIndexPage($init);
+
+        self::assertSame(300, $this->invokePrivate($init, 'getSessionLifeTime'));
+    }
+
+    /**
+     * A preset for somebody else's address is not this client's rule, and the configured default
+     * stands. This is the half that makes the preset a rule about an address rather than a global
+     * override that happens to be stored with one.
+     *
+     * @throws Exception
+     */
+    public function testAPresetForADifferentAddressLeavesTheDefaultAlone(): void
+    {
+        $this->configData->setSessionTimeout(1800);
+        $this->session->setUserData(new UserDto(login: 'admin'));
+        $this->givenASessionTimeoutPresetFor('10.0.0.1', 120);
+
+        $init = $this->buildInit();
+        $this->markAsIndexPage($init);
+
+        self::assertSame(1800, $this->invokePrivate($init, 'getSessionLifeTime'));
+    }
+
+    /**
+     * The preset only exists serialized into the stored row, so it is put there the way the
+     * application puts it there.
+     *
+     * @throws InvalidArgumentException
+     */
+    private function givenASessionTimeoutPresetFor(string $address, int $timeout): void
+    {
+        $this->itemPresetService
+            ->method('getForCurrentUser')
+            ->willReturn(
+                (new ItemPreset(['type' => ItemPresetInterface::ITEM_TYPE_SESSION_TIMEOUT]))
+                    ->dehydrate(new SessionTimeout($address, $timeout))
+            );
     }
 
     /**
