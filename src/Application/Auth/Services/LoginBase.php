@@ -44,6 +44,11 @@ use function SP\__u;
  */
 abstract class LoginBase extends Service
 {
+    /**
+     * What every failed sign-in is counted against, whichever part of the flow noticed it.
+     */
+    private const TRACK_SOURCE = 'login';
+
     private readonly TrackRequest $trackRequest;
 
     /**
@@ -56,7 +61,12 @@ abstract class LoginBase extends Service
     ) {
         parent::__construct($application);
 
-        $this->trackRequest = $this->trackService->buildTrackRequest(static::class);
+        // One bucket for the whole sign-in flow, not one per class. Keyed on static::class, each
+        // subclass counted into a bucket of its own: a wrong password was recorded by
+        // LoginAuthHandler while the only check that can refuse — Login::checkTracking() — read
+        // Login's. The two never met, so guessing a real account's password was not limited at
+        // all; only repeated empty submissions ever tripped the gate.
+        $this->trackRequest = $this->trackService->buildTrackRequest(self::TRACK_SOURCE);
     }
 
     /**
