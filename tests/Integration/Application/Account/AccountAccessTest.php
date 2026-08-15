@@ -48,6 +48,7 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
+use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
@@ -575,6 +576,56 @@ final class AccountAccessTest extends TestCase
      * of AccountAclService::getAcl() is to gate access to it afterward), then ask the real ACL
      * whether the current context user may perform $actionId on it.
      */
+    /**
+     * The account manager screen is a different thing from the account list, and worth stating
+     * plainly, because "management" reads like a lesser permission than "administrator" and here
+     * it is not.
+     *
+     * Its grid is built from AccountService::search(), which — unlike the search behind the account
+     * list, asserted above — applies no ownership filter at all, and the tab is granted by
+     * isAdminAcc OR the mgmAccounts profile bit. So a user holding that bit sees every account in
+     * the installation, including ones nobody shared with them, and the manager's own delete
+     * endpoint gates on that same permission.
+     *
+     * The three agree with each other, so this is the design rather than an oversight. It is
+     * recorded here so that nobody grants mgmAccounts expecting it to be scoped, and so that a
+     * later change which starts scoping it is a deliberate one rather than an accident.
+     */
+    public function testTheAccountManagerGridIsNotScopedToWhatAUserMayRead(): void
+    {
+        $ownerGroupId = $this->createGroup('mgm-owner');
+        $ownerId = $this->createUser('mgm-owner', $ownerGroupId);
+
+        $strangerGroupId = $this->createGroup('mgm-stranger');
+        $strangerId = $this->createUser('mgm-stranger', $strangerGroupId);
+
+        $accountId = $this->createAccount('mgm-private', 'MgmPass!1', $ownerId, $ownerGroupId);
+
+        $this->setContextUser($strangerId, $strangerGroupId, 'mgm-stranger');
+
+        // The account list refuses it, as its own test above establishes — asserted again here so
+        // the two screens are compared side by side rather than each in isolation.
+        self::assertFalse(
+            $this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId),
+            'the account list still refuses an account nobody shared'
+        );
+        self::assertFalse($this->searchContainsId($accountId));
+
+        // The manager grid lists it all the same.
+        $found = false;
+
+        foreach (
+            $this->dic->get(AccountService::class)->search(new ItemSearchDto(''))->getDataAsArray() as $row
+        ) {
+            if ((int)$row->getId() === $accountId) {
+                $found = true;
+                break;
+            }
+        }
+
+        self::assertTrue($found, 'the manager grid lists an account the same user may not read');
+    }
+
     private function canAccess(int $actionId, int $accountId): bool
     {
         $accountService = $this->dic->get(AccountService::class);
