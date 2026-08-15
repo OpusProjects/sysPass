@@ -189,7 +189,10 @@ final class AccountSearchItem
             $accesses[] = sprintf(
                 '(%s) <em>%s</em>',
                 $userLabel,
-                Html::escape($user->login)
+                // The `?? ''` is not about null — Html::escape() takes it. `login` is reached
+                // through Model::__get(), so without a null-coalesce PHPStan sees a property that
+                // is not declared anywhere.
+                Html::escape($user->login ?? '')
             );
         }
 
