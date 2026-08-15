@@ -245,6 +245,17 @@ async function selectizePick(page, fieldId, value) {
 // Test
 // ---------------------------------------------------------------------------
 
+/**
+ * Named to sort after install-wizard.spec.js on purpose.
+ *
+ * The suite runs its files in name order with a single worker, and the install
+ * wizard spec is what installs the instance the rest of them use. This spec
+ * needs an installed instance — it seeds a client and a category straight into
+ * MariaDB — so running before the wizard leaves it querying tables that hold
+ * nothing yet. That is what it did on CI while it was called
+ * account-lifecycle.spec.js, where it passed locally against an already
+ * installed instance and failed on a clean one.
+ */
 test.describe('Account lifecycle', () => {
   /**
    * Creates an account through the real account form (name, client,
