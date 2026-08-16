@@ -47,6 +47,7 @@ All original copyright and the GNU GPLv3 license are retained.
 | [CLI](docs/cli.md) | Command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables |
 | [GitHub](docs/github.md) | Repository configuration: branch protection, CI jobs, Dependabot, releases, and workflow |
 | [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
+| [Security](docs/security.md) | Cryptography: how account passwords and the master password are protected, and what an administrator can reach |
 | [Testing](docs/testing.md) | Running the test suites, test layout, environment requirements, and writing new tests |
 
 ---
