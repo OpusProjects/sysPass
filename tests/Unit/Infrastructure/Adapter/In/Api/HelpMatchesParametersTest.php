@@ -191,6 +191,79 @@ class HelpMatchesParametersTest extends TestCase
     /**
      * @return array<string, string> group name => directory
      */
+    /**
+     * The help the API would actually answer with, obtained the way `Api::getHelp()` obtains it.
+     *
+     * Everything above reads the two halves as *source*, which is the only way to compare a
+     * `getParam*()` call against a `getItem()` call. It never runs a help class. This does, and so
+     * pins the shape `/api/docs` and every "Wrong parameters" hint depend on: a `help` key holding
+     * one entry per parameter, each with a description somebody can read and a boolean flag.
+     *
+     * @param array<string, bool> $documented
+     */
+    #[Test]
+    #[DataProvider('apiActions')]
+    public function theHelpTheApiAnswersWithHasTheDocumentedShape(
+        string $action,
+        array  $read,
+        array  $documented
+    ): void {
+        [$group, $method] = explode('/', $action);
+
+        $helpClass = self::helpClassOf(self::CONTROLLERS . '/' . $group);
+
+        if ($helpClass === null || $documented === []) {
+            self::assertSame([], $documented);
+
+            return;
+        }
+
+        /** @var class-string<HelpInterface> $fqcn */
+        $fqcn = 'SP\\Infrastructure\\Adapter\\In\\Api\\Controllers\\Help\\' . $helpClass;
+
+        $help = $fqcn::getHelpFor($method);
+
+        self::assertArrayHasKey('help', $help, sprintf('%s answers nothing for "%s"', $helpClass, $method));
+
+        $names = [];
+
+        foreach ($help['help'] as $entry) {
+            foreach ($entry as $name => $definition) {
+                $names[] = $name;
+
+                self::assertNotSame('', $definition['description'], sprintf('%s: "%s" has no description', $action, $name));
+                self::assertIsBool($definition['required']);
+            }
+        }
+
+        // Compared as sets: the source-level check above already pins which parameters exist, and
+        // the order a help class happens to list them in is not a property worth freezing.
+        $expected = array_keys($documented);
+        sort($expected);
+        sort($names);
+
+        self::assertSame(
+            $expected,
+            $names,
+            sprintf('%s::%s() answers with different parameters than its source declares', $helpClass, $method)
+        );
+    }
+
+    /**
+     * An action named the way a request names it resolves to the same help as a bare one, because
+     * `HelpTrait::getHelpFor()` drops the group before looking the method up — which is what makes
+     * the hint on a failed call find anything at all.
+     */
+    #[Test]
+    public function aRoutedActionResolvesToTheSameHelpAsABareOne(): void
+    {
+        /** @var class-string<HelpInterface> $fqcn */
+        $fqcn = 'SP\\Infrastructure\\Adapter\\In\\Api\\Controllers\\Help\\CategoryHelp';
+
+        self::assertSame($fqcn::getHelpFor('view'), $fqcn::getHelpFor('category/view'));
+        self::assertSame([], $fqcn::getHelpFor('noSuchAction'));
+    }
+
     private static function groupDirectories(): array
     {
         $groups = [];
