@@ -589,16 +589,24 @@ final class Account extends BaseRepository implements AccountRepository
         // arrives as null rather than falling back to a default. Selecting the account view
         // (which already resolves the client/category/user/group names) keeps this projection in
         // step with what that DTO requires; only pass/key have to come from Account itself.
-        $query = $this->queryFactory
-            ->newSelect()
-            ->from(AccountViewModel::TABLE)
+        // Scoped to what the current user may read, the same way getPasswordForId() is. Minting a
+        // public link is a read of the account — the link is a copy of it that anybody holding the
+        // URL opens without signing in — and the account is named by an id the caller supplies. A
+        // user allowed to publish links for their own accounts could otherwise name any account in
+        // the installation and publish its password.
+        //
+        // Only create() and refresh() reach this, both with a signed-in user. Following a link
+        // reads the stored vault, not the account, so nothing here narrows what a link already
+        // issued can show.
+        $query = $this->accountFilterUser
+            ->buildFilter()
             ->cols(
                 array_merge(
                     AccountViewModel::getColsWithPreffix(AccountViewModel::TABLE),
                     ['Account.pass', 'Account.key']
                 )
             )
-            ->join('INNER', AccountModel::TABLE, 'account_data_v.id = Account.id')
+            ->join('INNER', AccountViewModel::TABLE, 'account_data_v.id = Account.id')
             ->where('account_data_v.id = :id')
             ->bindValues(['id' => $accountId]);
 

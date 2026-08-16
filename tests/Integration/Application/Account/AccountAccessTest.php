@@ -44,6 +44,10 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Dtos\AccountSearchFilterDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
+use SP\Application\Account\Ports\PublicLinkService;
+use SP\Domain\Account\PublicLinkType;
+use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Context\Context;
@@ -524,6 +528,71 @@ final class AccountAccessTest extends TestCase
         self::assertTrue($this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId));
         self::assertTrue($this->canAccess(AclActionsInterface::ACCOUNT_EDIT, $accountId));
         self::assertSame($password, $this->readPassword($accountId));
+    }
+
+    /**
+     * A public link is a copy of an account that anyone holding the URL can read without signing
+     * in, so minting one is a read of the account — and has to be refused to somebody who could
+     * not read it any other way.
+     *
+     * The permission that allows it, PUBLICLINK_CREATE, is granted by isAccPublicLinks(): an
+     * ordinary account-level right, the one an administrator hands to users so they can publish
+     * links for their own accounts. The account is named by an id the caller supplies.
+     *
+     * @throws Exception
+     */
+    public function testAPublicLinkCannotBeMintedForAnAccountTheUserCannotRead(): void
+    {
+        $ownerGroupId = $this->createGroup('link-owner');
+        $ownerId = $this->createUser('link-owner', $ownerGroupId);
+
+        $otherGroupId = $this->createGroup('link-other');
+        $otherId = $this->createUser('link-other', $otherGroupId);
+
+        $password = 'LinkPass!' . bin2hex(random_bytes(4));
+        // Not shared with the other user in any way.
+        $accountId = $this->createAccount('link', $password, $ownerId, $ownerGroupId);
+
+        $this->setContextUser($otherId, $otherGroupId, 'link-other');
+
+        self::assertFalse(
+            $this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId),
+            'the account was reachable, so this proves nothing'
+        );
+
+        $this->expectException(SPException::class);
+
+        $this->dic->get(PublicLinkService::class)->create(
+            new PublicLinkModel(['itemId' => $accountId, 'typeId' => PublicLinkType::Account->value])
+        );
+    }
+
+    /**
+     * And the owner still publishes their own, which is what the permission is for.
+     *
+     * @throws Exception
+     */
+    public function testTheOwnerCanStillMintAPublicLinkForTheirOwnAccount(): void
+    {
+        $ownerGroupId = $this->createGroup('linkown-owner');
+        $ownerId = $this->createUser('linkown-owner', $ownerGroupId);
+
+        $accountId = $this->createAccount(
+            'linkown',
+            'LinkOwnPass!' . bin2hex(random_bytes(4)),
+            $ownerId,
+            $ownerGroupId
+        );
+
+        $this->setContextUser($ownerId, $ownerGroupId, 'linkown-owner');
+
+        self::assertGreaterThan(
+            0,
+            $this->dic->get(PublicLinkService::class)->create(
+                new PublicLinkModel(['itemId' => $accountId, 'typeId' => PublicLinkType::Account->value])
+            ),
+            'the owner could not publish a link for their own account'
+        );
     }
 
     /**
