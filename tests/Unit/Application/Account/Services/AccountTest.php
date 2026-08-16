@@ -1652,10 +1652,29 @@ class AccountTest extends UnitaryTestCase
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
 
+        // Each account goes into history before it is removed, exactly as deleting one at a time
+        // does — that entry is what restoreRemoved() rebuilds a deleted account from.
+        $this->givenEachAccountIsPushedIntoHistory(count($ids));
+
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
             ->with($ids)->willReturn(new QueryResult(null, 1));
 
         $this->account->deleteByIdBatch($ids);
+    }
+
+    /**
+     * @param int $count how many accounts the batch covers
+     * @throws Exception
+     */
+    private function givenEachAccountIsPushedIntoHistory(int $count): void
+    {
+        $this->configService->method('getByParam')->willReturn(self::$faker->password());
+
+        $this->accountRepository
+            ->method('getById')
+            ->willReturn(new QueryResult([AccountDataGenerator::factory()->buildAccount()]));
+
+        $this->accountHistoryService->expects(self::exactly($count))->method('create');
     }
 
     /**
@@ -1665,6 +1684,8 @@ class AccountTest extends UnitaryTestCase
     public function testDeleteByIdBatchError()
     {
         $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+
+        $this->givenEachAccountIsPushedIntoHistory(count($ids));
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
             ->with($ids)->willReturn(new QueryResult(null, 0));
