@@ -49,6 +49,7 @@ All original copyright and the GNU GPLv3 license are retained.
 | [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
 | [Security](docs/security.md) | Cryptography: how account passwords and the master password are protected, and what an administrator can reach |
 | [Testing](docs/testing.md) | Running the test suites, test layout, environment requirements, and writing new tests |
+| [Upgrade](docs/upgrade.md) | Upgrading an existing installation: what triggers it, the migrations, and what to do first |
 
 ---
 
