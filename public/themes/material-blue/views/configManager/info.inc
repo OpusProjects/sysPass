@@ -100,7 +100,12 @@ use function SP\__;
     <tr>
         <td class="descField"><?php echo __('Web Server'); ?></td>
         <td class="valField">
-            <?php echo !$_getvar('isDemo') ? $_e($_SERVER['SERVER_SOFTWARE']) : '***'; ?>
+            <?php
+            // SERVER_SOFTWARE is whatever the SAPI chose to advertise, and not every one sets it —
+            // reading it unguarded warns wherever it is absent, which includes rendering this page
+            // from the console. php_sapi_name() always answers, so the row says something true
+            // instead of emitting a warning into the panel it is describing.
+            echo !$_getvar('isDemo') ? $_e($_SERVER['SERVER_SOFTWARE'] ?? php_sapi_name()) : '***'; ?>
         </td>
     </tr>
     <tr>

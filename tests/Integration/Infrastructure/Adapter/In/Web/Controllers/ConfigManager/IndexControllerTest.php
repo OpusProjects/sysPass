@@ -72,6 +72,29 @@ class IndexControllerTest extends IntegrationTestCase
     }
 
     /**
+     * The information panel reports the server it is running on, and has to do so without
+     * assuming SERVER_SOFTWARE is set — not every SAPI advertises one, and the panel is rendered
+     * here from the console, where it is absent. Reading it unguarded warned three times in the
+     * suite and would have written the warning into the page it was describing.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerWebServer')]
+    public function theWebServerRowSurvivesAnAbsentServerSoftware()
+    {
+        unset($_SERVER['SERVER_SOFTWARE']);
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configManager/index'])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
      * @param string $output
      * @return void
      */
@@ -82,5 +105,22 @@ class IndexControllerTest extends IntegrationTestCase
         $tabs = $crawler->filterXPath('//div[contains(@id, \'tabs-\')]');
 
         self::assertCount(12, $tabs);
+    }
+
+    /**
+     * @param string $output
+     * @return void
+     */
+    private function outputCheckerWebServer(string $output): void
+    {
+        $crawler = new Crawler($output);
+
+        // The cell itself, not the page: under the bug the row renders empty, and every other
+        // assertion available here passes just as well on an empty one. Asserting against the
+        // whole output would find 'cli' elsewhere in the markup and prove nothing.
+        $value = $crawler->filterXPath('//td[normalize-space()=\'Web Server\']/following-sibling::td[1]');
+
+        self::assertCount(1, $value);
+        self::assertSame(php_sapi_name(), trim($value->text()));
     }
 }
