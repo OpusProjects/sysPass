@@ -79,6 +79,26 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertStringContainsString('help', $r->body->error->detail);
     }
 
+    /**
+     * A required parameter sent empty is not a parameter that was sent.
+     *
+     * "Required" used to mean only that the key was present, so this call created a category with
+     * no name — one the web form refuses outright with "A category name needed". The API therefore
+     * wrote rows the interface would not, and a nameless category cannot be picked out of a
+     * listing afterwards. Every required parameter on every endpoint reaches Api::getParam(), so
+     * the category is standing in for all of them here.
+     */
+    public function testCreateActionRefusesARequiredParameterSentEmpty(): void
+    {
+        $params = self::PARAMS;
+        $params['name'] = '';
+
+        $r = $this->createCategory($params);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+    }
+
     public function testViewAction(): void
     {
         $id = $this->createCategory(self::PARAMS)->body->itemId;

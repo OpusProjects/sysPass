@@ -199,6 +199,68 @@ class ApiTest extends UnitaryTestCase
      * @throws InvalidClassException
      * @throws \PHPUnit\Framework\MockObject\Exception
      */
+    /**
+     * "Required" meant only that the key had been sent, so `{"name": ""}` satisfied it and the API
+     * created rows the web forms refuse — a category with no name is accepted here and rejected
+     * there by CategoryForm::checkCommon(). Every required parameter on every endpoint comes
+     * through this one method, so the gap was the whole API's, not one controller's.
+     */
+    #[DataProvider('emptyRequiredValueProvider')]
+    public function testARequiredParameterThatSaysNothingIsRefused(mixed $value): void
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest->method('exists')->willReturn(true);
+        $this->apiRequest->method('get')->willReturn($value);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Wrong parameters');
+
+        $this->apiService->getParam($param, true);
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function emptyRequiredValueProvider(): array
+    {
+        return [
+            'empty string' => [''],
+            'null' => [null],
+        ];
+    }
+
+    /**
+     * Zero and false are values, not absences.
+     *
+     * Refusing them would have been the easy over-reach — `empty()` treats both as nothing — and it
+     * would have turned `getParamInt('id', true)` with `id=0` into a parameter error instead of
+     * letting it reach the code that reports the item as not found.
+     */
+    #[DataProvider('falsyButPresentValueProvider')]
+    public function testAFalsyValueIsStillAValue(mixed $value): void
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest->method('exists')->willReturn(true);
+        $this->apiRequest->method('get')->willReturn($value);
+
+        self::assertSame($value, $this->apiService->getParam($param, true));
+    }
+
+    /**
+     * @return array<string, array{mixed}>
+     */
+    public static function falsyButPresentValueProvider(): array
+    {
+        return [
+            'zero' => [0],
+            'false' => [false],
+            'zero string' => ['0'],
+            'empty array' => [[]],
+        ];
+    }
+
     public function testGetParamWithHelp()
     {
         $apiRequest = $this->createStub(ApiRequestService::class);
