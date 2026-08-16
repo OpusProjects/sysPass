@@ -30,6 +30,7 @@ use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CsrfHandler;
+use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Infrastructure\Html\Services\MinifyCss;
 use SP\Infrastructure\Html\Services\MinifyJs;
 use SP\Infrastructure\File\FileCache;
@@ -51,7 +52,13 @@ return [
                        [Path::PLUGINS, FileSystem::buildPath(__DIR__, 'plugins')],
                    ]),
     BootstrapInterface::class => autowire(Bootstrap::class),
-    ModuleInterface::class => autowire(Init::class),
+    // sessionKeyService is named because php-di skips a constructor parameter that has a
+    // default, even when the container can provide its type — so autowire() alone left it null.
+    // Init calls it as `$this->sessionKeyService?->reKey(...)`, and reKey() is where
+    // session_regenerate_id() lives, so the rotation the line above it decides on never happened.
+    // Silent twice over: nothing is skipped loudly, and the null-safe call swallows the rest.
+    ModuleInterface::class => autowire(Init::class)
+        ->constructorParameter('sessionKeyService', get(SessionKeyService::class)),
     CssController::class => autowire(
         CssController::class
     )->constructorParameter('minify', autowire(MinifyCss::class)),
