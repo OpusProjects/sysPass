@@ -25,7 +25,6 @@
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigGeneral;
 
 use SP\Infrastructure\Http\Ports\ResponseService;
-use RuntimeException;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
@@ -70,15 +69,21 @@ final class DownloadConfigBackupController extends SimpleControllerBase
             return ActionResponse::warning(__('Ey, this is a DEMO!!'));
         }
 
+        // Decided before it is logged, and answered rather than thrown. The event used to be
+        // notified first, so a request naming a format that cannot be served — the format comes
+        // from the route, so any caller can name one — left "File downloaded" in the log for a
+        // download that never happened, on the one file that holds the installation's
+        // configuration. The sibling backup downloads guard first and log after; this is the same
+        // order, and an unservable request now gets an answer instead of a RuntimeException.
+        if ($type !== 'json') {
+            return ActionResponse::error(__u('File format not supported'));
+        }
+
         $this->eventDispatcher->notify(new Event(
             'download.configBackupFile',
             $this,
             EventMessage::build(__u('File downloaded'))->addDetail(__u('File'), 'config.json')
         ));
-
-        if ($type !== 'json') {
-            throw new RuntimeException('Not implemented');
-        }
 
         $data = ConfigBackup::configToJson($this->configBackupService->getBackup());
 
