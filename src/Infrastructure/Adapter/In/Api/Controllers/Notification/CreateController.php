@@ -22,8 +22,8 @@ final class CreateController extends NotificationBase
             'component'   => $this->apiService->getParamString('component', true),
             'description' => $this->apiService->getParamString('description', true),
             'userId'      => $this->apiService->getParamInt('userId'),
-            'sticky'      => (bool) $this->apiService->getParamInt('sticky'),
-            'onlyAdmin'   => (bool) $this->apiService->getParamInt('onlyAdmin'),
+            'sticky'      => $this->mayBroadcast() && (bool) $this->apiService->getParamInt('sticky'),
+            'onlyAdmin'   => $this->mayBroadcast() && (bool) $this->apiService->getParamInt('onlyAdmin'),
         ]);
 
         $id = $this->notificationService->create($notification);

@@ -44,6 +44,9 @@ use stdClass;
 #[Group('integration')]
 class NotificationControllerTest extends ApiTestCase
 {
+    /** A fixture user that is not an application administrator. */
+    private const NON_ADMIN_USER_ID = 2;
+
     private const PARAMS = [
         'type' => 'API test',
         'component' => 'Accounts',
@@ -74,6 +77,53 @@ class NotificationControllerTest extends ApiTestCase
         $this->assertFalse($item->onlyAdmin);
         $this->assertFalse($item->checked);
         $this->assertGreaterThan(0, $item->date);
+    }
+
+    /**
+     * A notification anybody can pin in front of everybody is not a notification.
+     *
+     * `sticky` shows it to every user in the installation and takes it out of reach of the
+     * ordinary delete, which is `WHERE id = :id AND sticky = 0`; `onlyAdmin` puts it in the
+     * administrators' queue. The web form has always read both only for an application
+     * administrator — NotificationFormTest pins exactly that — and the API read them from
+     * anybody, so an ordinary user holding a notification token could leave an undeletable
+     * message in front of the whole installation.
+     *
+     * @throws \Exception
+     */
+    public function testANonAdminCannotPinANotificationForEverybody(): void
+    {
+        $params = self::PARAMS;
+        $params['sticky'] = 1;
+        $params['onlyAdmin'] = 1;
+
+        $r = $this->callApi(AclActionsInterface::NOTIFICATION_CREATE, $params, self::NON_ADMIN_USER_ID);
+
+        $this->assertSame(201, $r->status);
+
+        $item = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $r->body->itemId])->body->data;
+
+        $this->assertFalse($item->sticky, 'a non-admin pinned a notification for every user');
+        $this->assertFalse($item->onlyAdmin, 'a non-admin put a notification in the admin queue');
+    }
+
+    /**
+     * And an administrator still can, which is what the flags are for.
+     *
+     * @throws \Exception
+     */
+    public function testAnAdministratorStillPinsOne(): void
+    {
+        $params = self::PARAMS;
+        $params['sticky'] = 1;
+        $params['onlyAdmin'] = 1;
+
+        $r = $this->createNotification($params);
+
+        $item = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $r->body->itemId])->body->data;
+
+        $this->assertTrue($item->sticky);
+        $this->assertTrue($item->onlyAdmin);
     }
 
     private function createNotification(?array $params = null): stdClass
