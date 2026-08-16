@@ -55,7 +55,6 @@ final class Track extends Service implements TrackService
 {
     private const TIME_TRACKING              = 600;
     private const TIME_TRACKING_MAX_ATTEMPTS = 10;
-    private const TIME_SLEEP                 = 0.25;
 
     /**
      * @param TrackRepository<TrackModel> $trackRepository
@@ -117,8 +116,14 @@ final class Track extends Service implements TrackService
                                               ->getNumRows();
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
-                $delaySeconds = (int)(self::TIME_SLEEP * $attempts);
-
+                // Answer at once. This used to sleep for a quarter of a second per attempt
+                // recorded, in the request, before returning — and every caller throws the moment
+                // it returns true, so the sleep changed nothing about what the client was told. It
+                // only held a worker: the count is unbounded within the ten-minute window and grows
+                // with each failure, so a thousand attempts from one address made every later
+                // request from it occupy a worker for four minutes to say no. A few at once took
+                // the application away from everybody, which is the opposite of what a throttle is
+                // for. What actually slows an attacker is the refusal, and that stands.
                 $this->eventDispatcher->notify(new Event(
                     'track.delay',
                     $this,
@@ -130,12 +135,7 @@ final class Track extends Service implements TrackService
                                     self::TIME_TRACKING_MAX_ATTEMPTS
                                 )
                             )
-                            ->addDetail(__u('Seconds'), (string)$delaySeconds)
                 ));
-
-                logger('Tracking delay: ' . $delaySeconds . 's');
-
-                sleep($delaySeconds);
 
                 return true;
             }

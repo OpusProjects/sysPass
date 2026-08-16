@@ -102,6 +102,40 @@ class TrackTest extends UnitaryTestCase
     }
 
     /**
+     * A blocked client is told so at once, however many attempts stand against it.
+     *
+     * The check used to sleep for a quarter of a second per attempt recorded before returning, in
+     * the request. Every caller throws the moment it returns true, so that changed nothing about
+     * what the client was told — it only held a worker, for a time the client itself chose by
+     * failing more often. The count is unbounded inside the ten-minute window, so a thousand
+     * attempts from one address bought four minutes of a worker per request, and a handful at once
+     * took the application away from everybody it was meant to protect.
+     *
+     * Ten thousand attempts is the shape of that: it would have been forty minutes.
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testABlockedClientIsRefusedWithoutHoldingTheRequest()
+    {
+        $trackRequest = $this->getTrackRequest();
+
+        $this->trackRepository
+            ->method('getTracksForClientFromTime')
+            ->willReturn(new QueryResult(range(0, 10000)));
+
+        $started = microtime(true);
+
+        $this->assertTrue($this->track->checkTracking($trackRequest));
+
+        $this->assertLessThan(
+            1,
+            microtime(true) - $started,
+            'the check held the request instead of answering'
+        );
+    }
+
+    /**
      * @throws InvalidArgumentException
      * @throws Exception
      */
