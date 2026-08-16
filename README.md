@@ -48,7 +48,7 @@ All original copyright and the GNU GPLv3 license are retained.
 | [Configuration](docs/configuration.md) | Environment variables, `config.xml`, every setting by area, and the defaults worth knowing |
 | [GitHub](docs/github.md) | Repository configuration: branch protection, CI jobs, Dependabot, releases, and workflow |
 | [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
-| [Security](docs/security.md) | Cryptography: how account passwords and the master password are protected, and what an administrator can reach |
+| [Security](docs/security.md) | How account passwords and the master password are protected, and the trust boundary |
 | [Testing](docs/testing.md) | Running the test suites, test layout, environment requirements, and writing new tests |
 | [Upgrade](docs/upgrade.md) | Upgrading an existing installation: what triggers it, the migrations, and what to do first |
 
