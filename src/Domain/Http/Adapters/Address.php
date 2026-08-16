@@ -103,8 +103,24 @@ final class Address
             throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
-        // Obtains subnets based on mask ie.: subnet === subnet
-        return (ip2long($address) & ip2long($inMask)) === (ip2long($inAddress) & ip2long($inMask));
+        // Compared as packed bytes, not through ip2long(), which understands IPv4 only and answers
+        // `false` for anything else. filter_var() above accepts IPv6, so two IPv6 addresses used to
+        // reach this line and compare `false & false === false & false` — every IPv6 client matched
+        // every configured network, whatever the mask said.
+        //
+        // PHP's `&` on two strings is a bytewise AND, so the same expression serves both families:
+        // four bytes for IPv4, sixteen for IPv6.
+        $binAddress = self::toBinary($address);
+        $binInAddress = self::toBinary($inAddress);
+        $binMask = self::toBinary($inMask);
+
+        // An address and a network from different families are not the same network. Their packed
+        // forms differ in length, and `&` would silently truncate to the shorter of the two.
+        if (strlen($binAddress) !== strlen($binMask) || strlen($binInAddress) !== strlen($binMask)) {
+            return false;
+        }
+
+        return ($binAddress & $binMask) === ($binInAddress & $binMask);
     }
 
     /**

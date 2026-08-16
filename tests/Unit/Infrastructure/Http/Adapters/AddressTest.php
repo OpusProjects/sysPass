@@ -216,6 +216,49 @@ class AddressTest extends UnitaryTestCase
     }
 
     /**
+     * @return array<string, array{string, string, string, bool}>
+     */
+    public static function ipv6Provider(): array
+    {
+        // address, network, mask, expected
+        return [
+            'inside a /32' => ['2001:db8:1::5', '2001:db8::', 'ffff:ffff::', true],
+            'outside a /32' => ['2001:dead:1::5', '2001:db8::', 'ffff:ffff::', false],
+            'inside a /64' => ['2001:db8::1:2:3:4', '2001:db8::', 'ffff:ffff:ffff:ffff::', true],
+            'outside a /64' => ['2001:db8:0:1::1', '2001:db8::', 'ffff:ffff:ffff:ffff::', false],
+            'loopback is not the documentation range' => ['::1', '2001:db8::', 'ffff:ffff::', false],
+        ];
+    }
+
+    /**
+     * `ip2long()` understands IPv4 only and answers `false` for anything else, while the
+     * `filter_var()` guard above it accepts IPv6 — so two IPv6 addresses reached the comparison
+     * and it read `false & false === false & false`. Every IPv6 client matched every configured
+     * network, whatever the mask said, and the one caller (the session-timeout preset) handed out
+     * its timeout to all of them.
+     *
+     * @throws InvalidArgumentException
+     */
+    #[DataProvider('ipv6Provider')]
+    public function testCheckWithIpv6(string $address, string $inAddress, string $inMask, bool $expected): void
+    {
+        $this->assertSame($expected, Address::check($address, $inAddress, $inMask));
+    }
+
+    /**
+     * An address and a network from different families are not the same network. Their packed
+     * forms differ in length, and a bytewise AND would otherwise compare only the shorter prefix.
+     *
+     * @throws InvalidArgumentException
+     */
+    public function testCheckAcrossFamiliesNeverMatches(): void
+    {
+        $this->assertFalse(Address::check('192.168.0.1', '2001:db8::', 'ffff:ffff::'));
+        $this->assertFalse(Address::check('2001:db8::1', '192.168.0.0', '255.255.255.0'));
+        $this->assertFalse(Address::check('192.168.0.1', '192.168.0.0', 'ffff:ffff::'));
+    }
+
+    /**
      * @throws InvalidArgumentException
      */
     public function testCheckWithInvalidAddress()
