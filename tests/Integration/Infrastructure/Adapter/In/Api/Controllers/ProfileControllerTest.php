@@ -46,10 +46,18 @@ class ProfileControllerTest extends ApiTestCase
     /** A fixture profile name, used to trigger the duplicate-name check. */
     private const EXISTING_NAME = 'Admin';
 
+    /** A fixture user that is not an application administrator. */
+    private const NON_ADMIN_USER_ID = 2;
+
     /**
-     * The permissions posted are the permissions stored, verbatim — not expanded to the full set
-     * of flags with the rest defaulted, and not reinterpreted in any way. A caller that asks for
-     * three flags gets exactly three flags back, nothing more.
+     * The permissions posted are the permissions granted, and nothing else is.
+     *
+     * What is stored is now written back by the application rather than echoed from the caller —
+     * the parameter arrives as a serialized profile and is re-serialized from the model it
+     * hydrates into, so every flag is present and the ones not asked for are false. That is the
+     * point of passing it through the model at all: a caller cannot decide the shape of what the
+     * database holds, and cannot grant a permission by naming it in a form the application would
+     * not have produced.
      */
     public function testCreateActionStoresPermissionFlags(): void
     {
@@ -64,7 +72,13 @@ class ProfileControllerTest extends ApiTestCase
         $view = $this->callApi(AclActionsInterface::PROFILE_VIEW, ['id' => $r->body->itemId]);
         $flags = json_decode($view->body->data->profile, true);
 
-        $this->assertSame(['accView' => true, 'accAdd' => true, 'mgmUsers' => true], $flags);
+        $this->assertTrue($flags['accView']);
+        $this->assertTrue($flags['accAdd']);
+        $this->assertTrue($flags['mgmUsers']);
+
+        // Everything not asked for is off, rather than absent.
+        $this->assertFalse($flags['accDelete']);
+        $this->assertFalse($flags['mgmAccounts']);
     }
 
     /**
@@ -111,6 +125,58 @@ class ProfileControllerTest extends ApiTestCase
         $this->assertStringContainsString('profile', $r->body->error->detail);
     }
 
+    /**
+     * A caller cannot hand out a permission they do not hold.
+     *
+     * The web form has always intersected the permissions asked for with the acting user's own —
+     * a delegate who may manage profiles must not be able to write themselves an administrator's
+     * profile and then wear it. The API took the same serialized profile and stored it verbatim,
+     * so the same delegate was refused through one door and obliged through the other.
+     *
+     * The fixture's user 2 is not an application administrator and holds a profile of its own,
+     * which is what makes this a real intersection rather than a check against nothing.
+     *
+     * @throws \Exception
+     */
+    public function testANonAdminCannotGrantPermissionsItDoesNotHold(): void
+    {
+        $asked = ['accView' => true, 'mgmUsers' => true, 'mgmAccounts' => true, 'mgmProfiles' => true];
+
+        $r = $this->callApi(
+            AclActionsInterface::PROFILE_CREATE,
+            ['name' => 'delegated profile ' . bin2hex(random_bytes(3)), 'profile' => json_encode($asked)],
+            self::NON_ADMIN_USER_ID
+        );
+
+        $this->assertSame(201, $r->status);
+
+        $view = $this->callApi(AclActionsInterface::PROFILE_VIEW, ['id' => $r->body->itemId]);
+        $flags = json_decode($view->body->data->profile, true);
+
+        $this->assertFalse($flags['mgmUsers'], 'a non-admin granted itself user management');
+        $this->assertFalse($flags['mgmAccounts'], 'a non-admin granted itself account management');
+        $this->assertFalse($flags['mgmProfiles'], 'a non-admin granted itself profile management');
+    }
+
+    /**
+     * And an administrator is not constrained, since there is nothing they do not hold.
+     *
+     * @throws \Exception
+     */
+    public function testAnAdministratorStillGrantsAnything(): void
+    {
+        $r = $this->createProfile([
+            'name' => 'admin-made profile ' . bin2hex(random_bytes(3)),
+            'profile' => json_encode(['mgmUsers' => true, 'mgmAccounts' => true]),
+        ]);
+
+        $view = $this->callApi(AclActionsInterface::PROFILE_VIEW, ['id' => $r->body->itemId]);
+        $flags = json_decode($view->body->data->profile, true);
+
+        $this->assertTrue($flags['mgmUsers']);
+        $this->assertTrue($flags['mgmAccounts']);
+    }
+
     public function testCreateActionDuplicateName(): void
     {
         $r = $this->createProfile(['name' => self::EXISTING_NAME, 'profile' => json_encode(['accView' => true])]);
@@ -153,7 +219,12 @@ class ProfileControllerTest extends ApiTestCase
         $view = $this->callApi(AclActionsInterface::PROFILE_VIEW, ['id' => $id]);
         $flags = json_decode($view->body->data->profile, true);
 
-        $this->assertSame(['accView' => true], $flags, 'accAdd and accDelete were dropped, not kept');
+        // The stored profile is now written back by the application rather than echoed from the
+        // caller, so every flag is present and the ones not asked for are false. What the test is
+        // about is unchanged: the edit replaces the permissions rather than merging with them.
+        $this->assertTrue($flags['accView']);
+        $this->assertFalse($flags['accAdd'], 'accAdd survived an edit that did not mention it');
+        $this->assertFalse($flags['accDelete'], 'accDelete survived an edit that did not mention it');
     }
 
     public function testEditActionNonExistant(): void

@@ -25,6 +25,12 @@ final class CreateController extends ProfileBase
             'profile' => $this->apiService->getParamString('profile', true),
         ]);
 
+        // The permissions a caller may hand out are bounded by the ones they hold, exactly as they
+        // are on the web form. Without this an ordinary user holding a profile token could write a
+        // profile granting anything — mgmUsers, mgmAccounts — and "may manage profiles" became
+        // "may become an administrator" in two steps.
+        $profileData = $profileData->dehydrate($this->constrainToOwnPermissions($profileData));
+
         $id = $this->profileService->create($profileData);
         $profileData = $profileData->mutate(['id' => $id]);
 
