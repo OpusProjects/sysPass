@@ -37,13 +37,23 @@ use function SP\__u;
  */
 final class LdapParams
 {
-    private const REGEX_SERVER    = '(?<server>(?:(?<proto>ldap|ldaps):\/\/)?[\w\.\-]+)(?::(?<port>\d+))?';
+    /**
+     * Anchored, and with the scheme kept out of the host.
+     *
+     * Unanchored, this matched a *prefix* of anything: `http://evil.com` produced the host `http`
+     * and no error, because `[\w.-]+` happily matched the scheme's own letters. And with the
+     * scheme inside the host group, `ldaps://host:1636` reached Laminas as the connect string
+     * `ldaps://host` — Laminas uses a scheme-bearing host verbatim and appends no port, so the
+     * 1636 the administrator configured was silently dropped in favour of 636.
+     */
+    private const REGEX_SERVER    = '^(?:(?<proto>ldaps?):\/\/)?(?<server>[\w\.\-]+)(?::(?<port>\d+))?$';
     private const REQUIRED_PARAMS = ['server', 'type', 'bindUser', 'bindPass'];
 
     private int     $port                  = 389;
     private ?string $searchBase            = null;
     private ?string $group                 = null;
     private bool    $tlsEnabled            = false;
+    private bool    $sslEnabled            = false;
     private ?string $filterUserObject      = null;
     private ?string $filterGroupObject     = null;
     /** @var string[]|null */
@@ -112,7 +122,15 @@ final class LdapParams
         );
 
         $ldapParams->searchBase = $params['searchBase'];
-        $ldapParams->port = (int)($serverAndPort['port'] ?? 389);
+
+        // The scheme selects the transport and the default port; an explicit port still wins.
+        // The pattern is case-insensitive, so the captured scheme can be in any case. `proto` is
+        // not the last group, so PHP always sets it — to '' when the scheme was not given — while
+        // `port` is last and is simply absent, which is why only that one is guarded.
+        $ldapParams->sslEnabled = strtolower($serverAndPort['proto']) === 'ldaps';
+        $ldapParams->port = empty($serverAndPort['port'])
+            ? ($ldapParams->sslEnabled ? 636 : 389)
+            : (int)$serverAndPort['port'];
         $ldapParams->group = $params['group'];
         $ldapParams->tlsEnabled = $params['tlsEnabled'];
         $ldapParams->filterUserObject = $params['filterUserObject'];
@@ -257,6 +275,15 @@ final class LdapParams
     public function getType(): LdapTypeEnum
     {
         return $this->type;
+    }
+
+    /**
+     * Whether the server was given as `ldaps://`, which is LDAP over TLS on its own port — distinct
+     * from `tlsEnabled`, which is StartTLS negotiated on the plain port.
+     */
+    public function isSslEnabled(): bool
+    {
+        return $this->sslEnabled;
     }
 
     public function isTlsEnabled(): bool
