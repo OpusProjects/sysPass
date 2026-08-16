@@ -54,7 +54,12 @@ if ($data->getData()->getDataCount() > 0):
                 <?php
                 $value = isset($rowSrc['filter']) ? $rowSrc['filter']($value) : $value; ?>
                 <td class="cell-data"><?php
-                    echo $value !== '' ? $_e($value) : '&nbsp;'; ?></td>
+                    // nl2br *after* escaping, never before: the value is rendered as text and the
+                    // breaks are added to the escaped result, so a newline the log holds becomes a
+                    // line on the page while anything else in the value stays text. The grid used
+                    // to be handed `<br>` tags instead, which arrived here as four characters and
+                    // were shown as such.
+                    echo $value !== '' ? nl2br($_e($value), false) : '&nbsp;'; ?></td>
             <?php
             endforeach; ?>
         </tr>

@@ -146,23 +146,22 @@ final class EventlogGrid extends GridBase
                     );
                 }
 
+                // Breaks as newlines, not as markup. A grid cell is rendered as text — see
+                // datagrid-rows.inc — so every `<br>` this used to insert reached the reader as
+                // the four characters of the tag, right through the SQL it was trying to make
+                // readable. Whitespace is what a cell can carry.
                 if (preg_match('/^SQL.*/m', $value)) {
                     $value = preg_replace(
                         [
-                                              '/([a-zA-Z_]+),/m',
-                                              '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
-                                          ],
-                        ['\\1,<br>', '<br>\\1'],
+                            '/([a-zA-Z_]+),/m',
+                            '/(UPDATE|DELETE|TRUNCATE|INSERT|SELECT|WHERE|LEFT|ORDER|LIMIT|FROM)/m'
+                        ],
+                        ["\\1," . PHP_EOL, PHP_EOL . '\\1'],
                         $value
                     );
                 }
 
-                return wordwrap(
-                    str_replace([';;', PHP_EOL], '<br>', $value),
-                    100,
-                    '<br>',
-                    true
-                );
+                return wordwrap(str_replace(';;', PHP_EOL, $value), 100, PHP_EOL, true);
             },
             false
         );
