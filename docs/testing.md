@@ -5,6 +5,17 @@ external services, and an integration suite backed by a real MariaDB database.
 
 Both suites pass: **2238 unit tests** and **253 integration tests**.
 
+- [Quick start (Docker)](#quick-start-docker)
+- [Test layout](#test-layout)
+- [End-to-end tests (Playwright)](#end-to-end-tests-playwright)
+- [Static analysis](#static-analysis)
+- [Environment requirements](#environment-requirements)
+- [Integration test database](#integration-test-database)
+- [Writing new tests](#writing-new-tests)
+- [What CI runs](#what-ci-runs)
+
+---
+
 ## Quick start (Docker)
 
 The Docker dev stack (`docker compose up --build -d`) provides everything needed.
@@ -24,6 +35,8 @@ docker compose exec \
   -w /var/www/html app \
   vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
+
+---
 
 ## Test layout
 
@@ -71,6 +84,8 @@ vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 vendor/bin/phpunit -c tests/phpunit.xml --no-coverage
 ```
 
+---
+
 ## End-to-end tests (Playwright)
 
 Browser-level tests live in [`tests/e2e/`](../tests/e2e) and run with
@@ -90,6 +105,8 @@ Prerequisites: Node/npm on the host, and the Docker stack up (`docker compose up
 > database and removes `config.xml` to reach a not-installed state, then installs
 > fresh. Never run it against an instance whose data you want to keep. `npm` and
 > `node_modules/` are dev-only; nothing here is needed to run the application.
+
+---
 
 ## Static analysis
 
@@ -142,6 +159,8 @@ PHPStan is one of three gates in CI's `lint` job — the other two are:
   confirming the committed `vendor.bundle.min.js` and `zxcvbn.min.js` match what
   `scripts/build-js.mjs` would produce from the versions pinned in `package-lock.json`.
 
+---
+
 ## Environment requirements
 
 The Docker image provides all of these. If running tests outside Docker, ensure:
@@ -153,6 +172,8 @@ The Docker image provides all of these. If running tests outside Docker, ensure:
 - **Locales `en_US.UTF-8` and `es_ES.UTF-8`** — `LanguageTest` asserts against them
   (7 failures without).
 - **Bundled font** `public/vendor/fonts/NotoSans-Regular-webfont.ttf` — `ImageTest` uses it.
+
+---
 
 ## Integration test database
 
@@ -176,7 +197,11 @@ mariadb -uroot -psyspass syspass < schemas/dbstructure.sql
 The integration tests are **not idempotent** — they insert/update/delete rows. Always
 re-seed the schema before running them again.
 
+---
+
 ## Writing new tests
+
+Conventions a new test is expected to follow, so it lands where the suite already looks for it.
 
 - Place unit tests in `tests/Unit/` and database-backed tests in `tests/Integration/`,
   mirroring the `src/` path of the class under test; shared helpers go in `tests/Support/`.
@@ -196,6 +221,8 @@ re-seed the schema before running them again.
 - Test serialization round-trips for models that use `SerializedModel` or have
   `__wakeup()` logic — stale serialized data is a common source of runtime errors
   after class renames.
+
+---
 
 ## What CI runs
 

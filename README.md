@@ -42,12 +42,12 @@ All original copyright and the GNU GPLv3 license are retained.
 
 | Document | What it covers |
 |---|---|
-| [API](docs/API.md) | REST API reference, authentication, and Swagger UI (`/api/docs/` on a live instance) |
-| [Architecture](docs/ARCHITECTURE.md) | Hexagonal layer map, request lifecycle, DI container, and dependency rules |
-| [CLI](docs/CLI.md) | Command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables |
+| [API](docs/api.md) | REST API reference, authentication, and Swagger UI (`/api/docs/` on a live instance) |
+| [Architecture](docs/architecture.md) | Hexagonal layer map, request lifecycle, DI container, and dependency rules |
+| [CLI](docs/cli.md) | Command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables |
 | [GitHub](docs/github.md) | Repository configuration: branch protection, CI jobs, Dependabot, releases, and workflow |
-| [Install](docs/INSTALL.md) | Requirements and installation (Docker and manual, multi-distro) |
-| [Testing](docs/TESTING.md) | Running the test suites, test layout, environment requirements, and writing new tests |
+| [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
+| [Testing](docs/testing.md) | Running the test suites, test layout, environment requirements, and writing new tests |
 
 ---
 

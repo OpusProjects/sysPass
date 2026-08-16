@@ -1,6 +1,15 @@
 # Installation
 
+- [Requirements](#requirements)
+- [Option A — Docker (recommended for development)](#option-a--docker-recommended-for-development)
+- [Option B — Manual installation](#option-b--manual-installation)
+- [CLI install](#cli-install)
+
+---
+
 ## Requirements
+
+What the host needs before either installation route below will work.
 
 - **PHP 8.4+** with extensions: `pdo_mysql`, `gettext`, `mbstring`, `openssl`,
   `dom` / `xml`, `json`, `fileinfo`, and `ldap` (optional — only for LDAP / Active
@@ -11,6 +20,8 @@
   or MySQL 5.7+).
 - A **web server** (Apache or Nginx); SSL strongly recommended for production.
 - **[Composer](https://getcomposer.org/)** to install the PHP dependencies.
+
+---
 
 ## Option A — Docker (recommended for development)
 
@@ -35,6 +46,8 @@ The Docker MariaDB container auto-creates the `syspass` database, so select
 **Hosting** mode in the installer — it uses the provided credentials directly
 instead of trying to create the database. Use `db` as the database server,
 `root` / `syspass` as the DB credentials, and `syspass` as the database name.
+
+---
 
 ## Option B — Manual installation
 
@@ -98,6 +111,8 @@ the web-root path, and the web-server user differ.
    The database server field accepts `host`, `host:port`, `[ipv6]:port`, or
    `unix:/path/to/socket`.
 
+---
+
 ## CLI install
 
 The installer can also run headless:
@@ -116,4 +131,4 @@ precedence over the arguments. `--install` skips the confirmation prompt;
 
 ---
 
-See [`TESTING.md`](TESTING.md) for how to run the test suites.
+See [`testing.md`](testing.md) for how to run the test suites.
