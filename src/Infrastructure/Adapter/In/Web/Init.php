@@ -402,6 +402,23 @@ final class Init extends HttpModuleBase
     }
 
     /**
+     * The session timeout an address-matched preset gives this user, if any.
+     *
+     * This reads `getClientAddress()`, which prefers the client-supplied Forwarded /
+     * X-Forwarded-For header — deliberately, and unlike `Track::buildTrackRequest()` and
+     * `InstallThrottle::check()`, which both key on REMOTE_ADDR precisely because that header is
+     * spoofable. The difference is intended and should not be "fixed" to match them.
+     *
+     * The reason is that behind a reverse proxy REMOTE_ADDR is the proxy, so an address-based
+     * preset would match every user or none, and the feature would stop working for exactly the
+     * deployments that configure it. The two limiters accept that cost because rotating a header
+     * defeats a brute-force limit outright; here it does not.
+     *
+     * What follows is that **this preset is not a security boundary**. Anyone can claim an address
+     * and receive the timeout configured for it, so it decides convenience — a longer session on a
+     * trusted network — and must not be relied on to shorten anyone's session against their will.
+     * It extends an already-authenticated session; it grants no access.
+     *
      * @throws ConstraintException
      * @throws InvalidArgumentException
      * @throws NoSuchPropertyException

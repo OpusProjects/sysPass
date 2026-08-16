@@ -367,6 +367,17 @@ Key constraints:
 
 ## Known non-issues — audited, do NOT "fix"
 
+- **The session-timeout preset matches on the *forwarded* address, unlike everything else that
+  makes a security decision.** `Init::getSessionTimeoutForUser()` reads `getClientAddress()`, which
+  prefers the client-supplied `Forwarded` / `X-Forwarded-For` header, while
+  `Track::buildTrackRequest()` and `InstallThrottle::check()` both key on `REMOTE_ADDR` because
+  that header is spoofable. The difference is deliberate: behind a reverse proxy `REMOTE_ADDR` is
+  the proxy, so an address-based preset would match every user or none and the feature would stop
+  working for the deployments that configure it. The limiters accept that cost because rotating a
+  header defeats a brute-force limit outright; here it only extends an already-authenticated
+  session and grants no access. The consequence — **the preset is a convenience, not a boundary**,
+  and anyone can claim an address to get the timeout set for it — is recorded at the call site.
+
 - **A password reset leaves the next sign-in asking for the previous password.** Not a broken
   reset: the user's master password is sealed with a key derived from their login password, so
   changing it without the old one leaves the vault unopenable and the login asks for the old one to
