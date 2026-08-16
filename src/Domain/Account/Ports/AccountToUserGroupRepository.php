@@ -51,6 +51,17 @@ interface AccountToUserGroupRepository extends Repository
     public function getUserGroupsByAccountId(int $id): QueryResult;
 
     /**
+     * The same rows for a page of accounts at once, each carrying its accountId.
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<AccountPermissionItem>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getUserGroupsByAccountIds(array $ids): QueryResult;
+
+    /**
      * Get the list with the names of the groups of an account.
      *
      * @param int $id

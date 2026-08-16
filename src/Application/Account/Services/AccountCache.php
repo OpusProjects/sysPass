@@ -27,9 +27,11 @@ namespace SP\Application\Account\Services;
 
 use SP\Application\Application;
 use SP\Domain\Account\Dtos\AccountCacheDto;
+use SP\Domain\Account\Models\AccountPermissionItem;
 use SP\Application\Account\Ports\AccountCacheService;
 use SP\Domain\Account\Ports\AccountToUserGroupRepository;
 use SP\Domain\Account\Ports\AccountToUserRepository;
+use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
@@ -78,5 +80,60 @@ final class AccountCache extends Service implements AccountCacheService
         }
 
         return $cache[$accountId];
+    }
+
+    /**
+     * @inheritDoc
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function warmUpFor(array $dateEditByAccountId): void
+    {
+        $cache = $this->context->getAccountsCache() ?? [];
+
+        $missing = array_keys(
+            array_filter(
+                $dateEditByAccountId,
+                static fn(int $dateEdit, int $accountId) => !isset($cache[$accountId])
+                                                            || $cache[$accountId]->getTime() < $dateEdit,
+                ARRAY_FILTER_USE_BOTH
+            )
+        );
+
+        if (empty($missing)) {
+            return;
+        }
+
+        $users = self::groupByAccount($this->accountToUserRepository->getUsersByAccountIds($missing));
+        $userGroups = self::groupByAccount($this->accountToUserGroupRepository->getUserGroupsByAccountIds($missing));
+
+        foreach ($missing as $accountId) {
+            $cache[$accountId] = new AccountCacheDto(
+                $accountId,
+                $users[$accountId] ?? [],
+                $userGroups[$accountId] ?? []
+            );
+        }
+
+        $this->context->setAccountsCache($cache);
+    }
+
+    /**
+     * @param QueryResult<AccountPermissionItem> $result
+     * @return array<int, AccountPermissionItem[]>
+     */
+    private static function groupByAccount(QueryResult $result): array
+    {
+        $byAccount = [];
+
+        foreach ($result->getDataAsArray() as $row) {
+            // The row keeps accountId in its outer bag; read it as an array rather than through
+            // __get(), which is dynamic-property access as far as static analysis is concerned.
+            $columns = $row->toArray(includeOuter: true);
+
+            $byAccount[(int)$columns['accountId']][] = $row;
+        }
+
+        return $byAccount;
     }
 }

@@ -157,4 +157,43 @@ final class AccountToUser extends BaseRepository implements AccountToUserReposit
 
         return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
     }
+
+    /**
+     * The same rows as getUsersByAccountId(), for a page of accounts at once.
+     *
+     * The listing needs these for every account it shows, and asking per account is a query per
+     * row — the tags on the same page are already fetched this way. Each row carries its
+     * accountId so the caller can group them.
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<AccountPermissionItem>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getUsersByAccountIds(array $ids): QueryResult
+    {
+        if (empty($ids)) {
+            /** @var QueryResult<AccountPermissionItem> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                       'AccountToUser.accountId',
+                       'User.id',
+                       'User.name',
+                       'User.login',
+                       'AccountToUser.isEdit',
+                   ])
+            ->from('AccountToUser')
+            ->join('INNER', 'User', 'User.id = AccountToUser.userId')
+            ->where('AccountToUser.accountId IN (:accountIds)', ['accountIds' => $ids])
+            ->orderBy(['User.name ASC']);
+
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
+    }
 }

@@ -36,4 +36,15 @@ interface AccountCacheService
      * Return the accesses from the cache
      */
     public function getCacheForAccount(int $accountId, int $dateEdit): AccountCacheDto;
+
+    /**
+     * Fill the cache for a page of accounts in one pass.
+     *
+     * The listing asks for every account it shows, and doing that one at a time is two queries a
+     * row. Calling this first makes each of those a cache hit.
+     *
+     * @param array<int, int> $dateEditByAccountId the accounts to load, and the edit time each
+     *                                             cached entry has to be at least as new as
+     */
+    public function warmUpFor(array $dateEditByAccountId): void;
 }
