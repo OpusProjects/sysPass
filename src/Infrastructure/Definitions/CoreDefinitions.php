@@ -445,7 +445,12 @@ final class CoreDefinitions
             // and satisfies FileHandlerProvider, which the Upgrade service attaches as an event
             // observer to capture upgrade progress in the log.
             FileHandlerProvider::class => autowire(LogHandler::class),
-            UpgradeService::class => autowire(Upgrade::class),
+            // Registering the handler here is what makes the upgrade do anything at all. Nothing
+            // else called registerUpgradeHandler(), so the service ran with an empty handler list:
+            // upgrade() looped over nothing, returned normally, and the controller reported
+            // "Application successfully updated" over a database it had not touched.
+            UpgradeService::class => autowire(Upgrade::class)
+                ->method('registerUpgradeHandler', UpgradeDatabase::class),
             UpgradeDatabase::class => autowire(UpgradeDatabase::class)
                 ->constructorParameter(
                     'sqlPath',

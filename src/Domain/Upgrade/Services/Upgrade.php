@@ -98,6 +98,14 @@ final class Upgrade extends Service implements UpgradeService
             $this->config->save($configData);
         }
 
+        // The handlers stamp what they own — UpgradeDatabase records the schema version it brought
+        // the database to. Nothing recorded that the *application* had been upgraded, and
+        // ModuleBase::checkUpgradeNeeded() reads both: an install that upgraded successfully was
+        // still sent to the upgrade page on the next request, with its one-time key already spent.
+        $configData->setAppVersion(Version::getVersionStringNormalized());
+
+        $this->config->save($configData);
+
         $this->eventDispatcher->notify(
             new Event(
                 sprintf('upgrade.%s.end', $class),
