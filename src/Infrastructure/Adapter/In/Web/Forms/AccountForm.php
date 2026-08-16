@@ -133,9 +133,50 @@ final class AccountForm extends FormBase implements FormInterface
             'userGroupId' => $this->request->analyzeInt('main_usergroup_id'),
         ];
 
+        $properties = $this->constrainPrivacyToPermission($properties);
+
         return $this->itemId === null ? AccountCreateDto::fromArray($properties) : AccountUpdateDto::fromArray(
             $properties
         );
+    }
+
+    /**
+     * Hold the two privacy flags to the same rule the interface applies when it decides whether to
+     * offer them.
+     *
+     * `AccountHelper` computes `allowPrivate` / `allowPrivateGroup` from the profile permission and
+     * ownership, and the template omits the checkbox when they are false — but nothing looked at
+     * either on the way back in, so a request that carried `private_enabled` anyway was honoured.
+     * That is not a way to reach anything: both flags only ever *withhold* an account. It is a way
+     * to hide one, and `AccountAcl` tests privacy before the administrator branch, so an account
+     * marked private disappears for account administrators too.
+     *
+     * @param array<string, mixed> $properties
+     *
+     * @return array<string, mixed>
+     */
+    private function constrainPrivacyToPermission(array $properties): array
+    {
+        $userData = $this->context->getUserData();
+        $userProfile = $this->context->getUserProfile();
+
+        $mayBePrivate = $userData->isAdminApp
+                        || (($userProfile?->isAccPrivate() ?? false)
+                            && $properties['userId'] === $userData->id);
+
+        $mayBePrivateGroup = $userData->isAdminApp
+                             || (($userProfile?->isAccPrivateGroup() ?? false)
+                                 && $properties['userGroupId'] === $userData->userGroupId);
+
+        if (!$mayBePrivate) {
+            $properties['isPrivate'] = 0;
+        }
+
+        if (!$mayBePrivateGroup) {
+            $properties['isPrivateGroup'] = 0;
+        }
+
+        return $properties;
     }
 
     /**
