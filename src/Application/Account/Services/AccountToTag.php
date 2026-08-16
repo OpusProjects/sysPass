@@ -62,4 +62,25 @@ final class AccountToTag extends Service implements AccountToTagService
             ->getTagsByAccountId($id)
             ->getDataAsArray(Item::class);
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getTagsByAccountIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $tagsByAccount = [];
+
+        foreach ($this->accountToTagRepository->getTagsByAccountIds($ids)->getDataAsArray() as $row) {
+            // accountId rides in the row's outer bag, so the rows can be split back up by account.
+            $tag = $row->toArray(includeOuter: true);
+
+            $tagsByAccount[(int)$tag['accountId']][] = new Item(['id' => $tag['id'], 'name' => $tag['name']]);
+        }
+
+        return $tagsByAccount;
+    }
 }

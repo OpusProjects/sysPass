@@ -71,6 +71,13 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 return $nodeAccounts;
             }
 
+            // Every account's tags in one query. This loop runs over the whole installation, so
+            // asking per account meant one query per account exported — thousands of them on a
+            // large one, for data a single pass answers.
+            $tagsByAccount = $this->accountToTagService->getTagsByAccountIds(
+                array_map(static fn($account) => $account->getId() ?? 0, $accounts)
+            );
+
             foreach ($accounts as $account) {
                 $accountName = $this->createTextElement('name', $account->getName() ?? '');
                 $accountCustomerId = $this->document->createElement('clientId', (string)$account->getClientId());
@@ -82,7 +89,7 @@ final class XmlAccountExport extends XmlExportEntityBase implements XmlAccountEx
                 $accountIV = $this->createTextElement('key', $account->getKey() ?? '');
                 $tags = $this->document->createElement('tags');
 
-                foreach ($this->accountToTagService->getTagsByAccountId($account->getId() ?? 0) as $itemData) {
+                foreach ($tagsByAccount[$account->getId() ?? 0] ?? [] as $itemData) {
                     $tag = $this->document->createElement('tag');
                     $tags->appendChild($tag);
 

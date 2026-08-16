@@ -48,6 +48,50 @@ class AccountToTagTest extends UnitaryTestCase
     private AccountToTagRepository|MockObject $accountToTagRepository;
 
     /**
+     * Several accounts cost one query, not one each, and each account gets back its own tags.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testGetTagsByAccountIdsReadsThemAllInOnePass()
+    {
+        $rows = [
+            new Item(['accountId' => 11, 'id' => 1, 'name' => 'alpha']),
+            new Item(['accountId' => 11, 'id' => 2, 'name' => 'beta']),
+            new Item(['accountId' => 22, 'id' => 3, 'name' => 'gamma']),
+        ];
+
+        $this->accountToTagRepository
+            ->expects(self::once())
+            ->method('getTagsByAccountIds')
+            ->with([11, 22, 33])
+            ->willReturn(new QueryResult($rows));
+
+        $actual = $this->accountToTag->getTagsByAccountIds([11, 22, 33]);
+
+        self::assertSame(['alpha', 'beta'], array_map(static fn(Item $t) => $t->getName(), $actual[11]));
+        self::assertSame(['gamma'], array_map(static fn(Item $t) => $t->getName(), $actual[22]));
+
+        // 33 had none, so it is absent rather than present and empty — the export coalesces.
+        self::assertArrayNotHasKey(33, $actual);
+    }
+
+    /**
+     * An empty page must not reach the database to discover it is empty.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testGetTagsByAccountIdsAsksForNothingWhenGivenNothing()
+    {
+        $this->accountToTagRepository->expects(self::never())->method('getTagsByAccountIds');
+
+        self::assertSame([], $this->accountToTag->getTagsByAccountIds([]));
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      * @throws SPException

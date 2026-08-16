@@ -42,4 +42,19 @@ interface AccountToTagService
      * @throws QueryException
      */
     public function getTagsByAccountId(int $id): array;
+
+    /**
+     * The tags of several accounts at once, grouped by account id.
+     *
+     * Asking per account is a query per account, which the export — the one caller that walks
+     * every account there is — paid in full. Accounts with no tags are absent from the result
+     * rather than present and empty.
+     *
+     * @param int[] $ids
+     *
+     * @return array<int, Item[]>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getTagsByAccountIds(array $ids): array;
 }
