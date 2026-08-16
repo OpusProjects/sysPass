@@ -109,6 +109,10 @@ final class LdapConnection implements LdapConnectionHandler
                 [
                     'host' => $ldapParams->getServer(),
                     'port' => $ldapParams->getPort(),
+                    // The host no longer carries the scheme, so the transport has to be stated.
+                    // Laminas only appends the port when it builds the connect string itself,
+                    // which it does exactly when the host has no scheme of its own.
+                    'useSsl' => $ldapParams->isSslEnabled(),
                     'useStartTls' => $ldapParams->isTlsEnabled(),
                     'username' => $ldapParams->getBindDn(),
                     'password' => $ldapParams->getBindPass(),
