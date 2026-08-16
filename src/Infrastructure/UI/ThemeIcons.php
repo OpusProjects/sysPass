@@ -71,13 +71,28 @@ final class ThemeIcons implements ThemeIconsInterface
             if ($context->getAppStatus() !== ContextBase::APP_STATUS_RELOADED
                 && !$cache->isExpired(self::CACHE_EXPIRE)
             ) {
-                $cached = $cache->load();
+                try {
+                    // Named, rather than checked after the fact: the instanceof test that used to
+                    // stand here only ran once the file had already been turned into objects,
+                    // which is too late to be a guard. FontIcon is named too — the icons are
+                    // nested inside, and allowing only the outer class would hand back a
+                    // ThemeIcons full of __PHP_Incomplete_Class that still passes instanceof.
+                    $cached = $cache->loadWith(self::class, FontIcon::class);
 
-                if ($cached instanceof ThemeIconsInterface) {
-                    return $cached;
+                    // No instanceof here: loadWith() is declared to return the class it was
+                    // given and throws otherwise, so the only thing left to establish is that the
+                    // icons inside survived.
+                    if (self::holdsOnlyIcons($cached)) {
+                        return $cached;
+                    }
+
+                    logger('Icons cache contains stale class — rebuilding', 'INFO');
+                } catch (InvalidClassException) {
+                    // A cache written by a version that named different classes. Rebuilding from
+                    // the theme is what this already did for a stale class, and is why naming the
+                    // classes costs nothing: anything unexpected is regenerated rather than served.
+                    logger('Icons cache cannot be read into the expected classes — rebuilding', 'INFO');
                 }
-
-                logger('Icons cache contains stale class — rebuilding', 'INFO');
             }
 
             $icons = FileSystem::require(
@@ -95,6 +110,32 @@ final class ThemeIcons implements ThemeIconsInterface
 
             throw $e;
         }
+    }
+
+    /**
+     * Whether every icon survived deserialisation as an icon.
+     *
+     * An icon class this one does not name comes back as __PHP_Incomplete_Class, and the object
+     * around it still satisfies instanceof — so the contents are checked rather than assumed, and
+     * a cache that fails is rebuilt from the theme instead of served half-formed.
+     */
+    private static function holdsOnlyIcons(self $icons): bool
+    {
+        // Reading the private property of another instance of the same class, which PHP scopes by
+        // class rather than by object — there is no accessor, and adding one to the interface for
+        // a cache check would be the wrong place to put it.
+        foreach ($icons->icons as $icon) {
+            // Statically this cannot fail — every write to the array goes through addIcon(), which
+            // takes an IconInterface. Deserialisation does not go through it: an icon class that
+            // was not named comes back as __PHP_Incomplete_Class and sits in the array regardless,
+            // because an array has no element type to enforce at runtime.
+            /** @phpstan-ignore instanceof.alwaysTrue */
+            if (!$icon instanceof IconInterface) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function getIconByName(string $name): IconInterface

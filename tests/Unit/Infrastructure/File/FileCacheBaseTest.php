@@ -327,12 +327,12 @@ class FileCacheBaseTest extends UnitaryTestCase
  */
 final class FileCacheBaseTestSubject extends FileCacheBase
 {
-    public function load(?string $path = null): mixed
+    public function load(?string $path = null, string ...$allowed): mixed
     {
         return null;
     }
 
-    public function loadWith(string $class): object
+    public function loadWith(string $class, string ...$nested): object
     {
         throw new LogicException('not used by this test');
     }

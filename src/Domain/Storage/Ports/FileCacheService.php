@@ -36,7 +36,7 @@ interface FileCacheService
     /**
      * @throws FileException
      */
-    public function load(?string $path = null): mixed;
+    public function load(?string $path = null, string ...$allowed): mixed;
 
     /**
      * @template T of object
@@ -45,7 +45,7 @@ interface FileCacheService
      * @return T&object
      * @throws FileException
      */
-    public function loadWith(string $class): object;
+    public function loadWith(string $class, string ...$nested): object;
 
     /**
      * Save file data serializing the data

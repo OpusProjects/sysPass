@@ -103,11 +103,100 @@ class ThemeIconsTest extends UnitaryTestCase
                   ->method('isExpired')
             ->willReturn(false);
 
+        // loadWith(), not load(): the cache is read into the classes it is allowed to contain.
         $fileCache->expects(self::once())
-                  ->method('load')
+                  ->method('loadWith')
+                  ->with(ThemeIcons::class, FontIcon::class)
                   ->willReturn(new ThemeIcons());
 
         ThemeIcons::loadIcons($context, $fileCache, $themeContext);
+    }
+
+    /**
+     * A cache written by a version that named other classes is rebuilt, not thrown.
+     *
+     * Naming the classes means loadWith() refuses anything else, and refusing is an exception —
+     * where the old code got back whatever the file held and fell through to a rebuild. That
+     * graceful path is the reason naming them costs nothing, so it is kept: an unreadable cache
+     * regenerates from the theme rather than taking the page down.
+     *
+     * This supersedes a test that had the cache hand back a stdClass. loadWith() cannot do that —
+     * it returns the class it was asked for or throws — so that test described a state the code
+     * can no longer reach.
+     *
+     * @throws InvalidClassException
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testACacheThatCannotBeReadIntoTheExpectedClassesIsRebuilt()
+    {
+        $context = $this->createMock(Context::class);
+        $fileCache = $this->createMock(FileCacheService::class);
+        $themeContext = $this->createMock(ThemeContextInterface::class);
+
+        $context->expects(self::once())->method('getAppStatus')->willReturn('test');
+        $fileCache->expects(self::once())->method('isExpired')->willReturn(false);
+
+        $fileCache->expects(self::once())
+                  ->method('loadWith')
+                  ->willThrowException(InvalidClassException::error('stale'));
+
+        $fileCache->expects(self::once())
+                  ->method('save')
+                  ->with(self::isInstanceOf(ThemeIconsInterface::class));
+
+        $themeContext->expects(self::once())
+                     ->method('getFullPath')
+                     ->willReturn(REAL_APP_ROOT . '/public/themes/material-blue');
+
+        $out = ThemeIcons::loadIcons($context, $fileCache, $themeContext);
+
+        $this->assertInstanceOf(ThemeIconsInterface::class, $out);
+        $this->assertEquals('add', $out->add()->getIcon());
+    }
+
+    /**
+     * A cached set whose icons did not survive being read is rebuilt too.
+     *
+     * The icons live in an array, and an array holds __PHP_Incomplete_Class quietly — so a
+     * ThemeIcons whose entries were not among the named classes still satisfies instanceof while
+     * containing nothing usable. Checking the class the cache was read into is not enough; the
+     * contents are checked as well.
+     *
+     * @throws InvalidClassException
+     * @throws Exception
+     * @throws FileException
+     */
+    public function testACachedSetWithIconsThatDidNotSurviveIsRebuilt()
+    {
+        $context = $this->createMock(Context::class);
+        $fileCache = $this->createMock(FileCacheService::class);
+        $themeContext = $this->createMock(ThemeContextInterface::class);
+
+        $hollow = new ThemeIcons();
+        $hollow->addIcon('add', new FontIcon('add'));
+
+        // What unserialize() leaves behind when a nested class was not allowed.
+        $incomplete = @unserialize('O:22:"SomeClassThatIsNotHere":0:{}', ['allowed_classes' => false]);
+        (function () use ($incomplete) {
+            $this->icons['add'] = $incomplete;
+        })->call($hollow);
+
+        $context->expects(self::once())->method('getAppStatus')->willReturn('test');
+        $fileCache->expects(self::once())->method('isExpired')->willReturn(false);
+        $fileCache->expects(self::once())->method('loadWith')->willReturn($hollow);
+
+        $fileCache->expects(self::once())
+                  ->method('save')
+                  ->with(self::isInstanceOf(ThemeIconsInterface::class));
+
+        $themeContext->expects(self::once())
+                     ->method('getFullPath')
+                     ->willReturn(REAL_APP_ROOT . '/public/themes/material-blue');
+
+        $out = ThemeIcons::loadIcons($context, $fileCache, $themeContext);
+
+        $this->assertEquals('add', $out->add()->getIcon());
     }
 
     /**
@@ -133,7 +222,7 @@ class ThemeIconsTest extends UnitaryTestCase
         $fileCache->expects(self::never())
                   ->method('isExpired');
         $fileCache->expects(self::never())
-                  ->method('load');
+                  ->method('loadWith');
         $fileCache->expects(self::once())
                   ->method('save')
                   ->with(self::isInstanceOf(ThemeIconsInterface::class));
@@ -171,7 +260,7 @@ class ThemeIconsTest extends UnitaryTestCase
                   ->method('isExpired')
                   ->willReturn(true);
         $fileCache->expects(self::never())
-                  ->method('load');
+                  ->method('loadWith');
         $fileCache->expects(self::once())
                   ->method('save')
                   ->with(self::isInstanceOf(ThemeIconsInterface::class));
@@ -186,45 +275,6 @@ class ThemeIconsTest extends UnitaryTestCase
         $this->assertEquals('warning', $out->warning()->getIcon());
     }
 
-    /**
-     * A cache file can only ever hold data that unserialize() was able to turn
-     * back into an object. If a class was renamed/removed since the file was
-     * written, load() hands back something that is not a ThemeIconsInterface;
-     * blindly returning it would crash every page that renders an icon.
-     * Instead the code must log and rebuild from the theme file.
-     *
-     * @throws InvalidClassException
-     * @throws Exception
-     * @throws FileException
-     */
-    public function testLoadIconsWhenCachedValueIsStaleClassRebuildsFromFile()
-    {
-        $context = $this->createMock(Context::class);
-        $fileCache = $this->createMock(FileCacheService::class);
-        $themeContext = $this->createMock(ThemeContextInterface::class);
-
-        $context->expects(self::once())
-                ->method('getAppStatus')
-                ->willReturn('test');
-
-        $fileCache->expects(self::once())
-                  ->method('isExpired')
-                  ->willReturn(false);
-        $fileCache->expects(self::once())
-                  ->method('load')
-                  ->willReturn(new \stdClass());
-        $fileCache->expects(self::once())
-                  ->method('save')
-                  ->with(self::isInstanceOf(ThemeIconsInterface::class));
-
-        $themeContext->expects(self::once())
-                     ->method('getFullPath')
-                     ->willReturn(REAL_APP_ROOT . '/public/themes/material-blue');
-
-        $out = ThemeIcons::loadIcons($context, $fileCache, $themeContext);
-
-        $this->assertInstanceOf(ThemeIconsInterface::class, $out);
-    }
 
     /**
      * A missing/misconfigured theme (e.g. an incomplete custom theme install)

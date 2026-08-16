@@ -77,7 +77,10 @@ final class MimeTypes implements MimeTypesService
         ) {
             $this->mapAndSave();
         } else {
-            $this->mimeTypes = $this->fileCache->load();
+            // MimeType[]: an array of objects, so the class is named. Without it every entry
+            // came back as __PHP_Incomplete_Class and failed far from here, where a closure in
+            // ConfigManager\IndexController takes a MimeType.
+            $this->mimeTypes = $this->fileCache->load(null, MimeType::class);
 
             logger('Loaded MIME types cache', 'INFO');
         }

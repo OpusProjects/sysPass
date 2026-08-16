@@ -97,10 +97,73 @@ class FileCacheTest extends TestCase
         $data = new FileCacheTestFixture('acl-cache', 7);
 
         $cache->save($data);
-        $loaded = $cache->load();
+        $loaded = $cache->loadWith(FileCacheTestFixture::class);
 
         self::assertInstanceOf(FileCacheTestFixture::class, $loaded);
         self::assertEquals($data, $loaded);
+    }
+
+    /**
+     * load() reads data, and a cache file that contains an object does not become one.
+     *
+     * It used to: nothing named a class, and Serde::deserialize() allows every class when it is
+     * not told which to expect — so whatever a cache file happened to contain was instantiated,
+     * and a write into the cache directory became objects of somebody else's choosing on the next
+     * read. Callers that cache an object say which one, through loadWith().
+     */
+    public function testLoadDoesNotBuildObjects(): void
+    {
+        $cache = new FileCache($this->file);
+
+        $cache->save(new FileCacheTestFixture('acl-cache', 7));
+
+        self::assertInstanceOf(\__PHP_Incomplete_Class::class, $cache->load());
+    }
+
+    /**
+     * A cache holding an *array* of objects names its classes through load().
+     *
+     * loadWith() cannot express this — it answers with one object of the class it was given —
+     * and the actions cache is exactly this shape: `Action[]`. Restricting load() to data alone
+     * turned every entry into __PHP_Incomplete_Class, and the failure surfaced far away, as
+     * `Actions::getActionById(): Return value must be of type Action, __PHP_Incomplete_Class
+     * returned`.
+     */
+    public function testLoadNamesTheClassesAnArrayMayContain(): void
+    {
+        $cache = new FileCache($this->file);
+
+        $cache->save([new FileCacheNestedFixture('one'), new FileCacheNestedFixture('two')]);
+
+        $refused = $cache->load();
+        self::assertInstanceOf(\__PHP_Incomplete_Class::class, $refused[0]);
+
+        $allowed = $cache->load(null, FileCacheNestedFixture::class);
+        self::assertInstanceOf(FileCacheNestedFixture::class, $allowed[0]);
+        self::assertSame('two', $allowed[1]->label);
+    }
+
+    /**
+     * An object that holds other objects needs all of them named, or the ones inside come back as
+     * __PHP_Incomplete_Class while the object around them still passes instanceof — which is how a
+     * restriction can look applied and leave the contents hollow.
+     *
+     * The property here is untyped on purpose. A *typed* property refuses the incomplete class
+     * outright with a TypeError, which is loud and therefore harmless; it is the untyped and the
+     * array-valued ones that hold it quietly. ThemeIcons keeps its icons in an array, which is why
+     * it checks its contents after loading rather than trusting the class it asked for.
+     */
+    public function testLoadWithNamesNestedClassesToo(): void
+    {
+        $cache = new FileCache($this->file);
+
+        $cache->save(new FileCacheTestFixture('acl-cache', 7, new FileCacheNestedFixture('nested')));
+
+        $hollow = $cache->loadWith(FileCacheTestFixture::class);
+        self::assertInstanceOf(\__PHP_Incomplete_Class::class, $hollow->nested);
+
+        $whole = $cache->loadWith(FileCacheTestFixture::class, FileCacheNestedFixture::class);
+        self::assertInstanceOf(FileCacheNestedFixture::class, $whole->nested);
     }
 
     /**
@@ -255,7 +318,18 @@ final class FileCacheTestFixture
 {
     public function __construct(
         public readonly string $name,
-        public readonly int $value
+        public readonly int $value,
+        public readonly mixed $nested = null
     ) {
+    }
+}
+
+/**
+ * A different class, so that naming the outer one is not enough to bring it back.
+ */
+final class FileCacheNestedFixture
+{
+    public function __construct(public readonly string $label)
+    {
     }
 }
