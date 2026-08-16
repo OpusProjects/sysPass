@@ -431,6 +431,62 @@ class LoginAuthHandlerTest extends UnitaryTestCase
     }
 
     /**
+     * A login the directory does not hold must answer exactly as a rejected password does, and be
+     * counted the same way.
+     *
+     * It did neither. NO_SUCH_OBJECT fell through to the "Internal error" branch, which says
+     * something different and calls no tracking — so the response distinguished a real login from
+     * a made-up one, and the path that distinguished them was the one attempt tracking never
+     * counted. An attacker could enumerate logins indefinitely, then switch to guessing passwords
+     * on the one path that is bounded.
+     *
+     * @throws AuthException
+     */
+    public function testAnUnknownLoginAnswersAndCountsLikeAWrongPassword()
+    {
+        $authData = new LdapAuthData(true);
+        $authData->setStatusCode(LdapCodeEnum::NO_SUCH_OBJECT->value);
+        $authData->fail();
+        $userLoginDto = new UserLoginDto('no_such_user', 'a_password');
+
+        $this->userService
+            ->expects($this->never())
+            ->method('checkExistsByLogin');
+
+        $this->trackService
+            ->expects($this->once())
+            ->method('add');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionMessage('Wrong login');
+
+        $this->loginAuthHandler->authLdap($authData, $userLoginDto);
+    }
+
+    /**
+     * A failure that is not about the user still falls through, and reveals nothing by doing so:
+     * a directory error answers the same way whatever login was sent.
+     *
+     * @throws AuthException
+     */
+    public function testADirectoryFailureIsStillReportedAsInternal()
+    {
+        $authData = new LdapAuthData(true);
+        $authData->setStatusCode(LdapCodeEnum::OPERATIONS_ERROR->value);
+        $authData->fail();
+        $userLoginDto = new UserLoginDto('a_user', 'a_password');
+
+        $this->trackService
+            ->expects($this->never())
+            ->method('add');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionMessage('Internal error');
+
+        $this->loginAuthHandler->authLdap($authData, $userLoginDto);
+    }
+
+    /**
      * @throws AuthException
      */
     public function testAuthLdapWithFailAndExpired()
