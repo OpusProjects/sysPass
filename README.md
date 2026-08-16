@@ -45,6 +45,7 @@ All original copyright and the GNU GPLv3 license are retained.
 | [API](docs/api.md) | REST API reference, authentication, and Swagger UI (`/api/docs/` on a live instance) |
 | [Architecture](docs/architecture.md) | Hexagonal layer map, request lifecycle, DI container, and dependency rules |
 | [CLI](docs/cli.md) | Command-line tool (`bin/cli.php`): commands, arguments, options, and environment variables |
+| [Configuration](docs/configuration.md) | Environment variables, `config.xml`, every setting by area, and the defaults worth knowing |
 | [GitHub](docs/github.md) | Repository configuration: branch protection, CI jobs, Dependabot, releases, and workflow |
 | [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
 | [Security](docs/security.md) | Cryptography: how account passwords and the master password are protected, and what an administrator can reach |
