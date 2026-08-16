@@ -75,12 +75,27 @@ final readonly class XmlFile implements XmlFileService
     {
         libxml_use_internal_errors(true);
 
-        if ($this->document->load($file, LIBXML_PARSEHUGE) === false) {
+        // Parsed under libxml's own limits. LIBXML_PARSEHUGE was passed here, and what it relaxes
+        // includes the entity expansion limit — the protection against a file whose entities refer
+        // to each other until they fill memory. Five hundred bytes expanded to three million
+        // characters with it, and libxml refused the same file without it.
+        if ($this->document->load($file) === false) {
             foreach (libxml_get_errors() as $error) {
                 logger(__METHOD__ . ' - ' . $error->message);
             }
 
             throw ImportException::error(__u('Internal error'), __u('Unable to process the XML file'));
+        }
+
+        // And no document type at all. sysPass's own export declares none and neither do the
+        // formats it imports, so refusing one costs nothing and removes entity expansion and
+        // external entities as a class — rather than resting on libxml's limits and defaults
+        // staying where they are, which is what went wrong above.
+        if ($this->document->doctype !== null) {
+            throw ImportException::error(
+                __u('Unable to process the XML file'),
+                __u('The file declares a document type, which is not accepted')
+            );
         }
     }
 
