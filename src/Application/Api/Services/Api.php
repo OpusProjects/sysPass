@@ -122,6 +122,13 @@ final class Api extends Service implements ApiService
         } catch (NoSuchItemException $e) {
             logger($e->getMessage(), 'ERROR');
 
+            // A token that does not exist is the attempt this counter is for. Guessing token
+            // values is the only way in from outside, and it was the single failure that did not
+            // count: a request that omitted the token entirely did, which is not what anybody
+            // brute-forcing sends. The limit above was therefore unreachable by the attack it
+            // guards against.
+            $this->addTracking();
+
             // For security reasons there won't be any hint about a not found token...
             throw new ServiceException(
                 __u('Internal error'),

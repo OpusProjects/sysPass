@@ -30,6 +30,7 @@ use Faker\Factory;
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use ReflectionClass;
@@ -387,6 +388,39 @@ class ApiTest extends UnitaryTestCase
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Internal error');
+
+        $this->apiService->setup($actionId);
+    }
+
+    /**
+     * A token nobody issued is the attempt the counter exists for: guessing token values is the
+     * only way into the API from outside.
+     *
+     * It was the one failure that did not count. A request omitting the token entirely did — and
+     * that is not what anybody brute-forcing sends — so the limit checked at the top of setup()
+     * was unreachable by the attack it guards against.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    #[Test]
+    public function aTokenThatWasNeverIssuedCountsAsAnAttempt()
+    {
+        $actionId = self::$faker->randomNumber();
+
+        $this->trackService->method('checkTracking')->willReturn(false);
+        $this->apiRequest->method('get')->willReturn(self::$faker->password());
+
+        $this->authTokenService
+            ->method('getTokenByToken')
+            ->willThrowException(new NoSuchItemException('not found'));
+
+        $this->trackService
+            ->expects(self::once())
+            ->method('add')
+            ->with($this->trackRequest);
+
+        $this->expectException(ServiceException::class);
 
         $this->apiService->setup($actionId);
     }
