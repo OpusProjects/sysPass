@@ -48,6 +48,7 @@ All original copyright and the GNU GPLv3 license are retained.
 | [Configuration](docs/configuration.md) | Environment variables, `config.xml`, every setting by area, and the defaults worth knowing |
 | [GitHub](docs/github.md) | Repository configuration: branch protection, CI jobs, Dependabot, releases, and workflow |
 | [Install](docs/install.md) | Requirements and installation (Docker and manual, multi-distro) |
+| [LDAP](docs/ldap.md) | Authenticating against a directory: the bind sequence, filters, and group membership |
 | [Permissions](docs/permissions.md) | Profile permissions, per-account access, private accounts, and how they combine |
 | [Security](docs/security.md) | How account passwords and the master password are protected, and the trust boundary |
 | [Testing](docs/testing.md) | Running the test suites, test layout, environment requirements, and writing new tests |
