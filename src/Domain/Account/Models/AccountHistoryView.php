@@ -29,12 +29,26 @@ namespace SP\Domain\Account\Models;
 /**
  * Class AccountHistoryView
  *
- * An AccountHistory row enriched with the editor's user data for display purposes
+ * An AccountHistory row enriched with the owner's, the group's and the editor's names for display
+ * purposes. The row itself stores only ids, and the detail view shows all three by name — the same
+ * three the current account's view shows, which reads them from `account_data_v`.
  */
 final class AccountHistoryView extends AccountHistory
 {
+    protected ?string $userName      = null;
+    protected ?string $userGroupName = null;
     protected ?string $userEditName  = null;
     protected ?string $userEditLogin = null;
+
+    public function getUserName(): ?string
+    {
+        return $this->userName;
+    }
+
+    public function getUserGroupName(): ?string
+    {
+        return $this->userGroupName;
+    }
 
     public function getUserEditName(): ?string
     {
