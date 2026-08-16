@@ -8,6 +8,12 @@ application whose entry point is **`bin/cli.php`**.
 `bin/cli.php` boots the same php-di container as the web and API entry points
 (`src/Base.php`), then runs the console application (`SP\Infrastructure\Adapter\In\Cli`).
 
+- [Running the CLI](#running-the-cli)
+- [Discovering commands](#discovering-commands)
+- [Commands](#commands)
+- [Exit codes](#exit-codes)
+- [Logging](#logging)
+
 ---
 
 ## Running the CLI
@@ -37,6 +43,8 @@ All examples below use the bare `php bin/cli.php …` form; prefix them with
 ---
 
 ## Discovering commands
+
+The console application documents itself, so the authoritative list is the one the binary prints.
 
 ```bash
 php bin/cli.php list             # list every available command
@@ -229,6 +237,8 @@ Commands follow the standard Symfony Console convention:
 | `1` | Failure (validation error, aborted confirmation, or an exception — the message is printed and logged). |
 
 This makes the CLI safe to use in shell scripts (`set -e`) and CI pipelines.
+
+---
 
 ## Logging
 

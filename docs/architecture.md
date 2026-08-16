@@ -10,7 +10,18 @@ a strict dependency direction: inner layers never depend on outer layers.
 Domain  ←──  Application  ←──  Infrastructure
 ```
 
+- [Layers](#layers)
+- [Entry points](#entry-points)
+- [Request lifecycle (web)](#request-lifecycle-web)
+- [DI container](#di-container)
+- [Other key directories](#other-key-directories)
+- [Dependency rules](#dependency-rules)
+
+---
+
 ## Layers
+
+The three layers, listed from the innermost outwards; the dependency rules binding them are at the end of this page.
 
 ### Domain (`src/Domain/`)
 
@@ -91,7 +102,11 @@ src/Infrastructure/
 `src/Base.php` is the bootstrap entry point that builds the DI container and
 dispatches to the appropriate module.
 
+---
+
 ## Entry points
+
+Three entry points exist, one per module, and each one loads the same bootstrap with a different `APP_MODULE`.
 
 | Entry point | Route | Purpose |
 |---|---|---|
@@ -102,7 +117,11 @@ dispatches to the appropriate module.
 Each module has its own DI definitions in
 `src/Infrastructure/Adapter/In/{Web,Api,Cli}/module.php`.
 
+---
+
 ## Request lifecycle (web)
+
+A web request travels from the entry point to a controller action along this path.
 
 ```
 index.php → Base.php (build DI container)
@@ -118,6 +137,8 @@ index.php → Base.php (build DI container)
 The `r` query parameter drives routing: `?r=account/view/42` resolves to
 `AccountController::viewAction(42)`. Empty action defaults to `index`.
 
+---
+
 ## DI container
 
 The container is built by [PHP-DI](https://php-di.org/) with definitions loaded in
@@ -131,7 +152,11 @@ In production (`DEBUG=false`), the container is compiled and lazy proxies are
 written to disk for performance. In development (`DEBUG=true`), it's built fresh
 on each request.
 
+---
+
 ## Other key directories
+
+Directories outside the layer map that matter when working on the application.
 
 | Path | Purpose |
 |---|---|
@@ -144,7 +169,11 @@ on each request.
 | `var/` | Runtime-writable (`cache/`, `temp/`, `backup/`) |
 | `tests/` | PHPUnit test suites — mirrors `src/` structure |
 
+---
+
 ## Dependency rules
+
+These are the constraints the layer map exists to enforce; a change that breaks one is a change in the wrong layer.
 
 - **Domain** depends on nothing outside `Domain/` (and PHP built-ins).
   `Domain/Core/` is the shared kernel — all layers may depend on it.

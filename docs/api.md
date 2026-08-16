@@ -4,6 +4,15 @@ sysPass exposes a **REST API** for programmatic access to accounts, categories,
 clients, tags, user groups, users, profiles, auth tokens, public links,
 notifications, event log, custom fields, and configuration operations.
 
+- [Interactive documentation (Swagger UI)](#interactive-documentation-swagger-ui)
+- [Base URL](#base-url)
+- [Authentication](#authentication)
+- [Endpoints](#endpoints)
+- [Response format](#response-format)
+- [Quick examples](#quick-examples)
+
+---
+
 ## Interactive documentation (Swagger UI)
 
 The API is documented with an OpenAPI 3.0 spec served through Swagger UI:
@@ -19,6 +28,8 @@ From there you can browse every endpoint, see request/response schemas, and use
 > `public/api`, see `docker/apache/syspass.conf`). On a manual install, add an
 > equivalent alias to your web server config — otherwise `/api/docs/` returns 404.
 
+---
+
 ## Base URL
 
 All endpoints are under `/api/v1/`:
@@ -28,6 +39,8 @@ http://<your-host>/api/v1/accounts
 http://<your-host>/api/v1/categories
 ...
 ```
+
+---
 
 ## Authentication
 
@@ -47,7 +60,11 @@ To create a token:
 Some operations (viewing passwords, custom fields, exports) additionally require
 the **token password** (`tokenPass`), sent in the request body or query string.
 
+---
+
 ## Endpoints
+
+Every route is versioned under `/api/v1/`, grouped below by the resource it acts on.
 
 ### Accounts
 
@@ -180,7 +197,11 @@ the **token password** (`tokenPass`), sent in the request body or query string.
 | `POST` | `/api/v1/config/backup` | Create backup |
 | `POST` | `/api/v1/config/export` | Export data (encrypted XML) |
 
+---
+
 ## Response format
+
+Every response is JSON and takes one of two shapes, depending on whether the call succeeded.
 
 ### Success (200 / 201)
 
@@ -205,6 +226,8 @@ Fields `message`, `count`, and `itemId` are included only when applicable.
   }
 }
 ```
+
+---
 
 ## Quick examples
 

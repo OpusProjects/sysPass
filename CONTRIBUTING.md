@@ -10,7 +10,7 @@ cd sysPass
 docker compose up --build -d
 ```
 
-See [`docs/INSTALL.md`](docs/INSTALL.md) for full requirements and manual setup.
+See [`docs/install.md`](docs/install.md) for full requirements and manual setup.
 
 ## Branch and PR workflow
 
@@ -33,11 +33,11 @@ git push -u origin <type>/<short-name>
 ## Coding conventions
 
 - **PHP 8.4+** with `declare(strict_types=1)`.
-- Follow the existing hexagonal structure — see [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+- Follow the existing hexagonal structure — see [`docs/architecture.md`](docs/architecture.md).
   Domain code must not depend on Infrastructure.
 - **PSR2** code style, enforced by PHPCS (`composer phpcs`); **PHPStan level 6**
   static analysis, shrink-only against `phpstan.baseline.neon` — see
-  ["Static analysis"](docs/TESTING.md#static-analysis) in `docs/TESTING.md`.
+  ["Static analysis"](docs/testing.md#static-analysis) in `docs/testing.md`.
 - No comments unless the *why* is non-obvious.
 - No feature flags or backwards-compatibility shims — just change the code.
 - `config/config.xml` contains DB credentials and crypto keys — never commit it.
@@ -63,7 +63,7 @@ npm ci
 npx playwright install chromium
 npm run test:e2e
 
-# Lint (also required before merging — see docs/TESTING.md#static-analysis)
+# Lint (also required before merging — see docs/testing.md#static-analysis)
 docker compose exec -w /var/www/html app vendor/bin/phpstan clear-result-cache
 docker compose exec -w /var/www/html app vendor/bin/phpstan analyse --level 6 src --no-progress
 docker compose exec -w /var/www/html app composer phpcs
@@ -73,8 +73,8 @@ npm run build:js && git diff --exit-code public/vendor/js/
 All test suites must pass before merging. CI's `lint` job runs three gates:
 **PHPStan** (level 6, shrink-only against `phpstan.baseline.neon`), **PHPCS**
 (PSR2), and the **vendored-assets drift check**. See
-[`docs/TESTING.md`](docs/TESTING.md) for details on test layout, groups, and
-writing new tests, and its ["What CI runs"](docs/TESTING.md#what-ci-runs)
+[`docs/testing.md`](docs/testing.md) for details on test layout, groups, and
+writing new tests, and its ["What CI runs"](docs/testing.md#what-ci-runs)
 section for the full CI job map (unit/integration matrix, lint gates, e2e,
 image build).
 
