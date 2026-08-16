@@ -29,6 +29,7 @@ namespace SP\Tests\Integration\Application\Account;
 use DI\ContainerBuilder;
 use PDO;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Application\Account\Ports\AccountHistoryService;
@@ -348,6 +349,48 @@ final class AccountHistoryRestoreTest extends TestCase
      *     name: string, login: string, url: string, notes: string
      * }
      */
+    /**
+     * Deleting a selection leaves the same history behind as deleting one at a time.
+     *
+     * delete() pushes the account into history with its delete flag set, which is the entry
+     * restoreRemoved() rebuilds it from. deleteByIdBatch() did not, so the same action — remove
+     * these accounts — was recoverable or irrecoverable depending only on how many were ticked in
+     * the grid, and the accounts removed as a selection left no record of what they had contained.
+     *
+     * @throws \Exception
+     */
+    #[Test]
+    public function deletingASelectionLeavesEachAccountRestorable(): void
+    {
+        $accountService = $this->dic->get(AccountService::class);
+        $accountHistoryService = $this->dic->get(AccountHistoryService::class);
+
+        $suffix = bin2hex(random_bytes(4));
+        $first = $this->createAccount('batch-a-' . $suffix, 'BatchPassA!' . $suffix);
+        $second = $this->createAccount('batch-b-' . $suffix, 'BatchPassB!' . $suffix);
+
+        $accountService->deleteByIdBatch([$first['accountId'], $second['accountId']]);
+
+        foreach ([$first, $second] as $account) {
+            self::assertSame(
+                1,
+                $this->historyRowCountFor($account['accountId']),
+                'a bulk delete left no history for the account it removed'
+            );
+
+            // And the entry is the kind restoreRemoved() takes: rebuilding from it brings the
+            // account back with the name it had.
+            $historyDto = $accountHistoryService->getById($this->oldestHistoryIdFor($account['accountId']));
+
+            $accountService->restoreRemoved($historyDto);
+
+            $statement = $this->pdo->prepare('SELECT COUNT(*) FROM `Account` WHERE `name` = :name');
+            $statement->execute(['name' => $account['name']]);
+
+            self::assertSame(1, (int)$statement->fetchColumn(), 'the account could not be restored');
+        }
+    }
+
     private function createAccount(string $suffix, string $password): array
     {
         $categoryService = $this->dic->get(CategoryService::class);

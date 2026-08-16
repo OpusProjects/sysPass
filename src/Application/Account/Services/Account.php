@@ -582,6 +582,14 @@ final class Account extends Service implements AccountService
     public function deleteByIdBatch(array $ids): void
     {
         $this->accountRepository->transactionAware(function () use ($ids) {
+            // The same history delete() writes, for every account in the selection. Without it,
+            // deleting accounts one at a time left each one restorable through restoreRemoved()
+            // while deleting the same accounts as a selection destroyed them outright — the same
+            // action, recoverable or not depending only on how many were ticked.
+            foreach ($ids as $id) {
+                $this->addHistory((int)$id, true);
+            }
+
             $affectedNumRows = $this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
             if ($affectedNumRows === 0) {
