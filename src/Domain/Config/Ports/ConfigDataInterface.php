@@ -26,13 +26,24 @@ declare(strict_types=1);
 
 namespace SP\Domain\Config\Ports;
 
+use IteratorAggregate;
 use JsonSerializable;
 
 /**
  * Interface ConfigDataInterface
+ *
+ * @extends IteratorAggregate<string, mixed>
  */
-interface ConfigDataInterface extends JsonSerializable
+interface ConfigDataInterface extends JsonSerializable, IteratorAggregate
 {
+    /**
+     * Walking the settings generically, rather than through the several hundred named accessors
+     * below, is what lets a migration touch every value of a given shape. ConfigData has always
+     * been able to do both — it is an ArrayObject underneath — and this says so, so that a caller
+     * holding the interface can rely on it.
+     */
+    public function set(string $key, mixed $value): void;
+
     public const LOG_EVENTS                    = 'logEvents';
     public const DOKUWIKI_ENABLED              = 'dokuwikiEnabled';
     public const DOKUWIKI_URL                  = 'dokuwikiUrl';

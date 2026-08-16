@@ -96,7 +96,11 @@ final class UploadController extends ControllerBase
         }
 
         try {
-            $fileName = htmlspecialchars($file['name'] ?? '', ENT_QUOTES);
+            // The name as the browser sent it. Escaping it here stored the entities — an
+            // attachment called "Q&A.txt" was saved, listed and downloaded as "Q&amp;A.txt" — and
+            // the places it is used each handle it for themselves: the list escapes it, and the
+            // download header encodes it.
+            $fileName = trim($file['name'] ?? '');
 
             if (empty($fileName)) {
                 throw SPException::error(__u('Invalid file'), sprintf(__u('File: %s'), $fileName));
