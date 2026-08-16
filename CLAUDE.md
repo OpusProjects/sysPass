@@ -365,6 +365,42 @@ Key constraints:
   these are library-internal (not PHP-level), suppressed by `display_errors=0` in `phpunit.xml`.
   `session.sid_bits_per_character` was removed from `SessionLifecycleHandler::SESSION_OPTIONS`.
 
+## Where the defects have actually been
+
+A record of what repeatedly turned out to be broken, because the pattern predicts the next one
+better than any coverage number does.
+
+**The wiring, not the code.** php-di skips a constructor parameter that has a default *even when the
+container has a binding for its type*, silently. `Init::$sessionKeyService` was null that way, so
+`reKey()` — and the `session_regenerate_id()` inside it — never ran, and session identifiers were
+never rotated for logged-in users. `AccountAcl`'s per-account cache died the same way earlier.
+Neither is visible in the unit suite, which mocks the container, nor in `CompilableContainerTest`,
+which asserts a container *compiles*: a definition compiles perfectly well and still throws, or
+silently under-fills, when something asks for it. `OptionalDependenciesAreWiredTest` builds each
+module and fails on any defaulted service-typed parameter left null. **Probe a real container
+before believing a dependency arrived.**
+
+**A comparison done in the wrong domain.** These behave correctly in the common case, which is why
+they survive review. `Hash::getKey()` measured bcrypt's 72-**byte** limit with `mb_strlen()`, so a
+40-character CJK password (120 bytes) skipped the SHA-256 pre-hash and bcrypt truncated it —
+Latin-script passwords were never affected. `Address::check()` compared IPv6 addresses through
+`ip2long()`, which answers `false` for them, so every IPv6 client matched every network. When one
+of these turns up, sweep the class rather than fixing the instance.
+
+**A parser told to ignore its own limits.** `LIBXML_PARSEHUGE` on the XML import relaxed the entity
+expansion limit: 542 bytes expanded to 3,000,000 characters, where libxml refuses the same file by
+default. `Serde::deserialize()` allows *every* class when it is not told which to expect, which is
+the wrong way round for a default — cache files were built into arbitrary objects.
+
+**Tests that assert nothing.** Five times a green test was pinning nothing: mocking a method the
+code no longer called, asserting an element count that survived the field being blank, matching a
+string that appeared elsewhere in the page. **Break the fix and re-run.** A test that does not fail
+without the change has not been shown to test it.
+
+**Only the integration suite sees the wiring.** Restricting `FileCache::load()` broke `Action[]` and
+`MimeType[]` — both read as plain arrays from their variable names, and neither is what the docblock
+says. The unit suite mocks the cache and passed twice while the application was broken.
+
 ## Known non-issues — audited, do NOT "fix"
 
 - **The session-timeout preset matches on the *forwarded* address, unlike everything else that

@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
+use SP\Domain\Core\Bootstrap\BootstrapInterface;
 use SP\Domain\Core\Bootstrap\ModuleInterface;
 use SP\Domain\File\FileSystem;
 use SP\Infrastructure\Definitions\CoreDefinitions;
@@ -130,6 +131,41 @@ class OptionalDependenciesAreWiredTest extends TestCase
                 )
             );
         }
+    }
+
+    /**
+     * Every entry point can build the two things it asks the container for.
+     *
+     * `public/index.php` and `public/api.php` both do
+     * `Bootstrap::run($dic->get(BootstrapInterface::class), $dic->get(ModuleInterface::class))`,
+     * and `bin/cli.php` asks only for the module — the CLI binds no BootstrapInterface, which is
+     * deliberate and recorded in CLAUDE.md.
+     *
+     * `CompilableContainerTest` asserts the container *has* an entry, which is not the same thing:
+     * a definition compiles perfectly well and still throws when something asks for it. This
+     * builds them, because building is what the entry points do.
+     */
+    #[Test]
+    #[\PHPUnit\Framework\Attributes\DataProvider('moduleProvider')]
+    public function eachEntryPointCanBuildWhatItAsksFor(string $module): void
+    {
+        $container = self::containerFor($module);
+
+        self::assertInstanceOf(ModuleInterface::class, $container->get(ModuleInterface::class));
+
+        if ($module === 'cli') {
+            // Asserted rather than skipped: the absence is the documented design, and an
+            // unused-but-broken binding added "for consistency" is what once broke the compiled
+            // container in production.
+            self::assertFalse(
+                $container->has(BootstrapInterface::class),
+                'The CLI module binds no BootstrapInterface, and bin/cli.php never asks for one'
+            );
+
+            return;
+        }
+
+        self::assertInstanceOf(BootstrapInterface::class, $container->get(BootstrapInterface::class));
     }
 
     private static function containerFor(string $module): \DI\Container
