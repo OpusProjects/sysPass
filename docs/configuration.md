@@ -31,8 +31,8 @@ it, and the database connection has to work before anything in the `Config` tabl
 
 ## Environment variables
 
-Thirteen variables are read, all through `SP\getFromEnv()`, and every one has a working default
-except the database credentials the installer writes.
+Fourteen variables are read, all through `SP\getFromEnv()`, and every one has a working default
+except the database credentials, which override `config.xml` when set.
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -41,6 +41,7 @@ except the database credentials the installer writes.
 | `CACHE_PATH` | `<app>/var/cache` | Cache directory; stores many small files |
 | `LOG_FILE` | `<CONFIG_PATH>/syspass.log` | Application log |
 | `ACTIONS_FILE` | `<resources>/actions.yaml` | ACL action definitions |
+| `MIMETYPES_FILE` | `<resources>/mimetypes.yaml` | MIME types recognised for attachments |
 | `DEBUG` | `false` | Builds the DI container live instead of compiling it |
 | `DB_SERVER` | — | Database host |
 | `DB_NAME` | — | Database name |
@@ -59,9 +60,12 @@ so both work — but code calling `getenv()` directly would see nothing.
 **A boolean default is parsed, not cast.** A dotenv value is always a string and `(bool)"false"` is
 `true` in PHP, so `DEBUG=false` is understood rather than silently enabling debug mode.
 
-`.env.example` is out of step with this list: it documents `BACKUP_PATH`, `TMP_PATH` and
-`MIMETYPES_FILE`, none of which the code reads, and gives `actions.xml` where the default is
-`actions.yaml`. Treat the table above as authoritative.
+The database variables are an override rather than a fallback: when a connection is defined here it
+is used in preference to the one stored in `config.xml`.
+
+Separately, the CLI commands map their options onto environment variables of their own — `sp:backup`
+reads `BACKUP_PATH`, `sp:install` reads `ADMIN_LOGIN` and the rest. Those are per-command and are
+listed in [CLI](cli.md), not here.
 
 ---
 
