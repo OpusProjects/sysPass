@@ -131,6 +131,7 @@ use SP\Domain\Notification\Services\PhpMailerService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Upgrade\Ports\UpgradeService;
 use SP\Domain\Upgrade\Services\Upgrade;
+use SP\Domain\Upgrade\Services\UpgradeConfigText;
 use SP\Domain\Upgrade\Services\UpgradeDatabase;
 use SP\Infrastructure\Database\Database;
 use SP\Infrastructure\Database\DatabaseUtil;
@@ -450,7 +451,8 @@ final class CoreDefinitions
             // upgrade() looped over nothing, returned normally, and the controller reported
             // "Application successfully updated" over a database it had not touched.
             UpgradeService::class => autowire(Upgrade::class)
-                ->method('registerUpgradeHandler', UpgradeDatabase::class),
+                ->method('registerUpgradeHandler', UpgradeDatabase::class)
+                ->method('registerUpgradeHandler', UpgradeConfigText::class),
             UpgradeDatabase::class => autowire(UpgradeDatabase::class)
                 ->constructorParameter(
                     'sqlPath',

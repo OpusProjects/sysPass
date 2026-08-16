@@ -78,9 +78,26 @@ final class Filter
         return is_numeric($filterVar) ? (int)$filterVar : null;
     }
 
+    /**
+     * A submitted string, normalised — and nothing more.
+     *
+     * This used to also run `htmlspecialchars()`, which meant every value the application stored
+     * was stored HTML-escaped: a category named `Q&A <b>notes</b>` became, in the database and in
+     * the REST answer, `Q&amp;A &lt;b&gt;notes&lt;/b&gt;`. Escaping is about where a value is
+     * *rendered*, and a request is not a page — the same value goes to a JSON client, into an
+     * export, into a mail, into a filename, and into a `LIKE` comparison, and it was wrong in all
+     * of them. The view escapes what it renders now, which is where the decision belongs.
+     *
+     * It was never much of a guard either: `ENT_NOQUOTES` left both quote characters alone, so it
+     * did nothing for a value interpolated into an attribute.
+     *
+     * What remains is the part that is genuinely about accepting input: the surrounding whitespace
+     * goes, and a byte sequence that is not valid UTF-8 is scrubbed rather than passed to a UTF-8
+     * column — `ENT_SUBSTITUTE` used to do that as a side effect.
+     */
     public static function getString(?string $value): string
     {
-        return htmlspecialchars(trim($value ?? ''), ENT_NOQUOTES | ENT_SUBSTITUTE | ENT_HTML401);
+        return mb_scrub(trim($value ?? ''), 'UTF-8');
     }
 
     public static function getRaw(string $value): string

@@ -45,8 +45,13 @@ use function SP\processException;
 
 /**
  * Class UpgradeDatabase
+ *
+ * One attribute per version, each naming the SQL file that brings the schema — or, for
+ * 400.24240101, the stored text — up to it. They are applied in order, and each one records itself
+ * as the database version once it has run, so an interrupted upgrade resumes rather than repeats.
  */
 #[UpgradeVersion('400.24210101')]
+#[UpgradeVersion('400.24240101')]
 final class UpgradeDatabase extends Service implements UpgradeHandlerService
 {
     public function __construct(

@@ -397,24 +397,46 @@ Key constraints:
   asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
   excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
 
-## Known defect — real, and too broad to fix in passing
+## Escaping: on output, never on input
 
-**The application escapes HTML on input, so every string is stored escaped and rendered escaped
-twice.** `Request::analyzeString()` (every web form) and `Api::getParamString()` (every REST
-parameter) both run `Filter::getString()`, which is `htmlspecialchars()`. Verified end to end:
-creating a category through the API named `Q&A <b>notes</b>` stores — and answers with —
-`Q&amp;A &lt;b&gt;notes&lt;/b&gt;`. The templates then escape again (`search-rows.inc`,
-`files-list.inc`, … all call `htmlspecialchars(..., ENT_QUOTES)` on render), so the UI shows
-`Q&amp;A`, and a JSON client gets entities where the user typed characters. It is 3.2's
-escape-on-input design, carried into the rewrite.
+**Text is stored exactly as it was typed, and escaped where it is rendered.** This was the other
+way round until recently — `Filter::getString()` ran `htmlspecialchars()` over every web form field
+and every REST parameter — and the four changes that turned it around are worth knowing about
+before touching any of it:
 
-Do not fix it one call site at a time. The escaped form *is* the storage format of every string
-field in the application, so unwinding it means storing raw and auditing every template and every
-non-HTML sink in the same change — and a template missed while values are suddenly raw is an XSS
-in a password manager. Two consequences have been dealt with where they surface instead: the
-download header no longer interpolates a name (`DownloadController::disposition()`), and the
-export/import round trip is pinned against XML-significant and non-ASCII text
-(`ExportImportRoundTripTest`).
+- **The view escapes.** `Html::escape()` is the one definition (`ENT_QUOTES | ENT_SUBSTITUTE`,
+  UTF-8, null-accepting), bound into template scope as `$_e` beside `$_getvar` — a closure and not
+  a class, because an included file does not inherit the including file's namespace. Inside a
+  `<script>` element the rule is different and `$_e` is wrong: a script element is raw text, so
+  entities arrive as the literal characters `&quot;`, and what ends the element is `</script>`
+  appearing anywhere in it. That is `Html::jsValue()`, bound as `$_j`.
+  `ThemeEscapesWhatItRendersTest` holds both rules per template, exempting by *shape* — a
+  translated literal, an icon class, a cast, arithmetic, a ternary between literals — plus the two
+  methods that compose markup on purpose (`AccountSearchItem::getAccesses()`, `getShortNotes()`),
+  which would be just as broken if escaped. Do not add a file to an exemption list; there isn't one.
+- **Messages escape too.** `HtmlFormatter` composes the HTML for notification mails and the
+  notices panel out of event details, which are account names, file names and logins.
+- **A URL is not text.** `Html::escape()` does nothing about `javascript:`, so `Html::isSafeUrl()`
+  is what decides whether a stored address may become an `href` — a denylist (`javascript`, `data`,
+  `vbscript`), because the addresses in a password manager are `ssh://`, `rdp://`, `sftp://`.
+- **Nothing rewrites a value on the way in.** `Filter::getString()` trims and scrubs invalid UTF-8
+  (the latter used to be a side effect of `ENT_SUBSTITUTE`) and does nothing else.
+
+The escaping was never the guard it looked like: `Filter::getString()` used `ENT_NOQUOTES`, so it
+left both quote characters alone and did nothing for the 274 places the theme interpolates into an
+attribute. What it did do was corrupt: a category created as `Q&A <b>notes</b>` was stored, and
+answered by the API, as `Q&amp;A &lt;b&gt;notes&lt;/b&gt;`; the UI escaped it again and showed
+`Q&amp;A`; and an LDAP filter `(&(objectClass=user))` was handed to the directory as
+`(&amp;(objectClass=user))`, where `&amp;` is not an operator and the search matches nothing.
+
+`TextIsStoredAsTypedTest` is the round trip that pins it, and `schemas/40024240101.sql` plus
+`UpgradeConfigText` are what bring rows and settings written before the change into line.
+**That migration is not idempotent and no decode of stored text could be** — run twice,
+`&amp;amp;` goes from `&amp;` to `&`, and nothing in the value says whether it has been decoded.
+What keeps it to one run is the database version, and the file is wrapped in a transaction so an
+interrupted run leaves the rows alone rather than half-decoded with no version written. Encrypted
+custom field values are **not** migrated: reading them needs the master password, which an upgrade
+does not have.
 
 ## Conventions
 
