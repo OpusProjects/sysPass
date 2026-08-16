@@ -109,9 +109,18 @@ class DatabaseConnectionData
         return $self;
     }
 
+    /**
+     * Whether the environment describes a database to connect to.
+     *
+     * A socket counts. `MysqlHandler` builds `unix_socket=…` *instead of* `host=…`, so a socket is
+     * a complete way to reach the database and needs no host — but this asked for `DB_SERVER`
+     * alone, so setting only `DB_SOCKET` did nothing at all and the connection quietly came from
+     * `config.xml`. The way to make the socket take effect was to also set a host that the DSN
+     * then ignores, which is not a thing anybody would guess.
+     */
     public static function hasEnvironmentConfig(): bool
     {
-        return getFromEnv('DB_SERVER') !== null;
+        return getFromEnv('DB_SERVER') !== null || getFromEnv('DB_SOCKET') !== null;
     }
 
     public static function getFromInstallData(InstallData $installData): DatabaseConnectionData
