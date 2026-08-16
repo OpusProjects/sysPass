@@ -127,6 +127,25 @@ final class AccountAcl extends Service implements AccountAclService
     }
 
     /**
+     * Whether the account's privacy puts it out of this user's reach.
+     *
+     * The two flags are independent and each is checked against the thing it names: `isPrivate`
+     * against the owner, `isPrivateGroup` against the owning group. Written the same way round as
+     * the SQL, so the listing and this cannot drift apart.
+     */
+    private function isWithheldAsPrivate(): bool
+    {
+        if ($this->accountAclDto->isPrivate()
+            && ($this->userData->id ?? 0) !== $this->accountAclDto->getUserId()
+        ) {
+            return true;
+        }
+
+        return $this->accountAclDto->isPrivateGroup()
+               && ($this->userData->userGroupId ?? 0) !== $this->accountAclDto->getUserGroupId();
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -134,6 +153,15 @@ final class AccountAcl extends Service implements AccountAclService
     {
         $this->accountPermission->setResultView(false);
         $this->accountPermission->setResultEdit(false);
+
+        // A private account belongs to its owner and to nobody else, whatever it is shared with
+        // and whoever is asking. This mirrors AccountFilterBuilder::buildFilter(), where the same
+        // two conditions are applied to every query outside the administrator exemption — an
+        // account the listing withholds from somebody must not be handed over when they ask for it
+        // by id instead.
+        if ($this->isWithheldAsPrivate()) {
+            return;
+        }
 
         // Check out if user is admin or owner/maingroup
         if ($this->userData->isAdminApp

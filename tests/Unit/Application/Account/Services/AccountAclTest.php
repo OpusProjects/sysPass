@@ -28,6 +28,7 @@ namespace SP\Tests\Unit\Application\Account\Services;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Infrastructure\Acl\Acl;
@@ -355,6 +356,95 @@ class AccountAclTest extends UnitaryTestCase
             self::$accounts[$accountId]['groups'],
             self::$faker->unixTime()
         );
+    }
+
+    /**
+     * A private account is its owner's, and the ACL is where that has to hold.
+     *
+     * The listing enforces it in SQL — AccountFilterBuilder::buildFilter() applies the same two
+     * conditions to every query, and does so outside the administrator exemption. Until this was
+     * added, AccountAclDto did not carry the flags at all, so an account the listing withheld was
+     * handed over in full to anyone who asked for it by id.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function aPrivateAccountIsRefusedToEveryoneButItsOwner(): void
+    {
+        $dto = new AccountAclDto(1, 100, [], 200, [], time(), isPrivate: true);
+
+        $this->context->setUserData(UserDto::fromArray(['id' => 101, 'userGroupId' => 200]));
+
+        $permission = $this->buildAccountAcl()->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto);
+
+        self::assertFalse($permission->isResultView(), 'a non-owner was given view of a private account');
+        self::assertFalse($permission->isResultEdit(), 'a non-owner was given edit of a private account');
+    }
+
+    /**
+     * Including an administrator, because the query that hides it from them makes no exception
+     * either.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function aPrivateAccountIsRefusedToAnAdministrator(): void
+    {
+        $dto = new AccountAclDto(1, 100, [], 200, [], time(), isPrivate: true);
+
+        $this->context->setUserData(
+            UserDto::fromArray(['id' => 999, 'userGroupId' => 998, 'isAdminApp' => true])
+        );
+
+        self::assertFalse(
+            $this->buildAccountAcl()->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto)->isResultView()
+        );
+    }
+
+    /**
+     * The owner keeps it, which is the whole point — the two above would be satisfied just as well
+     * by a flag that refused everybody.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function theOwnerKeepsTheirOwnPrivateAccount(): void
+    {
+        $dto = new AccountAclDto(1, 100, [], 200, [], time(), isPrivate: true);
+
+        $this->context->setUserData(UserDto::fromArray(['id' => 100, 'userGroupId' => 200]));
+
+        $permission = $this->buildAccountAcl()->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto);
+
+        self::assertTrue($permission->isResultView());
+        self::assertTrue($permission->isResultEdit());
+    }
+
+    /**
+     * The group flag is checked against the owning group, the way the SQL checks it, and is
+     * independent of the user flag.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    #[Test]
+    public function aGroupPrivateAccountIsRefusedOutsideThatGroupAndKeptInsideIt(): void
+    {
+        $dto = new AccountAclDto(1, 100, [], 200, [], time(), isPrivateGroup: true);
+
+        $this->context->setUserData(UserDto::fromArray(['id' => 101, 'userGroupId' => 201]));
+        self::assertFalse($this->buildAccountAcl()->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto)->isResultView());
+
+        $this->context->setUserData(UserDto::fromArray(['id' => 101, 'userGroupId' => 200]));
+        self::assertTrue($this->buildAccountAcl()->getAcl(AclActionsInterface::ACCOUNT_VIEW, $dto)->isResultView());
+    }
+
+    private function buildAccountAcl(): AccountAcl
+    {
+        return new AccountAcl($this->application, $this->acl, $this->userToUserGroupService);
     }
 
     /**

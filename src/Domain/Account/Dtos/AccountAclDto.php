@@ -47,7 +47,9 @@ final class AccountAclDto
         private array        $usersId,
         private readonly int $userGroupId,
         private array        $userGroupsId,
-        private readonly int $dateEdit
+        private readonly int $dateEdit,
+        private readonly bool $isPrivate = false,
+        private readonly bool $isPrivateGroup = false
     ) {
         $this->usersId = self::buildFromItemData($usersId);
         $this->userGroupsId = self::buildFromItemData($userGroupsId);
@@ -66,7 +68,9 @@ final class AccountAclDto
             $accountDetailsResponse->getUsers(),
             $accountDetailsResponse->getAccountView()->getUserGroupId(),
             $accountDetailsResponse->getUserGroups(),
-            strtotime($accountDetailsResponse->getAccountView()->getDateEdit() ?? '') ?: 0
+            strtotime($accountDetailsResponse->getAccountView()->getDateEdit() ?? '') ?: 0,
+            (bool)$accountDetailsResponse->getAccountView()->getIsPrivate(),
+            (bool)$accountDetailsResponse->getAccountView()->getIsPrivateGroup()
         );
     }
 
@@ -83,6 +87,22 @@ final class AccountAclDto
     public function getDateEdit(): int
     {
         return $this->dateEdit;
+    }
+
+    /**
+     * Whether the account is its owner's alone, whoever else it happens to be shared with.
+     */
+    public function isPrivate(): bool
+    {
+        return $this->isPrivate;
+    }
+
+    /**
+     * And the same for the owning group.
+     */
+    public function isPrivateGroup(): bool
+    {
+        return $this->isPrivateGroup;
     }
 
     /**
@@ -104,7 +124,9 @@ final class AccountAclDto
             $users,
             $accountSearchView->getUserGroupId(),
             $userGroups,
-            strtotime($accountSearchView->getDateEdit() ?? '') ?: 0
+            strtotime($accountSearchView->getDateEdit() ?? '') ?: 0,
+            (bool)$accountSearchView->getIsPrivate(),
+            (bool)$accountSearchView->getIsPrivateGroup()
         );
     }
 
