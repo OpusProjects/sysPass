@@ -42,10 +42,14 @@ use stdClass;
 class PublicLinkControllerTest extends ApiTestCase
 {
     /**
-     * An account from the seeded fixture that does not already have a link — accounts 1 and 2
-     * do, and a second link for the same account is refused.
+     * The test makes its own account rather than naming one from the fixture.
+     *
+     * Accounts 1 and 2 already have a link and a second one for the same account is refused, and
+     * the only two left are private — 3 to its owner, 4 to its group — so neither can be linked by
+     * the admin this suite authenticates as, now that minting a link is scoped to what the caller
+     * may read. An account of its own is independent of all of that.
      */
-    private const ACCOUNT_ID = 3;
+    private ?int $accountId = null;
 
     public function testCreateAction(): void
     {
@@ -74,7 +78,7 @@ class PublicLinkControllerTest extends ApiTestCase
         $r = $this->callApi(AclActionsInterface::PUBLICLINK_VIEW, ['id' => $id]);
 
         $this->assertSame(200, $r->status);
-        $this->assertSame(self::ACCOUNT_ID, $r->body->data->itemId);
+        $this->assertSame($this->accountId(), $r->body->data->itemId);
     }
 
     public function testViewActionNonExistant(): void
@@ -130,6 +134,30 @@ class PublicLinkControllerTest extends ApiTestCase
 
     private function createLink(): stdClass
     {
-        return $this->callApi(AclActionsInterface::PUBLICLINK_CREATE, ['itemId' => self::ACCOUNT_ID]);
+        return $this->callApi(AclActionsInterface::PUBLICLINK_CREATE, ['itemId' => $this->accountId()]);
+    }
+
+    /**
+     * An ordinary account owned by the caller, made once per test.
+     *
+     * @throws \Exception
+     */
+    private function accountId(): int
+    {
+        if ($this->accountId === null) {
+            $created = $this->callApi(
+                AclActionsInterface::ACCOUNT_CREATE,
+                [
+                    'name' => 'Link target ' . bin2hex(random_bytes(4)),
+                    'categoryId' => 1,
+                    'clientId' => 1,
+                    'pass' => 'a-password',
+                ]
+            );
+
+            $this->accountId = (int)$created->body->itemId;
+        }
+
+        return $this->accountId;
     }
 }
