@@ -48,7 +48,23 @@ final class Hash
      */
     public static function checkHashKey(string $key, string $hash): bool
     {
-        return password_verify(self::getKey($key), $hash);
+        // Kept before getKey(), which takes its argument by reference and replaces it with the
+        // pre-hash when it applies one.
+        $original = $key;
+
+        if (password_verify(self::getKey($key), $hash)) {
+            return true;
+        }
+
+        // A hash written before the limit was measured in bytes still has to verify, or an upgrade
+        // would lock out precisely the people the fix is for. It is only ever a fallback: nothing
+        // is written this way any more, and a password that was being truncated stays as weak as
+        // it already was until its owner changes it — which they can, because they can still sign
+        // in. There is nothing to gain by taking this path: it accepts only what the old code
+        // already accepted.
+        $legacy = self::legacyKey($original);
+
+        return $legacy !== null && password_verify($legacy, $hash);
     }
 
     /**
@@ -61,12 +77,30 @@ final class Hash
      */
     private static function getKey(string &$key, bool $isCheck = true): string
     {
-        if (mb_strlen($key) > self::MAX_KEY_LENGTH) {
+        // Bytes, not characters. bcrypt's 72 is a byte limit, and it truncates silently at it —
+        // so measuring with mb_strlen() let a password through that bcrypt then cut short. Forty
+        // CJK characters are forty by that measure and a hundred and twenty bytes: everything past
+        // the seventy-second byte was ignored, and any other password sharing that prefix opened
+        // the same account. Latin-script passwords were never affected, which is why it held.
+        if (strlen($key) > self::MAX_KEY_LENGTH) {
             $key = hash(self::HASH_ALGO, $key);
 
             if ($isCheck === false) {
                 logger('[INFO] Password string shortened using SHA256 and then BCRYPT');
             }
+        }
+
+        return $key;
+    }
+
+    /**
+     * The key as it would have been prepared before the limit was measured in bytes, or null when
+     * the two measures agree and there is nothing else to try.
+     */
+    private static function legacyKey(string $key): ?string
+    {
+        if (mb_strlen($key) > self::MAX_KEY_LENGTH || strlen($key) <= self::MAX_KEY_LENGTH) {
+            return null;
         }
 
         return $key;
