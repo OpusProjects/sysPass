@@ -102,6 +102,59 @@ class XmlFileTest extends UnitaryTestCase
     }
 
     /**
+     * A file whose entities refer to one another until they fill memory is refused.
+     *
+     * `LIBXML_PARSEHUGE` was passed when loading an imported file, and what it relaxes includes
+     * libxml's entity expansion limit — the protection against exactly this. Five hundred bytes
+     * expanded to three million characters with the flag, and libxml refused the same file
+     * without it. Nine levels rather than six would be some gigabytes from under a kilobyte.
+     *
+     * @throws ImportException
+     * @throws FileException
+     */
+    public function testAnEntityExpansionBombIsRefused()
+    {
+        $entities = '<!ENTITY lol "lol">';
+
+        for ($i = 1; $i <= 6; $i++) {
+            $previous = $i === 1 ? 'lol' : 'lol' . ($i - 1);
+            $entities .= sprintf('<!ENTITY lol%d "%s">', $i, str_repeat("&$previous;", 10));
+        }
+
+        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
+        $fileHandler->write(
+            sprintf('<?xml version="1.0"?><!DOCTYPE lolz [%s]><Root><Meta>&lol6;</Meta></Root>', $entities)
+        );
+
+        $xmlFile = new XmlFile();
+
+        $this->expectException(ImportException::class);
+
+        $xmlFile->builder($fileHandler);
+    }
+
+    /**
+     * No document type at all, bomb or not. sysPass's own export declares none and neither do the
+     * formats it imports, so refusing one removes entity expansion and external entities as a
+     * class rather than resting on libxml's limits and defaults staying where they are.
+     *
+     * @throws ImportException
+     * @throws FileException
+     */
+    public function testADocumentTypeIsRefused()
+    {
+        $fileHandler = new FileHandler(self::$faker->filePath(), 'w');
+        $fileHandler->write('<?xml version="1.0"?><!DOCTYPE Root><Root><Meta>a</Meta></Root>');
+
+        $xmlFile = new XmlFile();
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('Unable to process the XML file');
+
+        $xmlFile->builder($fileHandler);
+    }
+
+    /**
      * @throws ImportException
      * @throws FileException
      */
