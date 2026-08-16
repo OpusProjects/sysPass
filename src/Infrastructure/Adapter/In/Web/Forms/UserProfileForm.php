@@ -118,38 +118,12 @@ final class UserProfileForm extends FormBase implements FormInterface
         ]);
 
         if (!$this->context->getUserData()->isAdminApp) {
-            $profileData = $this->constrainProfileToActorPermissions($profileData);
+            $profileData = $profileData->constrainedTo($this->context->getUserProfile());
         }
 
         return $profileData;
     }
 
-    /**
-     * Intersect every permission bit with the acting user's own profile so that
-     * a non-admin delegate can never grant permissions they don't hold themselves.
-     */
-    private function constrainProfileToActorPermissions(ProfileData $profileData): ProfileData
-    {
-        $actorProfile = $this->context->getUserProfile();
-        $mutations = [];
-
-        foreach ($profileData->toArray() as $prop => $value) {
-            if (!is_bool($value)) {
-                continue;
-            }
-
-            $getter = 'is' . ucfirst($prop);
-
-            if (!method_exists($profileData, $getter)) {
-                continue;
-            }
-
-            $actorHasBit = $actorProfile !== null && $actorProfile->$getter();
-            $mutations[$prop] = $value && $actorHasBit;
-        }
-
-        return $profileData->mutate($mutations);
-    }
 
     /**
      * @throws ValidationException

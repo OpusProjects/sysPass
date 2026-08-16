@@ -32,6 +32,37 @@ use SP\Domain\Common\Models\Model;
  */
 class ProfileData extends Model
 {
+    /**
+     * This profile with every permission the actor does not itself hold turned off.
+     *
+     * A delegate who may create or edit profiles must not be able to grant more than they have —
+     * otherwise "may manage profiles" is "may become an administrator" in two steps. Application
+     * administrators are not passed through this; they hold everything by definition.
+     *
+     * Every boolean on the model is intersected, so a permission added later is covered without
+     * this having to be revisited.
+     */
+    public function constrainedTo(?ProfileData $actorProfile): ProfileData
+    {
+        $mutations = [];
+
+        foreach ($this->toArray() as $property => $value) {
+            if (!is_bool($value)) {
+                continue;
+            }
+
+            $getter = 'is' . ucfirst($property);
+
+            if (!method_exists($this, $getter)) {
+                continue;
+            }
+
+            $mutations[$property] = $value && ($actorProfile !== null && $actorProfile->$getter());
+        }
+
+        return $this->mutate($mutations);
+    }
+
     protected bool $accView          = false;
     protected bool $accViewPass      = false;
     protected bool $accViewHistory   = false;
