@@ -136,8 +136,11 @@ class EventlogGridTest extends IntegrationTestCase
     {
         $shown = $this->whenShowing('SQL: SELECT id, name FROM Account WHERE id = 1');
 
-        self::assertStringContainsString('<br>', $shown);
-        self::assertStringContainsString('id,<br>', $shown, 'the selected columns are broken up');
+        // Newlines, not markup: the cell is rendered as text and the template turns the breaks
+        // into lines after escaping. Emitting tags here put them in front of the reader instead.
+        self::assertStringContainsString(PHP_EOL, $shown);
+        self::assertStringContainsString('id,' . PHP_EOL, $shown, 'the selected columns are broken up');
+        self::assertStringNotContainsString('<br>', $shown, 'markup reaches the reader as text');
     }
 
     /**
@@ -153,7 +156,7 @@ class EventlogGridTest extends IntegrationTestCase
     {
         $shown = $this->whenShowing('Account deleted FROM the listing');
 
-        self::assertStringNotContainsString('<br>FROM', $shown);
+        self::assertStringNotContainsString(PHP_EOL . 'FROM', $shown);
     }
 
     /**
