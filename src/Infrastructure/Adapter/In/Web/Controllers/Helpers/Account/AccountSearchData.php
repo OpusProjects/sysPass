@@ -147,6 +147,11 @@ final class AccountSearchData
 
         $tagsByAccount = $this->getTagsFor($queryResult);
 
+        // One pass for the whole page. Each row below asks the cache for its account's users and
+        // groups, and a miss is two queries — so a page of fifty accounts cost a hundred of them
+        // the first time it was shown. The tags above are already fetched this way.
+        $this->accountCacheService->warmUpFor($this->dateEditByAccountId($queryResult));
+
         return $queryResult->mutateWithCallback(
             function (AccountSearchView $accountSearchView) use (
                 $maxTextLength,
@@ -228,6 +233,27 @@ final class AccountSearchData
         }
 
         return $tagsByAccount;
+    }
+
+    /**
+     * @param QueryResult<AccountSearchView> $queryResult
+     * @return array<int, int> account id => the edit time its cache entry must be at least as new as
+     */
+    private function dateEditByAccountId(QueryResult $queryResult): array
+    {
+        $dateEditByAccountId = [];
+
+        foreach ($queryResult->getDataAsArray() as $account) {
+            $id = $account->getId();
+
+            if ($id !== null) {
+                $dateEditByAccountId[$id] = $account->getDateEdit() !== null
+                    ? (int)strtotime($account->getDateEdit())
+                    : 0;
+            }
+        }
+
+        return $dateEditByAccountId;
     }
 
     private function pickAccountColor(int $id): string

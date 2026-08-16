@@ -195,4 +195,42 @@ final class AccountToUserGroup extends BaseRepository implements AccountToUserGr
 
         $this->db->runQuery($queryData);
     }
+
+    /**
+     * The same rows as getUserGroupsByAccountId(), for a page of accounts at once.
+     *
+     * The listing needs these for every account it shows, and asking per account is a query per
+     * row — the tags on the same page are already fetched this way. Each row carries its
+     * accountId so the caller can group them.
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<AccountPermissionItem>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getUserGroupsByAccountIds(array $ids): QueryResult
+    {
+        if (empty($ids)) {
+            /** @var QueryResult<AccountPermissionItem> $empty */
+            $empty = new QueryResult();
+
+            return $empty;
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols([
+                       'AccountToUserGroup.accountId',
+                       'UserGroup.id',
+                       'UserGroup.name',
+                       'AccountToUserGroup.isEdit',
+                   ])
+            ->from('AccountToUserGroup')
+            ->join('INNER', 'UserGroup', 'UserGroup.id = AccountToUserGroup.userGroupId')
+            ->where('AccountToUserGroup.accountId IN (:accountIds)', ['accountIds' => $ids])
+            ->orderBy(['UserGroup.name ASC']);
+
+        return $this->db->runQuery(QueryData::build($query)->setMapClassName(AccountPermissionItem::class));
+    }
 }

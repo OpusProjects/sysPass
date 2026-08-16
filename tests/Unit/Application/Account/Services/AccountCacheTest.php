@@ -80,6 +80,65 @@ class AccountCacheTest extends UnitaryTestCase
     }
 
     /**
+     * A page of accounts costs one query per repository, not one per account.
+     *
+     * The listing asks the cache for every account it shows, and a miss reads that account's users
+     * and groups — so fifty accounts used to be a hundred queries the first time a page was
+     * rendered. This loads the page in one pass, the way the tags on the same page already were.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
+     */
+    public function testWarmUpForLoadsAWholePageInOnePass()
+    {
+        $accountIds = [11, 22, 33];
+
+        $this->accountToUserRepository
+            ->expects(self::once())
+            ->method('getUsersByAccountIds')
+            ->with($accountIds)
+            ->willReturn(new QueryResult([]));
+
+        $this->accountToUserGroupRepository
+            ->expects(self::once())
+            ->method('getUserGroupsByAccountIds')
+            ->with($accountIds)
+            ->willReturn(new QueryResult([]));
+
+        $this->accountCache->warmUpFor(array_fill_keys($accountIds, self::$faker->unixTime()));
+
+        // And every account it covered is a hit afterwards, so the row loop reads nothing more.
+        $this->accountToUserRepository->expects(self::never())->method('getUsersByAccountId');
+        $this->accountToUserGroupRepository->expects(self::never())->method('getUserGroupsByAccountId');
+
+        foreach ($accountIds as $accountId) {
+            $this->accountCache->getCacheForAccount($accountId, 0);
+        }
+    }
+
+    /**
+     * Nothing to load is no query at all — a page whose accounts are already cached, or an empty
+     * page, must not reach the database to discover that.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     * @throws SPException
+     */
+    public function testWarmUpForAsksForNothingWhenThereIsNothingMissing()
+    {
+        $accountId = self::$faker->randomNumber();
+
+        $this->context->setAccountsCache([$accountId => new AccountCacheDto($accountId, [], [])]);
+
+        $this->accountToUserRepository->expects(self::never())->method('getUsersByAccountIds');
+        $this->accountToUserGroupRepository->expects(self::never())->method('getUserGroupsByAccountIds');
+
+        $this->accountCache->warmUpFor([$accountId => 0]);
+        $this->accountCache->warmUpFor([]);
+    }
+
+    /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws SPException

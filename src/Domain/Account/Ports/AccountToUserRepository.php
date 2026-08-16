@@ -85,4 +85,15 @@ interface AccountToUserRepository extends Repository
      * @throws QueryException
      */
     public function getUsersByAccountId(int $id): QueryResult;
+
+    /**
+     * The same rows for a page of accounts at once, each carrying its accountId.
+     *
+     * @param int[] $ids
+     *
+     * @return QueryResult<AccountPermissionItem>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getUsersByAccountIds(array $ids): QueryResult;
 }
