@@ -155,7 +155,9 @@ final class AccountHistoryHelper extends AccountHelperBase
             $this->accountToUserService->getUsersByAccountId($this->accountId),
             $accountHistoryViewDto->userGroupId,
             $this->accountToUserGroupService->getUserGroupsByAccountId($this->accountId),
-            (DateTime::createFromFormat('Y-m-d H:i:s', $accountHistoryViewDto->dateEdit ?? '') ?: new DateTime())->getTimestamp()
+            (DateTime::createFromFormat('Y-m-d H:i:s', $accountHistoryViewDto->dateEdit ?? '') ?: new DateTime())->getTimestamp(),
+            (bool)$accountHistoryViewDto->isPrivate,
+            (bool)$accountHistoryViewDto->isPrivateGroup
         );
 
         $this->accountPermission = $this->accountAclService->getAcl($this->actionId, $acccountAclDto, true);

@@ -423,6 +423,110 @@ final class AccountAccessTest extends TestCase
     }
 
     /**
+     * A private account is the owner's, and stays the owner's however it is reached.
+     *
+     * "Private" is not another way of sharing with fewer people: the filter that implements it sits
+     * *outside* the administrator exemption in AccountFilterBuilder::buildFilter(), so an account
+     * marked private is withheld from an application administrator too. That placement is the
+     * statement of what the flag means, and every path has to agree with it — a listing that hides
+     * an account while a direct request for it by id answers in full is not privacy.
+     *
+     * The account here is shared with somebody, deliberately: an unshared private account is
+     * already refused by ordinary ownership rules, so it could not tell whether the flag does
+     * anything at all.
+     */
+    public function testAPrivateAccountIsWithheldFromEveryoneButItsOwner(): void
+    {
+        $ownerGroupId = $this->createGroup('priv-owner');
+        $ownerId = $this->createUser('priv-owner', $ownerGroupId);
+
+        $otherGroupId = $this->createGroup('priv-other');
+        $otherId = $this->createUser('priv-other', $otherGroupId);
+
+        $password = 'PrivatePass!' . bin2hex(random_bytes(4));
+        $accountId = $this->createAccount(
+            'priv',
+            $password,
+            $ownerId,
+            $ownerGroupId,
+            usersView: [$otherId],
+            isPrivate: true
+        );
+
+        $this->setContextUser($otherId, $otherGroupId, 'priv-other');
+
+        self::assertFalse(
+            $this->searchContainsId($accountId),
+            'a private account showed up in somebody else\'s search results'
+        );
+        self::assertFalse(
+            $this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId),
+            'the ACL let somebody other than the owner view a private account'
+        );
+        self::assertFalse(
+            $this->canAccess(AclActionsInterface::ACCOUNT_EDIT, $accountId),
+            'the ACL let somebody other than the owner edit a private account'
+        );
+    }
+
+    /**
+     * And an application administrator is not an exception, because the query that hides it from
+     * them does not make one.
+     */
+    public function testAPrivateAccountIsWithheldFromAnApplicationAdministratorToo(): void
+    {
+        $ownerGroupId = $this->createGroup('privadm-owner');
+        $ownerId = $this->createUser('privadm-owner', $ownerGroupId);
+
+        $adminGroupId = $this->createGroup('privadm-admin');
+        $adminId = $this->createUser('privadm-admin', $adminGroupId, isAdminApp: true);
+
+        $accountId = $this->createAccount(
+            'privadm',
+            'PrivAdminPass!' . bin2hex(random_bytes(4)),
+            $ownerId,
+            $ownerGroupId,
+            isPrivate: true
+        );
+
+        $this->setContextUser($adminId, $adminGroupId, 'privadm-admin', isAdminApp: true);
+
+        self::assertFalse(
+            $this->searchContainsId($accountId),
+            'a private account showed up in an administrator\'s search results'
+        );
+        self::assertFalse(
+            $this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId),
+            'the ACL let an administrator view somebody else\'s private account'
+        );
+    }
+
+    /**
+     * The owner still reaches their own, which is what the flag is for.
+     */
+    public function testTheOwnerStillReachesTheirOwnPrivateAccount(): void
+    {
+        $ownerGroupId = $this->createGroup('privown-owner');
+        $ownerId = $this->createUser('privown-owner', $ownerGroupId);
+
+        $password = 'PrivOwnPass!' . bin2hex(random_bytes(4));
+        $accountId = $this->createAccount(
+            'privown',
+            $password,
+            $ownerId,
+            $ownerGroupId,
+            isPrivate: true
+        );
+
+        $this->setContextUser($ownerId, $ownerGroupId, 'privown-owner');
+
+        self::assertTrue($this->searchContainsId($accountId), 'the owner lost their own private account');
+        self::assertTrue($this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId));
+        self::assertTrue($this->canAccess(AclActionsInterface::ACCOUNT_EDIT, $accountId));
+        self::assertSame($password, $this->readPassword($accountId));
+    }
+
+    /**
      * An accounts administrator reads any account too -- the same bypass, granted through isAdminAcc
      * rather than isAdminApp.
      */
@@ -532,7 +636,8 @@ final class AccountAccessTest extends TestCase
         array $usersView = [],
         array $usersEdit = [],
         array $groupsView = [],
-        array $groupsEdit = []
+        array $groupsEdit = [],
+        bool $isPrivate = false
     ): int {
         $unique = $suffix . '-' . bin2hex(random_bytes(3));
 
@@ -551,6 +656,7 @@ final class AccountAccessTest extends TestCase
                 usersEdit: $usersEdit,
                 userGroupsView: $groupsView,
                 userGroupsEdit: $groupsEdit,
+                isPrivate: $isPrivate,
             )
         );
     }

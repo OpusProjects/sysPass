@@ -50,6 +50,10 @@ final class AccountHistoryViewDto extends Dto
         public readonly ?string $notes = null,
         public readonly ?string $userEditName = null,
         public readonly ?string $userEditLogin = null,
+        // Carried so that AccountHistoryHelper can hold a history entry to the same privacy the
+        // account itself is held to. fromArray() fills them from the row, which has both columns.
+        public readonly ?bool   $isPrivate = null,
+        public readonly ?bool   $isPrivateGroup = null,
     ) {
     }
 }
