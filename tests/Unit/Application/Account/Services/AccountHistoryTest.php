@@ -157,6 +157,10 @@ class AccountHistoryTest extends UnitaryTestCase
             'mPassHash',
             'userEditName',
             'userEditLogin',
+            // Alongside userEditName: names the DTO carries for the detail view, which the base
+            // AccountHistory model this is compared against does not have columns for.
+            'userName',
+            'userGroupName',
         ];
 
         $current = $this->accountHistory->getById($id);

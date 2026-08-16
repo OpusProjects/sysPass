@@ -48,6 +48,11 @@ final class AccountHistoryViewDto extends Dto
         public readonly ?string $login = null,
         public readonly ?string $url = null,
         public readonly ?string $notes = null,
+        // The owner and the group by name. details.inc renders an Owner and a Main Group row for a
+        // history entry exactly as it does for the account, and read them straight off this object
+        // — so leaving them off did not hide the rows, it warned and rendered them empty.
+        public readonly ?string $userName = null,
+        public readonly ?string $userGroupName = null,
         public readonly ?string $userEditName = null,
         public readonly ?string $userEditLogin = null,
         // Carried so that AccountHistoryHelper can hold a history entry to the same privacy the

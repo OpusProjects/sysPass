@@ -76,6 +76,12 @@ final class AccountHistoryDto extends AccountDto
         public readonly ?string $dateEdit = null,
         public readonly ?string $userEditName = null,
         public readonly ?string $userEditLogin = null,
+        // The owner and the group by name, carried for the same reason userEditName is: the
+        // service hands this DTO to the controller, which rebuilds an AccountHistoryViewDto from
+        // it, so a name the DTO does not declare is dropped here and the detail view renders the
+        // row empty however well the query fetched it.
+        public readonly ?string $userName = null,
+        public readonly ?string $userGroupName = null,
     ) {
         parent::__construct(
             $id,

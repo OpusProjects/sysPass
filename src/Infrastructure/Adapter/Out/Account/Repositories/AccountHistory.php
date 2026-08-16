@@ -165,9 +165,17 @@ final class AccountHistory extends BaseRepository implements AccountHistoryRepos
             ->from(AccountHistoryModel::TABLE)
             ->cols(AccountHistoryModel::getColsWithPreffix(AccountHistoryModel::TABLE))
             ->cols([
+                       'UserOwner.name AS userName',
+                       'UserGroup.name AS userGroupName',
                        'UserEdit.name AS userEditName',
                        'UserEdit.login AS userEditLogin',
                    ])
+            // The owner and the group by name, as the detail view shows them — a history row
+            // stores only their ids. LEFT, unlike account_data_v's inner joins for the same two:
+            // a history entry outlives the user and the group it names, and an entry whose owner
+            // has since been deleted must still be viewable rather than vanish from the query.
+            ->join('LEFT', 'User AS UserOwner', 'AccountHistory.userId = UserOwner.id')
+            ->join('LEFT', 'UserGroup', 'AccountHistory.userGroupId = UserGroup.id')
             ->join('LEFT', 'User AS UserEdit', 'AccountHistory.userEditId = UserEdit.id')
             ->where('AccountHistory.id = :id')
             ->bindValues(['id' => $id])

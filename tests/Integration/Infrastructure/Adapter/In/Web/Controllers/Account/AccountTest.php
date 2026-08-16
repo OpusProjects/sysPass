@@ -66,6 +66,9 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    private const OWNER_NAME = 'Fixture Person';
+    private const GROUP_NAME = 'Fixture Team';
+
     protected function getUserDataDto(): UserDto
     {
         $userPreferences = UserDataGenerator::factory()->buildUserPreferencesData()->mutate(['topNavbar' => true]);
@@ -247,11 +250,13 @@ class AccountTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerViewHistory')]
     public function viewHistory()
     {
+        // Fixed rather than drawn: the body checker looks for these exact strings in the Owner and
+        // Main Group cells, and a faker name would have to be carried across to it.
         $accountHistory = AccountDataGenerator::factory()
                                               ->buildAccountHistoryData()
                                               ->mutate([
-                                                           'userName' => self::$faker->userName(),
-                                                           'userGroupName' => self::$faker->userName(),
+                                                           'userName' => self::OWNER_NAME,
+                                                           'userGroupName' => self::GROUP_NAME,
                                                            'userEditName' => self::$faker->userName(),
                                                            'userEditLogin' => self::$faker->userName(),
                                                        ]);
@@ -1063,6 +1068,28 @@ class AccountTest extends IntegrationTestCase
         )->extract(['id']);
 
         self::assertCount(2, $filter);
+
+        // A history row stores the owner and the group as ids, and the detail view shows both by
+        // name. Asserted against the cells: with a name missing the rows still render, just empty,
+        // so anything looser passes on the broken output. Owner matters most — it falls back to
+        // the account's login, which looks like a filled-in field naming the wrong person.
+        self::assertSame(self::OWNER_NAME, self::valueCellFor($crawler, 'Owner'));
+        self::assertSame(self::GROUP_NAME, self::valueCellFor($crawler, 'Main Group'));
+    }
+
+    /**
+     * The value cell of a labelled detail row, with the label the cell repeats for narrow screens
+     * stripped back off.
+     */
+    private static function valueCellFor(Crawler $crawler, string $label): string
+    {
+        $cell = $crawler->filterXPath(
+            sprintf("//td[normalize-space()='%s']/following-sibling::td[1]", $label)
+        );
+
+        self::assertCount(1, $cell, sprintf('No "%s" row was rendered', $label));
+
+        return trim(str_replace($label, '', $cell->text()));
     }
 
     /**
