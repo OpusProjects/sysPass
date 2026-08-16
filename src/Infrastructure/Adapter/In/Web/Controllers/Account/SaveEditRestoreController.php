@@ -71,7 +71,19 @@ final class SaveEditRestoreController extends AccountControllerBase
     {
         $this->accountAclEnforcer->checkAccountAccess(AclActionsInterface::ACCOUNT_EDIT_RESTORE, $id);
 
-        $this->accountService->restoreModified($this->accountHistoryService->getById($historyId));
+        $accountHistory = $this->accountHistoryService->getById($historyId);
+
+        // The entry names the account it will be written back to, and restoreModified() writes to
+        // that one — not to the id checked above. Both come from the request, so without this they
+        // are free to name different accounts: an account the caller may edit passes the check,
+        // and a history entry belonging to somebody else's account is the thing actually restored,
+        // reverting it to an earlier version. Authorising one account and writing to another is
+        // the whole of the bug, so the two are required to be the same account.
+        if ($accountHistory->accountId !== $id) {
+            return ActionResponse::error(__u('The history entry does not belong to this account'));
+        }
+
+        $this->accountService->restoreModified($accountHistory);
 
         $this->eventDispatcher->notify(new Event(
             'edit.account.restore',

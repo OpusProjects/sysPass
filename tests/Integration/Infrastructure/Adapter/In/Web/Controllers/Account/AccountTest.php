@@ -393,6 +393,63 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * The route names two things — the history entry to restore, and the account to restore it
+     * into — and both come from the request. The ACL is checked against the account; the write
+     * goes to whichever account the entry belongs to.
+     *
+     * Left unrelated, that is an account somebody may edit satisfying the check while a history
+     * entry belonging to another account is the thing actually restored, reverting it to an
+     * earlier version — undoing a password rotation, for instance. So a mismatch is refused.
+     *
+     * This does not need the ACL closed to mean something, which is what makes it expressible in
+     * this harness: the ACL is stubbed open here, and the request is refused anyway.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[InjectConfigParam]
+    public function saveEditRestoreRefusesAHistoryEntryFromAnotherAccount()
+    {
+        $accountDataGenerator = AccountDataGenerator::factory();
+
+        $accountId = self::$faker->numberBetween(1, 499);
+        $anotherAccountId = $accountId + 500;
+
+        $this->addDatabaseMapperResolver(
+            AccountHistoryView::class,
+            new QueryResult([
+                $accountDataGenerator->buildAccountHistoryData()->mutate(['accountId' => $anotherAccountId]),
+            ])
+        );
+
+        $this->addDatabaseMapperResolver(
+            Account::class,
+            new QueryResult([$accountDataGenerator->buildAccount()])
+        );
+
+        $this->addDatabaseMapperResolver(
+            AccountView::class,
+            new QueryResult([$accountDataGenerator->buildAccountDataView()])
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => sprintf('account/saveEditRestore/%d/%d', self::$faker->numberBetween(1, 999), $accountId)]
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString(
+            '{"status":"ERROR","description":"The history entry does not belong to this account","data":null}'
+        );
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -403,9 +460,18 @@ class AccountTest extends IntegrationTestCase
     {
         $accountDataGenerator = AccountDataGenerator::factory();
 
+        $historyId = self::$faker->numberBetween(1, 999);
+        $accountId = self::$faker->numberBetween(1, 999);
+
+        // The entry has to belong to the account being restored. It used to be built with an
+        // accountId of its own — an independent random number — and the restore went through
+        // anyway, which was the defect: the ACL is checked against the id in the route while the
+        // write goes to the account the entry names.
         $this->addDatabaseMapperResolver(
             AccountHistoryView::class,
-            new QueryResult([$accountDataGenerator->buildAccountHistoryData()])
+            new QueryResult([
+                $accountDataGenerator->buildAccountHistoryData()->mutate(['accountId' => $accountId]),
+            ])
         );
 
         $this->addDatabaseMapperResolver(
@@ -424,9 +490,6 @@ class AccountTest extends IntegrationTestCase
             'password' => $account->getPass(),
             'password_repeat' => $account->getPass(),
         ];
-
-        $historyId = self::$faker->randomNumber(3);
-        $accountId = self::$faker->randomNumber(3);
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
