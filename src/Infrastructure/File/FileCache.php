@@ -43,11 +43,15 @@ class FileCache extends FileCacheBase
      * @throws FileException
      * @throws SPException
      */
-    public function load(?string $path = null): mixed
+    public function load(?string $path = null, string ...$allowed): mixed
     {
         $this->checkOrInitializePath($path);
 
-        return Serde::deserialize($this->path->checkIsReadable()->readToString());
+        // Data only. Nothing here named a class, and Serde::deserialize() allows every class when
+        // it is not told which to expect — so a write into the cache directory became objects of
+        // the attacker's choosing on the next read. Callers that cache an object use loadWith(),
+        // which says what it may be.
+        return Serde::deserializeData($this->path->checkIsReadable()->readToString(), ...$allowed);
     }
 
     /**
@@ -67,9 +71,15 @@ class FileCache extends FileCacheBase
      * @inheritDoc
      * @throws InvalidClassException
      */
-    public function loadWith(string $class): object
+    public function loadWith(string $class, string ...$nested): object
     {
-        $data = unserialize($this->path->checkIsReadable()->readToString(), ['allowed_classes' => [$class]]);
+        // The nested classes matter: an object that holds other objects — ThemeIcons holds a
+        // FontIcon per entry — would otherwise come back with every one of them replaced by
+        // __PHP_Incomplete_Class, while still passing the instanceof check below.
+        $data = unserialize(
+            $this->path->checkIsReadable()->readToString(),
+            ['allowed_classes' => [$class, ...$nested]]
+        );
 
         if (!class_exists($class) || !($data instanceof $class)) {
             throw InvalidClassException::error(

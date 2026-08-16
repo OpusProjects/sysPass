@@ -74,7 +74,10 @@ class Actions implements ActionsInterface
             ) {
                 $this->mapAndSave();
             } else {
-                $this->actions = $this->fileCache->load();
+                // Action[]: an array of objects, which loadWith() cannot express — it answers
+                // with one object of the class it was given. Naming the class here keeps the
+                // cache from building anything else.
+                $this->actions = $this->fileCache->load(null, Action::class);
 
                 logger('Loaded actions cache', 'INFO');
             }

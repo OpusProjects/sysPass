@@ -88,6 +88,33 @@ final class Serde
     }
 
     /**
+     * Deserialise data that is expected to contain no objects at all.
+     *
+     * `deserialize()` allows every class when it is not told which to expect, which is the wrong
+     * way round for a default: a caller that knows what it wants says so, and one that does not is
+     * exactly the one that should be restricted. This says it explicitly, and reports a payload it
+     * cannot read the same way `deserialize()` does.
+     *
+     * Unlike `deserialize()`, the value may be an array holding objects of the named classes —
+     * which `deserialize()` cannot express, since it checks the value itself against the class.
+     *
+     * @throws SPException
+     */
+    public static function deserializeData(string $data, string ...$allowed): mixed
+    {
+        // An empty list allows no classes at all, which is the point of the default: a caller says
+        // what its cache may contain, and anything else comes back as __PHP_Incomplete_Class
+        // rather than being built.
+        $value = @unserialize($data, ['allowed_classes' => $allowed]);
+
+        if ($value === false && $data !== serialize(false)) {
+            throw SPException::error(__u('Couldn\'t deserialize the data'));
+        }
+
+        return $value;
+    }
+
+    /**
      * Takes an __PHP_Incomplete_Class and casts it to a stdClass object.
      * All properties will be made public in this step.
      *
