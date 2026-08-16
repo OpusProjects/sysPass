@@ -184,7 +184,19 @@ final class Api extends Service implements ApiService
      */
     public function getParam(string $param, bool $required = false, mixed $default = null): mixed
     {
-        if ($required && !$this->apiRequest->exists($param)) {
+        // "Required" used to mean only that the key was present, so `{"name": ""}` satisfied it and
+        // the API created rows the web forms refuse — a category with no name is accepted here and
+        // rejected there by CategoryForm::checkCommon(), and the same holds for every entity, since
+        // every required parameter in the API comes through this one method.
+        //
+        // Null and the empty string are the two ways a value can be supplied and say nothing. They
+        // are refused; anything else a caller sends is still its own concern, including `0` and
+        // `false`, which are meaningful values rather than absent ones.
+        $value = $this->apiRequest->get($param, $default);
+
+        if ($required
+            && (!$this->apiRequest->exists($param) || in_array($value, [null, ''], true))
+        ) {
             throw new ServiceException(
                 __u('Wrong parameters'),
                 SPException::ERROR,
@@ -193,7 +205,7 @@ final class Api extends Service implements ApiService
             );
         }
 
-        return $this->apiRequest->get($param, $default);
+        return $value;
     }
 
     /**
