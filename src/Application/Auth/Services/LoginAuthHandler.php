@@ -179,7 +179,23 @@ final class LoginAuthHandler extends LoginBase implements LoginAuthHandlerServic
                 return;
             }
 
-            if ($authData->getStatusCode() === LdapCodeEnum::INVALID_CREDENTIALS->value) {
+            // A login the directory does not hold and a password the directory rejects are the same
+            // answer to the client, and both are counted.
+            //
+            // They were not. NO_SUCH_OBJECT fell through to the "Internal error" branch below,
+            // which neither tracks nor says the same thing — so the response told an attacker
+            // which logins exist, and the path that told them was the one attempt tracking never
+            // counted. The database provider has always tracked every authoritative failure; this
+            // is the LDAP side agreeing with it.
+            //
+            // Failures that are not about the user — the directory being unreachable, a bad bind
+            // account — still fall through, and reveal nothing, because they answer the same way
+            // whatever login was sent. The event log keeps the real reason either way.
+            if (in_array(
+                $authData->getStatusCode(),
+                [LdapCodeEnum::INVALID_CREDENTIALS->value, LdapCodeEnum::NO_SUCH_OBJECT->value],
+                true
+            )) {
                 $eventMessage->addDescription(__u('Wrong login'));
 
                 $this->addTracking();
