@@ -62,6 +62,8 @@ class UserTest extends UnitaryTestCase
     private MockObject|DatabaseInterface $database;
 
     /**
+     * Every placeholder is the user being asked about.
+     *
      * @throws ConstraintException
      * @throws QueryException
      */
@@ -74,16 +76,50 @@ class UserTest extends UnitaryTestCase
                 self::callback(static function (QueryData $queryData) {
                     $params = $queryData->getQuery()->getBindValues();
 
-                    return count($params) === 5
-                           && $params['userId1'] === 100
-                           && $params['userEditId'] === 100
-                           && $params['userId2'] === 100
-                           && $params['userId3'] === 100
-                           && $params['userId4'] === 100;
+                    return count($params) === 8
+                           && count(array_unique($params)) === 1
+                           && array_values($params)[0] === 100;
                 })
             );
 
         $this->user->getUsageForUser(100);
+    }
+
+    /**
+     * The query covers every relation that stops a user being deleted.
+     *
+     * Counting bind values does not: the previous version of the test above passed while the
+     * account history and the notifications — two of the six `RESTRICT` foreign keys onto `User` —
+     * were absent from the query entirely, so the view could report nothing blocking a delete that
+     * the database then refused.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testGetUsageForUserCoversEveryRelationThatBlocksADelete()
+    {
+        $statement = null;
+
+        $this->database
+            ->expects($this->once())
+            ->method('runQuery')
+            ->with(
+                self::callback(static function (QueryData $queryData) use (&$statement) {
+                    $statement = $queryData->getQuery()->getStatement();
+
+                    return true;
+                })
+            );
+
+        $this->user->getUsageForUser(100);
+
+        foreach (['Account', 'AccountHistory', 'Notification', 'PublicLink'] as $table) {
+            self::assertStringContainsString(
+                sprintf('`%s`', $table),
+                (string)$statement,
+                sprintf('%s references User without ON DELETE, so it blocks a delete and must be reported', $table)
+            );
+        }
     }
 
     /**

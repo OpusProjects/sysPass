@@ -1986,7 +1986,7 @@ parameters:
 		-
 			message: '#^Access to an undefined property SP\\Domain\\Common\\Models\\Simple\:\:\$icon\.$#'
 			identifier: property.notFound
-			count: 4
+			count: 1
 			path: src/Infrastructure/Adapter/In/Web/Controllers/User/UserViewBase.php
 
 		-
