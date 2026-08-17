@@ -57,7 +57,11 @@ final class MysqlHandler implements DbStorageHandler
 
     public static function getConnectionUri(DatabaseConnectionData $connectionData): string
     {
-        $dsn = ['charset=utf8'];
+        // utf8mb4, not utf8: in MySQL and MariaDB `utf8` is an alias for `utf8mb3`, which holds
+        // three bytes per character and so cannot carry an emoji or any other character outside
+        // the basic plane. Both halves have to say mb4 — a utf8mb4 column reached over a utf8mb3
+        // connection is no better off.
+        $dsn = ['charset=utf8mb4'];
 
         if (empty($connectionData->getDbSocket())) {
             $dsn[] = sprintf('host=%s', $connectionData->getDbHost());
