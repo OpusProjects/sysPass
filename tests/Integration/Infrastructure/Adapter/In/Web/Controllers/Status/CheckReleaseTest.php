@@ -35,6 +35,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use SP\Domain\Core\AppInfoInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -46,11 +47,23 @@ use SP\Tests\Support\IntegrationTestCase;
  * actually newer than the one it is running. Getting the comparison backwards would nag every
  * administrator on every visit about a version they already have — or, worse, stay silent when a
  * genuine update exists.
+ *
+ * Who may ask is pinned here too. Making the application open an outbound connection is the
+ * privilege this endpoint hands out, so the two tests that refuse it assert that no request was
+ * made rather than reading the message — the refusal deliberately says the same "unavailable" the
+ * service saying nothing useful says, and asserting on that would pass either way.
  */
 #[Group('integration')]
 class CheckReleaseTest extends IntegrationTestCase
 {
     private ?ResponseInterface $answer = null;
+
+    /** Who is signed in, and whether the feature is switched on. */
+    private bool $isAdmin = true;
+    private bool $checkUpdates = true;
+
+    /** Memoized: the harness builds a fresh random user on each call. */
+    private ?UserDto $userDto = null;
 
     /**
      * A release newer than the running one is offered, with everything the page shows about it.
@@ -140,6 +153,48 @@ class CheckReleaseTest extends IntegrationTestCase
     }
 
     /**
+     * A caller who is not an administrator does not get to make the application call out.
+     *
+     * The client was told as much — `GetEnvironmentController` offers the check only to an
+     * administrator (or a demo instance) — but nothing enforced it, and the controller sat in
+     * `Init::PARTIAL_INIT`, which skips the session entirely. So an unauthenticated request made
+     * the server open a connection to a third party and wait on it, as often as anybody liked.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerUnavailable')]
+    public function somebodyWhoIsNotAnAdministratorDoesNotGetToCallOut()
+    {
+        $this->isAdmin = false;
+
+        $this->whenCheckingForARelease($this->aClientThatMustNotBeUsed());
+    }
+
+    /**
+     * Neither does an administrator once the check has been switched off.
+     *
+     * The setting existed only to decide what the browser was offered, so an instance that had
+     * deliberately turned update checks off still answered a request that asked for one. Turning
+     * it off is what an operator does to stop the application talking to the internet, and it now
+     * does that.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerUnavailable')]
+    public function anInstanceWithTheCheckTurnedOffDoesNotCallOut()
+    {
+        $this->checkUpdates = false;
+
+        $this->whenCheckingForARelease($this->aClientThatMustNotBeUsed());
+    }
+
+    /**
      * A tag for this instance's own version, optionally bumped — derived from the constants rather
      * than written out, so bumping the application's version does not silently invert what these
      * tests are asserting.
@@ -174,12 +229,16 @@ class CheckReleaseTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
-    private function whenCheckingForARelease(): void
+    private function whenCheckingForARelease(?ClientInterface $client = null): void
     {
         // Answering in the real client's place: the test must not depend on the network being
         // there, nor on what that service happens to be publishing today.
-        $client = self::createStub(ClientInterface::class);
-        $client->method('request')->willReturn($this->answer);
+        if ($client === null) {
+            $stub = self::createStub(ClientInterface::class);
+            $stub->method('request')->willReturn($this->answer);
+
+            $client = $stub;
+        }
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'status/checkRelease']),
@@ -187,6 +246,43 @@ class CheckReleaseTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * A client that fails the test if anything asks it for a request.
+     *
+     * This is the assertion the refusal tests rest on: the endpoint's whole cost is the outbound
+     * call, so "was it refused" is only really answered by "was the call made".
+     *
+     * @throws Exception
+     */
+    private function aClientThatMustNotBeUsed(): ClientInterface
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::never())->method('request');
+
+        return $client;
+    }
+
+    /**
+     * An administrator, unless a test says otherwise — the harness signs in a user who is not one.
+     *
+     * Memoized because `IntegrationTestCase::getUserDataDto()` builds a fresh random user on every
+     * call, so without this the user in the container is not the user anything else here sees.
+     *
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
+    protected function getUserDataDto(): UserDto
+    {
+        return $this->userDto ??= parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdmin]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isCheckUpdates' => $this->checkUpdates]);
     }
 
     private function outputCheckerUpdateOffered(string $output): void

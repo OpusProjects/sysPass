@@ -36,6 +36,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 use Throwable;
@@ -48,11 +49,22 @@ use Throwable;
  * So what matters is that a malformed, empty or unreachable answer leaves the page working — an
  * administrator opening their own instance should not get an error page because somebody else's
  * service is down — while a good answer actually reaches the page.
+ *
+ * And that only an administrator can ask for it at all: the two refusal tests assert that no
+ * request was made, because the refusal deliberately reuses the same "unavailable" the service
+ * being unreachable produces, and reading the message would not tell them apart.
  */
 #[Group('integration')]
 class CheckNoticesTest extends IntegrationTestCase
 {
     private ResponseInterface|Throwable|null $answer = null;
+
+    /** Who is signed in, and whether the feature is switched on. */
+    private bool $isAdmin = true;
+    private bool $checkNotices = true;
+
+    /** Memoized: the harness builds a fresh random user on each call. */
+    private ?UserDto $userDto = null;
 
     /**
      * A well-formed answer reaches the page, with each notice's title, date and text.
@@ -144,6 +156,43 @@ class CheckNoticesTest extends IntegrationTestCase
     }
 
     /**
+     * A caller who is not an administrator does not get to make the application call out.
+     *
+     * The client was told as much — `GetEnvironmentController` offers the check only to an
+     * administrator (or a demo instance) — but nothing enforced it, and the controller sat in
+     * `Init::PARTIAL_INIT`, which skips the session entirely. So an unauthenticated request made
+     * the server open a connection to a third party and wait on it, as often as anybody liked.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerNotAvailable')]
+    public function somebodyWhoIsNotAnAdministratorDoesNotGetToCallOut()
+    {
+        $this->isAdmin = false;
+
+        $this->whenCheckingForNotices($this->aClientThatMustNotBeUsed());
+    }
+
+    /**
+     * Neither does an administrator once the check has been switched off.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerNotAvailable')]
+    public function anInstanceWithTheCheckTurnedOffDoesNotCallOut()
+    {
+        $this->checkNotices = false;
+
+        $this->whenCheckingForNotices($this->aClientThatMustNotBeUsed());
+    }
+
+    /**
      * @param array<mixed> $payload
      */
     private function jsonAnswer(array $payload): ResponseInterface
@@ -156,16 +205,20 @@ class CheckNoticesTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
-    private function whenCheckingForNotices(): void
+    private function whenCheckingForNotices(?ClientInterface $client = null): void
     {
         // The real client would call out to a third-party service; this answers in its place, so
         // the test never depends on the network being there or on what that service says today.
-        $client = self::createStub(ClientInterface::class);
+        if ($client === null) {
+            $stub = self::createStub(ClientInterface::class);
 
-        if ($this->answer instanceof Throwable) {
-            $client->method('request')->willThrowException($this->answer);
-        } else {
-            $client->method('request')->willReturn($this->answer);
+            if ($this->answer instanceof Throwable) {
+                $stub->method('request')->willThrowException($this->answer);
+            } else {
+                $stub->method('request')->willReturn($this->answer);
+            }
+
+            $client = $stub;
         }
 
         $container = $this->buildContainer(
@@ -174,6 +227,43 @@ class CheckNoticesTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * A client that fails the test if anything asks it for a request.
+     *
+     * This is the assertion the refusal tests rest on: the endpoint's whole cost is the outbound
+     * call, so "was it refused" is only really answered by "was the call made".
+     *
+     * @throws Exception
+     */
+    private function aClientThatMustNotBeUsed(): ClientInterface
+    {
+        $client = $this->createMock(ClientInterface::class);
+        $client->expects(self::never())->method('request');
+
+        return $client;
+    }
+
+    /**
+     * An administrator, unless a test says otherwise — the harness signs in a user who is not one.
+     *
+     * Memoized because `IntegrationTestCase::getUserDataDto()` builds a fresh random user on every
+     * call, so without this the user in the container is not the user anything else here sees.
+     *
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
+    protected function getUserDataDto(): UserDto
+    {
+        return $this->userDto ??= parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdmin]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isCheckNotices' => $this->checkNotices]);
     }
 
     private function outputCheckerNoticesShown(string $output): void

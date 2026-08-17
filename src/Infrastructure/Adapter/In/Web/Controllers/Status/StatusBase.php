@@ -45,4 +45,26 @@ abstract class StatusBase extends SimpleControllerBase
 
         $this->client = $client;
     }
+
+    /**
+     * Whether this caller may make the application call out to a third party.
+     *
+     * Both status actions fetch a URL over the network, and the client is told whether to offer
+     * them by `GetEnvironmentController`:
+     *
+     * ```php
+     * $checkStatus = $this->session->getAuthCompleted()
+     *                && ($this->session->getUserData()->isAdminApp || $this->configData->isDemoEnabled());
+     * ```
+     *
+     * Nothing said it here, and these controllers sit in `Init::PARTIAL_INIT`, which skips the
+     * session check — so the endpoints answered anybody. An unauthenticated request made the
+     * server open an outbound connection and hold a worker for as long as the far end took, with
+     * no limit on how often. The same rule is applied here, where it binds.
+     */
+    final protected function mayCheckStatus(): bool
+    {
+        return $this->session->getAuthCompleted()
+               && ($this->session->getUserData()->isAdminApp || $this->configData->isDemoEnabled());
+    }
 }

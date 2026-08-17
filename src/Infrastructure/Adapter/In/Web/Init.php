@@ -79,8 +79,6 @@ use SP\Infrastructure\Adapter\In\Web\Controllers\Items\TagsController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Login\LoginController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Resource\CssController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Resource\JsController;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Status\CheckNoticesController;
-use SP\Infrastructure\Adapter\In\Web\Controllers\Status\CheckReleaseController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade\IndexController as UpgradeIndexController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Upgrade\UpgradeController;
 
@@ -103,8 +101,10 @@ final class Init extends HttpModuleBase
         InstallIndexController::class,
         CheckConnectionController::class,
         GetEnvironmentController::class,
-        CheckNoticesController::class,
-        CheckReleaseController::class,
+        // CheckNoticesController and CheckReleaseController used to sit here. Both fetch a URL
+        // over the network, and partial initialization skips the session — so the rule that only
+        // an administrator may make the application call out could not be applied, and the
+        // endpoints answered anybody. They now take the full initialization their guard needs.
         UpgradeIndexController::class,
         UpgradeController::class,
         DatabaseConnectionController::class,

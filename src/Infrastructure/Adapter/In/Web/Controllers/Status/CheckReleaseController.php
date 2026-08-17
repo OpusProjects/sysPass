@@ -56,6 +56,12 @@ final class CheckReleaseController extends StatusBase
     #[Action(ResponseType::JSON)]
     public function checkReleaseAction(): ActionResponse
     {
+        // Deliberately the same answer the endpoint gives when the service says nothing useful:
+        // a caller who may not ask learns only that there is no version to show.
+        if (!$this->mayCheckStatus() || !$this->configData->isCheckUpdates()) {
+            return ActionResponse::error(__u('Version unavailable'));
+        }
+
         try {
             $this->extensionChecker->checkCurl(true);
 
