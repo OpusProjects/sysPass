@@ -28,9 +28,11 @@ namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 use Exception;
 use JsonException;
 use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Models\AccountToUser as AccountToUserModel;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Client\Models\Client as ClientModel;
+use SP\Domain\Notification\Models\Notification as NotificationModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -588,6 +590,19 @@ final class User extends BaseRepository implements UserRepository
     /**
      * Returns the usage of the given user's id
      *
+     * This is what the user view shows as "what would break if this user were removed", so it has
+     * to cover the relations that actually stop the removal. Six foreign keys reference `User`
+     * without `ON DELETE`, which is `RESTRICT`: `Account.userId` / `userEditId`,
+     * `AccountHistory.userId` / `userEditId`, `Notification.userId` and `PublicLink.userId`. Two
+     * of those — the account history and the notifications — were missing here, so the panel could
+     * show nothing that blocks a delete while the delete was blocked all the same: having once
+     * edited an account, or having a single unread notification, is enough. The administrator was
+     * left with a refusal and a panel that disagreed with it.
+     *
+     * The account memberships and group memberships listed alongside them cascade away and do not
+     * block anything; they are shown because they are still worth knowing about before removing
+     * somebody.
+     *
      * @param int $id
      *
      * @return QueryResult<Simple>
@@ -691,11 +706,62 @@ final class User extends BaseRepository implements UserRepository
                             ),
                             '"PublicLink" AS ref'
                         ]
+                    )
+                    // One row per account rather than per revision: the history keeps a row for
+                    // every change ever made, and an account edited fifty times would otherwise
+                    // fill the panel with fifty identical-looking entries. The name is taken from
+                    // one of the recorded revisions, which is why it is aggregated — the account
+                    // may have been renamed since, and may not exist at all any more.
+                    ->unionAll()
+                    ->from(AccountHistoryModel::TABLE)
+                    ->innerJoin(
+                        ClientModel::TABLE,
+                        sprintf('%s.id = %s.clientId', ClientModel::TABLE, AccountHistoryModel::TABLE)
+                    )
+                    ->where(
+                        sprintf(
+                            '%s.userId = :userId5 OR %s.userEditId = :userEditId2',
+                            AccountHistoryModel::TABLE,
+                            AccountHistoryModel::TABLE
+                        )
+                    )
+                    ->groupBy([sprintf('%s.accountId', AccountHistoryModel::TABLE)])
+                    ->cols(
+                        [
+                            sprintf('%s.accountId as id', AccountHistoryModel::TABLE),
+                            sprintf(
+                                'CONCAT(MAX(%s.name), "(", MAX(%s.name), ")") AS name',
+                                AccountHistoryModel::TABLE,
+                                ClientModel::TABLE
+                            ),
+                            '"AccountHistory" AS ref'
+                        ]
+                    )
+                    ->unionAll()
+                    ->from(NotificationModel::TABLE)
+                    ->where(sprintf('%s.userId = :userId6', NotificationModel::TABLE))
+                    ->cols(
+                        [
+                            sprintf('%s.id as id', NotificationModel::TABLE),
+                            sprintf('%s.component AS name', NotificationModel::TABLE),
+                            '"Notification" AS ref'
+                        ]
                     ),
                 'Items'
             )
             ->orderBy(['Items.ref'])
-            ->bindValues(['userId1' => $id, 'userEditId' => $id, 'userId2' => $id, 'userId3' => $id, 'userId4' => $id]);
+            ->bindValues(
+                [
+                    'userId1' => $id,
+                    'userEditId' => $id,
+                    'userId2' => $id,
+                    'userId3' => $id,
+                    'userId4' => $id,
+                    'userId5' => $id,
+                    'userEditId2' => $id,
+                    'userId6' => $id,
+                ]
+            );
 
         return $this->db->runQuery(QueryData::build($query));
     }

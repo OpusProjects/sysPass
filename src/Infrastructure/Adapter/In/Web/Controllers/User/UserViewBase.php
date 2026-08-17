@@ -132,19 +132,16 @@ abstract class UserViewBase extends ControllerBase
                 'usage',
                 array_map(
                     static function ($value) {
-                        switch ($value->ref) {
-                            case 'Account':
-                                $value->icon = 'description';
-                                break;
-                            case 'UserGroup':
-                                $value->icon = 'group';
-                                break;
-                            case 'PublicLink':
-                                $value->icon = 'link';
-                                break;
-                            default:
-                                $value->icon = 'info_outline';
-                        }
+                        // One assignment rather than one per kind: a kind the map does not know
+                        // still gets an icon, so a row is never rendered without one.
+                        $value->icon = match ($value->ref) {
+                            'Account' => 'description',
+                            'AccountHistory' => 'history',
+                            'Notification' => 'notifications',
+                            'PublicLink' => 'link',
+                            'UserGroup' => 'group',
+                            default => 'info_outline',
+                        };
 
                         return $value;
                     },

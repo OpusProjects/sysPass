@@ -66,6 +66,8 @@ class UserUsageTest extends IntegrationTestCase
                 ['ref' => 'Account', 'name' => 'An account', 'id' => 1],
                 ['ref' => 'UserGroup', 'name' => 'A group', 'id' => 2],
                 ['ref' => 'PublicLink', 'name' => 'A link', 'id' => 3],
+                ['ref' => 'AccountHistory', 'name' => 'A retired account', 'id' => 4],
+                ['ref' => 'Notification', 'name' => 'A notification', 'id' => 5],
             ]
         );
     }
@@ -139,6 +141,8 @@ class UserUsageTest extends IntegrationTestCase
         self::assertStringContainsString('mdl-list__item-icon">description</i>', $html, 'an account');
         self::assertStringContainsString('mdl-list__item-icon">group</i>', $html, 'a group');
         self::assertStringContainsString('mdl-list__item-icon">link</i>', $html, 'a public link');
+        self::assertStringContainsString('mdl-list__item-icon">history</i>', $html, "an account's history");
+        self::assertStringContainsString('mdl-list__item-icon">notifications</i>', $html, 'a notification');
     }
 
     private function outputCheckerFallbackIcon(string $output): void
