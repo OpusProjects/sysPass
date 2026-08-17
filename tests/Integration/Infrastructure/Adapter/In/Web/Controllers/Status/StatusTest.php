@@ -33,6 +33,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\IntegrationTestCase;
 
@@ -47,6 +48,9 @@ class StatusTest extends IntegrationTestCase
 {
     /** Replaced per test so the suite never reaches the network. */
     private ?ClientInterface $httpClient = null;
+
+    /** Memoized: the harness builds a fresh random user on each call. */
+    private ?UserDto $userDto = null;
 
     /**
      * A published version newer than the running one is reported as an available update.
@@ -136,6 +140,27 @@ class StatusTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * Both endpoints are for an administrator, and the harness signs in a user who is not one.
+     *
+     * Memoized because `IntegrationTestCase::getUserDataDto()` builds a fresh random user on every
+     * call, so without this the user in the container is not the user anything else here sees.
+     *
+     * @throws \SP\Domain\Core\Exceptions\SPException
+     */
+    protected function getUserDataDto(): UserDto
+    {
+        return $this->userDto ??= parent::getUserDataDto()->mutate(['isAdminApp' => true]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getConfigData(): array
+    {
+        return array_merge(parent::getConfigData(), ['isCheckUpdates' => true, 'isCheckNotices' => true]);
     }
 
     private function outputCheckerUpdateAvailable(string $output): void

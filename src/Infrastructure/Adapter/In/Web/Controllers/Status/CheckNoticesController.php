@@ -51,6 +51,13 @@ final class CheckNoticesController extends StatusBase
     #[Action(ResponseType::JSON)]
     public function checkNoticesAction(): ActionResponse
     {
+        // Deliberately the same answer the endpoint gives when the service says nothing useful:
+        // a caller who may not ask learns only that there is nothing to show, and it is a string
+        // the locales already carry rather than a new untranslated one.
+        if (!$this->mayCheckStatus() || !$this->configData->isCheckNotices()) {
+            return ActionResponse::error(__u('Notifications not available'));
+        }
+
         try {
             $this->extensionChecker->checkCurl(true);
 
