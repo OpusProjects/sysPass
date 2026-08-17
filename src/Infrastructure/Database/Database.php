@@ -242,6 +242,21 @@ final class Database implements DatabaseInterface
                 );
             }
 
+            // A value longer than its column, which the server refuses outright under
+            // STRICT_TRANS_TABLES rather than truncating. It is the caller's input that is wrong,
+            // so it gets the same treatment as a constraint violation above: a message that says
+            // what to do about it, with the driver's text as the hint. Without this it fell to
+            // "Error while doing the query" below, which tells somebody who typed one character
+            // too many nothing at all — not that length was the problem, and not which field.
+            if ((int)$e->getCode() === 22001) {
+                throw QueryException::error(
+                    self::tooLongMessage($e),
+                    $e->getMessage(),
+                    (int)$e->getCode(),
+                    $e
+                );
+            }
+
             // Same split as the constraint branch above: a translated summary as the message,
             // the raw driver text as the hint. Passing $e->getMessage() as the message put
             // "SQLSTATE[22003]: ... column 'userId' ..." in front of the user (and the SQLSTATE
@@ -269,6 +284,24 @@ final class Database implements DatabaseInterface
             1452 => __u('Referenced record not found'),
             default => __u('Integrity constraint'),
         };
+    }
+
+    /**
+     * Which value was too long, when the driver says so.
+     *
+     * MySQL reports "Data too long for column 'name' at row 1", and the column name is the only
+     * part of that worth putting in front of somebody — it is the field they filled in. A driver
+     * that phrases it differently falls back to the message without it rather than to a wrong one.
+     */
+    private static function tooLongMessage(Exception $e): string
+    {
+        $detail = $e instanceof PDOException ? ($e->errorInfo[2] ?? '') : '';
+
+        if (preg_match('/column \'([^\']+)\'/', (string)$detail, $matches) === 1) {
+            return sprintf(__u('The value for "%s" is too long'), $matches[1]);
+        }
+
+        return __u('The value is too long');
     }
 
     /**

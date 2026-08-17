@@ -871,6 +871,71 @@ class DatabaseTest extends UnitaryTestCase
     }
 
     /**
+     * A value longer than its column says which field was too long.
+     *
+     * No form validates a length and `Filter::getString()` does not truncate, so the column is the
+     * only limit there is, and `STRICT_TRANS_TABLES` makes the server refuse the row rather than
+     * shorten the value. That refusal used to fall through to "Error while doing the query" —
+     * which does not say that length was the problem, let alone which field, and is what somebody
+     * saw for typing one character too many into a name.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithATooLongValueNamesTheColumn()
+    {
+        $this->expectExceptionMessage('The value for "name" is too long');
+
+        $this->runQueryWithTooLongValue("Data too long for column 'name' at row 1");
+    }
+
+    /**
+     * A driver that phrases it differently still reports it as a length problem rather than
+     * guessing at a column name that isn't in the message.
+     *
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    public function testRunQueryWithATooLongValueAndNoColumnInTheDriverText()
+    {
+        $this->expectExceptionMessage('The value is too long');
+
+        $this->runQueryWithTooLongValue('String data, right truncated');
+    }
+
+    /**
+     * @throws ConstraintException
+     * @throws Exception
+     * @throws QueryException
+     */
+    private function runQueryWithTooLongValue(string $driverDetail): void
+    {
+        $pdo = $this->createStub(PDO::class);
+        $pdoStatement = $this->createStub(PDOStatement::class);
+        $query = $this->createStub(QueryInterface::class);
+        $queryData = $this->createStub(QueryDataInterface::class);
+
+        $queryData->method('getOnErrorMessage')->willReturn('an_error');
+        $query->method('getStatement')->willReturn('test_query');
+        $queryData->method('getQuery')->willReturn($query);
+
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+        $pdo->method('prepare')->willReturn($pdoStatement);
+
+        $pdoException = new PDOException('SQLSTATE[22001]', 22001);
+        $pdoException->errorInfo = ['22001', 1406, $driverDetail];
+
+        $pdoStatement->method('execute')->willThrowException($pdoException);
+
+        $this->expectException(QueryException::class);
+        $this->expectExceptionCode(22001);
+
+        $this->database->runQuery($queryData);
+    }
+
+    /**
      * Drives runQuery() into the ConstraintException branch with a real PDOException carrying
      * the given MySQL driver error code in errorInfo[1], the way the PDO MySQL driver actually
      * reports it (a plain exception code of 23000 alone never carries the specific 1062/1451/1452

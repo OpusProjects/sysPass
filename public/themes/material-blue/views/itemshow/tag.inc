@@ -58,7 +58,7 @@ $tag = $_getvar('tag');
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input id="name" name="name" type="text" required
                                class="mdl-textfield__input mdl-color-text--indigo-400"
-                               maxlength="50"
+                               maxlength="45"
                                value="<?php
                                echo $_e($tag->getName()); ?>">
                         <label class="mdl-textfield__label"
