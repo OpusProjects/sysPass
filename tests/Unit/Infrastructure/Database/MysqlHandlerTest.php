@@ -135,7 +135,7 @@ class MysqlHandlerTest extends UnitaryTestCase
         $connectionData->method('getDbPass')
                        ->willReturn('a_password');
 
-        $dsn = 'mysql:charset=utf8;host=localhost;port=3306;dbname=test';
+        $dsn = 'mysql:charset=utf8mb4;host=localhost;port=3306;dbname=test';
 
         $pdoWrapper->expects($this->once())
                    ->method('build')
@@ -185,7 +185,7 @@ class MysqlHandlerTest extends UnitaryTestCase
         $connectionData->method('getDbPass')
                        ->willReturn('a_password');
 
-        $dsn = 'mysql:charset=utf8;host=localhost;port=3306';
+        $dsn = 'mysql:charset=utf8mb4;host=localhost;port=3306';
 
         $pdoWrapper->expects($this->once())
                    ->method('build')
@@ -271,8 +271,8 @@ class MysqlHandlerTest extends UnitaryTestCase
                    ->with(
                        $this->callback(
                            static fn(string $dsn) => $matcher->numberOfInvocations() === 1
-                               ? $dsn === 'mysql:charset=utf8;host=localhost;port=3306'
-                               : $dsn === 'mysql:charset=utf8;host=localhost;port=3306;dbname=test'
+                               ? $dsn === 'mysql:charset=utf8mb4;host=localhost;port=3306'
+                               : $dsn === 'mysql:charset=utf8mb4;host=localhost;port=3306;dbname=test'
                        )
                    )
                    ->willReturnOnConsecutiveCalls($pdoInstall, $pdoRuntime);

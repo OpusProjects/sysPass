@@ -113,6 +113,42 @@ class SchemaEnforcesIdentityTest extends TestCase
         self::assertSame([], $missing, 'Tables with a hash identity and no unique index');
     }
 
+    /**
+     * Every table is utf8mb4, so text somebody actually types can be stored.
+     *
+     * The schema was utf8mb3 throughout — three bytes per character, which cannot hold anything
+     * outside the basic plane. With `STRICT_TRANS_TABLES` the database does not truncate such a
+     * value, it refuses the row:
+     *
+     * ```
+     * ERROR 1366 (22007): Incorrect string value: '\xF0\x9F\x94\x90'
+     *                     for column `syspass`.`Category`.`name`
+     * ```
+     *
+     * So a category called "Servers 🔐" could not be created at all, and neither could an account
+     * whose notes carried one. `MysqlHandler` is the other half: its DSN said `charset=utf8`,
+     * which MySQL and MariaDB both read as an alias for `utf8mb3`, so a utf8mb4 column reached
+     * over that connection would have been no better off.
+     */
+    #[Test]
+    public function theSchemaStoresFourByteCharacters(): void
+    {
+        $schema = (string)file_get_contents(self::SCHEMA);
+
+        self::assertSame(
+            0,
+            substr_count($schema, 'utf8mb3'),
+            'utf8mb3 holds three bytes per character and refuses anything outside the basic plane, '
+            . 'so an emoji in a name or a note fails the insert outright'
+        );
+
+        self::assertGreaterThan(
+            0,
+            substr_count($schema, 'utf8mb4'),
+            'The schema declares no character set at all'
+        );
+    }
+
     private static function tableDefinition(string $table): string
     {
         $schema = (string)file_get_contents(self::SCHEMA);

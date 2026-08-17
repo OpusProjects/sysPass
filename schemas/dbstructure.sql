@@ -54,8 +54,8 @@ CREATE TABLE `Account`
     CONSTRAINT `fk_Account_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
     CONSTRAINT `fk_Account_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,8 +79,8 @@ CREATE TABLE `AccountFile`
     KEY `idx_AccountFile_01` (`accountId`),
     CONSTRAINT `fk_AccountFile_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -133,8 +133,8 @@ CREATE TABLE `AccountHistory`
     CONSTRAINT `fk_AccountHistory_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
     CONSTRAINT `fk_AccountHistory_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,8 +154,8 @@ CREATE TABLE `AccountToFavorite`
     CONSTRAINT `fk_AccountToFavorite_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_AccountToFavorite_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,8 +175,8 @@ CREATE TABLE `AccountToTag`
     CONSTRAINT `fk_AccountToTag_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_AccountToTag_tagId` FOREIGN KEY (`tagId`) REFERENCES `Tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,8 +197,8 @@ CREATE TABLE `AccountToUser`
     CONSTRAINT `fk_AccountToUser_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_AccountToUser_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,8 +219,8 @@ CREATE TABLE `AccountToUserGroup`
     CONSTRAINT `fk_AccountToUserGroup_accountId` FOREIGN KEY (`accountId`) REFERENCES `Account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_AccountToUserGroup_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,8 +246,8 @@ CREATE TABLE `AuthToken`
     KEY `fk_AuthToken_actionId` (`actionId`),
     CONSTRAINT `fk_AuthToken_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -266,8 +266,8 @@ CREATE TABLE `Category`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_Category_01` (`hash`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -287,8 +287,8 @@ CREATE TABLE `Client`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_Client_01` (`hash`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,8 +304,8 @@ CREATE TABLE `Config`
     `value`     varchar(4000) DEFAULT NULL,
     PRIMARY KEY (`parameter`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,8 +329,8 @@ CREATE TABLE `CustomFieldData`
     KEY `uk_CustomFieldData_01` (`moduleId`, `itemId`, `definitionId`),
     CONSTRAINT `fk_CustomFieldData_definitionId` FOREIGN KEY (`definitionId`) REFERENCES `CustomFieldDefinition` (`id`) ON DELETE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -354,8 +354,8 @@ CREATE TABLE `CustomFieldDefinition`
     KEY `fk_CustomFieldDefinition_typeId` (`typeId`),
     CONSTRAINT `fk_CustomFieldDefinition_typeId` FOREIGN KEY (`typeId`) REFERENCES `CustomFieldType` (`id`) ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -374,8 +374,8 @@ CREATE TABLE `CustomFieldType`
     UNIQUE KEY `uk_CustomFieldType_01` (`name`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 11
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 -- Reference data, not user data: CustomFieldDefinition.typeId is a foreign key onto this table,
@@ -412,8 +412,8 @@ CREATE TABLE `EventLog`
     `level`       varchar(20)      NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -443,8 +443,8 @@ CREATE TABLE `ItemPreset`
     CONSTRAINT `fk_ItemPreset_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_ItemPreset_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -471,8 +471,8 @@ CREATE TABLE `Notification`
     KEY `fk_Notification_userId` (`userId`),
     CONSTRAINT `fk_Notification_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -493,8 +493,8 @@ CREATE TABLE `Plugin`
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_Plugin_01` (`name`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -513,8 +513,8 @@ CREATE TABLE `PluginData`
     PRIMARY KEY (`name`, `itemId`),
     CONSTRAINT `fk_PluginData_name` FOREIGN KEY (`name`) REFERENCES `Plugin` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -546,8 +546,8 @@ CREATE TABLE `PublicLink`
     KEY `fk_PublicLink_userId` (`userId`),
     CONSTRAINT `fk_PublicLink_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -566,8 +566,8 @@ CREATE TABLE `Tag`
     UNIQUE KEY `uk_Tag_01` (`hash`),
     KEY `idx_Tag_01` (`name`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -590,8 +590,8 @@ CREATE TABLE `Track`
     KEY `idx_Track_01` (`userId`),
     KEY `idx_Track_02` (`time`, `ipv4`, `ipv6`, `source`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -635,8 +635,8 @@ CREATE TABLE `User`
     CONSTRAINT `fk_User_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`),
     CONSTRAINT `fk_User_userProfileId` FOREIGN KEY (`userProfileId`) REFERENCES `UserProfile` (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -653,8 +653,8 @@ CREATE TABLE `UserGroup`
     `description` varchar(255) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -675,8 +675,8 @@ CREATE TABLE `UserPassRecover`
     KEY `idx_UserPassRecover_01` (`userId`, `date`),
     CONSTRAINT `fk_UserPassRecover_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -693,8 +693,8 @@ CREATE TABLE `UserProfile`
     `profile` blob                 NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -714,8 +714,8 @@ CREATE TABLE `UserToUserGroup`
     CONSTRAINT `fk_UserToGroup_userGroupId` FOREIGN KEY (`userGroupId`) REFERENCES `UserGroup` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_UserToGroup_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB
-  DEFAULT CHARSET = utf8mb3
-  COLLATE = utf8mb3_unicode_ci;
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -806,9 +806,9 @@ SET character_set_client = @saved_cs_client;
 /*!50001 SET @saved_cs_client = @@character_set_client */;
 /*!50001 SET @saved_cs_results = @@character_set_results */;
 /*!50001 SET @saved_col_connection = @@collation_connection */;
-/*!50001 SET character_set_client = utf8mb3 */;
-/*!50001 SET character_set_results = utf8mb3 */;
-/*!50001 SET collation_connection = utf8mb3_general_ci */;
+/*!50001 SET character_set_client = utf8mb4 */;
+/*!50001 SET character_set_results = utf8mb4 */;
+/*!50001 SET collation_connection = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM = UNDEFINED */ /*!50013 SQL SECURITY DEFINER */ /*!50001 VIEW `account_data_v` AS
 select `Account`.`id`                              AS `id`,
        `Account`.`name`                            AS `name`,
@@ -857,9 +857,9 @@ from ((((((`Account` left join `Category` on (`Account`.`categoryId` = `Category
 /*!50001 SET @saved_cs_client = @@character_set_client */;
 /*!50001 SET @saved_cs_results = @@character_set_results */;
 /*!50001 SET @saved_col_connection = @@collation_connection */;
-/*!50001 SET character_set_client = utf8mb3 */;
-/*!50001 SET character_set_results = utf8mb3 */;
-/*!50001 SET collation_connection = utf8mb3_general_ci */;
+/*!50001 SET character_set_client = utf8mb4 */;
+/*!50001 SET character_set_results = utf8mb4 */;
+/*!50001 SET collation_connection = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM = UNDEFINED */ /*!50013 SQL SECURITY DEFINER */ /*!50001 VIEW `account_search_v` AS
 select `Account`.`id`                                                                        AS `id`,
        `Account`.`clientId`                                                                  AS `clientId`,
