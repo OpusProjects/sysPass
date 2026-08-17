@@ -7,6 +7,8 @@ namespace SP\Tests\Integration\Infrastructure\Adapter\In\Api\Controllers\Account
 use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Integration\Infrastructure\Adapter\In\Api\ApiTestCase;
+
+use function SP\Tests\getDbHandler;
 use stdClass;
 
 /**
@@ -85,6 +87,26 @@ class UploadControllerTest extends ApiTestCase
         ));
     }
 
+    /**
+     * The extension as it was actually stored.
+     *
+     * Read from the row rather than from the upload's own response, which echoes back only the id
+     * and the name — an assertion against what the endpoint just told us would not show what the
+     * database now holds, which is the thing that was wrong.
+     */
+    private function extensionStoredFor(int $fileId): string
+    {
+        $statement = getDbHandler()->getConnection()
+                                   ->prepare('SELECT `extension` FROM `AccountFile` WHERE `id` = :id');
+        $statement->execute(['id' => $fileId]);
+
+        $extension = $statement->fetchColumn();
+
+        $this->assertNotFalse($extension, sprintf('No AccountFile row with id %d', $fileId));
+
+        return (string)$extension;
+    }
+
     // -----------------------------------------------------------------------
     // Tests
     // -----------------------------------------------------------------------
@@ -105,6 +127,73 @@ class UploadControllerTest extends ApiTestCase
         $this->assertSame('File uploaded', $r->body->message);
         $this->assertSame('hello.txt', $r->body->data->name);
         $this->assertGreaterThan(0, $r->body->itemId);
+    }
+
+    /**
+     * The extension is documented as optional, so leaving it out has to work.
+     *
+     * It did not: the column is NOT NULL, so an omitted extension reached the database as null and
+     * the caller got HTTP 500 `Integrity constraint`, with `SQLSTATE[23000] … Column 'extension'
+     * cannot be null` in the detail — an internal database error handed to an API client for using
+     * the endpoint as documented. Every test here passed one, which is why nothing noticed.
+     */
+    public function testAnUploadWithoutAnExtensionTakesItFromTheName(): void
+    {
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'    => 'notes.txt',
+            'content' => base64_encode(self::PLAIN_TEXT_CONTENT),
+            'type'    => 'text/plain',
+        ]);
+
+        $this->assertSame(200, $r->status, 'an optional parameter must be optional');
+        $this->assertSame('File uploaded', $r->body->message);
+
+        $this->assertSame(
+            'TXT',
+            $this->extensionStoredFor($r->body->itemId),
+            'the name says .txt, and the web upload would have stored TXT for the same file'
+        );
+    }
+
+    /**
+     * A name with no extension stores an empty one rather than failing.
+     *
+     * Empty is a fact about the file — plenty of real attachments have no extension — while null
+     * is an insert the database refuses.
+     */
+    public function testAnUploadOfAFileWithNoExtensionIsStored(): void
+    {
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'    => 'README',
+            'content' => base64_encode(self::PLAIN_TEXT_CONTENT),
+            'type'    => 'text/plain',
+        ]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame('', $this->extensionStoredFor($r->body->itemId));
+    }
+
+    /**
+     * An extension the caller does give is still the one used, and is normalised the way the web
+     * upload normalises it.
+     */
+    public function testAnExtensionTheCallerGivesIsKept(): void
+    {
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'      => 'notes.txt',
+            'content'   => base64_encode(self::PLAIN_TEXT_CONTENT),
+            'type'      => 'text/plain',
+            'extension' => 'log',
+        ]);
+
+        $this->assertSame(200, $r->status);
+        $this->assertSame('LOG', $this->extensionStoredFor($r->body->itemId));
     }
 
     public function testOversizedUploadIsRejected(): void
