@@ -285,7 +285,7 @@ CREATE TABLE `Client`
     `description` varchar(255) DEFAULT NULL,
     `isGlobal`    tinyint(1)   DEFAULT 0,
     PRIMARY KEY (`id`),
-    KEY `uk_Client_01` (`hash`)
+    UNIQUE KEY `uk_Client_01` (`hash`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb3
   COLLATE = utf8mb3_unicode_ci;
