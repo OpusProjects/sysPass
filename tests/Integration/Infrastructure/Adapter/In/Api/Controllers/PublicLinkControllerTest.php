@@ -26,10 +26,13 @@ declare(strict_types=1);
 
 namespace SP\Tests\Integration\Infrastructure\Adapter\In\Api\Controllers;
 
+use PDO;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Tests\Integration\Infrastructure\Adapter\In\Api\ApiTestCase;
 use stdClass;
+
+use function SP\Tests\getDbHandler;
 
 /**
  * Covers the public-link endpoints over the REST API. None of them had tests.
@@ -57,6 +60,67 @@ class PublicLinkControllerTest extends ApiTestCase
 
         $this->assertSame(201, $r->status);
         $this->assertGreaterThan(0, $r->body->itemId);
+    }
+
+    /**
+     * A caller cannot choose when a link expires, or how many times it may be opened.
+     *
+     * `getPublinksMaxTime()` and `getPublinksMaxViews()` are the administrator's configuration —
+     * a maximum — and neither web path offers a way to set either. The endpoint nonetheless
+     * accepted `dateExpire` and `maxCountViews`, advertised them in its own help, and discarded
+     * them on the way to the database.
+     *
+     * What made that costly rather than merely useless is the response: it echoed the request
+     * back, so a caller asking for a link that expired at a particular time was told it would,
+     * while the stored link expired at whatever the configuration said. For a feature that hands
+     * out credentials, being wrong about the expiry in the safe direction is luck, not design.
+     */
+    public function testTheExpiryAndViewLimitComeFromTheConfigurationNotTheCaller(): void
+    {
+        $wanted = time() + 12345;
+
+        $r = $this->callApi(AclActionsInterface::PUBLICLINK_CREATE, [
+            'itemId' => $this->accountId(),
+            'dateExpire' => $wanted,
+            'maxCountViews' => 7,
+        ]);
+
+        $this->assertSame(201, $r->status);
+
+        [$storedExpiry, $storedViews] = $this->storedLimitsFor($r->body->itemId);
+
+        $this->assertNotSame($wanted, $storedExpiry, 'the caller must not be able to set the expiry');
+        $this->assertNotSame(7, $storedViews, 'nor the view limit');
+
+        // The half that actually misled anyone: the answer has to describe the link that exists.
+        $this->assertSame(
+            $storedExpiry,
+            $r->body->data->dateExpire,
+            'the response reported an expiry the link does not have'
+        );
+        $this->assertSame(
+            $storedViews,
+            $r->body->data->maxCountViews,
+            'the response reported a view limit the link does not have'
+        );
+    }
+
+    /**
+     * The expiry and the view limit as the row holds them.
+     *
+     * @return array{int, int}
+     */
+    private function storedLimitsFor(int $id): array
+    {
+        $statement = getDbHandler()->getConnection()
+                                   ->prepare('SELECT `dateExpire`, `maxCountViews` FROM `PublicLink` WHERE `id` = :id');
+        $statement->execute(['id' => $id]);
+
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
+
+        $this->assertNotFalse($row, sprintf('No PublicLink row with id %d', $id));
+
+        return [(int)$row['dateExpire'], (int)$row['maxCountViews']];
     }
 
     /**
