@@ -136,7 +136,7 @@ workflow reacts to.
 
 ```bash
 git tag v4.0.1
-git push opus v4.0.1
+git push origin v4.0.1
 ```
 
 The tag runs the full pipeline, and then two jobs behave differently than they do on a pull request:
@@ -175,17 +175,17 @@ Every change is its own pull request, squash-merged, and independently reviewabl
 revertable — a dependency bump, a fix and a documentation edit each get their own.
 
 ```bash
-git checkout main && git pull opus main
+git checkout main && git pull origin main
 git checkout -b <type>/<short-name>
 # ... make exactly one change, and test it ...
-git commit -am "Short title — what and why"
-git push -u opus <type>/<short-name>
+git commit -am "<type>: short imperative summary"
+git push -u origin <type>/<short-name>
 gh pr create --repo OpusProjects/sysPass --base main --head <type>/<short-name> --title "..." --body "..."
 gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch
 ```
 
 Branch names are `<type>/<short-name>` and titles are `<type>: short imperative summary`, drawn from
 `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build` and `chore`. The remotes are `origin` for
-read-only upstream `nuxsmin/sysPass` and `opus` for this fork, which is where everything is pushed.
+this fork, which is where everything is pushed, and `upstream` for the read-only `nuxsmin/sysPass`.
 
 [CONTRIBUTING.md](../CONTRIBUTING.md) covers development setup and coding conventions in full.
