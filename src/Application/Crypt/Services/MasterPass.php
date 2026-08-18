@@ -93,6 +93,20 @@ final class MasterPass extends Service implements MasterPassService
     }
 
     /**
+     * Re-encrypts everything under a new master password, or leaves it all as it was.
+     *
+     * The hash belongs inside the transaction with the secrets it describes. The three
+     * re-encryption passes were already rolled back together, but the hash was stored afterwards,
+     * so a failure in those two writes — or a process that stopped between them — left every
+     * account, history row and custom field re-keyed to the new password while the application
+     * went on believing the old one. `checkMasterPassword()` compares against that hash, so the
+     * new password is refused and the old one opens nothing: an instance nobody can unlock, and no
+     * way back without editing the database by hand.
+     *
+     * The ordering was not a choice between which half to save. `transactionAware()` runs on the
+     * shared `Database`, so these writes join the same transaction as the re-encryption, and the
+     * rotation either happens or does not.
+     *
      * @throws Exception
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request): void
@@ -102,11 +116,11 @@ final class MasterPass extends Service implements MasterPassService
                 $this->accountMasterPasswordService->updateMasterPassword($request);
                 $this->accountMasterPasswordService->updateHistoryMasterPassword($request);
                 $this->customFieldCryptService->updateMasterPassword($request);
+
+                $this->updateConfig($request->getHash());
             },
             $this
         );
-
-        $this->updateConfig($request->getHash());
     }
 
     /**
