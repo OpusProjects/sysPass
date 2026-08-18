@@ -101,7 +101,7 @@ docker compose exec -e DB_SERVER=db -e DB_NAME=syspass -e DB_USER=root -e DB_PAS
   -w /var/www/html app vendor/bin/phpunit -c tests/phpunit.xml --testsuite integration --no-coverage
 ```
 
-Both pass: **3955 unit** + **942 integration**. The integration suite includes the
+Both pass: **3973 unit** + **972 integration**. The integration suite includes the
 end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`, real DI container +
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
@@ -389,6 +389,23 @@ Key constraints:
 
 A record of what repeatedly turned out to be broken, because the pattern predicts the next one
 better than any coverage number does.
+
+**A guard that is not where the change happens.** The commonest shape here, and the one that reads
+as correct in review. A public link's view limit and the temporary master password's fifty-attempt
+cap were both tested in PHP against a row that had already been read, so two requests arriving
+together both passed — and the attempt counter was written back as `$attempts + 1`, an absolute
+value worked out from that same stale read, so guesses in parallel advanced it by one between them.
+The master password's rotation re-encrypted every secret inside a transaction and then stored the
+hash describing them outside it, leaving a vault nobody could open if those last two writes failed.
+`40024210101.sql` made two commits out of one logical change, and DDL commits as it goes, so a
+refused second statement left an upgrade that could be neither finished nor repeated.
+
+Where the codebase gets this right it is always the same move — the guard and the change are one
+statement: `UserPassRecover::toggleUsedByHash()` consumes a reset token with `used = 0` in its
+`WHERE` and throws when it affects nothing, `InstallThrottle` holds an exclusive `flock` across its
+whole read-modify-write, `countViews + 1` is arithmetic the server does. **Ask where the decision is
+taken and where the change lands; if they are not the same statement, work out what fits between
+them.**
 
 **The wiring, not the code.** php-di skips a constructor parameter that has a default *even when the
 container has a binding for its type*, silently. `Init::$sessionKeyService` was null that way, so
