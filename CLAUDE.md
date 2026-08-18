@@ -15,17 +15,17 @@ is a **separate PR**, squash-merged. One logical change per PR (independently re
 bisectable, revertable).
 
 ```bash
-git checkout main && git pull opus main
+git checkout main && git pull origin main
 git checkout -b <type>/<short-name>
 # ... make exactly one change, test it ...
 git commit -am "<type>: short imperative summary"
-git push -u opus <type>/<short-name>
+git push -u origin <type>/<short-name>
 gh pr create --repo OpusProjects/sysPass --base main --head <type>/<short-name> --title "..." --body "..."
 gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch   # we self-merge
 ```
 
 - **Types** (branch prefix and commit/PR title alike): `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `chore` — as in every OpusProjects repo.
-- **Remotes:** `origin` = upstream `nuxsmin/sysPass` (read-only) · `opus` = our fork `OpusProjects/sysPass` (push here). Default branch: `main`.
+- **Remotes:** `origin` = our fork `OpusProjects/sysPass` (push here) · `upstream` = `nuxsmin/sysPass` (read-only). Default branch: `main`.
 - **Git identity** is set repo-locally (`blaipr` / `blaipr@hotmail.com`) — plain `git commit` works.
 - `gh pr edit` can silently no-op on this repo (classic-Projects GraphQL field); if a body edit doesn't apply, PATCH via `gh api -X PATCH repos/OpusProjects/sysPass/pulls/<n> -F body=@file`.
 
