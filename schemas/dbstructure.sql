@@ -651,7 +651,8 @@ CREATE TABLE `UserGroup`
     `id`          smallint(5) unsigned NOT NULL AUTO_INCREMENT,
     `name`        varchar(50)          NOT NULL,
     `description` varchar(255) DEFAULT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_UserGroup_01` (`name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
@@ -691,7 +692,8 @@ CREATE TABLE `UserProfile`
     `id`      smallint(5) unsigned NOT NULL AUTO_INCREMENT,
     `name`    varchar(45)          NOT NULL,
     `profile` blob                 NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_UserProfile_01` (`name`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
