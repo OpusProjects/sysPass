@@ -21,12 +21,13 @@ into `main`. Never commit directly to `main`.
 git checkout main && git pull origin main
 git checkout -b <type>/<short-name>
 # make exactly one logical change
-git commit -am "Short title — what & why"
+git commit -am "<type>: short imperative summary"
 git push -u origin <type>/<short-name>
 # open PR, squash-merge, delete branch
 ```
 
-**Branch prefixes:** `fix/`, `refactor/`, `docs/`, `cleanup/`, `feat/`, `test/`.
+**Types** (branch prefix and commit/PR title alike): `feat`, `fix`, `perf`,
+`refactor`, `docs`, `test`, `build`, `chore`.
 
 **One logical change per PR** — independently reviewable, bisectable, revertable.
 
@@ -80,7 +81,8 @@ image build).
 
 ## Commit messages
 
-- Short title (imperative mood) — what changed and why.
+- Title is `<type>: short imperative summary`, using the types listed above —
+  the PR title matches it, since the squash-merge keeps it as the commit title.
 - Body is optional; use it for context that isn't obvious from the diff.
 - No issue/PR numbers in the title — GitHub adds the PR number on squash-merge.
 
