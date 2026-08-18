@@ -515,6 +515,12 @@ final class User extends BaseRepository implements UserRepository
     {
         $query = $this->queryFactory
             ->newSelect()
+            // A user belongs to the group by their own `userGroupId` or through UserToUserGroup, and
+            // the join carries one row per membership they hold — so `User.userGroupId = :id`, being
+            // true on every one of those rows, returned somebody in the group directly once for each
+            // *other* group they were in. The caller mails what it is handed, so they received the
+            // temporary master password once per extra membership.
+            ->distinct()
             ->cols(UserModel::getColsWithPreffix(UserModel::TABLE))
             ->from(UserModel::TABLE)
             ->innerJoin(
