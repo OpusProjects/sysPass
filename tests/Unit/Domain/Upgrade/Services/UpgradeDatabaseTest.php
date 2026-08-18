@@ -55,14 +55,15 @@ class UpgradeDatabaseTest extends UnitaryTestCase
     {
         $configData = $this->createMock(ConfigDataInterface::class);
 
-        $this->database->expects($this->exactly(2))
+        // One statement, not two. DDL commits as it goes, so as a pair the drop stood on its own
+        // when the primary key was refused — and the retry then died on `Can't DROP COLUMN id`
+        // before reaching the statement that had failed. MigrationIsAtomicTest runs the file
+        // against a real server and holds it to failing as a whole.
+        $this->database->expects($this->once())
                        ->method('runQueryRaw')
                        ->with(
-                           ...
-                           self::withConsecutive(
-                               ['alter table CustomFieldData drop column id'],
-                               ['alter table CustomFieldData add primary key (moduleId, itemId, definitionId)']
-                           )
+                           'alter table CustomFieldData drop column id, '
+                           . 'add primary key (moduleId, itemId, definitionId)'
                        );
 
         $configData->expects($this->once())
