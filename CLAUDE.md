@@ -25,7 +25,7 @@ gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch   # we self
 ```
 
 - **Types** (branch prefix and commit/PR title alike): `feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build`, `chore` — as in every OpusProjects repo.
-- **Remotes:** `origin` = our fork `OpusProjects/sysPass` (push here) · `upstream` = `nuxsmin/sysPass` (read-only). Default branch: `main`.
+- **Remote:** `origin` = `OpusProjects/sysPass`, the only one — the discontinued `nuxsmin/sysPass` shares no history with our squashed `main`, so nothing merges or rebases from it. Default branch: `main`.
 - **Git identity** is set repo-locally (`blaipr` / `blaipr@hotmail.com`) — plain `git commit` works.
 - `gh pr edit` can silently no-op on this repo (classic-Projects GraphQL field); if a body edit doesn't apply, PATCH via `gh api -X PATCH repos/OpusProjects/sysPass/pulls/<n> -F body=@file`.
 
