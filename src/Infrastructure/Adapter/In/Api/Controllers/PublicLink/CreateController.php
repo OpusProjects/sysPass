@@ -24,12 +24,25 @@ final class CreateController extends PublicLinkBase
             // call fail on the insert.
             'typeId'        => PublicLinkType::Account->value,
             'notify'        => (bool) $this->apiService->getParamInt('notify'),
-            'dateExpire'    => $this->apiService->getParamInt('dateExpire'),
-            'maxCountViews' => $this->apiService->getParamInt('maxCountViews'),
         ]);
 
         $id = $this->publicLinkService->create($linkData);
-        $linkData = $linkData->mutate(['id' => $id]);
+
+        // When the link expires and how often it may be opened are the administrator's
+        // configuration — `getPublinksMaxTime()` is a maximum, and neither web path lets anyone
+        // choose either. The service sets both, so the `dateExpire` and `maxCountViews` this
+        // endpoint used to accept were discarded on the way to the database. What made that
+        // costly rather than merely useless is that the response echoed the request back, so a
+        // caller was told a link would expire when they asked, and it did not.
+        $stored = $this->publicLinkService->getById($id);
+
+        $linkData = $linkData->mutate(
+            [
+                'id' => $id,
+                'dateExpire' => $stored->getDateExpire(),
+                'maxCountViews' => $stored->getMaxCountViews(),
+            ]
+        );
 
         $this->eventDispatcher->notify(new Event(
             'create.publicLink',

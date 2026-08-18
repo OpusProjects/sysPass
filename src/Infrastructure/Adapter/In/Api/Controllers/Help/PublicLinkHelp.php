@@ -53,9 +53,9 @@ final class PublicLinkHelp implements HelpInterface
     {
         return [
             self::getItem('itemId', __('Account Id'), true),
-            self::getItem('notify', __('Notify when the link is used')),
-            self::getItem('dateExpire', __('Expiry date')),
-            self::getItem('maxCountViews', __('Maximum views'))
+            self::getItem('notify', __('Notify when the link is used'))
+            // No expiry or view limit: both come from the configuration, which is where the
+            // maximum lives, and a caller who could set them could outlive it.
         ];
     }
 
