@@ -236,10 +236,60 @@ class TemporaryMasterPassTest extends UnitaryTestCase
                 $hash
             );
 
+        // The attempt is counted by the server, in one statement that also carries the limit.
+        // This used to expect save('tempmaster_attempts', $attempts + 1) — an absolute value
+        // worked out here from a number read a moment earlier, which is exactly what let
+        // simultaneous guesses all write back the same count.
         $this->configService
             ->expects(self::once())
-            ->method('save')
-            ->with('tempmaster_attempts', $attempts + 1);
+            ->method('incrementIfBelow')
+            ->with('tempmaster_attempts', TemporaryMasterPass::MAX_ATTEMPTS)
+            ->willReturn(true);
+
+        $this->configService
+            ->expects(self::never())
+            ->method('save');
+
+        self::assertFalse($this->temporaryMasterPass->checkKey($pass));
+    }
+
+    /**
+     * A wrong key that takes the count to the limit expires the temporary password there and then.
+     *
+     * Whether there was an attempt left is the answer to the counting, not something read before
+     * it, so this is the moment the last one is spent — and the password has to stop working
+     * without waiting for another request to notice.
+     *
+     * @throws ServiceException
+     */
+    public function testCheckTempMasterPassExpiresItWhenTheLastAttemptIsSpent()
+    {
+        $now = time();
+        $pass = self::$faker->password();
+        $hash = password_hash(self::$faker->sha1(), PASSWORD_BCRYPT);
+
+        $this->configService
+            ->method('getByParam')
+            ->willReturn((string)($now + 3600), (string)$now, '49', $hash);
+
+        $this->configService
+            ->expects(self::once())
+            ->method('incrementIfBelow')
+            ->with('tempmaster_attempts', TemporaryMasterPass::MAX_ATTEMPTS)
+            ->willReturn(false);
+
+        $configRequest = new ConfigRequest();
+        $configRequest->add('tempmaster_pass', '');
+        $configRequest->add('tempmaster_passkey', '');
+        $configRequest->add('tempmaster_passhash', '');
+        $configRequest->add('tempmaster_passtime', '0');
+        $configRequest->add('tempmaster_maxtime', '0');
+        $configRequest->add('tempmaster_attempts', '0');
+
+        $this->configService
+            ->expects(self::once())
+            ->method('saveBatch')
+            ->with($configRequest);
 
         self::assertFalse($this->temporaryMasterPass->checkKey($pass));
     }

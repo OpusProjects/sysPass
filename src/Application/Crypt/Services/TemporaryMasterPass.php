@@ -172,7 +172,18 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
             );
 
             if (!$isValid) {
-                $this->configService->save(self::PARAM_ATTEMPTS, (string)($attempts + 1));
+                // Counting the attempt is what enforces the limit, so the counting has to be the
+                // thing that cannot be raced. This used to read the count above, compare it here,
+                // and write back `$attempts + 1` — so guesses arriving together all read the same
+                // number and all wrote the same number back, and fifty of them moved the counter
+                // by one. The per-address tracker still applied, but this is the limit that is
+                // supposed to hold when the guesses come from everywhere at once, and it did not.
+                //
+                // The check above stays as it is: it costs nothing, and it is not what enforces
+                // anything now.
+                if (!$this->configService->incrementIfBelow(self::PARAM_ATTEMPTS, self::MAX_ATTEMPTS)) {
+                    $this->expire();
+                }
             }
 
             return $isValid;
