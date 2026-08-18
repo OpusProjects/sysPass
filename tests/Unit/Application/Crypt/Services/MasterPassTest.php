@@ -198,6 +198,37 @@ class MasterPassTest extends UnitaryTestCase
     }
 
     /**
+     * The stored hash is written inside the transaction, with the secrets it describes.
+     *
+     * The three re-encryption passes were already rolled back together, but the hash was saved
+     * after the commit — so a failure in those two writes, or a process that stopped between them,
+     * left every account, history row and custom field re-keyed to the new password while the
+     * application went on believing the old one. `checkMasterPassword()` compares against that
+     * hash, so the new password is refused and the old one opens nothing.
+     *
+     * Asserted by giving `transactionAware()` a double that never runs its closure: nothing inside
+     * the transaction happens, so nothing at all should be written. With the hash saved afterwards
+     * it is written regardless, which is exactly the state that outlives a rollback.
+     *
+     * @throws Exception
+     */
+    public function testTheStoredHashIsWrittenInsideTheTransaction(): void
+    {
+        $request = new UpdateMasterPassRequest('123', '456', self::$faker->sha1());
+
+        // No withResolveCallableCallback(): the closure is handed over and never invoked.
+        $this->repository
+            ->expects(self::once())
+            ->method('transactionAware');
+
+        $this->configService
+            ->expects(self::never())
+            ->method('save');
+
+        $this->masterPass->changeMasterPassword($request);
+    }
+
+    /**
      * Regression: when one of the re-key sub-services throws (simulating a partial
      * re-key failure), changeMasterPassword must propagate the exception and must NOT
      * advance the stored master-pass hash (i.e. configService->save must never be called).
