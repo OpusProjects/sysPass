@@ -628,7 +628,7 @@ CREATE TABLE `User`
     `isChangedPass`   tinyint(1)                    DEFAULT 0,
     `preferences`     blob                          DEFAULT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `uk_User_01` (`login`, `ssoLogin`),
+    UNIQUE KEY `uk_User_01` (`login`),
     KEY `idx_User_01` (`pass`),
     KEY `fk_User_userGroupId` (`userGroupId`),
     KEY `fk_User_userProfileId` (`userProfileId`),

@@ -114,6 +114,38 @@ class SchemaEnforcesIdentityTest extends TestCase
     }
 
     /**
+     * A login identifies a person, and only the database can hold it to that.
+     *
+     * `checkDuplicatedOnAdd()` refuses a login that already exists — a SELECT, then the INSERT if
+     * nothing came back, so two requests arriving together both find nothing and both insert. What
+     * has to stop the second is the index, and `uk_User_01` covered `(login, ssoLogin)` rather than
+     * `login`: MySQL treats NULLs in a unique index as distinct, so two rows with the same login
+     * and no SSO login — which is most of them — were both accepted. Two simultaneous first-time
+     * logins through `createOnLogin()` are all it takes.
+     *
+     * `getByLogin()` then answers with `LIMIT 1` and no ordering, so which of the two a login
+     * resolves to is the server's choice, and it is `DatabaseAuth` asking.
+     *
+     * `ssoLogin` is deliberately not covered here. The application's own rule exempts an empty one
+     * (`ssoLogin IS NOT NULL AND ssoLogin <> ''`), the user form stores `''` rather than NULL for
+     * a field left blank, and `''` is not distinct the way NULL is — a unique index over it would
+     * refuse the second user who has no SSO login at all.
+     */
+    #[Test]
+    public function aLoginIsHeldUniqueOnItsOwn(): void
+    {
+        $definition = self::tableDefinition('User');
+
+        self::assertMatchesRegularExpression(
+            '/UNIQUE KEY\s+`[^`]+`\s*\(`login`\)/',
+            $definition,
+            'User.login is unique in the application and has to be unique in the database. A '
+            . 'composite key over (login, ssoLogin) is not that: NULLs count as distinct, so it '
+            . 'admits two users with the same login and no SSO login.'
+        );
+    }
+
+    /**
      * Every table is utf8mb4, so text somebody actually types can be stored.
      *
      * The schema was utf8mb3 throughout — three bytes per character, which cannot hold anything
