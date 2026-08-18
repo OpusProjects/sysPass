@@ -185,7 +185,7 @@ gh pr merge <n> --repo OpusProjects/sysPass --squash --delete-branch
 ```
 
 Branch names are `<type>/<short-name>` and titles are `<type>: short imperative summary`, drawn from
-`feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build` and `chore`. The remotes are `origin` for
-this fork, which is where everything is pushed, and `upstream` for the read-only `nuxsmin/sysPass`.
+`feat`, `fix`, `perf`, `refactor`, `docs`, `test`, `build` and `chore`. The only remote is `origin`,
+this repository — the discontinued `nuxsmin/sysPass` shares no history with the squashed `main`.
 
 [CONTRIBUTING.md](../CONTRIBUTING.md) covers development setup and coding conventions in full.
