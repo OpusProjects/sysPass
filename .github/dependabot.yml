@@ -4,13 +4,23 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    # Dependabot writes its own commit titles: "build(deps): bump <pkg> ..."
+    commit-message:
+      prefix: "build"
+      include: "scope"
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "build"
+      include: "scope"
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "build"
+      include: "scope"
