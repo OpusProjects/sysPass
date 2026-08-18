@@ -106,6 +106,36 @@ class PublicLinkControllerTest extends ApiTestCase
     }
 
     /**
+     * Creating a link answers with the link.
+     *
+     * `account/viewLink/{hash}` is the URL that gets handed out, and the service mints the hash,
+     * so a caller who had only what they sent back could not hand out what they had just made.
+     * The way round it was to fetch the link again — which answers with `data`, the sealed vault,
+     * so working around the omission gave out more than reporting the hash does.
+     *
+     * Both halves are asserted: the hash is there and is the one stored, and `data` is still not.
+     */
+    public function testCreatingALinkAnswersWithTheHashThatIsTheUrl(): void
+    {
+        $r = $this->createLink();
+
+        $this->assertSame(201, $r->status);
+        $this->assertNotEmpty($r->body->data->hash, 'without the hash the caller cannot build the URL');
+
+        $statement = getDbHandler()->getConnection()
+                                   ->prepare('SELECT `hash` FROM `PublicLink` WHERE `id` = :id');
+        $statement->execute(['id' => $r->body->itemId]);
+
+        $this->assertSame(
+            $statement->fetchColumn(),
+            $r->body->data->hash,
+            'the hash reported must be the one the link is stored under'
+        );
+
+        $this->assertNull($r->body->data->data, 'creating a link must not hand back the sealed vault');
+    }
+
+    /**
      * The expiry and the view limit as the row holds them.
      *
      * @return array{int, int}

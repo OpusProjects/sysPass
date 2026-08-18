@@ -39,6 +39,12 @@ final class CreateController extends PublicLinkBase
         $linkData = $linkData->mutate(
             [
                 'id' => $id,
+                // The hash is the link. `account/viewLink/{hash}` is the URL that gets handed out,
+                // and the service mints it, so a caller who had only what they sent could not
+                // hand out what they had just created — they had to fetch the link back to find
+                // out. That fetch answers with `data` as well, the sealed vault, so the way round
+                // the omission gave out more than this does.
+                'hash' => $stored->getHash(),
                 'dateExpire' => $stored->getDateExpire(),
                 'maxCountViews' => $stored->getMaxCountViews(),
             ]
