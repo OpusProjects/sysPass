@@ -47,6 +47,47 @@ final class Config extends BaseRepository implements ConfigRepository
     public const TABLE = 'Config';
 
     /**
+     * Counts one against a numeric parameter, unless it has already reached the limit.
+     *
+     * The server does the arithmetic and the comparison together. Read it, compare it in PHP and
+     * write back `$value + 1` — which is what counting a failed temporary-password attempt used to
+     * do — and requests arriving together all read the same number and all write the same number
+     * back, so fifty attempts advance the counter by one. A limit counted that way is not a limit.
+     *
+     * `COALESCE` because `value` is nullable, and a NULL would make both the sum and the
+     * comparison NULL: the parameter would stop counting rather than start at zero.
+     *
+     * The `+ 0` keeps the comparison numeric whoever asks. `Config.value` is a varchar, so if both
+     * sides arrive as strings the server compares them as text and `'10' < '3'` is true — a
+     * counter would sail past its limit the moment it reached double figures, which is where a
+     * limit of fifty starts to matter. Today the right-hand side is an integer and `Database`
+     * binds it `PDO::PARAM_INT`, which settles it on its own; this makes it not depend on that.
+     *
+     * Written without `CAST(… AS UNSIGNED)` on purpose: Aura quotes whatever follows `AS` in a raw
+     * expression, so that becomes ``CAST(… AS `UNSIGNED) + 1` `` and the statement will not parse.
+     *
+     * @return QueryResult<Simple> with one row affected when the attempt was counted, and none
+     *                             when the parameter is missing or already at the limit
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function incrementIfBelow(string $param, int $limit): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(self::TABLE)
+            ->set('value', 'COALESCE(`value`, \'0\') + 1')
+            // No LIMIT: `parameter` is the primary key, so at most one row can match anyway.
+            ->where('parameter = :parameter')
+            ->where('COALESCE(`value`, \'0\') + 0 < :limit')
+            ->bindValues(['parameter' => $param, 'limit' => $limit]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the config parameter'));
+
+        return $this->db->runQuery($queryData);
+    }
+
+    /**
      * @param ConfigModel $config
      *
      * @return QueryResult<Simple>

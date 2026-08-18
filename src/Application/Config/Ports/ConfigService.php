@@ -58,5 +58,16 @@ interface ConfigService
      * @throws ConstraintException
      * @throws QueryException
      */
+    /**
+     * Counts one against a numeric parameter, and says whether there was room for it.
+     *
+     * The increment and the limit check are one statement in the repository, so requests arriving
+     * together each count, rather than all writing back the same number they all read.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function incrementIfBelow(string $param, int $limit): bool;
+
     public function save(string $param, string $value): bool;
 }

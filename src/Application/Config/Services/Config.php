@@ -120,6 +120,21 @@ final class Config extends Service implements ConfigService
      * @throws ConstraintException
      * @throws QueryException
      */
+    /**
+     * Counts one against a numeric parameter, and says whether there was room for it.
+     *
+     * False means the limit had already been reached — or the parameter is not there at all, which
+     * for a counter that is created alongside what it guards means the same thing: nothing left to
+     * spend.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function incrementIfBelow(string $param, int $limit): bool
+    {
+        return $this->configRepository->incrementIfBelow($param, $limit)->getAffectedNumRows() === 1;
+    }
+
     public function save(string $param, string $value): bool
     {
         $config = new ConfigModel(['parameter' => $param, 'value' => $value]);

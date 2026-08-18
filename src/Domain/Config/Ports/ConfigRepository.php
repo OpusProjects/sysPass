@@ -40,6 +40,19 @@ use SP\Domain\Common\Dtos\QueryResult;
 interface ConfigRepository extends Repository
 {
     /**
+     * Counts one against a numeric parameter, unless it has already reached the limit.
+     *
+     * The increment and the comparison are one statement, so an attempt cannot be lost to another
+     * request reading the same number at the same moment.
+     *
+     * @return QueryResult<Simple> with one row affected when the attempt was counted, and none
+     *                             when the parameter is missing or already at the limit
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function incrementIfBelow(string $param, int $limit): QueryResult;
+
+    /**
      * @param ConfigModel $config
      *
      * @return QueryResult<Simple>

@@ -220,6 +220,13 @@ A few harness details bite when writing an integration test against a real branc
 - **Two test processes sharing the fixture database produce failures that are not yours.** A red
   integration run while an agent or another shell is mid-run is contention until proven otherwise —
   re-run it alone before believing it.
+- **Editing `src` while a suite is running invalidates the run, and it comes back green.** PHP loads
+  each class the first time something asks for it, so tests that ran before the edit used the old
+  code and everything after it used the new: the result describes neither version. Unlike the
+  contention above, there is no red to notice — an unrelated change can be "verified" by a run that
+  never executed it. Let the run finish, or kill it (inside the container — see the gotcha above)
+  and start again. `git stash push -- <the other change's files>` is how to get one change verified
+  on its own when two of them are in the tree.
 - **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
@@ -301,6 +308,18 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 - Repos build SQL with **Aura.SqlQuery** via `$this->queryFactory`. `->set($col, $rawExpr)` injects a
   **RAW, unquoted** expression (`'NOW()'`, `0`, `"''"` for an empty string — *not* `''`, which yields
   invalid SQL).
+- **"Raw" still goes past Aura's identifier quoter, which quotes whatever follows `AS`.**
+  `CAST(COALESCE(\`value\`, '0') AS UNSIGNED) + 1` is emitted as
+  ``CAST(COALESCE(`value`, '0') AS `UNSIGNED) + 1` `` — the rest of the expression is swallowed into
+  a quoted identifier and the statement will not parse. The SQL is valid when run by hand, so it
+  reads as a database problem rather than a builder one; dump `$query->getStatement()` before
+  believing either. Write the expression without `AS`: `COALESCE(\`value\`, '0') + 1` casts just as
+  well for arithmetic.
+- **A numeric comparison against a varchar column needs the column side forced numeric.** `Config`
+  stores everything as text, so `value < :limit` compares as text when both sides are strings, and
+  `'10' < '3'` is true — a counter would pass a limit of 3 forever once it reached 10. `Database`
+  binds an int as `PDO::PARAM_INT`, which settles it, but `+ 0` on the column makes it independent
+  of how the value happens to arrive.
 - **`Model::toArray()` includes relation/non-column properties** (e.g. `UserGroup::$users`) — exclude
   them from insert `cols` or you get *"Unknown column"*.
 - A model property left **null** is inserted as `NULL` and **overrides a column's schema DEFAULT** —
@@ -436,6 +455,15 @@ says. The unit suite mocks the cache and passed twice while the application was 
   `CONFIG_BACKUP_RUN` tokens. Do not "harden" it by confining the path to `Path::BACKUP` — that
   breaks the documented, tested feature. (That an admin could target a web-accessible directory is
   operational guidance, not a code bug.)
+- **`ConfigBackup::configToJson()` calls `Serde::deserialize()` without naming a class, and that is
+  where it stays.** Restricting it to `ConfigData::class` was tried and reverted: a sysPass 3.2
+  backup holds `O:20:"SP\Config\ConfigData"`, a class this rewrite does not have, and the `is_a()`
+  arm throws before the `__PHP_Incomplete_Class` arm can deal with it — so the restriction turns
+  reading an old backup into a fatal error. The path that actually applies a backup, `restore()`,
+  **is** restricted, and this one only deserializes in order to re-serialize to JSON, over the
+  `config_backup` row the application itself wrote. Every other `unserialize()` in `src` passes
+  `allowed_classes`, and every other `Serde::deserialize()` names what it expects; this is the one
+  exception and it is deliberate.
 - **`jquery-ui` is in `package-lock.json` but not in `package.json` — not drift.** It is an
   `optionalDependencies` entry of `@selectize/selectize` (drag_drop plugin support), locked like
   any transitive dep (`npm ls jquery-ui` shows the chain; a fresh `npm install` keeps it). It is
