@@ -143,7 +143,11 @@ final class AccountSearchFilterDto
 
     public function setLimitStart(int $limitStart): AccountSearchFilterDto
     {
-        $this->limitStart = $limitStart;
+        // `start` and `rpp` come straight off the query string here, without passing through
+        // ItemSearchDto — and a negative one reached the server as `LIMIT -1 OFFSET -5`, which
+        // MariaDB answers with `ERROR 1064 ... syntax error`. A page nobody has is an empty page,
+        // not a database failure.
+        $this->limitStart = max(0, $limitStart);
 
         return $this;
     }
@@ -155,7 +159,7 @@ final class AccountSearchFilterDto
 
     public function setLimitCount(?int $limitCount): AccountSearchFilterDto
     {
-        $this->limitCount = $limitCount;
+        $this->limitCount = $limitCount === null ? null : max(0, $limitCount);
 
         return $this;
     }

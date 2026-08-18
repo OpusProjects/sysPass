@@ -32,14 +32,25 @@ use SP\Domain\Common\Providers\Filter;
  */
 class ItemSearchDto
 {
+    private readonly int $limitStart;
+    private readonly int $limitCount;
+
     public function __construct(
         private ?string       $searchString = null,
-        private readonly ?int $limitStart = 0,
-        private readonly ?int $limitCount = 0,
+        ?int                  $limitStart = 0,
+        ?int                  $limitCount = 0,
     ) {
         if (!empty($searchString)) {
             $this->searchString = Filter::safeSearchString($searchString);
         }
+
+        // How far into a list to start, and how much of it to take, both come from the query
+        // string — and a negative one reached the server as `LIMIT -1 OFFSET -5`, which is not
+        // SQL: MariaDB answers `ERROR 1064 ... syntax error`, so the page a caller asked for came
+        // back as a database failure rather than a page. Nothing was harmed, but nothing an
+        // ordinary request can say should end up as a syntax error either.
+        $this->limitStart = max(0, $limitStart ?? 0);
+        $this->limitCount = max(0, $limitCount ?? 0);
     }
 
     public function getSearchString(): ?string
