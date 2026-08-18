@@ -258,6 +258,14 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      */
     public function addLinkView(PublicLinkModel $publicLinkData): bool
     {
+        // The limit and the expiry are conditions of the update, not something checked beforehand.
+        // They used to be tested in PHP against a row that had already been read, so two requests
+        // arriving together on a link with one view left both passed the check and both were
+        // served — a link issued for a single view handed the account out twice. Here the server
+        // decides, and a link that is exhausted or expired matches no row.
+        //
+        // COALESCE because `countViews` is nullable: a NULL would make the comparison NULL and
+        // refuse a link that has simply never been followed.
         $query = $this->queryFactory
             ->newUpdate()
             ->table('PublicLink')
@@ -265,7 +273,9 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->set('totalCountViews', '(totalCountViews + 1)')
             ->col('useInfo', $publicLinkData->getUseInfo())
             ->where('hash = :hash')
-            ->bindValues(['hash' => $publicLinkData->getHash()]);
+            ->where('COALESCE(countViews, 0) < maxCountViews')
+            ->where('dateExpire > :now')
+            ->bindValues(['hash' => $publicLinkData->getHash(), 'now' => time()]);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the link'));
 

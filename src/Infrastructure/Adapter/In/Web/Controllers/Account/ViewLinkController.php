@@ -101,12 +101,13 @@ final class ViewLinkController extends AccountControllerBase
             logger(sprintf('Public link not found: %s', $hash));
         }
 
-        if ($publicLink !== null
-            && time() < $publicLink->getDateExpire()
-            && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
-        ) {
-            $this->publicLinkService->addLinkView($publicLink);
-
+        // Spending the view is what decides whether to serve. The expiry and the view limit used
+        // to be tested here, against a row that had already been read, and the counter was then
+        // incremented — so two requests arriving together on a link with one view left both got
+        // past the test and both were served. A link issued to be followed once handed the
+        // account out twice. Both conditions now live in that update, and it reports whether it
+        // applied.
+        if ($publicLink !== null && $this->publicLinkService->addLinkView($publicLink)) {
             $this->accountService->incrementViewCounter($publicLink->getItemId());
             $this->accountService->incrementDecryptCounter($publicLink->getItemId());
 

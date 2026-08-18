@@ -114,13 +114,17 @@ interface PublicLinkService
     public function getAll(): array;
 
     /**
-     * Increments the visit counter of a link
+     * Records a view of a link, if it still has one to give.
+     *
+     * The view limit and the expiry are conditions of the update itself, so this is the moment the
+     * link is spent — and the answer is whether it was. False means the link was exhausted or had
+     * expired, and the caller must not hand out the account.
      *
      * @throws NoSuchItemException
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function addLinkView(PublicLink $publicLink): void;
+    public function addLinkView(PublicLink $publicLink): bool;
 
     /**
      * @throws SPException

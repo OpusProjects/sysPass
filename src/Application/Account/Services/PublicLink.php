@@ -279,7 +279,7 @@ final class PublicLink extends Service implements PublicLinkService
      * @throws QueryException
      * @throws ServiceException
      */
-    public function addLinkView(PublicLinkModel $publicLink): void
+    public function addLinkView(PublicLinkModel $publicLink): bool
     {
         $useInfo = [];
 
@@ -297,7 +297,16 @@ final class PublicLink extends Service implements PublicLinkService
 
         $useInfo[] = self::getUseInfo($publicLink->getHash(), $this->request);
 
-        $this->publicLinkRepository->addLinkView($publicLink->mutate(['useInfo' => Serde::serialize($useInfo)]));
+        // False when the link is exhausted or expired: the repository makes both conditions of the
+        // update, so this answers whether the view was actually recorded, and the caller must not
+        // hand out the account unless it was.
+        //
+        // The usage list itself is still assembled from the row as it was read, so two views
+        // landing together record one entry between them. The counter is exact — that is the one
+        // that decides access — while the list is a log.
+        return $this->publicLinkRepository->addLinkView(
+            $publicLink->mutate(['useInfo' => Serde::serialize($useInfo)])
+        );
     }
 
     /**

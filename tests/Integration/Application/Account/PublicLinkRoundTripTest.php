@@ -231,6 +231,88 @@ final class PublicLinkRoundTripTest extends TestCase
     }
 
     /**
+     * A copy of the link read before it was spent cannot be used to spend it again.
+     *
+     * This is the concurrent case, made deterministic. Two requests arriving together each read
+     * the row before either has written to it, so each holds a copy saying the link still has
+     * views left — and the check used to be made against that copy:
+     *
+     * ```php
+     * && $publicLink->getCountViews() < $publicLink->getMaxCountViews()
+     * ```
+     *
+     * Both passed, both were served, and a link issued for a single view handed the account out
+     * twice. Holding a stale copy is exactly what the second request has, so exhausting the link
+     * and then presenting the copy reproduces it without needing two processes.
+     *
+     * The limit and the expiry are conditions of the update now, so the server is what refuses,
+     * and a copy of any age cannot talk it round.
+     */
+    public function testAStaleCopyOfALinkCannotSpendItPastItsLimit(): void
+    {
+        $publicLinkService = $this->dic->get(PublicLinkServiceInterface::class);
+
+        $suffix = bin2hex(random_bytes(4));
+        $accountId = $this->createAccount('race-' . $suffix, 'RacePass!' . bin2hex(random_bytes(6)));
+
+        $hash = $this->createLinkFor($accountId);
+
+        // The copy the second request would be holding: read before anything has been spent.
+        $staleCopy = $publicLinkService->getByHash($hash);
+
+        $maxCountViews = $staleCopy->getMaxCountViews();
+        self::assertGreaterThan(0, $maxCountViews, 'setup: the configured view limit must be positive');
+
+        for ($view = 1; $view <= $maxCountViews; $view++) {
+            self::assertNotNull($this->followLink($hash), sprintf('setup: view %d should be allowed', $view));
+        }
+
+        self::assertFalse(
+            $publicLinkService->addLinkView($staleCopy),
+            'a copy read before the link was exhausted must not be able to spend it again'
+        );
+
+        self::assertSame(
+            $maxCountViews,
+            $publicLinkService->getByHash($hash)->getCountViews(),
+            'the refused attempt must not have moved the counter past the limit'
+        );
+    }
+
+    /**
+     * The same for an expiry that passed while the request was in flight.
+     *
+     * The expiry was the other half of the same check, read from the same stale copy, so it is
+     * refused by the same update rather than by a comparison made before it.
+     */
+    public function testALinkThatExpiresBeforeTheViewIsRecordedIsRefused(): void
+    {
+        $publicLinkService = $this->dic->get(PublicLinkServiceInterface::class);
+
+        $suffix = bin2hex(random_bytes(4));
+        $accountId = $this->createAccount('exp-' . $suffix, 'ExpPass!' . bin2hex(random_bytes(6)));
+
+        $hash = $this->createLinkFor($accountId);
+        $publicLink = $publicLinkService->getByHash($hash);
+
+        // Expire it behind the copy the request is holding, which still says it is good.
+        $statement = getDbHandler()->getConnection()
+                                   ->prepare('UPDATE `PublicLink` SET `dateExpire` = :expired WHERE `hash` = :hash');
+        $statement->execute(['expired' => time() - 1, 'hash' => $hash]);
+
+        self::assertGreaterThan(
+            time(),
+            $publicLink->getDateExpire(),
+            'setup: the copy in hand must still believe the link is live'
+        );
+
+        self::assertFalse(
+            $publicLinkService->addLinkView($publicLink),
+            'a link that expired before the view was recorded must not be spent'
+        );
+    }
+
+    /**
      * A link whose expiry has already passed does not yield the account either, even though it is
      * nowhere near its view limit. The expiry is moved into the past through
      * PublicLinkService::update() -- the same service the application uses to persist a link -- not
@@ -306,11 +388,12 @@ final class PublicLinkRoundTripTest extends TestCase
 
         $publicLink = $publicLinkService->getByHash($hash);
 
-        if (time() >= $publicLink->getDateExpire() || $publicLink->getCountViews() >= $publicLink->getMaxCountViews()) {
+        // Spending the view is the guard, exactly as the controller now has it: the expiry and the
+        // limit are conditions of the update, so this answers whether there was a view left to
+        // take. It used to be a pair of comparisons here, against the row just read.
+        if (!$publicLinkService->addLinkView($publicLink)) {
             return null;
         }
-
-        $publicLinkService->addLinkView($publicLink);
 
         $accountService->incrementViewCounter($publicLink->getItemId());
         $accountService->incrementDecryptCounter($publicLink->getItemId());

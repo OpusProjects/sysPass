@@ -42,6 +42,7 @@ use SP\Domain\Core\Events\EventReceiver;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Crypt\Vault;
 use SP\Infrastructure\Crypt\Crypt;
+use SP\Infrastructure\Database\QueryData;
 use SP\Infrastructure\Events\EventDispatcher;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
@@ -258,7 +259,31 @@ class ViewLinkRefusalsTest extends IntegrationTestCase
                                                  )
                                              );
 
-        $this->addDatabaseMapperResolver(PublicLink::class, new QueryResult([$publicLink]));
+        // Whether the link still has a view to give is decided by the update that spends it: its
+        // WHERE clause carries the limit and the expiry, so an exhausted or expired link matches
+        // no row and the update reports nothing affected. The double has to answer the way the
+        // server would, or a test for a refusal only shows that the fixture said "expired"
+        // somewhere — the guard it is aiming at moved out of PHP precisely so that two
+        // simultaneous requests cannot both pass it.
+        $spent = (int)($publicLink->getCountViews() ?? 0) >= (int)($publicLink->getMaxCountViews() ?? 0)
+                 || time() >= (int)$publicLink->getDateExpire();
+
+        // One resolver rather than a mapper resolver beside it: `databaseQueryResolver` is
+        // consulted first and short-circuits the mapper ones, so the read has to be answered here
+        // too. Not a static closure — the harness binds it with Closure::call().
+        $this->databaseQueryResolver = function (QueryData $queryData) use ($spent, $publicLink): QueryResult {
+            $statement = $queryData->getQuery()->getStatement();
+
+            if (str_contains($statement, 'UPDATE') && str_contains($statement, 'PublicLink')) {
+                return new QueryResult([], $spent ? 0 : 1);
+            }
+
+            if ($queryData->getMapClassName() === PublicLink::class) {
+                return new QueryResult([$publicLink]);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
     }
 
     /**
