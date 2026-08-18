@@ -146,6 +146,49 @@ class SchemaEnforcesIdentityTest extends TestCase
     }
 
     /**
+     * A name the application holds unique is unique in the database too.
+     *
+     * `UserProfile` and `UserGroup` each refuse a name that is already taken —
+     * `UPPER(:name) = UPPER(name)` in `checkDuplicatedOnAdd()` — and neither table had any unique
+     * index at all. That check is a SELECT followed by an INSERT, so two requests arriving
+     * together both find nothing and both insert, and there was nothing underneath to stop the
+     * second: two groups called Admins, and no way to tell which one a permission refers to.
+     *
+     * A plain unique index is the application's rule exactly, because `name` collates
+     * `utf8mb4_unicode_ci` — 'Admins' and 'ADMINS' collide, which is what `UPPER()` was asking
+     * for.
+     *
+     * @return array<string, array{string, string}>
+     */
+    public static function uniqueNameProvider(): array
+    {
+        return [
+            'UserProfile' => ['UserProfile', 'name'],
+            'UserGroup' => ['UserGroup', 'name'],
+            'Category' => ['Category', 'hash'],
+            'Client' => ['Client', 'hash'],
+            'Tag' => ['Tag', 'hash'],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('uniqueNameProvider')]
+    public function whatTheApplicationHoldsUniqueTheDatabaseHoldsUnique(string $table, string $column): void
+    {
+        self::assertMatchesRegularExpression(
+            sprintf('/UNIQUE KEY\s+`[^`]+`\s*\(`%s`\)/', preg_quote($column, '/')),
+            self::tableDefinition($table),
+            sprintf(
+                '%s.%s is refused as a duplicate by the repository, with a SELECT before the '
+                . 'INSERT that two concurrent requests both pass. Only a unique index stops the '
+                . 'second one.',
+                $table,
+                $column
+            )
+        );
+    }
+
+    /**
      * Every table is utf8mb4, so text somebody actually types can be stored.
      *
      * The schema was utf8mb3 throughout — three bytes per character, which cannot hold anything
