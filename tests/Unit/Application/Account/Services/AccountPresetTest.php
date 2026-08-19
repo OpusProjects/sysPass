@@ -224,6 +224,114 @@ class AccountPresetTest extends UnitaryTestCase
     }
 
     /**
+     * The lifetime cap survives an edit, and asks nothing about the password.
+     *
+     * The clamp used to live only in `checkPasswordPreset()`, which is called where a password is
+     * being set — creating an account, copying one, changing its password. Editing an account
+     * writes `passDateChange` just the same, from a field the form offers, and none of those paths
+     * clamped it: an account created under a ninety-day policy could be edited a moment later to
+     * expire in a decade, and bulk edit could do it to a selection at once.
+     *
+     * The password validator must not run here. An edit carries no password, and
+     * `PasswordValidator::validate()` measures `mb_strlen('')` against the required length and
+     * throws — so validating would refuse every edit while a fixed preset existed. `expects(never())`
+     * is the point of this test as much as the clamp is.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordExpiryClampsAnEditWithoutValidatingThePassword(): void
+    {
+        $expireDays = self::$faker->numberBetween(1, 30);
+        $expireTimePreset = $expireDays * Password::EXPIRE_TIME_MULTIPLIER;
+
+        $itemPreset = ItemPresetDataGenerator::factory()
+            ->buildItemPresetData($this->buildPasswordPresetWithExpireDays($expireDays))
+            ->mutate(['fixed' => 1]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD)
+            ->willReturn($itemPreset);
+
+        $this->passwordValidator
+            ->expects(self::never())
+            ->method('validate');
+
+        // An edit: no password, and a deadline further out than the policy allows.
+        $accountDto = AccountDataGenerator::factory()->buildAccountUpdateDto()
+                                          ->mutate([
+                                              'pass' => '',
+                                              'passDateChange' => time() + $expireTimePreset + 31536000,
+                                          ]);
+
+        $before = time();
+        $out = $this->accountPreset->checkPasswordExpiry($accountDto);
+        $after = time();
+
+        self::assertGreaterThanOrEqual($before + $expireTimePreset, $out->passDateChange);
+        self::assertLessThanOrEqual($after + $expireTimePreset, $out->passDateChange);
+    }
+
+    /**
+     * A deadline already stricter than the policy is left alone by the edit path too.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordExpiryLeavesAStricterDeadlineAlone(): void
+    {
+        $expireDays = self::$faker->numberBetween(10, 30);
+
+        $itemPreset = ItemPresetDataGenerator::factory()
+            ->buildItemPresetData($this->buildPasswordPresetWithExpireDays($expireDays))
+            ->mutate(['fixed' => 1]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->willReturn($itemPreset);
+
+        $stricter = time() + 60;
+
+        $out = $this->accountPreset->checkPasswordExpiry(
+            AccountDataGenerator::factory()->buildAccountUpdateDto()->mutate(['passDateChange' => $stricter])
+        );
+
+        self::assertSame($stricter, $out->passDateChange, 'the cap is a ceiling, not a floor');
+    }
+
+    /**
+     * A preset that is not fixed is a suggestion, and an edit is left as it was.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCheckPasswordExpiryIgnoresAPresetThatIsNotFixed(): void
+    {
+        $itemPreset = ItemPresetDataGenerator::factory()
+            ->buildItemPresetData($this->buildPasswordPresetWithExpireDays(1))
+            ->mutate(['fixed' => 0]);
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->willReturn($itemPreset);
+
+        $wanted = time() + 31536000;
+
+        $out = $this->accountPreset->checkPasswordExpiry(
+            AccountDataGenerator::factory()->buildAccountUpdateDto()->mutate(['passDateChange' => $wanted])
+        );
+
+        self::assertSame($wanted, $out->passDateChange);
+    }
+
+    /**
      * A "fixed" preset's expiry acts as a CEILING, not a floor: a deadline that is
      * already earlier (stricter) than the policy's limit must be left untouched.
      *

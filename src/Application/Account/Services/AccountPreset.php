@@ -79,20 +79,70 @@ final class AccountPreset extends Service implements AccountPresetService
             if ($passwordPreset !== null) {
                 $this->passwordValidator->validate($passwordPreset, $accountDto->pass);
 
-                if ($this->configData->isAccountExpireEnabled()) {
-                    $expireTimePreset = $passwordPreset->getExpireTime();
-
-                    if ($expireTimePreset > 0) {
-                        $maxPassDateChange = time() + $expireTimePreset;
-
-                        if (empty($accountDto->passDateChange)
-                            || $accountDto->passDateChange > $maxPassDateChange
-                        ) {
-                            return $accountDto->withPassDateChange($maxPassDateChange);
-                        }
-                    }
-                }
+                return $this->clampToPolicyLifetime($accountDto, $passwordPreset);
             }
+        }
+
+        return $accountDto;
+    }
+
+    /**
+     * Holds an account to the policy's password lifetime, without asking about the password.
+     *
+     * The lifetime a fixed preset sets is a maximum, and it used to be applied only where a
+     * password was being set — creating an account, copying one, changing its password. Editing
+     * the account writes `passDateChange` just the same, from a field the form offers, and none of
+     * those paths clamped it: an account created under a ninety-day policy could be edited a
+     * moment later to expire in a decade. Bulk edit could do it to a selection at once.
+     *
+     * Separate from `checkPasswordPreset()` because that also validates the password against the
+     * preset, and an edit legitimately carries none — `PasswordValidator::validate()` measures
+     * `mb_strlen('')` against the required length and throws, so calling the whole check here
+     * would refuse every edit while a fixed preset existed.
+     *
+     * @template T of AccountDto
+     * @param T $accountDto
+     * @return T
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function checkPasswordExpiry(AccountDto $accountDto): AccountDto
+    {
+        $itemPreset = $this->itemPresetService->getForCurrentUser(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PASSWORD);
+
+        if ($itemPreset === null || $itemPreset->getFixed() !== 1) {
+            return $accountDto;
+        }
+
+        $passwordPreset = $itemPreset->hydrate(Password::class);
+
+        return $passwordPreset === null
+            ? $accountDto
+            : $this->clampToPolicyLifetime($accountDto, $passwordPreset);
+    }
+
+    /**
+     * @template T of AccountDto
+     * @param T $accountDto
+     * @return T
+     */
+    private function clampToPolicyLifetime(AccountDto $accountDto, Password $passwordPreset): AccountDto
+    {
+        if (!$this->configData->isAccountExpireEnabled()) {
+            return $accountDto;
+        }
+
+        $expireTimePreset = $passwordPreset->getExpireTime();
+
+        if ($expireTimePreset <= 0) {
+            return $accountDto;
+        }
+
+        $maxPassDateChange = time() + $expireTimePreset;
+
+        if (empty($accountDto->passDateChange) || $accountDto->passDateChange > $maxPassDateChange) {
+            return $accountDto->withPassDateChange($maxPassDateChange);
         }
 
         return $accountDto;

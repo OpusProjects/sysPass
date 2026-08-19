@@ -59,6 +59,11 @@ final class EditController extends AccountBase
             )
         );
 
+        // The expiry only, not the whole preset check: an edit carries no password, and
+        // validating one against the policy would refuse every edit while a fixed preset existed.
+        // The lifetime a fixed preset sets is a maximum, and `expireDate` is a parameter here.
+        $accountUpdateDto = $this->accountPresetService->checkPasswordExpiry($accountUpdateDto);
+
         $this->accountService->update($accountUpdateDto->id, $accountUpdateDto);
 
         $accountDetails = $this->accountService->getByIdEnriched($accountUpdateDto->id);
