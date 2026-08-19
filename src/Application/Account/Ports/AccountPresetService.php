@@ -47,6 +47,22 @@ interface AccountPresetService
     public function checkPasswordPreset(AccountDto $accountDto): AccountDto;
 
     /**
+     * Holds an account to the policy's password lifetime, without asking about the password.
+     *
+     * For the paths that change an account without setting a password: they write
+     * `passDateChange` from a field the form offers, and the cap a fixed preset sets is a maximum
+     * that has to survive an edit. Separate from `checkPasswordPreset()` because that validates
+     * the password too, and an edit legitimately carries none.
+     *
+     * @template T of AccountDto
+     * @param T $accountDto
+     * @return T
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function checkPasswordExpiry(AccountDto $accountDto): AccountDto;
+
+    /**
      * @throws QueryException
      * @throws ConstraintException
      * @throws NoSuchPropertyException

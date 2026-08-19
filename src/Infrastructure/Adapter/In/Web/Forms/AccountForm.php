@@ -82,6 +82,10 @@ final class AccountForm extends FormBase implements FormInterface
             AclActionsInterface::ACCOUNT_EDIT =>
             $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                   ->next(fn(AccountDto $dto) => $this->checkCommon($dto))
+                  // The expiry only, not the whole preset check: an edit carries no password, and
+                  // validating one against the policy would refuse every edit. The lifetime a
+                  // fixed preset sets is a maximum, and the form offers the field.
+                  ->next(fn(AccountDto $dto) => $this->accountPresetService->checkPasswordExpiry($dto))
                   ->resolve(),
             AclActionsInterface::ACCOUNT_CREATE,
             AclActionsInterface::ACCOUNT_COPY =>
@@ -97,6 +101,8 @@ final class AccountForm extends FormBase implements FormInterface
             AclActionsInterface::ACCOUNTMGR_BULK_EDIT =>
             $chain->next(fn(AccountDto $dto) => $this->analyzeItems($dto))
                   ->next(fn(AccountDto $dto) => $this->analyzeBulkEdit($dto))
+                  // Bulk edit writes passDateChange for every account in the selection.
+                  ->next(fn(AccountDto $dto) => $this->accountPresetService->checkPasswordExpiry($dto))
                   ->resolve(),
             // Guard the public FormInterface contract: an unexpected action must fail as a
             // handled validation error, not an \UnhandledMatchError (a 500 for the client).

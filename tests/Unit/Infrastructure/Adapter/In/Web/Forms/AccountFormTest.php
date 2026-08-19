@@ -76,6 +76,7 @@ final class AccountFormTest extends UnitaryTestCase
 
         $accountPresetService = $this->createMock(AccountPresetService::class);
         $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
 
         $form = new AccountForm($this->application, $request, $accountPresetService);
 
@@ -115,6 +116,7 @@ final class AccountFormTest extends UnitaryTestCase
 
         $accountPresetService = $this->createMock(AccountPresetService::class);
         $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
 
         $form = new AccountForm($this->application, $request, $accountPresetService);
 
@@ -207,6 +209,7 @@ final class AccountFormTest extends UnitaryTestCase
     {
         $accountPresetService = $this->createStub(AccountPresetService::class);
         $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
 
         $form = new AccountForm(
             $this->application,
@@ -229,6 +232,7 @@ final class AccountFormTest extends UnitaryTestCase
     {
         $accountPresetService = $this->createStub(AccountPresetService::class);
         $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
 
         $form = new AccountForm(
             $this->application,
@@ -326,6 +330,7 @@ final class AccountFormTest extends UnitaryTestCase
     {
         $accountPresetService = $this->createStub(AccountPresetService::class);
         $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
+        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
 
         return new AccountForm($this->application, $request, $accountPresetService);
     }
