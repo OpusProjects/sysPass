@@ -128,7 +128,7 @@ gotchas (the image provides these):
 
 ### Coverage: what is covered, and what deliberately is not
 
-Line coverage is **96.63%** (`21973/22740`). Measure it by installing pcov in the container
+Line coverage is **97.20%** (`22268/22910`). Measure it by installing pcov in the container
 (`pecl install pcov && docker-php-ext-enable pcov` — the enable step is separate, and a previous
 session's `pecl install` leaves it *installed but disabled*, so a `pecl list | grep pcov` guard
 skips it and every file reports zero), running both suites with `--coverage-clover`, and removing
@@ -140,9 +140,9 @@ worst 2 — the Web `Forms/`), so a merge that treats "absent from one report" a
 overstates those files. Confirm a per-file gap with a
 focused `--coverage-clover` run before sending anyone to fix it: that file is at 100%.
 
-The remaining 767 statements are not a backlog to burn down uniformly. What is left:
+The remaining 642 statements are not a backlog to burn down uniformly. What is left:
 
-- **Bootstrap (~90 statements).** `Base.php`, `Definitions/CoreDefinitions.php`, `Adapter/In/Cli/Init.php`,
+- **Bootstrap (72 statements).** `Base.php`, `Definitions/CoreDefinitions.php`, `Adapter/In/Cli/Init.php`,
   `Bootstrap/BootstrapBase.php`. These run *before* the container the tests build — `Base.php` is
   what constructs it — or are wiring the entry point exercises live. The containers themselves are
   compiled in the suite (`CompilableContainerTest`), which is what catches the failure mode that
@@ -232,8 +232,8 @@ A few harness details bite when writing an integration test against a real branc
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
 
-The rest is mostly, but not entirely, a long tail: of the 767 uncovered statements across **271**
-files, **302 sit in 199 files missing three statements or fewer** — individual error branches,
+The rest is mostly, but not entirely, a long tail: of the 642 uncovered statements across **262**
+files, **303 sit in 200 files missing three statements or fewer** — individual error branches,
 rarely-hit conditionals and unused accessors, worth picking off when touching the surrounding code
 and not worth a campaign.
 
@@ -437,6 +437,58 @@ without the change has not been shown to test it.
 **Only the integration suite sees the wiring.** Restricting `FileCache::load()` broke `Action[]` and
 `MimeType[]` — both read as plain arrays from their variable names, and neither is what the docblock
 says. The unit suite mocks the cache and passed twice while the application was broken.
+
+## Swept and clean — where the defects are not
+
+The other half of the record above. Each of these was swept exhaustively and came back clean, so a
+later session can start somewhere else instead of re-deriving them. A lens listed here was checked
+against the code as it stood, not reasoned about: where a claim needed a fact, the fact was measured.
+
+- **Injection.** Every `where()` clause carrying a variable also carries a `:placeholder` — none
+  interpolate. `ORDER BY` is a `match` over constants with a `default`, so a caller's sort key can
+  only be a fixed literal. An array bound to `IN (:ids)` is expanded into one placeholder per
+  element, word-boundary guarded so `:id` cannot corrupt `:idOwner`. The only raw-SQL sites are
+  literal expressions (`->set()`) and the installer's `GRANT`, which `quote()`s every value and
+  escapes the LIKE wildcards in the database name.
+- **Path traversal on the `resource/css|js` route**, which takes a caller-supplied base directory
+  and file list and answers unauthenticated. `ResourceBase`'s constructor verifies an HMAC over
+  every query parameter, keyed by the password salt, before any action runs — so `b` and `f` cannot
+  be forged. `getSecureAppPath()` is the second layer, not the only one; on its own it would allow
+  `b=/config`, since `APP_ROOT` contains it.
+- **LDAP.** Every value reaching a filter goes through `ldap_escape(…, LDAP_ESCAPE_FILTER)`, in
+  `LdapUtil::getAttributesForFilter()` and in the one hand-built filter in
+  `LdapActions::searchGroupsDn()`. The unauthenticated-bind bypass is closed three times over:
+  `Login` rejects an empty password before any provider runs, `LdapConnection::connect()` uses `??`
+  so a provided-but-empty password is passed verbatim rather than falling back to the service
+  account's, and Laminas throws on an empty password with a username (`allowEmptyPassword` defaults
+  false and is never enabled here).
+- **Object-level authorisation.** Every API endpoint acting on an existing account calls
+  `checkAccountAccess()`; create has no account to check and search is scoped by
+  `AccountFilterUser` in the query. On the web, both `getPasswordView()` and `getPasswordClear()`
+  call `checkActionAccess()`, and `getPasswordForId()` / `getPasswordHistoryForId()` build through
+  `AccountFilterUser` and throw when the row is not visible. History metadata is the exception that
+  proves it: its query *cannot* be filtered, because history has to outlive the account it
+  describes, so `AccountHistoryHelper::checkAccess()` enforces the ACL instead.
+- **Deserialization.** Every `unserialize()` in `src` passes `allowed_classes`, and every
+  `Serde::deserialize()` names the class it expects — bar `ConfigBackup::configToJson()`, recorded
+  below with the reason.
+- **Foreign keys.** Nine tables have `*Id` columns without one, and each is explained: polymorphic
+  targets (`moduleId`/`itemId`), ids from `actions.yaml` rather than a table (`AuthToken.actionId`),
+  history that outlives its account, audit rows that must survive a user's deletion
+  (`EventLog.userId`, `Track.userId` — an FK there would make a user undeletable), and `parentId`'s
+  `0` sentinel, which no FK can represent.
+- **Import.** The whole import runs inside `transactionAware`, so a failure rolls all of it back.
+  Accounts are created through `AccountService::create()`, so presets, permissions and history
+  apply; ownership comes from the import parameters. CSV refuses a row whose field count is wrong
+  rather than building a partial account.
+- **Deployment layout.** `DocumentRoot` is `public/`, so `config/config.xml` and `var/backup` are
+  not reachable: a request for them falls through the rewrite to the login redirect while genuine
+  assets under `public/` are served directly.
+- **Also checked and sound:** the privacy and permission presets are applied on both create and
+  update (and bulk edit cannot write `isPrivate`); the config cache invalidates on the config file's
+  mtime and is rewritten at save; a custom field's value is read as encrypted or not according to
+  **the row**, not the definition's current flag, so toggling the flag cannot corrupt existing
+  values; and every date comparison found compares epoch against epoch.
 
 ## Known non-issues — audited, do NOT "fix"
 
