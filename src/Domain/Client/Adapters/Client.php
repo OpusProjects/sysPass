@@ -33,6 +33,7 @@ use SP\Domain\Common\Models\Model;
 use SP\Domain\Common\Providers\Link;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
@@ -60,10 +61,11 @@ final class Client extends Adapter implements ClientAdapter
     public function __construct(
         ConfigDataInterface                     $configData,
         string                                  $baseUrl,
+        AclInterface                      $acl,
         private readonly CustomFieldDataService $customFieldDataService,
         private readonly ActionsInterface       $actions
     ) {
-        parent::__construct($configData, $baseUrl);
+        parent::__construct($configData, $baseUrl, $acl);
     }
 
     /**
@@ -76,7 +78,7 @@ final class Client extends Adapter implements ClientAdapter
     {
         return $this->collection(
             $this->getCustomFieldsForItem(AclActionsInterface::CLIENT, $client->getId(), $this->customFieldDataService),
-            new CustomField($this->configData, $this->baseUrl)
+            new CustomField($this->configData, $this->baseUrl, $this->acl)
         );
     }
 

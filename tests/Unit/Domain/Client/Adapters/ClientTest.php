@@ -32,6 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Client\Adapters\Client;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
@@ -61,6 +62,7 @@ class ClientTest extends UnitaryTestCase
         $adapter = new Client(
             $this->config->getConfigData(),
             'testUrl',
+            $this->createStub(AclInterface::class),
             $this->customFieldDataService,
             $this->actions
         );
@@ -94,6 +96,7 @@ class ClientTest extends UnitaryTestCase
         $adapter = new Client(
             $this->config->getConfigData(),
             'testUrl',
+            $this->createStub(AclInterface::class),
             $this->customFieldDataService,
             $this->actions
         );
