@@ -72,6 +72,8 @@ final class ExportController extends ControllerBase
     {
         $this->setupApi(AclActionsInterface::CONFIG_EXPORT_RUN);
 
+        $this->denyOnDemo();
+
         $password = $this->apiService->getParamString('password');
         $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 

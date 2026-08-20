@@ -18,6 +18,8 @@ final class EditController extends UserBase
         $this->setupApi(AclActionsInterface::USER_EDIT);
 
         $userData = $this->buildUserData();
+
+        $this->denyOnDemoUser($userData->getId());
         $this->userService->update($userData);
 
         $this->eventDispatcher->notify(new Event(

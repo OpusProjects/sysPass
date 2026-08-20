@@ -407,6 +407,21 @@ whole read-modify-write, `countViews + 1` is arithmetic the server does. **Ask w
 taken and where the change lands; if they are not the same statement, work out what fits between
 them.**
 
+**The same rule, asked at the other door.** Every rule here has two ways in — the web and the API,
+and often a create path and an edit path — and it is reliably enforced at the one that was written
+first. A rule that is *in a form* is the strongest tell, because the API has no forms: `UserForm`
+refused to touch the demo account and to change a password past its policy lifetime, and the REST
+user and account endpoints did neither. Custom-field values were masked for a caller without
+`CUSTOMFIELD_VIEW_PASS` in the web's view and handed over in full by the API's. Demo mode was
+enforced in five web config actions and mentioned nowhere on the API at all — the sharpest case,
+because a demo publishes its administrator's credentials, so the ACL stops nobody and that guard is
+the whole boundary. Search paging clamped a negative offset in one of the two DTOs that carry one.
+
+**Take a rule you can see being enforced and go looking for its other door.** When you find the gap,
+put the check somewhere both doors reach — a shared base method, or the service under them — rather
+than a second copy that will drift; and move the constant it compares against out of whichever one
+owned it privately.
+
 **The wiring, not the code.** php-di skips a constructor parameter that has a default *even when the
 container has a binding for its type*, silently. `Init::$sessionKeyService` was null that way, so
 `reKey()` — and the `session_regenerate_id()` inside it — never ran, and session identifiers were
