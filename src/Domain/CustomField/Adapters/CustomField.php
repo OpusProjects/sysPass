@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\CustomField\Adapters;
 
 use SP\Domain\Common\Adapters\Adapter;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Common\Dtos\Dto;
 use SP\Domain\CustomField\Ports\CustomFieldAdapter;
 use SP\Domain\CustomField\Services\CustomFieldItem;
@@ -35,6 +36,9 @@ use SP\Domain\CustomField\Services\CustomFieldItem;
  */
 final class CustomField extends Adapter implements CustomFieldAdapter
 {
+    /** What the theme prints in place of a value the viewer may not see. */
+    public const MASKED = '***';
+
     /**
      * @param CustomFieldItem $data
      * @return array<string, mixed>
@@ -47,9 +51,33 @@ final class CustomField extends Adapter implements CustomFieldAdapter
             'definitionId' => $data->definitionId,
             'definitionName' => $data->definitionName,
             'help' => $data->help,
-            'value' => $data->value,
+            'value' => $this->valueFor($data),
             'encrypted' => $data->isEncrypted,
             'required' => $data->required,
         ];
+    }
+
+    /**
+     * The value, or what the interface would show in its place.
+     *
+     * `ItemTrait::getCustomFieldsForItem()` decrypts a stored value whenever the row carries a
+     * key, without asking who is looking — the deciding is left to whoever renders it. The theme
+     * does decide: `aux-customfields.inc` prints `***` unless `showViewCustomPass`, which
+     * `AccountHelper` sets from the account's own view-password permission. Nothing decided here,
+     * so `account/view?customFields=1` answered with the decrypted value — on a token for
+     * `account/view`, an action the API otherwise keeps apart from `account/viewPass` precisely
+     * because one of them hands out secrets.
+     *
+     * A field that was never encrypted is not a secret and is returned as it is.
+     */
+    private function valueFor(CustomFieldItem $data): ?string
+    {
+        if (!$data->isValueEncrypted) {
+            return $data->value;
+        }
+
+        return $this->acl->checkUserAccess(AclActionsInterface::CUSTOMFIELD_VIEW_PASS)
+            ? $data->value
+            : self::MASKED;
     }
 }

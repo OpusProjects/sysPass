@@ -27,6 +27,7 @@ namespace SP\Domain\Common\Adapters;
 
 use League\Fractal\TransformerAbstract;
 use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Acl\AclInterface;
 
 /**
  * Class Adapter
@@ -35,7 +36,8 @@ abstract class Adapter extends TransformerAbstract
 {
     public function __construct(
         protected readonly ConfigDataInterface $configData,
-        protected readonly string              $baseUrl
+        protected readonly string              $baseUrl,
+        protected readonly AclInterface        $acl
     ) {
     }
 

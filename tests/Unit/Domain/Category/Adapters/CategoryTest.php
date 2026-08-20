@@ -32,6 +32,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Category\Adapters\Category;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\ActionNotFoundException;
 use SP\Domain\Core\Acl\ActionsInterface;
@@ -61,6 +62,7 @@ class CategoryTest extends UnitaryTestCase
         $adapter = new Category(
             $this->config->getConfigData(),
             'testUrl',
+            $this->createStub(AclInterface::class),
             $this->customFieldDataService,
             $this->actions
         );
@@ -93,6 +95,7 @@ class CategoryTest extends UnitaryTestCase
         $adapter = new Category(
             $this->config->getConfigData(),
             'testUrl',
+            $this->createStub(AclInterface::class),
             $this->customFieldDataService,
             $this->actions
         );
