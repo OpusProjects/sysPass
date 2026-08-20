@@ -79,10 +79,6 @@ abstract class ControllerBase
     }
 
     /**
-     * @throws SPException
-     * @throws ServiceException
-     */
-    /**
      * Demo mode makes an instance refuse to change or copy itself. The web enforces that in five
      * config actions and in `UserForm`; nothing on the API surface mentioned demo mode at all.
      *
@@ -115,6 +111,10 @@ abstract class ControllerBase
         }
     }
 
+    /**
+     * @throws SPException
+     * @throws ServiceException
+     */
     final protected function setupApi(int $actionId): void
     {
         $this->apiService->setup($actionId);
