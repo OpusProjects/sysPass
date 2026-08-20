@@ -170,9 +170,7 @@ final class AuthToken extends Service implements AuthTokenService
      */
     private function injectSecureData(AuthTokenModel $authToken, string $token): AuthTokenModel
     {
-        if (self::isSecuredAction($authToken->getActionId())
-            || self::canUseSecureTokenAction($authToken->getActionId())
-        ) {
+        if (self::needsSecureToken($authToken->getActionId())) {
             $properties = [
                 'vault' => $this->getSecureData($token, $authToken->getHash() ?? '')->getSerialized(),
                 'hash' => Hash::hashKey($authToken->getHash() ?? '')
@@ -187,6 +185,23 @@ final class AuthToken extends Service implements AuthTokenService
         $properties['createdBy'] = $this->context->getUserData()->id;
 
         return $authToken->mutate($properties);
+    }
+
+    /**
+     * Whether a token for this action carries a vault: the master password, sealed with the
+     * token's own password and the token itself.
+     *
+     * Both lists mean that, and anything asking the administrator for a token password has to ask
+     * exactly when one will be built. `AuthTokenForm` asked only for `isSecuredAction()`, so a
+     * token for one of the three `CAN_USE_SECURE_TOKEN_ACTIONS` could be created with the field
+     * left blank — and the vault was then sealed with the empty string. Nothing can open it:
+     * `Api::getMasterPassFromVault()` reads `tokenPass` as a required parameter, which refuses the
+     * empty string, so the one password that would work cannot be presented. The token was issued,
+     * reported as created, and permanently unable to do the thing it was issued for.
+     */
+    public static function needsSecureToken(int $action): bool
+    {
+        return self::isSecuredAction($action) || self::canUseSecureTokenAction($action);
     }
 
     public static function isSecuredAction(int $action): bool

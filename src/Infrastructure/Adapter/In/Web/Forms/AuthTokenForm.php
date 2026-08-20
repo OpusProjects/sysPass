@@ -103,7 +103,7 @@ final class AuthTokenForm extends FormBase implements FormInterface
         }
 
         if (empty($this->authTokenData->getHash())
-            && (AuthTokenService::isSecuredAction($this->authTokenData->getActionId())
+            && (AuthTokenService::needsSecureToken($this->authTokenData->getActionId())
                 || $this->isRefresh())
         ) {
             throw new ValidationException(__u('Password cannot be blank'));

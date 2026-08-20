@@ -244,7 +244,7 @@ final class UserFormTest extends UnitaryTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Ey, this is a DEMO!!');
 
-        $form->validateFor(AclActionsInterface::USER_EDIT, self::DEMO_ADMIN_USER_ID);
+        $form->validateFor(AclActionsInterface::USER_EDIT, User::DEMO_ADMIN_ID);
     }
 
     /**
@@ -310,7 +310,7 @@ final class UserFormTest extends UnitaryTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Ey, this is a DEMO!!');
 
-        $form->validateFor(AclActionsInterface::USER_EDIT_PASS, self::DEMO_ADMIN_USER_ID);
+        $form->validateFor(AclActionsInterface::USER_EDIT_PASS, User::DEMO_ADMIN_ID);
     }
 
     /**
@@ -326,7 +326,7 @@ final class UserFormTest extends UnitaryTestCase
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Ey, this is a DEMO!!');
 
-        $form->validateFor(AclActionsInterface::USER_DELETE, self::DEMO_ADMIN_USER_ID);
+        $form->validateFor(AclActionsInterface::USER_DELETE, User::DEMO_ADMIN_ID);
     }
 
     /**
@@ -347,8 +347,6 @@ final class UserFormTest extends UnitaryTestCase
 
     // ── helpers ──────────────────────────────────────────────────────────────
 
-    /** Mirrors UserForm::DEMO_ADMIN_USER_ID (private const, not reachable from the test). */
-    private const int DEMO_ADMIN_USER_ID = 2;
 
     private function buildForm(?int $itemId = null): UserForm
     {
@@ -358,7 +356,7 @@ final class UserFormTest extends UnitaryTestCase
     /**
      * Builds an Application whose config has the demo mode enabled and whose
      * actor is an app-admin — the two preconditions UserForm::isDemo() needs
-     * besides the target itemId matching DEMO_ADMIN_USER_ID.
+     * besides the target itemId matching User::DEMO_ADMIN_ID.
      */
     private function buildDemoAdminApplication(): Application
     {
