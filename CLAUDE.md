@@ -422,6 +422,18 @@ put the check somewhere both doors reach — a shared base method, or the servic
 than a second copy that will drift; and move the constant it compares against out of whichever one
 owned it privately.
 
+**One of the siblings already gets it right.** Where a small family of near-identical methods does
+the same job for different types, the correct one is usually already there, and reading it settles
+the design before you invent one. The API's four parameter readers are the case: `getParamArray()`
+checked the type it had been sent and answered `Wrong parameters` with a 400, while `getParamInt()`,
+`getParamString()` and `getParamRaw()` each handed the value straight to something typed — so
+`{"name": 123}` was a `TypeError` escaping as a 500 with the class, the method and the server's
+absolute path in the body, on every string and integer parameter of every endpoint. The same value
+in a query string was fine, since everything arrives as a string there.
+
+**Find the sibling that is right before deciding what right means** — and once the rule is shared,
+have the one that already had it defer to the shared copy, or there are two definitions again.
+
 **The wiring, not the code.** php-di skips a constructor parameter that has a default *even when the
 container has a binding for its type*, silently. `Init::$sessionKeyService` was null that way, so
 `reKey()` — and the `session_regenerate_id()` inside it — never ran, and session identifiers were

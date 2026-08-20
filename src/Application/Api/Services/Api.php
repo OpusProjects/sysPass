@@ -346,6 +346,31 @@ final class Api extends Service implements ApiService
     }
 
     /**
+     * A parameter the caller sent with the wrong JSON type is a bad request, not a crash.
+     *
+     * The readers below hand their value straight to a typed function — `Filter::getInt(int|string)`,
+     * `Filter::getString(?string)`, or `getParamRaw()`'s own `?string` return — so a JSON body
+     * carrying `{"name": 123}`, `{"userGroupId": true}` or an array where a scalar belongs raised a
+     * `TypeError` that escaped as a 500 carrying the class, the method and the server's absolute
+     * path. Every string and integer parameter on every endpoint could be made to do it, and the
+     * same value sent through a query string works, because everything arrives as a string there.
+     *
+     * `getParamArray()` already answered this correctly, and this is its refusal, shared: the type
+     * has to be the one the endpoint declares. Nothing is coerced — converting silently is how
+     * `1.5` becomes the id `15` (`FILTER_SANITIZE_NUMBER_INT` drops the point) and how a boolean
+     * becomes somebody's name.
+     */
+    private function wrongParameterType(): ServiceException
+    {
+        return new ServiceException(
+            __u('Wrong parameters'),
+            SPException::ERROR,
+            $this->getHelpHint($this->apiRequest->getMethod()),
+            Code::BAD_REQUEST->value
+        );
+    }
+
+    /**
      * @throws ServiceException
      */
     public function getParamInt(string $param, bool $required = false, $default = null): ?int
@@ -353,6 +378,10 @@ final class Api extends Service implements ApiService
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
+            if (!is_int($value) && !is_string($value)) {
+                throw $this->wrongParameterType();
+            }
+
             return Filter::getInt($value);
         }
 
@@ -367,6 +396,10 @@ final class Api extends Service implements ApiService
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
+            if (!is_string($value)) {
+                throw $this->wrongParameterType();
+            }
+
             return Filter::getString($value);
         }
 
@@ -383,12 +416,7 @@ final class Api extends Service implements ApiService
 
         if (null !== $value) {
             if (!is_array($value)) {
-                throw new ServiceException(
-                    __u('Wrong parameters'),
-                    SPException::ERROR,
-                    $this->getHelpHint($this->apiRequest->getMethod()),
-                    Code::BAD_REQUEST->value
-                );
+                throw $this->wrongParameterType();
             }
 
             return Filter::getArray($value);
@@ -405,6 +433,10 @@ final class Api extends Service implements ApiService
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
+            if (!is_string($value)) {
+                throw $this->wrongParameterType();
+            }
+
             return $value;
         }
 
