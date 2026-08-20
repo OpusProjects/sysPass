@@ -74,6 +74,8 @@ final class BackupController extends ControllerBase
     {
         $this->setupApi(AclActionsInterface::CONFIG_BACKUP_RUN);
 
+        $this->denyOnDemo();
+
         $path = $this->apiService->getParamString('path', false, $this->pathsContext[Path::BACKUP]);
 
         $this->fileBackupService->doBackup($path, $this->pathsContext[Path::APP]);

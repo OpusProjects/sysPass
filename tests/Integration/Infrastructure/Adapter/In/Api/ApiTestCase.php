@@ -194,7 +194,21 @@ abstract class ApiTestCase extends TestCase
             $config
         );
 
+        if ($this->isDemoEnabled()) {
+            $config = preg_replace('#<demoEnabled>.*?</demoEnabled>#', '<demoEnabled>1</demoEnabled>', $config);
+        }
+
         file_put_contents(FileSystem::buildPath($this->configPath, 'config.xml'), $config);
+    }
+
+    /**
+     * Demo mode is off everywhere except the tests that assert what it refuses. The config the
+     * API reads is a real file written in setUp(), so this has to be decided before the request
+     * rather than stubbed on a container.
+     */
+    protected function isDemoEnabled(): bool
+    {
+        return false;
     }
 
     protected function tearDown(): void

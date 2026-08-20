@@ -19,6 +19,8 @@ final class DeleteController extends UserBase
 
         $id = $this->apiService->getParamInt('id', true);
 
+        $this->denyOnDemoUser($id);
+
         // The same guard the web form applies, written out because the API surface has no form:
         // an account cannot delete itself, or the token's owner would be removing the identity the
         // request is being made as — and the last administrator could lock the installation.

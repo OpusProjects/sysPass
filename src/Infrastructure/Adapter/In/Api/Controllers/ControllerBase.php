@@ -32,9 +32,13 @@ use SP\Application\Api\Ports\ApiService;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Events\EventDispatcherInterface;
 use SP\Domain\Core\Exceptions\SPException;
+
+use function SP\__u;
 
 /**
  * Class ControllerBase
@@ -78,6 +82,39 @@ abstract class ControllerBase
      * @throws SPException
      * @throws ServiceException
      */
+    /**
+     * Demo mode makes an instance refuse to change or copy itself. The web enforces that in five
+     * config actions and in `UserForm`; nothing on the API surface mentioned demo mode at all.
+     *
+     * A demo deployment is the one place where the caller is *expected* to hold administrator
+     * credentials — they are published so people can try the thing — so this guard, not the ACL,
+     * is what stands between a visitor and the instance. Signing in as the demo admin, minting a
+     * token and calling the API ran the backup, the export or the user change that the interface
+     * had just refused, and a visitor who changed the demo admin's password ended the demo for
+     * everyone after them.
+     *
+     * @throws ValidationException
+     */
+    final protected function denyOnDemo(): void
+    {
+        if ($this->configData->isDemoEnabled()) {
+            throw ValidationException::error(__u('Ey, this is a DEMO!!'));
+        }
+    }
+
+    /**
+     * The same refusal, narrowed to the account a demo instance publishes: every other user on a
+     * demo may be created, edited and deleted freely, which is most of what there is to try.
+     *
+     * @throws ValidationException
+     */
+    final protected function denyOnDemoUser(int $userId): void
+    {
+        if ($userId === UserModel::DEMO_ADMIN_ID) {
+            $this->denyOnDemo();
+        }
+    }
+
     final protected function setupApi(int $actionId): void
     {
         $this->apiService->setup($actionId);

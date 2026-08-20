@@ -49,6 +49,14 @@ class User extends Model implements ItemWithIdAndNameModel
      */
     public const CREDENTIAL_COLS = ['pass', 'hashSalt', 'mPass', 'mKey'];
 
+    /**
+     * The account a demo instance publishes the credentials for. Demo mode refuses to change it,
+     * so the demo keeps working after the first visitor tries it — and since both the web forms
+     * and the API have to refuse the same account, the id lives here rather than privately in
+     * whichever of them was written first.
+     */
+    public const int DEMO_ADMIN_ID = 2;
+
     protected ?int    $id              = null;
     protected ?string $pass            = null;
     protected ?string $hashSalt        = null;
