@@ -431,6 +431,25 @@ put the check somewhere both doors reach — a shared base method, or the servic
 than a second copy that will drift; and move the constant it compares against out of whichever one
 owned it privately.
 
+**A paged query with a non-total order.** `LIMIT`/`OFFSET` over an `ORDER BY` that does not
+determine a unique order lets the database return tied rows differently for each page, so one row
+arrives on two pages and another on none. Asked of this schema directly — `ORDER BY countView DESC`
+over 104 accounts in pages of ten — **63 accounts appeared on no page at all and 34 on two**. The
+account search sorted on one non-unique column for every sort key it offers, and view count is the
+worst of them because most accounts sit at zero and therefore all tie.
+
+Pin this on the **statement**, not by paging a real table: whether a given plan happens to be stable
+is the database's business and moves with volume, statistics and version — the joined search query
+was stable at 150 rows while the direct query was wildly not. What the application controls, and
+what has to hold whatever the plan, is that the ordering it asks for is total.
+
+**Still to sweep:** the account search is fixed; the other paged grids are not. Affected, because
+their leading sort column is not unique (`hash` is unique on several of these tables, `name` is
+not): `Client`, `Tag`, `Category`, `User` (sorted by `name`, while `login` is the unique one),
+`AuthToken` (by `User.login`, and one user may hold many tokens), `CustomFieldDefinition` (by
+`moduleId`), `ItemPreset` (by `type, score`) and `Track` (by `time`). `UserGroup` and `UserProfile`
+are already total, since `name` is unique on both.
+
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles
 the design before you invent one. The API's four parameter readers are the case: `getParamArray()`
