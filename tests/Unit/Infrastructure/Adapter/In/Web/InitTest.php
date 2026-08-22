@@ -34,6 +34,8 @@ use Psr\Log\LoggerInterface;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\User\Ports\UserProfileService;
+use SP\Application\User\Ports\UserService;
+use SP\Domain\User\Models\User;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Infrastructure\ProvidersHelper;
 use SP\Domain\Common\Providers\Version;
@@ -343,13 +345,16 @@ class InitTest extends UnitaryTestCase
             $this->createStub(ItemPresetService::class),
             $this->databaseUtil,
             $this->createStub(UserProfileService::class),
-            $uriContext
+            $uriContext,
+            $this->userService
         );
     }
 
     /**
      * @throws Exception
      */
+    private MockObject|UserService $userService;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -360,6 +365,11 @@ class InitTest extends UnitaryTestCase
 
         $this->request = $this->createMock(RequestService::class);
         $this->request->method('checkReload')->willReturn(false);
+
+        // Nobody is signed in in these tests, so the disabled-account check never reads anything;
+        // a stub that answers an enabled user keeps it out of the way of what they do assert.
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 1, 'isDisabled' => false]));
     }
 
     /**
