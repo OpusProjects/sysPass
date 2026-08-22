@@ -26,6 +26,7 @@ namespace SP\Infrastructure\Adapter\In\Web;
 
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
+use Throwable;
 use LogicException;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Application\Application;
@@ -59,6 +60,7 @@ use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserProfileService;
+use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Database\DatabaseUtil;
 use SP\Domain\Core\Exceptions\FileException;
@@ -158,6 +160,7 @@ final class Init extends HttpModuleBase
         private readonly DatabaseUtil          $databaseUtil,
         private readonly UserProfileService    $userProfileService,
         private readonly UriContextInterface   $uriContext,
+        private readonly UserService           $userService,
         private readonly ?SessionKeyService    $sessionKeyService = null,
     ) {
         parent::__construct(
@@ -270,6 +273,25 @@ final class Init extends HttpModuleBase
             if (!in_array($controller, self::NO_SESSION_ACTIVITY, true)) {
                 // Initialize user session context
                 $this->initUserSession();
+
+                // A session must not outlive the account it belongs to. The API re-reads the user
+                // on every request and refuses a disabled one (`Api::setUserData()`), but the web
+                // only ever checked at login, so disabling an account stopped its token at once
+                // and left its browser session working. Nothing else caught up with it either:
+                // the timeout is measured from the last request, so the session being actively
+                // used is precisely the one that never expires — and an account is usually
+                // disabled because of what is being done with it right now.
+                //
+                // Beside the timeout rather than before it, because it is the same question —
+                // may this session continue — and it gets the same answer, a restart that lands
+                // the user on the login page. The controllers excluded here are the login form
+                // itself and the read-only lists behind the pickers; a disabled account is caught
+                // on the next page it asks for.
+                if ($this->context->isLoggedIn() && $this->isUserDisabled()) {
+                    logger('User disabled; ending session', 'INFO');
+
+                    SessionLifecycleHandler::restart();
+                }
             }
 
             if ($this->context->isLoggedIn()
@@ -319,6 +341,33 @@ final class Init extends HttpModuleBase
      *
      * @throws SPException
      */
+    /**
+     * Whether the signed-in user's account has since been disabled.
+     *
+     * Read from the database rather than from the session, which is the whole point: the session
+     * holds what was true at login.
+     *
+     * Only a positive answer ends a session. A read that fails — the database briefly unreachable,
+     * a row that does not come back — says nothing about the account, and this runs on every
+     * request of every session: answering "disabled" to a hiccup would sign out everybody at once
+     * and turn it into an outage. So the session stands, and the request goes on to fail on its
+     * own terms if it needed the user. An account that has been deleted rather than disabled is
+     * left to the ordinary session expiry for the same reason.
+     */
+    private function isUserDisabled(): bool
+    {
+        try {
+            // `=== true`, not the bare value: the getter is `?bool`, and under strict_types a null
+            // — a row whose flag was never set — is a TypeError out of a method declared `bool`,
+            // on every request of every session. An absent flag is not a disabled account.
+            return $this->userService->getById($this->context->getUserData()->id ?? 0)->isDisabled() === true;
+        } catch (Throwable $e) {
+            logger($e->getMessage());
+
+            return false;
+        }
+    }
+
     private function initUserSession(): void
     {
         $sessionContext = $this->requireSessionContext();

@@ -416,6 +416,11 @@ user and account endpoints did neither. Custom-field values were masked for a ca
 enforced in five web config actions and mentioned nowhere on the API at all — the sharpest case,
 because a demo publishes its administrator's credentials, so the ACL stops nobody and that guard is
 the whole boundary. Search paging clamped a negative offset in one of the two DTOs that carry one.
+It runs the other way too, and that is the more useful half: the API re-reads the user on every
+request and refuses a disabled one, while the web trusted what login had put in the session — so
+disabling an account stopped its token at once and left its browser session working, and since the
+timeout is measured from the last request, the session being actively used is the one that never
+expires.
 
 **Take a rule you can see being enforced and go looking for its other door.** When you find the gap,
 put the check somewhere both doors reach — a shared base method, or the service under them — rather
@@ -575,6 +580,27 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   controller for each would be inventing a feature. `RoutesAreDispatchableTest` lists them and
   asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
   excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
+
+## Known gap — the API cannot create a token that carries a vault
+
+`POST /api/v1/auth-tokens` answers **500 "Error while retrieving master password from context"** for
+every action a token carries a vault for — the five `SECURED_ACTIONS` and the three
+`CAN_USE_SECURE_TOKEN_ACTIONS`, so `ACCOUNT_VIEW` and `ACCOUNT_CREATE` among them. With or without a
+`password`. The help documents `actionId` with no restriction, and the web creates these tokens
+fine, so this is an oversight rather than a policy.
+
+The cause is not in the controller. `AuthToken::injectSecureData()` needs the master password on the
+context to seal the vault; the API only ever loads it from the *calling* token's own vault
+(`Api::requireMasterPass()`), and `AUTHTOKEN_CREATE` is on neither list, so it has no vault to load
+it from. Making this work therefore means putting `AUTHTOKEN_CREATE` on
+`CAN_USE_SECURE_TOKEN_ACTIONS` — which is a decision, not a fix: it makes a token that can mint
+tokens also a token that carries the master password. **That is why it is recorded here rather than
+patched.** The alternative is to answer a clear refusal instead of a 500, which is smaller but
+encodes "permanently unavailable" for `ACCOUNT_VIEW` tokens, and that looks wrong.
+
+Do not "fix" it by having `injectSecureData()` fall back to an empty key: that seals the vault with
+the empty string, and `Api::getMasterPassFromVault()` requires a non-empty `tokenPass`, so the token
+can never be opened. That exact failure is what the web form's password rule now prevents.
 
 ## Escaping: on output, never on input
 

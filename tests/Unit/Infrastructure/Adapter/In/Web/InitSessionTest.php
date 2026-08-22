@@ -39,6 +39,9 @@ use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\User\Ports\UserProfileService;
+use SP\Application\User\Ports\UserService;
+use SP\Domain\Core\Exceptions\NoSuchItemException;
+use SP\Domain\User\Models\User;
 use SP\Domain\Common\Providers\Version;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -87,6 +90,7 @@ class InitSessionTest extends UnitaryTestCase
     private ConfigFileService|MockObject $configMock;
     private ItemPresetService|MockObject $itemPresetService;
     private SessionKeyService|MockObject $sessionKeyService;
+    private MockObject|UserService $userService;
     private Session $session;
 
     /**
@@ -257,6 +261,96 @@ class InitSessionTest extends UnitaryTestCase
 
 
     /**
+     * A session must not outlive the account it belongs to.
+     *
+     * The API re-reads the user on every request and refuses a disabled one
+     * (`Api::setUserData()`), but the web only ever checked at login — so disabling an account
+     * stopped its API token at once and left its browser session working. Nothing else caught up
+     * with it either: the timeout is measured from the last request, so the session being actively
+     * used is exactly the one that never expires, and an account is usually disabled because of
+     * what is being done with it right now.
+     *
+     * Signed in first and the session then written out, so `initialize()` picks it up the way a
+     * returning request does rather than being handed one that was never stored.
+     *
+     * @throws Exception
+     */
+    public function testASessionWhoseAccountHasBeenDisabledIsEnded(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin'));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 7, 'isDisabled' => true]));
+
+        $init = $this->buildInitForAFreshSession(new Session());
+
+        $init->initialize(IndexController::class);
+
+        self::assertArrayNotHasKey('context', $_SESSION, 'the session must be gone');
+    }
+
+    /**
+     * The control. Without it the assertion above is satisfied by ending every session, which is
+     * not a check on the account at all.
+     *
+     * @throws Exception
+     */
+    public function testASessionWhoseAccountIsStillEnabledSurvives(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin'));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 7, 'isDisabled' => false]));
+
+        $freshSession = $this->buildInitForAFreshSession($session = new Session());
+
+        $freshSession->initialize(IndexController::class);
+
+        self::assertArrayHasKey('context', $_SESSION, 'an enabled account keeps its session');
+        self::assertSame('admin', $session->getUserData()->login);
+    }
+
+    /**
+     * A read that fails leaves the session alone, deliberately.
+     *
+     * This guard runs on every request of every session, so its failure mode is the whole design:
+     * treating "could not read the account" as "the account is disabled" would sign every user out
+     * the moment the database hiccuped, turning a blip into an outage. Only a positive answer ends
+     * a session; an account that has been deleted rather than disabled is left to the ordinary
+     * expiry for the same reason.
+     *
+     * @throws Exception
+     */
+    public function testASessionSurvivesAnAccountReadThatFails(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin'));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')
+                          ->willThrowException(NoSuchItemException::error('User does not exist'));
+
+        $init = $this->buildInitForAFreshSession(new Session());
+
+        $init->initialize(IndexController::class);
+
+        self::assertArrayHasKey('context', $_SESSION, 'a failed read must not end the session');
+    }
+
+    private function givenAnInstalledInstance(): void
+    {
+        $currentVersion = Version::getVersionStringNormalized();
+
+        $this->configData->setInstalled(true);
+        $this->configData->setMaintenance(false);
+        $this->configData->setAppVersion($currentVersion);
+        $this->configData->setDatabaseVersion($currentVersion);
+        $this->configData->setSessionTimeout(3600);
+    }
+
+    /**
      * Everything Init needs to reach session bookkeeping for an ordinary controller, against a
      * session that has not been initialized yet — initialize() calls Context::initialize() itself
      * as its first step, and Session::initialize() refuses to bind twice.
@@ -314,6 +408,7 @@ class InitSessionTest extends UnitaryTestCase
             $databaseUtil,
             $this->createStub(UserProfileService::class),
             $uriContext,
+            $this->userService,
             $this->sessionKeyService
         );
 
@@ -508,6 +603,7 @@ class InitSessionTest extends UnitaryTestCase
             $this->createStub(DatabaseUtil::class),
             $this->createStub(UserProfileService::class),
             $uriContext,
+            $this->userService,
             $this->sessionKeyService
         );
     }
@@ -521,6 +617,11 @@ class InitSessionTest extends UnitaryTestCase
 
         $this->itemPresetService = $this->createMock(ItemPresetService::class);
         $this->sessionKeyService = $this->createMock(SessionKeyService::class);
+
+        // These tests sign a user in, so the disabled-account check does read the account. An
+        // enabled one keeps it out of the way of what they are actually about.
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 1, 'isDisabled' => false]));
     }
 
     /**
