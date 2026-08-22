@@ -174,29 +174,39 @@ class AccountMasterPasswordTest extends UnitaryTestCase
     }
 
     /**
-     * sysPass ships a public demo mode; a visitor there can drive the master-password-change flow,
-     * but it must not actually touch the database — otherwise one demo visitor could re-key (and
-     * effectively lock) every other visitor's accounts. Demo mode has to make rotation a pure
-     * no-op: every account is reported OK without ever being decrypted or re-encrypted.
+     * Demo mode no longer half-performs the rotation here.
+     *
+     * This used to skip every account and report them all as done, so that a demo visitor driving
+     * the flow could not re-key anybody's accounts. Only that half stood still, though: the custom
+     * fields were re-encrypted to the new password and the stored hash was written, so the
+     * application ended up believing a password that opened none of the accounts — every secret on
+     * the instance unreadable. The refusal now lives in `MasterPass::changeMasterPassword()`, which
+     * every door reaches, so nothing gets this far on a demo instance and this pass no longer has
+     * a special case. Pinned here because the skip read as a safety measure and would be easy to
+     * put back.
      *
      * @throws ServiceException
      */
-    public function testUpdateMasterPasswordDoesNotTouchAccountsInDemoMode(): void
+    public function testUpdateMasterPasswordHasNoDemoModeSpecialCase(): void
     {
         $this->config->getConfigData()->setDemoEnabled(true);
 
-        $request = new UpdateMasterPassRequest(self::$faker->password(), self::$faker->password(), self::$faker->sha1());
-        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 4));
+        $request = new UpdateMasterPassRequest(
+            self::$faker->password(),
+            self::$faker->password(),
+            self::$faker->sha1()
+        );
+        $accountData = array_map(static fn() => AccountDataGenerator::factory()->buildAccount(), range(0, 9));
 
         $this->account->expects(self::once())
                       ->method('getAccountsPassData')
                       ->willReturn($accountData);
-        $this->crypt->expects(self::never())
-                    ->method('decrypt');
-        $this->accountCrypt->expects(self::never())
-                           ->method('getPasswordEncrypted');
-        $this->account->expects(self::never())
-                      ->method('updatePasswordMasterPass');
+        $this->accountCrypt->expects(self::exactly(10))
+                           ->method('getPasswordEncrypted')
+                           ->willReturn(new EncryptedPassword('a_password', 'a_key'));
+        $this->account->expects(self::exactly(10))
+                      ->method('updatePasswordMasterPass')
+                      ->with(self::anything(), new EncryptedPassword('a_password', 'a_key'));
 
         $this->accountMasterPassword->updateMasterPassword($request);
     }

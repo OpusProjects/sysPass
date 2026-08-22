@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Crypt\Services;
 
+use Closure;
 use Dotenv\Repository\RepositoryInterface;
 use Exception;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
@@ -280,6 +281,75 @@ class MasterPassTest extends UnitaryTestCase
 
         $this->masterPass->updateConfig($hash);
     }
+
+    /**
+     * A demo instance refuses the rotation outright, rather than performing part of it.
+     *
+     * `AccountMasterPassword::processAccounts()` used to skip every account on a demo and report
+     * them all as done, so that a visitor driving the flow could not re-key anybody's accounts.
+     * Only that half stood still: the custom fields were re-encrypted to the new password, and
+     * `updateConfig()` wrote the new hash — so the application went on believing a password that
+     * opened none of the accounts, and every secret on the instance became unreadable. That is the
+     * same end state as storing the hash outside the transaction, reached from the other side.
+     *
+     * The web has always refused before reaching this service; `sp:updateMasterPassword` had no
+     * such guard, so the CLI was a live route to it.
+     *
+     * @throws Exception
+     */
+    public function testADemoInstanceRefusesTheRotation(): void
+    {
+        $this->config->getConfigData()->setDemoEnabled(true);
+
+        $this->repository->expects(self::never())->method('transactionAware');
+        $this->configService->expects(self::never())->method('save');
+        $this->accountMasterPasswordService->expects(self::never())->method('updateMasterPassword');
+        $this->accountMasterPasswordService->expects(self::never())->method('updateHistoryMasterPassword');
+        $this->customFieldCryptService->expects(self::never())->method('updateMasterPassword');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Ey, this is a DEMO!!');
+
+        $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'new', self::$faker->sha1()));
+    }
+
+    /**
+     * Nothing is written, in particular. Before the refusal the hash and the rotation timestamp
+     * were both stored while the accounts were skipped, which is precisely what made the instance
+     * unopenable — so this asserts the absence directly rather than trusting the exception to
+     * imply it.
+     *
+     * @throws Exception
+     */
+    public function testADemoInstanceStoresNoHashForARotationItRefused(): void
+    {
+        $this->config->getConfigData()->setDemoEnabled(true);
+
+        // The transaction double has to actually run its closure, or this test passes whether or
+        // not the guard is there: a `transactionAware` that never invokes what it was handed
+        // reaches no `save()` either way, and the assertion below would be vacuous.
+        $this->repository
+            ->method('transactionAware')
+            ->willReturnCallback(static fn(Closure $closure, object $newThis): mixed => $closure->call($newThis));
+
+        $saved = [];
+        $this->configService->method('save')->willReturnCallback(
+            static function (string $param) use (&$saved): bool {
+                $saved[] = $param;
+
+                return true;
+            }
+        );
+
+        try {
+            $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'new', self::$faker->sha1()));
+        } catch (ServiceException) {
+            // asserted above; this test is about what reached the config
+        }
+
+        self::assertSame([], $saved, 'a refused rotation must store nothing');
+    }
+
 
     protected function setUp(): void
     {

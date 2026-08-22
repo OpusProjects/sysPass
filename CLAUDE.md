@@ -399,6 +399,10 @@ The master password's rotation re-encrypted every secret inside a transaction an
 hash describing them outside it, leaving a vault nobody could open if those last two writes failed.
 `40024210101.sql` made two commits out of one logical change, and DDL commits as it goes, so a
 refused second statement left an upgrade that could be neither finished nor repeated.
+The same shape appears as a guard that stops *half* of an operation: demo mode skipped every account
+in the master-password rotation and reported them all done, while the custom fields were re-encrypted
+and the new hash was written — so a demo instance ended up believing a password that opened none of
+its accounts. A guard that lets an operation continue has to stop all of it or none.
 
 Where the codebase gets this right it is always the same move — the guard and the change are one
 statement: `UserPassRecover::toggleUsedByHash()` consumes a reset token with `used = 0` in its
@@ -541,6 +545,15 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   re-key it. Somebody who used the flow *because they forgot* cannot supply it and needs an
   administrator to issue a temporary master password, which the login form takes in its place. This
   is the crypto, not a defect — `PasswordResetFlowTest` records it with the reason.
+
+- **`sp:backup` has no demo-mode guard, and should not get one.** The web and the API refuse a
+  backup on a demo instance because both are remote doors and a demo publishes its administrator's
+  credentials, so any visitor can reach them. The CLI is not that: running it needs shell access on
+  the server, and anyone with that already has `config/config.xml` — the database credentials and
+  the crypto keys — and can dump the database directly. A guard there would protect nothing while
+  stopping an operator from backing up their own demo. `sp:updateMasterPassword` **is** refused on a
+  demo, but for a different reason: that rotation corrupts the instance rather than merely copying
+  it, and the refusal lives in `MasterPass::changeMasterPassword()`, which every door reaches.
 
 - **`SP\Domain\Plugin\Ports\PluginDataStorage` has no implementation in `src/` — intentional.**
   It is the `#[Hydratable]` target for `PluginData.data`; the concrete classes ship with the
