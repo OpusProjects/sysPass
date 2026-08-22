@@ -41,6 +41,7 @@ use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\CustomField\Ports\CustomFieldCryptService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
+use function SP\__u;
 use function SP\processException;
 
 /**
@@ -111,6 +112,23 @@ final class MasterPass extends Service implements MasterPassService
      */
     public function changeMasterPassword(UpdateMasterPassRequest $request): void
     {
+        // Demo mode refuses the rotation outright, rather than performing part of it.
+        //
+        // `AccountMasterPassword::processAccounts()` used to skip every account here and report
+        // them all as done, on the stated grounds that a demo visitor driving this flow must not
+        // re-key anybody's accounts. But only that half stood still: the custom fields were
+        // re-encrypted to the new password, and the hash below was written, so the application
+        // ended up believing a password that opened nothing. Every account secret on the instance
+        // became unreadable — the precise failure the hash-inside-the-transaction fix was about,
+        // reached from the other side.
+        //
+        // The web has always refused before getting this far. `sp:updateMasterPassword` had no
+        // such guard, so the CLI was a live route to it. The refusal belongs here, where every
+        // door reaches it.
+        if ($this->config->getConfigData()->isDemoEnabled()) {
+            throw ServiceException::error(__u('Ey, this is a DEMO!!'));
+        }
+
         $this->repository->transactionAware(
             function () use ($request) {
                 $this->accountMasterPasswordService->updateMasterPassword($request);

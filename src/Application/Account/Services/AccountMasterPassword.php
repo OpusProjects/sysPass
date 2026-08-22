@@ -143,16 +143,9 @@ final class AccountMasterPassword extends Service implements AccountMasterPasswo
             return [$eventMessage, 0];
         }
 
-        $configData = $this->config->getConfigData();
         $currentMasterPassHash = $updateMasterPassRequest->getCurrentHash();
 
         foreach ($accounts as $account) {
-            // Do not make changes if running in demo mode
-            if ($configData->isDemoEnabled()) {
-                $accountsOk[] = $account->getId();
-                continue;
-            }
-
             if ($counter % 100 === 0) {
                 $eta = self::getETA($startTime, $counter, $numAccounts);
 
