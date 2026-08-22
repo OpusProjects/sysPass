@@ -175,6 +175,125 @@ class AccountSearchTest extends UnitaryTestCase
         $this->checkQueryRegex($out->getStatement(), $query);
     }
 
+    /**
+     * @return array<string, array{int|null, bool}>
+     */
+    public static function sortKeyProvider(): array
+    {
+        return [
+            'name' => [AccountSearchConstants::SORT_NAME, false],
+            'category' => [AccountSearchConstants::SORT_CATEGORY, false],
+            'login' => [AccountSearchConstants::SORT_LOGIN, false],
+            'url' => [AccountSearchConstants::SORT_URL, false],
+            'client' => [AccountSearchConstants::SORT_CLIENT, false],
+            'default (client, name)' => [null, false],
+            'view count' => [null, true],
+        ];
+    }
+
+    /**
+     * Every ordering ends with the primary key, which is what makes it total.
+     *
+     * The search pages with LIMIT/OFFSET, and every sort key it offers is a non-unique column:
+     * account names, logins, URLs, categories and client names all repeat, and the view count is
+     * the worst of them, because most accounts sit at zero and therefore all tie. Rows that tie
+     * are in no defined order, and the database may order them differently for each page it is
+     * asked for — so one row arrives on two pages while another arrives on none.
+     *
+     * Asked of this schema directly, `ORDER BY countView DESC` over 104 accounts read in pages of
+     * ten returned 63 of them on no page at all and 34 on two. A password manager that leaves a
+     * third of somebody's accounts out of its own list is worse than one that shows them in an odd
+     * order, and no amount of retrying finds them: the row is simply not on any page.
+     *
+     * This is asserted on the statement rather than by paging a real table, deliberately. Whether
+     * a given plan happens to be stable is the database's business and changes with volume,
+     * statistics and version; what the application controls, and what has to hold whatever the
+     * plan, is that the ordering it asks for is total.
+     */
+    #[DataProvider('sortKeyProvider')]
+    public function testEveryOrderingIsTotal(?int $sortKey, bool $sortViews): void
+    {
+        $filter = AccountSearchFilterDto::build('test');
+        $filter->setLimitStart(10);
+        $filter->setLimitCount(10);
+
+        if ($sortKey !== null) {
+            $filter->setSortKey($sortKey);
+        }
+
+        if ($sortViews) {
+            $filter->setSortViews(true);
+        }
+
+        $statement = null;
+
+        $this->database->expects(self::once())
+                       ->method('runQuery')
+                       ->with(
+                           new Callback(static function (QueryData $data) use (&$statement) {
+                               $statement = $data->getQuery()->getStatement();
+
+                               return true;
+                           }),
+                           true
+                       );
+
+        $this->accountSearch->getByFilter($filter);
+
+        self::assertIsString($statement);
+
+        // The ORDER BY clause alone: LIMIT follows it, so this is about what the ordering ends
+        // with, not what the statement ends with.
+        self::assertSame(
+            1,
+            preg_match('/ORDER BY(.*?)(?:\\bLIMIT\\b|$)/is', $statement, $matches),
+            'the query must carry an ORDER BY'
+        );
+
+        $columns = explode(',', trim($matches[1]));
+
+        self::assertSame(
+            '`Account`.`id`',
+            trim((string)end($columns)),
+            'a paged search must break ties on a unique column, or its pages are not a partition'
+        );
+    }
+
+
+    /**
+     * A descending sort on the default key sorts *both* its columns descending.
+     *
+     * The default key is two columns, and the direction used to be appended to the pair as one
+     * string — `ORDER BY Account.clientName, Account.name DESC`, which in SQL sorts only the last
+     * column descending. So asking for descending order left the clients ascending and reversed
+     * the names within each of them, which is neither of the two orders a user can ask for.
+     */
+    public function testADescendingDefaultSortAppliesToBothOfItsColumns(): void
+    {
+        $filter = AccountSearchFilterDto::build('test');
+        $filter->setSortOrder(AccountSearchConstants::SORT_DIR_DESC);
+
+        $statement = null;
+
+        $this->database->expects(self::once())
+                       ->method('runQuery')
+                       ->with(
+                           new Callback(static function (QueryData $data) use (&$statement) {
+                               $statement = $data->getQuery()->getStatement();
+
+                               return true;
+                           }),
+                           true
+                       );
+
+        $this->accountSearch->getByFilter($filter);
+
+        self::assertIsString($statement);
+        self::assertStringContainsString('`Account`.`clientName` DESC', $statement);
+        self::assertStringContainsString('`Account`.`name` DESC', $statement);
+    }
+
+
     public function testGetByFilter()
     {
         $accountSearchFilter = AccountSearchFilterDto::build('test');
