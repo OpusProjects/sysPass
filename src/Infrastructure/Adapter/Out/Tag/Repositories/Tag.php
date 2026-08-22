@@ -294,7 +294,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->newSelect()
             ->from(TagModel::TABLE)
             ->cols(TagModel::getCols(['hash']))
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

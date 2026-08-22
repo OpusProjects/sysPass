@@ -154,7 +154,7 @@ final class Track extends BaseRepository implements TrackRepository
                        'FROM_UNIXTIME(timeUnlock)' => 'dateTimeUnlock',
                        'IF(time >= :time AND timeUnlock IS NULL, 1, 0)' => 'tracked'
                    ])
-            ->orderBy(['time DESC'])
+            ->orderBy(['time DESC', 'id'])
             ->bindValues(['time' => $time])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());

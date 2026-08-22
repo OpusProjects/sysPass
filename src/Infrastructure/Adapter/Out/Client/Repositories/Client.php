@@ -297,7 +297,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->newSelect()
             ->from(ClientModel::TABLE)
             ->cols(ClientModel::getCols(['hash']))
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

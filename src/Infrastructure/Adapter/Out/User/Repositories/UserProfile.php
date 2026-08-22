@@ -145,7 +145,7 @@ final class UserProfile extends BaseRepository implements UserProfileRepository
             ->newSelect()
             ->from(UserProfileModel::TABLE)
             ->cols(UserProfileModel::getCols())
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

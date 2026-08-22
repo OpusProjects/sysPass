@@ -169,7 +169,7 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->join('INNER', 'User', 'User.id = PublicLink.userId')
             ->join('INNER', 'Account', 'Account.id = PublicLink.itemId')
             ->join('INNER', 'Client', 'Client.id = Account.clientId')
-            ->orderBy(['PublicLink.dateExpire DESC'])
+            ->orderBy(['PublicLink.dateExpire DESC', 'PublicLink.id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

@@ -212,7 +212,7 @@ final class CustomFieldDefinition extends BaseRepository implements CustomFieldD
                 CustomFieldDefinitionModel::getColsWithPreffix('CF_Definition'),
                 ['CF_Type.name AS typeName']
             ))
-            ->orderBy(['CF_Definition.moduleId ASC'])
+            ->orderBy(['CF_Definition.moduleId ASC', 'CF_Definition.id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

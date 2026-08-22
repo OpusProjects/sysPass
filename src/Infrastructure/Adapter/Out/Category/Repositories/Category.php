@@ -292,7 +292,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->newSelect()
             ->from(CategoryModel::TABLE)
             ->cols(CategoryModel::getCols(['hash']))
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

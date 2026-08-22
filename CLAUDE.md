@@ -443,12 +443,14 @@ is the database's business and moves with volume, statistics and version — the
 was stable at 150 rows while the direct query was wildly not. What the application controls, and
 what has to hold whatever the plan, is that the ordering it asks for is total.
 
-**Still to sweep:** the account search is fixed; the other paged grids are not. Affected, because
-their leading sort column is not unique (`hash` is unique on several of these tables, `name` is
-not): `Client`, `Tag`, `Category`, `User` (sorted by `name`, while `login` is the unique one),
-`AuthToken` (by `User.login`, and one user may hold many tokens), `CustomFieldDefinition` (by
-`moduleId`), `ItemPreset` (by `type, score`) and `Track` (by `time`). `UserGroup` and `UserProfile`
-are already total, since `name` is unique on both.
+Every table here has `id` for a primary key, so the rule is one rule with no exceptions list to
+rot: **the last thing a paged search orders by is the primary key**. It is applied even where the
+leading column is already unique (`UserGroup.name`, `UserProfile.name`, `Plugin.name`), because it
+costs nothing there and survives somebody dropping that index later.
+`PagedSearchesAreTotallyOrderedTest` holds every paged repository to it, so a new search cannot be
+added without one. Worth knowing while reading the schema: `Category.name`, `Client.name` and
+`Tag.name` are **not** unique — only their `hash` is — so those three needed it despite looking
+like natural keys.
 
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles
