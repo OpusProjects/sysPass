@@ -243,7 +243,7 @@ final class Plugin extends BaseRepository implements PluginRepository
             ->newSelect()
             ->from(self::TABLE)
             ->cols(PluginModel::getCols())
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

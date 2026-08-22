@@ -262,7 +262,7 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             ->leftJoin('User', 'ItemPreset.userId = User.id ')
             ->leftJoin('UserProfile', 'ItemPreset.userProfileId = UserProfile.id')
             ->leftJoin('UserGroup', 'ItemPreset.userGroupId = UserGroup.id')
-            ->orderBy(['ItemPreset.type', 'score DESC'])
+            ->orderBy(['ItemPreset.type', 'score DESC', 'ItemPreset.id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

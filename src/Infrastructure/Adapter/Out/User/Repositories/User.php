@@ -255,7 +255,7 @@ final class User extends BaseRepository implements UserRepository
                     sprintf('%s.name AS userGroupName', UserGroupModel::TABLE),
                 ]
             ))
-            ->orderBy([sprintf('%s.name', UserModel::TABLE)])
+            ->orderBy([sprintf('%s.name', UserModel::TABLE), sprintf('%s.id', UserModel::TABLE)])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

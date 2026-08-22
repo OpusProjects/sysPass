@@ -526,7 +526,7 @@ final class Account extends BaseRepository implements AccountRepository
             ->newSelect()
             ->from(AccountSearchViewModel::TABLE)
             ->cols(AccountSearchViewModel::getCols())
-            ->orderBy(['name ASC', 'clientName ASC'])
+            ->orderBy(['name ASC', 'clientName ASC', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

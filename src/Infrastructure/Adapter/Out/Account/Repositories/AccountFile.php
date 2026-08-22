@@ -192,7 +192,7 @@ final class AccountFile extends BaseRepository implements AccountFileRepository
             ->from(FileModel::TABLE)
             ->join('INNER', 'Account', 'Account.id = AccountFile.accountId')
             ->join('INNER', 'Client', 'Client.id = Account.clientId')
-            ->orderBy(['AccountFile.name ASC'])
+            ->orderBy(['AccountFile.name ASC', 'AccountFile.id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 

@@ -251,7 +251,7 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
             ->newSelect()
             ->from(UserGroupModel::TABLE)
             ->cols(UserGroupModel::getCols(['users']))
-            ->orderBy(['name'])
+            ->orderBy(['name', 'id'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
