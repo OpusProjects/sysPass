@@ -69,6 +69,17 @@ interface CustomFieldDataService
     public function delete(array $itemsId, int $moduleId): void;
 
     /**
+     * Delete one field's value, leaving the item's other fields alone
+     *
+     * @param int $itemId
+     * @param int $moduleId
+     * @param int $definitionId
+     *
+     * @throws ServiceException
+     */
+    public function deleteForDefinition(int $itemId, int $moduleId, int $definitionId): void;
+
+    /**
      * Creates an item
      *
      * @throws ServiceException

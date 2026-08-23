@@ -105,6 +105,45 @@ class CustomFieldDataTest extends UnitaryTestCase
     }
 
     /**
+     * The delete that clears one field carries the definition as well as the item and the module.
+     *
+     * deleteBatch() above is keyed on the item and the module only — right for deleting the item,
+     * wrong for clearing one of its fields, which used to take every other field with it. The
+     * assertion is on the emitted statement's bound values rather than on a row count, because a
+     * WHERE clause that is missing a condition still deletes successfully.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteForDefinitionIsKeyedOnTheDefinitionToo()
+    {
+        $itemId = self::$faker->numberBetween(1, 1000);
+        $moduleId = self::$faker->numberBetween(1, 1000);
+        $definitionId = self::$faker->numberBetween(1, 1000);
+
+        $callback = new Callback(
+            static function (QueryData $arg) use ($itemId, $moduleId, $definitionId) {
+                $query = $arg->getQuery();
+                $bindValues = $query->getBindValues();
+
+                return count($bindValues) === 3
+                       && $bindValues['moduleId'] === $moduleId
+                       && $bindValues['itemId'] === $itemId
+                       && $bindValues['definitionId'] === $definitionId
+                       && is_a($query, DeleteInterface::class)
+                       && !empty($query->getStatement());
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callback);
+
+        $this->customFieldData->deleteForDefinition($itemId, $moduleId, $definitionId);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws QueryException
      */

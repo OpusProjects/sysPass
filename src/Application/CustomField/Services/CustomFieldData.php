@@ -198,6 +198,18 @@ final class CustomFieldData extends Service implements CustomFieldDataService
     }
 
     /**
+     * @inheritDoc
+     */
+    public function deleteForDefinition(int $itemId, int $moduleId, int $definitionId): void
+    {
+        try {
+            $this->customFieldDataRepository->deleteForDefinition($itemId, $moduleId, $definitionId);
+        } catch (SPException $e) {
+            throw ServiceException::from($e);
+        }
+    }
+
+    /**
      * Updates an item
      *
      * @param CustomFieldDataModel $customFieldData

@@ -158,6 +158,40 @@ final class CustomFieldData extends BaseRepository implements CustomFieldDataRep
     }
 
     /**
+     * Delete one field's value, leaving the item's other fields alone.
+     *
+     * deleteBatch() is keyed on the item and the module only, which is what deleting the item
+     * itself wants. Clearing a single field needs the definition in the WHERE too, or it takes
+     * every other field on the item with it.
+     *
+     * @param int $itemId
+     * @param int $moduleId
+     * @param int $definitionId
+     *
+     * @return QueryResult<Simple>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteForDefinition(int $itemId, int $moduleId, int $definitionId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(CustomFieldDataModel::TABLE)
+            ->where('moduleId = :moduleId')
+            ->where('itemId = :itemId')
+            ->where('definitionId = :definitionId')
+            ->bindValues(
+                [
+                    'moduleId' => $moduleId,
+                    'itemId' => $itemId,
+                    'definitionId' => $definitionId,
+                ]
+            );
+
+        return $this->db->runQuery(QueryData::build($query));
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult<T>
