@@ -29,6 +29,7 @@ use Defuse\Crypto\Key;
 use Defuse\Crypto\KeyProtectedByPassword;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use ReflectionMethod;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Domain\Core\Exceptions\CryptException;
 use SP\Tests\Support\UnitaryTestCase;
@@ -202,5 +203,33 @@ class CryptTest extends UnitaryTestCase
         $this->expectException(CryptException::class);
 
         $crypt->encrypt('the secret', $key, 'not-the-key-password');
+    }
+
+    /**
+     * unlockSecuredKey() is private, and both of its callers (encrypt() and decrypt()) always pass
+     * $useAscii = false — so its `if ($useAscii)` branch, which re-encodes the unlocked inner key
+     * back into an ascii-safe string rather than returning the Key object, is never reached through
+     * the class's public surface today. It is still real, correctly-implemented behaviour rather
+     * than a copy-paste leftover: reached directly through reflection, it must hand back text that
+     * is itself a usable key, not merely a string.
+     *
+     * @throws CryptException
+     */
+    #[Test]
+    public function unlockingAPasswordProtectedKeyInAsciiFormReturnsUsableKeyText(): void
+    {
+        $crypt = new Crypt();
+        $password = 'the-key-password';
+
+        $protectedKey = $crypt->makeSecuredKey($password);
+
+        $unlockSecuredKey = new ReflectionMethod(Crypt::class, 'unlockSecuredKey');
+        $unlockedKeyText = $unlockSecuredKey->invoke($crypt, $protectedKey, $password, true);
+
+        $this->assertIsString($unlockedKeyText);
+        self::assertSame(
+            'the secret',
+            $crypt->decrypt($crypt->encrypt('the secret', $unlockedKeyText), $unlockedKeyText)
+        );
     }
 }
