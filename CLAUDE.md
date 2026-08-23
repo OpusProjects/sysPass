@@ -253,6 +253,15 @@ module reach two NOT NULL columns; and a typed property with no `= null`, which 
 making `getItemData()` a fatal rather than the null its return type promises. Compare a form against
 its siblings before reading it closely — all three showed up as the one that differed.
 
+`NotificationForm` had the same `0 ===` mistake against `analyzeInt()`, and it is worth knowing what
+it cost, because the obvious reading was wrong. The form's "Select User" option posts an **empty
+string**, which `analyzeInt()` reads as null, so `$userId === 0` was false and an administrator's
+`onlyAdmin`/`sticky` were dropped. That looks like a disclosure — a broadcast with `onlyAdmin = 0` is
+visible to everyone — but the target check two methods below refuses a notification with no user and
+neither flag, so the submission came back as **"A target is needed"**, naming the one thing the
+administrator had supplied. The feature was not leaky, it was **unreachable**: no broadcast could be
+created through the web form at all. Follow the value to the end before describing the damage.
+
 Writing the first test for an endpoint has been the most reliable way to find a real defect here:
 the REST user, notification and auth-token endpoints each had one — a credential leak, an
 authorization gap and a create that answered with nothing usable — and none of them had a test
