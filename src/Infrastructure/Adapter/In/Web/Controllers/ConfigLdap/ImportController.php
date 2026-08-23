@@ -142,6 +142,13 @@ final class ImportController extends SimpleControllerBase
         $this->checks();
         $this->checkAccess(AclActionsInterface::CONFIG_LDAP);
 
+        // This action creates sysPass users, with a profile the caller names in the request, so it
+        // needs the permission that creating a user needs. CONFIG_LDAP answers isConfigGeneral()
+        // and USER_CREATE answers isMgmUsers(), and a profile is thirty independent booleans —
+        // none of them implies another. Without this, "may configure the LDAP connection" reached
+        // "may create a user holding any existing profile", including one with mgmUsers itself.
+        $this->checkAccess(AclActionsInterface::USER_CREATE);
+
         $this->extensionChecker->checkLdap(true);
     }
 }

@@ -31,6 +31,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use RuntimeException;
+use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Application\Application;
 use SP\Application\Auth\Ports\LdapCheckService;
 use SP\Application\Config\Ports\ConfigFileService;
@@ -203,6 +204,113 @@ class RefusalsTest extends WebControllerTestCase
     }
 
     /**
+     * Importing users from the directory needs the permission that creating a user needs.
+     *
+     * The import creates sysPass users, with the group and profile named in the request. It was
+     * reached with CONFIG_LDAP alone, which `Acl` answers with `isConfigGeneral()` — an entirely
+     * separate bit from the `isMgmUsers()` that USER_CREATE answers, and the profile list the form
+     * offers is unfiltered, so a holder of the first could mint users carrying any existing
+     * profile, `mgmUsers` included.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function importingIsRefusedWithoutThePermissionToCreateAUser(): void
+    {
+        $ldapImportService = $this->createMock(LdapImportService::class);
+        $ldapImportService->expects(self::never())->method('importUsers');
+
+        $application = $this->signedInUserApplication();
+
+        $this->expectException(UnauthorizedPageException::class);
+
+        new ImportController(
+            $application,
+            $this->simpleControllerHelper(
+                $this->aclThatAllowsAllBut(AclActionsInterface::USER_CREATE),
+                'configLdap',
+                'import'
+            ),
+            $ldapImportService
+        );
+    }
+
+    /**
+     * And so does changing the profile that LDAP users are created with.
+     *
+     * `User::createOnLogin()` reads `ldapDefaultProfile`, and `LoginAuthHandler` creates that user
+     * on any first successful directory bind — so writing this setting decides the profile of every
+     * user auto-provisioned afterwards. It is the same escalation as the import, reached without
+     * importing anything.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function changingTheProfileLdapUsersGetIsRefusedWithoutThatPermission(): void
+    {
+        $this->expectException(UnauthorizedPageException::class);
+
+        (new SaveController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper(
+                $this->aclThatAllowsAllBut(AclActionsInterface::USER_CREATE),
+                'configLdap',
+                'save',
+                enablingLdap: true
+            )
+        ))->saveAction();
+    }
+
+    /**
+     * The rest of the page still saves without it. The guard is on the two settings that decide who
+     * a directory user becomes, not on administering the connection — otherwise this would take the
+     * feature away from the permission that is meant to have it.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function theConnectionStillSavesWithoutThePermissionToCreateAUser(): void
+    {
+        $response = (new SaveController(
+            $this->applicationWhoseConfigSaveThrows(),
+            $this->simpleControllerHelper(
+                $this->aclThatAllowsAllBut(AclActionsInterface::USER_CREATE),
+                'configLdap',
+                'save'
+            )
+        ))->saveAction();
+
+        // Reaching saveConfig() at all is the point: the request carries no ldap_enabled flag, so
+        // this is the "disable it" path, which touches neither of the two guarded settings. That it
+        // then reports the stubbed write failure is how we know it got that far.
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame('Error while saving the configuration', $response->subject);
+    }
+
+    /**
+     * An ACL that allows everything except the one action named, so a test can be specific about
+     * which permission it is withholding. `aclThatRefuses()` refuses the lot, which cannot tell a
+     * missing USER_CREATE from a missing CONFIG_LDAP.
+     *
+     * @throws Exception
+     */
+    /**
+     * A profile id the stored config does not already hold, so the guarded comparison sees a change.
+     */
+    private const A_DIFFERENT_PROFILE = 99;
+
+    private function aclThatAllowsAllBut(int $action): AclInterface
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturnCallback(
+            static fn(int $actionId): bool => $actionId !== $action
+        );
+        $acl->method('getRouteFor')->willReturn('a/route');
+
+        return $acl;
+    }
+
+    /**
      * `SimpleControllerBase` takes a `SimpleControllerHelper`, not the `WebControllerHelper` the
      * shared harness builds for `ControllerBase` subclasses — this mirrors
      * `WebControllerTestCase::webControllerHelper()`'s construction of that inner object directly.
@@ -212,14 +320,23 @@ class RefusalsTest extends WebControllerTestCase
     private function simpleControllerHelper(
         AclInterface $acl,
         string       $controller = 'controller',
-        string       $action = 'action'
+        string       $action = 'action',
+        bool         $enablingLdap = false
     ): SimpleControllerHelper {
         $request = $this->createStub(RequestService::class);
         $request->method('isAjax')->willReturn(false);
         $request->method('getServer')->willReturn('0');
         $request->method('analyzeString')->willReturn(null);
         $request->method('analyzeArray')->willReturn(null);
-        $request->method('analyzeInt')->willReturn(null);
+
+        if ($enablingLdap) {
+            // saveAction() only reaches the settings this is about when the request is turning LDAP
+            // on; with the flag absent it takes the "disable it" path and never reads them.
+            $request->method('analyzeBool')->willReturn(true);
+            $request->method('analyzeInt')->willReturn(self::A_DIFFERENT_PROFILE);
+        } else {
+            $request->method('analyzeInt')->willReturn(null);
+        }
 
         $theme = $this->createStub(ThemeInterface::class);
         $theme->method('getUri')->willReturn('/theme');
