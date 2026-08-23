@@ -95,7 +95,14 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
      */
     public function update(CustomFieldDefinitionModel $customFieldDefinition): void
     {
-        $this->customFieldDefinitionRepository->update($customFieldDefinition);
+        // An update whose WHERE matched nothing has not updated anything, and answering the caller
+        // with success for it reports an edit of something since deleted as saved. The repository
+        // already counts the rows, and the connection sets FOUND_ROWS, so a save that changes no
+        // field still matches its row and is not mistaken for a missing one. This is the check
+        // eight of the other services already make.
+        if ($this->customFieldDefinitionRepository->update($customFieldDefinition) === 0) {
+            throw NoSuchItemException::info(__u('Field not found'));
+        }
     }
 
     /**
