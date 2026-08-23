@@ -77,7 +77,13 @@ final class ClientForm extends FormBase implements FormInterface
                 'id' => $this->itemId,
                 'name' => $this->request->analyzeString('name'),
                 'description' => $this->request->analyzeString('description'),
-                'isglobal' => $this->request->analyzeBool('isglobal', false)
+                // 'isGlobal', matching the declared property, and cast because it is `?int`.
+                // As 'isglobal' the value went into the model's property bag instead of the
+                // property, so getIsGlobal() stayed null, toArray() wrote null, and ticking
+                // "global client" did nothing at all — while the template renders the checkbox
+                // from getIsGlobal(), so it came back unticked as well. The REST door sets the
+                // same field correctly, which is why it works there and not here.
+                'isGlobal' => (int)$this->request->analyzeBool('isglobal', false)
 
             ]
         );
