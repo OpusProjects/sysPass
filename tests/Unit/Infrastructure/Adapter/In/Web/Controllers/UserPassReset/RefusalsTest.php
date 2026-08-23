@@ -139,10 +139,15 @@ class RefusalsTest extends WebControllerTestCase
     /**
      * What the action does when the work behind it fails, once tracking allows it through.
      *
+     * It answers exactly what it answers when the request succeeds. This endpoint is reachable
+     * without a session, so anything it distinguishes it distinguishes for anybody — a failure
+     * reported as itself told an unauthenticated caller whether the login existed. The failure is
+     * still recorded and still counted against the caller; only the answer is the same.
+     *
      * @throws Exception
      */
     #[Test]
-    public function savingARequestReportsAFailureBehindItRatherThanEscaping(): void
+    public function savingARequestReportsAFailureBehindItTheSameWayAsASuccess(): void
     {
         $request = $this->createStub(RequestService::class);
         $request->method('isAjax')->willReturn(false);
@@ -172,8 +177,8 @@ class RefusalsTest extends WebControllerTestCase
             $trackService
         ))->saveRequestAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
-        self::assertSame('the user could not be read', $response->subject);
+        self::assertSame(ResponseStatus::OK, $response->status);
+        self::assertSame('Request sent', $response->subject);
     }
 
     /**

@@ -45,6 +45,32 @@ final class SaveRequestController extends UserPassResetSaveBase
 {
 
     /**
+     * Ask for a password-recovery link.
+     *
+     * Every outcome answers the same thing. This endpoint needs no session, so whatever it
+     * distinguishes it distinguishes for anybody: it used to answer "User not found" for a login
+     * that does not exist, "Wrong data" for one that does with the wrong address, "Unable to reset
+     * the password" for a disabled or LDAP account, and "Request sent" when it worked. That is an
+     * oracle over the whole user table — whether a login exists, which address is on file for it,
+     * and whether it is usable — offered to an unauthenticated caller, one request at a time.
+     *
+     * Half of it had already been closed: the disabled and LDAP refusals were collapsed into one
+     * message for exactly this reason, and the test that pinned them says so. Collapsing two of
+     * four still left the first question answerable, so this finishes it.
+     *
+     * The sibling gets it right and settles the shape: Login answers "Wrong login" for an unknown
+     * user and for a wrong password alike, rather than saying which.
+     *
+     * The rate limit is deliberately still distinguishable. "Attempts exceeded" is about the
+     * caller's own behaviour and reveals nothing about any account, and hiding it would leave
+     * somebody who has locked themselves out with no way to find out why.
+     *
+     * What is lost is the message telling an honest user they mistyped their address, and the one
+     * telling a disabled user to contact an administrator. Both are recoverable — the address is
+     * theirs to check, and a disabled account is a conversation with an administrator either way —
+     * whereas an enumerable user list is not. The real outcome is still recorded in the event log,
+     * where an administrator can see it and a stranger cannot.
+     *
      * @return ActionResponse
      */
     #[Action(ResponseType::JSON)]
@@ -52,10 +78,23 @@ final class SaveRequestController extends UserPassResetSaveBase
     {
         try {
             $this->checkTracking();
+        } catch (Exception $e) {
+            processException($e);
 
-            $login = $this->request->analyzeString('login');
-            $email = $this->request->analyzeEmail('email');
+            // Still counted. checkTracking() throws once the limit is already reached, and
+            // recording the attempt anyway is what makes further hammering extend the block
+            // rather than sit out a window that stops growing.
+            $this->addTracking();
 
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
+        }
+
+        $login = $this->request->analyzeString('login');
+        $email = $this->request->analyzeEmail('email');
+
+        try {
             $userData = $this->userService->getByLogin($login);
 
             if ($userData->getEmail() !== $email) {
@@ -85,19 +124,19 @@ final class SaveRequestController extends UserPassResetSaveBase
                 $email,
                 UserPassRecover::getMailMessage($hash, $this->uriContext->getWebUri())
             );
-
-            return ActionResponse::ok(
-                __u('Request sent'),
-                [__u('You will receive an email to complete the request shortly.')]
-            );
         } catch (Exception $e) {
+            // Recorded and counted, not reported. The tracking still runs, so guessing is still
+            // rate limited; only the answer the guesser gets back is the same either way.
             processException($e);
 
             $this->addTracking();
 
             $this->eventDispatcher->notify(new Event('exception', $e));
-
-            return ActionResponse::error($e->getMessage());
         }
+
+        return ActionResponse::ok(
+            __u('Request sent'),
+            [__u('You will receive an email to complete the request shortly.')]
+        );
     }
 }
