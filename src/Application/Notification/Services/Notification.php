@@ -112,6 +112,14 @@ final class Notification extends Service implements NotificationService
      */
     public function delete(int $id): NotificationService
     {
+        // Whose notification it is, before removing it. `getById()` applies the same check
+        // `setCheckedById()` makes, and reading it first is what the REST delete already did in
+        // order to build its event message — so that door was guarded by accident while the web's
+        // called straight through to the repository, where the only condition is `sticky = 0`.
+        // `NOTIFICATION_DELETE` is not an administrator's permission, so that left any signed-in
+        // user able to delete any other user's notification by its id.
+        $this->getById($id);
+
         if ($this->notificationRepository->delete($id)->getAffectedNumRows() === 0) {
             throw NoSuchItemException::info(__u('Notification not found'));
         }
@@ -167,6 +175,12 @@ final class Notification extends Service implements NotificationService
      */
     public function deleteByIdBatch(array $ids): int
     {
+        // Every one of them, before any of them: a selection is the same door as a single delete,
+        // and checking after the fact would mean having already removed somebody else's.
+        foreach ($ids as $id) {
+            $this->getById((int)$id);
+        }
+
         $count = $this->notificationRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
