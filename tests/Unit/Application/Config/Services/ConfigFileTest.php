@@ -32,6 +32,10 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Core\Exceptions\ContextException;
+use PHPUnit\Framework\Attributes\Test;
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
 use SP\Domain\Config\Adapters\ConfigData;
 use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Application\Config\Services\ConfigFile;
@@ -589,4 +593,88 @@ class ConfigFileTest extends UnitaryTestCase
         $this->fileStorageService = $this->createMock(XmlFileStorageService::class);
         $this->fileCacheService = $this->createMock(FileCacheService::class);
     }
+
+    /**
+     * Every setting in `config.xml` can actually reach `ConfigData`.
+     *
+     * `configMapper()` walks `ConfigData`'s setters and, for each one whose parameter is a *named
+     * builtin*, coerces the file's value to that type. Anything else — a union type, a class, an
+     * intersection — falls through the `instanceof ReflectionNamedType && isBuiltin()` test and is
+     * **skipped in silence**: the setting stays at its default, nothing is logged, and nothing
+     * fails. A configuration option that quietly never loads is close to unfindable from the
+     * outside, so the contract is asserted here rather than left to be discovered.
+     */
+    #[Test]
+    public function everyConfigSetterTakesATypeTheMapperCanRead(): void
+    {
+        $unreadable = [];
+
+        foreach ((new ReflectionClass(ConfigData::class))->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if (!str_starts_with($method->getName(), 'set')) {
+                continue;
+            }
+
+            foreach ($method->getParameters() as $parameter) {
+                $type = $parameter->getType();
+
+                if (!$type instanceof ReflectionNamedType || !$type->isBuiltin()) {
+                    $unreadable[] = sprintf('%s(%s)', $method->getName(), (string)$type);
+                }
+            }
+        }
+
+        self::assertSame(
+            [],
+            $unreadable,
+            'these settings would be skipped by ConfigFile::configMapper() and never load from config.xml'
+        );
+    }
+
+    /**
+     * An empty element in the file reaches the getters as the type they promise.
+     *
+     * `config.xml` writes an unset boolean as `<demoEnabled></demoEnabled>`, and the loader answers
+     * that as the empty string — the key *exists*, so `DataCollection::get()` returns `''` rather
+     * than the default the getter hands it. `ConfigData::isDemoEnabled()` is declared `: bool`, and
+     * given `''` directly it does throw:
+     * "Return value must be of type bool, string returned". The load path does not, and this says
+     * so end to end.
+     *
+     * Deliberately not claimed as a test of `configMapper()`'s `(bool)` cast: removing that cast
+     * leaves this passing, because the `?bool` setter coerces the empty string on its own. Two
+     * mechanisms hold this up and the test does not distinguish them — what it pins is the outcome,
+     * which is the part that matters and the part a direct `new ConfigData(['demoEnabled' => ''])`
+     * does not get.
+     *
+     * @throws ConfigException
+     * @throws Exception
+     */
+    #[Test]
+    public function anEmptyElementBecomesTheTypeTheGetterPromises(): void
+    {
+        $this->fileCacheService->method('exists')->willReturn(false);
+        $this->fileStorageService->method('getFileTime')->willReturn(time());
+        $this->fileStorageService
+            ->method('load')
+            ->willReturn(
+                [
+                    // exactly what XmlFileStorage answers for empty elements
+                    ConfigDataInterface::DEMO_ENABLED => '',
+                    ConfigDataInterface::MAINTENANCE => '',
+                    ConfigDataInterface::SESSION_TIMEOUT => '',
+                    ConfigDataInterface::CONFIG_HASH => 'a-hash',
+                ]
+            );
+
+        $configData = (new ConfigFile(
+            $this->fileStorageService,
+            $this->fileCacheService,
+            $this->context
+        ))->getConfigData();
+
+        self::assertFalse($configData->isDemoEnabled());
+        self::assertFalse($configData->isMaintenance());
+        self::assertSame(0, $configData->getSessionTimeout());
+    }
+
 }
