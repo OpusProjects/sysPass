@@ -214,6 +214,61 @@ class DataGridTest extends UnitaryTestCase
     }
 
     /**
+     * setDataHeaderTemplate() has its own try/catch around checkTemplate(), separate from the
+     * actions, pager and row template setters -- each catches the same FileNotFoundException
+     * independently, so each needs its own missing-template case to be exercised. This one
+     * reports through processException() rather than logger(); either way the setter must not
+     * let the exception escape, or building a grid with one bad template name would take the
+     * whole page down instead of just rendering without that section.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aMissingHeaderTemplateIsNotSet()
+    {
+        $grid = $this->buildGrid();
+
+        $result = $grid->setDataHeaderTemplate('no-such-template');
+
+        self::assertSame($grid, $result);
+    }
+
+    /**
+     * Same degrade-and-continue contract as the header template, for the paginator's own
+     * template setter -- setDataPagerTemplate() reports the missing template through logger()
+     * rather than processException(), a second, independent catch site.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aMissingPagerTemplateIsNotSet()
+    {
+        $grid = $this->buildGrid();
+
+        $result = $grid->setDataPagerTemplate('no-such-template');
+
+        self::assertSame($grid, $result);
+        self::assertNull($grid->getDataPagerTemplate());
+    }
+
+    /**
+     * Same degrade-and-continue contract again, for the per-row template setter -- a third,
+     * independent catch site, back to reporting through processException().
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aMissingRowTemplateIsNotSet()
+    {
+        $grid = $this->buildGrid();
+
+        $result = $grid->setDataRowTemplate('no-such-template');
+
+        self::assertSame($grid, $result);
+        self::assertNull($grid->getDataRowTemplate());
+    }
+
+    /**
      * A template that does exist is resolved to its full path and kept, so the screen renders
      * that section instead of silently skipping it. Covers both branches of the template path
      * (with and without a base subdirectory) that a missing-template test cannot reach, since

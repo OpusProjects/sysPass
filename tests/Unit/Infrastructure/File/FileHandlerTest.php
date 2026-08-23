@@ -354,6 +354,80 @@ class FileHandlerTest extends TestCase
     }
 
     /**
+     * save() must not report a write as done when it never got the lock in the first place --
+     * otherwise a caller believing its data was persisted could be looking at whatever the file
+     * held before. flock() itself has no portable, permission-based way to make it fail (it
+     * doesn't care whether the handle is read-only), and forcing a real lock conflict would block
+     * rather than fail, since save() calls flock(LOCK_EX) without LOCK_NB. A stream wrapper is the
+     * only way to reach this without contriving something that hangs the test instead.
+     *
+     * @throws FileException
+     */
+    public function testSaveThrowsWhenTheLockCannotBeObtained(): void
+    {
+        self::registerFlockFailureStreamWrapper();
+
+        $handler = new FileHandler('sp-flock-failure://obtain/' . uniqid(), 'c+');
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Unable to obtain a lock');
+
+        $handler->save('data');
+    }
+
+    /**
+     * The matching failure on the way out: the lock is obtained and the data is written, but the
+     * unlock itself fails. That must surface too, rather than leaving the caller believing the
+     * save completed cleanly while the file is left locked.
+     *
+     * @throws FileException
+     */
+    public function testSaveThrowsWhenTheLockCannotBeReleased(): void
+    {
+        self::registerFlockFailureStreamWrapper();
+
+        $handler = new FileHandler('sp-flock-failure://release/' . uniqid(), 'c+');
+
+        $this->expectException(FileException::class);
+        $this->expectExceptionMessage('Unable to release a lock');
+
+        $handler->save('data');
+    }
+
+    private static function registerFlockFailureStreamWrapper(): void
+    {
+        if (!in_array('sp-flock-failure', stream_get_wrappers(), true)) {
+            stream_wrapper_register('sp-flock-failure', FileHandlerFlockFailureStreamWrapper::class);
+        }
+    }
+
+    /**
+     * delete() must report a failed unlink() as this application's own exception rather than
+     * treating the file as gone. A directory swapped in for the file after opening it is what
+     * reaches this reliably: unlink() always refuses a directory (EISDIR), regardless of
+     * permissions or which user runs the test -- removing write access would not, if the suite
+     * happens to run as root.
+     *
+     * @throws FileException
+     */
+    public function testDeleteThrowsWhenUnlinkFails(): void
+    {
+        file_put_contents($this->file, 'x');
+        $handler = new FileHandler($this->file);
+
+        unlink($this->file);
+        mkdir($this->file);
+
+        $this->expectException(FileException::class);
+
+        try {
+            $handler->delete();
+        } finally {
+            rmdir($this->file);
+        }
+    }
+
+    /**
      * The stat cache is what makes a file just written still look empty; clearing it is fluent, so
      * it chains in front of the read that needs the fresh size.
      */
@@ -518,5 +592,123 @@ class FileHandlerTest extends TestCase
         touch($this->file, 0);
 
         self::assertSame(0, (new FileHandler($this->file))->getFileTime());
+    }
+}
+
+/**
+ * An in-memory stream wrapper that fails exactly one flock() operation, chosen by the URL host
+ * ("obtain" or "release"), and otherwise behaves like an ordinary read/write file. This exists
+ * solely to reach FileHandler::lock()/unlock()'s error paths (see FileHandlerTest's two
+ * testSaveThrowsWhenTheLockCannot* tests): a real filesystem's flock() has no permission-based
+ * way to refuse a lock, and forcing an actual conflict would block instead of failing, since
+ * save() calls flock() without LOCK_NB.
+ */
+final class FileHandlerFlockFailureStreamWrapper
+{
+    private const FAIL_OBTAIN = 'obtain';
+    private const FAIL_RELEASE = 'release';
+
+    /** @var resource|null */
+    public $context;
+
+    private string $data = '';
+    private int $position = 0;
+    private string $failing = '';
+
+    public function stream_open(string $path, string $mode, int $options, ?string &$openedPath): bool
+    {
+        $this->failing = (string)parse_url($path, PHP_URL_HOST);
+
+        return true;
+    }
+
+    public function stream_read(int $count): string
+    {
+        $chunk = substr($this->data, $this->position, $count);
+        $this->position += strlen($chunk);
+
+        return $chunk;
+    }
+
+    public function stream_write(string $data): int
+    {
+        $this->data = substr_replace($this->data, $data, $this->position, strlen($data));
+        $this->position += strlen($data);
+
+        return strlen($data);
+    }
+
+    public function stream_eof(): bool
+    {
+        return $this->position >= strlen($this->data);
+    }
+
+    public function stream_tell(): int
+    {
+        return $this->position;
+    }
+
+    public function stream_seek(int $offset, int $whence = SEEK_SET): bool
+    {
+        $base = match ($whence) {
+            SEEK_CUR => $this->position,
+            SEEK_END => strlen($this->data),
+            default => 0,
+        };
+        $this->position = $base + $offset;
+
+        return true;
+    }
+
+    public function stream_truncate(int $newSize): bool
+    {
+        $this->data = substr($this->data, 0, $newSize);
+        $this->position = min($this->position, $newSize);
+
+        return true;
+    }
+
+    public function stream_flush(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function stream_stat(): array
+    {
+        return [];
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    public function url_stat(string $path, int $flags): array
+    {
+        return [
+            'dev' => 0,
+            'ino' => 0,
+            'mode' => 0100644,
+            'nlink' => 1,
+            'uid' => 0,
+            'gid' => 0,
+            'rdev' => 0,
+            'size' => strlen($this->data),
+            'atime' => 0,
+            'mtime' => 0,
+            'ctime' => 0,
+            'blksize' => -1,
+            'blocks' => -1,
+        ];
+    }
+
+    public function stream_lock(int $operation): bool
+    {
+        return match ($operation & 3) {
+            LOCK_EX => $this->failing !== self::FAIL_OBTAIN,
+            LOCK_UN => $this->failing !== self::FAIL_RELEASE,
+            default => true,
+        };
     }
 }
