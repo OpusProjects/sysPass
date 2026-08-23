@@ -196,6 +196,41 @@ class UploadControllerTest extends ApiTestCase
         $this->assertSame('LOG', $this->extensionStoredFor($r->body->itemId));
     }
 
+    /**
+     * No MIME types configured at all must refuse the upload up front, before any of the content
+     * checks that assume there is an allow-list to compare against.
+     *
+     * The config here is rewritten to drop the `<filesAllowedMime>` element entirely (not merely
+     * empty its contents) *before* the first API call of the test, so the very first config load
+     * — the one that populates the file cache — already sees the absent element and
+     * `getFilesAllowedMime()` falls back to `[]`. Rewriting it after a call would race the file
+     * cache's mtime-based invalidation, which only has one-second resolution.
+     */
+    public function testNoAllowedMimeTypesConfiguredIsRejected(): void
+    {
+        $configFile = $this->configPath . DIRECTORY_SEPARATOR . 'config.xml';
+        $config = file_get_contents($configFile);
+
+        // getFilesAllowedMime() only falls back to [] when the key is absent from the loaded
+        // config array; an empty-but-present <filesAllowedMime></filesAllowedMime> node instead
+        // deserializes to '' and is cast to a one-element array, which is not empty().
+        $config = preg_replace('#<filesAllowedMime>.*?</filesAllowedMime>#s', '', $config);
+
+        file_put_contents($configFile, $config);
+
+        $accountId = $this->createAccount();
+
+        $r = $this->upload($accountId, [
+            'name'      => 'hello.txt',
+            'content'   => base64_encode(self::PLAIN_TEXT_CONTENT),
+            'type'      => 'text/plain',
+            'extension' => 'TXT',
+        ]);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame("There aren't any allowed MIME types", $r->body->error->message);
+    }
+
     public function testOversizedUploadIsRejected(): void
     {
         $accountId = $this->createAccount();
