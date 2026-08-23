@@ -140,11 +140,41 @@ final readonly class AccountFilter implements AccountFilterBuilder
             $query->where(sprintf('(%s)', join(sprintf(' %s ', AccountSearchConstants::FILTER_CHAIN_OR), $where)));
         }
 
+        return $this->buildFilterPrivate($query);
+    }
+
+    /**
+     * The private rule on its own, without the ownership and sharing conditions above it.
+     *
+     * A private account is its owner's alone and a private-group account its group's, and neither
+     * `isAdminApp` nor `isAdminAcc` is an exception to that — which is why these two conditions sit
+     * outside the block that the admin flags skip. The account manager's own query applies no
+     * ownership filter at all, deliberately, but it was applying this one no more than the rest,
+     * so it listed private accounts that every other way of reaching them withholds. It asks for
+     * this much of the filter and nothing else.
+     *
+     * @param SelectInterface $query
+     * @param string $prefix How the account's columns are named in this query. The manager's grid
+     *                       reads a view, where they are unqualified.
+     *
+     * @return SelectInterface
+     */
+    public function buildFilterPrivate(SelectInterface $query, string $prefix = 'Account.'): SelectInterface
+    {
+        $userData = $this->context->getUserData();
+
         $query->where(
-            '(Account.isPrivate IS NULL OR Account.isPrivate = 0 OR (Account.isPrivate = 1 AND Account.userId = :userId))'
+            sprintf(
+                '(%1$sisPrivate IS NULL OR %1$sisPrivate = 0 OR (%1$sisPrivate = 1 AND %1$suserId = :userId))',
+                $prefix
+            )
         );
         $query->where(
-            '(Account.isPrivateGroup IS NULL OR Account.isPrivateGroup = 0 OR (Account.isPrivateGroup = 1 AND Account.userGroupId = :userGroupId))'
+            sprintf(
+                '(%1$sisPrivateGroup IS NULL OR %1$sisPrivateGroup = 0 '
+                . 'OR (%1$sisPrivateGroup = 1 AND %1$suserGroupId = :userGroupId))',
+                $prefix
+            )
         );
 
         $query->bindValues([

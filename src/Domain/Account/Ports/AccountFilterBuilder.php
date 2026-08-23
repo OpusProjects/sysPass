@@ -41,4 +41,15 @@ interface AccountFilterBuilder
      * Returns the filter for the SQL query of accounts a user can access
      */
     public function buildFilter(bool $useGlobalSearch = false, ?SelectInterface $query = null): SelectInterface;
+
+    /**
+     * Returns the private-account rule on its own, for a query that deliberately applies no
+     * ownership filter of its own
+     *
+     * @param SelectInterface $query
+     * @param string $prefix How the account's columns are named in this query
+     *
+     * @return SelectInterface
+     */
+    public function buildFilterPrivate(SelectInterface $query, string $prefix = 'Account.'): SelectInterface;
 }
