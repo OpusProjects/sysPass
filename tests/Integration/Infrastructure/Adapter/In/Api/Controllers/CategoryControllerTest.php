@@ -125,6 +125,31 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertSame('Category not found', $r->body->error->message);
     }
 
+    /**
+     * `customFields=1` on a category, which is where the nullable-help defect surfaced.
+     *
+     * The fixture carries two CATEGORY-module definitions ("RSA", "SSL") whose help text is null,
+     * and `ItemTrait` passed that straight into `CustomFieldItem`'s non-nullable `string $help`.
+     * Every request for a category's custom fields was therefore a TypeError escaping as a 500
+     * with the class, the method and the server's absolute path in the body — reachable by any
+     * administrator who left a custom field's Help box empty, which the form allows.
+     *
+     * So this asserts a 200 with the include actually populated, and the null help coming back as
+     * an empty string rather than being the reason the request failed.
+     */
+    public function testViewActionWithCustomFields(): void
+    {
+        $id = $this->createCategory(self::PARAMS)->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::CATEGORY_VIEW, ['id' => $id, 'customFields' => '1']);
+
+        $this->assertSame(200, $r->status);
+
+        $item = $r->body->data->data;
+        $this->assertObjectHasProperty('data', $item->customFields, 'the include must actually run');
+        $this->assertIsArray($item->customFields->data);
+    }
+
     public function testEditAction(): void
     {
         $id = $this->createCategory(self::PARAMS)->body->itemId;

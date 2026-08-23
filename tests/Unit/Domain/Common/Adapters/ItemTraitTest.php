@@ -68,6 +68,25 @@ class ItemTraitTest extends UnitaryTestCase
     }
 
     /**
+     * A definition whose Help box was left blank is read like any other.
+     *
+     * `CustomFieldDefinition.help` is `varchar(255) DEFAULT NULL` and its getter is `?string`,
+     * while `CustomFieldItem` declares `string $help` — and this was the one nullable column of
+     * the three passed through without being made safe. Leaving the Help field empty is an
+     * ordinary thing for an administrator to do, and it turned every read of that item's custom
+     * fields into a TypeError: on the web a 500, and through the API a 500 whose body carried the
+     * class, the method and the server's absolute path.
+     */
+    #[Test]
+    public function aFieldWithNoHelpTextIsReadWithoutOne()
+    {
+        $fields = $this->whenReadingTheFieldsOf($this->buildRow(['data' => 'a value', 'help' => null]));
+
+        self::assertCount(1, $fields);
+        self::assertSame('', $fields[0]->help);
+    }
+
+    /**
      * The stored row's columns arrive as strings; the item they become is typed, and the view uses
      * the definition id to key the field it renders.
      */

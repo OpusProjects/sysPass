@@ -65,7 +65,14 @@ trait ItemTrait
             $customField = new CustomFieldItem(
                 required:         (bool)$item['required'],
                 showInList:       (bool)$item['showInList'],
-                help:             $item['help'],
+                // `help` is the one nullable column here that was not being made safe: the schema
+                // has it `varchar(255) DEFAULT NULL` and CustomFieldDefinition::getHelp() agrees
+                // it is `?string`, while CustomFieldItem declares `string $help`. `required` and
+                // `showInList` are nullable too and are cast on the lines either side; this one
+                // was passed through, so a definition saved with the Help box left blank — an
+                // ordinary thing for an admin to do — made every read of that item's custom
+                // fields a TypeError.
+                help:             $item['help'] ?? '',
                 definitionId:     (int)$item['definitionId'],
                 definitionName:   $item['definitionName'],
                 typeId:           (int)$item['typeId'],
