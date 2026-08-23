@@ -632,26 +632,33 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
   excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
 
-## Known gap — the API cannot create a token that carries a vault
+## A token that carries a vault, and what that costs
 
-`POST /api/v1/auth-tokens` answers **500 "Error while retrieving master password from context"** for
-every action a token carries a vault for — the five `SECURED_ACTIONS` and the three
-`CAN_USE_SECURE_TOKEN_ACTIONS`, so `ACCOUNT_VIEW` and `ACCOUNT_CREATE` among them. With or without a
-`password`. The help documents `actionId` with no restriction, and the web creates these tokens
-fine, so this is an oversight rather than a policy.
+Some actions need the master password, so a token issued for one carries a **vault**: the master
+password sealed with the token's own password *and* the token itself. `AuthToken::needsSecureToken()`
+is the single definition of which actions those are — `SECURED_ACTIONS` plus
+`CAN_USE_SECURE_TOKEN_ACTIONS` — and both the web form and the API ask it.
 
-The cause is not in the controller. `AuthToken::injectSecureData()` needs the master password on the
-context to seal the vault; the API only ever loads it from the *calling* token's own vault
-(`Api::requireMasterPass()`), and `AUTHTOKEN_CREATE` is on neither list, so it has no vault to load
-it from. Making this work therefore means putting `AUTHTOKEN_CREATE` on
-`CAN_USE_SECURE_TOKEN_ACTIONS` — which is a decision, not a fix: it makes a token that can mint
-tokens also a token that carries the master password. **That is why it is recorded here rather than
-patched.** The alternative is to answer a clear refusal instead of a 500, which is smaller but
-encodes "permanently unavailable" for `ACCOUNT_VIEW` tokens, and that looks wrong.
+`POST /api/v1/auth-tokens` used to answer **500 "Error while retrieving master password from
+context"** for every one of them, with or without a password, while the web created the same tokens
+without difficulty: sealing a vault needs the master password on the context, and the API only ever
+loads that from the *calling* token's own vault, which `AUTHTOKEN_CREATE` did not have.
 
-Do not "fix" it by having `injectSecureData()` fall back to an empty key: that seals the vault with
-the empty string, and `Api::getMasterPassFromVault()` requires a non-empty `tokenPass`, so the token
-can never be opened. That exact failure is what the web form's password rule now prevents.
+It works now, and the way it was made to work is a decision worth knowing rather than a detail:
+**`AUTHTOKEN_CREATE` and `AUTHTOKEN_EDIT` are themselves on `CAN_USE_SECURE_TOKEN_ACTIONS`, so a
+token that can mint tokens also carries the master password.** That is the authority the web already
+grants — an administrator who can reach the tokens page has unlocked the vault with their own
+password — but on the API it is a bearer credential sitting in somebody's script, so it is worth as
+much as the vault. Two things follow, and both are enforced in
+`AuthTokenBase::prepareSecureToken()`:
+
+- the password on such a token is **required**, not optional. Without it the vault is sealed with
+  the empty string and nothing can open it: `Api::getMasterPassFromVault()` reads `tokenPass` as a
+  required parameter, and required refuses the empty string, so the one password that would work
+  cannot be presented. Do not "fix" that by letting the empty key through;
+- creating one requires a calling token that already carries a vault, so an `AUTHTOKEN_CREATE`
+  token minted before this existed has none and gets a 401 until it is re-issued. The web can
+  always issue the first one.
 
 ## Escaping: on output, never on input
 

@@ -17,10 +17,15 @@ final class CreateController extends AuthTokenBase
     {
         $this->setupApi(AclActionsInterface::AUTHTOKEN_CREATE);
 
+        $actionId = $this->apiService->getParamInt('actionId', true);
+        $password = $this->apiService->getParamRaw('password');
+
+        $this->prepareSecureToken($actionId, $password);
+
         $tokenData = new AuthToken([
             'userId'   => $this->apiService->getParamInt('userId', true),
-            'actionId' => $this->apiService->getParamInt('actionId', true),
-            'hash'     => $this->apiService->getParamRaw('password'),
+            'actionId' => $actionId,
+            'hash'     => $password,
         ]);
 
         $id = $this->authTokenService->create($tokenData);

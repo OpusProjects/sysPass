@@ -17,11 +17,16 @@ final class EditController extends AuthTokenBase
     {
         $this->setupApi(AclActionsInterface::AUTHTOKEN_EDIT);
 
+        $actionId = $this->apiService->getParamInt('actionId', true);
+        $password = $this->apiService->getParamRaw('password');
+
+        $this->prepareSecureToken($actionId, $password);
+
         $tokenData = new AuthToken([
             'id'       => $this->apiService->getParamInt('id', true),
             'userId'   => $this->apiService->getParamInt('userId', true),
-            'actionId' => $this->apiService->getParamInt('actionId', true),
-            'hash'     => $this->apiService->getParamRaw('password'),
+            'actionId' => $actionId,
+            'hash'     => $password,
         ]);
 
         $this->authTokenService->update($tokenData);
