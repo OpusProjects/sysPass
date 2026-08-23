@@ -530,6 +530,13 @@ final class Account extends BaseRepository implements AccountRepository
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
+        // The account manager's grid is deliberately not scoped to what the viewer may read — that
+        // is what managing accounts means, and it is pinned by a test. The private flag is not part
+        // of that: it withholds an account from everybody but its owner, admins included, wherever
+        // else it is reached. This applies that one rule and nothing else. The columns come from a
+        // view, so they are unqualified here.
+        $this->accountFilterUser->buildFilterPrivate($query, '');
+
         if (!empty($itemSearchData->getSearchString())) {
             $query->where('name LIKE :name')
                   ->orWhere('clientName LIKE :clientName')

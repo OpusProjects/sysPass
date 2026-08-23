@@ -801,6 +801,80 @@ final class AccountAccessTest extends TestCase
         self::assertTrue($found, 'the manager grid lists an account the same user may not read');
     }
 
+    /**
+     * A private account is not in the manager grid either.
+     *
+     * The test above records that the grid is deliberately unscoped by ownership — managing
+     * accounts is what the permission is for. The private flag is a different rule: it withholds an
+     * account from everyone but its owner, and it is the one condition that even an application
+     * administrator does not pass, as this file's own admin test establishes. The manager's query
+     * applied no filter at all, so it listed the account's name, client, category and owner to any
+     * holder of mgmAccounts — the one screen in the application where a private account was
+     * visible to somebody who is not its owner.
+     */
+    public function testAPrivateAccountIsNotInTheManagerGridEither(): void
+    {
+        $ownerGroupId = $this->createGroup('mgm-priv-owner');
+        $ownerId = $this->createUser('mgm-priv-owner', $ownerGroupId);
+
+        $strangerGroupId = $this->createGroup('mgm-priv-stranger');
+        $strangerId = $this->createUser('mgm-priv-stranger', $strangerGroupId);
+
+        $privateId = $this->createAccount(
+            'mgm-really-private',
+            'MgmPass!1',
+            $ownerId,
+            $ownerGroupId,
+            isPrivate: true
+        );
+        $sharedId = $this->createAccount('mgm-not-private', 'MgmPass!1', $ownerId, $ownerGroupId);
+
+        $this->setContextUser($strangerId, $strangerGroupId, 'mgm-priv-stranger');
+
+        $listed = $this->managerGridIds();
+
+        self::assertNotContains($privateId, $listed, 'the manager grid must not list a private account');
+
+        // The account that is merely somebody else's is still listed, which is the behaviour the
+        // test above pins. Without this, hiding everything would satisfy the assertion above.
+        self::assertContains($sharedId, $listed, 'the manager grid still lists accounts it always did');
+    }
+
+    /**
+     * Its owner still sees it there, or the rule would have become "nobody manages a private
+     * account" rather than "only its owner does".
+     */
+    public function testAPrivateAccountIsInTheManagerGridForItsOwner(): void
+    {
+        $ownerGroupId = $this->createGroup('mgm-priv-self');
+        $ownerId = $this->createUser('mgm-priv-self', $ownerGroupId);
+
+        $privateId = $this->createAccount(
+            'mgm-own-private',
+            'MgmPass!1',
+            $ownerId,
+            $ownerGroupId,
+            isPrivate: true
+        );
+
+        $this->setContextUser($ownerId, $ownerGroupId, 'mgm-priv-self');
+
+        self::assertContains($privateId, $this->managerGridIds());
+    }
+
+    /**
+     * The ids the account manager's grid shows the current context user.
+     *
+     * @return int[]
+     */
+    private function managerGridIds(): array
+    {
+        return array_map(
+            static fn($row) => (int)$row->getId(),
+            $this->dic->get(AccountService::class)->search(new ItemSearchDto(''))->getDataAsArray()
+        );
+    }
+
     private function canAccess(int $actionId, int $accountId): bool
     {
         $accountService = $this->dic->get(AccountService::class);
