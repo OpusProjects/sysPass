@@ -226,7 +226,13 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function delete(int $id): PublicLinkService
     {
-        $this->publicLinkRepository->delete($id);
+        // A delete that matched no row has removed nothing, and answering the caller with success
+        // for it reports the removal of a link somebody else already deleted as done. Thirteen of
+        // the fourteen services make this check; this repository was also the only one of fifteen
+        // whose delete() answered `void`, so there was nothing here to check against.
+        if ($this->publicLinkRepository->delete($id)->getAffectedNumRows() === 0) {
+            throw new NoSuchItemException(__u('Link not found'));
+        }
 
         return $this;
     }
