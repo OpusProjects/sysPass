@@ -40,6 +40,13 @@ use function SP\processException;
  */
 final readonly class DatabaseAuth implements DatabaseAuthService
 {
+    /**
+     * A bcrypt hash of a value nothing supplied at a login can equal, at the cost this
+     * installation hashes with, so that verifying against it costs what verifying a real user's
+     * password costs. It exists to be compared against and never to match.
+     */
+    private const string ABSENT_USER_HASH = '$2y$12$zV1o.l9z/dn2kLYhcwHxverrSraaiNa5fNC.ZXg.ioWV7S071QRh.';
+
     public function __construct(
         private UserService     $userService,
         private UserPassService $userPassService
@@ -79,6 +86,20 @@ final readonly class DatabaseAuth implements DatabaseAuthService
             }
         } catch (Exception $e) {
             processException($e);
+
+            // A login that named nobody still pays for a password check.
+            //
+            // `getByLogin()` throws for a login that does not exist, and this used to return
+            // straight away — so an existing login cost a bcrypt verify and a made-up one cost a
+            // failed SELECT. At the cost this installation hashes with, that is about 255ms
+            // against nothing: one request per candidate name tells an unauthenticated caller
+            // which of them are real, without ever guessing a password. The reply is identical
+            // either way, and was the only thing that had been made identical.
+            //
+            // Verifying against a fixed hash that nothing can match spends the same time on the
+            // way to the same answer. `Track` still counts the attempt, so this is bounded by the
+            // same limit that bounds guessing.
+            Hash::checkHashKey($userLoginDto->getLoginPass() ?? '', self::ABSENT_USER_HASH);
         }
 
         return false;

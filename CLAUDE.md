@@ -474,6 +474,23 @@ silently under-fills, when something asks for it. `OptionalDependenciesAreWiredT
 module and fails on any defaulted service-typed parameter left null. **Probe a real container
 before believing a dependency arrived.**
 
+**A refusal that costs a different amount.** The reply can be identical and still tell the caller
+what it was meant to withhold. `DatabaseAuth::authUser()` answered `Wrong login` for a name that
+does not exist and for a wrong password alike — but the first returned as soon as `getByLogin()`
+threw, while the second ran a bcrypt verify. Measured on this installation, which hashes at cost
+12: **277ms against 0.7ms**. One request per candidate name told an unauthenticated caller which
+logins were real, without their ever guessing a password. The fix is to spend the same time on the
+way to the same answer — verify against a fixed hash nothing can match — and the test asserts the
+two paths against *each other* rather than against a number of milliseconds, so it calibrates
+itself to whatever machine it runs on.
+
+Watch for the same shape wherever a lookup precedes a check: the public link's "never issued"
+answered differently from "expired" until it was made to answer the same, and the password reset's
+two refusals are deliberately one message. **Ask what a refusal costs, not only what it says.** Note
+that a fixture is easy to get wrong here — `UserDataGenerator` puts a plain string in `pass`, which
+`password_verify()` rejects as malformed and returns from at once, so a timing comparison against an
+unmodified generated user is two fast paths agreeing and proves nothing.
+
 **A comparison done in the wrong domain.** These behave correctly in the common case, which is why
 they survive review. `Hash::getKey()` measured bcrypt's 72-**byte** limit with `mb_strlen()`, so a
 40-character CJK password (120 bytes) skipped the SHA-256 pre-hash and bcrypt truncated it —

@@ -109,6 +109,79 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertFalse($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    /**
+     * A login naming nobody costs what a login naming somebody costs.
+     *
+     * `getByLogin()` throws for a login that does not exist, and this used to return straight
+     * away — so a real login cost a bcrypt verify and a made-up one cost a failed SELECT. At the
+     * cost this installation hashes with that is roughly 250ms against nothing, which tells an
+     * unauthenticated caller which names are real without their ever guessing a password. The
+     * refusal itself was already identical for both, and was the only thing that had been.
+     *
+     * Measured against each other rather than against a fixed number of milliseconds, so the
+     * assertion calibrates itself to whatever machine it runs on: both paths do one bcrypt, so
+     * the ratio is about one, and half of it is a floor no unhashed path can reach. Without the
+     * work the missing-user path takes well under a thousandth of the other.
+     *
+     * The known-user fixture is given a *real* hash on purpose: `UserDataGenerator` puts a plain
+     * string in `pass`, which `password_verify()` rejects as malformed and returns from at once,
+     * so a comparison against that would be two fast paths agreeing and would prove nothing.
+     */
+    public function testALoginForAMissingUserCostsTheSameAsOneForAnExistingUser(): void
+    {
+        $password = self::$faker->password();
+
+        $existing = UserDataGenerator::factory()->buildUserData()->mutate(
+            ['login' => 'a-real-login', 'pass' => Hash::hashKey('the-actual-password')]
+        );
+
+        $this->userService
+            ->method('getByLogin')
+            ->willReturnCallback(
+                static function (string $login) use ($existing) {
+                    if ($login === 'a-real-login') {
+                        return $existing;
+                    }
+
+                    throw new NoSuchItemException('User does not exist');
+                }
+            );
+
+        $costOfExistingUser = $this->timeAuthenticating('a-real-login', $password);
+        $costOfMissingUser = $this->timeAuthenticating('no-such-login', $password);
+
+        self::assertGreaterThan(
+            $costOfExistingUser / 2,
+            $costOfMissingUser,
+            sprintf(
+                'a login for a user that does not exist has to cost about what one for a user that'
+                . ' does costs, or the difference tells a caller which logins are real'
+                . ' (existing: %.1fms, missing: %.1fms)',
+                $costOfExistingUser * 1000,
+                $costOfMissingUser * 1000
+            )
+        );
+    }
+
+    /**
+     * Seconds spent on one authentication attempt, which must fail either way.
+     */
+    private function timeAuthenticating(string $login, string $password): float
+    {
+        $userLoginData = new UserLoginDto();
+        $userLoginData->setLoginUser($login);
+        $userLoginData->setLoginPass($password);
+
+        $started = microtime(true);
+        $result = $this->databaseAuth->authenticate($userLoginData);
+        $elapsed = microtime(true) - $started;
+
+        self::assertFalse($result->isOk(), $login . ': the attempt has to fail');
+
+        return $elapsed;
+    }
+
+
     public function testAuthenticateWithMigrationBySHA1()
     {
         $user = self::$faker->userName();
