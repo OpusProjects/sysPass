@@ -662,6 +662,84 @@ final class AccountPresetApplicationTest extends TestCase
         );
     }
 
+    /**
+     * Two presets that the score expression cannot separate resolve the same way every time.
+     *
+     * `score` is `priority + 3 / + 2 / + 1` by how specifically the preset matches, and two group
+     * presets at the same priority both come out at `priority + 2`. A user in two groups reaches
+     * that with an entirely ordinary configuration — one preset on each group — and the query then
+     * asked for `ORDER BY score DESC LIMIT 1` over a tie, which lets the database return either.
+     * So which default permissions, or which password policy, applied to that user was not decided
+     * anywhere and could differ between two requests.
+     *
+     * The preset defined first now wins. The direction is a choice, and this is the one that
+     * leaves installations where they are: asked of a tie, this MariaDB was in fact returning the
+     * lower id, so settling the rule this way does not quietly move anybody's effective policy to
+     * a different preset.
+     *
+     * Which is also why this test cannot be the one that pins the fix, and is not claimed to be:
+     * since the database already answers this way, it passes with the ordering and without it.
+     * What it does establish is that the tie is reachable from an ordinary configuration and that
+     * the answer is stable across twenty creations. `ItemPresetTest::testTheOrderThatChoosesAPreset\
+     * IsTotal` is the one that fails when the ordering stops asking for a decided answer.
+     */
+    public function testTwoEquallyRankedGroupPresetsResolveTheSameWayEveryTime(): void
+    {
+        $primaryGroupId = $this->createGroup('tie-primary');
+        $secondaryGroupId = $this->createGroup('tie-secondary');
+        $userId = $this->createUser('tie', $primaryGroupId);
+        $this->addToGroup($userId, $secondaryGroupId);
+
+        $earlierTargetId = $this->createUser('tie-earlier-target', $this->createGroup('tie-earlier-target'));
+        $laterTargetId = $this->createUser('tie-later-target', $this->createGroup('tie-later-target'));
+
+        // Same type, same specificity, same priority: nothing in the score separates these two.
+        $this->createPermissionPreset(
+            userGroupId: $primaryGroupId,
+            fixed: 1,
+            priority: 5,
+            data: new AccountPermissionPreset([$earlierTargetId], [], [], [])
+        );
+        $this->createPermissionPreset(
+            userGroupId: $secondaryGroupId,
+            fixed: 1,
+            priority: 5,
+            data: new AccountPermissionPreset([$laterTargetId], [], [], [])
+        );
+
+        $this->setContextUser($userId, $primaryGroupId, 'tie-user');
+
+        for ($attempt = 0; $attempt < 20; $attempt++) {
+            $accountId = $this->createAccount(
+                'tie-' . $attempt,
+                'TiePass!' . bin2hex(random_bytes(4)),
+                $userId,
+                $primaryGroupId
+            );
+
+            $viewIds = $this->viewUserIds($accountId);
+
+            self::assertContains(
+                $earlierTargetId,
+                $viewIds,
+                sprintf('attempt %d applied the later preset; the tie is not being decided', $attempt)
+            );
+            self::assertNotContains($laterTargetId, $viewIds);
+        }
+    }
+
+    /**
+     * A second, non-primary group membership — the `UserToUserGroup` half of the preset query's
+     * WHERE, and what makes two group presets reachable by one user at once.
+     */
+    private function addToGroup(int $userId, int $userGroupId): void
+    {
+        $statement = getDbHandler()->getConnection()
+                                   ->prepare('INSERT INTO UserToUserGroup (userId, userGroupId) VALUES (?, ?)');
+        $statement->execute([$userId, $userGroupId]);
+    }
+
+
     private function createPermissionPreset(
         ?int $userId = null,
         ?int $userGroupId = null,
