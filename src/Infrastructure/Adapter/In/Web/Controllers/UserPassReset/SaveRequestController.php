@@ -81,6 +81,11 @@ final class SaveRequestController extends UserPassResetSaveBase
         } catch (Exception $e) {
             processException($e);
 
+            // Still counted. checkTracking() throws once the limit is already reached, and
+            // recording the attempt anyway is what makes further hammering extend the block
+            // rather than sit out a window that stops growing.
+            $this->addTracking();
+
             $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
