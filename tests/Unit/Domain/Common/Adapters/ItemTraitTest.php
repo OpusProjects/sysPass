@@ -34,6 +34,7 @@ use SP\Domain\Common\Adapters\ItemTrait;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\CustomField\Models\CustomFieldData;
+use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Services\CustomFieldItem;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Tests\Support\UnitaryTestCase;
@@ -237,6 +238,73 @@ class ItemTraitTest extends UnitaryTestCase
         $service->expects(self::once())->method('delete')->with([7], self::MODULE_ID);
 
         $this->host->updateCustomFields(self::MODULE_ID, 7, $this->givenThePostedFields([4 => '']), $service);
+    }
+
+    /**
+     * A masked value is not saved over the secret it stands in for.
+     *
+     * The form renders a secret the viewer may not see as `***`, and the browser posts that back
+     * verbatim when the form is saved without the field being touched. Storing it encrypted the
+     * mask over the real value, unrecoverably — so editing anything else about an item destroyed
+     * every custom field secret on it that the editor was not allowed to see.
+     */
+    #[Test]
+    public function updatingDoesNotSaveTheMaskOverTheSecretItStandsFor()
+    {
+        $service = $this->createMock(CustomFieldDataService::class);
+        $service->expects(self::never())->method('updateOrCreate');
+        $service->expects(self::never())->method('delete');
+
+        $this->host->updateCustomFields(
+            self::MODULE_ID,
+            7,
+            $this->givenThePostedFields([4 => CustomField::MASKED]),
+            $service
+        );
+    }
+
+    /**
+     * Nor is one copied into a new item. The copy form is prefilled from the original, so a secret
+     * the copier may not see arrives masked and would otherwise become the copy's stored value.
+     */
+    #[Test]
+    public function creatingDoesNotSaveTheMaskOverTheSecretItStandsFor()
+    {
+        $service = $this->createMock(CustomFieldDataService::class);
+        $service->expects(self::never())->method('create');
+
+        $this->host->addCustomFields(
+            self::MODULE_ID,
+            7,
+            $this->givenThePostedFields([4 => CustomField::MASKED]),
+            $service
+        );
+    }
+
+    /**
+     * The fields either side of a masked one are still saved — the mask is skipped, not the
+     * request. Without this the test above is satisfied by a guard that drops everything.
+     */
+    #[Test]
+    public function aMaskedFieldDoesNotStopTheOthersBeingSaved()
+    {
+        $saved = [];
+
+        $service = $this->createStub(CustomFieldDataService::class);
+        $service->method('updateOrCreate')->willReturnCallback(
+            static function ($customFieldData) use (&$saved): void {
+                $saved[] = $customFieldData->getDefinitionId();
+            }
+        );
+
+        $this->host->updateCustomFields(
+            self::MODULE_ID,
+            7,
+            $this->givenThePostedFields([4 => 'kept', 5 => CustomField::MASKED, 6 => 'also kept']),
+            $service
+        );
+
+        self::assertSame([4, 6], $saved);
     }
 
     /**
