@@ -60,6 +60,13 @@ class ArchiveHandler implements ArchiveHandlerInterface
     public function compressDirectory(string $directory, ?string $regex = null): string
     {
         $this->archive->buildFromDirectory($directory, $regex);
+
+        // Before compressing, not only after: the uncompressed archive holds the same thing the
+        // compressed one does and exists for as long as compressing takes, which on a large
+        // installation is not an instant. `database.sql` is restricted the moment it is opened for
+        // exactly this reason; this is the same window, left open.
+        $this->restrictToOwner($this->archive->getPath());
+
         $packed = $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed archive
@@ -78,6 +85,11 @@ class ArchiveHandler implements ArchiveHandlerInterface
     public function compressFile(string $file): string
     {
         $this->archive->addFile($file, basename($file));
+
+        // See compressDirectory(): the uncompressed archive is as sensitive as the compressed one
+        // and lives for as long as compressing takes.
+        $this->restrictToOwner($this->archive->getPath());
+
         $packed = $this->archive->compress(Phar::GZ);
 
         // Delete the non-compressed files
@@ -90,12 +102,13 @@ class ArchiveHandler implements ArchiveHandlerInterface
     }
 
     /**
-     * Restrict a produced backup archive to its owner.
+     * Restrict a backup archive to its owner.
      *
      * The archive holds a full DB dump (encrypted account blobs + the master
      * password hash) or the application files (config.xml with the crypto keys),
      * so it must not land at the process default umask (typically world-readable
-     * 0644) where any local user on a shared host could read it.
+     * 0644) where any local user on a shared host could read it. That applies to
+     * the uncompressed archive too, for as long as it exists.
      */
     private function restrictToOwner(string $path): void
     {

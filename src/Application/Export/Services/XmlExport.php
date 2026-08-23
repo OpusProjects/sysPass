@@ -175,6 +175,13 @@ final class XmlExport extends Service implements XmlExportService
             if (!$this->document->save($file)) {
                 throw ServiceException::error(__u('Error while creating the XML file'));
             }
+
+            // The backup archives are restricted to their owner; this was not, and it holds the
+            // same installation. Every account's encrypted secret and its key are in here, and
+            // when no export password was given so is everything around them in the clear — the
+            // name, the login, the URL and the notes of every account. At the default umask that
+            // is a world-readable file, which on a shared host is every local user.
+            @chmod($file, 0600);
         } catch (ServiceException $e) {
             throw $e;
         } catch (Exception $e) {

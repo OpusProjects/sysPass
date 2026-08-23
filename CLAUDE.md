@@ -452,6 +452,21 @@ added without one. Worth knowing while reading the schema: `Category.name`, `Cli
 `Tag.name` are **not** unique — only their `hash` is — so those three needed it despite looking
 like natural keys.
 
+**A file we write, at whatever umask happens to be set.** The backup archives are deliberately
+`0600`, with a comment saying why: they hold the DB dump and `config.xml`, and the process umask is
+typically `0644`, which on a shared host is every local user. The XML export holds the same
+installation — every account's encrypted secret and its key, and when no export password was given
+the name, login, URL and notes of every account **in the clear** — and was left at whatever the
+umask gave it, measured as `0644`. The uncompressed archive had the same gap for as long as
+compressing took, though `database.sql` beside it was restricted the moment it was opened, for
+exactly that reason.
+
+**Anything this application writes that holds account data is restricted to its owner**, and the
+place to check is not only the finished artefact but every intermediate on the way to it — and what
+is left behind when the run fails, since an interrupted backup leaves its intermediate at the umask
+indefinitely. `config/config.xml` is the exception that is fine: it is `0644` itself, but
+`ConfigUtil` holds its *directory* at `0750`, and that is the control.
+
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles
 the design before you invent one. The API's four parameter readers are the case: `getParamArray()`
