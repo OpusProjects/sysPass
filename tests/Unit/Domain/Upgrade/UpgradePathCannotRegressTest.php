@@ -226,6 +226,73 @@ class UpgradePathCannotRegressTest extends TestCase
      *
      * @return string[]
      */
+    /**
+     * Versions declared above the application's own, which therefore cannot be reached.
+     *
+     * `ModuleBase::checkUpgradeNeeded()` asks whether the *stored* version is behind the version
+     * the code reports, and `Version::getVersionStringNormalized()` builds that from
+     * `AppInfoInterface::APP_VERSION` and `APP_BUILD` alone. Those constants have not moved since
+     * the rewrite was imported, so an installation stamped with them — which is every installation
+     * this codebase performs, since `Installer` stamps the same value — is never behind, no upgrade
+     * is ever triggered, and a handler declared above that version never runs.
+     *
+     * Both entries below are in that state. They are listed rather than merely tolerated so that a
+     * migration added tomorrow cannot quietly join them: the test asserts these two are *still*
+     * unreachable, and that nothing else is.
+     *
+     * Resolving them is a deployment decision rather than a test change. Bumping APP_BUILD makes
+     * both reachable, but `40024210101.sql` drops a column that `dbstructure.sql` already ships
+     * without — so it would then run against schemas that already have it applied, and fail. The
+     * migration has to be made conditional first, or these two accepted as applying only to
+     * installations arriving from 3.2.
+     */
+    private const VERSIONS_THE_APPLICATION_CANNOT_REACH = ['400.24210101', '400.24240101'];
+
+    /**
+     * A declared version above the application's own can never be the reason an upgrade runs.
+     *
+     * This is not a property of any one migration, which is why it is asserted over all of them:
+     * the version is what decides whether the upgrade happens at all, so declaring a handler above
+     * it writes a migration nothing will ever ask for. It fails silently and looks exactly like an
+     * installation that had nothing to do.
+     */
+    #[Test]
+    #[DataProvider('handlerProvider')]
+    public function everyDeclaredVersionIsOneTheApplicationCanReach(string $handler): void
+    {
+        $current = Version::getVersionStringNormalized();
+
+        foreach (self::versionsOf($handler) as $version) {
+            $unreachable = Version::checkVersion($current, $version);
+
+            if (in_array($version, self::VERSIONS_THE_APPLICATION_CANNOT_REACH, true)) {
+                self::assertTrue(
+                    $unreachable,
+                    sprintf(
+                        '%s is listed as unreachable but the application now reports %s. Remove it '
+                        . 'from VERSIONS_THE_APPLICATION_CANNOT_REACH.',
+                        $version,
+                        $current
+                    )
+                );
+
+                continue;
+            }
+
+            self::assertFalse(
+                $unreachable,
+                sprintf(
+                    '%s declares %s, which is above the application\'s own %s. checkUpgradeNeeded() '
+                    . 'compares the stored version against that, so this migration can never run. '
+                    . 'Bump APP_BUILD, or lower the declared version.',
+                    $handler,
+                    $version,
+                    $current
+                )
+            );
+        }
+    }
+
     private static function versionsOf(string $handler): array
     {
         return array_map(
