@@ -241,6 +241,41 @@ class SerdeTest extends UnitaryTestCase
         $this->assertSame(42, $out->id);
         $this->assertSame('a label', $out->label);
     }
+
+    /**
+     * serializeObjectToJson() reflects over every property and hands the lot to json_encode()
+     * with JSON_THROW_ON_ERROR -- a value json_encode() can never represent (a non-finite float,
+     * here) must come back as this application's own exception rather than json_decode()'s
+     * JsonException escaping raw, the same contract every other serialize/deserialize pair here
+     * keeps. This is what a preset or plugin blob that happened to compute NAN or INF would hit.
+     *
+     * @throws SPException
+     */
+    public function testSerializeObjectToJsonWrapsAJsonEncodingFailure()
+    {
+        $subject = new SerdeSerializeObjectToJsonTestSubject();
+        $subject->value = NAN;
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Inf and NaN cannot be JSON encoded');
+
+        Serde::serializeObjectToJson($subject);
+    }
+
+    /**
+     * deserializeObjectFromJson() decodes with JSON_THROW_ON_ERROR before it ever reaches for
+     * reflection, so malformed JSON -- a truncated cache write, a corrupted stored blob -- must
+     * surface the same way: this application's own exception, not json_decode()'s JsonException.
+     *
+     * @throws SPException
+     */
+    public function testDeserializeObjectFromJsonWrapsAJsonDecodingFailure()
+    {
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('Syntax error');
+
+        Serde::deserializeObjectFromJson('{"id":', SerdeDeserializeObjectFromJsonTestSubject::class);
+    }
 }
 
 /**
@@ -253,4 +288,15 @@ final class SerdeDeserializeObjectFromJsonTestSubject
 {
     public int $id;
     public string $label;
+}
+
+/**
+ * A minimal target for Serde::serializeObjectToJson(), holding a value the caller can set to
+ * something json_encode() refuses (NAN, INF) without depending on a specific domain type.
+ *
+ * @see SerdeTest::testSerializeObjectToJsonWrapsAJsonEncodingFailure()
+ */
+final class SerdeSerializeObjectToJsonTestSubject
+{
+    public float $value = 0.0;
 }
