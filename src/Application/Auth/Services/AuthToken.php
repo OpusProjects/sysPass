@@ -76,6 +76,18 @@ final class AuthToken extends Service implements AuthTokenService
         AclActionsInterface::ACCOUNT_VIEW,
         AclActionsInterface::CATEGORY_VIEW,
         AclActionsInterface::CLIENT_VIEW,
+        // Sealing the master password into a new token needs the master password, and the API can
+        // only get it out of the calling token's own vault. Without these two, every action a
+        // token carries a vault for — ACCOUNT_VIEW and ACCOUNT_CREATE among them — could be
+        // created from the web and not from the API, which answered 500 for all of them.
+        //
+        // It follows that a token which can mint tokens also carries the master password. That is
+        // the same authority the web grants: an administrator who can reach the tokens page has
+        // already unlocked the vault with their own password. It is not free, though — such a
+        // token is worth as much as the vault, which is why the password protecting it is required
+        // rather than optional (`AuthTokenBase::prepareSecureToken()`).
+        AclActionsInterface::AUTHTOKEN_CREATE,
+        AclActionsInterface::AUTHTOKEN_EDIT,
     ];
 
     /**
