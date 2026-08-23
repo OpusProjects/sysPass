@@ -92,7 +92,14 @@ final class NotificationForm extends FormBase implements FormInterface
             'checked' => $this->request->analyzeBool('notification_checkout', false),
         ];
 
-        if ($userId === 0 && $this->context->getUserData()->isAdminApp) {
+        // empty(), not `0 ===`: the "Select User" option in the form posts an empty string, which
+        // analyzeInt() reads as null, and `null === 0` is false — so the two flags that only mean
+        // anything on a notification addressed to nobody were dropped on exactly the notifications
+        // they were for. `onlyAdmin` is the one that matters: a regular user's notifications are
+        // selected with `(userId = :userId OR (userId IS NULL AND onlyAdmin = 0) OR sticky = 1)`,
+        // so an administrator ticking "only admins" and losing it published the notice to
+        // everybody instead. The REST door sets both flags correctly, so it worked there.
+        if (empty($userId) && $this->context->getUserData()->isAdminApp) {
             $data['onlyAdmin'] = $this->request->analyzeBool('notification_onlyadmin', false);
             $data['sticky'] = $this->request->analyzeBool('notification_sticky', false);
         }

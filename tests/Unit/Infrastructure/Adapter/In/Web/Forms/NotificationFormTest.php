@@ -200,6 +200,68 @@ class NotificationFormTest extends UnitaryTestCase
     }
 
     /**
+     * A notice addressed to nobody keeps the flags that only mean anything on one.
+     *
+     * The form's "Select User" option posts an empty string, which `analyzeInt()` reads as null,
+     * and the guard compared against `0` — so `null === 0` was false and both flags were dropped on
+     * exactly the notifications they exist for. `onlyAdmin` is the one that matters: a regular
+     * user's notifications are selected with
+     * `(userId = :userId OR (userId IS NULL AND onlyAdmin = 0) OR sticky = 1)`, so an
+     * administrator ticking "only admins" and losing it was then left with a notification that
+     * had no user, no `onlyAdmin` and no `sticky` — which is exactly what the target check below
+     * refuses. So a broadcast could not be created through this form at all: the submission came
+     * back as "A target is needed", naming the one thing the administrator had in fact supplied.
+     * The REST door sets both flags independently of the user and could always create them.
+     */
+    #[Test]
+    public function anAdministratorsBroadcastKeepsItsFlags(): void
+    {
+        $this->asApplicationAdministrator();
+        // null is what an unselected user posts; 0 is the other way of saying "nobody".
+        $this->givenAForm(ints: ['notification_user' => null], bools: true);
+
+        $data = $this->buildForm()->validateFor(AclActionsInterface::NOTIFICATION_CREATE)->getItemData();
+
+        self::assertNull($data->getUserId(), 'a broadcast is addressed to nobody');
+        self::assertTrue((bool)$data->isOnlyAdmin(), 'an admin-only notice must stay admin-only');
+        self::assertTrue((bool)$data->isSticky());
+    }
+
+    /**
+     * The same submission from somebody who is not an application administrator is refused, so the
+     * fix widened the null case rather than the permission: broadcasting stays an administrator's
+     * to do, and a notice with no user and no flags has nobody to reach.
+     */
+    #[Test]
+    public function aRegularUserCannotBroadcast(): void
+    {
+        $this->givenAForm(ints: ['notification_user' => null], bools: true);
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('A target is needed');
+
+        $this->buildForm()->validateFor(AclActionsInterface::NOTIFICATION_CREATE);
+    }
+
+    /**
+     * And a notice addressed to a particular user still gets neither, whoever sends it: the flags
+     * describe a broadcast, and this one is not.
+     */
+    #[Test]
+    public function aNoticeAddressedToSomebodyGetsNoFlags(): void
+    {
+        $this->asApplicationAdministrator();
+        $this->givenAForm(ints: ['notification_user' => 7], bools: true);
+
+        $data = $this->buildForm()->validateFor(AclActionsInterface::NOTIFICATION_CREATE)->getItemData();
+
+        self::assertSame(7, $data->getUserId());
+        self::assertNotTrue($data->isOnlyAdmin());
+        self::assertNotTrue($data->isSticky());
+    }
+
+
+    /**
      * @param array<string, string> $strings overriding the complete, valid submission
      * @param array<string, int> $ints
      */
@@ -211,7 +273,11 @@ class NotificationFormTest extends UnitaryTestCase
             'notification_description' => 'Something happened',
         ];
 
-        $ints += ['notification_user' => 7];
+        // array_key_exists, not `+=`: a deliberate null override must survive, and `+=` only
+        // fills keys that are absent — which a null one is not.
+        if (!array_key_exists('notification_user', $ints)) {
+            $ints['notification_user'] = 7;
+        }
 
         $this->request
             ->method('analyzeString')
