@@ -30,6 +30,7 @@ use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\CustomField\Adapters\CustomField;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Application\CustomField\Ports\CustomFieldDataService;
 use SP\Domain\CustomField\Services\CustomFieldItem;
@@ -128,6 +129,14 @@ trait ItemTrait
 
         if (!empty($customFields)) {
             foreach ($customFields as $id => $value) {
+                // Reached with a mask when an item is copied rather than created from blank: the
+                // copy form is prefilled from the original, so a secret the copier may not see
+                // arrives here masked and would become the new item's stored value. Same rule as
+                // the update path below, which explains it.
+                if ($value === CustomField::MASKED) {
+                    continue;
+                }
+
                 $customFieldData = new CustomFieldDataModel(
                     [
                         'itemId' => $itemId,
@@ -199,6 +208,21 @@ trait ItemTrait
 
         if (!empty($customFields)) {
             foreach ($customFields as $id => $value) {
+                // The form shows a secret the viewer may not see as CustomField::MASKED, and the
+                // browser posts that back verbatim whenever the form is saved without the field
+                // being touched. Storing it encrypts the mask over the secret it stood in for, and
+                // the original is not recoverable: editing anything else about an item destroyed
+                // every custom field secret on it that the editor was not allowed to see.
+                //
+                // The three config forms that mask a password already refuse it on the way in —
+                // ConfigLdap, ConfigGeneral and ConfigMail each compare against this same value —
+                // so this is a rule the codebase had already settled, applied at the door that was
+                // never given it. The cost is that a field cannot deliberately be set to exactly
+                // the mask, which is the trade those three already make.
+                if ($value === CustomField::MASKED) {
+                    continue;
+                }
+
                 $customFieldData = new CustomFieldDataModel(
                     [
                         'itemId' => $itemId,
