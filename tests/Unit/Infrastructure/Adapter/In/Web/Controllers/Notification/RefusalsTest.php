@@ -11,6 +11,7 @@ use SP\Application\User\Ports\UserService;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Notification\CreateController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Notification\EditController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\Notification\SaveEditController;
 use SP\Tests\Support\WebControllerTestCase;
 
 /**
@@ -65,6 +66,28 @@ class RefusalsTest extends WebControllerTestCase
             $notificationService,
             $this->createStub(UserService::class)
         ))->editAction(123);
+
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame("You don't have permission to do this operation", $response->subject);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function savingAnEditIsRefusedWhenTheAclDenies(): void
+    {
+        $notificationService = $this->createMock(NotificationService::class);
+        $notificationService->expects(self::never())->method('update');
+
+        $application = $this->applicationForASignedInUser();
+        $acl = $this->aclThatRefuses();
+
+        $response = (new SaveEditController(
+            $application,
+            $this->webControllerHelper($acl, $application, 'notification', 'saveEdit'),
+            $notificationService
+        ))->saveEditAction(123);
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
         self::assertSame("You don't have permission to do this operation", $response->subject);

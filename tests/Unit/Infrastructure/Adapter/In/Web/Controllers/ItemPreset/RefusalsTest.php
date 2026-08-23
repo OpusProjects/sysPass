@@ -9,7 +9,9 @@ use PHPUnit\Framework\MockObject\Exception;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Domain\Common\Enums\ResponseStatus;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\ItemPresetHelper;
+use SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset\DeleteController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset\EditController;
+use SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset\SaveCreateController;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ItemPreset\ViewController;
 use SP\Application\User\Ports\UserGroupService;
 use SP\Application\User\Ports\UserProfileService;
@@ -76,6 +78,51 @@ class RefusalsTest extends WebControllerTestCase
         );
 
         $response = $controller->editAction(1);
+
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame("You don't have permission to do this operation", $response->subject);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function deletingIsRefusedWhenTheAclDenies(): void
+    {
+        $itemPresetService = $this->createMock(ItemPresetService::class);
+        $itemPresetService->expects(self::never())->method('delete');
+        $itemPresetService->expects(self::never())->method('deleteByIdBatch');
+
+        $application = $this->applicationForASignedInUser();
+        $acl = $this->aclThatRefuses();
+
+        $response = (new DeleteController(
+            $application,
+            $this->webControllerHelper($acl, $application, 'itemPreset', 'delete'),
+            $itemPresetService
+        ))->deleteAction(1);
+
+        self::assertSame(ResponseStatus::ERROR, $response->status);
+        self::assertSame("You don't have permission to do this operation", $response->subject);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function savingANewPresetIsRefusedWhenTheAclDenies(): void
+    {
+        $itemPresetService = $this->createMock(ItemPresetService::class);
+        $itemPresetService->expects(self::never())->method('create');
+
+        $application = $this->applicationForASignedInUser();
+        $acl = $this->aclThatRefuses();
+
+        $response = (new SaveCreateController(
+            $application,
+            $this->webControllerHelper($acl, $application, 'itemPreset', 'saveCreate'),
+            $itemPresetService
+        ))->saveCreateAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
         self::assertSame("You don't have permission to do this operation", $response->subject);
