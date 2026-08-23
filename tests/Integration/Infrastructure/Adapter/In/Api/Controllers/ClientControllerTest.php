@@ -105,6 +105,27 @@ class ClientControllerTest extends ApiTestCase
         $this->assertSame('Client not found', $r->body->error->message);
     }
 
+    /**
+     * `customFields=1` is the only parameter that changes what the controller does, not merely
+     * what it returns: `CLIENT_VIEW` carries a vault (it is one of the `CAN_USE_SECURE_TOKEN_ACTIONS`
+     * that mint a token holding the master password), and asking for custom fields is what makes
+     * the controller call `requireMasterPass()` to open it before including them. Without a test
+     * that actually sets the flag, that branch — and the vault it depends on — never runs, even
+     * though `testViewAction()` above already proves the flag defaults to off.
+     */
+    public function testViewActionWithCustomFields(): void
+    {
+        $id = $this->createClient(self::PARAMS)->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::CLIENT_VIEW, ['id' => $id, 'customFields' => '1']);
+
+        $this->assertSame(200, $r->status);
+
+        $item = $r->body->data->data;
+        $this->assertObjectHasProperty('data', $item->customFields, 'the include must actually run');
+        $this->assertIsArray($item->customFields->data);
+    }
+
     public function testEditAction(): void
     {
         $id = $this->createClient(self::PARAMS)->body->itemId;

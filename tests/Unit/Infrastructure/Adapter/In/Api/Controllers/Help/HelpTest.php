@@ -32,6 +32,7 @@ use SP\Infrastructure\Adapter\In\Api\Controllers\Help\AccountHelp;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\CategoryHelp;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ClientHelp;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\ConfigHelp;
+use SP\Infrastructure\Adapter\In\Api\Controllers\Help\EventlogHelp;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\TagHelp;
 use SP\Infrastructure\Adapter\In\Api\Controllers\Help\UserGroupHelp;
 use SP\Tests\Support\UnitaryTestCase;
@@ -141,5 +142,16 @@ class HelpTest extends UnitaryTestCase
         $help = ConfigHelp::getHelpFor('backup');
 
         self::assertArrayHasKey('help', $help);
+    }
+
+    /**
+     * Clearing the event log takes no parameters, and the empty list is a documented fact rather
+     * than a missing method: an action nobody wrote a method for answers with nothing at all (see
+     * testAnUndocumentedActionYieldsNoHelp()), while `clear()` exists and deliberately says there
+     * is nothing to pass.
+     */
+    public function testTheEventlogClearActionDocumentsNoParameters(): void
+    {
+        self::assertSame(['help' => []], EventlogHelp::getHelpFor('clear'));
     }
 }
