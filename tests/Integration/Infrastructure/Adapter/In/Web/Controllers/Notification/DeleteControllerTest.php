@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Domain\Notification\Models\Notification;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Database\QueryData;
 use SP\Domain\Common\Dtos\QueryResult;
@@ -15,8 +16,11 @@ use SP\Tests\Support\IntegrationTestCase;
 
 /**
  * Covers the notification delete endpoint for single and batch deletions.
- * The delete service methods (deleteAdmin / delete / deleteByIdBatch) go directly
- * to the repository without calling getById, so no ownership resolver is needed.
+ *
+ * The owner-scoped delete methods (delete / deleteByIdBatch) read the notification first, so that
+ * a user cannot remove somebody else's by its id, and the non-admin tests below therefore have to
+ * answer that read with a notification the signed-in user owns. The admin ones (deleteAdmin /
+ * deleteAdminBatch) delete any notification by design and need no such row.
  *
  * The ACL denial itself (the very first check in DeleteController::deleteAction()) is not
  * reachable here: this harness's AclInterface double is permanently open. It is covered instead
@@ -27,10 +31,32 @@ use SP\Tests\Support\IntegrationTestCase;
 class DeleteControllerTest extends IntegrationTestCase
 {
     private bool $isAdminApp = false;
+    private ?UserDto $userDto = null;
 
+    /**
+     * Memoised: the generator mints a fresh random user on every call, and these tests have to
+     * know who is signed in — the notification below is owned by them.
+     */
     protected function getUserDataDto(): UserDto
     {
-        return parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdminApp]);
+        return $this->userDto ??= parent::getUserDataDto()->mutate(['isAdminApp' => $this->isAdminApp]);
+    }
+
+    /**
+     * Answers the ownership read with a notification belonging to the signed-in user, and
+     * everything else with the affected-row count the caller expects.
+     */
+    private function givenTheNotificationsAreMine(int $affectedRows): void
+    {
+        $mine = new Notification(['userId' => $this->getUserDataDto()->id]);
+
+        $this->databaseQueryResolver = function (QueryData $queryData) use ($mine, $affectedRows): QueryResult {
+            if ($queryData->getMapClassName() === Notification::class) {
+                return new QueryResult([$mine]);
+            }
+
+            return new QueryResult([], $affectedRows, 0);
+        };
     }
 
     /**
@@ -40,6 +66,8 @@ class DeleteControllerTest extends IntegrationTestCase
      */
     public function testDeleteSingle(): void
     {
+        $this->givenTheNotificationsAreMine(1);
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'notification/delete/100'])
         );
@@ -77,11 +105,9 @@ class DeleteControllerTest extends IntegrationTestCase
      */
     public function testDeleteMultiple(): void
     {
-        // The batch-delete service verifies affectedNumRows == count(ids).
-        // Return a QueryResult whose affectedNumRows matches the 2 ids sent.
-        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
-            return new QueryResult([], 2, 0);
-        };
+        // The batch-delete service verifies affectedNumRows == count(ids), and reads each one
+        // first to check it belongs to the caller.
+        $this->givenTheNotificationsAreMine(2);
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'notification/delete', 'items' => [100, 200]])
@@ -170,9 +196,9 @@ class DeleteControllerTest extends IntegrationTestCase
      */
     public function testDeleteMultiplePartialFailure(): void
     {
-        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
-            return new QueryResult([], 1, 0);
-        };
+        // Both belong to the caller, but only one row is affected: the count mismatch is what
+        // this asserts, and it has to be reached rather than short-circuited by the ownership read.
+        $this->givenTheNotificationsAreMine(1);
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'notification/delete', 'items' => [100, 200]])

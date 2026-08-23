@@ -225,6 +225,76 @@ class NotificationTest extends UnitaryTestCase
     }
 
     /**
+     * Deleting somebody else's notification is refused, the way marking one read already was.
+     *
+     * `NOTIFICATION_DELETE` is not an administrator's permission, and `delete()` went straight to
+     * the repository, where the only condition is `sticky = 0` — so any signed-in user could
+     * remove any other user's notification by its id. The REST door happened to be safe because it
+     * reads the row first to build its event message; the web's called through.
+     *
+     * @throws Exception
+     */
+    public function testDeleteDeniedForNonOwner()
+    {
+        // Default context user is non-admin. Use a notification owned by a different user.
+        $userId = $this->context->getUserData()->id;
+        $foreignNotification = new NotificationModel(['userId' => ($userId ?? 0) + 1]);
+
+        $getByIdResult = $this->createMock(QueryResult::class);
+        $getByIdResult->expects($this->once())->method('getNumRows')->willReturn(1);
+        $getByIdResult->expects($this->once())
+                      ->method('getData')
+                      ->with(NotificationModel::class)
+                      ->willReturn($foreignNotification);
+
+        $this->notificationRepository
+            ->expects($this->once())
+            ->method('getById')
+            ->with(100)
+            ->willReturn($getByIdResult);
+
+        $this->notificationRepository->expects($this->never())->method('delete');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Notification not found');
+
+        $this->notification->delete(100);
+    }
+
+    /**
+     * And a selection is the same door: one id in it that belongs to somebody else refuses the
+     * whole thing, before anything has been removed.
+     *
+     * @throws Exception
+     */
+    public function testDeleteByIdBatchDeniedWhenOneIdBelongsToSomebodyElse()
+    {
+        $userId = $this->context->getUserData()->id;
+        $mine = new NotificationModel(['userId' => $userId]);
+        $theirs = new NotificationModel(['userId' => ($userId ?? 0) + 1]);
+
+        $this->notificationRepository
+            ->method('getById')
+            ->willReturnCallback(
+                function (int $id) use ($mine, $theirs) {
+                    $result = $this->createStub(QueryResult::class);
+                    $result->method('getNumRows')->willReturn(1);
+                    $result->method('getData')->willReturn($id === 100 ? $mine : $theirs);
+
+                    return $result;
+                }
+            );
+
+        $this->notificationRepository->expects($this->never())->method('deleteByIdBatch');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Notification not found');
+
+        $this->notification->deleteByIdBatch([100, 101]);
+    }
+
+
+    /**
      * @throws Exception
      * @throws SPException
      */
@@ -350,8 +420,35 @@ class NotificationTest extends UnitaryTestCase
      * @throws NoSuchItemException
      * @throws QueryException
      */
+    /**
+     * The ownership read `delete()` and `deleteByIdBatch()` now make before removing anything.
+     * Answers a notification belonging to the context user, so these tests stay about what they
+     * were about.
+     *
+     * @throws Exception
+     */
+    private function givenTheNotificationsAreMine(): void
+    {
+        $mine = new NotificationModel(['userId' => $this->context->getUserData()->id]);
+
+        $this->notificationRepository
+            ->method('getById')
+            ->willReturnCallback(
+                function () use ($mine) {
+                    $result = $this->createStub(QueryResult::class);
+                    $result->method('getNumRows')->willReturn(1);
+                    $result->method('getData')->willReturn($mine);
+
+                    return $result;
+                }
+            );
+    }
+
+
     public function testDelete()
     {
+        $this->givenTheNotificationsAreMine();
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('delete')
@@ -368,6 +465,8 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteWithException()
     {
+        $this->givenTheNotificationsAreMine();
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('delete')
@@ -586,6 +685,8 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatch()
     {
+        $this->givenTheNotificationsAreMine();
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
@@ -602,6 +703,8 @@ class NotificationTest extends UnitaryTestCase
      */
     public function testDeleteByIdBatchWithException()
     {
+        $this->givenTheNotificationsAreMine();
+
         $this->notificationRepository
             ->expects($this->once())
             ->method('deleteByIdBatch')
