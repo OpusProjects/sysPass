@@ -113,6 +113,13 @@ final class XmlExport extends Service implements XmlExportService
      */
     public function export(DirectoryHandlerService $exportPath, ?string $password = null): string
     {
+        // Null and the empty string both mean "no password, write it in the clear", which is a
+        // supported way to export. A password of "0" does not mean that — but empty() says it
+        // does, and every decision below used to ask empty(). An admin who typed 0 got an
+        // unencrypted export, signed with the installation's salt rather than their password,
+        // and nothing said so. Settling it here means the rest of this class asks one question.
+        $password = ($password === null || $password === '') ? null : $password;
+
         set_time_limit(0);
 
         $exportPath->checkOrCreate();
@@ -261,7 +268,7 @@ final class XmlExport extends Service implements XmlExportService
         try {
             $selfNode = $this->document->importNode($node, true);
 
-            if (!empty($password)) {
+            if ($password !== null) {
                 $securedKey = $this->crypt->makeSecuredKey($password, false);
                 $encrypted = $this->crypt->encrypt(
                     $this->document->saveXML($selfNode),
@@ -310,7 +317,7 @@ final class XmlExport extends Service implements XmlExportService
     {
         try {
             $hash = self::generateHashFromNodes($this->document);
-            $key = $password ?: sha1($this->configData->getPasswordSalt() ?? '');
+            $key = $password ?? sha1($this->configData->getPasswordSalt() ?? '');
 
             $hashNode = $this->document->createElement('Hash', $hash);
             $hashNode->setAttribute('sign', Hash::signMessage($hash, $key));

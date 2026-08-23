@@ -76,6 +76,11 @@ final class XmlVerify extends Service implements XmlVerifyService
     {
         $self = clone $this;
 
+        // Same rule as XmlExport::export(), which this verifies the output of: only null and the
+        // empty string mean "there is no password". Asking empty() here made "0" verify a file as
+        // unencrypted, agreeing with the export that had just silently written it that way.
+        $password = ($password === null || $password === '') ? null : $password;
+
         $self->setup($xmlFile);
         $self->validateSchema();
 
@@ -83,13 +88,13 @@ final class XmlVerify extends Service implements XmlVerifyService
 
         self::checkVersion($version);
 
-        $key = $password ?: sha1($self->config->getConfigData()->getPasswordSalt() ?? '');
+        $key = $password ?? sha1($self->config->getConfigData()->getPasswordSalt() ?? '');
 
         if (!self::checkXmlHash($self->document, $key)) {
             throw ServiceException::error(__u('Error while checking integrity hash'));
         }
 
-        if (!empty($password)) {
+        if ($password !== null) {
             $self->checkPassword($password);
             $self->processEncrypted($password);
         }
