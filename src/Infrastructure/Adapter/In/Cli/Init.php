@@ -86,6 +86,15 @@ final class Init extends ModuleBase
         // Load language
         $this->language->setLanguage();
 
+        // Before initCli(), which is what runs the command. Without this the dispatcher has no
+        // receivers at all, and notify() is a loop over receivers — so every event a CLI command
+        // fired was silently discarded, including the ones that write the Eventlog table the
+        // security log reads. A master password rotation or a backup run from bin/cli.php left no
+        // trace of having happened, while the same operation through the web or the API was fully
+        // recorded. Web/Init and Api/Init both call this from their own initialize(); this door
+        // was the one that never had it.
+        $this->initEventHandlers();
+
         $this->initCli();
     }
 
