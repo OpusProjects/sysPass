@@ -531,6 +531,19 @@ mistaken for a missing row. Without that attribute this check would turn every u
 "not found", which is worth measuring through the application's own PDO options rather than the
 `mariadb` client, since the client does not set it and answers 0 for the same statement.
 
+**A static factory a subclass cannot use.** `SPException` offers `error()`, `info()`, `critical()`,
+`warning()` and `from()`, each doing `new static($message, …)`. Four subclasses fix their own message
+and take `int $type` first instead — `AccountPermissionException`, `UnauthorizedActionException`,
+`UnauthorizedPageException`, `UpdatedMasterPassException` — so
+`UnauthorizedActionException::error('…')` hands a string to a parameter declared `int` and dies with
+*"Argument #1 ($type) must be of type int, string given"*. The factory idiom is used everywhere else
+(`ServiceException::error()`, `ValidationException::error()`, which are plain subclasses and inherit
+the constructor unchanged), which is exactly why reaching for it on these four is a natural mistake.
+
+**Raise those four with `new` and a type.** Pinned in `UnauthorizedActionExceptionTest` rather than
+fixed: they are constructed at some twenty sites that all pass a type first, so changing the
+signature is wide, behaviour-neutral churn to close a trap nobody has yet stepped in.
+
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles
 the design before you invent one. The API's four parameter readers are the case: `getParamArray()`
