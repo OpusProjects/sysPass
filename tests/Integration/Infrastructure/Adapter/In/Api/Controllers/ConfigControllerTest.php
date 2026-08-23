@@ -45,6 +45,15 @@ class ConfigControllerTest extends ApiTestCase
         $this->assertSame('Export process finished', $r->body->message);
         $this->assertNotEmpty($r->body->data->files->xml);
         $this->assertFileExists($r->body->data->files->xml);
+
+        // Owner-only, like the backup archives beside it. The file holds every account's encrypted
+        // secret and its key, and — when no export password was given — the name, login, URL and
+        // notes of every account in the clear. It used to land at the default umask, 0644.
+        $this->assertSame(
+            0600,
+            fileperms($r->body->data->files->xml) & 0777,
+            'an export must not be readable by every local user'
+        );
     }
 
     public function testExportActionCustomPath(): void
