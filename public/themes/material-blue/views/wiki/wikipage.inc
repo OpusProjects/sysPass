@@ -64,8 +64,8 @@ $pageInfo = $_getvar('pageInfo');
                         printf(
                             '%s: <a href="%s" target="_blank">%s</a>',
                             __('Page'),
-                            $_getvar('wikiUrlBase') . '/' . $result['id'],
-                            $result['id']
+                            $_e($_getvar('wikiUrlBase') . '/' . $result['id']),
+                            $_e($result['id'])
                         ); ?></li>
                 <?php
                 endforeach; ?>
@@ -85,8 +85,8 @@ $pageInfo = $_getvar('pageInfo');
                     printf(
                         '%s: <a href="%s" target="_blank">%s</a>',
                         __('Page'),
-                        $_getvar('wikiUrlBase') . $pageInfo['name'],
-                        $pageInfo['name']
+                        $_e($_getvar('wikiUrlBase') . $pageInfo['name']),
+                        $_e($pageInfo['name'])
                     ); ?></li>
                 <li><?php
                     printf('%s: %s', __('Date'), $pageInfo['lastModified']); ?></li>

@@ -116,7 +116,7 @@ use function SP\__;
     </tr>
     <tr>
         <td class="descField"><?php echo __('Download rate'); ?></td>
-        <td class="valField"><?php printf('%d MB/s', $_getvar('downloadRate')); ?></td>
+        <td class="valField"><?php printf('%d MB/s', $_e((string)$_getvar('downloadRate'))); ?></td>
     </tr>
 </table>
 

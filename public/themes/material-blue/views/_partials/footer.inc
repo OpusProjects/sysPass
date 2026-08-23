@@ -29,7 +29,7 @@ use function SP\__;
                     <?php endif; ?>
                     <span id="user-name-footer"><?php echo $_e($_getvar('ctx_userName')); ?></span>
                     <span for="user-name-footer"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_e($_getvar('ctx_userGroup'))); ?></span>
                 </span>
             </div>
         <?php endif; ?>

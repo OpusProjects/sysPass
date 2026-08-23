@@ -50,7 +50,7 @@ use function SP\__;
 
             <div class="installer-card-header">
                 <h1><?php
-                    printf('%s %s — %s', $_getvar('app_name'), $_getvar('app_version'), __('Installation')); ?></h1>
+                    printf('%s %s — %s', $_e($_getvar('app_name')), $_e($_getvar('app_version')), __('Installation')); ?></h1>
             </div>
 
             <ol class="installer-stepper">
