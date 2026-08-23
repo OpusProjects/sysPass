@@ -34,6 +34,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\User\Models\User;
 use SP\Tests\Support\BodyChecker;
+use SP\Application\Notification\Ports\MailService;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
@@ -57,7 +58,7 @@ class SaveRequestRefusalsTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[BodyChecker('outputCheckerWrongData')]
+    #[BodyChecker('outputCheckerIndistinguishable')]
     public function anAddressThatIsNotTheAccountsIsRefused()
     {
         $this->givenAUser(['email' => self::REGISTERED_EMAIL]);
@@ -73,7 +74,7 @@ class SaveRequestRefusalsTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[BodyChecker('outputCheckerContactAdministrator')]
+    #[BodyChecker('outputCheckerIndistinguishable')]
     public function aDisabledAccountIsRefused()
     {
         $this->givenAUser(['email' => self::REGISTERED_EMAIL, 'isDisabled' => true]);
@@ -90,12 +91,90 @@ class SaveRequestRefusalsTest extends IntegrationTestCase
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    #[BodyChecker('outputCheckerContactAdministrator')]
+    #[BodyChecker('outputCheckerIndistinguishable')]
     public function anLdapAccountIsRefused()
     {
         $this->givenAUser(['email' => self::REGISTERED_EMAIL, 'isLdap' => true]);
 
         $this->whenRequesting('someone', self::REGISTERED_EMAIL);
+    }
+
+    /**
+     * A login nobody has is answered exactly like one that exists.
+     *
+     * This is the half that was still open. The disabled and LDAP refusals had already been
+     * collapsed into a single message for this reason; an unknown login still answered "User not
+     * found" while a known one with the wrong address answered "Wrong data", so the first question
+     * anybody would ask — does this login exist — was answerable by anyone, unauthenticated.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerIndistinguishable')]
+    public function aLoginThatDoesNotExistIsAnsweredLikeOneThatDoes()
+    {
+        $this->givenNoSuchUser();
+
+        $this->whenRequesting('nobody', self::REGISTERED_EMAIL);
+    }
+
+    /**
+     * And so is a request that actually works, or the answer would separate the successes from
+     * everything else instead — which tells a caller just as much.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerIndistinguishable')]
+    public function aRequestThatSucceedsIsAnsweredTheSameWay()
+    {
+        $this->givenAUser(['email' => self::REGISTERED_EMAIL]);
+
+        $this->whenRequesting('someone', self::REGISTERED_EMAIL);
+    }
+
+    /**
+     * The request that works still sends the mail.
+     *
+     * Every outcome now answers the same string, which is the point — but a response that says
+     * "Request sent" whatever happened is also exactly what an endpoint that had quietly stopped
+     * sending anything would produce. Nothing else here would notice, because the failure path is
+     * deliberately swallowed. So this asserts the mail itself, at the address on the account.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerIndistinguishable')]
+    public function aRequestThatSucceedsStillSendsTheMail()
+    {
+        $this->givenAUser(['email' => self::REGISTERED_EMAIL]);
+
+        $sentTo = [];
+
+        $mailService = $this->createStub(MailService::class);
+        $mailService->method('send')->willReturnCallback(
+            static function (string $subject, string $to) use (&$sentTo): void {
+                $sentTo[] = $to;
+            }
+        );
+
+        $this->whenRequesting('someone', self::REGISTERED_EMAIL, [MailService::class => $mailService]);
+
+        self::assertSame([self::REGISTERED_EMAIL], $sentTo, 'the recovery mail must still go out');
+    }
+
+    /**
+     * No row for the login, which is what the service turns into its "User not found".
+     */
+    private function givenNoSuchUser(): void
+    {
+        $this->addDatabaseMapperResolver(User::class, new QueryResult([]));
     }
 
     /**
@@ -114,7 +193,10 @@ class SaveRequestRefusalsTest extends IntegrationTestCase
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
-    private function whenRequesting(string $login, string $email): void
+    /**
+     * @param array<string, mixed> $definitionsOverride
+     */
+    private function whenRequesting(string $login, string $email, array $definitionsOverride = []): void
     {
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
@@ -122,30 +204,23 @@ class SaveRequestRefusalsTest extends IntegrationTestCase
                 'index.php',
                 ['r' => 'userPassReset/saveRequest'],
                 ['login' => $login, 'email' => $email]
-            )
+            ),
+            $definitionsOverride
         );
 
         IntegrationTestCase::runApp($container);
     }
 
-    private function outputCheckerWrongData(string $output): void
-    {
-        $json = json_decode($output);
-
-        self::assertNotEquals('OK', $json->status);
-        self::assertSame('Wrong data', $json->description);
-    }
-
     /**
-     * Both refusals answer identically. The reply does not say which of the two applied, so an
-     * unauthenticated caller learns nothing about the account from asking — which is why the
-     * assertion is on the exact message rather than on it merely failing.
+     * Every outcome is asserted against the same string, deliberately. That is the whole point of
+     * the change these pin: an unauthenticated caller must not be able to tell a login that does
+     * not exist from one that does, nor either from a request that actually sent a mail.
      */
-    private function outputCheckerContactAdministrator(string $output): void
+    private function outputCheckerIndistinguishable(string $output): void
     {
         $json = json_decode($output);
 
-        self::assertNotEquals('OK', $json->status);
-        self::assertSame('Unable to reset the password', $json->description);
+        self::assertSame('OK', $json->status);
+        self::assertSame('Request sent', $json->description);
     }
 }
