@@ -66,10 +66,24 @@ final class SaveController extends SimpleControllerBase
                 $eventMessage->addDescription(__u('LDAP enabled'));
             }
 
-            $ldapParams = LdapParams::fromRequest($this->request);
-
             $ldapDefaultGroup = $this->request->analyzeInt('ldap_defaultgroup');
             $ldapDefaultProfile = $this->request->analyzeInt('ldap_defaultprofile');
+
+            // Before any of the work, because it is an authorisation question. These two decide the
+            // group and profile every user auto-provisioned on their first LDAP sign-in receives —
+            // User::createOnLogin() reads them, and LoginAuthHandler creates that user whenever a
+            // directory bind succeeds and no local record exists. Setting them is a user-management
+            // decision rather than a connection setting, and it needs the permission that creating
+            // a user needs: this action is reached with isConfigGeneral(), an independent bit from
+            // the isMgmUsers() that USER_CREATE answers. Only when they change, so an administrator
+            // of the connection can still save the rest of this page.
+            if ($ldapDefaultGroup !== $configData->getLdapDefaultGroup()
+                || $ldapDefaultProfile !== $configData->getLdapDefaultProfile()
+            ) {
+                $this->checkAccess(AclActionsInterface::USER_CREATE);
+            }
+
+            $ldapParams = LdapParams::fromRequest($this->request);
 
             $configData->setLdapEnabled(true);
             $configData->setLdapType($ldapParams->getType()->value);
