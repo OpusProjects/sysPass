@@ -185,7 +185,19 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
                              'userGroupId' => $userGroupId,
                              'userProfileId' => $userProfileId
                          ])
-            ->orderBy(['score DESC'])
+            // `id` because `score DESC` alone does not decide this. Two presets tie whenever they
+            // are equally specific and equally prioritised, which an ordinary configuration
+            // reaches: a user in two groups, each carrying a preset of the same type at the same
+            // priority, scores both at `priority + 2`. With `LIMIT 1` over a tie the database is
+            // free to return either, so which password policy or which default permissions applied
+            // to that user was not decided anywhere and could differ between two requests.
+            //
+            // Ascending, so the preset defined first wins. The direction is a choice — nothing in
+            // the schema or the UI expresses one — and this is the one that leaves installations
+            // where they are: asked of a tie, the database was in fact returning the lower id, so
+            // defining the rule this way settles the question without quietly moving anybody's
+            // effective policy to a different preset.
+            ->orderBy(['score DESC', 'id ASC'])
             ->limit(1);
 
         $queryData = QueryData::buildWithMapper($query, ItemPresetModel::class);

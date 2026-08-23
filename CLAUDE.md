@@ -438,6 +438,14 @@ over 104 accounts in pages of ten — **63 accounts appeared on no page at all a
 account search sorted on one non-unique column for every sort key it offers, and view count is the
 worst of them because most accounts sit at zero and therefore all tie.
 
+The same applies to a `LIMIT 1` **selector**, which is not paging at all but has the identical
+defect: `ItemPreset::getByFilter()` chose a preset with `ORDER BY score DESC LIMIT 1`, where `score`
+is `priority + 3 / + 2 / + 1` by specificity — so two group presets at the same priority tie, which
+a user in two groups reaches from an ordinary configuration, and which password policy or default
+permissions applied to them was decided by nothing. When picking the direction of a tie-break, check
+what the database is *already* doing: here it returned the lower id, so `id ASC` settles the
+question without moving anybody's effective policy, where `id DESC` would silently have changed it.
+
 Pin this on the **statement**, not by paging a real table: whether a given plan happens to be stable
 is the database's business and moves with volume, statistics and version — the joined search query
 was stable at 150 rows while the direct query was wildly not. What the application controls, and

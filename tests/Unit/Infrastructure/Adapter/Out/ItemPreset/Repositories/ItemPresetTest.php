@@ -59,6 +59,58 @@ class ItemPresetTest extends UnitaryTestCase
 
     private ItemPreset $itemPreset;
 
+    /**
+     * The preset that applies is decided, not left to the database.
+     *
+     * `score` is `priority + 3 / + 2 / + 1` by how specifically a preset matches, and two presets
+     * tie whenever they are equally specific and equally prioritised — a user in two groups, each
+     * carrying a preset of the same type at the same priority, scores both at `priority + 2`, which
+     * is an ordinary configuration rather than a contrived one. `ORDER BY score DESC LIMIT 1` over
+     * a tie lets the database return either, so which password policy or which default permissions
+     * that user got was not decided anywhere.
+     *
+     * Asserted on the statement rather than by setting the tie up against a real database, for the
+     * same reason the paged searches are (#836): asked of a tie this MariaDB does in fact return
+     * the lower id, so a behavioural test passes whether or not the ordering says so and proves
+     * nothing about it. `AccountPresetApplicationTest` builds the tie for real and pins that the
+     * answer is stable; this pins that the query asks for a stable one.
+     */
+    public function testTheOrderThatChoosesAPresetIsTotal(): void
+    {
+        $statement = null;
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with(
+                new Callback(static function (QueryData $arg) use (&$statement) {
+                    $statement = $arg->getQuery()->getStatement();
+
+                    return true;
+                }),
+                false
+            );
+
+        $this->itemPreset->getByFilter('test', 100, 200, 300);
+
+        self::assertIsString($statement);
+        self::assertSame(
+            1,
+            preg_match('/ORDER BY(.*?)(?:\\bLIMIT\\b|$)/is', $statement, $matches),
+            'the query must carry an ORDER BY'
+        );
+
+        $columns = explode(',', trim($matches[1]));
+        $last = trim((string)end($columns));
+
+        self::assertSame(
+            'id ASC',
+            $last,
+            'a LIMIT 1 over a score that can tie must break the tie on something unique'
+        );
+    }
+
+
     public function testGetByFilter()
     {
         $item = new ItemSearchDto(self::$faker->name());
