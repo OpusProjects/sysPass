@@ -33,6 +33,7 @@ use RuntimeException;
 use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\_t;
+use function SP\compiledContainerName;
 use function SP\formatStackTrace;
 use function SP\getElapsedTime;
 use function SP\getFromEnv;
@@ -416,4 +417,49 @@ class FunctionsTest extends TestCase
         $this->assertStringContainsString($outerMarker, $chainedLogged);
         $this->assertStringContainsString('(P) ' . $innerMarker, $chainedLogged);
     }
+
+    /**
+     * Two versions of sysPass do not share a compiled container.
+     *
+     * php-di reuses an existing compiled file as-is and never revalidates the definitions behind
+     * it, and `var/cache` is runtime state that survives a deployment — so upgrading in place left
+     * the previous release's compiled container in front of the new code, and any constructor
+     * signature that changed between them fatals with a `TypeError` on every request, web and API
+     * alike. Nothing recovers from it: the container is built before `Init` runs, so the upgrade
+     * page cannot be reached, and no upgrade step clears the directory.
+     *
+     * The module half of the name was already load-bearing for the same underlying reason, one
+     * entry point at a time rather than one release at a time.
+     */
+    public function testACompiledContainerNameIsPerVersion(): void
+    {
+        self::assertNotSame(
+            compiledContainerName('web', '400.21031301'),
+            compiledContainerName('web', '401.21031302'),
+            'two releases must not share a compiled container'
+        );
+    }
+
+    public function testACompiledContainerNameIsPerModule(): void
+    {
+        self::assertNotSame(
+            compiledContainerName('web', '400.21031301'),
+            compiledContainerName('api', '400.21031301'),
+            'two modules must not share a compiled container'
+        );
+    }
+
+    /**
+     * It is a PHP class name, so whatever the version string carries has to come out of it — the
+     * normalised version is dotted, and a dot in a class name does not compile.
+     */
+    public function testACompiledContainerNameIsAValidClassName(): void
+    {
+        $name = compiledContainerName('web', '400.21031301');
+
+        self::assertMatchesRegularExpression('/^[A-Za-z_][A-Za-z0-9_]*$/', $name);
+        self::assertStringStartsWith('CompiledContainerWeb', $name);
+        self::assertStringContainsString('40021031301', $name);
+    }
+
 }

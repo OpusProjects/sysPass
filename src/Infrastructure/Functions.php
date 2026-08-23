@@ -243,6 +243,35 @@ function getElapsedTime(float $from): float
 }
 
 /**
+ * The class name php-di compiles the container into.
+ *
+ * Carries the module *and* the application version, because php-di reuses an existing compiled
+ * file as-is and never revalidates the definitions behind it. The module is there because each one
+ * binds `BootstrapInterface` and `ModuleInterface` to its own classes, so a shared name let
+ * whichever entry point compiled first decide the others' bindings.
+ *
+ * The version is there for the same reason at a different timescale: `var/cache` is runtime state
+ * that survives a deployment, so upgrading sysPass in place left the previous release's compiled
+ * container in front of the new code. Any constructor signature or definition that changed between
+ * the two then fatals — a `TypeError` about an argument of a class that no longer takes it, on
+ * every request, web and API alike. Nothing recovers from it either: the container is built before
+ * `Init` runs, so the upgrade page that would fix things cannot be reached, and no upgrade step
+ * clears the directory.
+ *
+ * Naming the file after the version means new code simply compiles a new one. The previous
+ * release's file is left where it is rather than deleted, since a request arriving mid-deployment
+ * may still be using it.
+ */
+function compiledContainerName(string $module, string $version): string
+{
+    return sprintf(
+        'CompiledContainer%s%s',
+        ucfirst($module),
+        preg_replace('/\W/', '', $version)
+    );
+}
+
+/**
  * Initialize module
  *
  * @return array<string, mixed>
