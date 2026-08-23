@@ -81,6 +81,17 @@ final class XmlExportController extends SimpleControllerBase
     #[Action(ResponseType::JSON)]
     public function xmlExportAction(): ActionResponse
     {
+        // A demo instance does not export itself. Every other way of getting the installation out
+        // of a demo already refuses — the backup and both of its downloads, and the REST export
+        // since #831 — and this one did not, though what it produces is the same installation:
+        // every account's encrypted secret and its key, and, when no export password is given, the
+        // name, login, URL and notes of every account in the clear. A demo publishes its
+        // administrator's credentials, so the ACL in front of this stops nobody and the demo check
+        // is the whole boundary.
+        if ($this->configData->isDemoEnabled()) {
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
+        }
+
         $exportPassword = $this->request->analyzeEncrypted('exportPwd');
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 

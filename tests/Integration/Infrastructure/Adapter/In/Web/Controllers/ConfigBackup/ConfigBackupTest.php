@@ -39,6 +39,8 @@ use SP\Tests\Support\IntegrationTestCase;
 #[Group('integration')]
 class ConfigBackupTest extends IntegrationTestCase
 {
+    private bool $demoEnabled = false;
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -166,11 +168,73 @@ class ConfigBackupTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
     }
 
+    /**
+     * A demo instance does not export itself.
+     *
+     * Everything else that gets the installation out of a demo already refused — the backup and
+     * both of its downloads, and the REST export since #831 — and this did not, though what it
+     * produces is the same installation: every account's encrypted secret and its key, and, when
+     * no export password is given, the name, login, URL and notes of every account in the clear.
+     * A demo publishes its administrator's credentials, so the ACL in front of this stops nobody
+     * and the demo check is the whole boundary.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function xmlExportIsRefusedOnADemo()
+    {
+        $this->demoEnabled = true;
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/xmlExport'])
+        );
+
+        $this->expectOutputString('{"status":"WARNING","description":"Ey, this is a DEMO!!","data":null}');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * And nor does it hand over one made before it became a demo, which is otherwise a way round
+     * the refusal above.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function downloadExportIsRefusedOnADemo()
+    {
+        $this->demoEnabled = true;
+
+        $filename = REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'backup'
+                    . DIRECTORY_SEPARATOR . 'sysPass_export-' . $this->passwordSalt . '.gz';
+
+        file_put_contents($filename, 'test_data_export');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
+        );
+
+        // Nothing at all, which is what the backup downloads beside it already answer on a demo:
+        // the action is typed CALLBACK, so a refusal that is not a callable renders as an empty
+        // body. The blank page is a wart these three share and is left alone here; what this
+        // asserts is the part that matters, which is that the export is not handed over.
+        $this->expectOutputString('');
+
+        IntegrationTestCase::runApp($container);
+
+        unlink($filename);
+    }
+
     protected function getConfigData(): array
     {
         $configData = parent::getConfigData();
         $configData['getBackupHash'] = $this->passwordSalt;
         $configData['getExportHash'] = $this->passwordSalt;
+        $configData['isDemoEnabled'] = $this->demoEnabled;
 
         return $configData;
     }
