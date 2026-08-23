@@ -486,19 +486,21 @@ is left behind when the run fails, since an interrupted backup leaves its interm
 indefinitely. `config/config.xml` is the exception that is fine: it is `0644` itself, but
 `ConfigUtil` holds its *directory* at `0750`, and that is the control.
 
-**A guard on the read but not on the write.** `Notification` had the rule written down and named —
-`checkUserAccess()`, with a docblock saying admins may reach any notification and regular users only
-their own, and answering "not found" so ids cannot be enumerated by the difference. It was called
-from `getById()` and from `setCheckedById()`, and not from `delete()` or `deleteByIdBatch()`, where
-the repository's only condition is `sticky = 0`. `NOTIFICATION_DELETE` is not an administrator's
-permission — `Acl` returns `true` for the notification actions unconditionally, with no profile bit
-— so any signed-in user could delete any other user's notification by its id.
+**A guard on the read but not on the write.** `Notification` has the rule written down and named —
+`checkUserAccess()`, admins may reach any notification and regular users only their own, answering
+"not found" so ids cannot be enumerated by the difference. It was called from `getById()` and
+`setCheckedById()`, and not from `delete()` or `deleteByIdBatch()`, where the repository's only
+condition is `sticky = 0`. Both delete paths now read the row first.
 
-The REST door was safe by accident: it reads the row to build its event message, and that read
-carries the check. The web's called straight through. **When a rule exists as a named method, grep
-its call sites before believing it is applied** — and beware of concluding the opposite from where
-it is *defined*: reading `setCheckedById()` alone suggested `getById()` was unguarded, and it was
-not.
+**Correcting the record on that one (#841 overstated it).** The PR said any signed-in user could
+delete another user's notification, on the grounds that `Acl` returns `true` for the notification
+actions unconditionally. `NOTIFICATION_VIEW`, `NOTIFICATION_SEARCH` and `NOTIFICATION_CHECK` are in
+that list — **`NOTIFICATION_DELETE` is not in the switch at all**, so it falls through to the deny
+at the end, and only `isAdminApp` (which short-circuits at the top of `checkUserAccess()`) ever
+reached those methods. The ownership check is still right, as defence in depth and for consistency
+with `setCheckedById()`, but it was not the reachable hole it was described as. **Read the ACL arm
+for the exact action, not for its neighbours** — three of the four notification actions being
+unconditional says nothing about the fourth.
 
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles

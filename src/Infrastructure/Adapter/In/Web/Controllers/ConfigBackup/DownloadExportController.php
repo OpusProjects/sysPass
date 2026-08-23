@@ -62,6 +62,12 @@ final class DownloadExportController extends SimpleControllerBase
     #[Action(ResponseType::CALLBACK)]
     public function downloadExportAction(): ActionResponse
     {
+        // See XmlExportController: making one is refused on a demo, and so is fetching one that
+        // was made before the instance became a demo, which is otherwise a way around it.
+        if ($this->configData->isDemoEnabled()) {
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
+        }
+
         Session::close();
 
         $filePath = (string)new BackupFileDto(
