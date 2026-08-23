@@ -56,11 +56,11 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
      *
      * @param int $id
      *
-     * @return void
+     * @return QueryResult<PublicLinkModel>
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $id): void
+    public function delete(int $id): QueryResult
     {
         $query = $this->queryFactory
             ->newDelete()
@@ -68,7 +68,9 @@ final class PublicLink extends BaseRepository implements PublicLinkRepository
             ->where('id = :id')
             ->bindValue('id', $id);
 
-        $this->db->runQuery(QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link')));
+        return $this->db->runQuery(
+            QueryData::build($query)->setOnErrorMessage(__u('Error while removing the link'))
+        );
     }
 
     /**

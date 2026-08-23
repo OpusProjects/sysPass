@@ -52,7 +52,10 @@ interface PublicLinkRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function delete(int $id): void;
+    /**
+     * @return QueryResult<PublicLink>
+     */
+    public function delete(int $id): QueryResult;
 
     /**
      * Returns all the items

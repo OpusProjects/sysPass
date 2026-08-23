@@ -276,7 +276,32 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('delete')
-            ->with($id);
+            ->with($id)
+            ->willReturn(new QueryResult([], 1));
+
+        $this->publicLink->delete($id);
+    }
+
+    /**
+     * A delete that matched no row has removed nothing, and saying otherwise reports the removal
+     * of a link somebody else already deleted as done. Thirteen of the fourteen services make this
+     * check; this repository was also the only one of fifteen whose delete() answered `void`, so
+     * there was nothing here to check against.
+     *
+     * @throws SPException
+     */
+    public function testDeleteThrowsWhenTheLinkIsGone(): void
+    {
+        $id = self::$faker->randomNumber();
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('delete')
+            ->with($id)
+            ->willReturn(new QueryResult([], 0));
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Link not found');
 
         $this->publicLink->delete($id);
     }
