@@ -229,15 +229,56 @@ class ItemTraitTest extends UnitaryTestCase
     /**
      * Clearing a field deletes the row rather than saving an empty one. Only the delete removes the
      * stored value, so saving the blank would leave the old ciphertext behind.
+     *
+     * It deletes that field, keyed on its definition. It used to call delete(), which is keyed on
+     * the item and the module alone.
      */
     #[Test]
     public function clearingAFieldDeletesItRatherThanSavingItEmpty()
     {
         $service = $this->createMock(CustomFieldDataService::class);
         $service->expects(self::never())->method('updateOrCreate');
-        $service->expects(self::once())->method('delete')->with([7], self::MODULE_ID);
+        $service->expects(self::never())->method('delete');
+        $service->expects(self::once())->method('deleteForDefinition')->with(7, self::MODULE_ID, 4);
 
         $this->host->updateCustomFields(self::MODULE_ID, 7, $this->givenThePostedFields([4 => '']), $service);
+    }
+
+    /**
+     * Clearing one field leaves the item's other fields alone.
+     *
+     * The delete this used to make carried only the item and the module, so emptying a single
+     * field removed every custom field value on the item — including encrypted ones the person
+     * saving could not see and had not touched. Nothing reported it: the save succeeded and the
+     * other fields simply came back blank.
+     */
+    #[Test]
+    public function clearingOneFieldLeavesTheOthersAlone()
+    {
+        $deleted = [];
+        $saved = [];
+
+        $service = $this->createStub(CustomFieldDataService::class);
+        $service->method('deleteForDefinition')->willReturnCallback(
+            static function (int $itemId, int $moduleId, int $definitionId) use (&$deleted): void {
+                $deleted[] = $definitionId;
+            }
+        );
+        $service->method('updateOrCreate')->willReturnCallback(
+            static function ($customFieldData) use (&$saved): void {
+                $saved[] = $customFieldData->getDefinitionId();
+            }
+        );
+
+        $this->host->updateCustomFields(
+            self::MODULE_ID,
+            7,
+            $this->givenThePostedFields([4 => 'kept', 5 => '', 6 => 'also kept']),
+            $service
+        );
+
+        self::assertSame([5], $deleted, 'only the cleared field is deleted');
+        self::assertSame([4, 6], $saved, 'the others are still saved');
     }
 
     /**

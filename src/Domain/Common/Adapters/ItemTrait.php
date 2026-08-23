@@ -191,7 +191,7 @@ trait ItemTrait
      * Update the item's custom fields
      *
      * @param int $moduleId
-     * @param int|int[] $itemId
+     * @param int $itemId
      * @param RequestService $request
      * @param CustomFieldDataService<CustomFieldDataModel> $customFieldDataService
      *
@@ -200,7 +200,7 @@ trait ItemTrait
      */
     protected function updateCustomFieldsForItem(
         int                    $moduleId,
-        int|array              $itemId,
+        int                    $itemId,
         RequestService $request,
         CustomFieldDataService $customFieldDataService
     ): void {
@@ -233,7 +233,10 @@ trait ItemTrait
                 );
 
                 if (empty($customFieldData->getData())) {
-                    $customFieldDataService->delete([$itemId], $moduleId);
+                    // Only this field. delete() is keyed on the item and the module alone — which
+                    // is what deleting the item itself wants — so clearing one field used to take
+                    // every other custom field on the item with it, silently, in the same save.
+                    $customFieldDataService->deleteForDefinition($itemId, $moduleId, $id);
                 } else {
                     $customFieldDataService->updateOrCreate($customFieldData);
                 }

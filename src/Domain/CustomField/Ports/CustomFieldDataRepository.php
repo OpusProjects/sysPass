@@ -88,6 +88,19 @@ interface CustomFieldDataRepository extends Repository
     public function deleteBatch(array $itemIds, int $moduleId): QueryResult;
 
     /**
+     * Delete one field's value, leaving the item's other fields alone
+     *
+     * @param int $itemId
+     * @param int $moduleId
+     * @param int $definitionId
+     *
+     * @return QueryResult<Simple>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteForDefinition(int $itemId, int $moduleId, int $definitionId): QueryResult;
+
+    /**
      * Returns all the items that were encrypted
      *
      * @return QueryResult<T>
