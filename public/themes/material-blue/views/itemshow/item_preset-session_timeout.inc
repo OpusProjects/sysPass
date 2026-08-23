@@ -51,7 +51,7 @@ $sessionTimeout = $_getvar('sessionTimeout');
                        class="mdl-textfield__input mdl-color-text--indigo-400"
                        maxlength="33"
                        value="<?php
-                       printf('%s/%s', $sessionTimeout->getAddress(), $sessionTimeout->getMask()); ?>">
+                       printf('%s/%s', $_e($sessionTimeout->getAddress()), $_e($sessionTimeout->getMask())); ?>">
                 <label class="mdl-textfield__label"
                        for="ip_address"><?php
                     echo __('IP Address'); ?></label>

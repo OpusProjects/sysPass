@@ -144,7 +144,7 @@ use function SP\__;
                     <i class="btn-action material-icons">account_circle</i>
                     <span id="user-name"><?php echo $_e($_getvar('ctx_userName')); ?></span>
                     <span for="user-name"
-                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_getvar('ctx_userGroup')); ?></span>
+                          class="mdl-tooltip mdl-tooltip--top"><?php printf('%s : %s', __('Group'), $_e($_getvar('ctx_userGroup'))); ?></span>
                     <?php
                     /** @var IconInterface $ctx_userType */
                     $ctx_userType = $_getvar('ctx_userType');

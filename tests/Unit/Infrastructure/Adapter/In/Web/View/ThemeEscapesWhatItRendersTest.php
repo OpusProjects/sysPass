@@ -56,9 +56,16 @@ class ThemeEscapesWhatItRendersTest extends TestCase
     private const THEME = REAL_APP_ROOT . '/public/themes/material-blue/views';
 
     /**
-     * Every `<?php echo …` / `<?= …` in a template.
+     * Every `<?php echo …`, `<?= …` and `<?php printf(…)` in a template.
+     *
+     * printf() has to be its own branch: `echo|print` requires whitespace after the word, and
+     * `printf(` has none, so a printf was invisible to this test entirely. That is how the account
+     * file list came to render an uploaded file's name unescaped — the two title attributes either
+     * side of it are escaped, and nothing here was looking at the line between them.
      */
-    private const ECHO = '/<\?(?:php\s+)?(?:echo|print)\s+(.*?)(?:;\s*)?\?>|<\?=\s*(.*?)(?:;\s*)?\?>/s';
+    private const ECHO = '/<\?(?:php\s+)?(?:echo|print)\s+(.*?)(?:;\s*)?\?>'
+                         . '|<\?(?:php\s+)?v?printf\s*\((.*?)\)\s*(?:;\s*)?\?>'
+                         . '|<\?=\s*(.*?)(?:;\s*)?\?>/s';
 
     /**
      * Reads that return text a user or an administrator typed. Deliberately by name: these are the
@@ -183,7 +190,7 @@ class ThemeEscapesWhatItRendersTest extends TestCase
         $echoes = [];
 
         foreach ($matches as $match) {
-            $expression = trim($match[1][0] ?? '') !== '' ? $match[1][0] : ($match[2][0] ?? '');
+            $expression = self::expressionFrom($match);
             $expression = implode(' ', preg_split('/\s+/', trim($expression)) ?: []);
 
             if ($expression !== '') {
@@ -210,7 +217,7 @@ class ThemeEscapesWhatItRendersTest extends TestCase
             preg_match_all(self::ECHO, $script[1][0], $echoes, PREG_OFFSET_CAPTURE | PREG_SET_ORDER);
 
             foreach ($echoes as $echo) {
-                $expression = trim($echo[1][0] ?? '') !== '' ? $echo[1][0] : ($echo[2][0] ?? '');
+                $expression = self::expressionFrom($echo);
                 $expression = implode(' ', preg_split('/\s+/', trim($expression)) ?: []);
 
                 if ($expression !== '') {
@@ -268,5 +275,21 @@ class ThemeEscapesWhatItRendersTest extends TestCase
             "/\?\s*(?:'[^']*'|\d+|__[u]?\(.*?\))\s*:\s*(?:'[^']*'|\d+|__[u]?\(.*?\))\s*$/",
             $expression
         );
+    }
+
+    /**
+     * The expression a match emitted, whichever of ECHO's three branches matched it.
+     *
+     * @param array<int, array{0: string, 1: int}> $match
+     */
+    private static function expressionFrom(array $match): string
+    {
+        foreach ([1, 2, 3] as $group) {
+            if (trim($match[$group][0] ?? '') !== '') {
+                return $match[$group][0];
+            }
+        }
+
+        return '';
     }
 }

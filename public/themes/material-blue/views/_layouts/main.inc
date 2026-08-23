@@ -14,7 +14,7 @@ use function SP\__;
 echo $_e($_getvar('lang')); ?>">
 <head>
     <title><?php
-        printf('%s :: %s', $_getvar('app_name'), $_getvar('app_desc')); ?></title>
+        printf('%s :: %s', $_e($_getvar('app_name')), $_e($_getvar('app_desc'))); ?></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png"

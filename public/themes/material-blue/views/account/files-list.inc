@@ -48,7 +48,7 @@ use function SP\__;
                       echo $_e($file->getName()); ?>">
                     <i class="material-icons  mdl-list__item-icon">attachment</i>
                     <span><?php
-                        printf('%s (%d KB)', Html::truncate($file->getName() ?? '', 50), ($file->getSize() ?? 0) / 1024); ?></span>
+                        printf('%s (%d KB)', $_e(Html::truncate($file->getName() ?? '', 50)), (int)(($file->getSize() ?? 0) / 1024)); ?></span>
                 </span>
 
                 <span class="list-actions">
