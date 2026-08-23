@@ -37,7 +37,11 @@ use function SP\__u;
  */
 final class CustomFieldDefForm extends FormBase implements FormInterface
 {
-    protected ?CustomFieldDefinition $customFieldDefData;
+    // `= null` like every other form here. Without it the typed property is uninitialised until
+    // analyzeRequestData() runs, so getItemData() after a validateFor() whose action falls outside
+    // the switch is a fatal — "must not be accessed before initialization" — rather than the null
+    // the return type promises.
+    protected ?CustomFieldDefinition $customFieldDefData = null;
 
     /**
      * Validate the form
@@ -92,11 +96,16 @@ final class CustomFieldDefForm extends FormBase implements FormInterface
             throw new ValidationException(__u('Field name not set'));
         }
 
-        if (0 === $this->customFieldDefData->getTypeId()) {
+        // empty(), not `0 ===`: analyzeInt() answers null for a field that was never sent — and
+        // for one it cannot read as an int — and `0 === null` is false, so an absent type or
+        // module walked past these checks. Both columns are NOT NULL, so what should have been
+        // "Field type not set" arrived as a database constraint error instead. AuthTokenForm
+        // carries the same note over the same mistake.
+        if (empty($this->customFieldDefData->getTypeId())) {
             throw new ValidationException(__u('Field type not set'));
         }
 
-        if (0 === $this->customFieldDefData->getModuleId()) {
+        if (empty($this->customFieldDefData->getModuleId())) {
             throw new ValidationException(__u('Field module not set'));
         }
     }

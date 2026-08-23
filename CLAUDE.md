@@ -244,6 +244,15 @@ now exercises every one through `getHelpFor()` while asserting the thing that ac
 that each declared parameter is one its controller reads, with the same required flag. Look for a
 block like that before assuming the remainder is uniform.
 
+It holds for **forms** as much as endpoints. Four of them had no test at all —
+`ClientForm`, `TagForm`, `PublicLinkForm`, `CustomFieldDefForm` — and writing the first one for each
+turned up three defects in two of them: a model key that did not match the declared property, so
+`isGlobal` never persisted and the "global client" switch did nothing; `0 === $x` against a value
+`analyzeInt()` answers as **null** when the field is absent, letting a definition with no type or
+module reach two NOT NULL columns; and a typed property with no `= null`, which every other form has,
+making `getItemData()` a fatal rather than the null its return type promises. Compare a form against
+its siblings before reading it closely — all three showed up as the one that differed.
+
 Writing the first test for an endpoint has been the most reliable way to find a real defect here:
 the REST user, notification and auth-token endpoints each had one — a credential leak, an
 authorization gap and a create that answered with nothing usable — and none of them had a test
