@@ -236,8 +236,4 @@ trait ItemTrait
     {
         return $request->analyzeArray('items');
     }
-
-    private function processCustomFields(callable $action)
-    {
-    }
 }
