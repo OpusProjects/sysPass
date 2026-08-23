@@ -31,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\File\FileSystem;
 
 use function SP\_t;
 use function SP\compiledContainerName;
@@ -462,4 +463,149 @@ class FunctionsTest extends TestCase
         self::assertStringContainsString('40021031301', $name);
     }
 
+    /**
+     * MODULES_PATH and LOG_FILE are defined once, at the top of this file, the moment it is first
+     * loaded — this suite's own bootstrap.php requires it (after vendor/autoload.php) before any
+     * test method runs, so by the time a test gets control both constants already exist and the
+     * file's functions are already declared. A constant cannot be undefined and a second `require`
+     * of the same file fatals redeclaring those functions, so there is no way to make either line
+     * run again inside this process — the only way to observe what they actually compute is a
+     * fresh subprocess, the same technique BaseBootstrapTest uses for the equally load-time-coupled
+     * Base.php.
+     *
+     * @param array<string,string> $env
+     */
+    private function runPhpSubprocess(array $env, string $script): string
+    {
+        $prefix = '';
+
+        foreach ($env as $key => $value) {
+            $prefix .= sprintf('%s=%s ', $key, escapeshellarg($value));
+        }
+
+        // stderr is dropped rather than merged: logger()'s error_log() fallback (there is no
+        // config/ directory under the fake APP_ROOT these scripts use) would otherwise land on the
+        // same stream and corrupt an exact stdout comparison.
+        $command = sprintf(
+            '%s%s -r %s 2>/dev/null',
+            $prefix,
+            escapeshellarg(PHP_BINARY),
+            escapeshellarg($script)
+        );
+
+        return (string)shell_exec($command);
+    }
+
+    /**
+     * MODULES_PATH is where every module's DI definitions file (module.php) is found. Base.php's
+     * own comment records why the require order matters ("Functions.php defines
+     * MODULES_PATH/LOG_FILE from APP_PATH at load time, so it must be required after APP_PATH is
+     * defined") — this pins what it actually resolves to, since a typo in any of these path
+     * segments breaks module loading for every entry point (web, api, cli) at once.
+     */
+    public function testModulesPathIsComputedFromAppRootAtLoadTime(): void
+    {
+        $fakeAppRoot = '/fake/app/root';
+
+        $script = <<<'PHP'
+            define('APP_ROOT', getenv('SP_FAKE_APP_ROOT'));
+            require getenv('SP_AUTOLOAD');
+            define('APP_PATH', APP_ROOT);
+            require getenv('SP_FUNCTIONS');
+            echo MODULES_PATH;
+            PHP;
+
+        $output = $this->runPhpSubprocess(
+            [
+                'SP_FAKE_APP_ROOT' => $fakeAppRoot,
+                'SP_AUTOLOAD' => REAL_APP_ROOT . '/vendor/autoload.php',
+                'SP_FUNCTIONS' => REAL_APP_ROOT . '/src/Infrastructure/Functions.php',
+            ],
+            $script
+        );
+
+        $this->assertSame(
+            FileSystem::buildPath($fakeAppRoot, 'src', 'Infrastructure', 'Adapter', 'In'),
+            $output
+        );
+    }
+
+    /**
+     * LOG_FILE defaults to config/syspass.log under APP_PATH unless a LOG_FILE environment
+     * variable overrides it — getFromEnv()'s own override behaviour is already covered above, this
+     * pins what the default itself resolves to, computed at load time exactly like MODULES_PATH
+     * and for the same reason only observable from a fresh subprocess. LOG_FILE is explicitly
+     * unset for the child process so an operator's real environment cannot leak into the default
+     * this asserts.
+     */
+    public function testLogFileDefaultsUnderAppPathConfigDirectory(): void
+    {
+        $fakeAppRoot = '/fake/app/root';
+
+        $script = <<<'PHP'
+            define('APP_ROOT', getenv('SP_FAKE_APP_ROOT'));
+            require getenv('SP_AUTOLOAD');
+            define('APP_PATH', APP_ROOT);
+            require getenv('SP_FUNCTIONS');
+            echo LOG_FILE;
+            PHP;
+
+        $output = $this->runPhpSubprocess(
+            [
+                'SP_FAKE_APP_ROOT' => $fakeAppRoot,
+                'SP_AUTOLOAD' => REAL_APP_ROOT . '/vendor/autoload.php',
+                'SP_FUNCTIONS' => REAL_APP_ROOT . '/src/Infrastructure/Functions.php',
+                'LOG_FILE' => '',
+            ],
+            $script
+        );
+
+        $this->assertSame(
+            FileSystem::buildPath($fakeAppRoot, 'config', 'syspass.log'),
+            $output
+        );
+    }
+
+    /**
+     * When a module's module.php exists but doesn't return an array (a stray edit that drops the
+     * closing `return`, or one that returns null), initModule() must not hand that value on to the
+     * container builder — it logs the miss and returns an empty definitions array instead, the
+     * same outcome a caller sees for a module that defines nothing at all.
+     *
+     * @throws SPException
+     */
+    public function testInitModuleReturnsEmptyArrayWhenTheModuleFileDoesNotReturnAnArray(): void
+    {
+        $fixtureRoot = sys_get_temp_dir() . '/sp-init-module-' . bin2hex(random_bytes(8));
+        $moduleDir = $fixtureRoot . '/src/Infrastructure/Adapter/In/Fake';
+
+        if (!mkdir($moduleDir, 0777, true) && !is_dir($moduleDir)) {
+            self::fail('could not create the fixture module directory');
+        }
+
+        file_put_contents($moduleDir . '/module.php', "<?php\nreturn 'not-an-array';\n");
+
+        try {
+            $script = <<<'PHP'
+                define('APP_ROOT', getenv('SP_FAKE_APP_ROOT'));
+                require getenv('SP_AUTOLOAD');
+                define('APP_PATH', APP_ROOT);
+                require getenv('SP_FUNCTIONS');
+                var_export(\SP\initModule('fake'));
+                PHP;
+
+            $output = $this->runPhpSubprocess(
+                [
+                    'SP_FAKE_APP_ROOT' => $fixtureRoot,
+                    'SP_AUTOLOAD' => REAL_APP_ROOT . '/vendor/autoload.php',
+                    'SP_FUNCTIONS' => REAL_APP_ROOT . '/src/Infrastructure/Functions.php',
+                ],
+                $script
+            );
+        } finally {
+            FileSystem::rmdirRecursive($fixtureRoot);
+        }
+
+        $this->assertSame("array (\n)", $output);
+    }
 }
