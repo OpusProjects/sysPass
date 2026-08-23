@@ -95,7 +95,9 @@ final class XmlExportController extends SimpleControllerBase
         $exportPassword = $this->request->analyzeEncrypted('exportPwd');
         $exportPasswordR = $this->request->analyzeEncrypted('exportPwdR');
 
-        if (!empty($exportPassword) && $exportPassword !== $exportPasswordR) {
+        // Not empty(): a password of "0" is a password, and skipping the confirmation for it let
+        // an export be written with one value while the admin had typed another in the second box.
+        if ($exportPassword !== null && $exportPassword !== '' && $exportPassword !== $exportPasswordR) {
             return ActionResponse::error(__u('Passwords do not match'));
         }
 
