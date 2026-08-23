@@ -26,9 +26,11 @@ use DI\ContainerBuilder;
 use Dotenv\Dotenv;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
+use SP\Domain\Common\Providers\Version;
 use SP\Domain\File\FileSystem;
 
 use function SP\getFromEnv;
+use function SP\compiledContainerName;
 use function SP\initModule;
 use function SP\processException;
 
@@ -58,12 +60,12 @@ try {
 
     if (!DEBUG) {
         $cachePath = getFromEnv('CACHE_PATH', FileSystem::buildPath(APP_PATH, 'var', 'cache'));
-        // The compiled class name must be per-module. Each module binds BootstrapInterface and
-        // ModuleInterface to its own classes, but php-di reuses an existing compiled file as-is
-        // without revalidating the definitions — so a single shared name means whichever entry
-        // point compiles first wins and the others get its bindings (e.g. api.php receiving
-        // Web\Bootstrap, which then fatals on the protected $module property).
-        $containerBuilder->enableCompilation($cachePath, sprintf('CompiledContainer%s', ucfirst(APP_MODULE)));
+        // Per module and per version — see compiledContainerName(), which explains why php-di
+        // reusing a compiled file as-is makes both parts of that name load-bearing.
+        $containerBuilder->enableCompilation(
+            $cachePath,
+            compiledContainerName(APP_MODULE, Version::getVersionStringNormalized())
+        );
         $containerBuilder->writeProxiesToFile(true, FileSystem::buildPath($cachePath, 'proxies'));
     }
 

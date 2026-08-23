@@ -274,6 +274,17 @@ so these runtime contracts are easy to break:
   `CoreDefinitions` show the explicit form. Prefer a required parameter for anything that must be
   present; to check an existing one, probe the real container
   (`$dic = require 'src/Base.php';`) rather than reading the class.
+- **The compiled container is never revalidated.** php-di writes it once and reuses whatever file
+  it finds under that class name, without looking at the definitions behind it — so the *name* is
+  the only invalidation there is, and `compiledContainerName()` builds it from the module **and the
+  application version**. The module part stops one entry point's bindings being served to another;
+  the version part stops the previous release's container being served to new code. `var/cache` is
+  runtime state that survives a deployment, and nothing in the upgrade clears it, so without the
+  version an in-place upgrade fatals on every request with a `TypeError` about a constructor
+  argument that changed — and cannot be recovered from through the UI, because the container is
+  built before `Init` runs and the upgrade page is therefore unreachable. **A stale compiled
+  container is also the first thing to suspect when a local instance fatals on a constructor
+  signature you have just changed** — it is not a bug in the change; clear `var/cache`.
 - **Compilation:** when `!DEBUG` the container is **compiled and lazy proxies are written**
   (`enableCompilation`/`writeProxiesToFile`); when `DEBUG` it's built live. So (1) every definition
   must be **compilable** — never bind a literal object; use `create()`/`autowire()`/`factory()`
