@@ -227,24 +227,41 @@ class UpgradePathCannotRegressTest extends TestCase
      * @return string[]
      */
     /**
-     * Versions declared above the application's own, which therefore cannot be reached.
+     * Versions declared above the application's own.
      *
      * `ModuleBase::checkUpgradeNeeded()` asks whether the *stored* version is behind the version
      * the code reports, and `Version::getVersionStringNormalized()` builds that from
-     * `AppInfoInterface::APP_VERSION` and `APP_BUILD` alone. Those constants have not moved since
-     * the rewrite was imported, so an installation stamped with them — which is every installation
-     * this codebase performs, since `Installer` stamps the same value — is never behind, no upgrade
-     * is ever triggered, and a handler declared above that version never runs.
+     * `AppInfoInterface::APP_VERSION` and `APP_BUILD` alone. Those two have not moved since the
+     * rewrite was imported, so they still say `400.21031301`, below both migrations.
      *
-     * Both entries below are in that state. They are listed rather than merely tolerated so that a
-     * migration added tomorrow cannot quietly join them: the test asserts these two are *still*
-     * unreachable, and that nothing else is.
+     * That reads like the upgrade path is dead. It is not, and the difference matters before
+     * anybody "fixes" it by bumping the constant.
      *
-     * Resolving them is a deployment decision rather than a test change. Bumping APP_BUILD makes
-     * both reachable, but `40024210101.sql` drops a column that `dbstructure.sql` already ships
-     * without — so it would then run against schemas that already have it applied, and fail. The
-     * migration has to be made conditional first, or these two accepted as applying only to
-     * installations arriving from 3.2.
+     * An installation arriving from 3.2 stores something like `320.19012701`. That is behind
+     * `400.21031301`, so the upgrade is triggered, and `getTargetUpgradeHandlers()` selects every
+     * handler declared above the *stored* version — which is both of these. The population these
+     * migrations were written for reaches them. Measured against the real class rather than
+     * reasoned about: `checkVersion('320.19012701', '400.24210101')` is true, and so is the same
+     * question for `400.24240101`.
+     *
+     * What cannot reach them is an installation this rewrite performed itself, which `Installer`
+     * stamps with the version the code reports. Neither migration applies to one:
+     * `dbstructure.sql` already ships `CustomFieldData` with the composite primary key and no `id`
+     * column, and text written after the escaping change is stored as typed rather than
+     * double-encoded.
+     *
+     * Bumping APP_BUILD would make things worse rather than better. `40024210101.sql` would then
+     * run against schemas that already have it applied — it drops a column that is not there —
+     * and, more seriously, `40024240101.sql` decodes stored text and says in its own header that
+     * it is not idempotent and that no decode of stored text could be. Running it on an
+     * installation whose text is already correct turns a name somebody typed as `Q&amp;A` into
+     * `Q&A`. The narrow population that would benefit — installed by this rewrite before the
+     * escaping change — is smaller than the population that would be damaged.
+     *
+     * So the two are listed rather than resolved, and the list is what stops a third joining them
+     * unnoticed: the test asserts these two are still above the application's version, and that
+     * nothing else is. A migration written for a version this codebase never stamps has to be a
+     * decision, not an accident.
      */
     private const VERSIONS_THE_APPLICATION_CANNOT_REACH = ['400.24210101', '400.24240101'];
 
