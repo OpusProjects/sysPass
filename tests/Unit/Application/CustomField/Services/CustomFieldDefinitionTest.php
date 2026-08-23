@@ -164,6 +164,29 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
     }
 
     /**
+     * An update that matched no row has not saved anything, and saying otherwise reports an edit
+     * of a definition that has since been deleted as done. The connection sets FOUND_ROWS, so a
+     * save that changes no field still matches its row and does not come through here.
+     *
+     * @throws SPException
+     */
+    public function testUpdateThrowsWhenTheDefinitionIsGone(): void
+    {
+        $customFieldDefinition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition();
+
+        $this->customFieldDefinitionRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with($customFieldDefinition)
+            ->willReturn(0);
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Field not found');
+
+        $this->customFieldDefinition->update($customFieldDefinition);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException

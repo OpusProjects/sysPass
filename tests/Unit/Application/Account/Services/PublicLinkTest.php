@@ -236,7 +236,31 @@ class PublicLinkTest extends UnitaryTestCase
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('update')
-            ->with($publicLinkList);
+            ->with($publicLinkList)
+            ->willReturn(true);
+
+        $this->publicLink->update($publicLinkList);
+    }
+
+    /**
+     * An update that matched no row has not saved anything, and saying otherwise reports an edit
+     * of a link that has since been deleted as done. The connection sets FOUND_ROWS, so a save
+     * that changes no field still matches its row and does not come through here.
+     *
+     * @throws SPException
+     */
+    public function testUpdateThrowsWhenTheLinkIsGone(): void
+    {
+        $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with($publicLinkList)
+            ->willReturn(false);
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Link not found');
 
         $this->publicLink->update($publicLinkList);
     }

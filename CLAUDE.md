@@ -520,6 +520,17 @@ with `setCheckedById()`, but it was not the reachable hole it was described as. 
 for the exact action, not for its neighbours** — three of the four notification actions being
 unconditional says nothing about the fourth.
 
+**An update that matched nothing, reported as saved.** Eight of the thirteen services check what
+their `update()` affected and throw when it is zero; `PublicLink` and `CustomFieldDefinition` threw
+the count away, so editing something another session had already deleted came back as saved. The
+repositories were already counting — only the services ignored it.
+
+Before adding such a check, know that **the connection sets `Pdo\Mysql::ATTR_FOUND_ROWS`**, so
+affected means *matched*, not *changed*: a save that alters no field still returns 1 and is not
+mistaken for a missing row. Without that attribute this check would turn every unchanged save into
+"not found", which is worth measuring through the application's own PDO options rather than the
+`mariadb` client, since the client does not set it and answers 0 for the same statement.
+
 **One of the siblings already gets it right.** Where a small family of near-identical methods does
 the same job for different types, the correct one is usually already there, and reading it settles
 the design before you invent one. The API's four parameter readers are the case: `getParamArray()`

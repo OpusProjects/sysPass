@@ -368,6 +368,13 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function update(PublicLinkModel $publicLink): void
     {
-        $this->publicLinkRepository->update($publicLink);
+        // An update whose WHERE matched nothing has not updated anything, and answering the caller
+        // with success for it reports an edit of something since deleted as saved. The repository
+        // already counts the rows, and the connection sets FOUND_ROWS, so a save that changes no
+        // field still matches its row and is not mistaken for a missing one. This is the check
+        // eight of the other services already make.
+        if (!$this->publicLinkRepository->update($publicLink)) {
+            throw new NoSuchItemException(__u('Link not found'));
+        }
     }
 }
