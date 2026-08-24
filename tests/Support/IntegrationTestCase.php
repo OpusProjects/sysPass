@@ -129,7 +129,8 @@ abstract class IntegrationTestCase extends TestCase
         array   $paramsGet = [],
         array   $paramsPost = [],
         array   $files = [],
-        ?string $csrfToken = self::CSRF_TOKEN
+        ?string $csrfToken = self::CSRF_TOKEN,
+        array   $server = []
     ): Request {
         $server = array_merge(
             $_SERVER,
@@ -143,7 +144,11 @@ abstract class IntegrationTestCase extends TestCase
                 'REMOTE_ADDR' => '127.0.0.1'
                 //'QUERY_STRING' => $query
             ],
-            $csrfToken !== null ? ['HTTP_X_CSRF' => $csrfToken] : []
+            $csrfToken !== null ? ['HTTP_X_CSRF' => $csrfToken] : [],
+            // Last, so a test can say something the defaults above do not — a request that arrived
+            // over HTTPS, say, which an installation with "Force HTTPS" on is the only kind that
+            // gets past Init.
+            $server
         );
 
         return new Request(
