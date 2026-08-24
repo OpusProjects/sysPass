@@ -84,6 +84,19 @@ class AccountHistoryManagerTest extends IntegrationTestCase
             new QueryResult([AccountDataGenerator::factory()->buildAccountHistoryData()])
         );
 
+        // The delete has to report as many rows as it was given ids, because the service now
+        // checks: a purge that removed fewer rows than it was asked to is not a purge that
+        // happened, and history is where an account's previous passwords live. The harness's
+        // default answer is one affected row whatever the statement, which for three ids reads as
+        // exactly that failure. Not a static closure — the harness binds it with Closure::call().
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            if (str_contains($queryData->getQuery()->getStatement(), 'DELETE')) {
+                return new QueryResult([], 3);
+            }
+
+            return new QueryResult([], 1, 100);
+        };
+
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest(
                 'post',
