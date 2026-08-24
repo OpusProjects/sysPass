@@ -71,7 +71,8 @@ class RefusalsTest extends WebControllerTestCase
             $userService,
             $this->createStub(CustomFieldDataService::class),
             $this->createStub(MailService::class),
-            $this->createStub(UserPassRecoverService::class)
+            $this->createStub(UserPassRecoverService::class),
+            $this->createStub(UserProfileService::class)
         ))->saveCreateAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);

@@ -36,6 +36,10 @@ final class EditController extends UserBase
 
     private function buildUserData(): User
     {
+        $userProfileId = $this->apiService->getParamInt('userProfileId', true);
+
+        $this->assertProfileIsAssignable($userProfileId);
+
         return new User([
             'id'            => $this->apiService->getParamInt('id', true),
             'name'          => $this->apiService->getParamString('name', true),
@@ -43,7 +47,7 @@ final class EditController extends UserBase
             'email'         => $this->apiService->getParamString('email'),
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
-            'userProfileId' => $this->apiService->getParamInt('userProfileId', true),
+            'userProfileId' => $userProfileId,
             'isAdminApp'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminApp'),
             'isAdminAcc'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminAcc'),
             'isDisabled'    => (bool) $this->apiService->getParamInt('isDisabled'),

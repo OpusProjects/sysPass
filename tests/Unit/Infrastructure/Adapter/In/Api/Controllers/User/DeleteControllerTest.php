@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Application\Api\Ports\ApiService;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Infrastructure\Bootstrap\Router;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -25,6 +26,7 @@ class DeleteControllerTest extends UnitaryTestCase
 {
     private MockObject|ApiService $apiService;
     private MockObject|UserService $userService;
+    private MockObject|UserProfileService $userProfileService;
     private DeleteController $controller;
 
     public function testDeleteAction(): void
@@ -93,6 +95,7 @@ class DeleteControllerTest extends UnitaryTestCase
 
         $this->apiService = $this->createMock(ApiService::class);
         $this->userService = $this->createMock(UserService::class);
+        $this->userProfileService = $this->createStub(UserProfileService::class);
 
         $router = new Router(
             new SymfonyRequest(),
@@ -106,7 +109,8 @@ class DeleteControllerTest extends UnitaryTestCase
             $router,
             $this->apiService,
             $this->createStub(AclInterface::class),
-            $this->userService
+            $this->userService,
+            $this->userProfileService
         );
     }
 }

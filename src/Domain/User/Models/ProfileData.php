@@ -42,6 +42,20 @@ class ProfileData extends Model
      * Every boolean on the model is intersected, so a permission added later is covered without
      * this having to be revisited.
      */
+    /**
+     * Whether this profile grants anything the actor does not itself hold.
+     *
+     * `constrainedTo()` answers the question for a profile being *written*. This answers it for one
+     * being *referenced*: assigning a user a profile hands them everything on it, so a delegate who
+     * may create or edit users must not be able to point one at a profile stronger than their own.
+     * Otherwise "may manage users" is "may become an administrator" in two steps, which is the same
+     * escalation `constrainedTo()` exists to stop through the other door.
+     */
+    public function grantsBeyond(?ProfileData $actorProfile): bool
+    {
+        return $this->constrainedTo($actorProfile)->toArray() !== $this->toArray();
+    }
+
     public function constrainedTo(?ProfileData $actorProfile): ProfileData
     {
         $mutations = [];

@@ -35,6 +35,7 @@ use SP\Application\Notification\Ports\MailService;
 use SP\Domain\CustomField\Models\CustomFieldData as CustomFieldDataModel;
 use SP\Domain\User\Models\User;
 use SP\Application\User\Ports\UserPassRecoverService;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Application\User\Services\UserPassRecover;
 use SP\Infrastructure\Adapter\In\Web\Controllers\ControllerBase;
@@ -66,7 +67,8 @@ abstract class UserSaveBase extends ControllerBase
         UserService $userService,
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
-        UserPassRecoverService $userPassRecoverService
+        UserPassRecoverService $userPassRecoverService,
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -77,6 +79,28 @@ abstract class UserSaveBase extends ControllerBase
         $this->mailService = $mailService;
         $this->userPassRecoverService = $userPassRecoverService;
         $this->form = new UserForm($application, $this->request);
+    }
+
+    /**
+     * A caller may not point a user at a profile stronger than their own.
+     *
+     * `UserForm` already gates `isAdminApp` and `isAdminAcc` on the caller holding them, and the
+     * API's user endpoints do the same — but neither constrained `userProfileId`, and a profile is
+     * where the other thirty permissions live. Without this, "may manage users" reached every
+     * permission in the installation by assigning an existing profile that has them.
+     *
+     * Called from here rather than from `UserService::create()`, which is also the path the
+     * installer and LDAP auto-provisioning take, where there is no signed-in caller to constrain
+     * against.
+     *
+     * @throws ServiceException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     */
+    final protected function assertProfileIsAssignable(User $userData): void
+    {
+        $this->userProfileService->assertAssignableBy($userData->getUserProfileId() ?? 0);
     }
 
     /**

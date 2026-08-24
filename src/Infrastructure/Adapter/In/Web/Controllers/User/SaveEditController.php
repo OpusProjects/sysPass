@@ -64,6 +64,8 @@ final class SaveEditController extends UserSaveBase
 
             $itemData = $this->form->getItemData();
 
+            $this->assertProfileIsAssignable($itemData);
+
             $this->userService->update($itemData);
 
             $this->eventDispatcher->notify(new Event(

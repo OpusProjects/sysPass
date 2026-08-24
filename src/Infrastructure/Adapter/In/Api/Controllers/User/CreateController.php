@@ -35,6 +35,10 @@ final class CreateController extends UserBase
 
     private function buildUserData(): User
     {
+        $userProfileId = $this->apiService->getParamInt('userProfileId', true);
+
+        $this->assertProfileIsAssignable($userProfileId);
+
         return new User([
             'name'          => $this->apiService->getParamString('name', true),
             'login'         => $this->apiService->getParamString('login', true),
@@ -45,7 +49,7 @@ final class CreateController extends UserBase
             'email'         => $this->apiService->getParamString('email'),
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
-            'userProfileId' => $this->apiService->getParamInt('userProfileId', true),
+            'userProfileId' => $userProfileId,
             'isAdminApp'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminApp'),
             'isAdminAcc'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminAcc'),
             'isDisabled'    => (bool) $this->apiService->getParamInt('isDisabled'),

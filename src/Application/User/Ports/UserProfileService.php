@@ -47,6 +47,23 @@ interface UserProfileService
      * @throws QueryException
      * @throws NoSuchItemException
      */
+    /**
+     * Refuse a profile that grants more than the signed-in user holds themselves
+     *
+     * Assigning a user a profile hands them everything on it, so a delegate who may create or edit
+     * users must not be able to point one at a profile stronger than their own — otherwise "may
+     * manage users" is "may become an administrator" in two steps. Application administrators are
+     * not constrained; they hold everything by definition.
+     *
+     * @param int $profileId
+     *
+     * @throws ServiceException When the profile grants a permission the caller does not hold
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     */
+    public function assertAssignableBy(int $profileId): void;
+
     public function getById(int $id): UserProfileModel;
 
     /**
