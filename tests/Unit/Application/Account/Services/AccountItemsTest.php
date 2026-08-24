@@ -136,44 +136,65 @@ class AccountItemsTest extends UnitaryTestCase
                                                     ]
                                                 );
 
-        $this->accountToUserGroupRepository
-            ->expects($this->never())
-            ->method('transactionAware');
+        // Nothing at all. null is "the caller said nothing about this list", and an edit that says
+        // nothing about sharing must leave it alone — it used to delete every row of every type,
+        // which is what an account edit through the REST API did on every call, there being no
+        // parameter that could have said otherwise.
+        foreach ([$this->accountToUserGroupRepository, $this->accountToUserRepository] as $repository) {
+            $repository->expects($this->never())->method('transactionAware');
+            $repository->expects($this->never())->method('deleteTypeByAccountId');
+            $repository->expects($this->never())->method('addByType');
+        }
 
-        $this->accountToUserGroupRepository
-            ->expects($this->exactly(2))
-            ->method('deleteTypeByAccountId')
-            ->with(...self::withConsecutive([100, false], [100, true]));
+        $this->accountToTagRepository->expects($this->never())->method('transactionAware');
+        $this->accountToTagRepository->expects($this->never())->method('deleteByAccountId');
+        $this->accountToTagRepository->expects($this->never())->method('add');
 
-        $this->accountToUserGroupRepository
-            ->expects($this->never())
-            ->method('addByType');
+        $this->accountItems->updateItems(true, 100, $accountUpdateDto);
+    }
 
-        $this->accountToUserRepository
-            ->expects($this->never())
-            ->method('transactionAware');
+    /**
+     * An empty list clears that kind of sharing.
+     *
+     * This is the case the bulk edit's "Delete" checkboxes post, and it used to match neither
+     * branch and do nothing at all — so the one deliberate way to clear an account's sharing was
+     * the one way that never worked, while reporting success.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     */
+    public function testUpdateItemsWithEmptyListsClearsThem()
+    {
+        $accountUpdateDto = AccountDataGenerator::factory()
+                                                ->buildAccountUpdateDto()
+                                                ->mutate(
+                                                    [
+                                                        'usersView' => [],
+                                                        'usersEdit' => [],
+                                                        'userGroupsView' => [],
+                                                        'userGroupsEdit' => [],
+                                                        'tags' => []
+                                                    ]
+                                                );
 
-        $this->accountToUserRepository
-            ->expects($this->exactly(2))
-            ->method('deleteTypeByAccountId')
-            ->with(...self::withConsecutive([100, false], [100, true]));
-
-        $this->accountToUserRepository
-            ->expects($this->never())
-            ->method('addByType');
-
-        $this->accountToTagRepository
-            ->expects($this->never())
-            ->method('transactionAware');
+        foreach ([$this->accountToUserGroupRepository, $this->accountToUserRepository] as $repository) {
+            $repository->expects($this->exactly(2))
+                       ->method('transactionAware')
+                       ->with(self::withResolveCallableCallback());
+            $repository->expects($this->exactly(2))
+                       ->method('deleteTypeByAccountId')
+                       ->with(...self::withConsecutive([100, false], [100, true]));
+            // Cleared, not replaced.
+            $repository->expects($this->never())->method('addByType');
+        }
 
         $this->accountToTagRepository
             ->expects($this->once())
-            ->method('deleteByAccountId')
-            ->with(100);
-
-        $this->accountToTagRepository
-            ->expects($this->never())
-            ->method('add');
+            ->method('transactionAware')
+            ->with(self::withResolveCallableCallback());
+        $this->accountToTagRepository->expects($this->once())->method('deleteByAccountId')->with(100);
+        $this->accountToTagRepository->expects($this->never())->method('add');
 
         $this->accountItems->updateItems(true, 100, $accountUpdateDto);
     }

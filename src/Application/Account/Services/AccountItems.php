@@ -68,70 +68,33 @@ final class AccountItems extends Service implements AccountItemsService
         AccountUpdateDto $accountUpdateDto
     ): void {
         if ($userCanChangePermissions) {
-            if (null === $accountUpdateDto->userGroupsView) {
-                $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (!empty($accountUpdateDto->userGroupsView)) {
-                $this->accountToUserGroupRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserGroupRepository
-                            ->deleteTypeByAccountId($accountId, false);
-                        $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->userGroupsView);
-                    },
-                    $this
-                );
-            }
-
-            if (null === $accountUpdateDto->userGroupsEdit) {
-                $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (!empty($accountUpdateDto->userGroupsEdit)) {
-                $this->accountToUserGroupRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserGroupRepository
-                            ->deleteTypeByAccountId($accountId, true);
-                        $this->accountToUserGroupRepository
-                            ->addByType($accountId, $accountUpdateDto->userGroupsEdit, true);
-                    },
-                    $this
-                );
-            }
-
-            if (null === $accountUpdateDto->usersView) {
-                $this->accountToUserRepository->deleteTypeByAccountId($accountId, false);
-            } elseif (!empty($accountUpdateDto->usersView)) {
-                $this->accountToUserRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserRepository
-                            ->deleteTypeByAccountId($accountId, false);
-                        $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->usersView);
-                    },
-                    $this
-                );
-            }
-
-            if (null === $accountUpdateDto->usersEdit) {
-                $this->accountToUserRepository->deleteTypeByAccountId($accountId, true);
-            } elseif (!empty($accountUpdateDto->usersEdit)) {
-                $this->accountToUserRepository->transactionAware(
-                    function () use ($accountUpdateDto, $accountId) {
-                        $this->accountToUserRepository
-                            ->deleteTypeByAccountId($accountId, true);
-                        $this->accountToUserRepository
-                            ->addByType($accountId, $accountUpdateDto->usersEdit, true);
-                    },
-                    $this
-                );
-            }
+            // null means the caller said nothing about this list, and an empty array means they
+            // said to empty it. It used to be the other way round: null deleted every row of that
+            // type and an empty array matched neither branch and did nothing at all.
+            //
+            // Nothing supplies these on the API — there is no parameter for them — so every REST
+            // account edit silently removed all four kinds of sharing from the account it was
+            // editing. On the web the form only sets a list when the corresponding `_update` flag
+            // is posted, which the theme sends only for a select the user actually changed, so an
+            // edit that touched the name or the URL did the same thing. And the bulk edit's
+            // "Delete" checkboxes, which post exactly the empty array, were the case that did
+            // nothing — so the one way to deliberately clear sharing was the one way that never
+            // worked.
+            $this->replaceUserGroups($accountId, $accountUpdateDto->userGroupsView, false);
+            $this->replaceUserGroups($accountId, $accountUpdateDto->userGroupsEdit, true);
+            $this->replaceUsers($accountId, $accountUpdateDto->usersView, false);
+            $this->replaceUsers($accountId, $accountUpdateDto->usersEdit, true);
         }
 
-        if (null === $accountUpdateDto->tags) {
-            $this->accountToTagRepository->deleteByAccountId($accountId);
-        } elseif (!empty($accountUpdateDto->tags)) {
+        // Same rule for the tags, which had the same two branches.
+        if ($accountUpdateDto->tags !== null) {
             $this->accountToTagRepository->transactionAware(
                 function () use ($accountUpdateDto, $accountId) {
                     $this->accountToTagRepository->deleteByAccountId($accountId);
-                    $this->accountToTagRepository->add($accountId, $accountUpdateDto->tags);
+
+                    if (!empty($accountUpdateDto->tags)) {
+                        $this->accountToTagRepository->add($accountId, $accountUpdateDto->tags);
+                    }
                 },
                 $this
             );
@@ -141,6 +104,63 @@ final class AccountItems extends Service implements AccountItemsService
     /**
      * Adds external items to the account
      */
+    /**
+     * Replace an account's shared groups of one kind, or leave them alone when none were supplied.
+     *
+     * The delete and the add are one transaction, so a failure adding leaves the existing rows
+     * rather than an account shared with nobody.
+     *
+     * @param int[]|null $userGroupIds
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     */
+    private function replaceUserGroups(int $accountId, ?array $userGroupIds, bool $isEdit): void
+    {
+        if ($userGroupIds === null) {
+            return;
+        }
+
+        $this->accountToUserGroupRepository->transactionAware(
+            function () use ($accountId, $userGroupIds, $isEdit) {
+                $this->accountToUserGroupRepository->deleteTypeByAccountId($accountId, $isEdit);
+
+                if (!empty($userGroupIds)) {
+                    $this->accountToUserGroupRepository->addByType($accountId, $userGroupIds, $isEdit);
+                }
+            },
+            $this
+        );
+    }
+
+    /**
+     * The same for an account's shared users.
+     *
+     * @param int[]|null $userIds
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     */
+    private function replaceUsers(int $accountId, ?array $userIds, bool $isEdit): void
+    {
+        if ($userIds === null) {
+            return;
+        }
+
+        $this->accountToUserRepository->transactionAware(
+            function () use ($accountId, $userIds, $isEdit) {
+                $this->accountToUserRepository->deleteTypeByAccountId($accountId, $isEdit);
+
+                if (!empty($userIds)) {
+                    $this->accountToUserRepository->addByType($accountId, $userIds, $isEdit);
+                }
+            },
+            $this
+        );
+    }
+
     public function addItems(bool $userCanChangePermissions, int $accountId, AccountCreateDto $accountCreateDto): void
     {
         try {

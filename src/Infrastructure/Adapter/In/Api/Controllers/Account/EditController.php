@@ -101,7 +101,11 @@ final class EditController extends AccountBase
             notes: $this->apiService->getParamString('notes'),
             isPrivate: (bool)$this->apiService->getParamInt('private'),
             isPrivateGroup: (bool)$this->apiService->getParamInt('privateGroup'),
-            tags: array_map(intval(...), $this->apiService->getParamArray('tagsId', false, [])),
+            // null rather than [], so that an edit which says nothing about tags leaves them
+            // alone. An empty array now means "clear them", which is what it reads as.
+            tags: ($tags = $this->apiService->getParamArray('tagsId', false)) === null
+                ? null
+                : array_map(intval(...), $tags),
         );
     }
 }
