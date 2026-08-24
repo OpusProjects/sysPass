@@ -37,7 +37,6 @@ use SP\Infrastructure\Context\SessionLifecycleHandler;
 use SP\Domain\Crypt\Ports\SessionKeyService;
 use SP\Infrastructure\HttpModuleBase;
 use SP\Infrastructure\ProvidersHelper;
-use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Core\Context\SessionContext;
 use SP\Domain\Core\Crypt\CsrfHandler;
@@ -215,7 +214,7 @@ final class Init extends HttpModuleBase
         $this->language->setLanguage($isReload);
 
         // Check whether it is necessary to switch to HTTPS
-        Http::checkHttps($this->configData, $this->request);
+        $this->redirectToHttpsIfRequired();
 
         $partialInit = in_array($controller, self::PARTIAL_INIT, true);
 

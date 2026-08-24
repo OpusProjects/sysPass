@@ -31,7 +31,6 @@ use SP\Domain\Core\Exceptions\ContextException;
 use SP\Infrastructure\HttpModuleBase;
 use SP\Infrastructure\Language;
 use SP\Infrastructure\ProvidersHelper;
-use SP\Domain\Common\Providers\Http;
 use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\LanguageInterface;
@@ -90,7 +89,7 @@ final class Init extends HttpModuleBase
         $this->language->setLanguage();
 
         // Checks if it needs to switch the request over HTTPS
-        Http::checkHttps($this->configData, $this->request);
+        $this->redirectToHttpsIfRequired();
 
         // Checks if sysPass is installed
         $this->checkInstalled();
