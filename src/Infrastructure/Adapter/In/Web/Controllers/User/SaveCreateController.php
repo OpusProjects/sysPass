@@ -60,6 +60,8 @@ final class SaveCreateController extends UserSaveBase
 
             $itemData = $this->form->getItemData();
 
+            $this->assertProfileIsAssignable($itemData);
+
             $id = $this->userService->create($itemData);
 
             $this->eventDispatcher->notify(new Event(

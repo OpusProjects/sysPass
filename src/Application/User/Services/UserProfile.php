@@ -28,6 +28,7 @@ namespace SP\Application\User\Services;
 use SP\Application\Application;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Common\Services\Service;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Dtos\ItemSearchDto;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -54,6 +55,32 @@ final class UserProfile extends Service implements UserProfileService
     public function __construct(Application $application, private readonly UserProfileRepository $userProfileRepository)
     {
         parent::__construct($application);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function assertAssignableBy(int $profileId): void
+    {
+        if ($this->context->getUserData()->isAdminApp) {
+            return;
+        }
+
+        try {
+            $profileData = $this->getById($profileId)->hydrate(ProfileData::class) ?? new ProfileData();
+        } catch (NoSuchItemException) {
+            // Nothing to constrain: a profile that does not exist grants nothing. Refusing here
+            // would change what a bad id reports — the foreign key already rejects it, and this
+            // guard is about how much a profile grants, not whether it is there.
+            return;
+        }
+
+        if ($profileData->grantsBeyond($this->context->getUserProfile())) {
+            throw ServiceException::error(
+                __u('You cannot assign a profile with more permissions than your own'),
+                __u('Please contact to the administrator')
+            );
+        }
     }
 
     /**
