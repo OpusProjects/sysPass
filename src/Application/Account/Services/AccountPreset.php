@@ -36,6 +36,12 @@ use SP\Domain\Config\Ports\ConfigDataInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\User\Ports\UserRepository;
+use SP\Domain\User\Models\UserGroup as UserGroupModel;
+use SP\Domain\User\Models\User as UserModel;
+use SP\Domain\User\Ports\UserGroupRepository;
+use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Common\Models\Simple;
 use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\Password;
@@ -50,6 +56,8 @@ final class AccountPreset extends Service implements AccountPresetService
 {
     /**
      * @param ItemPresetService<ItemPresetModel> $itemPresetService
+     * @param UserRepository<UserModel> $userRepository
+     * @param UserGroupRepository<UserGroupModel> $userGroupRepository
      */
     public function __construct(
         Application                                   $application,
@@ -57,7 +65,9 @@ final class AccountPreset extends Service implements AccountPresetService
         private readonly AccountToUserGroupRepository $accountToUserGroupRepository,
         private readonly AccountToUserRepository      $accountToUserRepository,
         private readonly ConfigDataInterface          $configData,
-        private readonly PasswordValidator $passwordValidator
+        private readonly PasswordValidator $passwordValidator,
+        private readonly UserRepository               $userRepository,
+        private readonly UserGroupRepository          $userGroupRepository
     ) {
         parent::__construct($application);
     }
@@ -165,10 +175,21 @@ final class AccountPreset extends Service implements AccountPresetService
             if ($accountPermission !== null) {
                 $userData = $this->context->getUserData();
 
-                $usersView = array_diff($accountPermission->getUsersView(), [$userData->id]);
-                $usersEdit = array_diff($accountPermission->getUsersEdit(), [$userData->id]);
-                $userGroupsView = array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId]);
-                $userGroupsEdit = array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId]);
+                // Only ids that still exist. The preset carries them inside a serialized blob, and
+                // no foreign key reaches in there — the one on ItemPreset covers the preset's own
+                // scope columns, not its contents. So a user or group named in a fixed preset can
+                // be deleted with nothing to stop it, and the next account anybody in that
+                // preset's scope saved failed on the foreign key these ids do have, inside the
+                // transaction, rolling the whole save back. Every account create and edit for
+                // those people, until an administrator worked out which preset to edit.
+                $usersView = $this->existingUsers(array_diff($accountPermission->getUsersView(), [$userData->id]));
+                $usersEdit = $this->existingUsers(array_diff($accountPermission->getUsersEdit(), [$userData->id]));
+                $userGroupsView = $this->existingUserGroups(
+                    array_diff($accountPermission->getUserGroupsView(), [$userData->userGroupId])
+                );
+                $userGroupsEdit = $this->existingUserGroups(
+                    array_diff($accountPermission->getUserGroupsEdit(), [$userData->userGroupId])
+                );
 
                 if (!empty($usersView)) {
                     $this->accountToUserRepository->addByType($accountId, $usersView);
@@ -188,4 +209,37 @@ final class AccountPreset extends Service implements AccountPresetService
             }
         }
     }
+
+    /**
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function existingUsers(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        return $this->userRepository->getExistingIds($ids);
+    }
+
+    /**
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    private function existingUserGroups(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        return $this->userGroupRepository->getExistingIds($ids);
+    }
+
 }

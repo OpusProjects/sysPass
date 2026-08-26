@@ -169,6 +169,17 @@ interface UserRepository extends Repository
     public function getUserEmailById(array $ids): QueryResult;
 
     /**
+     * Which of the given ids still exist
+     *
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getExistingIds(array $ids): array;
+
+    /**
      * Returns the usage of the given user's id
      *
      * @param int $id
