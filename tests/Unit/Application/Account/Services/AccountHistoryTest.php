@@ -216,6 +216,57 @@ class AccountHistoryTest extends UnitaryTestCase
         $this->accountHistory->deleteByIdBatch($ids);
     }
 
+    /**
+     * A purge that removed fewer rows than it was given says so.
+     *
+     * The ids here are history rows, so every one of them should have matched. The count was
+     * returned and thrown away — the controller discards it and answers "Accounts updated" either
+     * way — so a stale id, or a row another session had already deleted, was reported as a purge
+     * that had happened. An old password the operator believes they destroyed is precisely what
+     * history holds.
+     *
+     * @throws ServiceException
+     */
+    public function testDeleteByIdBatchThatRemovedFewerRowsThanItWasGiven()
+    {
+        $ids = [1, 2, 3];
+
+        $this->accountHistoryRepository
+            ->expects($this->once())
+            ->method('transactionAware')
+            ->with(self::withResolveCallableCallback())
+            ->willReturn(2);
+
+        $this->accountHistoryRepository
+            ->expects(self::once())
+            ->method('deleteByIdBatch')
+            ->with($ids)
+            ->willReturn(2);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while deleting the accounts');
+
+        $this->accountHistory->deleteByIdBatch($ids);
+    }
+
+    /**
+     * Deleting by *account* id is deliberately not held to that: an account may have no history at
+     * all, so removing nothing from it is the right answer rather than a failure. There is no count
+     * to compare against.
+     */
+    public function testDeleteByAccountIdBatchAcceptsAccountsWithNoHistory()
+    {
+        $ids = [1, 2, 3];
+
+        $this->accountHistoryRepository
+            ->expects(self::once())
+            ->method('deleteByAccountIdBatch')
+            ->with($ids)
+            ->willReturn(0);
+
+        self::assertSame(0, $this->accountHistory->deleteByAccountIdBatch($ids));
+    }
+
     public function testSearch()
     {
         $itemSearchData =

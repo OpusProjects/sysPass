@@ -141,13 +141,30 @@ final class AccountHistory extends Service implements AccountHistoryService
      */
     public function deleteByIdBatch(array $ids): int
     {
-        return $this->accountHistoryRepository->transactionAware(function () use ($ids) {
+        $count = $this->accountHistoryRepository->transactionAware(function () use ($ids) {
             return $this->accountHistoryRepository->deleteByIdBatch($ids);
         }, $this);
+
+        // These are history row ids, so every one of them should have matched. Returning the count
+        // and leaving it at that meant a purge which removed fewer rows than it was given — a
+        // stale id, a row another session had already deleted — was reported as done: the
+        // controller discards this value and answers success either way. An old password the
+        // operator believes they destroyed is exactly what history is kept in.
+        //
+        // The single delete beside this one has always thrown; this is that check, for the batch.
+        if ($count !== count($ids)) {
+            throw new ServiceException(__u('Error while deleting the accounts'), SPException::WARNING);
+        }
+
+        return $count;
     }
 
     /**
      * Deletes all the items for given accounts id
+     *
+     * Deliberately unchecked, unlike deleteByIdBatch() above: these are *account* ids, and an
+     * account may have no history at all — a purge that removes nothing from it has done exactly
+     * what it was asked. There is no count here to compare against.
      *
      * @param int[] $ids
      *
