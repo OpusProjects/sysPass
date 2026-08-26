@@ -75,7 +75,7 @@ interface SessionContext extends Context
      *
      * @return ?string
      */
-    public function getTemporaryMasterPass(): ?string;
+    public function takeTemporaryMasterPass(): ?string;
 
     /**
      * Return the public key
