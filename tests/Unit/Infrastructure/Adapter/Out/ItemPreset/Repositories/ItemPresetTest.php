@@ -60,6 +60,57 @@ class ItemPresetTest extends UnitaryTestCase
     private ItemPreset $itemPreset;
 
     /**
+     * A fixed preset is chosen ahead of one that is not.
+     *
+     * Only a fixed preset is a rule: `AccountPreset::checkPasswordPreset()` and
+     * `checkPasswordExpiry()` do nothing unless `getFixed()` is 1, so a non-fixed preset winning
+     * the selection means no policy is enforced at all. And a non-fixed preset can win, because
+     * `score` is `priority + 3 / + 2 / + 1` and priority is an administrator-set 0-128 — a group
+     * preset at priority 5 outranks a user-scoped one left at the default 0.
+     *
+     * So an administrator who marked a password policy fixed for one person, and separately gave
+     * that person's group a non-fixed preset at any priority above zero, got no policy for them.
+     * Nothing reported it: the losing preset is not refused, it is simply not selected.
+     *
+     * Asserted on the emitted ORDER BY rather than against rows, for the same reason as the test
+     * below — which preset a tie returns is the database's business, and a behavioural test would
+     * pass on this MariaDB whether or not the query asked for it.
+     */
+    public function testAFixedPresetIsChosenAheadOfOneThatIsNot(): void
+    {
+        $statement = null;
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with(
+                new Callback(static function (QueryData $arg) use (&$statement) {
+                    $statement = $arg->getQuery()->getStatement();
+
+                    return true;
+                }),
+                false
+            );
+
+        $this->itemPreset->getByFilter('test', 100, 200, 300);
+
+        self::assertIsString($statement);
+        self::assertSame(
+            1,
+            preg_match('/ORDER BY(.*?)(?:\\bLIMIT\\b|$)/is', $statement, $matches),
+            'the query must carry an ORDER BY'
+        );
+
+        $columns = array_map(trim(...), explode(',', trim($matches[1])));
+
+        self::assertSame(
+            'fixed DESC',
+            $columns[0],
+            'a rule must be chosen ahead of a default, whatever the priorities say'
+        );
+    }
+
+    /**
      * The preset that applies is decided, not left to the database.
      *
      * `score` is `priority + 3 / + 2 / + 1` by how specifically a preset matches, and two presets
