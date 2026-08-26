@@ -37,6 +37,7 @@ use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Domain\Storage\Ports\XmlFileStorageService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
@@ -68,6 +69,35 @@ class MimeTypesTest extends UnitaryTestCase
         foreach ($out as $mimeType) {
             $this->assertInstanceOf(MimeType::class, $mimeType);
         }
+    }
+
+    /**
+     * A cache file that is readable but corrupt is rebuilt, not fatal.
+     *
+     * There was no catch here at all — Actions::loadCache() at least caught FileException, which
+     * still did not match what Serde raises for a truncated file. MimeTypes is what the file
+     * upload and the config manager read, so the same torn write took those down.
+     *
+     * @throws FileException
+     */
+    public function testACorruptCacheIsRebuilt()
+    {
+        $this->fileCache->method('exists')->willReturn(true);
+        $this->fileCache->method('isExpired')->willReturn(false);
+
+        // What Serde answers for a truncated file, which is not a FileException.
+        $this->fileCache
+            ->expects(self::once())
+            ->method('load')
+            ->willThrowException(SPException::error('Couldn\'t deserialize the data'));
+
+        // The rebuild reads the YAML and writes the cache again.
+        $this->checkBuildCache();
+
+        $mimeTypes = new MimeTypes($this->fileCache, $this->yamlFileStorage);
+
+        // Rebuilt rather than escaping the constructor.
+        self::assertCount(10, $mimeTypes->getMimeTypes());
     }
 
     /**

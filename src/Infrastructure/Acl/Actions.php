@@ -32,6 +32,7 @@ use SP\Domain\Core\Models\Action;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__u;
 use function SP\logger;
@@ -73,15 +74,36 @@ class Actions implements ActionsInterface
                 || $this->fileCache->isExpiredDate($this->yamlFileStorage->getFileTime())
             ) {
                 $this->mapAndSave();
-            } else {
-                // Action[]: an array of objects, which loadWith() cannot express — it answers
-                // with one object of the class it was given. Naming the class here keeps the
-                // cache from building anything else.
-                $this->actions = $this->fileCache->load(null, Action::class);
 
-                logger('Loaded actions cache', 'INFO');
+                return;
             }
         } catch (FileException $e) {
+            processException($e);
+
+            $this->mapAndSave();
+
+            return;
+        }
+
+        try {
+            // Action[]: an array of objects, which loadWith() cannot express — it answers
+            // with one object of the class it was given. Naming the class here keeps the
+            // cache from building anything else.
+            $this->actions = $this->fileCache->load(null, Action::class);
+
+            logger('Loaded actions cache', 'INFO');
+        } catch (SPException $e) {
+            // SPException, not FileException. A cache file that cannot be opened raises the
+            // latter, but one that is readable and *corrupt* — truncated by a reader landing
+            // between another request's ftruncate() and its write — comes back from Serde as a
+            // plain SPException, and FileException is its child, so catching the child never
+            // caught it. It escaped the constructor, and since Acl depends on this class,
+            // essentially every request broke. The corrupting write refreshes the file's mtime,
+            // so the expiry check above could not heal it either: it took deleting the file by
+            // hand.
+            //
+            // Around the load alone, so that a rebuild which fails on its own terms still
+            // reports rather than being retried once and swallowed.
             processException($e);
 
             $this->mapAndSave();

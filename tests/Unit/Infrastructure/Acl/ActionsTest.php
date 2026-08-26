@@ -184,6 +184,45 @@ class ActionsTest extends UnitaryTestCase
     }
 
     /**
+     * A cache file that is readable but corrupt is rebuilt, not fatal.
+     *
+     * FileCache::save() truncates in place and writes, holding an advisory lock; readToString()
+     * takes no lock at all. So a reader can land between the truncate and the write and get a
+     * partial file — which unserialize() refuses, and Serde turns into a plain SPException.
+     *
+     * Only FileException was caught, and FileException is SPException's *child*, so that catch
+     * never matched: the exception escaped the constructor. Acl depends on this class, so it took
+     * essentially every request down — and the corrupting write refreshes the mtime, so the
+     * expiry check could not heal it. It took deleting the file by hand.
+     *
+     * @throws ActionNotFoundException
+     * @throws FileException
+     * @throws Exception
+     */
+    public function testResetWithACorruptCacheRebuildsIt()
+    {
+        $this->fileCache
+            ->expects(self::once())
+            ->method('isExpired')
+            ->with(Actions::CACHE_EXPIRE)
+            ->willReturn(false);
+
+        // What Serde answers for a truncated file, which is not a FileException.
+        $this->fileCache
+            ->expects(self::once())
+            ->method('load')
+            ->willThrowException(SPException::error('Couldn\'t deserialize the data'));
+
+        $actionsMapped = $this->checkLoadAndSave();
+
+        $this->actions->reset();
+
+        $action = current($actionsMapped);
+
+        self::assertEquals($action, $this->actions->getActionById($action->getId()));
+    }
+
+    /**
      * @throws ActionNotFoundException
      * @throws FileException
      */
