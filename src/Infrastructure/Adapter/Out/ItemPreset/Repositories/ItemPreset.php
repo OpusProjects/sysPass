@@ -197,7 +197,23 @@ class ItemPreset extends BaseRepository implements ItemPresetRepository
             // where they are: asked of a tie, the database was in fact returning the lower id, so
             // defining the rule this way settles the question without quietly moving anybody's
             // effective policy to a different preset.
-            ->orderBy(['score DESC', 'id ASC'])
+            // `fixed` first, because it is the stronger statement and the two are not comparable
+            // on score alone. `score` is `priority + 3 / + 2 / + 1` by specificity, and priority is
+            // an administrator-set 0-128, so a group preset at priority 5 outranks a user-scoped
+            // one left at the default 0 — cross-scope arbitration by priority, which is what the
+            // field is for.
+            //
+            // What that quietly did was let a *default* outrank a *rule*. Only a fixed preset is
+            // read as a rule: AccountPreset::checkPasswordPreset() and checkPasswordExpiry() do
+            // nothing at all unless getFixed() is 1, so a non-fixed preset winning means no policy
+            // is enforced. An administrator who marked a password policy fixed for one person, and
+            // separately gave that person's group a non-fixed preset carrying default values at a
+            // priority above zero, got no policy for them — with nothing anywhere saying so, since
+            // the losing preset is not reported, it is simply not selected.
+            //
+            // This changes which preset applies in that mixed case, and only in that case: between
+            // two fixed presets, or two non-fixed ones, the score decides exactly as before.
+            ->orderBy(['fixed DESC', 'score DESC', 'id ASC'])
             ->limit(1);
 
         $queryData = QueryData::buildWithMapper($query, ItemPresetModel::class);
