@@ -241,6 +241,53 @@ class UserProfileTest extends UnitaryTestCase
     }
 
     /**
+     * The profile new directory users are created with cannot be deleted.
+     *
+     * `ldapDefaultProfile` and `ssoDefaultProfile` are plain ints in config.xml with nothing
+     * pointing at UserProfile, so no foreign key refuses this — and the RESTRICT on
+     * User.userProfileId only catches a profile somebody currently holds, which is precisely not
+     * the case for one being tidied up. Deleting it succeeded cleanly, and then every
+     * auto-provisioned login afterwards died on the NOT NULL foreign key in
+     * User::createOnLogin(), reported as "Internal error, check the event log".
+     *
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function testDeleteRefusesTheDirectoryDefaultProfile()
+    {
+        $this->config->getConfigData()->setLdapDefaultProfile(100);
+
+        $this->userProfileRepository->expects($this->never())->method('delete');
+
+        try {
+            $this->userProfile->delete(100);
+            self::fail('Expected a ServiceException');
+        } catch (ServiceException $e) {
+            self::assertSame('Profile in use', $e->getMessage());
+            self::assertSame('It is the default profile for LDAP users', $e->getHint());
+        }
+    }
+
+    /**
+     * And the batch does not get round it.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteByIdBatchRefusesTheDirectoryDefaultProfile()
+    {
+        $this->config->getConfigData()->setSsoDefaultProfile(200);
+
+        $this->userProfileRepository->expects($this->never())->method('deleteByIdBatch');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Profile in use');
+
+        $this->userProfile->deleteByIdBatch([100, 200, 300]);
+    }
+
+    /**
      * @throws ConstraintException
      * @throws NoSuchItemException
      * @throws QueryException

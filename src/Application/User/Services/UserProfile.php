@@ -41,6 +41,7 @@ use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
 
+use function SP\__;
 use function SP\__u;
 
 /**
@@ -115,8 +116,42 @@ final class UserProfile extends Service implements UserProfileService
      */
     public function delete(int $id): void
     {
+        $this->assertIsNotADirectoryDefault($id);
+
         if ($this->userProfileRepository->delete($id)->getAffectedNumRows() === 0) {
             throw NoSuchItemException::info(__u('Profile not found'));
+        }
+    }
+
+    /**
+     * Refuse a profile that new directory users are created with.
+     *
+     * A profile set as the directory's default is held by the configuration rather than by a row,
+     * so no foreign key refuses it — `ldapDefaultProfile` and `ssoDefaultProfile` are plain ints in
+     * config.xml with nothing pointing at UserProfile. The RESTRICT on User.userProfileId only
+     * catches a profile somebody currently holds, and the profile most likely to be deleted while
+     * reorganising is one nobody holds any more. Deleting it succeeded cleanly, and then every
+     * auto-provisioned login afterwards died on the NOT NULL foreign key in
+     * User::createOnLogin(), surfacing as "Internal error, check the event log".
+     *
+     * @throws ServiceException
+     */
+    private function assertIsNotADirectoryDefault(int $id): void
+    {
+        $configData = $this->config->getConfigData();
+
+        $defaults = [
+            __('LDAP') => $configData->getLdapDefaultProfile(),
+            __('SSO') => $configData->getSsoDefaultProfile(),
+        ];
+
+        foreach ($defaults as $label => $default) {
+            if ($default === $id) {
+                throw ServiceException::warning(
+                    __u('Profile in use'),
+                    sprintf(__('It is the default profile for %s users'), $label)
+                );
+            }
         }
     }
 
@@ -129,6 +164,12 @@ final class UserProfile extends Service implements UserProfileService
      */
     public function deleteByIdBatch(array $ids): int
     {
+        // As above: the batch does not pass through delete(), and no foreign key knows about
+        // `ldapDefaultProfile`.
+        foreach ($ids as $id) {
+            $this->assertIsNotADirectoryDefault($id);
+        }
+
         $count = $this->userProfileRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
