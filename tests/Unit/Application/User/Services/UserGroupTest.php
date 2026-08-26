@@ -38,6 +38,7 @@ use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Application\User\Services\UserGroup;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\Common\Models\Simple;
 use SP\Tests\Support\Generators\UserGroupGenerator;
 use SP\Tests\Support\Stubs\UserGroupRepositoryStub;
 use SP\Tests\Support\UnitaryTestCase;
@@ -332,11 +333,55 @@ class UserGroupTest extends UnitaryTestCase
     {
         $this->userGroupRepository
             ->expects($this->once())
+            ->method('getUsage')
+            ->with(100)
+            ->willReturn(new QueryResult([]));
+
+        $this->userGroupRepository
+            ->expects($this->once())
             ->method('delete')
             ->with(100)
             ->willReturn(new QueryResult(null, 1));
 
         $this->userGroup->delete(100);
+    }
+
+    /**
+     * A group something still holds is refused, and the refusal says what holds it.
+     *
+     * Three foreign keys refuse this delete: a user whose main group it is, an account owned by
+     * it, and a history row, which outlives the account it describes. The refusal used to come
+     * back from MySQL as error 1451 and be rendered as "The record is in use", which names
+     * nothing — and the group's own "Used by" panel lists only its users, so a group with no
+     * members but a hundred accounts looked entirely safe to delete right up until it was not.
+     *
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function testDeleteRefusesAGroupInUseAndSaysWhatHoldsIt()
+    {
+        $this->userGroupRepository
+            ->expects($this->once())
+            ->method('getUsage')
+            ->with(100)
+            ->willReturn(
+                new QueryResult([
+                    new Simple(['id' => 100, 'ref' => 'Account']),
+                    new Simple(['id' => 100, 'ref' => 'Account']),
+                    new Simple(['id' => 100, 'ref' => 'AccountHistory']),
+                ])
+            );
+
+        $this->userGroupRepository->expects($this->never())->method('delete');
+
+        try {
+            $this->userGroup->delete(100);
+            self::fail('Expected a ServiceException');
+        } catch (ServiceException $e) {
+            self::assertSame('Group in use', $e->getMessage());
+            self::assertSame('Accounts: 2 - Accounts in history: 1', $e->getHint());
+        }
     }
 
     /**
