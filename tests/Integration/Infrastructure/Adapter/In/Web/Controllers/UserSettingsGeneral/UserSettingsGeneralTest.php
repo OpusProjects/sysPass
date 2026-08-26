@@ -88,6 +88,9 @@ class UserSettingsGeneralTest extends IntegrationTestCase
     {
         $context = self::createStub(SessionContext::class);
         $context->method('isLoggedIn')->willReturn(true);
+        // A real session holds a request token; without one the guard has nothing to check
+        // against, which is the state it now refuses rather than waves through.
+        $context->method('getCSRF')->willReturn(self::CSRF_TOKEN);
         $context->method('getAuthCompleted')->willReturn(true);
         $context->method('getUserData')->willReturn($this->getUserDataDto());
         $context->method('getUserProfile')->willReturn($this->getUserProfile());

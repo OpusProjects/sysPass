@@ -59,9 +59,8 @@ class CsrfTest extends UnitaryTestCase
     public function testInitialize()
     {
         $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
+            ->expects(self::never())
+            ->method('isLoggedIn');
 
         $this->sessionContext
             ->expects(self::once())
@@ -94,7 +93,6 @@ class CsrfTest extends UnitaryTestCase
     {
         $tokens = [];
 
-        $this->sessionContext->method('isLoggedIn')->willReturn(true);
         $this->sessionContext->method('getCSRF')->willReturn(null);
         $this->sessionContext
             ->expects(self::exactly(2))
@@ -135,11 +133,6 @@ class CsrfTest extends UnitaryTestCase
 
         $this->sessionContext
             ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
             ->method('getCSRF')
             ->willReturn($sessionToken);
 
@@ -174,11 +167,6 @@ class CsrfTest extends UnitaryTestCase
 
         $this->sessionContext
             ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
             ->method('getCSRF')
             ->willReturn(bin2hex(random_bytes(32)));
 
@@ -204,11 +192,6 @@ class CsrfTest extends UnitaryTestCase
 
         $this->sessionContext
             ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
             ->method('getCSRF')
             ->willReturn(self::$faker->sha1());
 
@@ -216,54 +199,64 @@ class CsrfTest extends UnitaryTestCase
     }
 
     /**
-     * @return void
+     * A request that changes nothing is not checked.
+     *
+     * A plain GET without the ajax header is a page being read, and the token cannot travel on one
+     * — there is no header to put it in.
      */
-    public function testCheckWithNoLogin()
+    public function testCheckLetsAPlainReadThrough()
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn(Method::GET);
-
+        $this->requestInterface->expects(self::once())->method('getMethod')->willReturn(Method::GET);
         $this->requestInterface
             ->expects(self::once())
             ->method('getHeader')
             ->with('X-Requested-With')
-            ->willReturn('test');
+            ->willReturn('');
 
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(false);
+        $this->sessionContext->expects(self::never())->method('getCSRF');
 
         self::assertTrue($this->csrf->check());
     }
 
     /**
-     * @return void
+     * A session with no token fails a state-changing request rather than passing it.
+     *
+     * This is the case that used to be waved through, and with it every request made before
+     * signing in — the sign-in itself above all, which is login CSRF: a cross-site form posting a
+     * username and password signs the victim's browser into the attacker's account, and they go on
+     * filing passwords into a vault the attacker can open. A browser that has never loaded a page
+     * of ours holds no token, which is exactly the request to refuse.
      */
-    public function testCheckWithNoCsrf()
+    #[DataProvider('httpMethodDataProvider')]
+    public function testCheckRefusesAStateChangingRequestWithNoSessionToken(Method $method, string $header)
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn(Method::GET);
-
+        $this->requestInterface->expects(self::once())->method('getMethod')->willReturn($method);
         $this->requestInterface
             ->expects(self::once())
             ->method('getHeader')
             ->with('X-Requested-With')
-            ->willReturn('test');
+            ->willReturn($header);
 
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
+        $this->sessionContext->expects(self::once())->method('getCSRF')->willReturn(null);
 
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('getCSRF')
-            ->willReturn(null);
+        self::assertFalse($this->csrf->check());
+    }
+
+    /**
+     * Being signed in is not what decides it, either way. The token is the whole check.
+     */
+    #[DataProvider('httpMethodDataProvider')]
+    public function testCheckDoesNotAskWhetherTheSessionIsSignedIn(Method $method, string $header)
+    {
+        $token = str_repeat('a', 64);
+
+        $this->requestInterface->method('getMethod')->willReturn($method);
+        $this->requestInterface
+            ->method('getHeader')
+            ->willReturnMap([['X-Requested-With', $header], ['X-CSRF', $token]]);
+
+        $this->sessionContext->expects(self::never())->method('isLoggedIn');
+        $this->sessionContext->method('getCSRF')->willReturn($token);
 
         self::assertTrue($this->csrf->check());
     }
