@@ -40,78 +40,110 @@ class HttpTest extends TestCase
 {
 
     /**
+     * The address a plaintext request should have been made to.
+     *
+     * These used to assert only which mock methods had been called, which is why the defect they
+     * now pin survived: the method sent a bare `header('Location: …')` with no status code and no
+     * exit, so the caller carried on and the response went out over the plaintext connection
+     * anyway. A `Location` on a 200 is not a redirect. Asserting the answer, rather than the
+     * calls, is the difference.
+     *
      * @throws Exception
      */
-    public function testCheckHttps()
+    public function testHttpsUrlForAPlaintextRequest()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
         $request = $this->createMock(RequestService::class);
 
-        $configData->expects($this->once())
-                   ->method('isHttpsEnabled')
-                   ->willReturn(true);
+        $configData->expects($this->once())->method('isHttpsEnabled')->willReturn(true);
+        $request->expects($this->once())->method('isHttps')->willReturn(false);
+        $request->expects($this->once())->method('getServerPort')->willReturn(8080);
+        $request->expects($this->once())->method('getHttpHost')->willReturn('http://localhost');
 
-        $request->expects($this->once())
-                ->method('isHttps')
-                ->willReturn(false);
+        $_SERVER['REQUEST_URI'] = '/index.php?r=account/index';
 
-        $request->expects($this->once())
-                ->method('getServerPort')
-                ->willReturn(8080);
-
-        $request->expects($this->once())
-                ->method('getHttpHost')
-                ->willReturn('localhost');
-
-        Http::checkHttps($configData, $request);
+        self::assertSame(
+            'https://localhost:8080/index.php?r=account/index',
+            Http::httpsUrlFor($configData, $request)
+        );
     }
 
     /**
+     * The standard port is not written out.
+     *
      * @throws Exception
      */
-    public function testCheckHttpsWithNoHttpsEnabled()
+    public function testHttpsUrlForOmitsThePortWhenItIsTheDefault()
     {
-        $configData = $this->createMock(ConfigDataInterface::class);
-        $request = $this->createMock(RequestService::class);
+        $configData = $this->createStub(ConfigDataInterface::class);
+        $request = $this->createStub(RequestService::class);
 
-        $configData->expects($this->once())
-                   ->method('isHttpsEnabled')
-                   ->willReturn(false);
+        $configData->method('isHttpsEnabled')->willReturn(true);
+        $request->method('isHttps')->willReturn(false);
+        $request->method('getServerPort')->willReturn(443);
+        $request->method('getHttpHost')->willReturn('http://vault.example');
 
-        $request->expects($this->never())
-                ->method('isHttps');
+        $_SERVER['REQUEST_URI'] = '/';
 
-        $request->expects($this->never())
-                ->method('getServerPort');
-
-        $request->expects($this->never())
-                ->method('getHttpHost');
-
-        Http::checkHttps($configData, $request);
+        self::assertSame('https://vault.example/', Http::httpsUrlFor($configData, $request));
     }
 
     /**
+     * Only the scheme is rewritten.
+     *
+     * It was a str_replace of 'http' for 'https' over the whole host, which rewrites every
+     * occurrence — so an installation at http://httpbin.example was redirected to
+     * https://httpsbin.example, a host that need not exist and need not be theirs.
+     *
      * @throws Exception
      */
-    public function testCheckHttpsWithHttpsEnabledAndHttpsRequest()
+    public function testHttpsUrlForRewritesOnlyTheScheme()
+    {
+        $configData = $this->createStub(ConfigDataInterface::class);
+        $request = $this->createStub(RequestService::class);
+
+        $configData->method('isHttpsEnabled')->willReturn(true);
+        $request->method('isHttps')->willReturn(false);
+        $request->method('getServerPort')->willReturn(443);
+        $request->method('getHttpHost')->willReturn('http://httpbin.example');
+
+        $_SERVER['REQUEST_URI'] = '/';
+
+        self::assertSame('https://httpbin.example/', Http::httpsUrlFor($configData, $request));
+    }
+
+    /**
+     * Nothing to do when the setting is off — and the request is not even examined.
+     *
+     * @throws Exception
+     */
+    public function testHttpsUrlForIsNullWhenNotEnabled()
     {
         $configData = $this->createMock(ConfigDataInterface::class);
         $request = $this->createMock(RequestService::class);
 
-        $configData->expects($this->once())
-                   ->method('isHttpsEnabled')
-                   ->willReturn(true);
+        $configData->expects($this->once())->method('isHttpsEnabled')->willReturn(false);
+        $request->expects($this->never())->method('getServerPort');
+        $request->expects($this->never())->method('getHttpHost');
 
-        $request->expects($this->once())
-                ->method('isHttps')
-                ->willReturn(true);
+        self::assertNull(Http::httpsUrlFor($configData, $request));
+    }
 
-        $request->expects($this->never())
-                ->method('getServerPort');
+    /**
+     * Nor when the request already arrived over HTTPS.
+     *
+     * @throws Exception
+     */
+    public function testHttpsUrlForIsNullWhenAlreadyHttps()
+    {
+        $configData = $this->createMock(ConfigDataInterface::class);
+        $request = $this->createMock(RequestService::class);
 
-        $request->expects($this->never())
-                ->method('getHttpHost');
+        $configData->expects($this->once())->method('isHttpsEnabled')->willReturn(true);
+        $request->expects($this->once())->method('isHttps')->willReturn(true);
+        $request->expects($this->never())->method('getServerPort');
+        $request->expects($this->never())->method('getHttpHost');
 
-        Http::checkHttps($configData, $request);
+        self::assertNull(Http::httpsUrlFor($configData, $request));
     }
 }

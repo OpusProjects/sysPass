@@ -106,7 +106,9 @@ class ConfigSecurityTest extends IntegrationTestCase
 
         $this->expectOutputString('{"status":"OK","description":"Configuration updated","data":null}');
 
-        $this->runController([], $configFileService, $eventDispatcher);
+        // Over HTTPS: the stored config already requires it, and Init now refuses a plaintext
+        // request on such an installation instead of merely mentioning where it should have gone.
+        $this->runController([], $configFileService, $eventDispatcher, ['HTTPS' => 'on']);
 
         self::assertSame($configData, $saved->value);
         self::assertFalse($configData->isHttpsEnabled());
@@ -229,13 +231,26 @@ class ConfigSecurityTest extends IntegrationTestCase
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
+    /**
+     * @param array<string, string> $server Extra server parameters — an installation that already
+     *                                      has "Force HTTPS" on refuses a plaintext request in
+     *                                      Init, so a test starting from that state has to arrive
+     *                                      over HTTPS to reach the controller at all.
+     */
     private function runController(
         array $fields,
         ConfigFileService $configFileService,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        array $server = []
     ): void {
         $container = $this->buildContainer(
-            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'configSecurity/save'], $fields),
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'configSecurity/save'],
+                $fields,
+                server: $server
+            ),
             [
                 ConfigFileService::class => $configFileService,
                 EventDispatcherInterface::class => $eventDispatcher,

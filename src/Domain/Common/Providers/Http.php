@@ -34,24 +34,31 @@ use SP\Domain\Http\Ports\RequestService;
 final class Http
 {
     /**
-     * Check and force (if necessary) the HTTPS connection
+     * The HTTPS address this request should have been made to, or null if none is needed.
+     *
+     * This used to send the redirect itself, with a bare `header('Location: …')` — no status code,
+     * no exit, no check that headers had already gone out. A `Location` on a 200 is not a redirect:
+     * browsers ignore it, and execution carried on through the whole request, so the response the
+     * setting was meant to prevent — an account page, an API token — was still built and sent over
+     * the plaintext connection. "Force HTTPS" forced nothing.
+     *
+     * Answering with the address instead leaves the redirect to the caller, which is the only
+     * place that can also stop the request: HttpModuleBase::redirectToHttpsIfRequired() sends it
+     * through the router and throws, the way every other refusal in Init already does.
      */
-    public static function checkHttps(ConfigDataInterface $configData, RequestService $request): void
+    public static function httpsUrlFor(ConfigDataInterface $configData, RequestService $request): ?string
     {
-        if ($configData->isHttpsEnabled() && !$request->isHttps()) {
-            $serverPort = $request->getServerPort();
-
-            $port = $serverPort !== 443 ? ':'.$serverPort : '';
-            $host = str_replace('http', 'https', $request->getHttpHost());
-
-            header(
-                sprintf(
-                    'Location: %s%s%s',
-                    $host,
-                    $port,
-                    $_SERVER['REQUEST_URI'] ?? ''
-                )
-            );
+        if (!$configData->isHttpsEnabled() || $request->isHttps()) {
+            return null;
         }
+
+        $serverPort = $request->getServerPort();
+        $port = $serverPort !== 443 ? ':' . $serverPort : '';
+
+        // Only the scheme. str_replace('http', 'https', …) rewrote every occurrence, so a host
+        // with "http" in its name — http://httpbin.example — came back as https://httpsbin.example.
+        $host = preg_replace('#^http://#i', 'https://', $request->getHttpHost()) ?? '';
+
+        return sprintf('%s%s%s', $host, $port, $_SERVER['REQUEST_URI'] ?? '');
     }
 }

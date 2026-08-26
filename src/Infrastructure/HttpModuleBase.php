@@ -28,6 +28,8 @@ namespace SP\Infrastructure;
 
 use SP\Application\Application;
 use SP\Infrastructure\Bootstrap\Router;
+use SP\Domain\Common\Providers\Http;
+use SP\Domain\Core\Exceptions\InitializationException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Ports\AppLockHandler;
 use SP\Domain\Http\Ports\RequestService;
@@ -35,6 +37,8 @@ use SP\Domain\Http\Ports\RequestService;
 /**
  * Base module for HTTP based modules
  */
+use function SP\logger;
+
 abstract class HttpModuleBase extends ModuleBase
 {
     public function __construct(
@@ -45,6 +49,35 @@ abstract class HttpModuleBase extends ModuleBase
         protected readonly AppLockHandler $appLock
     ) {
         parent::__construct($application, $providersHelper);
+    }
+
+    /**
+     * Send the request to HTTPS and stop, when the configuration says it must be.
+     *
+     * The sending and the stopping are one thing, which is why this is here rather than in the
+     * helper that works out the address. A redirect that does not halt is not a redirect: the
+     * response carries on being built and goes out over the connection the setting exists to
+     * refuse.
+     *
+     * Both entry points call this, and it mirrors what Init already does for a not-installed
+     * instance, a database it cannot reach and maintenance mode — redirect through the router,
+     * then throw.
+     *
+     * @throws InitializationException
+     */
+    protected function redirectToHttpsIfRequired(): void
+    {
+        $httpsUrl = Http::httpsUrlFor($this->configData, $this->request);
+
+        if ($httpsUrl === null) {
+            return;
+        }
+
+        logger('Redirecting to HTTPS', 'INFO');
+
+        $this->router->response()->redirect($httpsUrl)->send();
+
+        throw new InitializationException('HTTPS required');
     }
 
     /**
