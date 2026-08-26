@@ -258,6 +258,38 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * A restore by somebody who may not change the owner does not change the owner.
+     *
+     * The snapshot carries every column, `userId` and `userGroupId` among them, and the restore
+     * wrote all of it back — so restoring an old version silently reverted who owns the account
+     * and which group it belongs to. Those are exactly what AccountAcl compares the signed-in user
+     * against, so it changes who can see it. And the door needs only ACCOUNT_EDIT_RESTORE, which
+     * AccountPermission buckets with plain edit, so anybody the account is shared with for editing
+     * could do it — the thing userCanChangeOwner() refuses them on the edit screen.
+     *
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function testEditRestoreLeavesTheOwnerAloneWithoutThePermission(): void
+    {
+        $account = AccountDataGenerator::factory()->buildAccount();
+
+        $callback = new Callback(
+            static function (QueryData $arg) {
+                $params = $arg->getQuery()->getBindValues();
+
+                return !array_key_exists('userId', $params)
+                       && !array_key_exists('userGroupId', $params)
+                       && !empty($arg->getQuery()->getStatement());
+            }
+        );
+
+        $this->database->expects(self::once())->method('runQuery')->with($callback);
+
+        $this->account->restoreModified($account->getId(), $account, false, false);
+    }
+
+    /**
      * @throws QueryException
      * @throws ConstraintException
      */
@@ -294,7 +326,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->database->expects(self::once())->method('runQuery')->with($callback);
 
-        $this->account->restoreModified($account->getId(), $account);
+        $this->account->restoreModified($account->getId(), $account, true, true);
     }
 
     /**
