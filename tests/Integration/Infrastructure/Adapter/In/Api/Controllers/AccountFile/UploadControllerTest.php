@@ -276,6 +276,12 @@ class UploadControllerTest extends ApiTestCase
     /**
      * Content the server cannot identify is still stored under the declared type: attachments
      * here are often keystores and certificates, which have no signature to match.
+     *
+     * The payload is fixed rather than random. It used to end in random_bytes(48), and about one
+     * run in two hundred produced bytes libmagic recognises — measured over 3,000 payloads on this
+     * image, 16 of them came back as image/x-tga. A recognised type is not the inconclusive answer
+     * this test is about, and image/x-tga is not on the allow-list, so the upload was refused and
+     * the run failed with 400 where it wanted 200, on whichever pull request happened to be open.
      */
     public function testUnidentifiableContentFallsBackToTheDeclaredType(): void
     {
@@ -283,7 +289,7 @@ class UploadControllerTest extends ApiTestCase
 
         $r = $this->upload($accountId, [
             'name'      => 'blob.pdf',
-            'content'   => base64_encode("\x00\x01\x02\xff\xfe" . random_bytes(48)),
+            'content'   => base64_encode("\x00\x01\x02\xff\xfe" . str_repeat("\x13\x37", 24)),
             'type'      => 'application/pdf',
             'extension' => 'PDF',
         ]);
