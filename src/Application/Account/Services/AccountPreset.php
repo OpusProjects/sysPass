@@ -241,5 +241,4 @@ final class AccountPreset extends Service implements AccountPresetService
 
         return $this->userGroupRepository->getExistingIds($ids);
     }
-
 }
