@@ -31,6 +31,7 @@ use SP\Domain\Core\File\MimeTypesService;
 use SP\Domain\Storage\Ports\FileCacheService;
 use SP\Infrastructure\Storage\Ports\YamlFileStorageService;
 use SP\Domain\Core\Exceptions\FileException;
+use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\logger;
 use function SP\processException;
@@ -76,13 +77,26 @@ final class MimeTypes implements MimeTypesService
             || $this->fileCache->isExpiredDate($this->yamlFileStorageService->getFileTime())
         ) {
             $this->mapAndSave();
-        } else {
+
+            return;
+        }
+
+        try {
             // MimeType[]: an array of objects, so the class is named. Without it every entry
             // came back as __PHP_Incomplete_Class and failed far from here, where a closure in
             // ConfigManager\IndexController takes a MimeType.
             $this->mimeTypes = $this->fileCache->load(null, MimeType::class);
 
             logger('Loaded MIME types cache', 'INFO');
+        } catch (SPException $e) {
+            // Same reason as Actions::loadCache(), and there was no catch here at all: a readable
+            // but corrupt cache — a reader landing mid-write — comes back from Serde as a plain
+            // SPException and took this down too. MimeTypes is what the file upload and the
+            // config manager read. Around the load alone, so a rebuild that fails on its own
+            // terms still reports.
+            processException($e);
+
+            $this->mapAndSave();
         }
     }
 
