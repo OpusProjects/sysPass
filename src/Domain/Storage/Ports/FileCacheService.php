@@ -57,6 +57,16 @@ interface FileCacheService
     public function delete(): FileCacheService;
 
     /**
+     * Restrict the cached file's permissions
+     *
+     * @param int $permissions
+     *
+     * @return FileCacheService
+     * @throws FileException
+     */
+    public function chmod(int $permissions): FileCacheService;
+
+    /**
      * Returns whether the file is expired
      */
     public function isExpired(int $time = 86400): bool;

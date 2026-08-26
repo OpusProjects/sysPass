@@ -105,6 +105,18 @@ abstract class FileCacheBase implements FileCacheService
     }
 
     /**
+     * @inheritDoc
+     */
+    public function chmod(int $permissions): FileCacheService
+    {
+        $this->checkOrInitializePath();
+
+        $this->path?->chmod($permissions);
+
+        return $this;
+    }
+
+    /**
      * @throws FileException
      */
     protected function checkOrInitializePath(?string $path = null): void

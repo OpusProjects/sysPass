@@ -116,7 +116,7 @@ class ConfigFile implements ConfigFileService
     {
         try {
             $configData = $this->configMapper($this->fileStorage->load('config'));
-            $this->fileCache->save($configData);
+            $this->saveCache($configData);
 
             return $configData;
         } catch (ReflectionException|FileException $e) {
@@ -188,7 +188,7 @@ class ConfigFile implements ConfigFileService
         if ($commit) {
             // Save only attributes to avoid a parent attributes node within the XML
             $this->fileStorage->save($configData->getAttributes(), 'config');
-            $this->fileCache->save($configData);
+            $this->saveCache($configData);
         }
 
         $this->configData = $configData;
@@ -250,5 +250,23 @@ class ConfigFile implements ConfigFileService
         }
 
         return $this;
+    }
+
+    /**
+     * Write the config cache, restricted to the user the application runs as.
+     *
+     * It is a serialized ConfigData, so it carries the database password, the mail password, the
+     * LDAP bind password and the password salt — the same material as config.xml, which sits in a
+     * directory deliberately held at 0750. This file was left at whatever the umask gave it,
+     * measured at 0644. The directory is restricted too (ConfigUtil::checkCacheDir()); this is the
+     * artefact itself, so a file created before that guard existed is brought into line the next
+     * time it is written.
+     *
+     * @throws FileException
+     */
+    private function saveCache(ConfigDataInterface $configData): void
+    {
+        $this->fileCache->save($configData);
+        $this->fileCache->chmod(0600);
     }
 }
