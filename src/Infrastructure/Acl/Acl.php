@@ -149,6 +149,10 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::PLUGIN_ENABLE:
             case self::PLUGIN_RESET:
             case self::PLUGIN_VIEW:
+            // Same shape: delete was the one plugin action with no arm, so the grid offered a
+            // button that answered "You don't have permission" to everyone but an application
+            // administrator, beside five that worked.
+            case self::PLUGIN_DELETE:
                 return $userProfile->isConfigGeneral();
             case self::CONFIG_IMPORT:
                 return $userProfile->isConfigImport();
@@ -186,6 +190,12 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::ACCOUNTMGR_SEARCH:
             case self::ACCOUNTMGR_HISTORY:
             case self::ACCOUNTMGR_HISTORY_SEARCH:
+            // Restore and delete were absent, so they fell through to the deny at the end and only
+            // an application administrator ever reached them — while the history grid rendered
+            // both buttons unconditionally and the tab itself was granted by the two above. An
+            // account manager could open the page, see the actions, and be refused by every one.
+            case self::ACCOUNTMGR_HISTORY_RESTORE:
+            case self::ACCOUNTMGR_HISTORY_DELETE:
                 return $userDto->isAdminAcc || $userProfile->isMgmAccounts();
             case self::FILE:
             case self::FILE_SEARCH:
