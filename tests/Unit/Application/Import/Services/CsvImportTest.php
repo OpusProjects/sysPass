@@ -31,6 +31,7 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Application\Category\Ports\CategoryService;
@@ -59,6 +60,9 @@ class CsvImportTest extends UnitaryTestCase
     private AccountService|MockObject       $accountService;
     private MockObject|CategoryService      $categoryService;
     private ClientService|MockObject        $clientService;
+    private AccountPresetService|MockObject    $accountPresetService;
+    /** @var int|null What the lifetime clamp should answer with, when a test cares. */
+    private ?int                               $clampTo = null;
     private FileHandlerInterface|MockObject $fileHandler;
     private CsvImport                       $csvImport;
 
@@ -134,6 +138,52 @@ class CsvImportTest extends UnitaryTestCase
                            && $dto->notes === 'a_note'
                            && $dto->url === 'a_url';
                 })
+            );
+
+        $this->csvImport->doImport($params);
+    }
+
+    /**
+     * An imported account is subject to the password lifetime.
+     *
+     * Every other door that creates an account asks the preset service to clamp passDateChange to
+     * the policy's lifetime — the web form, and the API's create and edit-pass. The importers went
+     * straight to AccountService::create(), which applies the permission and privacy presets but
+     * has never applied the password ones, so a fixed policy saying passwords expire after ninety
+     * days said nothing at all about the several thousand accounts that arrived through a CSV.
+     *
+     * The stored account is whatever the clamp returned, not the DTO the importer built.
+     *
+     * @throws ImportException
+     * @throws FileException
+     */
+    public function testAnImportedAccountIsSubjectToThePasswordLifetime()
+    {
+        $params = new CsvImportParamsDto($this->fileHandler, 1, 1);
+
+        $this->fileHandler
+            ->expects(self::once())
+            ->method('readFromCsv')
+            ->willReturnCallback(
+                static function () {
+                    yield ['Account_name', 'Client_name', 'Category_name', 'a_url', 'a_login', 'a_password', 'a_note'];
+                }
+            );
+
+        $this->clientService->expects(self::once())->method('getByName')->willThrowException(NoSuchItemException::error('test'));
+        $this->clientService->expects(self::once())->method('create')->willReturn(100);
+        $this->categoryService->expects(self::once())->method('getByName')->willThrowException(NoSuchItemException::error('test'));
+        $this->categoryService->expects(self::once())->method('create')->willReturn(200);
+
+        $clamped = 1_234_567_890;
+
+        $this->clampTo = $clamped;
+
+        $this->accountService
+            ->expects(self::once())
+            ->method('create')
+            ->with(
+                new Callback(static fn(AccountCreateDto $dto): bool => $dto->passDateChange === $clamped)
             );
 
         $this->csvImport->doImport($params);
@@ -396,12 +446,26 @@ class CsvImportTest extends UnitaryTestCase
         $this->categoryService = $this->createMock(CategoryService::class);
         $this->clientService = $this->createMock(ClientService::class);
 
+        $this->accountPresetService = $this->createStub(AccountPresetService::class);
+
+        // The lifetime clamp runs on import. By default it changes nothing; a test that cares sets
+        // $clampTo. One stub rather than a per-test override, because the first stub registered is
+        // the one that answers — a later re-stub of the same method silently does nothing.
+        $this->accountPresetService
+            ->method('checkPasswordExpiry')
+            ->willReturnCallback(
+                fn(AccountCreateDto $dto): AccountCreateDto => $this->clampTo === null
+                    ? $dto
+                    : $dto->mutate(['passDateChange' => $this->clampTo])
+            );
+
         $importHelper = new ImportHelper(
             $this->accountService,
             $this->categoryService,
             $this->clientService,
             $this->createStub(TagService::class),
-            $this->createStub(ConfigService::class)
+            $this->createStub(ConfigService::class),
+            $this->accountPresetService
         );
 
         $crypt = $this->createStub(CryptInterface::class);
