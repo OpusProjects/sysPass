@@ -27,6 +27,7 @@ namespace SP\Infrastructure\Adapter\Out\User\Repositories;
 
 use Exception;
 use SP\Domain\Account\Models\Account as AccountModel;
+use SP\Domain\Account\Models\AccountHistory as AccountHistoryModel;
 use SP\Domain\Account\Models\AccountToUserGroup as AccountToUserGroupModel;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Dtos\ItemSearchDto;
@@ -83,28 +84,36 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
      */
     public function getUsage(int $userGroupId): QueryResult
     {
+        // Exactly the references that refuse the delete, which is not the same as the references
+        // that exist. Six foreign keys point at UserGroup; three carry ON DELETE CASCADE and
+        // therefore never block — AccountToUserGroup, ItemPreset and UserToUserGroup. The other
+        // three have no ON DELETE clause, so they are RESTRICT, and they are what MySQL refuses on:
+        //
+        //   fk_User_userGroupId            a user whose *main* group this is
+        //   fk_Account_userGroupId         an account owned by this group
+        //   fk_AccountHistory_userGroupId  a history row, which outlives the account it describes
+        //
+        // This listed UserToUserGroup and AccountToUserGroup — two that cascade — and omitted
+        // AccountHistory, which does not. Answering with the cascading ones would refuse a delete
+        // the database would have allowed; omitting the history one lets a delete through that it
+        // then refuses for a reason nothing has mentioned.
         $query = $this->queryFactory
             ->newSelect()
             ->from(UserModel::TABLE)
             ->cols(['userGroupId AS id', '"User" AS ref'])
             ->where('userGroupId = :userGroupId1')
             ->unionAll()
-            ->from(UserToUserGroupModel::TABLE)
-            ->cols(['userGroupId AS id', '"UserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId2')
-            ->unionAll()
-            ->from(AccountToUserGroupModel::TABLE)
-            ->cols(['userGroupId AS id', '"AccountToUserGroup" AS ref'])
-            ->where('userGroupId = :userGroupId3')
-            ->unionAll()
             ->from(AccountModel::TABLE)
             ->cols(['userGroupId AS id', '"Account" AS ref'])
-            ->where('userGroupId = :userGroupId4')
+            ->where('userGroupId = :userGroupId2')
+            ->unionAll()
+            ->from(AccountHistoryModel::TABLE)
+            ->cols(['userGroupId AS id', '"AccountHistory" AS ref'])
+            ->where('userGroupId = :userGroupId3')
             ->bindValues([
                 'userGroupId1' => $userGroupId,
                 'userGroupId2' => $userGroupId,
                 'userGroupId3' => $userGroupId,
-                'userGroupId4' => $userGroupId,
             ]);
 
         return $this->db->runQuery(QueryData::build($query));

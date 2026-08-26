@@ -344,24 +344,44 @@ class UserGroupTest extends UnitaryTestCase
         $this->userGroup->getAll();
     }
 
-    public function testGetUsage()
+    /**
+     * getUsage() answers with the references that actually refuse the delete.
+     *
+     * Six foreign keys point at UserGroup. Three cascade — AccountToUserGroup, ItemPreset and
+     * UserToUserGroup — so they never block. The other three have no ON DELETE clause, so they are
+     * RESTRICT and they are exactly what MySQL refuses on: a user whose main group this is, an
+     * account owned by it, and a history row, which outlives the account it describes.
+     *
+     * This used to query UserToUserGroup and AccountToUserGroup, which cascade, and not
+     * AccountHistory, which does not — wrong in both directions. Asserted on the statement, since
+     * which tables it reads is the whole point.
+     */
+    public function testGetUsageAsksOnlyWhatCanRefuseTheDelete()
     {
+        $statement = null;
+
         $this->database
             ->expects($this->once())
             ->method('runQuery')
             ->with(
-                self::callback(static function (QueryData $queryData) {
+                self::callback(static function (QueryData $queryData) use (&$statement) {
                     $params = $queryData->getQuery()->getBindValues();
+                    $statement = $queryData->getQuery()->getStatement();
 
-                    return count($params) === 4
+                    return count($params) === 3
                            && $params['userGroupId1'] === 100
                            && $params['userGroupId2'] === 100
-                           && $params['userGroupId3'] === 100
-                           && $params['userGroupId4'] === 100;
+                           && $params['userGroupId3'] === 100;
                 })
             );
 
         $this->userGroup->getUsage(100);
+
+        self::assertIsString($statement);
+        self::assertStringContainsString('User', $statement);
+        self::assertStringContainsString('AccountHistory', $statement);
+        self::assertStringNotContainsString('UserToUserGroup', $statement, 'that one cascades');
+        self::assertStringNotContainsString('AccountToUserGroup', $statement, 'so does that one');
     }
 
     public function testGetByName()

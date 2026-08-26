@@ -39,6 +39,7 @@ use SP\Application\User\Ports\UserToUserGroupService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
 
+use function SP\__;
 use function SP\__u;
 
 /**
@@ -93,9 +94,54 @@ final class UserGroup extends Service implements UserGroupService
      */
     public function delete(int $id): void
     {
+        // Said before the database says it, and in terms an administrator can act on. Three
+        // foreign keys refuse this delete — a user whose main group it is, an account owned by it,
+        // and a history row, which outlives the account it describes. Without this the refusal
+        // came back from MySQL as error 1451 and was rendered as "The record is in use", which
+        // names nothing; and the group's own "Used by" panel lists only its users, so a group with
+        // no members but a hundred accounts looked perfectly safe to delete right up until it was
+        // not.
+        //
+        // The foreign keys still stand behind this — a row created between the two statements is
+        // refused by the database as before. This is about telling somebody what to go and fix.
+        $usedBy = $this->getUsage($id);
+
+        if ($usedBy !== []) {
+            throw ServiceException::warning(
+                __u('Group in use'),
+                self::describeUsage($usedBy)
+            );
+        }
+
         if ($this->userGroupRepository->delete($id)->getAffectedNumRows() === 0) {
             throw NoSuchItemException::info(__u('Group not found'));
         }
+    }
+
+    /**
+     * What is holding the group, counted by kind, for the hint on the refusal.
+     *
+     * @param array<int, Simple> $usedBy
+     */
+    private static function describeUsage(array $usedBy): string
+    {
+        $counts = array_count_values(array_map(static fn(Simple $row): string => (string)$row['ref'], $usedBy));
+
+        $described = [
+            'User' => __('Users'),
+            'Account' => __('Accounts'),
+            'AccountHistory' => __('Accounts in history'),
+        ];
+
+        $parts = [];
+
+        foreach ($described as $ref => $label) {
+            if (isset($counts[$ref])) {
+                $parts[] = sprintf('%s: %d', $label, $counts[$ref]);
+            }
+        }
+
+        return implode(' - ', $parts);
     }
 
     /**
