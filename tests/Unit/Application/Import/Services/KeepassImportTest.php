@@ -29,6 +29,7 @@ use DOMDocument;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Application\Category\Ports\CategoryService;
@@ -60,6 +61,7 @@ class KeepassImportTest extends UnitaryTestCase
     private AccountService|MockObject  $accountService;
     private MockObject|CategoryService $categoryService;
     private ClientService|MockObject   $clientService;
+    private AccountPresetService|MockObject    $accountPresetService;
 
     /**
      * @throws Exception
@@ -195,7 +197,8 @@ class KeepassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->createStub(TagService::class),
-            $this->createStub(ConfigService::class)
+            $this->createStub(ConfigService::class),
+            $this->accountPresetService
         );
 
         $keepassImport = new KeepassImport(
@@ -216,12 +219,17 @@ class KeepassImportTest extends UnitaryTestCase
         $this->categoryService = $this->createMock(CategoryService::class);
         $this->clientService = $this->createMock(ClientService::class);
 
+        $this->accountPresetService = $this->createStub(AccountPresetService::class);
+        // The lifetime clamp runs on import; by default it changes nothing.
+        $this->accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
+
         $importHelper = new ImportHelper(
             $this->accountService,
             $this->categoryService,
             $this->clientService,
             $this->createStub(TagService::class),
-            $this->createStub(ConfigService::class)
+            $this->createStub(ConfigService::class),
+            $this->accountPresetService
         );
 
         $crypt = $this->createStub(CryptInterface::class);

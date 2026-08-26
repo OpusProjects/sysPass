@@ -31,6 +31,7 @@ use SP\Domain\Import\Services\ImportException;
 use SP\Application\Application;
 use SP\Domain\Crypt\Hash;
 use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Category\Models\Category as CategoryModel;
@@ -68,6 +69,7 @@ abstract class ImportBase extends Service implements ImportService
     protected int                      $version = 0;
     protected int                      $counter = 0;
     protected readonly AccountService  $accountService;
+    protected readonly AccountPresetService $accountPresetService;
     /** @var CategoryService<CategoryModel> */
     protected readonly CategoryService $categoryService;
     protected readonly ClientService   $clientService;
@@ -84,6 +86,7 @@ abstract class ImportBase extends Service implements ImportService
         parent::__construct($application);
 
         $this->accountService = $importHelper->getAccountService();
+        $this->accountPresetService = $importHelper->getAccountPresetService();
         $this->categoryService = $importHelper->getCategoryService();
         $this->clientService = $importHelper->getClientService();
         $this->tagService = $importHelper->getTagService();
@@ -157,7 +160,19 @@ abstract class ImportBase extends Service implements ImportService
             $dto = $dto->mutate(['pass' => $pass, 'key' => '']);
         }
 
-        $this->accountService->create($dto);
+        // The password lifetime applies to an imported account too. Every other door that creates
+        // one — the web form, the API's create and edit-pass — asks the preset service for this;
+        // the importers went straight to AccountService::create(), which applies the permission
+        // and privacy presets but has never applied the password ones. So a fixed policy saying
+        // passwords expire after ninety days said nothing about the several thousand accounts
+        // that arrived through a CSV.
+        //
+        // The lifetime clamp only. checkPasswordPreset(), which validates length and character
+        // classes, is deliberately not applied here: an import is a migration of credentials that
+        // already exist elsewhere, and refusing the ones that predate the policy would mean not
+        // being able to migrate at all. The policy still bites when the account is next edited,
+        // and the clamp is what makes that happen rather than waiting for someone to notice.
+        $this->accountService->create($this->accountPresetService->checkPasswordExpiry($dto));
         $this->counter++;
     }
 

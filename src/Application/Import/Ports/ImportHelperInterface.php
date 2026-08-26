@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Import\Ports;
 
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Application\Client\Ports\ClientService;
@@ -38,6 +39,8 @@ use SP\Domain\Category\Models\Category as CategoryModel;
 interface ImportHelperInterface
 {
     public function getAccountService(): AccountService;
+
+    public function getAccountPresetService(): AccountPresetService;
 
     /**
      * @return CategoryService<CategoryModel>

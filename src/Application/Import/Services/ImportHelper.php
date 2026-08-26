@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Import\Services;
 
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Application\Category\Ports\CategoryService;
 use SP\Application\Client\Ports\ClientService;
@@ -46,13 +47,19 @@ readonly class ImportHelper implements ImportHelperInterface
         private CategoryService $categoryService,
         private ClientService   $clientService,
         private TagService      $tagService,
-        private ConfigService   $configService
+        private ConfigService   $configService,
+        private AccountPresetService $accountPresetService
     ) {
     }
 
     public function getAccountService(): AccountService
     {
         return $this->accountService;
+    }
+
+    public function getAccountPresetService(): AccountPresetService
+    {
+        return $this->accountPresetService;
     }
 
     /**

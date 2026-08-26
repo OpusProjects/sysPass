@@ -35,6 +35,7 @@ use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use RuntimeException;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Domain\Account\Dtos\AccountCreateDto;
+use SP\Application\Account\Ports\AccountPresetService;
 use SP\Application\Account\Ports\AccountService;
 use SP\Domain\Category\Models\Category;
 use SP\Application\Category\Ports\CategoryService;
@@ -74,6 +75,7 @@ class SyspassImportTest extends UnitaryTestCase
     private CryptInterface|MockObject  $crypt;
     private SyspassImport              $sysPassImport;
     private ConfigService|MockObject   $configService;
+    private AccountPresetService|MockObject     $accountPresetService;
 
     /**
      * @throws ImportException
@@ -594,7 +596,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -679,7 +682,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -747,7 +751,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -789,7 +794,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -841,7 +847,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -891,7 +898,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -951,7 +959,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -1001,7 +1010,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -1067,7 +1077,8 @@ class SyspassImportTest extends UnitaryTestCase
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $document = new DOMDocument();
@@ -1229,13 +1240,18 @@ class SyspassImportTest extends UnitaryTestCase
         $this->clientService = $this->createMock(ClientService::class);
         $this->tagService = $this->createMock(TagService::class);
         $this->configService = $this->createMock(ConfigService::class);
+        $this->accountPresetService = $this->createStub(AccountPresetService::class);
+        // The lifetime clamp is applied on import; by default it changes nothing.
+        $this->accountPresetService->method('checkPasswordExpiry')
+                                  ->willReturnArgument(0);
 
         $importHelper = new ImportHelper(
             $this->accountService,
             $this->categoryService,
             $this->clientService,
             $this->tagService,
-            $this->configService
+            $this->configService,
+            $this->accountPresetService
         );
 
         $this->crypt = $this->createMock(CryptInterface::class);
