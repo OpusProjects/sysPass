@@ -117,7 +117,12 @@ interface AccountRepository extends Repository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function restoreModified(int $accountId, Account $account): QueryResult;
+    public function restoreModified(
+        int $accountId,
+        Account $account,
+        bool $changeOwner,
+        bool $changeUserGroup
+    ): QueryResult;
 
     /**
      * Updates an item for bulk action

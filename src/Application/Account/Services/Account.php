@@ -520,11 +520,36 @@ final class Account extends Service implements AccountService
     {
         $this->accountRepository->transactionAware(
             function () use ($dto) {
+                $userData = $this->context->getUserData();
+                $userProfile = $this->context->getUserProfile() ?? new ProfileData();
+
+                // Who owns the account, and which group it belongs to, are decided by the same two
+                // checks an ordinary edit makes — not by what the historical row happened to say.
+                //
+                // A restore writes every column of the snapshot back, and these two were among
+                // them, so restoring an old version silently reverted the owner and the group.
+                // Those are what AccountAcl compares the signed-in user against, so it changes who
+                // can see the account; and the door needs only ACCOUNT_EDIT_RESTORE, which
+                // AccountPermission buckets with plain edit — so anybody the account is shared
+                // with for editing could hand it back to a previous owner, which is exactly what
+                // userCanChangeOwner() exists to refuse them on the edit screen.
+                $changeOwner = false;
+                $changeUserGroup = false;
+
+                if (AccountAcl::getShowPermission($userData, $userProfile)) {
+                    $account = $this->getById($dto->accountId);
+
+                    $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
+                    $changeUserGroup = $this->userCanChangeGroup($userData, $userProfile, $account);
+                }
+
                 $this->addHistory($dto->accountId);
 
                 $result = $this->accountRepository->restoreModified(
                     $dto->accountId,
-                    AccountModel::restoreModified($dto, $this->context->getUserData()->id ?? 0)
+                    AccountModel::restoreModified($dto, $userData->id ?? 0),
+                    $changeOwner,
+                    $changeUserGroup
                 );
 
                 if ($result->getAffectedNumRows() === 0) {

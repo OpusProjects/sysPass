@@ -263,8 +263,12 @@ final class Account extends BaseRepository implements AccountRepository
      * @throws ConstraintException
      * @throws QueryException
      */
-    public function restoreModified(int $accountId, AccountModel $account): QueryResult
-    {
+    public function restoreModified(
+        int          $accountId,
+        AccountModel $account,
+        bool         $changeOwner,
+        bool         $changeUserGroup
+    ): QueryResult {
         $query = $this->queryFactory
             ->newUpdate()
             ->table(AccountModel::TABLE)
@@ -277,6 +281,11 @@ final class Account extends BaseRepository implements AccountRepository
                         'countDecrypt',
                         'countView',
                         'dateEdit',
+                        // Excluded here for the same reason update() excludes them: who owns an
+                        // account and which group it belongs to is not an ordinary field. They are
+                        // written back only when the caller is allowed to change them.
+                        'userGroupId',
+                        'userId',
                         'id',
                     ]
                 )
@@ -284,6 +293,14 @@ final class Account extends BaseRepository implements AccountRepository
             ->set('dateEdit', 'NOW()')
             ->where('id = :id')
             ->bindValues(['id' => $accountId]);
+
+        if ($changeUserGroup) {
+            $query->col('userGroupId', $account->getUserGroupId());
+        }
+
+        if ($changeOwner) {
+            $query->col('userId', $account->getUserId());
+        }
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error on restoring the account'));
 
