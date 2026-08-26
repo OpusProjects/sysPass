@@ -196,6 +196,34 @@ final class UserGroup extends BaseRepository implements UserGroupRepository
     }
 
     /**
+     * Which of the given ids still exist
+     *
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getExistingIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(UserGroupModel::TABLE)
+            ->where('id IN (:ids)', ['ids' => $ids]);
+
+        $result = $this->db->runQuery(QueryData::build($query)->setMapClassName(Simple::class));
+
+        // Array access rather than ->id: Simple declares no properties, every read goes through
+        // the model's outer-property bag, and static analysis cannot see through that.
+        return array_map(static fn(Simple $row): int => (int)$row['id'], $result->getDataAsArray());
+    }
+
+    /**
      * Returns all the items
      *
      * @return QueryResult<T>

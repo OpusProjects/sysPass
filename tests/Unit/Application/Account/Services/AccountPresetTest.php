@@ -46,6 +46,11 @@ use SP\Domain\Common\Validators\PasswordValidator;
 use SP\Domain\Common\Validators\ValidatorInterface;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\ItemPresetDataGenerator;
+use SP\Domain\User\Ports\UserRepository;
+use SP\Domain\User\Ports\UserGroupRepository;
+use SP\Domain\Common\Models\Simple;
+use SP\Domain\Common\Dtos\QueryResult;
+use SP\Domain\ItemPreset\Models\AccountPermission;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
@@ -62,6 +67,10 @@ class AccountPresetTest extends UnitaryTestCase
     private ValidatorInterface|MockObject           $passwordValidator;
     private MockObject|AccountToUserGroupRepository $accountToUserGroupRepository;
     private AccountToUserRepository|MockObject      $accountToUserRepository;
+    private UserRepository|MockObject               $userRepository;
+    private UserGroupRepository|MockObject          $userGroupRepository;
+    /** @var int[] Ids a test has decided are gone from the database. */
+    private array                                   $deletedIds = [];
 
     /**
      * @throws QueryException
@@ -549,6 +558,53 @@ class AccountPresetTest extends UnitaryTestCase
         );
     }
 
+    /**
+     * A preset naming a user who has since been deleted still saves the account.
+     *
+     * The permission preset keeps its user and group ids inside a serialized blob, and no foreign
+     * key reaches in there — the one on ItemPreset covers the preset's own scope columns, not its
+     * contents. So deleting a user named in a fixed preset is allowed, and the ids AccountToUser
+     * *does* have a foreign key on then fail on the next insert: error 1452, raised inside
+     * Account::create()'s transaction, rolling the whole save back. Every account create and edit
+     * by anybody in that preset's scope, until an administrator worked out which preset to edit.
+     *
+     * The ones that still exist are applied; the stale one is dropped.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    #[Test]
+    public function testAddPresetPermissionsSkipsAUserThatNoLongerExists()
+    {
+        $accountPermission = new AccountPermission(
+            usersView: [11, 12],
+            usersEdit: [],
+            userGroupsView: [],
+            userGroupsEdit: []
+        );
+
+        $this->itemPresetService
+            ->expects(self::once())
+            ->method('getForCurrentUser')
+            ->with('account.permission')
+            ->willReturn(
+                ItemPresetDataGenerator::factory()
+                                       ->buildItemPresetData($accountPermission)
+                                       ->mutate(['fixed' => 1])
+            );
+
+        // 12 has been deleted since the preset named it.
+        $this->deletedIds = [12];
+
+        $this->accountToUserRepository
+            ->expects(self::once())
+            ->method('addByType')
+            ->with(100, [11], false);
+
+        $this->accountPreset->addPresetPermissions(100);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -560,6 +616,16 @@ class AccountPresetTest extends UnitaryTestCase
         $this->passwordValidator = $this->createMock(PasswordValidator::class);
         $this->accountToUserGroupRepository = $this->createMock(AccountToUserGroupRepository::class);
         $this->accountToUserRepository = $this->createMock(AccountToUserRepository::class);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userGroupRepository = $this->createMock(UserGroupRepository::class);
+
+        // Every id the preset names still exists unless a test puts one in $deletedIds, which is
+        // the ordinary case — the filter is there for the one where it does not. One stub rather
+        // than a per-test override, because the first stub registered is the one that answers.
+        $echo = fn(array $ids): array => array_values(array_diff($ids, $this->deletedIds));
+
+        $this->userRepository->method('getExistingIds')->willReturnCallback($echo);
+        $this->userGroupRepository->method('getExistingIds')->willReturnCallback($echo);
 
         $this->accountPreset =
             new AccountPreset(
@@ -568,7 +634,10 @@ class AccountPresetTest extends UnitaryTestCase
                 $this->accountToUserGroupRepository,
                 $this->accountToUserRepository,
                 $configData,
-                $this->passwordValidator
+                $this->passwordValidator,
+                $this->userRepository,
+                $this->userGroupRepository
             );
     }
+
 }

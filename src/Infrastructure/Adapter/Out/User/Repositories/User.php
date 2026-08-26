@@ -567,6 +567,34 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
+     * Which of the given ids still exist
+     *
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getExistingIds(array $ids): array
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(UserModel::TABLE)
+            ->where('id IN (:ids)', ['ids' => $ids]);
+
+        $result = $this->db->runQuery(QueryData::build($query)->setMapClassName(Simple::class));
+
+        // Array access rather than ->id: Simple declares no properties, every read goes through
+        // the model's outer-property bag, and static analysis cannot see through that.
+        return array_map(static fn(Simple $row): int => (int)$row['id'], $result->getDataAsArray());
+    }
+
+    /**
      * Return the email of the given user's id
      *
      * @param array<int> $ids

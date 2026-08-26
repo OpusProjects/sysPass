@@ -89,6 +89,17 @@ interface UserGroupRepository extends Repository
     public function getAll(): QueryResult;
 
     /**
+     * Which of the given ids still exist
+     *
+     * @param int[] $ids
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getExistingIds(array $ids): array;
+
+    /**
      * Deletes all the items for given ids
      *
      * @param array<int> $ids
