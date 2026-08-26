@@ -404,6 +404,16 @@ class ConfigFileTest extends UnitaryTestCase
             ->method('save')
             ->with(self::anything());
 
+        // The cache is a serialized ConfigData, so it holds the database password, the mail
+        // password, the LDAP bind password and the password salt — the same material as
+        // config.xml, whose directory is deliberately held at 0750. This file was left at whatever
+        // the umask gave it, measured at 0644, so on a shared host every local account could read
+        // the installation's credentials out of it.
+        $this->fileCacheService
+            ->expects(self::exactly(2))
+            ->method('chmod')
+            ->with(0600);
+
         $configFile = new ConfigFile(
             $this->fileStorageService,
             $this->fileCacheService,
