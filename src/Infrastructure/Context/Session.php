@@ -210,11 +210,27 @@ class Session extends ContextBase implements SessionContext
     }
 
     /**
-     * Returns the temporary master password
+     * Takes the temporary master password, and forgets it
+     *
+     * It is put here by the administrator who generated it, so that the page rendered after the
+     * generating request can show it once — there is nowhere else to keep it for that one hop, and
+     * it is deliberately not persisted anywhere in plaintext.
+     *
+     * Reading it clears it. It used to stay for the life of that administrator's session, and the
+     * Configuration page reads it on every load, so a value meant to be shown once was rendered
+     * into the HTML again on every later visit — after it had expired, after its recipients had
+     * used it, and after the master password had been rotated. Nothing anywhere removed it: there
+     * was no clear for it to call.
      */
-    public function getTemporaryMasterPass(): ?string
+    public function takeTemporaryMasterPass(): ?string
     {
-        return $this->getContextKey('tempmasterpass');
+        $tempMasterPass = $this->getContextKey('tempmasterpass');
+
+        if ($tempMasterPass !== null) {
+            $this->setContextKey('tempmasterpass', null);
+        }
+
+        return $tempMasterPass;
     }
 
     /**

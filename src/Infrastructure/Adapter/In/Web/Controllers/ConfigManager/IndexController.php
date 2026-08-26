@@ -442,7 +442,7 @@ final class IndexController extends ControllerBase
         );
 
         $template->assign('tempMasterAttempts', $tempMasterAttempts);
-        $template->assign('tempMasterPass', $this->session->getTemporaryMasterPass());
+        $template->assign('tempMasterPass', $this->session->takeTemporaryMasterPass());
 
         $template->assign(
             'userGroups',

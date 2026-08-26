@@ -397,11 +397,36 @@ class SessionTest extends UnitaryTestCase
     {
         $session = $this->givenAStartedSession();
 
-        self::assertNull($session->getTemporaryMasterPass());
+        self::assertNull($session->takeTemporaryMasterPass());
 
         $session->setTemporaryMasterPass('a-temporary-password');
 
-        self::assertSame('a-temporary-password', $session->getTemporaryMasterPass());
+        self::assertSame('a-temporary-password', $session->takeTemporaryMasterPass());
+    }
+
+    /**
+     * And carried exactly once.
+     *
+     * It lives in the session only so that the page rendered after the generating request can show
+     * it — there is nowhere else to keep it for that one hop, and it is deliberately not persisted
+     * in plaintext anywhere. It used to stay for the life of the administrator's session, and
+     * ConfigManager's index reads it on every load, so a value meant to be shown once was rendered
+     * into the HTML again on every later visit to the Configuration page: after it had expired,
+     * after its recipients had used it, and after the master password had been rotated. Nothing
+     * removed it, because there was nothing that could — no clear existed.
+     *
+     * @throws ContextException
+     * @throws SPException
+     */
+    #[Test]
+    public function theTemporaryMasterPasswordIsCarriedOnlyOnce()
+    {
+        $session = $this->givenAStartedSession();
+
+        $session->setTemporaryMasterPass('a-temporary-password');
+
+        self::assertSame('a-temporary-password', $session->takeTemporaryMasterPass());
+        self::assertNull($session->takeTemporaryMasterPass(), 'it must not survive being read');
     }
 
     /**
