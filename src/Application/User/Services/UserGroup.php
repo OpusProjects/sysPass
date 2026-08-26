@@ -104,6 +104,15 @@ final class UserGroup extends Service implements UserGroupService
         //
         // The foreign keys still stand behind this — a row created between the two statements is
         // refused by the database as before. This is about telling somebody what to go and fix.
+        // A group set as the directory's default is held by the configuration rather than by a
+        // row, so no foreign key refuses it — `ldapDefaultGroup` and `ssoDefaultGroup` are plain
+        // ints in config.xml with nothing pointing at UserGroup. And the group most likely to be
+        // deleted while reorganising is one with no members left, which is exactly the case the
+        // RESTRICT on User.userGroupId does not catch. Deleting it succeeded cleanly, and then
+        // every auto-provisioned login afterwards died on the NOT NULL foreign key in
+        // User::createOnLogin(), surfacing as "Internal error, check the event log".
+        $this->assertIsNotADirectoryDefault($id);
+
         $usedBy = $this->getUsage($id);
 
         if ($usedBy !== []) {
@@ -115,6 +124,30 @@ final class UserGroup extends Service implements UserGroupService
 
         if ($this->userGroupRepository->delete($id)->getAffectedNumRows() === 0) {
             throw NoSuchItemException::info(__u('Group not found'));
+        }
+    }
+
+    /**
+     * Refuse a group that new directory users are created into.
+     *
+     * @throws ServiceException
+     */
+    private function assertIsNotADirectoryDefault(int $id): void
+    {
+        $configData = $this->config->getConfigData();
+
+        $defaults = [
+            __('LDAP') => $configData->getLdapDefaultGroup(),
+            __('SSO') => $configData->getSsoDefaultGroup(),
+        ];
+
+        foreach ($defaults as $label => $default) {
+            if ($default === $id) {
+                throw ServiceException::warning(
+                    __u('Group in use'),
+                    sprintf(__('It is the default group for %s users'), $label)
+                );
+            }
         }
     }
 
@@ -153,6 +186,14 @@ final class UserGroup extends Service implements UserGroupService
      */
     public function deleteByIdBatch(array $ids): int
     {
+        // The batch goes to the repository directly, so the single delete's guard does not stand
+        // in front of it. The directory default is the one that matters here: the foreign keys
+        // still refuse a group anything holds, whichever door the delete came through, but nothing
+        // in the database knows about `ldapDefaultGroup`.
+        foreach ($ids as $id) {
+            $this->assertIsNotADirectoryDefault($id);
+        }
+
         $count = $this->userGroupRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {

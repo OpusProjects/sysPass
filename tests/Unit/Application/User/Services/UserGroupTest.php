@@ -347,6 +347,55 @@ class UserGroupTest extends UnitaryTestCase
     }
 
     /**
+     * The group new directory users are created into cannot be deleted.
+     *
+     * `ldapDefaultGroup` and `ssoDefaultGroup` are plain ints in config.xml with nothing pointing
+     * at UserGroup, so no foreign key refuses this — and the RESTRICT on User.userGroupId only
+     * catches a group somebody currently holds, which is precisely not the case for one being
+     * tidied up because its members have moved on. Deleting it succeeded cleanly, and then every
+     * auto-provisioned login afterwards died on the NOT NULL foreign key in
+     * User::createOnLogin(), reported as "Internal error, check the event log".
+     *
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function testDeleteRefusesTheDirectoryDefaultGroup()
+    {
+        $this->config->getConfigData()->setLdapDefaultGroup(100);
+
+        $this->userGroupRepository->expects($this->never())->method('getUsage');
+        $this->userGroupRepository->expects($this->never())->method('delete');
+
+        try {
+            $this->userGroup->delete(100);
+            self::fail('Expected a ServiceException');
+        } catch (ServiceException $e) {
+            self::assertSame('Group in use', $e->getMessage());
+            self::assertSame('It is the default group for LDAP users', $e->getHint());
+        }
+    }
+
+    /**
+     * And the batch does not get round it. It goes to the repository directly, so the single
+     * delete's guard is not in front of it.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function testDeleteByIdBatchRefusesTheDirectoryDefaultGroup()
+    {
+        $this->config->getConfigData()->setSsoDefaultGroup(200);
+
+        $this->userGroupRepository->expects($this->never())->method('deleteByIdBatch');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Group in use');
+
+        $this->userGroup->deleteByIdBatch([100, 200, 300]);
+    }
+
+    /**
      * A group something still holds is refused, and the refusal says what holds it.
      *
      * Three foreign keys refuse this delete: a user whose main group it is, an account owned by
