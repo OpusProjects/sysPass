@@ -1144,7 +1144,7 @@ class AccountTest extends UnitaryTestCase
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
-            ->with($id, AccountModel::updatePassword($accountUpdateDto));
+            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($accountUpdateDto)));
 
         $this->account->editPassword($id, $accountUpdateDto);
     }
@@ -1186,7 +1186,7 @@ class AccountTest extends UnitaryTestCase
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
-            ->with($id, AccountModel::updatePassword($expectedDto));
+            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($expectedDto)));
 
         $this->account->editPassword($id, $accountUpdateDto);
     }
@@ -1333,7 +1333,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($encryptedDto))
+            ->with(self::anAccountStampedNow(AccountModel::create($encryptedDto)))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1385,7 +1385,7 @@ class AccountTest extends UnitaryTestCase
         $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($encryptedDto))
+            ->with(self::anAccountStampedNow(AccountModel::create($encryptedDto)))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1568,7 +1568,7 @@ class AccountTest extends UnitaryTestCase
             ->withEncryptedPassword($encryptedPassword);
 
         $this->accountRepository->expects(self::once())->method('create')
-            ->with(AccountModel::create($expectedDto))
+            ->with(self::anAccountStampedNow(AccountModel::create($expectedDto)))
             ->willReturn(new QueryResult(null, 0, $id));
 
         $this->accountItemsService->expects(self::once())->method('addItems')
@@ -1744,6 +1744,34 @@ class AccountTest extends UnitaryTestCase
             ->willReturn(new QueryResult(null, 0));
 
         $this->assertFalse($this->account->incrementDecryptCounter($id));
+    }
+
+    /**
+     * The account the service is expected to write, give or take the second it was stamped in.
+     *
+     * `AccountUseCases::create()` and `::updatePassword()` stamp `passDate` with `time()`, and a
+     * test that builds its expectation by calling the same factory calls `time()` a moment before
+     * the production code does. Whenever the second ticks between the two the models differ by one
+     * and the test fails — a real failure on CI, roughly once in a few hundred runs, in whichever
+     * pull request happened to be open. It is not the code being wrong, and it is not reproducible
+     * on demand, which is what made it read as a mystery.
+     *
+     * Everything else is still compared exactly: only `passDate` is taken from the actual model,
+     * and only after it has been checked for being a timestamp from the last few seconds — so a
+     * factory that stopped stamping it, or stamped something else, still fails.
+     */
+    private static function anAccountStampedNow(AccountModel $expected): Callback
+    {
+        return self::callback(static function (AccountModel $actual) use ($expected): bool {
+            $now = time();
+
+            self::assertGreaterThanOrEqual($now - 10, $actual->getPassDate());
+            self::assertLessThanOrEqual($now, $actual->getPassDate());
+
+            self::assertEquals($expected->mutate(['passDate' => $actual->getPassDate()]), $actual);
+
+            return true;
+        });
     }
 
     protected function setUp(): void
