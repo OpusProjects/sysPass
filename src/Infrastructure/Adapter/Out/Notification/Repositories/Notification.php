@@ -284,7 +284,13 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->newSelect()
             ->from(NotificationModel::TABLE)
             ->cols(NotificationModel::getCols())
-            ->orderBy(['date DESC'])
+            // The primary key settles ties, or the pages are not a partition of the results:
+            // `date` is a one-second epoch and nothing else here is unique, so notifications
+            // raised together by one bulk operation all carry the same stamp. Under LIMIT/OFFSET
+            // the database may then order those ties differently for each page, putting one
+            // notification on two pages and another on none. `id DESC` keeps the newest-first
+            // reading the date already asks for.
+            ->orderBy(['date DESC', 'id DESC'])
             ->limit($itemSearchData->getLimitCount())
             ->offset($itemSearchData->getLimitStart());
 
@@ -385,7 +391,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR (userId IS NULL AND sticky = 1)) AND onlyAdmin = 0')
             ->bindValues(['userId' => $userId])
-            ->orderBy(['date DESC']);
+            // Ties on the one-second stamp, so the list keeps one order between reads.
+            ->orderBy(['date DESC', 'id DESC']);
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
@@ -406,7 +413,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR sticky = 1) AND onlyAdmin = 0 AND checked = 0')
             ->bindValues(['userId' => $userId])
-            ->orderBy(['date DESC']);
+            // Ties on the one-second stamp, so the list keeps one order between reads.
+            ->orderBy(['date DESC', 'id DESC']);
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 
@@ -428,7 +436,8 @@ final class Notification extends BaseRepository implements NotificationRepositor
             ->cols(NotificationModel::getCols())
             ->where('(userId = :userId OR sticky = 1 OR userId IS NULL) AND checked = 0')
             ->bindValues(['userId' => $userId])
-            ->orderBy(['date DESC']);
+            // Ties on the one-second stamp, so the list keeps one order between reads.
+            ->orderBy(['date DESC', 'id DESC']);
 
         $queryData = QueryData::buildWithMapper($query, NotificationModel::class);
 

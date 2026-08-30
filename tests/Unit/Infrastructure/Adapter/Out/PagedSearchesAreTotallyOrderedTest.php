@@ -30,6 +30,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use ReflectionClass;
 use ReflectionMethod;
 use SP\Domain\Core\Context\Context;
@@ -61,12 +63,18 @@ use SP\Tests\Support\UnitaryTestCase;
 class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
 {
     /**
-     * Every repository whose `search()` pages with LIMIT/OFFSET.
+     * Every repository whose search pages with LIMIT/OFFSET, and the method that does it.
+     *
+     * Most of them call it `search()`. `Notification` does not — it has `searchForUserId()` and
+     * `searchForAdmin()`, both building on one private `getBaseSearch()` — and that is exactly how
+     * it came to be missing from this list while its paged query ordered by `date DESC` alone.
+     * `everyPagedSearchIsListedHere()` below now fails when a repository pages and is absent,
+     * whatever it calls the method.
      *
      * `AccountSearch` is absent because its ordering is chosen per request rather than fixed here,
      * and `AccountSearchTest::testEveryOrderingIsTotal` covers each of its sort keys instead.
      *
-     * @return array<string, array{class-string}>
+     * @return array<string, array{class-string, string}>
      */
     public static function pagedRepositoryProvider(): array
     {
@@ -92,10 +100,89 @@ class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
         $cases = [];
 
         foreach ($classes as $class) {
-            $cases[substr((string)strrchr($class, '\\'), 1)] = [$class];
+            $cases[substr((string)strrchr($class, '\\'), 1)] = [$class, 'search'];
+        }
+
+        foreach (['searchForUserId', 'searchForAdmin'] as $method) {
+            $cases['Notification::' . $method] = [
+                \SP\Infrastructure\Adapter\Out\Notification\Repositories\Notification::class,
+                $method,
+            ];
         }
 
         return $cases;
+    }
+
+    /**
+     * The list above is written by hand, and a repository that pages under a method named anything
+     * else is invisible to it — which is what happened to `Notification`, for as long as its search
+     * ordered by a one-second stamp with no tie-break.
+     *
+     * So the list is held to the source: every repository with a query that reads
+     * `getLimitCount()` must be covered above, or named here as a deliberate exception with the
+     * reason. Static, because reaching these methods needs their arguments, which differ; this only
+     * has to answer which files page.
+     */
+    #[Test]
+    public function everyPagedSearchIsListedHere(): void
+    {
+        $covered = array_unique(array_map(static fn(array $case) => $case[0], self::pagedRepositoryProvider()));
+
+        // Its ordering is chosen per request; AccountSearchTest::testEveryOrderingIsTotal covers it.
+        $exempt = [\SP\Infrastructure\Adapter\Out\Account\Repositories\AccountSearch::class];
+
+        $missing = [];
+
+        foreach (self::repositoryFiles() as $file) {
+            if (!str_contains((string)file_get_contents($file), 'getLimitCount()')) {
+                continue;
+            }
+
+            $class = self::classFor($file);
+
+            if (!in_array($class, $covered, true) && !in_array($class, $exempt, true)) {
+                $missing[] = $class;
+            }
+        }
+
+        self::assertSame(
+            [],
+            $missing,
+            'these repositories page and are covered by nothing: ' . implode(', ', $missing)
+        );
+    }
+
+    /**
+     * @return string[]
+     */
+    private static function repositoryFiles(): array
+    {
+        $files = [];
+
+        $directory = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator(REAL_APP_ROOT . '/src/Infrastructure/Adapter/Out')
+        );
+
+        foreach ($directory as $file) {
+            if ($file->isFile()
+                && $file->getExtension() === 'php'
+                && str_contains($file->getPathname(), DIRECTORY_SEPARATOR . 'Repositories' . DIRECTORY_SEPARATOR)) {
+                $files[] = $file->getPathname();
+            }
+        }
+
+        sort($files);
+
+        return $files;
+    }
+
+    private static function classFor(string $file): string
+    {
+        $source = (string)file_get_contents($file);
+
+        preg_match('/^namespace\s+([^;]+);/m', $source, $namespace);
+
+        return $namespace[1] . '\\' . basename($file, '.php');
     }
 
     /**
@@ -105,9 +192,9 @@ class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
      */
     #[Test]
     #[DataProvider('pagedRepositoryProvider')]
-    public function aPagedSearchOrdersByThePrimaryKeyLast(string $repositoryClass): void
+    public function aPagedSearchOrdersByThePrimaryKeyLast(string $repositoryClass, string $method): void
     {
-        $statement = $this->captureSearchStatement($repositoryClass);
+        $statement = $this->captureSearchStatement($repositoryClass, $method);
 
         self::assertStringContainsStringIgnoringCase(
             'LIMIT',
@@ -118,7 +205,7 @@ class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
         self::assertSame(
             'id',
             self::lastOrderedColumn($statement),
-            $repositoryClass . ': a paged search must order by the primary key last, or its pages'
+            $repositoryClass . '::' . $method . ': a paged search must order by the primary key last, or its pages'
             . ' are not a partition of the results'
         );
     }
@@ -128,7 +215,7 @@ class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
      *
      * @throws Exception
      */
-    private function captureSearchStatement(string $repositoryClass): string
+    private function captureSearchStatement(string $repositoryClass, string $method = 'search'): string
     {
         $statement = null;
 
@@ -148,14 +235,15 @@ class PagedSearchesAreTotallyOrderedTest extends UnitaryTestCase
 
         $arguments = [new ItemSearchDto(null, 10, 10)];
 
-        if ((new ReflectionMethod($repositoryClass, 'search'))->getNumberOfRequiredParameters() > 1) {
-            // Track::search() also takes the window it counts attempts within.
+        if ((new ReflectionMethod($repositoryClass, $method))->getNumberOfRequiredParameters() > 1) {
+            // Track::search() also takes the window it counts attempts within, and
+            // Notification's two take the user whose notifications they are.
             $arguments[] = time();
         }
 
-        $repository->search(...$arguments);
+        $repository->{$method}(...$arguments);
 
-        self::assertIsString($statement, $repositoryClass . ': no query was run');
+        self::assertIsString($statement, $repositoryClass . '::' . $method . ': no query was run');
 
         return $statement;
     }
