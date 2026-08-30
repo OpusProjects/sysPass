@@ -228,6 +228,14 @@ A few harness details bite when writing an integration test against a real branc
   never executed it. Let the run finish, or kill it (inside the container — see the gotcha above)
   and start again. `git stash push -- <the other change's files>` is how to get one change verified
   on its own when two of them are in the tree.
+- **A model factory that stamps `time()` cannot be compared against one the test built.**
+  `AccountUseCases::create()` and `::updatePassword()` stamp `passDate` with `time()`, and five
+  expectations in `AccountTest` built theirs by calling the same factory — so whenever the second
+  ticked between the two calls the models differed by one and CI went red in whichever pull request
+  happened to be open. It is not reproducible on demand, which is what made it read as a mystery
+  rather than a bug. `anAccountStampedNow()` compares everything else exactly and takes only
+  `passDate` from the actual, after checking it is a timestamp from the last few seconds. Injecting
+  `sleep(1)` before the write is how to reproduce it, and how to show a fix works.
 - **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
