@@ -512,6 +512,20 @@ is left behind when the run fails, since an interrupted backup leaves its interm
 indefinitely. `config/config.xml` is the exception that is fine: it is `0644` itself, but
 `ConfigUtil` holds its *directory* at `0750`, and that is the control.
 
+**A guard inside one arm of a switch, on a flag that does not follow the switch.** The web's custom
+field partial masked the value inside its `typeName === 'password'` branch, and `isEncrypted` is a
+property of the *definition*, set by a checkbox that sits beside the type select and is independent
+of it. So an encrypted textarea — a recovery phrase, an API key, a signed URL — was decrypted by
+`ItemTrait::getCustomFieldsForItem()` and then printed in full to anyone who could open the item,
+whatever `CUSTOMFIELD_VIEW_PASS` said. Four of the five branches leaked; the fifth was the one the
+guard was written in.
+
+This is the two-doors shape with both doors in the same file, and it is easier to miss for that: the
+masking is visibly *there*. **When a guard sits inside a branch, ask what the branch is switching on
+and whether the thing being guarded varies with it.** Here it did not — which is why the API, whose
+`CustomField::valueFor()` decides on `isValueEncrypted` and never looks at the type, was right all
+along. The fix computes the decision once per field, above the switch.
+
 **A guard on the read but not on the write.** `Notification` has the rule written down and named —
 `checkUserAccess()`, admins may reach any notification and regular users only their own, answering
 "not found" so ids cannot be enumerated by the difference. It was called from `getById()` and

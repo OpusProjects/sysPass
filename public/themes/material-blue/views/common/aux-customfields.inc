@@ -37,7 +37,23 @@ use function SP\__;
 
 $customFields = $_getvar('customFields');
 
-foreach ($customFields as $index => $field):?>
+foreach ($customFields as $index => $field):
+    // What to print in place of the value, decided once for every type rather than only inside
+    // the password branch.
+    //
+    // Masking used to live in that branch alone, and `isEncrypted` is set independently of the
+    // type — the definition form's "Encrypted" checkbox is not tied to the type select — so an
+    // encrypted textarea, or an encrypted text, url or number field, was rendered in the clear to
+    // anybody who could see the item, whatever CUSTOMFIELD_VIEW_PASS said. The API has always got
+    // this right: `CustomField::valueFor()` decides on `isValueEncrypted` and never looks at the
+    // type.
+    //
+    // A password-typed field stays masked whether or not the row is encrypted, which is what this
+    // did before and is the safer reading of somebody having called it a password.
+    $isSecret = $field->isValueEncrypted || $field->typeName === 'password';
+    $showsValue = (bool)$_getvar('showViewCustomPass');
+    $displayValue = !$showsValue && $isSecret && !empty($field->value) ? '***' : $field->value;
+    ?>
     <tr>
         <td class="descField">
             <?php
@@ -89,7 +105,7 @@ foreach ($customFields as $index => $field):?>
             if ($field->typeName === 'color' && $_getvar('isView')): ?>
                 <span class="round custom-input-color"
                       style="background-color: <?php
-                      echo $_e($field->value); ?>;"></span>
+                      echo $_e($displayValue); ?>;"></span>
             <?php
             elseif ($field->typeName === 'password'): ?>
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -103,7 +119,7 @@ foreach ($customFields as $index => $field):?>
                            data-clipboard="1"
                            maxlength="500"
                            value="<?php
-                           echo !$_getvar('showViewCustomPass') && !empty($field->value) ? '***' : $_e($field->value); ?>" <?php
+                           echo $_e($displayValue); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
                     echo $_e($_getvar('readonly')); ?>>
                     <label class="mdl-textfield__label"
@@ -122,7 +138,7 @@ foreach ($customFields as $index => $field):?>
                             id="<?php
                             echo $field->formId; ?>" <?php
                     echo $_e($_getvar('readonly')); ?>><?php
-                        echo $_e($field->value); ?></textarea>
+                        echo $_e($displayValue); ?></textarea>
                     <label class="mdl-textfield__label"
                            for="<?php
                            echo $field->formId; ?>"><?php
@@ -140,7 +156,7 @@ foreach ($customFields as $index => $field):?>
                            class="mdl-textfield__input mdl-color-text--indigo-400"
                            maxlength="500"
                            value="<?php
-                           echo $_e($field->value); ?>" <?php
+                           echo $_e($displayValue); ?>" <?php
                     echo $field->required ? 'required' : ''; ?> <?php
                     echo $_e($_getvar('readonly')); ?>>
                     <label class="mdl-textfield__label"
