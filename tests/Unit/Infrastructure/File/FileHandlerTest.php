@@ -91,6 +91,124 @@ class FileHandlerTest extends TestCase
     }
 
     /**
+     * The file is replaced, not truncated and rewritten.
+     *
+     * `config.xml` goes through `save()`, and it holds the database credentials, the password salt
+     * and the master-password hash. `ftruncate(0)` followed by `fwrite()` has a window in which
+     * that file is empty on disk, and a process killed in it — an OOM, a container stopped
+     * mid-save, the host losing power — leaves an installation that cannot boot and cannot be
+     * recovered through the UI. Nothing takes a backup first.
+     *
+     * The inode is the observable part of the fix: a rename gives the path a different file, where
+     * a truncate keeps the same one. It is also exactly the property that makes the replacement
+     * atomic for a reader, which is what this is for.
+     *
+     * @throws FileException
+     */
+    public function testSaveReplacesTheFileRatherThanTruncatingIt(): void
+    {
+        file_put_contents($this->file, 'the old contents');
+        $before = fileinode($this->file);
+
+        (new FileHandler($this->file, 'c+'))->save('the new contents');
+
+        clearstatcache(true, $this->file);
+
+        self::assertSame('the new contents', file_get_contents($this->file));
+        self::assertNotSame($before, fileinode($this->file), 'the file must be replaced, not truncated');
+    }
+
+    /**
+     * A save that cannot be completed leaves the file exactly as it was.
+     *
+     * This is the failure the change is about, and the only way to reach it deterministically here
+     * is to make the temporary file impossible to create — a directory in its place does that for
+     * root as well, which is what the suite runs as. Before the change the write went straight into
+     * the file, so the same conditions replaced its contents instead of preserving them.
+     *
+     * @throws FileException
+     */
+    public function testASaveThatCannotBeCompletedLeavesTheFileAsItWas(): void
+    {
+        file_put_contents($this->file, 'the old contents');
+
+        // Where save() wants to put its temporary file.
+        mkdir(sprintf('%s.%d.tmp', $this->file, getmypid()));
+
+        $handler = new FileHandler($this->file, 'c+');
+
+        try {
+            @$handler->save('the new contents');
+            self::fail('a save that cannot write its temporary file has to throw');
+        } catch (FileException) {
+            // asserted below: what matters is what is left on disk
+        } finally {
+            @rmdir(sprintf('%s.%d.tmp', $this->file, getmypid()));
+        }
+
+        clearstatcache(true, $this->file);
+
+        self::assertSame('the old contents', file_get_contents($this->file));
+    }
+
+    /**
+     * Replacing the file keeps the permissions it had, rather than giving it the umask's.
+     *
+     * `config/config.xml` is 0644 with its *directory* held at 0750, and that arrangement is
+     * deliberate — a save must not quietly change either half of it.
+     *
+     * @throws FileException
+     */
+    public function testSaveKeepsThePermissionsOfTheFileItReplaces(): void
+    {
+        file_put_contents($this->file, 'contents');
+        chmod($this->file, 0640);
+
+        (new FileHandler($this->file, 'c+'))->save('new contents');
+
+        clearstatcache(true, $this->file);
+
+        self::assertSame(0640, fileperms($this->file) & 0777);
+    }
+
+    /**
+     * And it leaves nothing beside the file it wrote.
+     *
+     * @throws FileException
+     */
+    public function testSaveLeavesNoTemporaryFileBehind(): void
+    {
+        (new FileHandler($this->file, 'c+'))->save('contents');
+
+        self::assertSame([$this->file], glob($this->dir . DIRECTORY_SEPARATOR . '*'));
+    }
+
+    /**
+     * After a save, this handle still describes what is on disk.
+     *
+     * It refers to the file that was just replaced, so this is the thing a rename could plausibly
+     * have broken: `ConfigFile::isExpired()` compares the config cache against
+     * `$this->fileStorage->getFileTime()`, and a stale mtime there would leave the cache looking
+     * current after every save. `SplFileInfo` stats the pathname rather than the open descriptor,
+     * and `save()` clears the stat cache for it, so both answers follow the rename.
+     *
+     * @throws FileException
+     */
+    public function testTheHandleStillDescribesTheFileAfterASave(): void
+    {
+        file_put_contents($this->file, 'old');
+        touch($this->file, time() - 60);
+
+        $handler = new FileHandler($this->file, 'c+');
+        $before = $handler->getFileTime();
+
+        $handler->save('new and longer contents');
+
+        self::assertGreaterThan($before, $handler->getFileTime(), 'the mtime must follow the rename');
+        self::assertSame(strlen('new and longer contents'), $handler->getFileSize());
+    }
+
+    /**
      * @throws FileException
      */
     public function testReadToStringReturnsContent(): void
