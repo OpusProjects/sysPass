@@ -47,8 +47,21 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
     /**
      * @inheritDoc
      */
+    /**
+     * The mode is kept because `save()` no longer writes through this handle — it replaces the
+     * file by renaming a sibling over it, which the directory's permissions allow whatever this
+     * handle was opened for. Refusing a read-only handle has to be explicit now that the stream
+     * will not refuse it for us.
+     */
+    private readonly string $mode;
+
+    /**
+     * @inheritDoc
+     */
     public function __construct(private readonly string $file, string $mode = 'r')
     {
+        $this->mode = $mode;
+
         parent::__construct($this->file, $mode);
     }
 
@@ -134,19 +147,88 @@ final class FileHandler extends SplFileObject implements FileHandlerInterface
      */
     public function save(string $data): FileHandlerInterface
     {
-        $this->lock();
-
-        $this->rewind();
-        $this->ftruncate(0);
-
-        if ($this->fwrite($data) === false) {
+        // `r` without `+` is the only read-only family; w, a, x and c all open for writing.
+        if (str_starts_with($this->mode, 'r') && !str_contains($this->mode, '+')) {
             throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
         }
 
-        $this->fflush();
-        $this->unlock();
+        $this->lock();
+
+        try {
+            $this->replaceWith($data);
+        } finally {
+            $this->unlock();
+        }
 
         return $this;
+    }
+
+    /**
+     * Put `$data` in place of this file's contents, without the file ever being partly written.
+     *
+     * This used to be `ftruncate(0)` followed by `fwrite()`, which has a window in which the file
+     * is empty on disk. `config.xml` goes through here, and it holds the database credentials, the
+     * password salt and the master-password hash — so a process killed in that window (an OOM, a
+     * container stopped mid-save, the host losing power) left an installation that cannot boot and
+     * cannot be recovered through the UI, because the container is built before `Init` runs and the
+     * install route refuses once `<installed>` was set. Nothing takes a backup first:
+     * `ConfigBackupService::backup()` exists and is called from nowhere.
+     *
+     * A sibling temp file renamed into place cannot show a half-written state to anybody, because
+     * `rename()` within a filesystem is atomic. That is what readers need, and the lock was never
+     * going to give it to them: `XmlFileStorage::load()` hands the *path* to `DOMDocument`, and
+     * `readToString()` reads by path too, so neither has ever taken this handle's lock. The lock
+     * stays because it still orders two writers that hold the same open file, and because losing
+     * one of two concurrent saves is a different and much smaller problem than losing the file.
+     *
+     * The temp file is created private and given the target's own permissions before the rename,
+     * so the mode does not change and the contents are never briefly readable at the umask.
+     *
+     * @throws FileException
+     */
+    private function replaceWith(string $data): void
+    {
+        // Per-process, so two of them cannot write into each other's temp file.
+        $temp = sprintf('%s.%d.tmp', $this->file, getmypid());
+
+        $mode = file_exists($this->file)
+            ? (fileperms($this->file) & 0777)
+            : (0666 & ~umask());
+
+        $handle = @fopen($temp, 'wb');
+
+        if ($handle === false) {
+            throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+        }
+
+        try {
+            @chmod($temp, 0600);
+
+            if (fwrite($handle, $data) === false) {
+                throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+            }
+
+            fflush($handle);
+        } finally {
+            fclose($handle);
+        }
+
+        try {
+            @chmod($temp, $mode);
+
+            if (!@rename($temp, $this->file)) {
+                throw FileException::error(sprintf(__('Unable to read/write the file (%s)'), $this->file));
+            }
+        } catch (FileException $e) {
+            @unlink($temp);
+
+            throw $e;
+        }
+
+        // This handle still refers to the file that was just replaced. Nothing reads through it —
+        // every read in this class goes by path — but clearing the stat cache keeps getFileSize()
+        // and getFileTime() answering about what is now on disk.
+        clearstatcache(true, $this->file);
     }
 
     /**

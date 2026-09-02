@@ -562,6 +562,21 @@ named `deleteMultiplePartialMatchIsNotDetected`, pinning the gap as known rather
 **A test that records a weaker behaviour with a name saying so is a defect somebody chose to
 describe** — read it as a lead, not as a decision, and check what its siblings do.
 
+**A file rewritten in place, with nothing to fall back on.** `FileHandler::save()` did
+`ftruncate(0)` and then `fwrite()`, so the file is empty on disk between the two. `config.xml`
+goes through it, and it holds the database credentials, the password salt and the master-password
+hash — a process killed in that window leaves an installation that cannot boot *and cannot be
+repaired through the UI*, because the container is built before `Init` runs and the install route
+refuses once `<installed>` is set. There is no backup to fall back on either:
+`ConfigBackupService::backup()` exists and is called from nowhere in `src/`.
+
+It is now a sibling temp file renamed into place, which is atomic within a filesystem. The lock was
+never what protected readers and could not have been — `XmlFileStorage::load()` hands the *path* to
+`DOMDocument` and `readToString()` reads by path, so neither ever took it. **Ask what a half-written
+file would cost before asking who holds the lock**; and note the two things a rename has to carry
+over by hand: the target's permissions, and a stat cache that would otherwise still describe the
+replaced file.
+
 **A static factory a subclass cannot use.** `SPException` offers `error()`, `info()`, `critical()`,
 `warning()` and `from()`, each doing `new static($message, …)`. Four subclasses fix their own message
 and take `int $type` first instead — `AccountPermissionException`, `UnauthorizedActionException`,
