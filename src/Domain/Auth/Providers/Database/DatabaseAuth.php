@@ -75,10 +75,31 @@ final readonly class DatabaseAuth implements DatabaseAuthService
                 $this->userService->getByLogin($userLoginDto->getLoginUser() ?? '')
             );
 
-            if ($userDto->isMigrate && $this->checkMigrateUser($userDto, $userLoginDto)) {
-                $this->userPassService->migrateUserPassById($userDto->id, $userLoginDto->getLoginPass() ?? '');
+            if ($userDto->isMigrate) {
+                if ($this->checkMigrateUser($userDto, $userLoginDto)) {
+                    $this->userPassService->migrateUserPassById($userDto->id, $userLoginDto->getLoginPass() ?? '');
 
-                return $userDto;
+                    return $userDto;
+                }
+
+                // A row still carrying a pre-migration hash refuses at the same cost as any other.
+                //
+                // Its `pass` holds a sha1, md5 or crypt digest, and the three comparisons above
+                // take microseconds; the fourth hands that digest to `password_verify()`, which
+                // rejects it on sight because it is not a bcrypt hash at all. So a wrong password
+                // here returned in about 0.3ms where a migrated account and an unknown login both
+                // paid ~220ms for a real verify — measured on this installation.
+                //
+                // That is the enumeration oracle the catch block below deals with, reopened for a
+                // subset: a fast refusal said "this login exists *and* is one of the old ones",
+                // naming both a real account and the ones whose stored hashes are weakest.
+                //
+                // Falling through to the check below would not have spent it either — that check
+                // is the same one `checkMigrateUser()` just made, against the same non-bcrypt
+                // value, so it fast-fails identically and the answer is false either way.
+                Hash::checkHashKey($userLoginDto->getLoginPass() ?? '', self::ABSENT_USER_HASH);
+
+                return false;
             }
 
             if (Hash::checkHashKey($userLoginDto->getLoginPass() ?? '', $userDto->pass)) {
