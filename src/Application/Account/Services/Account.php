@@ -449,12 +449,27 @@ final class Account extends Service implements AccountService
                     $accountUpdateDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
                 }
 
-                $this->accountRepository->update(
+                // An edit whose WHERE matched nothing has saved nothing, and answering the caller
+                // with success reports the edit of an account another session has since deleted as
+                // done. `restoreModified()`, `updatePasswordMasterPass()`, `delete()` and
+                // `deleteByIdBatch()` all make this check; `update()` and `editPassword()` were the
+                // two writes in this file that threw the count away.
+                //
+                // `addHistory()` above reads the account and throws for one that is already gone,
+                // so this is the window between that read and this write — both inside the same
+                // transaction, and the update takes the latest committed row, so a delete that
+                // landed in between matches nothing here. The connection sets FOUND_ROWS, so a save
+                // that alters no field still matches its row and is not mistaken for a missing one.
+                $result = $this->accountRepository->update(
                     $id,
                     AccountModel::update($accountUpdateDto),
                     $changeOwner,
                     $changeUserGroup
                 );
+
+                if ($result->getAffectedNumRows() === 0) {
+                    throw new NoSuchItemException(__u('Account not found'));
+                }
 
                 $this->accountItemsService->updateItems($userCanChangePermissions, $id, $accountUpdateDto);
 
@@ -482,10 +497,16 @@ final class Account extends Service implements AccountService
 
                 $encryptedPassword = $this->accountCryptService->getPasswordEncrypted($accountUpdateDto->pass);
 
-                $this->accountRepository->editPassword(
+                // As in update() above: without this, changing the password of an account that has
+                // just been deleted comes back as saved.
+                $result = $this->accountRepository->editPassword(
                     $id,
                     AccountModel::updatePassword($accountUpdateDto->withEncryptedPassword($encryptedPassword))
                 );
+
+                if ($result->getAffectedNumRows() === 0) {
+                    throw new NoSuchItemException(__u('Account not found'));
+                }
             },
             $this
         );
