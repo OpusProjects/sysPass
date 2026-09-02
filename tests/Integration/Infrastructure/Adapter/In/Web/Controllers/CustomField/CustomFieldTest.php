@@ -242,11 +242,8 @@ class CustomFieldTest extends IntegrationTestCase
     }
 
     /**
-     * Unlike Tag's batch delete (which requires every requested id to be affected),
-     * CustomFieldDefinitionService::deleteByIdBatch() only checks for `$affectedNumRows === 0`
-     * — see CustomFieldDefinition.php lines 77-89 in src/Application/CustomField/Services/.
-     * So when none of the requested ids matched a row, the transactionAware() closure throws,
-     * the transaction rolls back, and the batch is reported as a failure.
+     * When none of the requested ids matched a row, the transactionAware() closure throws, the
+     * transaction rolls back, and the batch is reported as a failure.
      *
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -270,17 +267,19 @@ class CustomFieldTest extends IntegrationTestCase
     }
 
     /**
-     * ...but a PARTIAL match (some requested ids existed, some didn't) is NOT caught by that
-     * `=== 0` check, so it is reported as a full "Fields deleted" success even though some of
-     * the requested rows were never removed. This pins the current (weaker-than-Tag) behaviour
-     * in place — see the note above for the exact guard that lets it through.
+     * ...and so is a PARTIAL match, where some of the requested ids existed and some did not.
+     *
+     * It used not to be. The `=== 0` guard refused only when nothing at all matched, so a
+     * selection of which one item had already been deleted came back as "Fields deleted" while
+     * some of the requested rows were never removed. This test recorded that as the current,
+     * weaker-than-Tag behaviour; it now asserts the refusal, which is what Tag has always done.
      *
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
      */
     #[Test]
-    public function deleteMultiplePartialMatchIsNotDetected()
+    public function deleteMultiplePartialMatchIsRefused()
     {
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
             // Only 1 of the 2 requested ids actually matched a row.
@@ -293,7 +292,7 @@ class CustomFieldTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
 
-        $this->expectOutputString('{"status":"OK","description":"Fields deleted","data":null}');
+        $this->expectOutputString('{"status":"ERROR","description":"Error while deleting the fields","data":null}');
     }
 
     /**

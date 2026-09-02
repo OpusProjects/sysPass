@@ -553,6 +553,15 @@ mistaken for a missing row. Without that attribute this check would turn every u
 "not found", which is worth measuring through the application's own PDO options rather than the
 `mariadb` client, since the client does not set it and answers 0 for the same statement.
 
+The same count, asked as the wrong question. `deleteByIdBatch()` has the identical shape and a
+second way to get it wrong: `AuthToken`, `Client`, `Category` and `CustomFieldDefinition` refused
+only when the delete affected **zero** rows, where the other nine compare it against
+`count($ids)` — so a selection of five of which one was already gone came back as five removed.
+Three of their unit tests stubbed "1 affected" for five ids and passed, and an integration test was
+named `deleteMultiplePartialMatchIsNotDetected`, pinning the gap as known rather than fixing it.
+**A test that records a weaker behaviour with a name saying so is a defect somebody chose to
+describe** — read it as a lead, not as a decision, and check what its siblings do.
+
 **A static factory a subclass cannot use.** `SPException` offers `error()`, `info()`, `critical()`,
 `warning()` and `from()`, each doing `new static($message, …)`. Four subclasses fix their own message
 and take `int $type` first instead — `AccountPermissionException`, `UnauthorizedActionException`,

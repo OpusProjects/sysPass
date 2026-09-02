@@ -80,7 +80,10 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
             function () use ($ids) {
                 $affectedNumRows = $this->customFieldDefinitionRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
-                if ($affectedNumRows === 0) {
+                // Fewer rows than ids means at least one was already gone, and reporting that as
+                // a full removal is the defect the other nine services refuse. Inside the
+                // transaction, so the refusal takes the partial delete with it.
+                if ($affectedNumRows !== count($ids)) {
                     throw ServiceException::warning(__u('Error while deleting the fields'));
                 }
             },

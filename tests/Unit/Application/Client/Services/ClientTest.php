@@ -251,7 +251,33 @@ class ClientTest extends UnitaryTestCase
             ->expects(self::once())
             ->method('deleteByIdBatch')
             ->with($ids)
-            ->willReturn(new QueryResult(null, 1));
+            ->willReturn(new QueryResult(null, count($ids)));
+
+        $this->client->deleteByIdBatch($ids);
+    }
+
+    /**
+     * A batch of five ids of which one was already gone is not a removal of five.
+     *
+     * This service refused only when *nothing* matched, so an administrator selecting several
+     * clients while a colleague deleted one of them was told the whole selection had been
+     * removed. Nine of the thirteen services already compare the count against the ids they were
+     * given; these four did not.
+     *
+     * @throws ServiceException
+     */
+    public function testDeleteByIdBatchWithOneAlreadyGone()
+    {
+        $ids = array_map(fn() => self::$faker->numberBetween(1, 1000), range(0, 4));
+
+        $this->clientRepository
+            ->expects(self::once())
+            ->method('deleteByIdBatch')
+            ->with($ids)
+            ->willReturn(new QueryResult(null, count($ids) - 1));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while deleting the clients');
 
         $this->client->deleteByIdBatch($ids);
     }

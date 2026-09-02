@@ -155,7 +155,12 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function deleteByIdBatch(array $ids): void
     {
-        if ($this->authTokenRepository->deleteByIdBatch($ids)->getAffectedNumRows() === 0) {
+        // A batch that removed fewer rows than it was given ids has not done what it was asked,
+        // and answering the caller with success reports the removal of something another session
+        // had already deleted — or of an id that never existed — as done. `=== 0` only refuses
+        // when *nothing* matched, so five ids of which one was stale came back as five removed.
+        // This is the comparison the other nine services make.
+        if ($this->authTokenRepository->deleteByIdBatch($ids)->getAffectedNumRows() !== count($ids)) {
             throw new ServiceException(__u('Error while removing the tokens'), SPException::WARNING);
         }
     }
