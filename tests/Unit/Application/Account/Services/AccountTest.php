@@ -111,7 +111,8 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), true, true);
+            ->with($id, AccountModel::update($accountUpdateDto), true, true)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -149,7 +150,8 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), false, false);
+            ->with($id, AccountModel::update($accountUpdateDto), false, false)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(false, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -187,7 +189,8 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), true, true);
+            ->with($id, AccountModel::update($accountUpdateDto), true, true)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -225,7 +228,8 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), false, false);
+            ->with($id, AccountModel::update($accountUpdateDto), false, false)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -296,7 +300,8 @@ class AccountTest extends UnitaryTestCase
                                     }),
                                     true,
                                     true
-                                );
+                                )
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(
                                       true,
@@ -374,7 +379,8 @@ class AccountTest extends UnitaryTestCase
                                     }),
                                     true,
                                     true
-                                );
+                                )
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(
                                       true,
@@ -430,7 +436,8 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), true, true);
+            ->with($id, AccountModel::update($accountUpdateDto), true, true)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $accountUpdateDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -476,7 +483,8 @@ class AccountTest extends UnitaryTestCase
         );
 
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($expectedDto), true, true);
+            ->with($id, AccountModel::update($expectedDto), true, true)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $expectedDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -517,7 +525,8 @@ class AccountTest extends UnitaryTestCase
         $expectedDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
 
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($expectedDto), true, true);
+            ->with($id, AccountModel::update($expectedDto), true, true)
+            ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
                                   ->with(true, $id, $expectedDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
@@ -1144,7 +1153,8 @@ class AccountTest extends UnitaryTestCase
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
-            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($accountUpdateDto)));
+            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($accountUpdateDto)))
+            ->willReturn(new QueryResult(null, 1));
 
         $this->account->editPassword($id, $accountUpdateDto);
     }
@@ -1186,7 +1196,8 @@ class AccountTest extends UnitaryTestCase
                                   );
 
         $this->accountRepository->expects(self::once())->method('editPassword')
-            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($expectedDto)));
+            ->with($id, self::anAccountStampedNow(AccountModel::updatePassword($expectedDto)))
+            ->willReturn(new QueryResult(null, 1));
 
         $this->account->editPassword($id, $accountUpdateDto);
     }
@@ -1744,6 +1755,76 @@ class AccountTest extends UnitaryTestCase
             ->willReturn(new QueryResult(null, 0));
 
         $this->assertFalse($this->account->incrementDecryptCounter($id));
+    }
+
+    /**
+     * An edit whose WHERE matched no row has saved nothing, and must not come back as saved.
+     *
+     * `restoreModified()`, `updatePasswordMasterPass()`, `delete()` and `deleteByIdBatch()` all
+     * check what they affected; `update()` and `editPassword()` were the two writes in this service
+     * that threw the count away, so editing an account another session had just deleted answered
+     * with success. `addHistory()` reads the account first and catches the ordinary case, which is
+     * why this needs the repository to report the miss directly.
+     *
+     * @throws Exception
+     */
+    public function testUpdateThatMatchedNoRowIsNotReportedAsSaved(): void
+    {
+        $id = self::$faker->numberBetween(1, 1000);
+        $accountUpdateDto = AccountDataGenerator::factory()->buildAccountUpdateDto();
+
+        $this->accountRepository
+            ->method('getById')
+            ->willReturn(new QueryResult([AccountDataGenerator::factory()->buildAccount()]));
+
+        // addHistory() writes the row it is about to replace, and needs the master-pass hash.
+        $this->configService->method('getByParam')->willReturn(self::$faker->sha1());
+
+        $this->accountRepository
+            ->expects(self::once())
+            ->method('update')
+            ->willReturn(new QueryResult(null, 0));
+
+        // Nothing downstream of the write may run for an account that is not there.
+        $this->accountItemsService->expects(self::never())->method('updateItems');
+        $this->accountPresetService->expects(self::never())->method('addPresetPermissions');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Account not found');
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
+     * The same for a password change, which is the other write that discarded the count.
+     *
+     * @throws Exception
+     */
+    public function testEditPasswordThatMatchedNoRowIsNotReportedAsSaved(): void
+    {
+        $id = self::$faker->numberBetween(1, 1000);
+        $accountUpdateDto = AccountDataGenerator::factory()->buildAccountUpdateDto();
+
+        $this->accountRepository
+            ->method('getById')
+            ->willReturn(new QueryResult([AccountDataGenerator::factory()->buildAccount()]));
+
+        // addHistory() writes the row it is about to replace, and needs the master-pass hash.
+        $this->configService->method('getByParam')->willReturn(self::$faker->sha1());
+
+        $this->accountCryptService
+            ->method('getPasswordEncrypted')
+            ->willReturn(new EncryptedPassword(self::$faker->password(), self::$faker->password()));
+
+        $this->accountRepository
+            ->expects(self::once())
+            ->method('editPassword')
+            ->willReturn(new QueryResult(null, 0));
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Account not found');
+
+        $this->account->editPassword($id, $accountUpdateDto);
     }
 
     /**
