@@ -33,6 +33,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\ClientGenerator;
 use SP\Tests\Support\IntegrationTestCase;
@@ -68,6 +69,10 @@ class ClientTest extends IntegrationTestCase
     #[Test]
     public function deleteMultiple()
     {
+        // The batch delete asserts that as many rows were affected as ids were sent.
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            return new QueryResult([], 3, 0);
+        };
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/delete', 'items' => [100, 200, 300]])
         );
@@ -75,6 +80,33 @@ class ClientTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         $this->expectOutputString('{"status":"OK","description":"Clients deleted","data":null}');
+    }
+
+    /**
+     * If the DELETE affects fewer rows than ids were sent — one of them no longer existed, or
+     * another session removed it first — the batch is reported as a failure rather than as a
+     * partial success. This service used to refuse only when *nothing* matched, so a selection of
+     * which one item was already gone came back as the whole selection removed.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function deleteMultiplePartialFailure()
+    {
+        $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
+            // Only 1 of the 2 requested ids was actually removed.
+            return new QueryResult([], 1, 0);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'client/delete', 'items' => [100, 200]])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Error while deleting the clients","data":null}');
     }
 
     /**
