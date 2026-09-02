@@ -23,10 +23,20 @@ if [ ! -f .env ]; then
 fi
 
 # sysPass needs these writable at runtime (config.xml, caches, proxies, backups).
+#
+# 0750, not the umask's 0755. var/backup holds the backup archives — the database dump and
+# config.xml — and the XML export, which carries every account's encrypted secret and key, and
+# with no export password its name, login, URL and notes in the clear. Those files are restricted
+# to their owner, but only once they are fully written: the handlers chmod after the write, so a
+# world-traversable directory leaves a window in which anybody else on the host can read them.
+# var/temp holds the intermediates on the way there.
+#
+# This is the mode DirectoryHandler::create() would have used, and it never gets the chance —
+# checkOrCreate() only creates a directory that is not already there, and these are.
 for dir in config var/cache var/temp var/backup; do
     mkdir -p "$dir"
     chown -R www-data:www-data "$dir"
+    chmod 750 "$dir"
 done
-chmod 750 config
 
 exec "$@"
