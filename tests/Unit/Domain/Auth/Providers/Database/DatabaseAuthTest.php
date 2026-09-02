@@ -164,6 +164,65 @@ class DatabaseAuthTest extends UnitaryTestCase
     }
 
     /**
+     * And an account still carrying a pre-migration hash refuses at that same cost.
+     *
+     * A row with `isMigrate` holds a sha1, md5 or crypt digest rather than a bcrypt hash, and
+     * `checkMigrateUser()` compares against all three — three digests, microseconds — before
+     * falling through to `Hash::checkHashKey()`, which `password_verify()` rejects on sight
+     * because the stored value is not a bcrypt hash at all. So a wrong password for a legacy
+     * account returned in microseconds, while a wrong password for a migrated one and a login
+     * naming nobody both paid for a full bcrypt verify.
+     *
+     * That is the enumeration oracle above, reopened for a subset: a fast refusal said "this login
+     * exists *and* is one of the old ones", which is both a name confirmed and the accounts whose
+     * stored hashes are weakest, to an unauthenticated caller who never guessed a password.
+     *
+     * Compared against the migrated account rather than a fixed number of milliseconds, for the
+     * same reason as the test above.
+     */
+    public function testALegacyAccountRefusesAPasswordAtTheSameCostAsAMigratedOne(): void
+    {
+        $password = self::$faker->password();
+        $salt = 'a-legacy-salt';
+
+        $migrated = UserDataGenerator::factory()->buildUserData()->mutate(
+            ['login' => 'migrated', 'isMigrate' => false, 'pass' => Hash::hashKey('the-actual-password')]
+        );
+
+        // The three digests checkMigrateUser() tries, one of which this row actually holds.
+        $legacy = UserDataGenerator::factory()->buildUserData()->mutate(
+            [
+                'login' => 'legacy',
+                'isMigrate' => true,
+                'hashSalt' => $salt,
+                'pass' => sha1($salt . 'the-actual-password'),
+            ]
+        );
+
+        $this->userService
+            ->method('getByLogin')
+            ->willReturnCallback(
+                static fn(string $login) => $login === 'legacy' ? $legacy : $migrated
+            );
+
+        $costOfMigrated = $this->timeAuthenticating('migrated', $password);
+        $costOfLegacy = $this->timeAuthenticating('legacy', $password);
+
+        self::assertGreaterThan(
+            $costOfMigrated / 2,
+            $costOfLegacy,
+            sprintf(
+                'a wrong password for an account that has not been migrated has to cost about what'
+                . ' one for an account that has costs, or the difference tells a caller which'
+                . ' logins are real and which of them still hold a legacy hash'
+                . ' (migrated: %.1fms, legacy: %.1fms)',
+                $costOfMigrated * 1000,
+                $costOfLegacy * 1000
+            )
+        );
+    }
+
+    /**
      * Seconds spent on one authentication attempt, which must fail either way.
      */
     private function timeAuthenticating(string $login, string $password): float
