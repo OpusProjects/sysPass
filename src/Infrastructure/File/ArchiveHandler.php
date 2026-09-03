@@ -37,6 +37,17 @@ use SP\Domain\File\Ports\ArchiveHandlerInterface;
  */
 class ArchiveHandler implements ArchiveHandlerInterface
 {
+    /**
+     * The umask held while the archives are written, so they are private from the moment they
+     * exist rather than from the moment the chmod runs.
+     *
+     * `PharData` gives no way to do this per file: it does not create the archive when it is
+     * constructed, so there is nothing to restrict beforehand, and `compress()` refuses outright
+     * when its target already exists — "phar ... exists and must be unlinked prior to conversion".
+     * The umask is what is left, and it covers both the tar and the gz.
+     */
+    private const OWNER_ONLY = 0177;
+
     private readonly PharData $archive;
 
     public function __construct(string $archive, PhpExtensionCheckerService $phpExtensionCheckerService)
@@ -59,20 +70,26 @@ class ArchiveHandler implements ArchiveHandlerInterface
      */
     public function compressDirectory(string $directory, ?string $regex = null): string
     {
-        $this->archive->buildFromDirectory($directory, $regex);
+        $umask = umask(self::OWNER_ONLY);
 
-        // Before compressing, not only after: the uncompressed archive holds the same thing the
-        // compressed one does and exists for as long as compressing takes, which on a large
-        // installation is not an instant. `database.sql` is restricted the moment it is opened for
-        // exactly this reason; this is the same window, left open.
-        $this->restrictToOwner($this->archive->getPath());
+        try {
+            $this->archive->buildFromDirectory($directory, $regex);
 
-        $packed = $this->archive->compress(Phar::GZ);
+            // Before compressing, not only after: the uncompressed archive holds the same thing
+            // the compressed one does and exists for as long as compressing takes, which on a
+            // large installation is not an instant. `database.sql` is restricted the moment it is
+            // opened for exactly this reason; this is the same window, left open.
+            $this->restrictToOwner($this->archive->getPath());
 
-        // Delete the non-compressed archive
-        (new FileHandler($this->archive->getPath()))->delete();
+            $packed = $this->archive->compress(Phar::GZ);
 
-        $this->restrictToOwner($this->archive->getPath() . '.gz');
+            // Delete the non-compressed archive
+            (new FileHandler($this->archive->getPath()))->delete();
+
+            $this->restrictToOwner($this->archive->getPath() . '.gz');
+        } finally {
+            umask($umask);
+        }
 
         return $packed->getFileInfo()->getPathname();
     }
@@ -84,19 +101,25 @@ class ArchiveHandler implements ArchiveHandlerInterface
      */
     public function compressFile(string $file): string
     {
-        $this->archive->addFile($file, basename($file));
+        $umask = umask(self::OWNER_ONLY);
 
-        // See compressDirectory(): the uncompressed archive is as sensitive as the compressed one
-        // and lives for as long as compressing takes.
-        $this->restrictToOwner($this->archive->getPath());
+        try {
+            $this->archive->addFile($file, basename($file));
 
-        $packed = $this->archive->compress(Phar::GZ);
+            // See compressDirectory(): the uncompressed archive is as sensitive as the compressed
+            // one and lives for as long as compressing takes.
+            $this->restrictToOwner($this->archive->getPath());
 
-        // Delete the non-compressed files
-        (new FileHandler($file))->delete();
-        (new FileHandler($this->archive->getPath()))->delete();
+            $packed = $this->archive->compress(Phar::GZ);
 
-        $this->restrictToOwner($this->archive->getPath() . '.gz');
+            // Delete the non-compressed files
+            (new FileHandler($file))->delete();
+            (new FileHandler($this->archive->getPath()))->delete();
+
+            $this->restrictToOwner($this->archive->getPath() . '.gz');
+        } finally {
+            umask($umask);
+        }
 
         return $packed->getFileInfo()->getPathname();
     }

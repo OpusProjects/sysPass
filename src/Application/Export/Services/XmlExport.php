@@ -179,15 +179,27 @@ final class XmlExport extends Service implements XmlExportService
             $this->appendNode($this->xmlAccountExportService->export(), $password);
             $this->appendHash($password);
 
-            if (!$this->document->save($file)) {
-                throw ServiceException::error(__u('Error while creating the XML file'));
-            }
-
             // The backup archives are restricted to their owner; this was not, and it holds the
             // same installation. Every account's encrypted secret and its key are in here, and
             // when no export password was given so is everything around them in the clear — the
             // name, the login, the URL and the notes of every account. At the default umask that
             // is a world-readable file, which on a shared host is every local user.
+            //
+            // The umask is what makes it private *from the moment it exists*. A chmod after the
+            // write leaves the whole file readable for as long as writing it takes, which for an
+            // installation of any size is not an instant — and leaves it readable indefinitely if
+            // the process dies in between. The chmod stays as the guarantee: the umask decides
+            // what a newly created file gets, and nothing here should depend on that alone.
+            $umask = umask(0177);
+
+            try {
+                if (!$this->document->save($file)) {
+                    throw ServiceException::error(__u('Error while creating the XML file'));
+                }
+            } finally {
+                umask($umask);
+            }
+
             @chmod($file, 0600);
         } catch (ServiceException $e) {
             throw $e;
