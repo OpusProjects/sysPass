@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigDokuWiki;
 
+use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
+use SP\Application\Application;
+use SP\Application\Config\Ports\ConfigBackupService;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -38,7 +41,16 @@ use function SP\__u;
 
 final class SaveController extends SimpleControllerBase
 {
+
     use ConfigTrait;
+
+    public function __construct(
+        Application            $application,
+        SimpleControllerHelper $simpleControllerHelper,
+        private readonly ConfigBackupService $configBackup
+    ) {
+        parent::__construct($application, $simpleControllerHelper);
+    }
 
     #[Action(ResponseType::JSON)]
     public function saveAction(): ActionResponse
@@ -79,6 +91,7 @@ final class SaveController extends SimpleControllerBase
         return $this->saveConfig(
             $configData,
             $this->config,
+            $this->configBackup,
             function () use ($eventMessage) {
                 $this->eventDispatcher->notify(new Event('save.config.dokuwiki', $this, $eventMessage));
             }

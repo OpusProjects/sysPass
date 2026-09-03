@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
+use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -169,7 +170,8 @@ class RefusalsTest extends WebControllerTestCase
 
         new SaveController(
             $application,
-            $this->simpleControllerHelper($acl, 'configLdap', 'save')
+            $this->simpleControllerHelper($acl, 'configLdap', 'save'),
+            self::createStub(ConfigBackupService::class)
         );
     }
 
@@ -195,7 +197,8 @@ class RefusalsTest extends WebControllerTestCase
 
         $response = (new SaveController(
             $application,
-            $this->simpleControllerHelper($acl, 'configLdap', 'save')
+            $this->simpleControllerHelper($acl, 'configLdap', 'save'),
+            self::createStub(ConfigBackupService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
@@ -258,7 +261,9 @@ class RefusalsTest extends WebControllerTestCase
                 'save',
                 enablingLdap: true
             )
-        ))->saveAction();
+        ,
+                self::createStub(ConfigBackupService::class)
+            ))->saveAction();
     }
 
     /**
@@ -278,7 +283,9 @@ class RefusalsTest extends WebControllerTestCase
                 'configLdap',
                 'save'
             )
-        ))->saveAction();
+        ,
+                self::createStub(ConfigBackupService::class)
+            ))->saveAction();
 
         // Reaching saveConfig() at all is the point: the request carries no ldap_enabled flag, so
         // this is the "disable it" path, which touches neither of the two guarded settings. That it

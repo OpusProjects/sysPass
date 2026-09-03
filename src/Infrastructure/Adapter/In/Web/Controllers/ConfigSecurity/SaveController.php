@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigSecurity;
 
+use SP\Application\Config\Ports\ConfigBackupService;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
@@ -43,6 +44,7 @@ final class SaveController extends SimpleControllerBase
     public function __construct(
         Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
+        private readonly ConfigBackupService $configBackup
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -61,6 +63,7 @@ final class SaveController extends SimpleControllerBase
         return $this->saveConfig(
             $configData,
             $this->config,
+            $this->configBackup,
             function () {
                 $this->eventDispatcher->notify(new Event('save.config.security', $this));
             }

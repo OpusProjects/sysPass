@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigGeneral;
 
+use SP\Application\Config\Ports\ConfigBackupService;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
@@ -53,7 +54,8 @@ final class SaveController extends SimpleControllerBase
     public function __construct(
         Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
-        private readonly AppLockHandler $appLock
+        private readonly AppLockHandler $appLock,
+        private readonly ConfigBackupService $configBackup
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -74,6 +76,7 @@ final class SaveController extends SimpleControllerBase
         return $this->saveConfig(
             $configData,
             $this->config,
+            $this->configBackup,
             function () use ($configData) {
                 if ($configData->isMaintenance()) {
                     $this->appLock->lock($this->session->getUserData()->id, 'config');

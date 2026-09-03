@@ -139,7 +139,8 @@ class RefusalsTest extends WebControllerTestCase
         new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configGeneral', 'save'),
-            $appLock
+            $appLock,
+            self::createStub(ConfigBackupService::class)
         );
     }
 
@@ -165,7 +166,8 @@ class RefusalsTest extends WebControllerTestCase
         $response = (new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configGeneral', 'save'),
-            $appLock
+            $appLock,
+            self::createStub(ConfigBackupService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
