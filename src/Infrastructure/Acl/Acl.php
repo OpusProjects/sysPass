@@ -202,6 +202,12 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::FILE_DELETE:
             case self::FILE_VIEW:
             case self::FILE_DOWNLOAD:
+            // The id the Files tab's own grid searches under, which is not one of the FILE_*
+            // family above. The tab is shown when `FILE` is granted, and every search or page
+            // inside it was then refused, because this id had no arm and fell through to the
+            // deny — so a holder of `isMgmFiles()` saw the list and could not search it. The two
+            // ids authorise one feature and have to answer the same.
+            case self::ACCOUNT_FILE_SEARCH:
                 return $userProfile->isMgmFiles();
             case self::TAG:
             case self::TAG_SEARCH:

@@ -90,6 +90,10 @@ class AclTest extends UnitaryTestCase
             'manage clients' => [AclActionsInterface::CLIENT, 'mgmCustomers'],
             'manage custom fields' => [AclActionsInterface::CUSTOMFIELD, 'mgmCustomFields'],
             'manage files' => [AclActionsInterface::FILE, 'mgmFiles'],
+            // The Files tab is shown on FILE and its grid searches under ACCOUNT_FILE_SEARCH, so
+            // the two have to answer the same. They did not: the second had no arm at all, and a
+            // holder of mgmFiles saw the list and was refused by every search inside it.
+            'search the files a tab shows' => [AclActionsInterface::ACCOUNT_FILE_SEARCH, 'mgmFiles'],
             'manage presets' => [AclActionsInterface::ITEMPRESET, 'mgmItemsPreset'],
             'view a custom field password' => [AclActionsInterface::CUSTOMFIELD_VIEW_PASS, 'accViewPass'],
         ];

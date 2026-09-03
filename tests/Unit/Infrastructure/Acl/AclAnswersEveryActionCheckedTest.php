@@ -72,13 +72,24 @@ class AclAnswersEveryActionCheckedTest extends TestCase
                 continue;
             }
 
+            $source = (string)file_get_contents($file->getPathname());
+
+            // The direct form: checkUserAccess(AclActionsInterface::FOO).
+            preg_match_all('/checkUserAccess\(\s*AclActionsInterface::([A-Z0-9_]+)/', $source, $matches);
+
+            // And the indirect one. `SearchGridControllerBase::searchAction()` calls
+            // `checkUserAccess($this->getAclAction())`, so the id a search controller is
+            // authorised by never appears beside the call — it is returned from a method in a
+            // subclass. Six controllers work that way, and the one action of the six with no arm
+            // in the ACL was exactly the one this test could not see: ACCOUNT_FILE_SEARCH, which
+            // refused every search inside a Files tab that had been shown to the user.
             preg_match_all(
-                '/checkUserAccess\(\s*AclActionsInterface::([A-Z0-9_]+)/',
-                (string)file_get_contents($file->getPathname()),
-                $matches
+                '/function getAclAction\(\)[^{]*\{.*?AclActionsInterface::([A-Z0-9_]+)/s',
+                $source,
+                $indirect
             );
 
-            foreach ($matches[1] as $action) {
+            foreach (array_merge($matches[1], $indirect[1]) as $action) {
                 $found[$action] = [$action];
             }
         }
