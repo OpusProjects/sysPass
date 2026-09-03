@@ -1,6 +1,7 @@
 <?php
 
-/**
+declare(strict_types=1);
+/*
  * sysPass
  *
  * @author nuxsmin
@@ -23,15 +24,12 @@
  * along with sysPass.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-declare(strict_types=1);
-
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigAuth;
 
 use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
-use RuntimeException;
 use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Domain\Config\Ports\ConfigDataInterface;
@@ -78,53 +76,102 @@ use Symfony\Component\HttpFoundation\Request;
  * `saveAction()` delegates to `ConfigTrait::saveConfig()`, which does carry a `catch` — around
  * `ConfigFileService::save()` — so that gets a test for the failure path too.
  */
+/**
+ * Saving configuration keeps the configuration it replaced.
+ *
+ * `ConfigBackupService::backup()` has existed since this rewrite was imported and was called from
+ * nowhere, so `config_backup` was never written — and the "Download config backup" link the
+ * Information page renders answered "Unable to retrieve the configuration" every time, on every
+ * installation. The integration tests around that download all seed the parameter by hand with
+ * `#[InjectConfigParam]`, which is the shape of a feature nothing produces.
+ *
+ * The backup is taken in `ConfigTrait::saveConfig()`, which every one of the nine configuration
+ * screens goes through, so one controller stands for all of them here.
+ */
 #[Group('unitary')]
-class RefusalsTest extends WebControllerTestCase
+class ConfigBackupOnSaveTest extends WebControllerTestCase
 {
     /**
      * @throws Exception
      */
     #[Test]
-    public function savingIsRefusedWhenTheAclDenies(): void
+    public function savingKeepsTheConfigurationItReplaces(): void
     {
-        $application = $this->signedInUserApplication();
-        $acl = $this->aclThatRefuses();
+        $configBackup = $this->createMock(ConfigBackupService::class);
+        $configBackup->expects(self::once())->method('backup');
 
-        $this->expectException(UnauthorizedPageException::class);
-
-        new SaveController(
-            $application,
-            $this->simpleControllerHelper($acl, 'configAuth', 'save'),
-            self::createStub(ConfigBackupService::class)
-        );
+        (new SaveController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
+            $configBackup
+        ))->saveAction();
     }
 
     /**
-     * What `ConfigTrait::saveConfig()` does when the write behind it fails.
+     * And takes it *before* the save, or it would keep the configuration it was replacing it with.
      *
-     * Nothing in the mocked integration harness ever fails to save, so this catch arm — the one
-     * shared by every controller that pulls in `ConfigTrait` — went untested. Here
-     * `ConfigFileService::save()` throws, and the assertion is that the caller is told rather than
-     * left with a blank page or an escaping fatal. Unlike a plain controller `catch`, this one
-     * answers with a fixed subject and carries the exception's message as `extra` instead.
+     * `ConfigFileService::getConfigData()` answers a clone and `save()` has not run yet, so what
+     * reaches `backup()` is the stored configuration rather than the one being written. Ordering is
+     * the only thing that makes that true, so it is asserted directly.
      *
      * @throws Exception
      */
     #[Test]
-    public function savingReportsAFailureBehindItRatherThanEscaping(): void
+    public function theBackupIsTakenBeforeTheNewConfigurationIsWritten(): void
     {
-        $application = $this->applicationWhoseConfigSaveThrows();
-        $acl = $this->aclThatAllows();
+        $order = [];
 
-        $response = (new SaveController(
-            $application,
-            $this->simpleControllerHelper($acl, 'configAuth', 'save'),
-            self::createStub(ConfigBackupService::class)
+        $config = $this->createStub(ConfigFileService::class);
+        $config->method('getConfigData')->willReturn($this->demoDisabledConfigData());
+        $config->method('save')->willReturnCallback(
+            function () use (&$order, &$config): ConfigFileService {
+                $order[] = 'save';
+
+                return $config;
+            }
+        );
+
+        $configBackup = $this->createStub(ConfigBackupService::class);
+        $configBackup->method('backup')->willReturnCallback(
+            static function () use (&$order): void {
+                $order[] = 'backup';
+            }
+        );
+
+        (new SaveController(
+            new Application($config, new EventDispatcher(), $this->signedInUserSession()),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
+            $configBackup
         ))->saveAction();
 
-        self::assertSame(ResponseStatus::ERROR, $response->status);
-        self::assertSame('Error while saving the configuration', $response->subject);
-        self::assertSame('the configuration file could not be written', $response->extra);
+        self::assertSame(['backup', 'save'], $order);
+    }
+
+    /**
+     * A demo instance refuses the save, and stores no backup of a configuration it did not replace.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function aRefusedSaveKeepsNothing(): void
+    {
+        $demoConfigData = $this->createStub(ConfigDataInterface::class);
+        $demoConfigData->method('isDemoEnabled')->willReturn(true);
+        $demoConfigData->method('getPasswordSalt')->willReturn('the-password-salt');
+
+        $config = $this->createStub(ConfigFileService::class);
+        $config->method('getConfigData')->willReturn($demoConfigData);
+
+        $configBackup = $this->createMock(ConfigBackupService::class);
+        $configBackup->expects(self::never())->method('backup');
+
+        $response = (new SaveController(
+            new Application($config, new EventDispatcher(), $this->signedInUserSession()),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
+            $configBackup
+        ))->saveAction();
+
+        self::assertSame(ResponseStatus::WARNING, $response->status);
     }
 
     /**
@@ -163,7 +210,6 @@ class RefusalsTest extends WebControllerTestCase
             new RouteContextData($controller, $action, $action . 'Action', [])
         );
     }
-
     /**
      * Mirrors `WebControllerTestCase::applicationForASignedInUser()`, with a real `EventDispatcher`
      * (see the class docblock) in place of a stubbed `EventDispatcherInterface`.
@@ -177,24 +223,6 @@ class RefusalsTest extends WebControllerTestCase
 
         return new Application($config, new EventDispatcher(), $this->signedInUserSession());
     }
-
-    /**
-     * Mirrors `signedInUserApplication()`, but swaps in a `ConfigFileService` double whose `save()`
-     * fails, to reach `ConfigTrait::saveConfig()`'s catch arm.
-     *
-     * @throws Exception
-     */
-    private function applicationWhoseConfigSaveThrows(): Application
-    {
-        $config = $this->createStub(ConfigFileService::class);
-        $config->method('getConfigData')->willReturn($this->demoDisabledConfigData());
-        $config->method('save')->willThrowException(
-            new RuntimeException('the configuration file could not be written')
-        );
-
-        return new Application($config, new EventDispatcher(), $this->signedInUserSession());
-    }
-
     /**
      * @throws Exception
      */
@@ -217,7 +245,6 @@ class RefusalsTest extends WebControllerTestCase
 
         return $session;
     }
-
     /**
      * @throws Exception
      */

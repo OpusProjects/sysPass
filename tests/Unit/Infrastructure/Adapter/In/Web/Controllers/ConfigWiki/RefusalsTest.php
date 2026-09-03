@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigWiki;
 
+use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -96,7 +97,8 @@ class RefusalsTest extends WebControllerTestCase
 
         new SaveController(
             $application,
-            $this->simpleControllerHelper($acl, 'configWiki', 'save')
+            $this->simpleControllerHelper($acl, 'configWiki', 'save'),
+            self::createStub(ConfigBackupService::class)
         );
     }
 
@@ -122,7 +124,8 @@ class RefusalsTest extends WebControllerTestCase
 
         $response = (new SaveController(
             $application,
-            $this->simpleControllerHelper($acl, 'configWiki', 'save')
+            $this->simpleControllerHelper($acl, 'configWiki', 'save'),
+            self::createStub(ConfigBackupService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
