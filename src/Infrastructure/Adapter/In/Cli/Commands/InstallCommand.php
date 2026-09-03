@@ -162,6 +162,8 @@ final class InstallCommand extends CommandBase
     {
         $style = new SymfonyStyle($input, $output);
 
+        self::warnAboutSecretsOnTheCommandLine($input, $style, 'adminPassword', 'masterPassword', 'databasePassword');
+
         try {
             // Throws when sysPass is already installed and --forceInstall was not given;
             // a fresh system installs without the flag

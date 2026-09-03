@@ -117,6 +117,8 @@ final class UpdateMasterPasswordCommand extends CommandBase
     ): int {
         $style = new SymfonyStyle($input, $output);
 
+        self::warnAboutSecretsOnTheCommandLine($input, $style, 'masterPassword', 'currentMasterPassword');
+
         if (!$this->lock()) {
             $style->warning(__('The command is already running in another process'));
 

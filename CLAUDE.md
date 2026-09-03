@@ -236,6 +236,16 @@ A few harness details bite when writing an integration test against a real branc
   rather than a bug. `anAccountStampedNow()` compares everything else exactly and takes only
   `passDate` from the actual, after checking it is a timestamp from the last few seconds. Injecting
   `sleep(1)` before the write is how to reproduce it, and how to show a fix works.
+- **An interrupted CLI install test poisons every later run, with an error that looks like a code
+  defect.** `DatabaseUtil::createUser()` grants with `GRANT … IDENTIFIED BY`, and MariaDB 11.8
+  refuses that for an account that **already exists** — *"Can't find any matching row in the user
+  table"* (SQLSTATE 28000, 1133). It creates a new one happily, so the helper works exactly once
+  per user: a run that dies before its teardown leaves `syspass@<ip>`, `syspass@<hostname>` and
+  `sp_*` users behind, and `InstallCommandTest` then fails for everyone afterwards. Confirm it is
+  not yours by running the same test on a stashed tree, then
+  `SELECT user, host FROM mysql.user` and drop the leftovers — everything but `syspass@%`,
+  `root@%`, `root@localhost`, `healthcheck@*` and `mariadb.sys@localhost` is a leftover.
+
 - **Faker's `randomNumber($n)` includes zero**, and forms read a zero id as "not given". A fixture
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
