@@ -42,6 +42,17 @@ interface UserPassRecoverService
      * @throws SPException
      * @throws ServiceException
      */
+    /**
+     * Spend every token outstanding for this user, because their password has just changed.
+     *
+     * @param int $userId
+     *
+     * @return int how many were still outstanding
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function toggleUsedByUserId(int $userId): int;
+
     public function toggleUsedByHash(string $hash): void;
 
     /**
