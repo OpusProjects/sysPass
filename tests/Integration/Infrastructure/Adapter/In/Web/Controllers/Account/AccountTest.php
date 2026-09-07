@@ -49,6 +49,7 @@ use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\Common\Dtos\QueryResult;
+use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AccountDataGenerator;
 use SP\Tests\Support\Generators\PublicLinkDataGenerator;
@@ -66,6 +67,8 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AccountTest extends IntegrationTestCase
 {
+    private const UNLISTABLE_ACCOUNT_NAME = 'an-account-this-user-cannot-list';
+
     private const OWNER_NAME = 'Fixture Person';
     private const GROUP_NAME = 'Fixture Team';
 
@@ -883,6 +886,60 @@ class AccountTest extends IntegrationTestCase
     }
 
     /**
+     * Requesting a modification does not name an account the caller could not have found.
+     *
+     * `ACCOUNT_REQUEST` answers `true` for every signed-in user — it is in the same unconditional
+     * arm as the notification actions — and the controller read the account with
+     * `getByIdEnriched()`, whose query is a bare `WHERE id = :id`. `AccountRequestHelper` is the
+     * one helper in its directory that does not call `checkAccess()`, where `AccountHelper` and
+     * `AccountHistoryHelper` both do. So any authenticated user could walk the ids and read back
+     * each account's name and client — including accounts marked private, which the search filter
+     * withholds from everybody, administrators included.
+     *
+     * The fix cannot be the usual per-account ACL check: this feature exists to ask about an
+     * account you can see listed and cannot open, which under global search is an account you have
+     * no relationship with. The bound is the search filter, which is what decides listability.
+     *
+     * The two queries are told apart by their statement rather than by their mapper, because both
+     * map to `AccountView` — only the filtered one joins `AccountToUser`, and on the old code no
+     * statement did, so the account was found and rendered.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerRequestAccessRefused')]
+    public function requestAccessDoesNotNameAnAccountTheUserCannotList()
+    {
+        $account = AccountDataGenerator::factory()->buildAccountDataView()->mutate(
+            ['name' => self::UNLISTABLE_ACCOUNT_NAME]
+        );
+
+        // Not a static closure: the harness binds it with Closure::call(). Everything other than
+        // the account read has to keep answering the way the harness's default does, or the
+        // request fails before it renders and the assertion below passes for the wrong reason.
+        $this->databaseQueryResolver = function (QueryData $queryData) use ($account): QueryResult {
+            if ($queryData->getMapClassName() !== AccountView::class) {
+                return new QueryResult([], 1, 100);
+            }
+
+            if (str_contains($queryData->getQuery()->getStatement(), 'AccountToUser')) {
+                // The filtered read: this user could not have listed it.
+                return new QueryResult([]);
+            }
+
+            return new QueryResult([$account]);
+        };
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'account/requestAccess/100'])
+        );
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -1119,6 +1176,14 @@ class AccountTest extends IntegrationTestCase
 
         self::assertCount(4, $filter);
         self::assertEquals('OK', $json->status);
+    }
+
+    /**
+     * The account's name is nowhere in what was sent back.
+     */
+    private function outputCheckerRequestAccessRefused(string $output): void
+    {
+        self::assertStringNotContainsString(self::UNLISTABLE_ACCOUNT_NAME, $output);
     }
 
     /**

@@ -139,6 +139,18 @@ interface AccountService
     public function getByIdEnriched(int $id): AccountView;
 
     /**
+     * The same account, but only when the signed-in user could have found it by searching.
+     *
+     * @param int $id
+     *
+     * @return AccountView
+     * @throws QueryException
+     * @throws NoSuchItemException
+     * @throws ConstraintException
+     */
+    public function getByIdEnrichedForUser(int $id): AccountView;
+
+    /**
      * @param int $id The account ID
      *
      * @return Account

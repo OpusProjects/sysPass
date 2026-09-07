@@ -192,6 +192,37 @@ final class Account extends Service implements AccountService
     }
 
     /**
+     * The same account, but only when the signed-in user could have found it by searching.
+     *
+     * `getByIdEnriched()` applies no filter, on purpose: most of its callers pair it with an
+     * explicit per-account ACL check. The "request modification" flow has neither, and cannot use
+     * the usual check either — asking about an account you can see listed and cannot open is what
+     * the feature is for, and under global search that is an account you have no relationship
+     * with. The search filter is what decides listability, so it is the right bound, and it
+     * withholds a private account from everybody including administrators.
+     *
+     * An account the user could not have listed is refused with the same "doesn't exist" as one
+     * that is really absent, so the two cannot be told apart by the answer.
+     *
+     * @param int $id
+     *
+     * @return AccountView
+     * @throws ConstraintException
+     * @throws NoSuchItemException
+     * @throws QueryException
+     */
+    public function getByIdEnrichedForUser(int $id): AccountView
+    {
+        $result = $this->accountRepository->getByIdEnrichedForUser($id);
+
+        if ($result->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('The account doesn\'t exist'));
+        }
+
+        return $result->getData(AccountView::class);
+    }
+
+    /**
      * Update accounts in bulk mode
      *
      * @param AccountUpdateBulkDto $accountUpdateBulkDto

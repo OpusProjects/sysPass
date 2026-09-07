@@ -640,6 +640,42 @@ final class Account extends BaseRepository implements AccountRepository
     }
 
     /**
+     * The enriched account, but only when the signed-in user could have found it by searching.
+     *
+     * `getByIdEnriched()` above applies no filter, on purpose: most of its callers pair it with an
+     * explicit per-account ACL check. The "request modification" flow has neither, and cannot use
+     * the usual check either — asking about an account you can see listed and cannot open is what
+     * that feature is *for*, and under global search that is an account you have no relationship
+     * with. So the bound is the search filter itself, which is what decides listability, and which
+     * withholds a private account from everybody, administrators included.
+     *
+     * The view is aliased to `Account` because that is the name `AccountFilter` qualifies its
+     * conditions with, and `account_data_v` exposes every column they read — `id`, `userId`,
+     * `userGroupId`, `isPrivate`, `isPrivateGroup`.
+     *
+     * @param int $accountId
+     *
+     * @return QueryResult<AccountViewModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByIdEnrichedForUser(int $accountId): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->from(sprintf('%s AS Account', AccountViewModel::TABLE))
+            ->cols(AccountViewModel::getCols())
+            ->where('Account.id = :id')
+            ->bindValues(['id' => $accountId])
+            ->limit(1);
+
+        $queryData = QueryData::buildWithMapper($this->accountFilterUser->buildFilter(false, $query), AccountViewModel::class)
+                              ->setOnErrorMessage(__u('Error while retrieving account\'s data'));
+
+        return $this->db->runQuery($queryData);
+    }
+
+    /**
      * @param int|null $accountId
      *
      * @return QueryResult<Simple>

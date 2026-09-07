@@ -160,6 +160,17 @@ interface AccountRepository extends Repository
     public function getDataForLink(int $accountId): QueryResult;
 
     /**
+     * The enriched account, but only when the signed-in user could have found it by searching.
+     *
+     * @param int $accountId
+     *
+     * @return QueryResult<AccountViewModel>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getByIdEnrichedForUser(int $accountId): QueryResult;
+
+    /**
      * @param int|null $accountId
      *
      * @return QueryResult<Simple>
