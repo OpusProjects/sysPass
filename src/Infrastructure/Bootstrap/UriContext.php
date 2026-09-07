@@ -36,12 +36,14 @@ final readonly class UriContext implements UriContextInterface
     private string $subUri;
     private string $webRoot;
     private string $webUri;
+    private string $unforwardedWebUri;
 
     public function __construct(RequestService $request)
     {
         $this->subUri = $this->buildSubUri($request);
         $this->webRoot = $this->buildWebRoot($request);
         $this->webUri = $request->getHttpHost() . $this->webRoot;
+        $this->unforwardedWebUri = $request->getHttpHostIgnoringForwarding() . $this->webRoot;
     }
 
     private function buildSubUri(RequestService $request): string
@@ -60,6 +62,21 @@ final readonly class UriContext implements UriContextInterface
         }
 
         return '';
+    }
+
+    /**
+     * The same URI, built without consulting `Forwarded` / `X-Forwarded-*`.
+     *
+     * `getWebUri()` prefers those headers so that an installation behind a reverse proxy reports
+     * the address its users actually type. They are supplied by whoever made the request, though,
+     * and nothing here calls `setTrustedProxies()` — verified against the running instance, where
+     * `X-Forwarded-Host: evil.example.com` comes straight back out. That is the right trade for a
+     * displayed URL and the wrong one for a link that is mailed to somebody else and carries a
+     * one-time token, which is what this exists for.
+     */
+    public function getUnforwardedWebUri(): string
+    {
+        return $this->unforwardedWebUri;
     }
 
     public function getWebUri(): string

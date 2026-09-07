@@ -101,6 +101,11 @@ interface RequestService
     public function getHttpHost(): string;
 
     /**
+     * The host this request actually arrived at, without consulting the forwarded headers.
+     */
+    public function getHttpHostIgnoringForwarding(): string;
+
+    /**
      * Return forward data per RFC 7239
      *
      * @return array{host: string, proto: string, for: string[]|null}|null
