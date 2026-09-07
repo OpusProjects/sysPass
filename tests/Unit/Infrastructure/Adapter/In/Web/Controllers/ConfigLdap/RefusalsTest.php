@@ -27,6 +27,8 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
+use SP\Domain\Common\Services\ServiceException;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -154,6 +156,8 @@ class RefusalsTest extends WebControllerTestCase
             $application,
             $this->simpleControllerHelper($acl, 'configLdap', 'import'),
             $ldapImportService
+        ,
+            self::createStub(UserProfileService::class)
         );
     }
 
@@ -171,7 +175,8 @@ class RefusalsTest extends WebControllerTestCase
         new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configLdap', 'save'),
-            self::createStub(ConfigBackupService::class)
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
         );
     }
 
@@ -198,7 +203,8 @@ class RefusalsTest extends WebControllerTestCase
         $response = (new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configLdap', 'save'),
-            self::createStub(ConfigBackupService::class)
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
@@ -235,6 +241,8 @@ class RefusalsTest extends WebControllerTestCase
                 'import'
             ),
             $ldapImportService
+        ,
+            self::createStub(UserProfileService::class)
         );
     }
 
@@ -260,10 +268,10 @@ class RefusalsTest extends WebControllerTestCase
                 'configLdap',
                 'save',
                 enablingLdap: true
-            )
-        ,
-                self::createStub(ConfigBackupService::class)
-            ))->saveAction();
+            ),
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
+        ))->saveAction();
     }
 
     /**
@@ -282,16 +290,77 @@ class RefusalsTest extends WebControllerTestCase
                 $this->aclThatAllowsAllBut(AclActionsInterface::USER_CREATE),
                 'configLdap',
                 'save'
-            )
-        ,
-                self::createStub(ConfigBackupService::class)
-            ))->saveAction();
+            ),
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
+        ))->saveAction();
 
         // Reaching saveConfig() at all is the point: the request carries no ldap_enabled flag, so
         // this is the "disable it" path, which touches neither of the two guarded settings. That it
         // then reports the stubbed write failure is how we know it got that far.
         self::assertSame(ResponseStatus::ERROR, $response->status);
         self::assertSame('Error while saving the configuration', $response->subject);
+    }
+
+    /**
+     * ...and the profile named has to be one this administrator could have granted by hand.
+     *
+     * `USER_CREATE` answers "may create users at all". It says nothing about how much a particular
+     * profile grants, which is what `UserProfileService::assertAssignableBy()` is for and what
+     * every user create/edit door — both web save controllers and both API ones — already asks.
+     * Without it here, a delegated administrator holding `isConfigGeneral()` and `isMgmUsers()`,
+     * two independent profile bits, could name a profile stronger than their own and have every
+     * LDAP user auto-provisioned into it.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function namingAProfileStrongerThanYourOwnIsRefused(): void
+    {
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('You cannot assign a profile with more permissions than your own');
+
+        (new SaveController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configLdap', 'save', enablingLdap: true),
+            self::createStub(ConfigBackupService::class),
+            $this->userProfileServiceThatRefuses()
+        ))->saveAction();
+    }
+
+    /**
+     * The same for the import, which hands every user it creates that profile directly.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function importingUsersIntoAProfileStrongerThanYourOwnIsRefused(): void
+    {
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('You cannot assign a profile with more permissions than your own');
+
+        (new ImportController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configLdap', 'import', enablingLdap: true),
+            self::createStub(LdapImportService::class),
+            $this->userProfileServiceThatRefuses()
+        ))->importAction();
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function userProfileServiceThatRefuses(): UserProfileService
+    {
+        $userProfileService = $this->createStub(UserProfileService::class);
+        $userProfileService->method('assertAssignableBy')->willThrowException(
+            ServiceException::error(
+                'You cannot assign a profile with more permissions than your own',
+                'Please contact to the administrator'
+            )
+        );
+
+        return $userProfileService;
     }
 
     /**

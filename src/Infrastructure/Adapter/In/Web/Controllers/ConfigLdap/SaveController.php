@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
+use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigBackupService;
@@ -56,7 +57,8 @@ final class SaveController extends SimpleControllerBase
     public function __construct(
         Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
-        private readonly ConfigBackupService $configBackup
+        private readonly ConfigBackupService $configBackup,
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -93,6 +95,14 @@ final class SaveController extends SimpleControllerBase
                 || $ldapDefaultProfile !== $configData->getLdapDefaultProfile()
             ) {
                 $this->checkAccess(AclActionsInterface::USER_CREATE);
+
+                // ...and the profile has to be one this administrator could have granted by hand.
+                // USER_CREATE answers "may create users at all"; it says nothing about how much a
+                // particular profile grants, which is what assertAssignableBy() is for and what
+                // every user create/edit door already asks. Without it, a delegated administrator
+                // holding isConfigGeneral() and isMgmUsers() could name a profile stronger than
+                // their own and have every LDAP user auto-provisioned into it.
+                $this->userProfileService->assertAssignableBy($ldapDefaultProfile ?? 0);
             }
 
             $ldapParams = LdapParams::fromRequest($this->request);

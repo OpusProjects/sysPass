@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigLdap;
 
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
@@ -53,7 +54,8 @@ final class ImportController extends SimpleControllerBase
     public function __construct(
         Application                        $application,
         SimpleControllerHelper             $simpleControllerHelper,
-        private readonly LdapImportService $ldapImportService
+        private readonly LdapImportService $ldapImportService,
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -148,6 +150,13 @@ final class ImportController extends SimpleControllerBase
         // none of them implies another. Without this, "may configure the LDAP connection" reached
         // "may create a user holding any existing profile", including one with mgmUsers itself.
         $this->checkAccess(AclActionsInterface::USER_CREATE);
+
+        // ...and the profile every imported user is given has to be one this administrator could
+        // have granted by hand. See ConfigLdap\SaveController: USER_CREATE is "may create users",
+        // not "may grant this much".
+        $this->userProfileService->assertAssignableBy(
+            $this->request->analyzeInt('ldap_defaultprofile') ?? 0
+        );
 
         $this->extensionChecker->checkLdap(true);
     }

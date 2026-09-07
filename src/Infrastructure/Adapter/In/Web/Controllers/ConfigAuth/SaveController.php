@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\ConfigAuth;
 
+use SP\Application\User\Ports\UserProfileService;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
 use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigBackupService;
@@ -27,7 +28,8 @@ final class SaveController extends SimpleControllerBase
     public function __construct(
         Application            $application,
         SimpleControllerHelper $simpleControllerHelper,
-        private readonly ConfigBackupService $configBackup
+        private readonly ConfigBackupService $configBackup,
+        private readonly UserProfileService $userProfileService
     ) {
         parent::__construct($application, $simpleControllerHelper);
     }
@@ -67,6 +69,20 @@ final class SaveController extends SimpleControllerBase
             $configData->setAuthBasicEnabled(true);
             $configData->setAuthBasicAutoLoginEnabled($authBasicAutologinEnabled);
             $configData->setAuthBasicDomain($authBasicDomain);
+            // The same authorisation question ConfigLdap\SaveController asks about its own
+            // defaults, and this door asked neither half of it. These decide the group and profile
+            // every user auto-provisioned on their first SSO sign-in receives —
+            // User::createOnLogin() reads them — so setting them is a user-management decision
+            // reached here with isConfigGeneral(), an independent bit from the isMgmUsers() that
+            // USER_CREATE answers. Only when they change, so an administrator of the rest of this
+            // page can still save it.
+            if ($authSsoDefaultGroup !== $configData->getSsoDefaultGroup()
+                || $authSsoDefaultProfile !== $configData->getSsoDefaultProfile()
+            ) {
+                $this->checkAccess(AclActionsInterface::USER_CREATE);
+                $this->userProfileService->assertAssignableBy($authSsoDefaultProfile ?? 0);
+            }
+
             $configData->setSsoDefaultGroup($authSsoDefaultGroup);
             $configData->setSsoDefaultProfile($authSsoDefaultProfile);
         } elseif ($configData->isAuthBasicEnabled()) {

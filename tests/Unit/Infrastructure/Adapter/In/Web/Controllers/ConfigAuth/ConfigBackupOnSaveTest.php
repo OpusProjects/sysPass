@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigAuth;
 
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -104,6 +105,8 @@ class ConfigBackupOnSaveTest extends WebControllerTestCase
             $this->signedInUserApplication(),
             $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
             $configBackup
+        ,
+            self::createStub(UserProfileService::class)
         ))->saveAction();
     }
 
@@ -142,6 +145,8 @@ class ConfigBackupOnSaveTest extends WebControllerTestCase
             new Application($config, new EventDispatcher(), $this->signedInUserSession()),
             $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
             $configBackup
+        ,
+            self::createStub(UserProfileService::class)
         ))->saveAction();
 
         self::assertSame(['backup', 'save'], $order);
@@ -169,6 +174,8 @@ class ConfigBackupOnSaveTest extends WebControllerTestCase
             new Application($config, new EventDispatcher(), $this->signedInUserSession()),
             $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save'),
             $configBackup
+        ,
+            self::createStub(UserProfileService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::WARNING, $response->status);
