@@ -33,12 +33,21 @@ use SP\Domain\Common\Models\Item;
 trait ItemDataTrait
 {
     /**
-     * @param Item[] $items
+     * Keep only the `Item`s out of whatever was handed over.
+     *
+     * The parameter is deliberately `mixed[]` rather than `Item[]`: every caller takes a bare
+     * `array` at runtime — `AccountAclDto`'s constructor and `AccountEnrichedDto`'s `with*()`
+     * methods all declare `array $x` — and the values arrive from the database and from
+     * deserialized DTOs, so this filter is the thing that makes the array an `Item[]`. Annotating
+     * the input as `Item[]` claimed the guarantee this method exists to provide, which is why
+     * PHPStan 2.2.12 began reporting the `instanceof` as always true.
+     *
+     * @param mixed[] $items
      *
      * @return Item[]
      */
     private static function buildFromItemData(array $items): array
     {
-        return array_filter($items, static fn($value) => $value instanceof Item);
+        return array_filter($items, static fn(mixed $value): bool => $value instanceof Item);
     }
 }
