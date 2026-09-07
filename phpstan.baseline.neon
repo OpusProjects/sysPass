@@ -199,12 +199,6 @@ parameters:
 			path: src/Domain/Account/Adapters/AccountPermission.php
 
 		-
-			message: '#^Instanceof between SP\\Domain\\Common\\Models\\Item and SP\\Domain\\Common\\Models\\Item will always evaluate to true\.$#'
-			identifier: instanceof.alwaysTrue
-			count: 1
-			path: src/Domain/Account/Dtos/AccountEnrichedDto.php
-
-		-
 			message: '#^Instanceof between SP\\Domain\\Account\\Dtos\\AccountUpdateDto and SP\\Domain\\Account\\Dtos\\AccountUpdateDto will always evaluate to true\.$#'
 			identifier: instanceof.alwaysTrue
 			count: 1
