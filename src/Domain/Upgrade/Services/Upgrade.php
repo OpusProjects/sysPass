@@ -85,15 +85,42 @@ final class Upgrade extends Service implements UpgradeService
             )
         );
 
-        foreach ($this->getTargetUpgradeHandlers($version) as [$targetVersion, $upgradeHandler]) {
-            if (!$upgradeHandler->apply($targetVersion, $configData)) {
-                throw UpgradeException::critical(
-                    __u('Error while applying the update'),
-                    __u('Please, check the event log for more details')
-                );
+        foreach ($this->getTargetUpgradeHandlersByVersion($version) as $targetVersion => $upgradeHandlers) {
+            foreach ($upgradeHandlers as $upgradeHandlerClass) {
+                try {
+                    // Resolved here rather than while grouping, so a handler we never reach —
+                    // because an earlier one failed — is never constructed. The conversion is
+                    // what the grouping's own catch used to provide for this call.
+                    $upgradeHandler = $this->container->get($upgradeHandlerClass);
+                } catch (Throwable $e) {
+                    throw ServiceException::from($e);
+                }
+
+                if (!$upgradeHandler->apply($targetVersion, $configData)) {
+                    throw UpgradeException::critical(
+                        __u('Error while applying the update'),
+                        __u('Please, check the event log for more details')
+                    );
+                }
+
+                logger('Upgrade: ' . $upgradeHandler::class);
             }
 
-            logger('Upgrade: ' . $upgradeHandler::class);
+            // The resume point, advanced as each version finishes rather than only once at the end.
+            //
+            // What still needs running is derived from `appVersion`, and that used to be written
+            // after *every* handler had succeeded, while progress was really being stamped per file
+            // in `databaseVersion`. So an interruption between two versions — an OOM kill, a
+            // stopped container, or simply `max_execution_time`, which nothing here raises although
+            // every other long write path calls `set_time_limit(0)` — left a database already
+            // migrated and a resume point that had not moved. The retry then re-ran a migration
+            // that had already been applied: `40024210101.sql` drops a column that is no longer
+            // there and fails for good, and `UpgradeConfigText` would decode text that is already
+            // decoded, which its own header says must happen exactly once.
+            //
+            // Writing it inside the loop is safe because the generator was built from the original
+            // version and is not re-evaluated; only a later run sees the advanced value.
+            $configData->setAppVersion($targetVersion);
 
             $this->config->save($configData);
         }
@@ -116,12 +143,25 @@ final class Upgrade extends Service implements UpgradeService
     }
 
     /**
-     * @return iterable<array{string, UpgradeHandlerService}>
+     * Every handler still to run, grouped by the version it belongs to, oldest version first.
+     *
+     * Grouped because two handlers can declare the same version — `UpgradeDatabase` and
+     * `UpgradeConfigText` both carry `400.24240101` — and the resume point may only advance once
+     * both have run. Sorted because it is a resume point: applying a lower version after a higher
+     * one would move it backwards, and a migration must in any case not run before one that
+     * precedes it. The order used to be whatever order the handlers were registered and their
+     * attributes declared in, which happens to ascend today and is nothing the code required.
+     *
+     * @param string $version
+     *
+     * @return array<string, class-string<UpgradeHandlerService>[]>
      * @throws ServiceException
      */
-    private function getTargetUpgradeHandlers(string $version): iterable
+    private function getTargetUpgradeHandlersByVersion(string $version): array
     {
         try {
+            $byVersion = [];
+
             foreach ($this->upgradeHandlers as $class) {
                 $reflection = new ReflectionClass($class);
                 /** @var ReflectionAttribute<UpgradeVersion> $attribute */
@@ -129,10 +169,22 @@ final class Upgrade extends Service implements UpgradeService
                     $instance = $attribute->newInstance();
 
                     if (Version::checkVersion($version, $instance->version)) {
-                        yield [$instance->version, $this->container->get($class)];
+                        // The class, not the instance: a handler that a failure upstream means we
+                        // never reach should not be constructed either.
+                        $byVersion[$instance->version][] = $class;
                     }
                 }
             }
+
+            uksort(
+                $byVersion,
+                static fn(string $left, string $right): int => version_compare(
+                    (string)Version::normalizeVersionForCompare($left),
+                    (string)Version::normalizeVersionForCompare($right)
+                )
+            );
+
+            return $byVersion;
         } catch (Throwable $e) {
             throw ServiceException::from($e);
         }

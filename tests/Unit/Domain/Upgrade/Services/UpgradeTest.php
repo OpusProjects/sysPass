@@ -158,6 +158,84 @@ class UpgradeTest extends UnitaryTestCase
     }
 
     /**
+     * The resume point moves as each version finishes, not once at the end.
+     *
+     * What still needs running is derived from `appVersion`, and it used to be written only after
+     * every handler had succeeded — while progress was really being stamped per file in
+     * `databaseVersion`. An interruption between two versions therefore left a database already
+     * migrated and a resume point that had not moved, and the retry re-ran a migration that had
+     * already been applied: `40024210101.sql` drops a column that is no longer there and fails for
+     * good, and `UpgradeConfigText` would decode text that is already decoded, which its own
+     * header says must happen exactly once.
+     *
+     * The second version failing is what makes this say anything: the first has completed, so its
+     * version must be on record before the failure, and the run must not go on to claim the
+     * application is fully upgraded.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    public function testAnInterruptedUpgradeRecordsTheVersionsThatFinished()
+    {
+        $configData = $this->createMock(ConfigDataInterface::class);
+
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->method('apply')->willReturnCallback(
+            static fn(string $version): bool => $version === '400.00000001'
+        );
+
+        $this->container->method('get')->willReturn($handler);
+
+        // The version that finished, and nothing else — in particular not the application version,
+        // which would tell the next run there is nothing left to do.
+        $configData->expects($this->once())->method('setAppVersion')->with('400.00000001');
+        $this->config->expects($this->once())->method('save');
+
+        $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
+
+        $this->expectException(UpgradeException::class);
+
+        $this->upgrade->upgrade('400.00000000', $configData);
+    }
+
+    /**
+     * And two versions that both finish are recorded in order, oldest first, before the run stamps
+     * the application version it reached.
+     *
+     * The order is not incidental: the value written after each version is a resume point, so
+     * applying a lower version after a higher one would move it backwards. It used to be whatever
+     * order the handlers were registered and their attributes declared in.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws InvalidClassException
+     */
+    public function testTheVersionsAreAppliedOldestFirst()
+    {
+        $configData = $this->createStub(ConfigDataInterface::class);
+
+        $applied = [];
+        $handler = $this->createMock(UpgradeHandlerService::class);
+        $handler->method('apply')->willReturnCallback(
+            static function (string $version) use (&$applied): bool {
+                $applied[] = $version;
+
+                return true;
+            }
+        );
+
+        $this->container->method('get')->willReturn($handler);
+
+        $this->upgrade->registerUpgradeHandler(UpgradeHandlerStub::class);
+        $this->upgrade->upgrade('400.00000000', $configData);
+
+        self::assertSame(['400.00000001', '400.00000002'], $applied);
+    }
+
+    /**
      * @throws Exception
      * @throws ServiceException
      * @throws FileException
@@ -168,9 +246,12 @@ class UpgradeTest extends UnitaryTestCase
     {
         $configData = $this->createStub(ConfigDataInterface::class);
         $handler = $this->createMock(UpgradeHandlerService::class);
+        // The oldest version outstanding, not whichever the stub happens to declare first: the
+        // handlers now run in ascending order, because the resume point written after each one
+        // must not go backwards.
         $handler->expects($this->once())
                 ->method('apply')
-                ->with('400.00000002', $configData)
+                ->with('400.00000001', $configData)
                 ->willReturn(false);
 
         $this->container

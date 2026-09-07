@@ -553,6 +553,21 @@ you have no relationship with at all — `AccountSearchItem::isShowRequest()` is
 ACL. **Ask what a feature is for before deciding which check it was missing**; a guard copied from
 a sibling can be the wrong guard.
 
+**A resume point that only moves when everything succeeded.** The upgrade decided what still
+needed running from `appVersion`, written once after every handler had finished, while progress was
+really being stamped per file in `databaseVersion`. So an interruption between two versions left a
+database already migrated and a resume point that had not moved, and the retry re-ran a migration
+that had already been applied — `40024210101.sql` drops a column that is no longer there and fails
+for good, and `UpgradeConfigText` would decode text that is already decoded, which its own header
+says must happen exactly once. Nothing in the upgrade calls `set_time_limit(0)`, though every other
+long write path does, so `max_execution_time` alone reaches it.
+
+**When one field records progress and another decides what to do next, they have to be the same
+field.** The fix advances `appVersion` as each version completes, which forces the versions to be
+applied in ascending order — a resume point that goes backwards is worse than one that never moves
+— and that in turn closed a latent fragility: the order used to be whichever way the handlers were
+registered and their attributes declared.
+
 **A guard on the read but not on the write.** `Notification` has the rule written down and named —
 `checkUserAccess()`, admins may reach any notification and regular users only their own, answering
 "not found" so ids cannot be enumerated by the difference. It was called from `getById()` and
