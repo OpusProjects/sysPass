@@ -50,10 +50,8 @@ use SP\Infrastructure\PhpExtensionChecker;
 class ArchiveHandlerTest extends TestCase
 {
     /**
-     * The one production caller always passes a regex (`BackupFile::BACKUP_INCLUDE_REGEX`), and so
-     * does this — `compressDirectory()`'s `?string $regex = null` default reaches
-     * `PharData::buildFromDirectory()`, which requires a string, so the null is a TypeError. It is
-     * unreachable today and is not this change's to fix.
+     * The one production caller passes a regex (`BackupFile::BACKUP_INCLUDE_REGEX`); most of these
+     * do too, and one below takes the other option deliberately.
      */
     private const EVERYTHING = '/.*/';
 
@@ -130,6 +128,29 @@ class ArchiveHandlerTest extends TestCase
         // URL for a file *inside* the archive rather than the archive's own path. Every caller
         // discards it, so that is a wart rather than a defect, but it is not what to measure.
         self::assertSame(0600, fileperms($this->archivePath()) & 0777);
+    }
+
+    /**
+     * Archiving a whole directory, which is what `?string $regex = null` offers.
+     *
+     * Taking that option handed the null straight to `PharData::buildFromDirectory()`, whose second
+     * parameter is declared `string` — a deprecation on PHP 8.5, a fatal on PHP 9, and already a
+     * hard error under this suite's error handler, which is how it was found. The one production
+     * caller always passes a regex, so nothing had reached it.
+     *
+     * Asserted on the contents rather than on the absence of an error: the fix is the one-argument
+     * form, and the thing worth pinning is that it still archives everything.
+     */
+    #[Test]
+    public function aDirectoryCanBeArchivedWithNoPatternAtAll(): void
+    {
+        file_put_contents($this->source . DIRECTORY_SEPARATOR . 'second.txt', 'more');
+
+        $this->handler()->compressDirectory($this->source);
+
+        $entries = iterator_to_array(new PharData($this->archivePath()));
+
+        self::assertCount(2, $entries);
     }
 
     /**
