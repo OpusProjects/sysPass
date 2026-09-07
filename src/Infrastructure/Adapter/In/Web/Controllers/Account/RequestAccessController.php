@@ -75,7 +75,7 @@ final class RequestAccessController extends ControllerBase
         $this->accountRequestHelper->initializeFor(AclActionsInterface::ACCOUNT_REQUEST);
         $this->accountRequestHelper->setIsView(true);
         $this->accountRequestHelper->setViewForRequest(
-            new AccountEnrichedDto($this->accountService->getByIdEnriched($id))
+            new AccountEnrichedDto($this->accountService->getByIdEnrichedForUser($id))
         );
 
         $this->view->addTemplate('account-request');

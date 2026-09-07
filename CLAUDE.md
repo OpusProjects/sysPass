@@ -536,6 +536,23 @@ and whether the thing being guarded varies with it.** Here it did not — which 
 `CustomField::valueFor()` decides on `isValueEncrypted` and never looks at the type, was right all
 along. The fix computes the decision once per field, above the switch.
 
+**An unfiltered read whose caller was the one without a check.** `AccountRepository::getByIdEnriched()`
+applies no filter on purpose — most callers pair it with an explicit per-account ACL check, and the
+"swept and clean" note above records that every path to a secret does. `account/requestAccess` did
+neither: `ACCOUNT_REQUEST` sits in the unconditional arm of `Acl::checkUserAccess()` beside the
+notification actions, and `AccountRequestHelper` is the one helper in its directory that does not
+call `checkAccess()`, where `AccountHelper` and `AccountHistoryHelper` both do. Any signed-in user
+could walk the ids and read back each account's name and client — private accounts included, which
+the search filter withholds from everybody, administrators among them.
+
+The fix is the interesting part, and the obvious one is wrong: **the usual per-account check would
+have broken the feature.** Requesting a modification exists precisely for an account you can see
+listed and cannot open, which under global search (`isFilterWithoutGlobalSearch()`) is an account
+you have no relationship with at all — `AccountSearchItem::isShowRequest()` is literally
+`!isShow()`. The bound is therefore the *search filter*, which is what decides listability, not the
+ACL. **Ask what a feature is for before deciding which check it was missing**; a guard copied from
+a sibling can be the wrong guard.
+
 **A guard on the read but not on the write.** `Notification` has the rule written down and named —
 `checkUserAccess()`, admins may reach any notification and regular users only their own, answering
 "not found" so ids cannot be enumerated by the difference. It was called from `getById()` and
