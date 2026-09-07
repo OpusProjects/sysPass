@@ -30,6 +30,8 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Application\Notification\Ports\MailService;
+use SP\Domain\Core\Messages\MailMessage;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\UserDataGenerator;
@@ -75,6 +77,64 @@ class SaveRequestControllerTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+
+        $this->expectOutputRegex('/"status":"OK","description":"Request sent"/');
+    }
+
+    /**
+     * The mailed link points where the installation lives, not where the caller said it does.
+     *
+     * `saveRequestAction()` needs no session, and the base URI came from
+     * `UriContextInterface::getWebUri()`, which prefers `Forwarded` / `X-Forwarded-Host`. Nothing
+     * in this application calls `setTrustedProxies()`, so those headers are whatever the caller
+     * sent — verified against the running instance, where `X-Forwarded-Host: evil.example.com`
+     * comes straight back out.
+     *
+     * So an unauthenticated caller who knew a login and its email address could choose the host in
+     * the message the real user then received: a genuine mail, from the real installation, whose
+     * link hands the one-time hash to somebody else's server.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    public function testTheResetLinkIgnoresAForwardedHost(): void
+    {
+        $login = 'resetme';
+        $email = 'resetme@example.com';
+
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(
+            ['login' => $login, 'email' => $email, 'isDisabled' => false, 'isLdap' => false]
+        );
+
+        $this->addDatabaseMapperResolver(UserModel::class, new QueryResult([$userData]));
+
+        $sent = null;
+        $mailService = $this->createStub(MailService::class);
+        $mailService->method('send')->willReturnCallback(
+            static function (string $subject, string|array $to, MailMessage $mailMessage) use (&$sent): void {
+                $sent = $mailMessage->composeText();
+            }
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'userPassReset/saveRequest'],
+                ['login' => $login, 'email' => $email],
+                [],
+                self::CSRF_TOKEN,
+                ['HTTP_X_FORWARDED_HOST' => 'evil.example.com', 'HTTP_X_FORWARDED_PROTO' => 'https']
+            ),
+            [MailService::class => $mailService]
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertNotNull($sent, 'the reset mail has to be sent for this to say anything');
+        self::assertStringNotContainsString('evil.example.com', $sent);
+        self::assertStringContainsString('localhost', $sent);
 
         $this->expectOutputRegex('/"status":"OK","description":"Request sent"/');
     }

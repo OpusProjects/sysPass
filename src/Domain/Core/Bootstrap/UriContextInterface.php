@@ -38,6 +38,11 @@ interface UriContextInterface
     public function getWebUri(): string;
 
     /**
+     * The same URI, built without consulting `Forwarded` / `X-Forwarded-*`.
+     */
+    public function getUnforwardedWebUri(): string;
+
+    /**
      * The current request path relative to the application root (e.g. files/index.php)
      *
      * @return string

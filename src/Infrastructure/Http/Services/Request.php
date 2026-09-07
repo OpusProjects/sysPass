@@ -387,6 +387,19 @@ class Request implements RequestService
             return strtolower(sprintf('%s://%s', $forwarded['proto'], $forwarded['host']));
         }
 
+        return $this->getHttpHostIgnoringForwarding();
+    }
+
+    /**
+     * The host this request actually arrived at, without consulting the forwarded headers.
+     *
+     * Those headers are supplied by whoever made the request — nothing here calls
+     * `setTrustedProxies()` — so `getHttpHost()` answers whatever a caller asks it to. That is
+     * acceptable for a URL the same caller is about to be shown, and not for one that is mailed to
+     * somebody else with a one-time token in it.
+     */
+    public function getHttpHostIgnoringForwarding(): string
+    {
         /** @noinspection HttpUrlsUsage */
         $protocol = 'http://';
 

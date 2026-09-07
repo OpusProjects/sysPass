@@ -122,7 +122,7 @@ final class SaveRequestController extends UserPassResetSaveBase
             $this->mailService->send(
                 __('Password Change'),
                 $email,
-                UserPassRecover::getMailMessage($hash, $this->uriContext->getWebUri())
+                UserPassRecover::getMailMessage($hash, $this->configData, $this->uriContext)
             );
         } catch (Exception $e) {
             // Recorded and counted, not reported. The tracking still runs, so guessing is still

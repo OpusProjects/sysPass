@@ -122,7 +122,7 @@ abstract class UserSaveBase extends ControllerBase
             $this->mailService->send(
                 __('Password Change'),
                 $userData->getEmail() ?? '',
-                UserPassRecover::getMailMessage($hash, $this->uriContext->getWebUri())
+                UserPassRecover::getMailMessage($hash, $this->configData, $this->uriContext)
             );
         }
     }

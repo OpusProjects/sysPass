@@ -29,6 +29,8 @@ use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Application\Application;
 use SP\Domain\Core\Messages\MailMessage;
 use SP\Domain\Common\Providers\Password;
+use SP\Domain\Config\Ports\ConfigDataInterface;
+use SP\Domain\Core\Bootstrap\UriContextInterface;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Exceptions\ConstraintException;
@@ -66,8 +68,33 @@ final class UserPassRecover extends Service implements UserPassRecoverService
         parent::__construct($application);
     }
 
-    public static function getMailMessage(string $hash, string $baseUri): MailMessage
-    {
+    /**
+     * The mail carrying a one-time reset link, and the address that link points at.
+     *
+     * The base URI is decided here rather than taken from the caller, because both callers used to
+     * pass `UriContextInterface::getWebUri()` — which prefers `Forwarded` / `X-Forwarded-Host`,
+     * headers supplied by whoever made the request, with no `setTrustedProxies()` anywhere to
+     * restrict them. Verified against the running instance: `X-Forwarded-Host: evil.example.com`
+     * comes straight back out of the application.
+     *
+     * `saveRequestAction()` needs no session, so an unauthenticated caller who knows a login and
+     * its email address could choose the host in the mail the real user then receives — a
+     * legitimate message, from the real installation, whose link hands the one-time hash to
+     * somebody else.
+     *
+     * Six other link builders in this application already prefer the configured application URL
+     * (`AccountHelper`, `ViewLinkController`, `PublicLinkViewBase`, `AccountSearchItem`,
+     * `Template`, `Account\SaveRequestController`); these two were the exception. The fallback is
+     * the unforwarded host rather than `getWebUri()`, so the header cannot choose it even when no
+     * application URL has been configured.
+     */
+    public static function getMailMessage(
+        string              $hash,
+        ConfigDataInterface $configData,
+        UriContextInterface $uriContext
+    ): MailMessage {
+        $baseUri = $configData->getApplicationUrl() ?: $uriContext->getUnforwardedWebUri();
+
         $mailMessage = new MailMessage();
         $mailMessage->setTitle(__('Password Change'));
         $mailMessage->addDescription(__('A request for changing your user password has been done.'));
