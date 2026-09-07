@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\User\Services;
 
+use SP\Application\User\Ports\UserPassRecoverService;
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
@@ -59,6 +60,7 @@ class UserTest extends UnitaryTestCase
 
     private MockObject|UserRepository        $userRepository;
     private MockObject|UserMasterPassService $userMasterPassService;
+    private UserPassRecoverService|MockObject $userPassRecoverService;
     private User                             $user;
 
     /**
@@ -286,6 +288,54 @@ class UserTest extends UnitaryTestCase
                 })
             )
             ->willReturn(1);
+
+        $this->user->updatePass(100, 'a_password');
+    }
+
+    /**
+     * Changing a password spends every reset link outstanding for that user.
+     *
+     * `toggleUsedByHash()` consumes only the token being redeemed, and nothing consumed the rest,
+     * so up to three (`MAX_PASS_RECOVER_LIMIT`) stayed live for up to an hour. Somebody holding a
+     * reset link they should not have — a forwarded mail, a shared machine — kept a working "set
+     * this account's password" capability across the very action taken in response, whether by the
+     * user or by an administrator.
+     *
+     * Asserted here rather than in the two controllers because `updatePass()` is the one method
+     * both the administrator's edit and the completion of a reset go through.
+     *
+     * @throws ConstraintException
+     * @throws ServiceException
+     * @throws QueryException
+     */
+    public function testUpdatePassSpendsTheUsersOutstandingResetTokens()
+    {
+        $this->userRepository->expects($this->once())->method('updatePassById')->willReturn(1);
+
+        $this->userPassRecoverService
+            ->expects($this->once())
+            ->method('toggleUsedByUserId')
+            ->with(100)
+            ->willReturn(2);
+
+        $this->user->updatePass(100, 'a_password');
+    }
+
+    /**
+     * ...and a password that was not changed spends nothing. Without this the assertion above
+     * would also be satisfied by revoking a user's links on a write that failed.
+     *
+     * @throws ConstraintException
+     * @throws ServiceException
+     * @throws QueryException
+     */
+    public function testAFailedPasswordChangeSpendsNoResetToken()
+    {
+        $this->userRepository->expects($this->once())->method('updatePassById')->willReturn(0);
+
+        $this->userPassRecoverService->expects($this->never())->method('toggleUsedByUserId');
+
+        $this->expectException(ServiceException::class);
 
         $this->user->updatePass(100, 'a_password');
     }
@@ -701,6 +751,13 @@ class UserTest extends UnitaryTestCase
         $this->userRepository = $this->createMock(UserRepository::class);
         $this->userMasterPassService = $this->createMock(UserMasterPassService::class);
 
-        $this->user = new User($this->application, $this->userRepository, $this->userMasterPassService);
+        $this->userPassRecoverService = $this->createMock(UserPassRecoverService::class);
+
+        $this->user = new User(
+            $this->application,
+            $this->userRepository,
+            $this->userMasterPassService,
+            $this->userPassRecoverService
+        );
     }
 }

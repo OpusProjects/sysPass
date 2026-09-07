@@ -87,6 +87,20 @@ final class UserPassRecover extends Service implements UserPassRecoverService
      * @throws SPException
      * @throws ServiceException
      */
+    /**
+     * Spend every token outstanding for this user, because their password has just changed.
+     *
+     * @param int $userId
+     *
+     * @return int how many were still outstanding
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function toggleUsedByUserId(int $userId): int
+    {
+        return $this->userPassRecoverRepository->toggleUsedByUserId($userId);
+    }
+
     public function toggleUsedByHash(string $hash): void
     {
         $time = time() - self::MAX_PASS_RECOVER_TIME;

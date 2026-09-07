@@ -72,6 +72,17 @@ interface UserPassRecoverRepository
      * @return int The updated rows. If no rows are updated, it means that the hash doesn't exist or it's expired
      * @throws SPException
      */
+    /**
+     * Spend every token outstanding for this user.
+     *
+     * @param int $userId
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function toggleUsedByUserId(int $userId): int;
+
     public function toggleUsedByHash(string $hash, int $time): int;
 
     /**

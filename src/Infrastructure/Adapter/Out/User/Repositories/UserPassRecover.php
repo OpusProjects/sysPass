@@ -102,6 +102,39 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
      * @return int
      * @throws SPException
      */
+    /**
+     * Spend every token outstanding for this user.
+     *
+     * `toggleUsedByHash()` consumes the one token being redeemed, and nothing consumed the rest —
+     * so a password change by any other route left them live. Up to three may be outstanding at
+     * once (`MAX_PASS_RECOVER_LIMIT`) for up to an hour, and an administrator resetting the
+     * password is the obvious response to suspecting a link has leaked; that response did not
+     * revoke it.
+     *
+     * No date bound, unlike the method below: an expired token is already refused by
+     * `getUserIdForHash()`, and marking it used costs nothing and leaves less to reason about.
+     *
+     * @param int $userId
+     *
+     * @return int
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function toggleUsedByUserId(int $userId): int
+    {
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(UserPassRecoverModel::TABLE)
+            ->cols(['used' => 1])
+            ->where('userId = :userId', ['userId' => $userId])
+            ->where('used = 0');
+
+        $queryData = QueryData::build($query);
+        $queryData->setOnErrorMessage(__u('Error while checking hash'));
+
+        return $this->db->runQuery($queryData)->getAffectedNumRows();
+    }
+
     public function toggleUsedByHash(string $hash, int $time): int
     {
         $query = $this->queryFactory

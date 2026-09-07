@@ -40,6 +40,7 @@ use SP\Domain\User\Dtos\UserLoginRequest;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserPreferences;
 use SP\Application\User\Ports\UserMasterPassService;
+use SP\Application\User\Ports\UserPassRecoverService;
 use SP\Domain\User\Ports\UserRepository;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
@@ -59,7 +60,8 @@ final class User extends Service implements UserService
     public function __construct(
         Application                            $application,
         private readonly UserRepository        $userRepository,
-        private readonly UserMasterPassService $userMasterPassService
+        private readonly UserMasterPassService $userMasterPassService,
+        private readonly UserPassRecoverService $userPassRecoverService
     ) {
         parent::__construct($application);
     }
@@ -277,6 +279,17 @@ final class User extends Service implements UserService
         if ($this->userRepository->updatePassById($user) === 0) {
             throw ServiceException::error(__u('Error while updating the password'));
         }
+
+        // A password that has just changed makes every outstanding reset link for this user
+        // meaningless, and they were left live. `toggleUsedByHash()` consumes only the one token
+        // being redeemed; up to three may be outstanding at once, for up to an hour. So somebody
+        // who had obtained a reset link — a forwarded mail, a shared machine — kept a working
+        // "set this account's password" capability across the very action taken in response, by
+        // the user or by an administrator.
+        //
+        // Here rather than in the two controllers, because this is the one method both the
+        // administrator's edit and the completion of a reset go through.
+        $this->userPassRecoverService->toggleUsedByUserId($userId);
     }
 
     /**
