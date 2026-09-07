@@ -73,7 +73,16 @@ class ArchiveHandler implements ArchiveHandlerInterface
         $umask = umask(self::OWNER_ONLY);
 
         try {
-            $this->archive->buildFromDirectory($directory, $regex);
+            // Only pass the pattern when there is one. `?string $regex = null` offers "archive
+            // the whole directory" as an option, and `PharData::buildFromDirectory()` declares its
+            // second parameter `string` — so taking that option emits a deprecation on PHP 8.5,
+            // becomes a fatal on PHP 9, and is already a hard error under the test suite's error
+            // handler. The one-argument form is what "no pattern" means to Phar.
+            if ($regex === null) {
+                $this->archive->buildFromDirectory($directory);
+            } else {
+                $this->archive->buildFromDirectory($directory, $regex);
+            }
 
             // Before compressing, not only after: the uncompressed archive holds the same thing
             // the compressed one does and exists for as long as compressing takes, which on a
