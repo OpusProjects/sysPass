@@ -27,6 +27,9 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\ConfigAuth;
 
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Common\Services\ServiceException;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\Config\Ports\ConfigBackupService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -95,7 +98,8 @@ class RefusalsTest extends WebControllerTestCase
         new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configAuth', 'save'),
-            self::createStub(ConfigBackupService::class)
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
         );
     }
 
@@ -119,13 +123,89 @@ class RefusalsTest extends WebControllerTestCase
         $response = (new SaveController(
             $application,
             $this->simpleControllerHelper($acl, 'configAuth', 'save'),
-            self::createStub(ConfigBackupService::class)
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
         ))->saveAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
         self::assertSame('Error while saving the configuration', $response->subject);
         self::assertSame('the configuration file could not be written', $response->extra);
     }
+
+    /**
+     * The SSO defaults decide who a single-sign-on user becomes, and this door asked nothing.
+     *
+     * `ConfigAuth\SaveController` is reached with `isConfigGeneral()`. The two settings below —
+     * read by `User::createOnLogin()` for every user auto-provisioned on their first SSO sign-in —
+     * are a user-management decision, and `ConfigLdap\SaveController` already guards its identical
+     * pair with `USER_CREATE` plus an assignability check. This one had neither half.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function changingTheProfileSsoUsersGetIsRefusedWithoutThatPermission(): void
+    {
+        $this->expectException(UnauthorizedPageException::class);
+
+        (new SaveController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper(
+                $this->aclThatAllowsAllBut(AclActionsInterface::USER_CREATE),
+                'configAuth',
+                'save',
+                enablingAuthBasic: true
+            ),
+            self::createStub(ConfigBackupService::class),
+            self::createStub(UserProfileService::class)
+        ))->saveAction();
+    }
+
+    /**
+     * ...and the profile named has to be one this administrator could have granted by hand.
+     *
+     * @throws Exception
+     */
+    #[Test]
+    public function namingAnSsoProfileStrongerThanYourOwnIsRefused(): void
+    {
+        $userProfileService = $this->createStub(UserProfileService::class);
+        $userProfileService->method('assertAssignableBy')->willThrowException(
+            ServiceException::error(
+                'You cannot assign a profile with more permissions than your own',
+                'Please contact to the administrator'
+            )
+        );
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('You cannot assign a profile with more permissions than your own');
+
+        (new SaveController(
+            $this->signedInUserApplication(),
+            $this->simpleControllerHelper($this->aclThatAllows(), 'configAuth', 'save', enablingAuthBasic: true),
+            self::createStub(ConfigBackupService::class),
+            $userProfileService
+        ))->saveAction();
+    }
+
+    /**
+     * An ACL that allows everything except the one action named.
+     *
+     * @throws Exception
+     */
+    private function aclThatAllowsAllBut(int $action): AclInterface
+    {
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')->willReturnCallback(
+            static fn(int $actionId): bool => $actionId !== $action
+        );
+
+        return $acl;
+    }
+
+    /**
+     * A profile id the stored config does not already hold, so the guarded comparison sees a change.
+     */
+    private const A_DIFFERENT_PROFILE = 99;
 
     /**
      * `SimpleControllerBase` takes a `SimpleControllerHelper`, not the `WebControllerHelper` the
@@ -137,14 +217,18 @@ class RefusalsTest extends WebControllerTestCase
     private function simpleControllerHelper(
         AclInterface $acl,
         string       $controller = 'controller',
-        string       $action = 'action'
+        string       $action = 'action',
+        bool         $enablingAuthBasic = false
     ): SimpleControllerHelper {
         $request = $this->createStub(RequestService::class);
         $request->method('isAjax')->willReturn(false);
         $request->method('getServer')->willReturn('0');
         $request->method('analyzeString')->willReturn(null);
         $request->method('analyzeArray')->willReturn(null);
-        $request->method('analyzeInt')->willReturn(null);
+
+        // The SSO defaults are only read, and only guarded, on the branch that enables auth basic.
+        $request->method('analyzeBool')->willReturn($enablingAuthBasic);
+        $request->method('analyzeInt')->willReturn($enablingAuthBasic ? self::A_DIFFERENT_PROFILE : null);
 
         $theme = $this->createStub(ThemeInterface::class);
         $theme->method('getUri')->willReturn('/theme');
