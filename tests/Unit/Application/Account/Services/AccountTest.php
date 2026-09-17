@@ -1226,15 +1226,64 @@ class AccountTest extends UnitaryTestCase
         $this->accountHistoryService->expects(self::once())->method('create')
                                     ->with($accountHistoryCreateDto);
 
+        // The privacy flags a restore may write are decided the way the edit screen decides them,
+        // not taken from the snapshot — the harness user is an ordinary one, so both are refused.
+        $restored = $accountHistoryDto->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0]);
+
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
-                                        $accountHistoryDto,
+                                        $restored,
                                         $this->context->getUserData()->id
                                     )
                                 )
                                 ->willReturn(new QueryResult(null, 1));
+
+        $this->account->restoreModified($accountHistoryDto);
+    }
+
+    /**
+     * A restore cannot mark an account private for somebody who could not mark it private.
+     *
+     * `AccountForm::constrainPrivacyToPermission()` gates both flags on the edit screen — only an
+     * application administrator, or the owner holding `isAccPrivate()` — and nothing re-applied it
+     * on the way back from a history row. `SaveEditRestoreController` checks only
+     * `ACCOUNT_EDIT_RESTORE`, which `AccountPermission` buckets with plain edit access, so anybody
+     * the account was shared with for editing could restore an old version to hide it. `AccountAcl`
+     * tests privacy *before* the administrator branch, so a private account disappears for account
+     * administrators too.
+     *
+     * The same shape as the owner and group flags one field over, which this method already
+     * refuses to take from the snapshot.
+     *
+     * @throws Exception
+     */
+    public function testRestoreModifiedCannotMakeAnAccountPrivate()
+    {
+        $this->configService->method('getByParam')->willReturn(self::$faker->password());
+
+        $accountDataGenerator = AccountDataGenerator::factory();
+
+        $this->accountRepository->method('getById')
+             ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+
+        $accountHistoryDto = $accountDataGenerator->buildAccountHistoryDto()
+                                                  ->mutate(['isPrivate' => 1, 'isPrivateGroup' => 1]);
+
+        $this->accountRepository
+            ->expects(self::once())
+            ->method('restoreModified')
+            ->with(
+                self::anything(),
+                self::callback(
+                    static fn(AccountModel $account): bool => (int)$account->getIsPrivate() === 0
+                                                              && (int)$account->getIsPrivateGroup() === 0
+                ),
+                self::anything(),
+                self::anything()
+            )
+            ->willReturn(new QueryResult(null, 1));
 
         $this->account->restoreModified($accountHistoryDto);
     }
@@ -1263,11 +1312,14 @@ class AccountTest extends UnitaryTestCase
                                     ->with($accountHistoryCreateDto);
 
 
+        // As above: the privacy flags are decided rather than taken from the snapshot.
+        $restored = $accountHistoryDto->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0]);
+
         $this->accountRepository->expects(self::once())->method('restoreModified')
                                 ->with(
                                     $accountHistoryDto->accountId,
                                     AccountModel::restoreModified(
-                                        $accountHistoryDto,
+                                        $restored,
                                         $this->context->getUserData()->id
                                     )
                                 )
