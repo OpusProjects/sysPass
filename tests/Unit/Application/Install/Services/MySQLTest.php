@@ -554,7 +554,8 @@ class MySQLTest extends UnitaryTestCase
 
         $this->pdo->method('quote')->willReturnArgument(0);
 
-        $this->mysqlService->rollback($this->configData->getDbUser());
+        // createdDatabase: this run made it, so the rollback owns it.
+        $this->mysqlService->rollback($this->configData->getDbUser(), true);
     }
 
     public function testRollbackIsSuccessfulWithSameDnsHost(): void
@@ -585,7 +586,8 @@ class MySQLTest extends UnitaryTestCase
 
         $this->pdo->method('quote')->willReturnArgument(0);
 
-        $this->mysqlService->rollback($this->configData->getDbUser());
+        // createdDatabase: this run made it, so the rollback owns it.
+        $this->mysqlService->rollback($this->configData->getDbUser(), true);
     }
 
     public function testRollbackIsSuccessfulWithHostingMode(): void
@@ -619,6 +621,21 @@ class MySQLTest extends UnitaryTestCase
                   ->willThrowException(new PDOException('test'));
 
         // Best-effort: a rollback failure must not mask the error that triggered it
+        $this->mysqlService->rollback(null, true);
+    }
+
+    /**
+     * A rollback that did not create the database does not drop one.
+     *
+     * `install/install` is unauthenticated by necessity, and the drop used to be unconditional —
+     * nothing established whose database it was. Two requests both pass
+     * `checkDatabaseAvailability()` before either creates anything, and the one that then loses the
+     * `CREATE SCHEMA` race used to drop the database the winner had just installed into.
+     */
+    public function testRollbackDropsNoDatabaseItDidNotCreate(): void
+    {
+        $this->pdo->expects(self::never())->method('exec');
+
         $this->mysqlService->rollback();
     }
 
