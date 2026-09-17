@@ -294,6 +294,39 @@ final class Account extends Service implements AccountService
      *
      * @return bool
      */
+    /**
+     * The privacy flags a restore may write, decided the way the edit screen decides them.
+     *
+     * Mirrors `AccountForm::constrainPrivacyToPermission()`. Both flags only ever *withhold* an
+     * account, so this is not a way to reach anything — it is a way to hide one, or to stop hiding
+     * one, without the permission that governs it.
+     *
+     * @param AccountHistoryDto $dto
+     * @param UserDto $userData
+     * @param ProfileData $userProfile
+     *
+     * @return AccountHistoryDto
+     */
+    private function constrainPrivacyToPermission(
+        AccountHistoryDto $dto,
+        UserDto           $userData,
+        ProfileData       $userProfile
+    ): AccountHistoryDto {
+        $mayBePrivate = $userData->isAdminApp
+                        || ($userProfile->isAccPrivate() && $dto->userId === $userData->id);
+
+        $mayBePrivateGroup = $userData->isAdminApp
+                             || ($userProfile->isAccPrivateGroup()
+                                 && $dto->userGroupId === $userData->userGroupId);
+
+        return $dto->mutate(
+            [
+                'isPrivate' => $mayBePrivate ? $dto->isPrivate : 0,
+                'isPrivateGroup' => $mayBePrivateGroup ? $dto->isPrivateGroup : 0,
+            ]
+        );
+    }
+
     protected function userCanChangeOwner(
         UserDto $userData,
         ProfileData  $userProfile,
@@ -594,6 +627,18 @@ final class Account extends Service implements AccountService
                     $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
                     $changeUserGroup = $this->userCanChangeGroup($userData, $userProfile, $account);
                 }
+
+                // And the two privacy flags, which are the same question asked about a different
+                // pair of columns and were still being taken from the snapshot.
+                //
+                // `AccountForm::constrainPrivacyToPermission()` decides this on the edit screen:
+                // only an application administrator, or the owner holding `isAccPrivate()` (the
+                // group holding `isAccPrivateGroup()`), may set them. Nothing re-applied it on the
+                // way back from a history row, so a restore let anybody with edit rights mark an
+                // account private — and `AccountAcl` tests privacy *before* the administrator
+                // branch, so a private account disappears for account administrators too — or strip
+                // the privacy from one that had it.
+                $dto = $this->constrainPrivacyToPermission($dto, $userData, $userProfile);
 
                 $this->addHistory($dto->accountId);
 
