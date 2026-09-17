@@ -50,6 +50,8 @@ use SP\Tests\Support\UnitaryTestCase;
 #[AllowMockObjectsWithoutExpectations]
 class DatabaseHandlerTest extends UnitaryTestCase
 {
+    private const A_SECRET = 'SuperSecretMasterPassword123';
+
     private MockObject|EventlogService   $eventLogService;
     private MockObject|LanguageInterface $language;
     private DatabaseHandler              $databaseHandler;
@@ -162,6 +164,66 @@ class DatabaseHandlerTest extends UnitaryTestCase
             ->method('unsetAppLocales');
 
         $this->databaseHandler->update($event);
+    }
+
+    /**
+     * A logged exception records what went wrong, and none of the values that were on the stack.
+     *
+     * The row used to be `(string)$source`, and `Exception::__toString()` embeds
+     * `getTraceAsString()`, which prints each frame's **argument values** — the first 15 characters
+     * of every string. The chains that throw into this sink include the crypt and database layers
+     * and the LDAP providers, so a master password, an account password or a bind credential can be
+     * an argument on the way to the throw point; the row is readable by anyone whose profile has
+     * `isEvl()`, and the event log can be searched and exported.
+     *
+     * `formatStackTrace()` is the same trace with every argument reduced to its type, and
+     * `processException()` has always used it for exactly this reason.
+     *
+     * Whether a trace carries arguments at all is an ini setting that differs between a development
+     * build and a production one, so it is pinned here rather than assumed — `FunctionsTest` does
+     * the same, and without it this passes locally and proves nothing wherever the production ini
+     * is in force.
+     */
+    public function testALoggedExceptionCarriesNoArgumentValues()
+    {
+        $ignoreArgs = ini_get('zend.exception_ignore_args');
+        ini_set('zend.exception_ignore_args', '0');
+
+        $description = null;
+
+        $this->eventLogService
+            ->expects($this->once())
+            ->method('create')
+            ->willReturnCallback(
+                static function (Eventlog $eventlog) use (&$description): int {
+                    $description = $eventlog->getDescription();
+
+                    return 1;
+                }
+            );
+
+        try {
+            $throw = static function (string $masterPassword, string $accountKey): void {
+                throw new RuntimeException('could not decrypt');
+            };
+
+            try {
+                $throw(self::A_SECRET, 'an-account-key');
+            } catch (RuntimeException $e) {
+                $this->databaseHandler->update(new Event('test_a.update', $e));
+            }
+        } finally {
+            ini_set('zend.exception_ignore_args', (string)$ignoreArgs);
+        }
+
+        self::assertIsString($description);
+        self::assertStringNotContainsString(substr(self::A_SECRET, 0, 15), $description);
+        self::assertStringNotContainsString('an-account-key', $description);
+
+        // ...and it is still an account of what happened, or withholding the arguments would have
+        // been achieved just as well by logging nothing.
+        self::assertStringContainsString('could not decrypt', $description);
+        self::assertStringContainsString('String', $description, 'arguments are recorded by type');
     }
 
     /**
