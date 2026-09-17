@@ -174,7 +174,10 @@ function processException(Throwable $exception): void
             sprintf(
                 "(P) %s\n%s",
                 __($previous->getMessage()),
-                $previous->getTraceAsString()
+                // The same formatter the line above uses, and for the same reason:
+                // `getTraceAsString()` prints argument values, so a secret passed to any frame on
+                // the way to the throw point lands in the log file.
+                formatStackTrace($previous)
             ),
             'EXCEPTION'
         );
