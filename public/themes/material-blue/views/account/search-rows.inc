@@ -421,8 +421,14 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                data-parent-id="<?php
                                echo $accountSearchData->getParentId(); ?>"
                                 <?php
+                                // A data attribute is escaped like every other value the theme
+                                // renders. These loops emit whatever a grid action was given, and
+                                // what reaches them today is routes and integer ids — but nothing
+                                // here constrains that, and the escaping guard cannot see a bare
+                                // `$dataValue` the way it sees a named getter. One `addData()` call
+                                // carrying a name or a note would break out of the attribute.
                                 foreach ($action->getData() as $dataName => $dataValue):
-                                    printf('data-%s="%s"', $dataName, $dataValue);
+                                    printf('data-%s="%s"', $dataName, $_e($dataValue));
                                 endforeach; ?>>
                                 <?php
                                 echo $action->getIcon()->getIcon(); ?></i>
@@ -459,7 +465,7 @@ $favoriteRouteOff = $_getvar('favoriteRouteOff');
                                             echo $accountSearchData->getParentId(); ?>"
                                             <?php
                                             foreach ($actionMenu->getData() as $dataName => $dataValue):
-                                                printf('data-%s="%s"', $dataName, $dataValue);
+                                                printf('data-%s="%s"', $dataName, $_e($dataValue));
                                             endforeach; ?>>
                                             <i class="material-icons <?php
                                             echo $actionMenu->getIcon()->getClass(); ?>"

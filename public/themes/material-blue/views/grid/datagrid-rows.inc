@@ -103,10 +103,14 @@ if ($dataGridData->getDataCount() > 0):
                                    data-item-id="<?php
                                    echo $itemId; ?>"
                                    data-onclick="<?php
-                                   echo $action->getOnClick(); ?>"
+                                   echo $_e($action->getOnClick()); ?>"
                                     <?php
+                                    // Escaped like every other value the theme renders. What
+                                    // reaches these today is routes and integer ids, but nothing
+                                    // here constrains that, and the escaping guard cannot see a
+                                    // bare `$dataValue` the way it sees a named getter.
                                     foreach ($nodeData as $dataName => $dataValue):
-                                        echo 'data-', $dataName, '=', '"', $dataValue, '"';
+                                        echo 'data-', $dataName, '=', '"', $_e($dataValue), '"';
                                     endforeach; ?>><?php
                                     echo $action->getIcon()->getIcon(); ?></i>
                                 <span
