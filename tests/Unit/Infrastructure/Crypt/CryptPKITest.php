@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Crypt;
 
-use phpseclib3\Crypt\RSA;
+use phpseclib4\Crypt\RSA;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\Exception;

@@ -26,7 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Crypt;
 
-use phpseclib3\Crypt\RSA;
+use phpseclib4\Crypt\RSA;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\File\Ports\FileHandlerInterface;
@@ -109,7 +109,7 @@ final class CryptPKI implements CryptPKIHandler
         $privateKeyPem = $this->getPrivateKey();
 
         // A valid RSA ciphertext is always exactly KEY_SIZE/8 bytes; anything else is
-        // invalid input — phpseclib3 returns binary garbage instead of throwing in that case.
+        // invalid input — phpseclib returns binary garbage instead of throwing in that case.
         if (strlen($data) !== self::KEY_SIZE / 8) {
             return null;
         }
