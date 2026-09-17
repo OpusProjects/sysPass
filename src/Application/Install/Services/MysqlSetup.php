@@ -345,7 +345,7 @@ final readonly class MysqlSetup implements DatabaseSetupService
      * Best-effort: a rollback failure must never mask the error that triggered
      * it, and one failed statement must not stop the remaining cleanup.
      */
-    public function rollback(?string $dbUser = null): void
+    public function rollback(?string $dbUser = null, bool $createdDatabase = false): void
     {
         try {
             $dbc = $this->dbStorage->getConnectionSimple();
@@ -385,13 +385,32 @@ final readonly class MysqlSetup implements DatabaseSetupService
 
             $this->execBestEffort($dbc, 'SET FOREIGN_KEY_CHECKS = 1');
         } else {
-            $this->execBestEffort(
-                $dbc,
-                sprintf(
-                    'DROP DATABASE IF EXISTS `%s`',
-                    $this->installData->getDbName()
-                )
-            );
+            // Only the database this run created, the way the user below is only dropped when
+            // this run created that.
+            //
+            // The drop used to be unconditional, and nothing established whose database it was.
+            // `install/install` is unauthenticated by necessity, `checkDatabaseAvailability()`
+            // runs before anything is created and `createDatabase()` well after it, with no lock
+            // between them — so two requests (an impatient double-click is enough) both pass the
+            // availability check, the second fails on `CREATE SCHEMA` because the name is now
+            // taken, and its rollback dropped the database the first had just finished installing
+            // into. `config.xml` already said `installed=1`, so the instance claimed to be
+            // installed with no schema behind it, and every later request went to
+            // `error/databaseError`.
+            //
+            // The comment above `checkDatabaseAvailability()` in `Installer::install()` shows the
+            // hazard was understood — "a failure here must not trigger a rollback, which could
+            // otherwise touch pre-existing data". This is that same rule, applied where the
+            // rollback happens rather than where the check does.
+            if ($createdDatabase) {
+                $this->execBestEffort(
+                    $dbc,
+                    sprintf(
+                        'DROP DATABASE IF EXISTS `%s`',
+                        $this->installData->getDbName()
+                    )
+                );
+            }
 
             if ($dbUser) {
                 $this->execBestEffort(

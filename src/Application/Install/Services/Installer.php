@@ -229,12 +229,18 @@ final class Installer implements InstallerService
             $configData->setDbPass($dbPass);
         }
 
+        $createdDatabase = false;
+
         try {
             // Inside the try: setupDbUser() already created the runtime user, so a
             // failure saving the config must roll it back too
             $this->config->save($configData, false);
 
             $this->databaseSetup->createDatabase($dbUser);
+
+            // Only now may a rollback drop it. Until this line the database is either absent or
+            // somebody else's, and the rollback below used to drop it either way.
+            $createdDatabase = true;
             $this->databaseSetup->createDBStructure();
             $this->databaseSetup->checkConnection();
 
@@ -264,7 +270,7 @@ final class Installer implements InstallerService
             // back over the admin connection
             $this->databaseConnectionData->refreshFromInstallData($this->installData);
 
-            $this->databaseSetup->rollback($dbUser);
+            $this->databaseSetup->rollback($dbUser, $createdDatabase);
 
             throw $e instanceof SPException
                 ? $e

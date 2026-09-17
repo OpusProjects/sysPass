@@ -396,6 +396,76 @@ class InstallerTest extends UnitaryTestCase
     }
 
     /**
+     * A rollback drops the database only when this run was the one that created it.
+     *
+     * `install/install` is unauthenticated by necessity, and the drop used to be unconditional —
+     * nothing established whose database it was. `checkDatabaseAvailability()` runs before anything
+     * is created and `createDatabase()` well after, with no lock between them, so two requests (an
+     * impatient double-click is enough) both pass the availability check; the second fails on
+     * `CREATE SCHEMA` because the name is now taken, and its rollback dropped the database the
+     * first had just finished installing into. `config.xml` already said `installed=1`, so the
+     * instance claimed to be installed with no schema behind it.
+     *
+     * Here the failure happens *before* `createDatabase()` returns, which is exactly the losing
+     * request's shape.
+     *
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testARollbackBeforeTheDatabaseWasCreatedDropsNoDatabase(): void
+    {
+        // Non-hosting on purpose: the unconditional DROP DATABASE was on that branch. The runtime
+        // user is created before the try block, so the pair has to be there to destructure.
+        $this->databaseSetup->method('setupDbUser')->willReturn(['sp_user', 'sp_pass']);
+
+        $this->databaseSetup
+            ->method('createDatabase')
+            ->willThrowException(SPException::error('Error while creating the DB'));
+
+        $this->databaseSetup
+            ->expects($this->once())
+            ->method('rollback')
+            ->with(self::anything(), false);
+
+        $params = $this->getInstallData();
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(SPException::class);
+
+        $installer->run($params);
+    }
+
+    /**
+     * ...and it does drop it once this run has created it, or a genuinely failed install would
+     * leave its own half-built schema behind and refuse every retry.
+     *
+     * @throws InvalidArgumentException
+     * @throws SPException
+     */
+    public function testARollbackAfterTheDatabaseWasCreatedDropsIt(): void
+    {
+        $this->databaseSetup->method('setupDbUser')->willReturn(['sp_user', 'sp_pass']);
+
+        $this->databaseSetup
+            ->method('createDBStructure')
+            ->willThrowException(SPException::error('Error while creating the DB structure'));
+
+        $this->databaseSetup
+            ->expects($this->once())
+            ->method('rollback')
+            ->with(self::anything(), true);
+
+        $params = $this->getInstallData();
+
+        $installer = $this->getDefaultInstaller();
+
+        $this->expectException(SPException::class);
+
+        $installer->run($params);
+    }
+
+    /**
      * @throws InvalidArgumentException
      * @throws SPException
      */

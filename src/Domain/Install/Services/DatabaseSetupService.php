@@ -73,8 +73,9 @@ interface DatabaseSetupService
     /**
      * Roll back the installation in case of failure.
      *
-     * Removes the sysPass database and user. Best-effort: it must never
-     * throw, so it cannot mask the error that triggered it.
+     * Removes what *this* run created, and only that: the user when `$dbUser` names one, and the
+     * database when `$createdDatabase` says this run created it. Best-effort: it must never throw,
+     * so it cannot mask the error that triggered it.
      */
-    public function rollback(?string $dbUser = null): void;
+    public function rollback(?string $dbUser = null, bool $createdDatabase = false): void;
 }
