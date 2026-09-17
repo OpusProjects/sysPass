@@ -64,7 +64,7 @@ $index = $index ?? 0;
                         <?php
                         foreach (
                             $action->getData() as $dataName => $dataValue
-                        ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                        ): echo 'data-', $dataName, '=', '"', $_e($dataValue), '"'; endforeach; ?>>
                         <i class="material-icons"><?php
                             echo $action->getIcon()->getIcon(); ?></i>
                     </button>
@@ -90,7 +90,7 @@ $index = $index ?? 0;
                         <?php
                         foreach (
                             $action->getData() as $dataName => $dataValue
-                        ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                        ): echo 'data-', $dataName, '=', '"', $_e($dataValue), '"'; endforeach; ?>>
 
                         <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
                             <label class="mdl-button mdl-js-button mdl-button--icon"
@@ -194,7 +194,7 @@ $index = $index ?? 0;
                             <?php
                             foreach (
                                 $action->getData() as $dataName => $dataValue
-                            ): echo 'data-', $dataName, '=', '"', $dataValue, '"'; endforeach; ?>>
+                            ): echo 'data-', $dataName, '=', '"', $_e($dataValue), '"'; endforeach; ?>>
                             <i class="material-icons <?php
                             echo $action->getIcon()->getClass(); ?>"><?php
                                 echo $action->getIcon()->getIcon(); ?></i>

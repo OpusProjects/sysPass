@@ -34,7 +34,7 @@ use function SP\__;
                         <a id="btn-<?php echo $action->getId(); ?>"
                            class="btn-menu mdl-navigation__link"
                             <?php foreach ($action->getData() as $dataName => $dataValue): ?>
-                                <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
+                                <?php echo 'data-', $dataName, '="', $_e($dataValue), '"'; ?>
                             <?php endforeach; ?>>
                             <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                         </a>
@@ -102,7 +102,7 @@ use function SP\__;
                     <a id="btn-drawer-<?php echo $action->getId(); ?>"
                        class="btn-menu mdl-navigation__link"
                         <?php foreach ($action->getData() as $dataName => $dataValue): ?>
-                            <?php echo 'data-', $dataName, '="', $dataValue, '"'; ?>
+                            <?php echo 'data-', $dataName, '="', $_e($dataValue), '"'; ?>
                         <?php endforeach; ?>>
                         <i class="material-icons"><?php echo $action->getIcon()->getIcon(); ?></i>
                         <?php echo $_e($action->getTitle()); ?>

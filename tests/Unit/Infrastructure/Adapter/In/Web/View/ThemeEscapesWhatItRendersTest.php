@@ -113,6 +113,62 @@ class ThemeEscapesWhatItRendersTest extends TestCase
     }
 
     /**
+     * A `data-*` attribute built from a caller-supplied map escapes what it emits.
+     *
+     * The rule above is per *expression*, and it recognises what carries text by the getter's name
+     * or by `$_getvar(`. Three loops in the theme emit `data-<name>="<value>"` out of
+     * `DataGridAction::getData()` / `getRuntimeData()`, where the value is a bare `$dataValue` —
+     * invisible to that rule, and unescaped. What reaches them today is routes and integer ids, so
+     * nothing was leaking; but nothing in the templates or in `DataGridActionBase` constrains it,
+     * and a single `addData()` call carrying a name, a login or a note would break straight out of
+     * the attribute.
+     *
+     * This is narrower than the rule above on purpose: it looks only at the loops whose attribute
+     * *name* is itself a variable, which are exactly the ones taking an arbitrary map from a
+     * caller. A fixed `data-item-id="<?php echo $id; ?>"` is an id by construction and is left to
+     * the rule above.
+     */
+    #[Test]
+    #[DataProvider('templates')]
+    public function aDataAttributeMapIsEscaped(string $template): void
+    {
+        $source = (string)file_get_contents($template);
+
+        $unescaped = [];
+
+        // printf('data-%s="%s"', $name, $value) and echo 'data-', $name, '=', '"', $value, '"'
+        // The quote characters are matched with `.` rather than written into the class, which
+        // keeps this pattern readable inside a single-quoted PHP string.
+        $patterns = [
+            '/printf\(\s*.data-%s="%s".\s*,(?P<args>[^;]*?)\);/s',
+            '/echo\s+.data-.\s*,(?P<args>[^;]*?);/s',
+        ];
+
+        foreach ($patterns as $pattern) {
+            preg_match_all($pattern, $source, $matches, PREG_OFFSET_CAPTURE);
+
+            foreach ($matches['args'] as [$args, $offset]) {
+                if (str_contains($args, '$_e(')) {
+                    continue;
+                }
+
+                $unescaped[] = sprintf(
+                    '%s:%d  %s',
+                    basename($template),
+                    substr_count(substr($source, 0, $offset), "\n") + 1,
+                    trim(preg_replace('/\s+/', ' ', $args))
+                );
+            }
+        }
+
+        self::assertSame(
+            [],
+            $unescaped,
+            "a data attribute built from a caller-supplied map went out unescaped:\n" . implode("\n", $unescaped)
+        );
+    }
+
+    /**
      * Inside a `<script>` element the rule is different, and `$_e()` is the wrong answer.
      *
      * A script element is raw text: the HTML parser does not decode character references in it, so
