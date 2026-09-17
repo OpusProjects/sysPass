@@ -302,7 +302,23 @@ class AccountItemsTest extends UnitaryTestCase
         $this->accountItems->addItems(false, 100, $accountCreateDto);
     }
 
-    public function testAddItemsWithException()
+    /**
+     * A failure adding an account's sharing is reported, not swallowed.
+     *
+     * This used to assert the opposite — it called `addItems()` with a throwing repository and no
+     * `expectException`, so it passed only because nothing propagated. What that cost: the five
+     * writes were wrapped in a `catch (SPException)` that logged and returned, so an account was
+     * saved with whatever subset had been inserted before the failure (or with nothing shared at
+     * all, if the first call threw) and the create reported plain success.
+     *
+     * `AccountToUserGroup`, `AccountToUser` and `AccountToTag` each carry a foreign key to the row
+     * they name, so a group, user or tag deleted between the form being drawn and submitted throws
+     * a `ConstraintException` from inside one of them.
+     *
+     * `Account::create()` calls this inside its own `transactionAware()`, so the exception now
+     * takes the account with it — which is what the edit path has always done.
+     */
+    public function testAddItemsReportsAFailureRatherThanSavingPartOfTheSharing()
     {
         $accountCreateDto = AccountDataGenerator::factory()->buildAccountCreateDto();
 
@@ -318,6 +334,9 @@ class AccountItemsTest extends UnitaryTestCase
             ->expects($this->once())
             ->method('add')
             ->willThrowException(SPException::error('test'));
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('test');
 
         $this->accountItems->addItems(false, 100, $accountCreateDto);
     }
