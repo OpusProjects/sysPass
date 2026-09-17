@@ -27,6 +27,7 @@ declare(strict_types=1);
 namespace SP\Infrastructure\Log\Providers;
 
 use Exception;
+use Throwable;
 use Psr\Log\LoggerInterface;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\InvalidClassException;
 use SP\Domain\Core\LanguageInterface;
 use SP\Domain\Http\Ports\RequestService;
 
+use function SP\processException;
 use function SP\__;
 use function SP\getLastCaller;
 
@@ -78,6 +80,37 @@ abstract class LoggerBase extends Provider implements EventReceiver
     {
         $this->language->setAppLocales();
 
+        try {
+            $this->writeEvent($event);
+        } catch (Throwable $e) {
+            // A log that cannot be written must not fail the thing it was reporting on.
+            //
+            // This receiver is attached on every request, before the install check and regardless
+            // of any config flag, and it was the only one of the four with no guard —
+            // `DatabaseHandler`, `MailEvent` and `NotificationEvent` all catch and hand to
+            // `processException()`. Monolog's `StreamHandler` throws when `var/syspass.log` cannot
+            // be opened or appended to, and `notify()` is always called *after* the work it
+            // describes, so a full disk turned a completed operation into an error response: the
+            // administrator is told a master-password rotation failed when it had already
+            // finished, which is the one thing that must never be ambiguous.
+            //
+            // `processException()` is safe to call from here: `logger()` writes with a suppressed
+            // `file_put_contents()` and falls back to `error_log()`, so it does not come back
+            // through Monolog.
+            //
+            // `Throwable` rather than the siblings' `Exception`, because a stream failure can
+            // surface as an `Error`; `processException()` accepts either.
+            processException($e);
+        } finally {
+            $this->language->unsetAppLocales();
+        }
+    }
+
+    /**
+     * @throws InvalidClassException
+     */
+    private function writeEvent(Event $event): void
+    {
         $eventName = $event->getName();
         $userLogin = 'N/A';
 
@@ -115,8 +148,6 @@ abstract class LoggerBase extends Provider implements EventReceiver
                 )
             );
         }
-
-        $this->language->unsetAppLocales();
     }
 
     /**

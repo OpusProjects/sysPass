@@ -132,6 +132,33 @@ class LogHandlerTest extends UnitaryTestCase
     }
 
     /**
+     * A log that cannot be written does not fail the thing it was reporting on.
+     *
+     * This receiver is attached on every request — before the install check, and regardless of any
+     * config flag — and it was the only one of the four with no guard around `update()`:
+     * `DatabaseHandler`, `MailEvent` and `NotificationEvent` all catch and hand to
+     * `processException()`. Monolog's `StreamHandler` throws when `var/syspass.log` cannot be
+     * opened or appended to, and `notify()` is always called *after* the work it describes, so a
+     * full disk turned a completed operation into an error response — the administrator is told a
+     * master-password rotation failed when it had already finished.
+     */
+    public function testAFailingLoggerDoesNotFailTheRequest()
+    {
+        $this->logger
+            ->expects($this->once())
+            ->method('debug')
+            ->willThrowException(new RuntimeException('could not write to var/syspass.log'));
+
+        // And the locales are still put back, which a plain try/catch around the call would miss.
+        $this->language->expects($this->once())->method('setAppLocales');
+        $this->language->expects($this->once())->method('unsetAppLocales');
+
+        $this->logHandler->update(new Event('test.event', $this));
+
+        self::assertTrue(true, 'update() returned rather than propagating');
+    }
+
+    /**
      * @throws InvalidClassException
      */
     public function testUpdateWithExceptionSource()
