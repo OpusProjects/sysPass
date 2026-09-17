@@ -1880,6 +1880,50 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * An account whose sharing could not be applied is not saved at all.
+     *
+     * `addItems()` used to catch and log, so a create whose group/user/tag insert failed part-way
+     * left the account stored with whatever subset had landed first — or with nothing shared, if
+     * the first call threw — and answered with plain success. Those three tables each carry a
+     * foreign key to the row they name, so a group, user or tag deleted between the form being
+     * drawn and submitted reaches exactly that.
+     *
+     * The account create already runs inside `transactionAware()`; what was missing was letting the
+     * failure reach it. Asserted through the service rather than on `addItems()` directly, because
+     * the thing that matters is that the *account* goes with it.
+     *
+     * @throws Exception
+     */
+    public function testCreateIsAbandonedWhenItsSharingCannotBeApplied()
+    {
+        $accountCreateDto = AccountDataGenerator::factory()->buildAccountCreateDto();
+
+        $this->accountCryptService
+            ->method('getPasswordEncrypted')
+            ->willReturn(new EncryptedPassword(self::$faker->password(), self::$faker->password()));
+
+        $this->itemPresetService->method('getForCurrentUser')->willReturn(null);
+
+        $this->accountRepository
+            ->method('create')
+            ->willReturn(new QueryResult(null, 0, self::$faker->numberBetween(1, 1000)));
+
+        $this->accountItemsService
+            ->expects(self::once())
+            ->method('addItems')
+            ->willThrowException(SPException::error('a shared group no longer exists'));
+
+        // Nothing after the sharing runs, and the transaction the create sits in takes the account
+        // with it.
+        $this->accountPresetService->expects(self::never())->method('addPresetPermissions');
+
+        $this->expectException(SPException::class);
+        $this->expectExceptionMessage('a shared group no longer exists');
+
+        $this->account->create($accountCreateDto);
+    }
+
+    /**
      * The account the service is expected to write, give or take the second it was stamped in.
      *
      * `AccountUseCases::create()` and `::updatePassword()` stamp `passDate` with `time()`, and a

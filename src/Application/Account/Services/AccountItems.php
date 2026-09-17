@@ -39,8 +39,6 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 
-use function SP\processException;
-
 /**
  * Class AccountItems
  */
@@ -161,43 +159,57 @@ final class AccountItems extends Service implements AccountItemsService
         );
     }
 
+    /**
+     * The sharing an account is created with — all of it, or none of the account.
+     *
+     * This used to wrap the five writes below in a `catch (SPException)` that called
+     * `processException()` and returned, so a failure part-way left the account saved with whatever
+     * subset had been inserted first — or with nothing shared at all, if the first call was the one
+     * that threw — and the create still reported plain success. `AccountToUserGroup`,
+     * `AccountToUser` and `AccountToTag` all carry a foreign key to the row they name, so a group,
+     * user or tag deleted between the form being drawn and submitted throws a `ConstraintException`
+     * from inside one of them.
+     *
+     * `Account::create()` calls this inside its own `transactionAware()`, so letting the exception
+     * out rolls the account back with it — which is the whole point of that transaction, and what
+     * the edit path has always done: `replaceUserGroups()` and `replaceUsers()` run their
+     * delete-and-insert inside a transaction and let failures propagate.
+     *
+     * @throws SPException
+     */
     public function addItems(bool $userCanChangePermissions, int $accountId, AccountCreateDto $accountCreateDto): void
     {
-        try {
-            if ($userCanChangePermissions) {
-                if (null !== $accountCreateDto->userGroupsView
-                    && !empty($accountCreateDto->userGroupsView)
-                ) {
-                    $this->accountToUserGroupRepository->addByType(
-                        $accountId,
-                        $accountCreateDto->userGroupsView
-                    );
-                }
-
-                if (null !== $accountCreateDto->userGroupsEdit
-                    && !empty($accountCreateDto->userGroupsEdit)
-                ) {
-                    $this->accountToUserGroupRepository->addByType(
-                        $accountId,
-                        $accountCreateDto->userGroupsEdit,
-                        true
-                    );
-                }
-
-                if (null !== $accountCreateDto->usersView && !empty($accountCreateDto->usersView)) {
-                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersView);
-                }
-
-                if (null !== $accountCreateDto->usersEdit && !empty($accountCreateDto->usersEdit)) {
-                    $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersEdit, true);
-                }
+        if ($userCanChangePermissions) {
+            if (null !== $accountCreateDto->userGroupsView
+                && !empty($accountCreateDto->userGroupsView)
+            ) {
+                $this->accountToUserGroupRepository->addByType(
+                    $accountId,
+                    $accountCreateDto->userGroupsView
+                );
             }
 
-            if (null !== $accountCreateDto->tags && !empty($accountCreateDto->tags)) {
-                $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
+            if (null !== $accountCreateDto->userGroupsEdit
+                && !empty($accountCreateDto->userGroupsEdit)
+            ) {
+                $this->accountToUserGroupRepository->addByType(
+                    $accountId,
+                    $accountCreateDto->userGroupsEdit,
+                    true
+                );
             }
-        } catch (SPException $e) {
-            processException($e);
+
+            if (null !== $accountCreateDto->usersView && !empty($accountCreateDto->usersView)) {
+                $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersView);
+            }
+
+            if (null !== $accountCreateDto->usersEdit && !empty($accountCreateDto->usersEdit)) {
+                $this->accountToUserRepository->addByType($accountId, $accountCreateDto->usersEdit, true);
+            }
+        }
+
+        if (null !== $accountCreateDto->tags && !empty($accountCreateDto->tags)) {
+            $this->accountToTagRepository->add($accountId, $accountCreateDto->tags);
         }
     }
 }
