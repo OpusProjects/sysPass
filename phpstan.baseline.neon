@@ -1699,20 +1699,8 @@ parameters:
 			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
 
 		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Domain\\Core\\Events\\Event\:\:getSource\(\)$#'
-			identifier: argument.templateType
-			count: 1
-			path: src/Infrastructure/Log/Providers/DatabaseHandler.php
-
-		-
 			message: '#^PHPDoc tag @param references unknown parameter\: \$eventType$#'
 			identifier: parameter.notFound
-			count: 1
-			path: src/Infrastructure/Log/Providers/LoggerBase.php
-
-		-
-			message: '#^Unable to resolve the template type T in call to method SP\\Domain\\Core\\Events\\Event\:\:getSource\(\)$#'
-			identifier: argument.templateType
 			count: 1
 			path: src/Infrastructure/Log/Providers/LoggerBase.php
 
