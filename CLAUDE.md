@@ -482,7 +482,8 @@ It runs the other way too, and that is the more useful half: the API re-reads th
 request and refuses a disabled one, while the web trusted what login had put in the session — so
 disabling an account stopped its token at once and left its browser session working, and since the
 timeout is measured from the last request, the session being actively used is the one that never
-expires.
+expires. Revoking administrator rights, changing the group or tightening the profile had the same gap for
+the same reason; `Init` now rebuilds the session's user and profile from the row it already reads.
 
 **Take a rule you can see being enforced and go looking for its other door.** When you find the gap,
 put the check somewhere both doors reach — a shared base method, or the service under them — rather

@@ -57,7 +57,9 @@ use SP\Domain\ItemPreset\Models\ItemPreset as ItemPresetModel;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\ProfileData;
+use SP\Domain\User\Models\User;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
@@ -286,10 +288,24 @@ final class Init extends HttpModuleBase
                 // the user on the login page. The controllers excluded here are the login form
                 // itself and the read-only lists behind the pickers; a disabled account is caught
                 // on the next page it asks for.
-                if ($this->context->isLoggedIn() && $this->isUserDisabled()) {
-                    logger('User disabled; ending session', 'INFO');
+                //
+                // The same read then refreshes what the session holds about the user. Everything
+                // an authorisation decision reads — `isAdminApp`, `isAdminAcc`, the group, the
+                // profile — was copied into the session at login and never looked at again, so
+                // revoking somebody's administrator rights, moving them to another group or
+                // tightening their profile left the session they were using with the old ones for
+                // as long as they kept using it. The API rebuilds all of it from the row on every
+                // request (`Api::setupUser()`); this is the web asking the same question.
+                if ($this->context->isLoggedIn()) {
+                    $user = $this->readSignedInUser();
 
-                    SessionLifecycleHandler::restart();
+                    if ($user?->isDisabled() === true) {
+                        logger('User disabled; ending session', 'INFO');
+
+                        SessionLifecycleHandler::restart();
+                    } elseif ($user !== null) {
+                        $this->refreshSignedInUser($user);
+                    }
                 }
             }
 
@@ -341,31 +357,47 @@ final class Init extends HttpModuleBase
      * @throws SPException
      */
     /**
-     * Whether the signed-in user's account has since been disabled.
+     * The signed-in user as the database has them now, or null when that cannot be read.
      *
-     * Read from the database rather than from the session, which is the whole point: the session
-     * holds what was true at login.
-     *
-     * Only a positive answer ends a session. A read that fails — the database briefly unreachable,
-     * a row that does not come back — says nothing about the account, and this runs on every
-     * request of every session: answering "disabled" to a hiccup would sign out everybody at once
-     * and turn it into an outage. So the session stands, and the request goes on to fail on its
-     * own terms if it needed the user. An account that has been deleted rather than disabled is
-     * left to the ordinary session expiry for the same reason.
+     * A read that fails leaves the session alone: this runs on every request of every session, and
+     * treating "could not read the account" as a verdict would sign everybody out the moment the
+     * database hiccuped.
      */
-    private function isUserDisabled(): bool
+    private function readSignedInUser(): ?User
     {
         try {
-            // `=== true`, not the bare value: the getter is `?bool`, and under strict_types a null
-            // — a row whose flag was never set — is a TypeError out of a method declared `bool`,
-            // on every request of every session. An absent flag is not a disabled account.
-            return $this->userService->getById($this->context->getUserData()->id ?? 0)->isDisabled() === true;
+            return $this->userService->getById($this->context->getUserData()->id ?? 0);
         } catch (Throwable $e) {
             logger($e->getMessage());
 
-            return false;
+            return null;
         }
     }
+
+    /**
+     * Replace the session's copy of the user and their profile with the current ones.
+     *
+     * The profile is read afresh too, since an administrator editing it changes what every holder
+     * may do. A profile that cannot be read keeps the one the session already has, for the same
+     * reason as above.
+     */
+    private function refreshSignedInUser(User $user): void
+    {
+        $userDto = UserDto::fromModel($user);
+
+        $this->context->setUserData($userDto);
+
+        try {
+            $this->context->setUserProfile(
+                $this->userProfileService
+                    ->getById($userDto->userProfileId ?? 0)
+                    ->hydrate(ProfileData::class) ?? new ProfileData()
+            );
+        } catch (Throwable $e) {
+            logger($e->getMessage());
+        }
+    }
+
 
     private function initUserSession(): void
     {
