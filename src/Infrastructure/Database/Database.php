@@ -80,6 +80,11 @@ final class Database implements DatabaseInterface
     private ?int $lastId = null;
 
     /**
+     * How many nested scopes have asked for a transaction. Only the outermost may commit.
+     */
+    private int $transactionDepth = 0;
+
+    /**
      * DB constructor.
      *
      * @param DbStorageHandler $dbStorageHandler
@@ -388,21 +393,41 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbStorageHandler->getConnection();
 
-        if (!$conn->inTransaction()) {
-            $result = $conn->beginTransaction();
+        // The counter is this class's own bookkeeping; `inTransaction()` is the truth. Both are
+        // consulted, so a transaction opened outside these methods is still joined rather than
+        // begun again — PDO throws on that.
+        if ($this->transactionDepth > 0 || $conn->inTransaction()) {
+            // Joining the transaction already running, not starting one. Counted so that the
+            // matching `endTransaction()` knows it is not the one that may commit.
+            //
+            // It used to return `true` here with nothing recorded, and `endTransaction()` committed
+            // whenever a transaction was active — so the *inner* scope ended the *outer* one.
+            // Measured against the server: the inner commit leaves `inTransaction()` false, the
+            // outer rollback then fails with "There is no active transaction", and both rows
+            // survive. Nesting is the normal case, not an edge: `Import::doImport()` wraps the
+            // whole import and calls `Account::create()` per row, which opens its own; and
+            // `Account::update()` calls `AccountItems::updateItems()`, which opens up to five in
+            // sequence.
+            $this->transactionDepth++;
 
-            $this->eventDispatcher->notify(new Event(
-                'database.transaction.begin',
-                $this,
-                EventMessage::build()->addExtra('result', $result)
-            ));
+            logger('beginTransaction: joining the transaction already open');
 
-            return $result;
+            return true;
         }
 
-        logger('beginTransaction: already in transaction');
+        $result = $conn->beginTransaction();
 
-        return true;
+        if ($result) {
+            $this->transactionDepth = 1;
+        }
+
+        $this->eventDispatcher->notify(new Event(
+            'database.transaction.begin',
+            $this,
+            EventMessage::build()->addExtra('result', $result)
+        ));
+
+        return $result;
     }
 
     /**
@@ -414,7 +439,17 @@ final class Database implements DatabaseInterface
     {
         $conn = $this->dbStorageHandler->getConnection();
 
+        if ($this->transactionDepth > 1) {
+            // An inner scope finishing. Its work stays in the open transaction, to be committed or
+            // rolled back with everything else by whoever opened it.
+            $this->transactionDepth--;
+
+            return true;
+        }
+
         $result = $conn->inTransaction() && $conn->commit();
+
+        $this->transactionDepth = 0;
 
         $this->eventDispatcher->notify(new Event(
             'database.transaction.end',
@@ -435,6 +470,11 @@ final class Database implements DatabaseInterface
         $conn = $this->dbStorageHandler->getConnection();
 
         $result = $conn->inTransaction() && $conn->rollBack();
+
+        // All of it, from whichever depth: a rollback is not something an inner scope can do on its
+        // own half of the work. Zeroing the depth also makes the outer scope's own rollback — which
+        // runs when the exception reaches it — a no-op rather than an error.
+        $this->transactionDepth = 0;
 
         $this->eventDispatcher->notify(new Event(
             'database.transaction.rollback',
