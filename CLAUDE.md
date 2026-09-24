@@ -471,6 +471,9 @@ user and account endpoints did neither. Custom-field values were masked for a ca
 enforced in five web config actions and mentioned nowhere on the API at all — the sharpest case,
 because a demo publishes its administrator's credentials, so the ACL stops nobody and that guard is
 the whole boundary. Search paging clamped a negative offset in one of the two DTOs that carry one.
+Who may mark an account private was decided in `AccountForm`, so the API's account create and edit
+wrote `private` / `privateGroup` as sent; it is now `Account::privacyAllowedFor()`, for the owner
+the account will actually have.
 It runs the other way too, and that is the more useful half: the API re-reads the user on every
 request and refuses a disabled one, while the web trusted what login had put in the session — so
 disabling an account stopped its token at once and left its browser session working, and since the

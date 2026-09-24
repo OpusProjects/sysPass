@@ -130,6 +130,10 @@ class AccountTest extends UnitaryTestCase
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
 
+        // Nobody signed in here may mark an account private, so whatever the request carried, the
+        // account is written with both flags off.
+        $expectedDto = $accountUpdateDto->withPrivate(false)->withPrivateGroup(false);
+
         $this->context->setUserData(
             UserDto::fromModel(
                 UserDataGenerator::factory()
@@ -146,15 +150,103 @@ class AccountTest extends UnitaryTestCase
         $this->itemPresetService->expects(self::once())->method('getForCurrentUser')
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
-        $this->accountRepository->expects(self::once())->method('getById')
+        // Once for the history, once to know who owns the account the flags are decided for.
+        $this->accountRepository->expects(self::exactly(2))->method('getById')
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), false, false)
+            ->with($id, AccountModel::update($expectedDto), false, false)
             ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
-                                  ->with(false, $id, $accountUpdateDto);
+                                  ->with(false, $id, $expectedDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
+     * An owner whose profile may mark accounts private keeps the flags they asked for.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateKeepsPrivacyAskedForByAnOwnerWithThePermission()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $userData = UserDto::fromModel(
+            UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+        );
+
+        $this->context->setUserData($userData);
+        $this->context->setUserProfile(new ProfileData(['accPrivate' => true, 'accPrivateGroup' => true]));
+
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()->withPrivate(true)->withPrivateGroup(true);
+        $stored = $accountDataGenerator->buildAccount()->mutate(
+            ['userId' => $userData->id, 'userGroupId' => $userData->userGroupId]
+        );
+
+        $this->configService->method('getByParam')->willReturn(self::$faker->password());
+        $this->itemPresetService->method('getForCurrentUser')->willReturn(null);
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$stored]));
+        $this->accountRepository->expects(self::once())->method('update')
+            ->with(
+                $id,
+                self::callback(
+                    static fn(AccountModel $account) => $account->getIsPrivate() === 1
+                                                         && $account->getIsPrivateGroup() === 1
+                ),
+                false,
+                false
+            )
+            ->willReturn(new QueryResult(null, 1));
+
+        $this->account->update($id, $accountUpdateDto);
+    }
+
+    /**
+     * The flags are decided for whoever owns the account once it is saved. A caller who may not
+     * change the owner does not become it by naming themselves in the request, so the permission to
+     * make one's *own* accounts private does not reach somebody else's — which the API's
+     * `account/edit` allowed, since it carried `private` / `privateGroup` straight into the row.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdatePrivacyIsDecidedForTheStoredOwnerNotTheOneRequested()
+    {
+        $id = self::$faker->randomNumber();
+        $accountDataGenerator = AccountDataGenerator::factory();
+        $userData = UserDto::fromModel(
+            UserDataGenerator::factory()->buildUserData()->mutate(['isAdminApp' => false, 'isAdminAcc' => false])
+        );
+
+        $this->context->setUserData($userData);
+        $this->context->setUserProfile(new ProfileData(['accPrivate' => true, 'accPrivateGroup' => true]));
+
+        $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto()
+                                                 ->withUserId($userData->id)
+                                                 ->withUserGroupId($userData->userGroupId)
+                                                 ->withPrivate(true)
+                                                 ->withPrivateGroup(true);
+        $stored = $accountDataGenerator->buildAccount()->mutate(
+            ['userId' => $userData->id + 1, 'userGroupId' => $userData->userGroupId + 1]
+        );
+
+        $this->configService->method('getByParam')->willReturn(self::$faker->password());
+        $this->itemPresetService->method('getForCurrentUser')->willReturn(null);
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$stored]));
+        $this->accountRepository->expects(self::once())->method('update')
+            ->with(
+                $id,
+                self::callback(
+                    static fn(AccountModel $account) => $account->getIsPrivate() === 0
+                                                         && $account->getIsPrivateGroup() === 0
+                ),
+                false,
+                false
+            )
+            ->willReturn(new QueryResult(null, 1));
 
         $this->account->update($id, $accountUpdateDto);
     }
@@ -168,6 +260,10 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+
+        // Nobody signed in here may mark an account private, so whatever the request carried, the
+        // account is written with both flags off.
+        $expectedDto = $accountUpdateDto->withPrivate(false)->withPrivateGroup(false);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -189,10 +285,10 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), true, true)
+            ->with($id, AccountModel::update($expectedDto), true, true)
             ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
-                                  ->with(true, $id, $accountUpdateDto);
+                                  ->with(true, $id, $expectedDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
         $this->account->update($id, $accountUpdateDto);
@@ -207,6 +303,10 @@ class AccountTest extends UnitaryTestCase
         $id = self::$faker->randomNumber();
         $accountDataGenerator = AccountDataGenerator::factory();
         $accountUpdateDto = $accountDataGenerator->buildAccountUpdateDto();
+
+        // Nobody signed in here may mark an account private, so whatever the request carried, the
+        // account is written with both flags off.
+        $expectedDto = $accountUpdateDto->withPrivate(false)->withPrivateGroup(false);
 
         $this->context->setUserData(
             UserDto::fromModel(
@@ -228,10 +328,10 @@ class AccountTest extends UnitaryTestCase
                                 ->with($id)
                                 ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
         $this->accountRepository->expects(self::once())->method('update')
-            ->with($id, AccountModel::update($accountUpdateDto), false, false)
+            ->with($id, AccountModel::update($expectedDto), false, false)
             ->willReturn(new QueryResult(null, 1));
         $this->accountItemsService->expects(self::once())->method('updateItems')
-                                  ->with(true, $id, $accountUpdateDto);
+                                  ->with(true, $id, $expectedDto);
         $this->accountPresetService->expects(self::once())->method('addPresetPermissions')->with($id);
 
         $this->account->update($id, $accountUpdateDto);
@@ -1445,7 +1545,10 @@ class AccountTest extends UnitaryTestCase
                                 ->with(ItemPresetInterface::ITEM_TYPE_ACCOUNT_PRIVATE)
                                 ->willReturn(null);
 
-        $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword);
+        // Not allowed to mark it private, so both flags are written off whatever was asked.
+        $encryptedDto = $accountCreateDto->withEncryptedPassword($encryptedPassword)
+                                         ->withPrivate(false)
+                                         ->withPrivateGroup(false);
 
         $this->accountRepository->expects(self::once())->method('create')
             ->with(self::anAccountStampedNow(AccountModel::create($encryptedDto)))
