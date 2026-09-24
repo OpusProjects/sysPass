@@ -35,6 +35,8 @@ use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
+use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Ports\MasterPassService;
@@ -51,6 +53,11 @@ final class MasterPass extends Service implements MasterPassService
 {
     public const PARAM_MASTER_PASS_TIME = 'lastupdatempass';
     public const PARAM_MASTER_PASS_HASH = 'masterPwd';
+
+    /**
+     * The shortest master password accepted, in characters
+     */
+    public const MIN_LENGTH = 11;
 
     public function __construct(
         Application                                   $application,
@@ -94,6 +101,29 @@ final class MasterPass extends Service implements MasterPassService
     }
 
     /**
+     * Refuse a master password shorter than MIN_LENGTH characters.
+     *
+     * Every account secret is sealed with the master password, so its minimum is the floor under
+     * the whole vault. The installer enforced it and nothing else did: the web's encryption
+     * settings (both the full rotation and the "hash only" option) and `sp:updateMasterPassword`
+     * accepted any non-empty value, so an installation could be re-keyed to `a` the day after it
+     * was set up. The installer also measured it with strlen(), in bytes, so four CJK characters
+     * (twelve bytes) passed a rule that promises eleven characters.
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function assertLongEnough(?string $masterPassword): void
+    {
+        if (mb_strlen($masterPassword ?? '') < self::MIN_LENGTH) {
+            throw new InvalidArgumentException(
+                __u('Master password too short'),
+                SPException::ERROR,
+                sprintf(__u('The Master Password length need to be at least %d characters'), self::MIN_LENGTH)
+            );
+        }
+    }
+
+    /**
      * Re-encrypts everything under a new master password, or leaves it all as it was.
      *
      * The hash belongs inside the transaction with the secrets it describes. The three
@@ -128,6 +158,8 @@ final class MasterPass extends Service implements MasterPassService
         if ($this->config->getConfigData()->isDemoEnabled()) {
             throw ServiceException::error(__u('Ey, this is a DEMO!!'));
         }
+
+        self::assertLongEnough($request->getNewMasterPass());
 
         $this->repository->transactionAware(
             function () use ($request) {

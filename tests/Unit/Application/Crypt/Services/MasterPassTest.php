@@ -38,6 +38,7 @@ use SP\Domain\Common\Services\ServiceException;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Services\MasterPass;
 use SP\Application\CustomField\Ports\CustomFieldCryptService;
@@ -172,7 +173,7 @@ class MasterPassTest extends UnitaryTestCase
             ->method('transactionAware')
             ->with(self::withResolveCallableCallback());
 
-        $request = new UpdateMasterPassRequest('123', '456', $hash);
+        $request = new UpdateMasterPassRequest('123', 'a_new_master_pass', $hash);
 
         $this->accountMasterPasswordService
             ->expects(self::once())
@@ -215,7 +216,7 @@ class MasterPassTest extends UnitaryTestCase
      */
     public function testTheStoredHashIsWrittenInsideTheTransaction(): void
     {
-        $request = new UpdateMasterPassRequest('123', '456', self::$faker->sha1());
+        $request = new UpdateMasterPassRequest('123', 'a_new_master_pass', self::$faker->sha1());
 
         // No withResolveCallableCallback(): the closure is handed over and never invoked.
         $this->repository
@@ -245,7 +246,7 @@ class MasterPassTest extends UnitaryTestCase
             ->method('transactionAware')
             ->with(self::withResolveCallableCallback());
 
-        $request = new UpdateMasterPassRequest('123', '456', $hash);
+        $request = new UpdateMasterPassRequest('123', 'a_new_master_pass', $hash);
 
         $this->accountMasterPasswordService
             ->expects(self::once())
@@ -310,7 +311,7 @@ class MasterPassTest extends UnitaryTestCase
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Ey, this is a DEMO!!');
 
-        $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'new', self::$faker->sha1()));
+        $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'a_new_master_pass', self::$faker->sha1()));
     }
 
     /**
@@ -342,7 +343,7 @@ class MasterPassTest extends UnitaryTestCase
         );
 
         try {
-            $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'new', self::$faker->sha1()));
+            $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'a_new_master_pass', self::$faker->sha1()));
         } catch (ServiceException) {
             // asserted above; this test is about what reached the config
         }
@@ -368,4 +369,34 @@ class MasterPassTest extends UnitaryTestCase
             $this->repository
         );
     }
+    /**
+     * The minimum is counted in characters, as its message promises: four CJK characters are
+     * twelve bytes, which a byte count let past a rule of eleven.
+     */
+    public function testTheMinimumLengthIsCountedInCharacters(): void
+    {
+        MasterPass::assertLongEnough(str_repeat('a', MasterPass::MIN_LENGTH));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Master password too short');
+
+        MasterPass::assertLongEnough('密码很长的');
+    }
+
+    /**
+     * The rotation refuses a new master password under the minimum before it touches anything —
+     * `sp:updateMasterPassword` reaches it with no other check on the way.
+     *
+     * @throws ServiceException
+     */
+    public function testChangeMasterPasswordRefusesAShortPasswordBeforeReEncryptingAnything(): void
+    {
+        $this->accountMasterPasswordService->expects(self::never())->method('updateMasterPassword');
+        $this->customFieldCryptService->expects(self::never())->method('updateMasterPassword');
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $this->masterPass->changeMasterPassword(new UpdateMasterPassRequest('old', 'short', self::$faker->sha1()));
+    }
+
 }

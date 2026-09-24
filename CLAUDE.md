@@ -476,6 +476,8 @@ wrote `private` / `privateGroup` as sent; it is now `Account::privacyAllowedFor(
 the account will actually have.
 The account manager's grid left out an account private to somebody else, while its delete and
 bulk edit acted on whatever ids were posted; `Account::assertNotWithheldAsPrivate()` guards those.
+The master password's eleven-character minimum was enforced only by the installer (and in bytes);
+`MasterPass::assertLongEnough()` now holds the web settings, their hash-only option and the CLI to it.
 It runs the other way too, and that is the more useful half: the API re-reads the user on every
 request and refuses a disabled one, while the web trusted what login had put in the session — so
 disabling an account stopped its token at once and left its browser session working, and since the

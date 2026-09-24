@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Install\Services;
 
+use SP\Application\Crypt\Services\MasterPass;
 use Exception;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\Config\Ports\ConfigService;
@@ -145,13 +146,7 @@ final class Installer implements InstallerService
             );
         }
 
-        if (strlen($this->installData->getMasterPassword() ?? '') < 11) {
-            throw new InvalidArgumentException(
-                __u('Master password too short'),
-                SPException::CRITICAL,
-                __u('The Master Password length need to be at least 11 characters')
-            );
-        }
+        MasterPass::assertLongEnough($this->installData->getMasterPassword());
 
         if ($this->installData->getMasterPassword() !== $this->installData->getMasterPasswordRepeat()) {
             throw new InvalidArgumentException(
