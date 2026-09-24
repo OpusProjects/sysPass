@@ -77,6 +77,19 @@ final class SaveRequestController extends UserPassResetSaveBase
     public function saveRequestAction(): ActionResponse
     {
         try {
+            return $this->handleRequest();
+        } finally {
+            // The attempt is decided either way: a failure has recorded itself by now.
+            $this->releaseTracking();
+        }
+    }
+
+    /**
+     * Sends a reset link when the login and email match, answering the same either way
+     */
+    private function handleRequest(): ActionResponse
+    {
+        try {
             $this->checkTracking();
         } catch (Exception $e) {
             processException($e);

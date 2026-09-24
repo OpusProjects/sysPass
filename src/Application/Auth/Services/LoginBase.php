@@ -83,6 +83,14 @@ abstract class LoginBase extends Service
     }
 
     /**
+     * Withdraw what checkTracking() recorded while the attempt was in flight
+     */
+    final protected function releaseTracking(): void
+    {
+        $this->trackService->release();
+    }
+
+    /**
      * Add a tracking entry
      *
      * @throws AuthException

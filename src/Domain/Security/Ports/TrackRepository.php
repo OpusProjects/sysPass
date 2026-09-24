@@ -58,6 +58,17 @@ interface TrackRepository
     public function unlock(int $id): int;
 
     /**
+     * Delete the given tracks
+     *
+     * @param non-empty-array<int> $ids
+     *
+     * @return QueryResult<Simple>
+     * @throws QueryException
+     * @throws ConstraintException
+     */
+    public function deleteByIdBatch(array $ids): QueryResult;
+
+    /**
      * Clears tracks
      *
      * @return bool with the result

@@ -57,6 +57,13 @@ final class Track extends Service implements TrackService
     private const TIME_TRACKING_MAX_ATTEMPTS = 10;
 
     /**
+     * The rows checkTracking() recorded for attempts this request has not yet decided
+     *
+     * @var int[]
+     */
+    private array $inFlight = [];
+
+    /**
      * @param TrackRepository<TrackModel> $trackRepository
      */
     public function __construct(
@@ -112,8 +119,18 @@ final class Track extends Service implements TrackService
     public function checkTracking(TrackRequest $trackRequest): bool
     {
         try {
+            // Record this attempt first, then count. Counting and recording used to be two
+            // statements with the whole attempt between them — a bcrypt verify on a login, a token
+            // lookup on the API — and a failure was only recorded at the end. So a burst of
+            // attempts sent together all counted the same rows, all passed, and the ten-attempt
+            // limit let through as many guesses as there were workers to run them. With the row
+            // in place before the count, whichever of two attempts counts second sees the other:
+            // the guard and the change are no longer separate. The row is withdrawn by release()
+            // once the attempt is decided; a failure has recorded its own by then.
+            $this->inFlight[] = $this->trackRepository->add($this->buildTrackFrom($trackRequest))->getLastId();
+
             $attempts = $this->trackRepository->getTracksForClientFromTime($this->buildTrackFrom($trackRequest))
-                                              ->getNumRows();
+                                              ->getNumRows() - 1;
 
             if ($attempts >= self::TIME_TRACKING_MAX_ATTEMPTS) {
                 // Answer at once. This used to sleep for a quarter of a second per attempt
@@ -146,6 +163,29 @@ final class Track extends Service implements TrackService
         }
 
         return false;
+    }
+
+    /**
+     * Withdraw the rows checkTracking() recorded for this request's attempts
+     *
+     * A failure to withdraw them is logged rather than raised: it runs as a request finishes, where
+     * throwing would replace the answer the attempt earned, and the rows it leaves behind only count
+     * against the same address until the window passes.
+     */
+    public function release(): void
+    {
+        $ids = $this->inFlight;
+        $this->inFlight = [];
+
+        if ($ids === []) {
+            return;
+        }
+
+        try {
+            $this->trackRepository->deleteByIdBatch($ids);
+        } catch (Exception $e) {
+            processException($e);
+        }
     }
 
     private function buildTrackFrom(TrackRequest $trackRequest): TrackModel

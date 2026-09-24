@@ -86,6 +86,14 @@ abstract class UserPassResetSaveBase extends ControllerBase
     }
 
     /**
+     * Withdraw what checkTracking() recorded while the attempt was in flight
+     */
+    final protected function releaseTracking(): void
+    {
+        $this->trackService->release();
+    }
+
+    /**
      * Add a tracking entry
      */
     final protected function addTracking(): void

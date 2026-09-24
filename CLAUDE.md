@@ -442,6 +442,10 @@ as correct in review. A public link's view limit and the temporary master passwo
 cap were both tested in PHP against a row that had already been read, so two requests arriving
 together both passed — and the attempt counter was written back as `$attempts + 1`, an absolute
 value worked out from that same stale read, so guesses in parallel advanced it by one between them.
+The sign-in limiter had the same gap at a larger scale: it counted, ran the whole attempt (a bcrypt
+verify), and recorded a failure only at the end, so a burst sent together all passed the count. It
+now records the attempt *before* counting and withdraws that row once the attempt is decided —
+`TrackService::release()`, which every door that calls `checkTracking()` must reach in a `finally`.
 The master password's rotation re-encrypted every secret inside a transaction and then stored the
 hash describing them outside it, leaving a vault nobody could open if those last two writes failed.
 `40024210101.sql` made two commits out of one logical change, and DDL commits as it goes, so a

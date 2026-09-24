@@ -27,10 +27,12 @@ declare(strict_types=1);
 namespace SP\Tests\Integration\Application\Auth;
 
 use DI\ContainerBuilder;
+use Exception;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Application\Auth\Ports\LoginService;
+use SP\Application\Security\Ports\TrackService;
 use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Auth\Services\AuthException;
@@ -282,6 +284,58 @@ final class BruteForceTrackingTest extends TestCase
             $pass,
             self::MASTER_PASS
         );
+    }
+
+    /**
+     * Attempts in flight at the same time count against each other.
+     *
+     * The check and the record used to be two statements with the whole attempt between them, and a
+     * failure was recorded only at the end — so attempts sent together all counted the same rows
+     * and all passed, and the limit let through as many guesses as there were workers. Two
+     * containers stand for two requests from one address here, interleaved the way a burst
+     * interleaves them: nine attempts already stand, the first request is checked and is still
+     * verifying when the second is checked. The second must see the first.
+     *
+     * Once both are decided the count is back to what the failures recorded, so a successful
+     * attempt costs nothing afterwards — which is what keeps an office behind one address from
+     * locking itself out by signing in.
+     *
+     * @throws Exception
+     */
+    public function testAttemptsInFlightCountAgainstEachOther(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = sprintf('203.0.113.%d', random_int(1, 254));
+        $source = 'bftest-inflight-' . bin2hex(random_bytes(4));
+
+        $earlier = $this->buildContainer()->get(TrackService::class);
+
+        for ($attempt = 1; $attempt <= 9; $attempt++) {
+            $earlier->add($earlier->buildTrackRequest($source));
+        }
+
+        $first = $this->buildContainer()->get(TrackService::class);
+        $second = $this->buildContainer()->get(TrackService::class);
+
+        self::assertFalse(
+            $first->checkTracking($first->buildTrackRequest($source)),
+            'nine earlier attempts are under the limit of ten'
+        );
+        self::assertTrue(
+            $second->checkTracking($second->buildTrackRequest($source)),
+            'an attempt checked while another is in flight did not count it'
+        );
+
+        $first->release();
+        $second->release();
+
+        $after = $this->buildContainer()->get(TrackService::class);
+
+        self::assertFalse(
+            $after->checkTracking($after->buildTrackRequest($source)),
+            'attempts that recorded no failure still counted once they were decided'
+        );
+
+        $after->release();
     }
 
     /**

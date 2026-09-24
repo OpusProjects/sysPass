@@ -86,6 +86,8 @@ class RefusalsTest extends WebControllerTestCase
         $trackService->method('buildTrackRequest')->willReturn($this->trackRequestFor('saveRequest'));
         $trackService->method('checkTracking')->willReturn(true);
         $trackService->expects(self::once())->method('add');
+        // Refused or not, what the check recorded while the attempt was in flight is withdrawn.
+        $trackService->expects(self::once())->method('release');
 
         $userService = $this->createMock(UserService::class);
         $userService->expects(self::never())->method('getByLogin');
@@ -116,6 +118,8 @@ class RefusalsTest extends WebControllerTestCase
         $trackService->method('buildTrackRequest')->willReturn($this->trackRequestFor('saveReset'));
         $trackService->method('checkTracking')->willReturn(true);
         $trackService->expects(self::once())->method('add');
+        // Refused or not, what the check recorded while the attempt was in flight is withdrawn.
+        $trackService->expects(self::once())->method('release');
 
         $userPassRecoverService = $this->createMock(UserPassRecoverService::class);
         $userPassRecoverService->expects(self::never())->method('getUserIdForHash');
