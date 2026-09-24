@@ -54,10 +54,20 @@ final class Filter
     {
         return array_map(
             static function ($value) {
-                if ($value !== null) {
-                    return is_numeric($value)
-                        ? Filter::getInt($value)
-                        : Filter::getString($value);
+                // Decided by type rather than by `is_numeric()` alone. `getInt()` takes
+                // `int|string` and `getString()` takes `?string`, under strict types, so anything
+                // else — a bool, a float, a nested array, an object — used to reach one of them and
+                // throw a `TypeError`. That is not a hypothetical shape: a JSON body can carry
+                // `[true]` or `[1.5]`, and a form field named `x[a][]` makes one element an array.
+                // Nothing in between caught it, so it surfaced as a 500 whose body named the class,
+                // the method and the server's absolute path. An element this cannot represent is
+                // answered as null, the same as a missing one.
+                if (is_int($value) || (is_string($value) && is_numeric($value))) {
+                    return Filter::getInt($value);
+                }
+
+                if (is_string($value)) {
+                    return Filter::getString($value);
                 }
 
                 return null;
