@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Forms;
 
+use SP\Application\Account\Services\AccountAcl;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\ValidationException;
@@ -129,6 +130,23 @@ final class ItemsPresetForm extends FormBase implements FormInterface
      */
     private function makePermissionPreset(): AccountPermission
     {
+        // A permission preset shares accounts, so writing one needs the authority that sharing an
+        // account by hand needs.
+        //
+        // Every preset action is gated on `isMgmItemsPreset()` alone — the profile switch labelled
+        // "Default Values Management" — while choosing who an account is shared with is gated on
+        // `AccountAcl::getShowPermission()`: an application or account administrator, or
+        // `isAccPermission()`. A fixed permission preset is applied by `addPresetPermissions()` to
+        // every account its target creates, outside the `$userCanChangePermissions` gate that
+        // guards the hand-picked sharing on the very same request. So a holder of the innocuous
+        // sounding switch, and nothing else, could make every account a colleague creates from
+        // then on shared with themselves for editing — sharing they could never have granted by
+        // hand. The other three preset types (password policy, privacy, session timeout) grant no
+        // access and stay with `isMgmItemsPreset()`.
+        if (!AccountAcl::getShowPermission($this->context->getUserData(), $this->context->getUserProfile())) {
+            throw new ValidationException(__u('You don\'t have permission to assign account permissions'));
+        }
+
         $accountPermission = new AccountPermission(
             $this->request->analyzeArray('users_view', null, []),
             $this->request->analyzeArray('users_edit', null, []),
