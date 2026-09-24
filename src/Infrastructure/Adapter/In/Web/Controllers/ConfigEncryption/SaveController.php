@@ -42,6 +42,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Crypt\Dtos\UpdateMasterPassRequest;
 use SP\Application\Crypt\Ports\MasterPassService;
 use SP\Application\Crypt\Services\MasterPass;
+use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
@@ -98,6 +99,14 @@ final class SaveController extends SimpleControllerBase
 
         if ($newMasterPass !== $newMasterPassR) {
             return ActionResponse::error(__u('Master passwords do not match'));
+        }
+
+        // Asked here as well as in the rotation, because the "hash only" option below never
+        // reaches it.
+        try {
+            MasterPass::assertLongEnough($newMasterPass);
+        } catch (InvalidArgumentException $e) {
+            return ActionResponse::error($e->getMessage(), $e->getHint());
         }
 
         if (!$this->masterPassService->checkMasterPassword($currentMasterPass)) {

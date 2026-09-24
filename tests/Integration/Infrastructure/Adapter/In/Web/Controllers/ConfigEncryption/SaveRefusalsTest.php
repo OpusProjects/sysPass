@@ -192,6 +192,40 @@ class SaveRefusalsTest extends IntegrationTestCase
     }
 
     /**
+     * A new master password is held to the minimum the installer set, here as there. Every secret
+     * is sealed with it, so this was a way to re-key the whole vault to `a`.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerTooShort')]
+    public function aNewPasswordShorterThanTheMinimumIsRefused()
+    {
+        $this->whenSaving($this->form(['new_masterpass' => 'short_pass', 'new_masterpass_repeat' => 'short_pass']));
+    }
+
+    /**
+     * Including by the "hash only" option, which replaces the stored hash without the rotation
+     * and so never reaches the service's own check.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[BodyChecker('outputCheckerTooShort')]
+    public function aShortPasswordIsRefusedWhenOnlyTheHashChanges()
+    {
+        $this->whenSaving(
+            $this->form(
+                ['new_masterpass' => 'short_pass', 'new_masterpass_repeat' => 'short_pass', 'no_account_change' => 'true']
+            )
+        );
+    }
+
+    /**
      * The form as it is submitted when everything is right.
      *
      * @param array<string, string> $overrides
@@ -256,6 +290,11 @@ class SaveRefusalsTest extends IntegrationTestCase
     private function outputCheckerNotConfirmed(string $output): void
     {
         self::assertSame('The password update must be confirmed', json_decode($output)->description);
+    }
+
+    private function outputCheckerTooShort(string $output): void
+    {
+        self::assertSame('Master password too short', json_decode($output)->description);
     }
 
     private function outputCheckerSame(string $output): void
