@@ -8,7 +8,6 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Application\Account\Ports\AccountPresetService;
 use SP\Domain\Core\Acl\AclActionsInterface;
-use SP\Domain\User\Models\ProfileData;
 use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Http\Ports\RequestService;
 use SP\Infrastructure\Adapter\In\Web\Forms\AccountForm;
@@ -47,10 +46,8 @@ final class AccountFormTest extends UnitaryTestCase
      */
     public function testPrivateFlagsReachTheDto(): void
     {
-        // The form now holds both flags to the profile permission and to ownership, the way the
-        // interface does when it decides whether to offer the checkbox — so the user this runs as
-        // has to be one the flags are actually available to.
-        $this->context->setUserProfile(new ProfileData(['accPrivate' => true, 'accPrivateGroup' => true]));
+        // Whether the flags may be set is the account service's to decide — it is where the API
+        // arrives too — so the form only has to carry what was submitted.
 
         $userData = $this->context->getUserData();
 
@@ -60,7 +57,7 @@ final class AccountFormTest extends UnitaryTestCase
             static fn(string $param) => $param === 'name' ? 'an_account' : null
         );
         // owner_id and main_usergroup_id carry the signed-in user: the real analyzeInt() falls back
-        // to that default, and the privacy flags are only available to somebody marking their own.
+        // to that default.
         $request->method('analyzeInt')->willReturnCallback(
             static fn(string $param) => match ($param) {
                 'client_id', 'category_id' => 1,
@@ -85,45 +82,6 @@ final class AccountFormTest extends UnitaryTestCase
         // AccountDto types both as ?bool, so the form's int cast arrives coerced.
         self::assertTrue($accountDto->isPrivate);
         self::assertTrue($accountDto->isPrivateGroup);
-    }
-
-    /**
-     * The interface only offers the privacy checkboxes to a user whose profile carries the
-     * permission — `AccountHelper` computes `allowPrivate` / `allowPrivateGroup` for exactly that —
-     * but nothing looked at either flag on the way back in, so a request carrying `private_enabled`
-     * anyway was honoured.
-     *
-     * Neither flag reaches anything: both only ever withhold. What they do is hide, and `AccountAcl`
-     * tests privacy before the administrator branch, so an account marked private disappears for
-     * account administrators as well.
-     */
-    public function testPrivateFlagsAreRefusedWithoutThePermission(): void
-    {
-        $this->context->setUserProfile(new ProfileData());
-
-        $request = $this->createMock(RequestService::class);
-
-        $request->method('analyzeString')->willReturnCallback(
-            static fn(string $param) => $param === 'name' ? 'an_account' : null
-        );
-        $request->method('analyzeInt')->willReturnCallback(
-            static fn(string $param) => in_array($param, ['client_id', 'category_id'], true) ? 1 : null
-        );
-        $request->method('analyzeEncrypted')->willReturn('a_password');
-        $request->method('analyzeBool')->willReturnCallback(
-            static fn(string $param) => in_array($param, ['private_enabled', 'private_group_enabled'], true)
-        );
-
-        $accountPresetService = $this->createMock(AccountPresetService::class);
-        $accountPresetService->method('checkPasswordPreset')->willReturnArgument(0);
-        $accountPresetService->method('checkPasswordExpiry')->willReturnArgument(0);
-
-        $form = new AccountForm($this->application, $request, $accountPresetService);
-
-        $accountDto = $form->validateFor(AclActionsInterface::ACCOUNT_CREATE)->getItemData();
-
-        self::assertFalse($accountDto->isPrivate);
-        self::assertFalse($accountDto->isPrivateGroup);
     }
 
     /**
