@@ -34,6 +34,9 @@ use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Application\Account\Ports\AccountService;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Application\Account\Services\PublicLink;
 use SP\Domain\Common\Models\Simple;
@@ -63,6 +66,9 @@ class PublicLinkTest extends UnitaryTestCase
     private PublicLink                      $publicLink;
     private CryptInterface|MockObject       $crypt;
     private MockObject|AccountService       $accountService;
+    private bool                            $mayViewPasswords  = true;
+    /** @var int[] */
+    private array                           $aclAskedFor       = [];
 
     /**
      * @throws QueryException
@@ -605,6 +611,29 @@ class PublicLinkTest extends UnitaryTestCase
         $actual = $this->publicLink->create($publicLinkData);
 
         $this->assertEquals($result->getLastId(), $actual);
+        $this->assertSame([AclActionsInterface::ACCOUNT_VIEW_PASS], $this->aclAskedFor);
+    }
+
+    /**
+     * A public link is the account's password, handed to whoever has the URL, so a user whose
+     * profile may not view passwords cannot mint one — whatever `PUBLICLINK_CREATE` says.
+     *
+     * @throws CryptoException
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws SPException
+     */
+    public function testCreateIsRefusedToAUserWhoMayNotViewPasswords()
+    {
+        $this->mayViewPasswords = false;
+
+        $this->publicLinkRepository->expects(self::never())->method('create');
+        $this->accountService->expects(self::never())->method('getDataForLink');
+        $this->crypt->expects(self::never())->method('decrypt');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->publicLink->create(PublicLinkDataGenerator::factory()->buildPublicLink());
     }
 
     /**
@@ -667,6 +696,15 @@ class PublicLinkTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
+        // Read when called rather than when configured, so each test can say who is signed in.
+        $acl = $this->createStub(AclInterface::class);
+        $acl->method('checkUserAccess')
+            ->willReturnCallback(function (int $actionId) {
+                $this->aclAskedFor[] = $actionId;
+
+                return $actionId === AclActionsInterface::ACCOUNT_VIEW_PASS && $this->mayViewPasswords;
+            });
+
         $this->context->setTrasientKey(Context::MASTER_PASSWORD_KEY, self::$faker->password());
 
         $this->publicLink =
@@ -675,7 +713,8 @@ class PublicLinkTest extends UnitaryTestCase
                 $this->publicLinkRepository,
                 $request,
                 $this->accountService,
-                $this->crypt
+                $this->crypt,
+                $acl
             );
     }
 }

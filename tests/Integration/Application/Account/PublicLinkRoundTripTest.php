@@ -48,6 +48,7 @@ use SP\Domain\Crypt\Vault;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Crypt\Crypt;
 use SP\Infrastructure\Definitions\CoreDefinitions;
 use SP\Infrastructure\Definitions\DomainDefinitions;
@@ -136,6 +137,9 @@ final class PublicLinkRoundTripTest extends TestCase
                 isAdminAcc: true,
             )
         );
+        // Minting a link asks the ACL whether the user may view passwords, and the ACL refuses
+        // anybody — an administrator included — whose session carries no profile at all.
+        $context->setUserProfile(new ProfileData());
         // AccountCryptService::getPasswordEncrypted() and PublicLink::getSecuredLinkData() both pull
         // the master password from here (Service::getMasterKeyFromContext()). A real login sets this
         // after checking the master password against the stored hash; done directly since this
