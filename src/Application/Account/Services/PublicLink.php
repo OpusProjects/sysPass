@@ -34,6 +34,9 @@ use SP\Domain\Account\Dtos\PublicLinkKey;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
 use SP\Domain\Account\Models\PublicLinkList;
 use SP\Application\Account\Ports\AccountService;
+use SP\Domain\Core\Acl\AccountPermissionException;
+use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Account\Ports\PublicLinkRepository;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Domain\Common\Adapters\Serde;
@@ -72,7 +75,8 @@ final class PublicLink extends Service implements PublicLinkService
         private readonly PublicLinkRepository $publicLinkRepository,
         private readonly RequestService $request,
         private readonly AccountService       $accountService,
-        private readonly CryptInterface       $crypt
+        private readonly CryptInterface       $crypt,
+        private readonly AclInterface         $acl
     ) {
         parent::__construct($application);
     }
@@ -210,6 +214,29 @@ final class PublicLink extends Service implements PublicLinkService
     }
 
     /**
+     * Refuse unless the signed-in user's profile may view account passwords.
+     *
+     * A public link *is* the account's password, handed to whoever holds the URL: creating one
+     * decrypts it with the master key and seals it into the link's vault, and the creator can open
+     * it like anybody else. So minting one needs what reading the password needs. Which accounts
+     * is already settled — `getDataForLink()` reads through `AccountFilterUser`, as
+     * `getPasswordForId()` does — but the profile's own view-password permission was asked only
+     * where the password is shown directly, and the account view offers the link button on
+     * exactly `isShowLink() && isShowViewPass()`. `PUBLICLINK_CREATE` (the "public links" profile
+     * switch) says nothing about it, so a profile allowed to publish links and not to see
+     * passwords could read every password it could list by linking it, and on the API — which
+     * answers with the new hash — without even opening the account.
+     *
+     * @throws AccountPermissionException
+     */
+    private function requirePasswordPermission(): void
+    {
+        if (!$this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_VIEW_PASS)) {
+            throw new AccountPermissionException(SPException::ERROR);
+        }
+    }
+
+    /**
      * Return the link's expiration time
      */
     public static function calcDateExpire(ConfigFileService $config): int
@@ -265,6 +292,8 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function create(PublicLinkModel $publicLink): int
     {
+        $this->requirePasswordPermission();
+
         return $this->publicLinkRepository->create($this->buildPublicLink($publicLink))->getLastId();
     }
 

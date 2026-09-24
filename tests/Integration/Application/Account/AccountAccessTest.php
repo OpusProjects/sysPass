@@ -47,7 +47,6 @@ use SP\Domain\Client\Models\Client;
 use SP\Application\Account\Ports\PublicLinkService;
 use SP\Domain\Account\PublicLinkType;
 use SP\Domain\Account\Models\PublicLink as PublicLinkModel;
-use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Context\Context;
@@ -57,6 +56,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
@@ -106,9 +106,10 @@ use function SP\Tests\getResource;
  * AccountAclService outright -- neither leaves anything real to test here. 'cli' keeps Context bound
  * to the plain Stateless implementation, so "logging in" as a different user between assertions is
  * just Context::setUserData() with a different UserDto, the same technique those two tests use.
- * Every user profile bit is left unset throughout (Context::setUserProfile() is never called): every
- * assertion here goes through AccountAclService/AccountService directly rather than through
- * AclInterface::checkUserAccess(), and AccountAcl::compileAccountAccess() -- the half that decides
+ * Every user profile bit is left unset (Context::setUserProfile() is not called) except by the
+ * public-link tests, since minting a link asks AclInterface::checkUserAccess() for the profile's
+ * view-password permission. Every other assertion here goes through AccountAclService/AccountService
+ * directly rather than through AclInterface::checkUserAccess(), and AccountAcl::compileAccountAccess() -- the half that decides
  * resultView/resultEdit, i.e. what actually gates reading an account -- never consults the profile at
  * all. A profile row still has to exist for each created user purely to satisfy User.userProfileId's
  * foreign key; its bits are never read.
@@ -554,13 +555,15 @@ final class AccountAccessTest extends TestCase
         $accountId = $this->createAccount('link', $password, $ownerId, $ownerGroupId);
 
         $this->setContextUser($otherId, $otherGroupId, 'link-other');
+        // Allowed to view passwords, so the refusal below can only be the account being out of reach.
+        $this->context->setUserProfile(new ProfileData(['accViewPass' => true]));
 
         self::assertFalse(
             $this->canAccess(AclActionsInterface::ACCOUNT_VIEW, $accountId),
             'the account was reachable, so this proves nothing'
         );
 
-        $this->expectException(SPException::class);
+        $this->expectException(NoSuchItemException::class);
 
         $this->dic->get(PublicLinkService::class)->create(
             new PublicLinkModel(['itemId' => $accountId, 'typeId' => PublicLinkType::Account->value])
@@ -585,6 +588,7 @@ final class AccountAccessTest extends TestCase
         );
 
         $this->setContextUser($ownerId, $ownerGroupId, 'linkown-owner');
+        $this->context->setUserProfile(new ProfileData(['accViewPass' => true]));
 
         self::assertGreaterThan(
             0,
@@ -592,6 +596,34 @@ final class AccountAccessTest extends TestCase
                 new PublicLinkModel(['itemId' => $accountId, 'typeId' => PublicLinkType::Account->value])
             ),
             'the owner could not publish a link for their own account'
+        );
+    }
+
+    /**
+     * But not when their profile may not view passwords: the link is the password, and whoever
+     * mints it can open it, so owning the account is not enough on its own.
+     *
+     * @throws Exception
+     */
+    public function testTheOwnerCannotMintALinkWhenTheirProfileMayNotViewPasswords(): void
+    {
+        $ownerGroupId = $this->createGroup('linknopass-owner');
+        $ownerId = $this->createUser('linknopass-owner', $ownerGroupId);
+
+        $accountId = $this->createAccount(
+            'linknopass',
+            'LinkNoPass!' . bin2hex(random_bytes(4)),
+            $ownerId,
+            $ownerGroupId
+        );
+
+        $this->setContextUser($ownerId, $ownerGroupId, 'linknopass-owner');
+        $this->context->setUserProfile(new ProfileData(['accViewPass' => false, 'accPublicLinks' => true]));
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->dic->get(PublicLinkService::class)->create(
+            new PublicLinkModel(['itemId' => $accountId, 'typeId' => PublicLinkType::Account->value])
         );
     }
 
