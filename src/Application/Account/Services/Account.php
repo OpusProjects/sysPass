@@ -239,17 +239,19 @@ final class Account extends Service implements AccountService
                 $userCanChangePermissions = AccountAcl::getShowPermission($userData, $userProfile);
 
                 foreach ($accountUpdateBulkDto->getAccountUpdateDto() as $accountId => $accountUpdateDto) {
+                    $account = $this->getById($accountId);
+
+                    $this->assertNotWithheldAsPrivate($account);
+
                     $changeOwner = false;
                     $changeUserGroup = false;
 
                     if ($userCanChangePermissions) {
-                        $account = $this->getById($accountId);
-
                         $changeOwner = $this->userCanChangeOwner($userData, $userProfile, $account);
                         $changeUserGroup = $this->userCanChangeGroup($userData, $userProfile, $account);
                     }
 
-                    $this->addHistory($accountId);
+                    $this->addHistoryFor($account);
 
                     if ($accountUpdateDto->userEditId === null) {
                         $accountUpdateDto = $accountUpdateDto->mutate(['userEditId' => $userData->id]);
@@ -400,9 +402,20 @@ final class Account extends Service implements AccountService
      */
     private function addHistory(int $accountId, bool $isDelete = false): void
     {
+        $this->addHistoryFor($this->getById($accountId), $isDelete);
+    }
+
+    /**
+     * Records the account as it stands, from a copy the caller has already read
+     *
+     * @throws SPException
+     * @throws ServiceException
+     */
+    private function addHistoryFor(AccountModel $account, bool $isDelete = false): void
+    {
         $this->accountHistoryService->create(
             new AccountHistoryCreateDto(
-                $this->getById($accountId),
+                $account,
                 !$isDelete,
                 $isDelete,
                 $this->configService->getByParam('masterPwd')
@@ -729,13 +742,41 @@ final class Account extends Service implements AccountService
     }
 
     /**
+     * Refuse an account that is private to somebody else, answering as if it did not exist.
+     *
+     * The same rule `AccountAcl::isWithheldAsPrivate()` applies and `AccountFilter::buildFilterPrivate()`
+     * writes as SQL: `isPrivate` withholds an account from everybody but its owner, `isPrivateGroup`
+     * from everybody outside its group — application administrators included. The account
+     * manager's grid applies it, so a private account is not listed there, but its delete and bulk
+     * edit took whatever ids were posted and acted on them: a holder of `mgmAccounts` could delete,
+     * or overwrite the client, category, tags and expiry of, an account nobody but its owner can
+     * reach anywhere else. The answer is "not found" for the same reason the grid leaves it out.
+     *
+     * @throws NoSuchItemException
+     * @throws SPException
+     */
+    private function assertNotWithheldAsPrivate(AccountModel $account): void
+    {
+        $userData = $this->context->getUserData();
+
+        if (($account->getIsPrivate() && $account->getUserId() !== $userData->id)
+            || ($account->getIsPrivateGroup() && $account->getUserGroupId() !== $userData->userGroupId)
+        ) {
+            throw new NoSuchItemException(__u('The account doesn\'t exist'));
+        }
+    }
+
+    /**
      * @throws ServiceException
      */
     public function delete(int $id): AccountService
     {
         $this->accountRepository->transactionAware(
             function () use ($id) {
-                $this->addHistory($id, true);
+                $account = $this->getById($id);
+
+                $this->assertNotWithheldAsPrivate($account);
+                $this->addHistoryFor($account, true);
 
                 if ($this->accountRepository->delete($id)->getAffectedNumRows() === 0) {
                     throw new NoSuchItemException(__u('Account not found'));
@@ -761,7 +802,10 @@ final class Account extends Service implements AccountService
             // while deleting the same accounts as a selection destroyed them outright — the same
             // action, recoverable or not depending only on how many were ticked.
             foreach ($ids as $id) {
-                $this->addHistory((int)$id, true);
+                $account = $this->getById((int)$id);
+
+                $this->assertNotWithheldAsPrivate($account);
+                $this->addHistoryFor($account, true);
             }
 
             $affectedNumRows = $this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows();

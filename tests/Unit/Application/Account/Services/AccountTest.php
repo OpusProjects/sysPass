@@ -832,12 +832,12 @@ class AccountTest extends UnitaryTestCase
             )
         );
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
+        // Read once each: the same copy decides privacy, ownership and what goes into history.
+        $consecutive = $accountsId;
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))
@@ -879,7 +879,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::exactly(count($accountsId)))->method('getById')
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $accountsId)))
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
@@ -920,12 +920,12 @@ class AccountTest extends UnitaryTestCase
 
         $this->context->setUserProfile(new ProfileData(['accPermission' => false]));
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
+        // Read once each: the same copy decides privacy, ownership and what goes into history.
+        $consecutive = $accountsId;
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
@@ -966,12 +966,12 @@ class AccountTest extends UnitaryTestCase
 
         $this->context->setUserProfile(new ProfileData(['accPermission' => true]));
 
-        $consecutive = array_merge($accountsId, $accountsId);
-        sort($consecutive);
+        // Read once each: the same copy decides privacy, ownership and what goes into history.
+        $consecutive = $accountsId;
 
         $this->accountRepository->expects(self::exactly(count($consecutive)))->method('getById')
                                 ->with(...self::withConsecutive(...array_map(fn($v) => [$v], $consecutive)))
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
         $this->configService->expects(self::exactly(count($accountsId)))->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
         $this->accountItemsService->expects(self::exactly(count($accountsId)))->method('updateItems')
@@ -1008,7 +1008,7 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository->expects(self::once())->method('getById')
                                 ->with($id)
-                                ->willReturn(new QueryResult([$accountDataGenerator->buildAccount()]));
+                                ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
         $this->configService->expects(self::once())->method('getByParam')
                             ->with('masterPwd')->willReturn(self::$faker->password());
 
@@ -1049,7 +1049,7 @@ class AccountTest extends UnitaryTestCase
     {
         $id = self::$faker->randomNumber();
         $password = self::$faker->password();
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = self::anAccountNobodyWithholds();
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, false, true, $password);
 
         $this->configService->expects(self::once())
@@ -1073,13 +1073,109 @@ class AccountTest extends UnitaryTestCase
     }
 
     /**
+     * The account manager deletes by the ids it is posted, and its grid leaves out an account
+     * private to somebody else — so posting that id anyway must not delete it. Answered as not
+     * found, as the grid answers by not listing it.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testDeleteRefusesAnAccountPrivateToSomebodyElse()
+    {
+        $id = self::$faker->randomNumber();
+        $userData = $this->context->getUserData();
+        $account = self::anAccountNobodyWithholds()->mutate(['isPrivate' => 1, 'userId' => $userData->id + 1]);
+
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$account]));
+        $this->accountHistoryService->expects(self::never())->method('create');
+        $this->accountRepository->expects(self::never())->method('delete');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('The account doesn\'t exist');
+
+        $this->account->delete($id);
+    }
+
+    /**
+     * Its owner still deletes it: privacy withholds an account from everybody else.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testTheOwnerMayDeleteTheirOwnPrivateAccount()
+    {
+        $id = self::$faker->randomNumber();
+        $userData = $this->context->getUserData();
+        $account = self::anAccountNobodyWithholds()->mutate(
+            [
+                'isPrivate' => 1,
+                'isPrivateGroup' => 1,
+                'userId' => $userData->id,
+                'userGroupId' => $userData->userGroupId,
+            ]
+        );
+
+        $this->configService->method('getByParam')->willReturn(self::$faker->password());
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$account]));
+        $this->accountHistoryService->expects(self::once())->method('create');
+        $this->accountRepository->expects(self::once())->method('delete')->willReturn(new QueryResult(null, 1));
+
+        $this->account->delete($id);
+    }
+
+    /**
+     * A selection is refused whole when any account in it is private to somebody else's group —
+     * nothing in it is deleted, and nothing goes into history.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testDeleteByIdBatchRefusesASelectionHoldingAnAccountPrivateToAnotherGroup()
+    {
+        $userData = $this->context->getUserData();
+        $withheld = self::anAccountNobodyWithholds()->mutate(
+            ['isPrivateGroup' => 1, 'userGroupId' => $userData->userGroupId + 1]
+        );
+
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$withheld]));
+        $this->accountHistoryService->expects(self::never())->method('create');
+        $this->accountRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(NoSuchItemException::class);
+
+        $this->account->deleteByIdBatch([1, 2]);
+    }
+
+    /**
+     * And a bulk edit does not overwrite one either.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testUpdateBulkRefusesAnAccountPrivateToSomebodyElse()
+    {
+        $userData = $this->context->getUserData();
+        $withheld = self::anAccountNobodyWithholds()->mutate(['isPrivate' => 1, 'userId' => $userData->id + 1]);
+
+        $this->accountRepository->method('getById')->willReturn(new QueryResult([$withheld]));
+        $this->accountHistoryService->expects(self::never())->method('create');
+        $this->accountRepository->expects(self::never())->method('updateBulk');
+
+        $this->expectException(NoSuchItemException::class);
+
+        $this->account->updateBulk(
+            new AccountUpdateBulkDto([1], [1 => AccountDataGenerator::factory()->buildAccountUpdateDto()])
+        );
+    }
+
+    /**
      * @throws ServiceException
      */
     public function testDeleteNotFound()
     {
         $id = self::$faker->randomNumber();
         $password = self::$faker->password();
-        $account = AccountDataGenerator::factory()->buildAccount();
+        $account = self::anAccountNobodyWithholds();
         $accountHistoryCreateDto = new AccountHistoryCreateDto($account, false, true, $password);
 
         $this->configService->expects(self::once())->method('getByParam')
@@ -1838,10 +1934,19 @@ class AccountTest extends UnitaryTestCase
 
         $this->accountRepository
             ->method('getById')
-            ->willReturn(new QueryResult([AccountDataGenerator::factory()->buildAccount()]));
+            ->willReturn(new QueryResult([self::anAccountNobodyWithholds()]));
 
         $this->accountHistoryService->expects(self::exactly($count))->method('create');
     }
+    /**
+     * An account private to nobody, so the manager's paths — which refuse one private to somebody
+     * else — act on it. The generator draws both flags at random for a random owner.
+     */
+    private static function anAccountNobodyWithholds(): AccountModel
+    {
+        return AccountDataGenerator::factory()->buildAccount()->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0]);
+    }
+
 
     /**
      * @throws ServiceException

@@ -147,7 +147,7 @@ class AccountManagerTest extends IntegrationTestCase
 
         $this->addDatabaseMapperResolver(
             Account::class,
-            new QueryResult([$accountDataGenerator->buildAccount()])
+            new QueryResult([$accountDataGenerator->buildAccount()->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0])])
         );
 
         $container = $this->buildContainer(
@@ -180,7 +180,7 @@ class AccountManagerTest extends IntegrationTestCase
                 return new QueryResult([$accountView]);
             } elseif ($queryData->getMapClassName() === Account::class) {
                 $account = AccountDataGenerator::factory()
-                                               ->buildAccount();
+                                               ->buildAccount()->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0]);
 
                 return new QueryResult([$account]);
             } elseif ($queryData->getMapClassName() === Config::class) {
@@ -217,7 +217,7 @@ class AccountManagerTest extends IntegrationTestCase
 
         $this->addDatabaseMapperResolver(
             Account::class,
-            new QueryResult([$accountDataGenerator->buildAccount()])
+            new QueryResult([$accountDataGenerator->buildAccount()->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0])])
         );
 
         $this->addDatabaseMapperResolver(
