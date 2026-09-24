@@ -144,6 +144,59 @@ class FileBackupServiceTest extends UnitaryTestCase
         $this->assertSame(TMP_PATH, $this->builtPath);
     }
 
+    /**
+     * Text that looks like a number is dumped as text.
+     *
+     * The dump used to write any value is_numeric() accepted as a bare literal, and a bare literal
+     * is a number to MySQL — so restoring a login of `0123`, an account named `0800` or a note of
+     * `1e5` stored `123`, `800` and `100000` in their place, and ` 7` lost its space. Only what PDO
+     * hands back as a number — an integer or float column — is written bare now.
+     *
+     * @throws ServiceException
+     * @throws Exception
+     */
+    public function testTextThatLooksLikeANumberIsDumpedAsText(): void
+    {
+        $this->config->getConfigData()->setDbName('a_db');
+
+        $this->database->method('runQuery')->willReturnCallback(
+            fn() => $this->buildCreateResult('table')
+        );
+        $this->database->method('doFetchWithOptions')->willReturnCallback(static function () {
+            yield ['0123', 5, '1e5', ' 7', 2.5, null];
+        });
+
+        $databaseUtil = $this->createStub(DatabaseUtilService::class);
+        $databaseUtil->method('escape')->willReturnCallback(static fn(string $value) => "'" . $value . "'");
+
+        $written = [];
+
+        $this->dbFileHandler->method('write')->willReturnCallback(
+            function (string $data) use (&$written) {
+                $written[] = $data;
+
+                return $this->dbFileHandler;
+            }
+        );
+
+        $backup = new BackupFile(
+            $this->application,
+            $this->database,
+            $databaseUtil,
+            new \SP\Infrastructure\Database\QueryDataFactory(),
+            $this->backupHandlersFactory
+        );
+
+        $backup->doBackup(TMP_PATH, APP_PATH);
+
+        $table = DatabaseUtilService::TABLES[0];
+
+        self::assertContains(
+            sprintf("INSERT INTO `%s` VALUES('0123',5,'1e5',' 7',2.5,NULL);", $table) . PHP_EOL,
+            $written
+        );
+    }
+
     private function buildCreateResult(string $type): QueryResult
     {
         $data = new stdClass();

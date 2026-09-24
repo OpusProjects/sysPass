@@ -210,8 +210,17 @@ final class BackupFile extends Service implements BackupFileService
                     function (mixed $value) {
                         if ($value === null) {
                             return 'NULL';
-                        } elseif (is_numeric($value)) {
-                            return $value;
+                        }
+
+                        // Decided by what the column is, not by what the value looks like. PDO
+                        // hands integer columns back as ints and every text column as a string, so
+                        // only a real number is written bare. This used to ask is_numeric(), which
+                        // is true of text that merely looks numeric — a login of `0123`, an account
+                        // named `0800`, a note reading `1e5` — and a bare literal is a number to
+                        // MySQL, so restoring the backup stored `123`, `800` and `100000` in their
+                        // place. A quoted number is still read correctly into a numeric column.
+                        if (is_int($value) || is_float($value)) {
+                            return (string)$value;
                         }
 
                         return $this->databaseUtil->escape((string)$value);
