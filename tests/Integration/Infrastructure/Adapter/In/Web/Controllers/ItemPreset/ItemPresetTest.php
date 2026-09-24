@@ -37,6 +37,7 @@ use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\ItemPreset\Models\ItemPreset;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
@@ -49,6 +50,15 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class ItemPresetTest extends IntegrationTestCase
 {
+    /**
+     * Saving a permission preset needs the authority to share accounts by hand, which the
+     * harness's randomly generated profile holds only about half the time.
+     */
+    protected function getUserProfile(): ProfileData
+    {
+        return parent::getUserProfile()->mutate(['accPermission' => true]);
+    }
+
     /**
      * The create form is built for a preset type passed on the route.
      *

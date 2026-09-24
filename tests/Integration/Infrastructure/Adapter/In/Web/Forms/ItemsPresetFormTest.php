@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\User\Models\ProfileData;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
@@ -44,6 +45,15 @@ use SP\Tests\Support\IntegrationTestCase;
 #[Group('integration')]
 class ItemsPresetFormTest extends IntegrationTestCase
 {
+    /**
+     * Saving a permission preset needs the authority to share accounts by hand, which the
+     * harness's randomly generated profile holds only about half the time.
+     */
+    protected function getUserProfile(): ProfileData
+    {
+        return parent::getUserProfile()->mutate(['accPermission' => true]);
+    }
+
     /**
      * A permission preset has to name somebody, otherwise it grants nothing and would sit in
      * the list doing nothing.

@@ -36,6 +36,7 @@ use SP\Domain\ItemPreset\Models\AccountPrivate;
 use SP\Domain\ItemPreset\Models\Password;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
 use SP\Domain\ItemPreset\Ports\ItemPresetInterface;
+use SP\Domain\User\Models\ProfileData;
 use SP\Infrastructure\Adapter\In\Web\Forms\ItemsPresetForm;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -88,6 +89,8 @@ class ItemsPresetFormTest extends UnitaryTestCase
     #[Test]
     public function aPermissionPresetGrantingNobodyAnythingIsRefused(): void
     {
+        $this->givenTheSignedInUserMayShareAccounts();
+
         $this->givenARequest(
             ['type' => ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION],
             ['user_id' => 1]
@@ -111,6 +114,8 @@ class ItemsPresetFormTest extends UnitaryTestCase
     #[Test]
     public function aPermissionPresetCarriesWhoWasNamed(): void
     {
+        $this->givenTheSignedInUserMayShareAccounts();
+
         $this->givenARequest(
             ['type' => ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION],
             ['user_id' => 1],
@@ -127,6 +132,31 @@ class ItemsPresetFormTest extends UnitaryTestCase
         self::assertSame([12], $preset->getUsersEdit());
         self::assertSame([20], $preset->getUserGroupsView());
         self::assertSame([], $preset->getUserGroupsEdit());
+    }
+
+    /**
+     * A permission preset shares every account its target creates from then on, so writing one
+     * needs the authority sharing an account by hand needs. "Default Values Management" alone is
+     * the switch that reaches this form, and it must not be a way to grant access its holder could
+     * never have granted directly.
+     *
+     * @throws ValidationException
+     */
+    #[Test]
+    public function aPermissionPresetFromSomebodyWhoCannotShareAccountsIsRefused(): void
+    {
+        $this->context->setUserProfile(new ProfileData(['mgmItemsPreset' => true]));
+
+        $this->givenARequest(
+            ['type' => ItemPresetInterface::ITEM_TYPE_ACCOUNT_PERMISSION],
+            ['user_id' => 1],
+            ['users_view' => [], 'users_edit' => [12], 'user_groups_view' => [], 'user_groups_edit' => []]
+        );
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('You don\'t have permission to assign account permissions');
+
+        $this->buildForm()->validateFor(AclActionsInterface::ITEMPRESET_CREATE);
     }
 
     /**
@@ -312,6 +342,14 @@ class ItemsPresetFormTest extends UnitaryTestCase
 
         $this->request->method('analyzeBool')->willReturn($bools);
         $this->request->method('analyzeUnsafeString')->willReturn($unsafeString);
+    }
+
+    /**
+     * Signs the test in as somebody whose profile lets them choose who an account is shared with.
+     */
+    private function givenTheSignedInUserMayShareAccounts(): void
+    {
+        $this->context->setUserProfile(new ProfileData(['mgmItemsPreset' => true, 'accPermission' => true]));
     }
 
     private function buildForm(): ItemsPresetForm
