@@ -66,6 +66,95 @@ class DatabaseTest extends UnitaryTestCase
     }
 
     /**
+     * A nested scope's `endTransaction()` does not commit the transaction it joined.
+     *
+     * `beginTransaction()` answered `true` whether it started a transaction or joined one, and
+     * `endTransaction()` committed whenever one was active — so the *inner* scope ended the *outer*
+     * one. Measured against the server before the fix: the inner commit leaves `inTransaction()`
+     * false, the outer rollback then fails with "There is no active transaction", and every row
+     * written before the inner commit survives.
+     *
+     * Nesting is the ordinary case rather than an edge. `Import::doImport()` wraps the whole import
+     * in one transaction and calls `Account::create()` per row, which opens its own; and
+     * `Account::update()` calls `AccountItems::updateItems()`, which opens up to five in sequence.
+     * So an import or a bulk edit that failed part-way kept everything already processed.
+     */
+    public function testANestedTransactionDoesNotCommitTheOuterOne()
+    {
+        $pdo = $this->createMock(PDO::class);
+
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+
+        // The connection's own state, so the second `beginTransaction()` is a genuine nested call
+        // rather than one the stub has told there is nothing open. By reference: an arrow function
+        // would capture it by value and answer `false` forever.
+        $open = false;
+        $pdo->method('inTransaction')->willReturnCallback(function () use (&$open): bool {
+            return $open;
+        });
+
+        // One real begin, and one real commit — not two of either.
+        $pdo->expects($this->once())
+            ->method('beginTransaction')
+            ->willReturnCallback(function () use (&$open): bool {
+                $open = true;
+
+                return true;
+            });
+
+        $pdo->expects($this->once())
+            ->method('commit')
+            ->willReturnCallback(function () use (&$open): bool {
+                $open = false;
+
+                return true;
+            });
+
+        self::assertTrue($this->database->beginTransaction(), 'the outer scope starts one');
+        self::assertTrue($this->database->beginTransaction(), 'the inner scope joins it');
+
+        self::assertTrue($this->database->endTransaction(), 'the inner scope finishing commits nothing');
+        self::assertTrue($this->database->endTransaction(), 'the outer scope is the one that commits');
+    }
+
+    /**
+     * And a rollback from any depth undoes all of it, leaving nothing for the outer scope to roll
+     * back a second time.
+     *
+     * `transactionAware()` rolls back in its own `catch`, so when an inner failure propagates the
+     * outer scope calls `rollbackTransaction()` again — that must be a no-op rather than an error.
+     */
+    public function testARollbackFromANestedScopeUndoesAllOfIt()
+    {
+        $pdo = $this->createMock(PDO::class);
+
+        $this->dbStorageHandler->method('getConnection')->willReturn($pdo);
+
+        // True while the transaction is open, false once it has been rolled back.
+        $open = true;
+        // By reference, not `fn()` — an arrow function captures by value when it is created, so a
+        // `fn(): bool => $open` here would answer `true` forever and rollBack() would run twice.
+        $pdo->method('inTransaction')->willReturnCallback(function () use (&$open): bool {
+            return $open;
+        });
+        $pdo->method('beginTransaction')->willReturn(true);
+
+        $pdo->expects($this->once())
+            ->method('rollBack')
+            ->willReturnCallback(static function () use (&$open): bool {
+                $open = false;
+
+                return true;
+            });
+
+        $this->database->beginTransaction();
+        $this->database->beginTransaction();
+
+        self::assertTrue($this->database->rollbackTransaction(), 'the inner failure rolls all of it back');
+        self::assertFalse($this->database->rollbackTransaction(), 'and the outer scope finds nothing left');
+    }
+
+    /**
      * @throws Exception
      */
     public function testBeginTransaction()
