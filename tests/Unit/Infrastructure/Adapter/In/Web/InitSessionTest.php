@@ -39,6 +39,8 @@ use SP\Application\Application;
 use SP\Application\Config\Ports\ConfigFileService;
 use SP\Application\ItemPreset\Ports\ItemPresetService;
 use SP\Application\User\Ports\UserProfileService;
+use SP\Domain\User\Models\UserProfile;
+use SP\Domain\User\Models\ProfileData;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\User\Models\User;
@@ -91,6 +93,7 @@ class InitSessionTest extends UnitaryTestCase
     private ItemPresetService|MockObject $itemPresetService;
     private SessionKeyService|MockObject $sessionKeyService;
     private MockObject|UserService $userService;
+    private ?UserProfileService $userProfileService = null;
     private Session $session;
 
     /**
@@ -302,7 +305,9 @@ class InitSessionTest extends UnitaryTestCase
         $this->session->setUserData(new UserDto(id: 7, login: 'admin'));
 
         $this->userService = $this->createStub(UserService::class);
-        $this->userService->method('getById')->willReturn(new User(['id' => 7, 'isDisabled' => false]));
+        $this->userService->method('getById')->willReturn(
+            new User(['id' => 7, 'login' => 'admin', 'isDisabled' => false])
+        );
 
         $freshSession = $this->buildInitForAFreshSession($session = new Session());
 
@@ -310,6 +315,86 @@ class InitSessionTest extends UnitaryTestCase
 
         self::assertArrayHasKey('context', $_SESSION, 'an enabled account keeps its session');
         self::assertSame('admin', $session->getUserData()->login);
+    }
+
+    /**
+     * A session follows the account's privileges, not the ones it had at login.
+     *
+     * `isAdminApp` and the rest were copied into the session when the user signed in and never
+     * read again, so revoking somebody's administrator rights left the session they were using an
+     * administrator for as long as they kept using it — the timeout is measured from the last
+     * request. The API rebuilds the user from the row on every request; so does the web now.
+     *
+     * @throws Exception
+     */
+    public function testASessionLosesAdministratorRightsTheAccountNoLongerHas(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin', isAdminApp: true, isAdminAcc: true));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(
+            new User(['id' => 7, 'login' => 'admin', 'isAdminApp' => false, 'isAdminAcc' => false, 'userGroupId' => 3])
+        );
+
+        $init = $this->buildInitForAFreshSession($session = new Session());
+
+        $init->initialize(IndexController::class);
+
+        self::assertFalse($session->getUserData()->isAdminApp, 'the session kept a revoked administrator');
+        self::assertFalse($session->getUserData()->isAdminAcc);
+        self::assertSame(3, $session->getUserData()->userGroupId, 'the session kept the old group');
+    }
+
+    /**
+     * And the profile as it is now: tightening a profile changes what every holder may do.
+     *
+     * @throws Exception
+     */
+    public function testASessionFollowsTheProfileAsItIsNow(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin', userProfileId: 5));
+        $this->session->setUserProfile(new ProfileData(['accViewPass' => true]));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 7, 'login' => 'admin', 'userProfileId' => 5]));
+
+        $this->userProfileService = $this->createStub(UserProfileService::class);
+        $this->userProfileService->method('getById')->willReturn(
+            (new UserProfile(['id' => 5]))->dehydrate(new ProfileData(['accViewPass' => false]))
+        );
+
+        $init = $this->buildInitForAFreshSession($session = new Session());
+
+        $init->initialize(IndexController::class);
+
+        self::assertFalse($session->getUserProfile()?->isAccViewPass(), 'the session kept the old profile');
+    }
+
+    /**
+     * A profile that cannot be read keeps the one the session has, for the reason a failed user
+     * read does: this runs on every request, and a hiccup must not strip everybody's permissions.
+     *
+     * @throws Exception
+     */
+    public function testAProfileThatCannotBeReadKeepsTheOneTheSessionHas(): void
+    {
+        $this->givenAnInstalledInstance();
+        $this->session->setUserData(new UserDto(id: 7, login: 'admin', userProfileId: 5));
+        $this->session->setUserProfile(new ProfileData(['accViewPass' => true]));
+
+        $this->userService = $this->createStub(UserService::class);
+        $this->userService->method('getById')->willReturn(new User(['id' => 7, 'login' => 'admin', 'userProfileId' => 5]));
+
+        $this->userProfileService = $this->createStub(UserProfileService::class);
+        $this->userProfileService->method('getById')->willThrowException(new RuntimeException('down'));
+
+        $init = $this->buildInitForAFreshSession($session = new Session());
+
+        $init->initialize(IndexController::class);
+
+        self::assertTrue($session->getUserProfile()?->isAccViewPass());
     }
 
     /**
@@ -406,7 +491,7 @@ class InitSessionTest extends UnitaryTestCase
             $this->createStub(LanguageInterface::class),
             $this->itemPresetService,
             $databaseUtil,
-            $this->createStub(UserProfileService::class),
+            $this->userProfileService ?? $this->createStub(UserProfileService::class),
             $uriContext,
             $this->userService,
             $this->sessionKeyService
