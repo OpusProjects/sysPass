@@ -149,6 +149,46 @@ class ParameterTypesTest extends ApiTestCase
     }
 
     /**
+     * An array whose *elements* are the wrong type is refused the same way.
+     *
+     * `getParamArray()` checked only `is_array()`, so `[true]`, `[1.5]` or `[[1]]` reached
+     * `Filter::getArray()`, which handed each element to `getInt(int|string)` or
+     * `getString(?string)` under strict types. That threw a `TypeError`, and the catch-all answered
+     * it as a 500 with the class, the method and the server's absolute path in the body — the exact
+     * leak the scalar readers above were fixed for, on the one reader this test called "always
+     * right". It was right about the container and never looked inside it.
+     *
+     * @return array<string, array{mixed}>
+     */
+    public static function arrayWithABadElementProvider(): array
+    {
+        return [
+            'a bool' => [[true]],
+            'a float' => [[1.5]],
+            'a nested array' => [[[1]]],
+            'a good id beside a bad one' => [[1, false]],
+        ];
+    }
+
+    #[Test]
+    #[DataProvider('arrayWithABadElementProvider')]
+    public function anArrayParameterWithABadElementIsRefused(array $tagsId): void
+    {
+        $r = $this->callApi(
+            AclActionsInterface::ACCOUNT_CREATE,
+            [
+                'name' => 'an account',
+                'categoryId' => 1,
+                'clientId' => 1,
+                'pass' => 'a-password',
+                'tagsId' => $tagsId,
+            ]
+        );
+
+        $this->assertBadRequest($r);
+    }
+
+    /**
      * The control. Every refusal above would be satisfied by an endpoint that had simply stopped
      * accepting anything, so the same call with the right types has to still work.
      */

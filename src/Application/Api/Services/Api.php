@@ -415,7 +415,14 @@ final class Api extends Service implements ApiService
         $value = $this->getParam($param, $required, $default);
 
         if (null !== $value) {
-            if (!is_array($value)) {
+            // The elements as well as the container. Checking only `is_array()` let `[true]` or
+            // `[[1]]` through to `Filter::getArray()`, which threw a `TypeError` — the 500 with a
+            // class name and a server path in the body that the three scalar readers above were
+            // already fixed to refuse with a 400. An element is an id or a value, so the same
+            // scalars those readers accept are the ones accepted here.
+            if (!is_array($value)
+                || array_filter($value, static fn($item) => !is_int($item) && !is_string($item) && $item !== null)
+            ) {
                 throw $this->wrongParameterType();
             }
 
