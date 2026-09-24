@@ -474,6 +474,8 @@ the whole boundary. Search paging clamped a negative offset in one of the two DT
 Who may mark an account private was decided in `AccountForm`, so the API's account create and edit
 wrote `private` / `privateGroup` as sent; it is now `Account::privacyAllowedFor()`, for the owner
 the account will actually have.
+The account manager's grid left out an account private to somebody else, while its delete and
+bulk edit acted on whatever ids were posted; `Account::assertNotWithheldAsPrivate()` guards those.
 It runs the other way too, and that is the more useful half: the API re-reads the user on every
 request and refuses a disabled one, while the web trusted what login had put in the session — so
 disabling an account stopped its token at once and left its browser session working, and since the

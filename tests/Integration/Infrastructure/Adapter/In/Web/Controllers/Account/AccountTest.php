@@ -650,7 +650,7 @@ class AccountTest extends IntegrationTestCase
 
         $this->addDatabaseMapperResolver(
             Account::class,
-            new QueryResult([$accountDataGenerator->buildAccount()])
+            new QueryResult([$accountDataGenerator->buildAccount()->mutate(['isPrivate' => 0, 'isPrivateGroup' => 0])])
         );
 
         $container = $this->buildContainer(

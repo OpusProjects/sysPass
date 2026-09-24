@@ -56,6 +56,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
@@ -870,6 +871,38 @@ final class AccountAccessTest extends TestCase
         // The account that is merely somebody else's is still listed, which is the behaviour the
         // test above pins. Without this, hiding everything would satisfy the assertion above.
         self::assertContains($sharedId, $listed, 'the manager grid still lists accounts it always did');
+    }
+
+    /**
+     * Nor can the manager act on it by id. The grid leaves a private account out, but its delete
+     * and bulk edit took whatever ids were posted — so a holder of mgmAccounts could delete an
+     * account that nobody but its owner reaches anywhere else, by guessing a sequential id.
+     *
+     * @throws Exception
+     */
+    public function testTheManagerCannotDeleteAPrivateAccountByItsId(): void
+    {
+        $ownerGroupId = $this->createGroup('mgm-del-owner');
+        $ownerId = $this->createUser('mgm-del-owner', $ownerGroupId);
+
+        $strangerGroupId = $this->createGroup('mgm-del-stranger');
+        $strangerId = $this->createUser('mgm-del-stranger', $strangerGroupId);
+
+        $privateId = $this->createAccount('mgm-del-private', 'MgmDel!1', $ownerId, $ownerGroupId, isPrivate: true);
+
+        $this->setContextUser($strangerId, $strangerGroupId, 'mgm-del-stranger');
+
+        // transactionAware() rethrows the refusal as a ServiceException carrying its message.
+        try {
+            $this->dic->get(AccountService::class)->deleteByIdBatch([$privateId]);
+            self::fail('a private account was deleted by somebody it is withheld from');
+        } catch (ServiceException $e) {
+            self::assertSame('The account doesn\'t exist', $e->getMessage());
+        }
+
+        $this->setContextUser($ownerId, $ownerGroupId, 'mgm-del-owner');
+
+        self::assertSame('MgmDel!1', $this->readPassword($privateId), 'the account is gone');
     }
 
     /**
