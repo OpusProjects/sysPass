@@ -64,10 +64,22 @@ interface TrackService
     /**
      * Check the login attempts
      *
-     * @return bool True if delay is performed, false otherwise
+     * The attempt being checked is recorded before the others are counted, so attempts in flight
+     * at the same time count against each other. Every caller must call release() once the
+     * attempt has been decided, whether it succeeded or failed.
+     *
+     * @return bool True if the limit is exceeded, false otherwise
      * @throws Exception
      */
     public function checkTracking(TrackRequest $trackRequest): bool;
+
+    /**
+     * Withdraw what checkTracking() recorded for the attempts this request made
+     *
+     * A failed attempt is recorded by add(), so this leaves the count exactly as it would have
+     * been had the attempts been made one at a time.
+     */
+    public function release(): void;
 
     /**
      * @throws ServiceException

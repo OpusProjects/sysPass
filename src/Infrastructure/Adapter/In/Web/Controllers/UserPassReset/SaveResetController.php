@@ -91,6 +91,9 @@ final class SaveResetController extends UserPassResetSaveBase
             $this->eventDispatcher->notify(new Event('exception', $e));
 
             return ActionResponse::error($e->getMessage());
+        } finally {
+            // The attempt is decided either way: a failure has recorded itself by now.
+            $this->releaseTracking();
         }
     }
 }

@@ -352,6 +352,9 @@ class ApiTest extends UnitaryTestCase
                                  ->with($userData->getUserProfileId())
                                  ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
 
+        // The attempt is decided, so what checkTracking() recorded while it was in flight goes.
+        $this->trackService->expects(self::once())->method('release');
+
         $this->apiService->setup($actionId);
     }
 
@@ -397,6 +400,10 @@ class ApiTest extends UnitaryTestCase
             ->method('checkTracking')
             ->with($this->trackRequest)
             ->willReturn(true);
+
+        // Refused attempts are recorded by add(); the in-flight row is withdrawn all the same.
+        $this->trackService->expects(self::once())->method('add')->with($this->trackRequest);
+        $this->trackService->expects(self::once())->method('release');
 
         $this->expectException(ServiceException::class);
         $this->expectExceptionMessage('Attempts exceeded');

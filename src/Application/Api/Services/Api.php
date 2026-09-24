@@ -97,6 +97,23 @@ final class Api extends Service implements ApiService
      */
     public function setup(int $actionId): void
     {
+        try {
+            $this->authenticate($actionId);
+        } finally {
+            // The attempt is decided either way: a failure has recorded itself by now.
+            $this->trackService->release();
+        }
+    }
+
+    /**
+     * Authenticates the request's token for the given action
+     *
+     * @throws ServiceException
+     * @throws SPException
+     * @throws Exception
+     */
+    private function authenticate(int $actionId): void
+    {
         $this->status = ApiStatuses::INITIALIZING;
 
         if ($this->trackService->checkTracking($this->trackRequest)) {

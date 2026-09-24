@@ -93,6 +93,118 @@ class TrackTest extends UnitaryTestCase
     }
 
     /**
+     * The attempt is recorded before the others are counted.
+     *
+     * Counting first and recording only once an attempt had failed left the whole attempt — a
+     * bcrypt verify on a login — between the guard and the change it guards, so a burst of attempts
+     * sent together all counted the same rows and all passed. With this attempt's row in place
+     * first, whichever of two attempts counts second sees the other one.
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testTheAttemptIsRecordedBeforeTheOthersAreCounted()
+    {
+        $calls = [];
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('add')
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'add';
+
+                return new QueryResult(null, 0, 7);
+            });
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('getTracksForClientFromTime')
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'count';
+
+                return new QueryResult([1]);
+            });
+
+        $this->track->checkTracking($this->getTrackRequest());
+
+        $this->assertSame(['add', 'count'], $calls);
+    }
+
+    /**
+     * And its own row is not held against it: nine earlier attempts and this one is still under the
+     * limit of ten, as it was when the count came first.
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testTheAttemptsOwnRowDoesNotCountAgainstIt()
+    {
+        $this->trackRepository->method('add')->willReturn(new QueryResult(null, 0, 7));
+        $this->trackRepository
+            ->method('getTracksForClientFromTime')
+            ->willReturn(new QueryResult(range(1, 10)));
+
+        $this->assertFalse($this->track->checkTracking($this->getTrackRequest()));
+    }
+
+    /**
+     * Releasing withdraws exactly the rows this request's checks recorded, and only once.
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testReleaseWithdrawsWhatTheChecksRecorded()
+    {
+        $lastIds = [41, 42];
+
+        $this->trackRepository
+            ->method('add')
+            ->willReturnCallback(function () use (&$lastIds) {
+                return new QueryResult(null, 0, array_shift($lastIds));
+            });
+        $this->trackRepository->method('getTracksForClientFromTime')->willReturn(new QueryResult([1]));
+
+        $deleted = [];
+
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('deleteByIdBatch')
+            ->willReturnCallback(function (array $ids) use (&$deleted) {
+                $deleted[] = $ids;
+
+                return new QueryResult();
+            });
+
+        $this->track->checkTracking($this->getTrackRequest());
+        $this->track->checkTracking($this->getTrackRequest());
+
+        $this->track->release();
+        $this->track->release();
+
+        $this->assertSame([[41, 42]], $deleted);
+    }
+
+    /**
+     * A release that fails is logged rather than raised: it runs as a request finishes, and
+     * throwing there would replace the answer the attempt earned.
+     *
+     * @throws InvalidArgumentException
+     * @throws Exception
+     */
+    public function testAFailedReleaseDoesNotReplaceTheAnswer()
+    {
+        $this->trackRepository->method('add')->willReturn(new QueryResult(null, 0, 7));
+        $this->trackRepository->method('getTracksForClientFromTime')->willReturn(new QueryResult([1]));
+        $this->trackRepository
+            ->expects($this->once())
+            ->method('deleteByIdBatch')
+            ->willThrowException(new RuntimeException('test'));
+
+        $this->track->checkTracking($this->getTrackRequest());
+        $this->track->release();
+    }
+
+    /**
      * @return TrackRequest
      * @throws InvalidArgumentException
      */

@@ -131,6 +131,9 @@ final class Login extends LoginBase implements LoginService
             return new LoginResponseDto(LoginStatus::OK, $this->getUriForRoute($from ?? 'index'));
         } catch (ServiceException $e) {
             throw AuthException::from($e);
+        } finally {
+            // The attempt is decided either way: a failure has recorded itself by now.
+            $this->releaseTracking();
         }
     }
 

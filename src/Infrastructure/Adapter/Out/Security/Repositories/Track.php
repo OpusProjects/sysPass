@@ -89,6 +89,27 @@ final class Track extends BaseRepository implements TrackRepository
     }
 
     /**
+     * Delete the given tracks
+     *
+     * @param non-empty-array<int> $ids
+     *
+     * @return QueryResult<Simple>
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function deleteByIdBatch(array $ids): QueryResult
+    {
+        $query = $this->queryFactory
+            ->newDelete()
+            ->from(self::TABLE)
+            ->where('id IN (:ids)', ['ids' => $ids]);
+
+        $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while removing the track'));
+
+        return $this->db->runQuery($queryData);
+    }
+
+    /**
      * Clears tracks
      *
      * @return bool the result
