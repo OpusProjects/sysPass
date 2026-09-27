@@ -355,20 +355,8 @@ parameters:
 			path: src/Domain/Common/Ports/Dto.php
 
 		-
-			message: '#^Comparison operation "\<" between int\<80400, 80599\> and 80600 is always true\.$#'
-			identifier: smaller.alwaysTrue
-			count: 1
-			path: src/Domain/Common/Providers/Environment.php
-
-		-
-			message: '#^Comparison operation "\>\=" between int\<80400, 80599\> and 80400 is always true\.$#'
+			message: '#^Comparison operation "\>\=" between int\<80400, 80699\> and 80400 is always true\.$#'
 			identifier: greaterOrEqual.alwaysTrue
-			count: 1
-			path: src/Domain/Common/Providers/Environment.php
-
-		-
-			message: '#^Result of && is always true\.$#'
-			identifier: booleanAnd.alwaysTrue
 			count: 1
 			path: src/Domain/Common/Providers/Environment.php
 
