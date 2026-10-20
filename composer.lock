@@ -1960,16 +1960,16 @@
         },
         {
             "name": "symfony/lock",
-            "version": "v8.1.6",
+            "version": "v8.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/lock.git",
-                "reference": "9fd3fa0e9b3c5bdd3e0e228d32ddaa47fba94b88"
+                "reference": "a57c18e351998f9964dff24713f7138a01d53703"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/lock/zipball/9fd3fa0e9b3c5bdd3e0e228d32ddaa47fba94b88",
-                "reference": "9fd3fa0e9b3c5bdd3e0e228d32ddaa47fba94b88",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/a57c18e351998f9964dff24713f7138a01d53703",
+                "reference": "a57c18e351998f9964dff24713f7138a01d53703",
                 "shasum": ""
             },
             "require": {
@@ -2018,7 +2018,7 @@
                 "semaphore"
             ],
             "support": {
-                "source": "https://github.com/symfony/lock/tree/v8.1.6"
+                "source": "https://github.com/symfony/lock/tree/v8.1.8"
             },
             "funding": [
                 {
@@ -2038,7 +2038,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-30T20:10:55+00:00"
+            "time": "2026-09-18T16:00:27+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
