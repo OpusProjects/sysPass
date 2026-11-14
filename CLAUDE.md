@@ -106,8 +106,9 @@ end-to-end CLI command tests (`tests/Integration/Infrastructure/Adapter/In/Cli/`
 real DB via `CliTestCase`, per-test config under `/tmp/syspass-cli-tests`). Test-environment
 gotchas (the image provides these):
 
-- **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0`; without
-  it `shell_exec` returns `null` and `trim(null)` is a fatal `TypeError` on PHP 8.
+- **`iproute2`** — the test bootstrap's `getRealIpAddress()` shells out to `ip a s eth0` to learn
+  the address the database sees the CLI install tests connect from. Without it, or on a host with
+  no `eth0` (some GitHub runners), it falls back to `127.0.0.1` — it used to `trim(null)` and die.
 - **Locales `en_US.UTF-8` + `es_ES.UTF-8`** — `LanguageTest` asserts against them (7 failures without).
 - **Bundled font** `public/vendor/fonts/NotoSans-Regular-webfont.ttf` — `ImageTest` uses it.
 - **Response language is fixed to English in tests** — the app picks the response language from the
