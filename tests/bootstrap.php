@@ -115,9 +115,20 @@ if (!function_exists('\gettext')) {
     }
 }
 
+/**
+ * Returns this host's address on eth0, falling back to the loopback address.
+ *
+ * `shell_exec()` answers null when the command prints nothing — no eth0 on the
+ * runner, or no `ip` binary — so its result is cast before trimming; otherwise
+ * `trim(null)` is a TypeError and the fallback is never reached.
+ *
+ * @return string The eth0 IPv4 address, or '127.0.0.1' when none is found.
+ */
 function getRealIpAddress(): string
 {
-    return trim(shell_exec('ip a s eth0 | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1')) ?: '127.0.0.1';
+    $address = shell_exec('ip a s eth0 2>/dev/null | awk \'$1 == "inet" {print $2}\' | cut -d"/" -f1');
+
+    return trim((string)$address) ?: '127.0.0.1';
 }
 
 function getDbHandler(?DatabaseConnectionData $connectionData = null): MysqlHandler
