@@ -1,0 +1,26 @@
+name: Dependabot auto-merge
+
+# Dependabot opens one pull request per dependency. This switches GitHub's
+# auto-merge on for each of them, so it is squash-merged as soon as every
+# required check on `main` is green, and simply waits when one is not (e.g. a
+# front-end bump whose vendor bundle still has to be rebuilt fails Lint).
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Enable auto-merge
+    runs-on: ubuntu-latest
+    # Only Dependabot's own pull requests, never a fork's.
+    if: github.event.pull_request.user.login == 'dependabot[bot]' && github.repository == 'OpusProjects/sysPass'
+    steps:
+      - name: Enable squash auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
