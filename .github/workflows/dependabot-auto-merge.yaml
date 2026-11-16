@@ -2,8 +2,8 @@ name: Dependabot auto-merge
 
 # Dependabot opens one pull request per dependency. This switches GitHub's
 # auto-merge on for each of them, so it is squash-merged as soon as every
-# required check on `main` is green, and simply waits when one is not (e.g. a
-# front-end bump whose vendor bundle still has to be rebuilt fails Lint).
+# required check on `main` is green, and simply waits when one is not. A
+# front-end bump gets its vendor bundle rebuilt by dependabot-rebuild-js.yaml.
 on:
   pull_request_target:
     types: [opened, reopened, synchronize]

@@ -1,0 +1,69 @@
+name: Dependabot vendor bundle
+
+# A front-end bump from Dependabot only edits package.json and
+# package-lock.json, but the browser loads the esbuild bundle committed under
+# public/vendor/js/. Lint rebuilds that bundle and fails when it differs, so
+# every such pull request used to need a manual `npm run build:js` commit.
+# This rebuilds the bundle on Dependabot's npm pull requests, commits it to the
+# same branch, and starts CI again on the new commit.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  rebuild:
+    name: Rebuild vendor JS bundle
+    runs-on: ubuntu-latest
+    # Only Dependabot's own branches in this repository, never a fork's.
+    if: github.actor == 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 'lts/*'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Rebuild the bundle
+        run: npm run build:js
+
+      # A bump that leaves the bundle unchanged (Playwright, esbuild itself)
+      # needs no commit, and the CI run already started on it stands.
+      - name: Commit and push when the bundle changed
+        id: commit
+        run: |
+          if git diff --quiet -- public/vendor/js/; then
+            echo "Bundle already current, nothing to commit."
+            echo "pushed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/vendor/js/
+          git commit -m "build: rebuild vendor JS bundle"
+          git push origin "HEAD:$HEAD_REF"
+          echo "pushed=true" >> "$GITHUB_OUTPUT"
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+
+      # A push made with GITHUB_TOKEN never starts another workflow, so the
+      # required checks would stay missing on the new commit and auto-merge
+      # would wait forever. A workflow_dispatch is the one event it may start.
+      - name: Run CI on the new commit
+        if: steps.commit.outputs.pushed == 'true'
+        run: gh workflow run ci.yaml --repo "$GITHUB_REPOSITORY" --ref "$HEAD_REF"
+        env:
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
