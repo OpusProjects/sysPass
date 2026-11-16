@@ -78,7 +78,7 @@ directly or to merge a pull request whose checks are red.
 ## Continuous integration
 
 One workflow, `.github/workflows/ci.yaml`, covers testing, linting, the container image and
-releases. It is triggered in exactly two situations:
+releases. It is triggered by a tag push, a pull request, and a manual dispatch:
 
 ```yaml
 on:
@@ -86,7 +86,11 @@ on:
     tags: ['v*']
   pull_request:
     branches: [main]
+  workflow_dispatch:
 ```
+
+The dispatch exists for the Dependabot bundle rebuild described under
+[Dependency updates](#dependency-updates); it never pushes an image or cuts a release.
 
 **Nothing runs on `main` itself.** A merge into `main` triggers no workflow — the pull request that
 preceded it is where the code was proven, and the next run against that code is the tag build. This
@@ -122,10 +126,17 @@ per update on a weekly schedule.
 | `npm` | Front-end build tooling and the Playwright suite (`package.json`, `package-lock.json`) |
 | `github-actions` | Action versions pinned in the workflow |
 
-Its pull requests go through the same seven required checks as any other, and are merged manually
-rather than automatically. That is a deliberate choice: auto-merge would land dependency changes
-that no person ever looked at, and two of these ecosystems update the tooling that decides whether
-everything else is green.
+Its pull requests go through the same seven required checks as any other. Two workflows act on
+them, and both ignore pull requests opened by anyone but Dependabot.
+
+| Workflow | What it does |
+|---|---|
+| `dependabot-auto-merge.yaml` | Turns on squash auto-merge, so the pull request lands once every check is green |
+| `dependabot-rebuild-js.yaml` | On an npm bump, runs `npm run build:js`, commits the bundle, and dispatches CI |
+
+The rebuild is needed because the `Lint` job fails whenever the committed vendor bundle differs
+from a fresh build. Its commit is pushed with the workflow token, which starts no workflow, so it
+dispatches CI itself to get the required checks reported on the new commit.
 
 ---
 
