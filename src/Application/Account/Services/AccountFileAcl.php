@@ -32,6 +32,7 @@ use SP\Domain\Account\Dtos\AccountAclDto;
 use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
 use SP\Domain\Core\Exceptions\QueryException;
 
@@ -42,12 +43,18 @@ use SP\Domain\Core\Exceptions\QueryException;
  * access the current user has to the owning account: read operations (view/download/list) require
  * view access, write operations (upload/delete) require edit access. This closes the IDOR where any
  * authenticated user could act on files belonging to accounts they can't access.
+ *
+ * Both also require the profile's "Files" permission (ACCOUNT_FILE). That permission used to be
+ * read only to decide whether the Files tab is shown, so a user without it could still list,
+ * download, upload and delete files by calling the routes directly. It is checked here, the one
+ * place every file operation on both the web and the API reaches, rather than in each controller.
  */
 final class AccountFileAcl
 {
     public function __construct(
         private readonly AccountService    $accountService,
-        private readonly AccountAclService $accountAclService
+        private readonly AccountAclService $accountAclService,
+        private readonly AclInterface      $acl
     ) {
     }
 
@@ -82,6 +89,13 @@ final class AccountFileAcl
      */
     private function check(int $accountId, int $actionId): void
     {
+        // Step 1: the profile must grant file access at all. Checked before the account is read,
+        // so a refusal here says nothing about whether the account exists.
+        if ($this->acl->checkUserAccess(AclActionsInterface::ACCOUNT_FILE) === false) {
+            throw new AccountPermissionException();
+        }
+
+        // Step 2: the user must have the required access to the account that owns the file.
         $accountEnrichedDto = new AccountEnrichedDto($this->accountService->getByIdEnriched($accountId));
         $accountEnrichedDto = $this->accountService->withUsers($accountEnrichedDto);
         $accountEnrichedDto = $this->accountService->withUserGroups($accountEnrichedDto);
