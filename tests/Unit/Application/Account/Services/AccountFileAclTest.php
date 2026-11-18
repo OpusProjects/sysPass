@@ -38,6 +38,7 @@ use SP\Domain\Account\Dtos\AccountEnrichedDto;
 use SP\Domain\Account\Models\AccountView;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\Core\Acl\AclActionsInterface;
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Tests\Support\UnitaryTestCase;
 
 /**
@@ -51,6 +52,7 @@ class AccountFileAclTest extends UnitaryTestCase
 {
     private AccountService|MockObject    $accountService;
     private AccountAclService|MockObject $accountAclService;
+    private AclInterface|MockObject      $acl;
     private AccountFileAcl               $accountFileAcl;
 
     public static function actionsProvider(): array
@@ -59,6 +61,30 @@ class AccountFileAclTest extends UnitaryTestCase
             'view' => ['requireView', AclActionsInterface::ACCOUNT_VIEW],
             'edit' => ['requireEdit', AclActionsInterface::ACCOUNT_EDIT],
         ];
+    }
+
+    /**
+     * The profile's "Files" permission is enforced by the server, not only by hiding the tab: a
+     * user without it is refused even on an account they can view and edit, and the refusal comes
+     * before the account is read.
+     */
+    #[DataProvider('actionsProvider')]
+    public function testRequireThrowsWithoutFilesPermission(string $method, int $actionId): void
+    {
+        $this->acl = $this->createMock(AclInterface::class);
+        $this->acl->expects(self::once())
+                  ->method('checkUserAccess')
+                  ->with(AclActionsInterface::ACCOUNT_FILE)
+                  ->willReturn(false);
+
+        $this->accountService->expects(self::never())->method('getByIdEnriched');
+        $this->accountAclService->expects(self::never())->method('getAcl');
+
+        $this->accountFileAcl = new AccountFileAcl($this->accountService, $this->accountAclService, $this->acl);
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->accountFileAcl->{$method}(self::$faker->randomNumber());
     }
 
     #[DataProvider('actionsProvider')]
@@ -133,6 +159,11 @@ class AccountFileAclTest extends UnitaryTestCase
         $this->accountService = $this->createMock(AccountService::class);
         $this->accountAclService = $this->createMock(AccountAclService::class);
 
-        $this->accountFileAcl = new AccountFileAcl($this->accountService, $this->accountAclService);
+        $this->acl = $this->createMock(AclInterface::class);
+        $this->acl->method('checkUserAccess')
+                  ->with(AclActionsInterface::ACCOUNT_FILE)
+                  ->willReturn(true);
+
+        $this->accountFileAcl = new AccountFileAcl($this->accountService, $this->accountAclService, $this->acl);
     }
 }
