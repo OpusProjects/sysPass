@@ -4,28 +4,29 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ad51454065ff57ce8ecda51bca87479",
+    "content-hash": "ef029d5ce33acfdbae016fa807d310c7",
     "packages": [
         {
             "name": "aura/sqlquery",
-            "version": "3.0.0",
+            "version": "7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.SqlQuery.git",
-                "reference": "6f71a3b82d7018dff437cdd316f3eb851fd3713c"
+                "reference": "384a4e77721afeacc160fb0e748aec1eb6ebb9b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/6f71a3b82d7018dff437cdd316f3eb851fd3713c",
-                "reference": "6f71a3b82d7018dff437cdd316f3eb851fd3713c",
+                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/384a4e77721afeacc160fb0e748aec1eb6ebb9b5",
+                "reference": "384a4e77721afeacc160fb0e748aec1eb6ebb9b5",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6"
+                "php": "^8.4"
             },
             "require-dev": {
                 "ext-pdo_sqlite": "*",
-                "yoast/phpunit-polyfills": "^1.0"
+                "phpstan/phpstan": "^2",
+                "phpunit/phpunit": "^12.0"
             },
             "suggest": {
                 "aura/sql": "Provides an extension to the native PDO along with a profiler and connection locator."
@@ -69,9 +70,9 @@
             ],
             "support": {
                 "issues": "https://github.com/auraphp/Aura.SqlQuery/issues",
-                "source": "https://github.com/auraphp/Aura.SqlQuery/tree/3.0.0"
+                "source": "https://github.com/auraphp/Aura.SqlQuery/tree/7.0.0"
             },
-            "time": "2023-04-25T13:21:16+00:00"
+            "time": "2026-11-10T09:19:54+00:00"
         },
         {
             "name": "defuse/php-encryption",
