@@ -50,9 +50,48 @@ class CsrfTest extends UnitaryTestCase
 
     public static function httpMethodDataProvider(): array
     {
+        return [[Method::POST], [Method::GET]];
+    }
+
+    /**
+     * Actions a plain GET could reach without the token, before the token was asked of every
+     * request: each changes something.
+     *
+     * @return array<string, array{string}>
+     */
+    public static function stateChangingRouteProvider(): array
+    {
         return [
-            [Method::POST, 'test'],
-            [Method::GET, 'XMLHttpRequest']
+            'clear the event log' => ['eventlog/clear'],
+            'delete a category' => ['category/delete/5'],
+            'save the general settings' => ['configGeneral/save'],
+            'mark a favourite' => ['accountFavorite/mark/5'],
+            'clear the lockouts' => ['track/clear'],
+        ];
+    }
+
+    /**
+     * What a browser opens without the token: the page, links from an email or a public link,
+     * and downloads.
+     *
+     * @return array<string, array{string}>
+     */
+    public static function plainNavigationProvider(): array
+    {
+        return [
+            'the page, no route' => [''],
+            'the page' => ['index'],
+            'the page, explicit' => ['index/index'],
+            'the login page' => ['login'],
+            'logout' => ['login/logout'],
+            'password reset' => ['userPassReset'],
+            'reset link from an email' => ['userPassReset/reset/abc123'],
+            'a public link' => ['account/viewLink/abc123'],
+            'a file download' => ['accountFile/download/5'],
+            'a PDF preview' => ['accountFile/view/5'],
+            'an application backup' => ['configBackup/downloadBackupApp'],
+            'a database backup' => ['configBackup/downloadBackupDb'],
+            'an export' => ['configBackup/downloadExport'],
         ];
     }
 
@@ -115,33 +154,16 @@ class CsrfTest extends UnitaryTestCase
     }
 
     /**
-     * @return void
+     * A signed-in request carrying the session's token passes, whatever its method.
      */
     #[DataProvider('httpMethodDataProvider')]
-    public function testCheckWithValidToken(Method $method, string $header)
+    public function testCheckWithValidToken(Method $method)
     {
         $sessionToken = bin2hex(random_bytes(32));
 
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn($method);
-
-        $this->requestInterface
-            ->expects(self::exactly(2))
-            ->method('getHeader')
-            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF']))
-            ->willReturn($header, $sessionToken);
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('getCSRF')
-            ->willReturn($sessionToken);
+        $this->signedInWith($sessionToken);
+        $this->requestInterface->method('getMethod')->willReturn($method);
+        $this->requestInterface->method('getHeader')->willReturnCallback(static fn(string $header): string => $header === 'X-CSRF' ? $sessionToken : '');
 
         self::assertTrue($this->csrf->check());
     }
@@ -150,122 +172,82 @@ class CsrfTest extends UnitaryTestCase
      * A token that does not match the one held in the session is rejected, and the User-Agent
      * and client address are never consulted: the client address comes from the caller-supplied
      * Forwarded header, so binding the token to it both weakened it and broke sessions whenever
-     * that value changed.
-     *
-     * @return void
+     * that value changed. A wrong token is not rescued by the route being a navigation.
      */
     #[DataProvider('httpMethodDataProvider')]
-    public function testCheckIsBoundToTheSessionTokenOnly(Method $method, string $header)
+    public function testCheckIsBoundToTheSessionTokenOnly(Method $method)
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn($method);
+        $this->signedInWith(bin2hex(random_bytes(32)));
+        $this->requestInterface->method('getMethod')->willReturn($method);
+        $this->requestInterface->method('getHeader')->willReturnCallback(static fn(string $header): string => $header === 'X-CSRF' ? bin2hex(random_bytes(32)) : '');
+        $this->requestInterface->method('analyzeString')->willReturn('index');
+        $this->requestInterface->expects(self::never())->method('getClientAddress');
 
-        $this->requestInterface
-            ->expects(self::exactly(2))
-            ->method('getHeader')
-            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF']))
-            ->willReturn($header, bin2hex(random_bytes(32)));
+        self::assertFalse($this->csrf->check());
+    }
 
-        $this->requestInterface
-            ->expects(self::never())
-            ->method('getClientAddress');
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('getCSRF')
-            ->willReturn(bin2hex(random_bytes(32)));
+    public function testCheckWithNoTokenOnAPost()
+    {
+        $this->signedInWith(self::$faker->sha1());
+        $this->requestInterface->method('getMethod')->willReturn(Method::POST);
+        $this->requestInterface->method('getHeader')->willReturn('');
+        $this->requestInterface->method('analyzeString')->willReturn('index');
 
         self::assertFalse($this->csrf->check());
     }
 
     /**
-     * @return void
+     * The defect: a plain GET without the token used to pass, so a link or an image reached any
+     * action with the session cookie alone.
      */
-    #[DataProvider('httpMethodDataProvider')]
-    public function testCheckWithNoToken(Method $method, string $header)
+    #[DataProvider('stateChangingRouteProvider')]
+    public function testAPlainGetWithoutTheTokenCannotChangeAnything(string $route)
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn($method);
-
-        $this->requestInterface
-            ->expects(self::exactly(2))
-            ->method('getHeader')
-            ->with(...self::withConsecutive(['X-Requested-With'], ['X-CSRF']))
-            ->willReturn($header, '');
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('getCSRF')
-            ->willReturn(self::$faker->sha1());
+        $this->signedInWith(self::$faker->sha1());
+        $this->requestInterface->method('getMethod')->willReturn(Method::GET);
+        $this->requestInterface->method('getHeader')->willReturn('');
+        $this->requestInterface->method('analyzeString')->willReturnCallback(static fn(string $param): ?string => $param === 'r' ? $route : null);
 
         self::assertFalse($this->csrf->check());
     }
 
     /**
-     * @return void
+     * And what a browser opens directly still opens.
      */
+    #[DataProvider('plainNavigationProvider')]
+    public function testAPlainGetWithoutTheTokenStillNavigates(string $route)
+    {
+        $this->signedInWith(self::$faker->sha1());
+        $this->requestInterface->method('getMethod')->willReturn(Method::GET);
+        $this->requestInterface->method('getHeader')->willReturn('');
+        $this->requestInterface->method('analyzeString')->willReturnCallback(static fn(string $param): ?string => $param === 'r' ? $route : null);
+
+        self::assertTrue($this->csrf->check());
+    }
+
     public function testCheckWithNoLogin()
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn(Method::GET);
-
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getHeader')
-            ->with('X-Requested-With')
-            ->willReturn('test');
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(false);
+        $this->sessionContext->method('isLoggedIn')->willReturn(false);
+        $this->requestInterface->expects(self::never())->method('getHeader');
 
         self::assertTrue($this->csrf->check());
     }
 
     /**
-     * @return void
+     * Before the session has a token there is nothing to compare against.
      */
     public function testCheckWithNoCsrf()
     {
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getMethod')
-            ->willReturn(Method::GET);
-
-        $this->requestInterface
-            ->expects(self::once())
-            ->method('getHeader')
-            ->with('X-Requested-With')
-            ->willReturn('test');
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('isLoggedIn')
-            ->willReturn(true);
-
-        $this->sessionContext
-            ->expects(self::once())
-            ->method('getCSRF')
-            ->willReturn(null);
+        $this->sessionContext->method('isLoggedIn')->willReturn(true);
+        $this->sessionContext->method('getCSRF')->willReturn(null);
 
         self::assertTrue($this->csrf->check());
+    }
+
+    private function signedInWith(string $sessionToken): void
+    {
+        $this->sessionContext->method('isLoggedIn')->willReturn(true);
+        $this->sessionContext->method('getCSRF')->willReturn($sessionToken);
     }
 
     protected function setUp(): void

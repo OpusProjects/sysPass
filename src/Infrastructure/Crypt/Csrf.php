@@ -55,30 +55,84 @@ final readonly class Csrf implements CsrfHandler
     }
 
     /**
-     * Check for CSRF token on POST requests
+     * Plain navigations a signed-in browser makes without the token header, as "controller/action"
+     * in lower case. None of them changes anything but logout, which only ends the session.
+     *
+     * Everything else a signed-in user does goes through the front end's request helper, which
+     * sends the token on every call; these are the ones that cannot: the page itself, the links an
+     * email or a public link hands out, and the downloads the browser opens directly.
+     */
+    private const PLAIN_NAVIGATIONS = [
+        'index/index',
+        'login/index',
+        'login/logout',
+        'userpassreset/index',
+        'userpassreset/reset',
+        'account/viewlink',
+        'accountfile/download',
+        'accountfile/view',
+        'configbackup/downloadbackupapp',
+        'configbackup/downloadbackupdb',
+        'configbackup/downloadexport',
+    ];
+
+    /**
+     * Check the CSRF token on every request from a signed-in user
+     *
+     * It used to be checked on a POST and on a GET marked as XMLHttpRequest only, so a plain GET —
+     * a link, an image, a redirect — carried the session cookie and nothing else, and reached any
+     * action: `?r=eventlog/clear`, `?r=category/delete/5`, a save with its fields in the query
+     * string. The session cookie is SameSite=Strict, which keeps a cross-site page from sending
+     * it, so what was left open was any same-site origin: a stored script, a sibling subdomain.
+     *
+     * Now the token is required whatever the method, and the only requests let through without it
+     * are a plain GET to one of the navigations above.
      */
     public function check(): bool
     {
-        $method = $this->request->getMethod();
-        $with = $this->request->getHeader('X-Requested-With');
-
-        if ($this->context->isLoggedIn()
-            && ($sessionToken = $this->context->getCSRF()) !== null
-            && ($method === Method::POST
-                || ($method === Method::GET && $with === 'XMLHttpRequest'))
-        ) {
-            $token = $this->request->getHeader('X-CSRF');
-
-            if (empty($token) || !hash_equals($sessionToken, $token)) {
-                logger('Invalid CSRF token', 'ERROR');
-
-                return false;
-            }
-
-            logger('CSRF token OK');
+        // Step 1: nothing to compare against before login, or before the first token is issued.
+        if (!$this->context->isLoggedIn() || ($sessionToken = $this->context->getCSRF()) === null) {
+            return true;
         }
 
-        return true;
+        // Step 2: a request that carries the token is checked on it, whatever its method.
+        $token = $this->request->getHeader('X-CSRF');
+
+        if ($token !== '') {
+            if (hash_equals($sessionToken, $token)) {
+                logger('CSRF token OK');
+
+                return true;
+            }
+
+            logger('Invalid CSRF token', 'ERROR');
+
+            return false;
+        }
+
+        // Step 3: one without it may only be a plain GET to a navigation.
+        if ($this->request->getMethod() === Method::GET && $this->isPlainNavigation()) {
+            return true;
+        }
+
+        logger('Missing CSRF token', 'ERROR');
+
+        return false;
+    }
+
+    /**
+     * Whether the request's route is one of the navigations a browser makes without the token
+     */
+    private function isPlainNavigation(): bool
+    {
+        $route = strtolower(trim($this->request->analyzeString('r', '') ?? '', '/'));
+        [$controller, $action] = array_pad(explode('/', $route, 3), 2, '');
+
+        return in_array(
+            sprintf('%s/%s', $controller ?: 'index', $action ?: 'index'),
+            self::PLAIN_NAVIGATIONS,
+            true
+        );
     }
 
     /**
