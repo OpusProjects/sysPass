@@ -325,7 +325,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveCreate'],
-                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 1]
             )
         );
 
@@ -349,7 +349,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveCreate'],
-                ['type' => 1, 'module' => 10]
+                ['type' => 1, 'module' => 1]
             )
         );
 
@@ -374,7 +374,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveCreate'],
-                ['name' => self::$faker->colorName(), 'type' => 0, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 0, 'module' => 1]
             )
         );
 
@@ -426,7 +426,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveCreate'],
-                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 1]
             ),
             [AclInterface::class => $acl]
         );
@@ -465,7 +465,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveCreate'],
-                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 1]
             )
         );
 
@@ -493,7 +493,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveEdit/100'],
-                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 1]
             )
         );
 
@@ -517,7 +517,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveEdit/100'],
-                ['type' => 1, 'module' => 10]
+                ['type' => 1, 'module' => 1]
             )
         );
 
@@ -545,7 +545,7 @@ class CustomFieldTest extends IntegrationTestCase
                 'post',
                 'index.php',
                 ['r' => 'customField/saveEdit/999'],
-                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 10]
+                ['name' => self::$faker->colorName(), 'type' => 1, 'module' => 1]
             )
         );
 

@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\CustomField\Services;
 
+use SP\Domain\Core\Exceptions\ValidationException;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -297,6 +299,31 @@ class CustomFieldDefinitionTest extends UnitaryTestCase
             ->willReturn(new QueryResult(null, 0, 100));
 
         $this->assertEquals(100, $this->customFieldDefinition->create($customFieldDefinition));
+    }
+
+    /**
+     * A definition must belong to a module custom fields exist for. The web form asked for one;
+     * the API stored `moduleId` 0 — a field attached to nothing, which no screen shows.
+     */
+    #[TestWith([0])]
+    #[TestWith([9999])]
+    public function testADefinitionForNoKnownModuleIsRefused(int $moduleId)
+    {
+        $definition = CustomFieldDefinitionGenerator::factory()->buildCustomFieldDefinition()
+            ->mutate(['moduleId' => $moduleId]);
+
+        $this->customFieldDefinitionRepository->expects(self::never())->method('create');
+        $this->customFieldDefinitionRepository->expects(self::never())->method('update');
+
+        foreach (['create', 'update'] as $method) {
+            try {
+                $this->customFieldDefinition->{$method}($definition);
+                self::fail($method . ' accepted a definition for no known module');
+            } catch (ValidationException $e) {
+                self::assertSame('Field module not set', $e->getMessage());
+                self::assertSame(400, $e->getCode());
+            }
+        }
     }
 
     /**
