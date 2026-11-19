@@ -30,6 +30,7 @@ use Faker\Factory;
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -794,6 +795,37 @@ class ApiTest extends UnitaryTestCase
     public function testGetParamString(mixed $value, mixed $expected, bool $required, bool $present): void
     {
         $this->checkParam([$this->apiService, 'getParamString'], ...func_get_args());
+    }
+
+    /**
+     * A required string that is only whitespace is empty once trimmed, which is what the web forms
+     * check; `getParam()` saw it before the trim, so `{"name": "   "}` was stored as no name at all.
+     */
+    #[TestWith(['   '])]
+    #[TestWith(["\t\n "])]
+    public function testARequiredStringThatIsOnlyWhitespaceIsRefused(string $value): void
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest->method('exists')->with($param)->willReturn(true);
+        $this->apiRequest->method('get')->with($param)->willReturn($value);
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Wrong parameters');
+
+        $this->apiService->getParamString($param, true);
+    }
+
+    /**
+     * An optional string may still be blank: it is the caller saying "nothing here".
+     */
+    public function testAnOptionalStringThatIsOnlyWhitespaceIsEmpty(): void
+    {
+        $param = self::$faker->colorName();
+
+        $this->apiRequest->method('get')->with($param)->willReturn('   ');
+
+        $this->assertSame('', $this->apiService->getParamString($param));
     }
 
     #[DataProvider('getParamArrayDataProvider')]

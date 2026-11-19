@@ -417,7 +417,17 @@ final class Api extends Service implements ApiService
                 throw $this->wrongParameterType();
             }
 
-            return Filter::getString($value);
+            $value = Filter::getString($value);
+
+            // getParam() refuses a required value that is empty, but it sees the value before
+            // it is trimmed, so `{"name": "   "}` got past it and was stored as an empty name —
+            // the web forms trim first and refuse the same input. A required string has to say
+            // something once trimmed.
+            if ($required && $value === '') {
+                throw $this->wrongParameterType();
+            }
+
+            return $value;
         }
 
         return $default;
