@@ -146,6 +146,18 @@ interface UserService
     public function update(UserModel $user): void;
 
     /**
+     * Refuses unless the signed-in user may manage the given user
+     *
+     * An application administrator may be managed only by another one: a user manager who is not
+     * an administrator is shown no administrators, and must not be able to act on one by id.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws NoSuchItemException
+     */
+    public function assertManageable(int $userId): void;
+
+    /**
      * Updates a user's pass
      *
      * @throws ConstraintException

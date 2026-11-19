@@ -59,7 +59,8 @@ class SelfDeleteTest extends IntegrationTestCase
      */
     protected function getUserDataDto(): UserDto
     {
-        return parent::getUserDataDto()->mutate(['id' => self::VIEWER_ID]);
+        // An administrator, so deleting somebody else does not first ask whether they are one.
+        return parent::getUserDataDto()->mutate(['id' => self::VIEWER_ID, 'isAdminApp' => true]);
     }
 
     /**

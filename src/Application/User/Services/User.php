@@ -132,6 +132,8 @@ final class User extends Service implements UserService
      */
     public function delete(int $id): void
     {
+        $this->assertManageable($id);
+
         if ($this->userRepository->delete($id)->getAffectedNumRows() === 0) {
             throw NoSuchItemException::info(__u('User not found'));
         }
@@ -146,6 +148,10 @@ final class User extends Service implements UserService
      */
     public function deleteByIdBatch(array $ids): int
     {
+        foreach ($ids as $id) {
+            $this->assertManageable((int)$id);
+        }
+
         $count = $this->userRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
         if ($count !== count($ids)) {
@@ -253,8 +259,33 @@ final class User extends Service implements UserService
      */
     public function update(UserModel $user): void
     {
+        $this->assertManageable((int)$user->getId());
+
         if ($this->userRepository->update($user) === 0) {
             throw ServiceException::error(__u('Error while updating the user'));
+        }
+    }
+
+    /**
+     * @inheritDoc
+     *
+     * The user search hides administrators from a caller who is not one, but edit, delete and
+     * the password change act on whatever id is posted, on the web and the API alike. A user
+     * manager could therefore delete an administrator, reset their password, or save their user
+     * with the administrator flags cleared — the form keeps those flags only for a caller who is
+     * an administrator, so an ordinary save wrote them as false. Answered as "not found", as the
+     * search does, rather than saying an administrator is there.
+     */
+    public function assertManageable(int $userId): void
+    {
+        $caller = $this->context->getUserData();
+
+        if ($caller->isAdminApp || $caller->id === $userId) {
+            return;
+        }
+
+        if ($this->getById($userId)->isAdminApp()) {
+            throw NoSuchItemException::info(__u('User not found'));
         }
     }
 

@@ -35,6 +35,7 @@ use SP\Application\Notification\Ports\MailService;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Core\Exceptions\ConstraintException;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Domain\User\Models\UserGroup as UserGroupModel;
 use SP\Domain\User\Models\UserList;
@@ -50,6 +51,45 @@ use Symfony\Component\DomCrawler\Crawler;
 #[Group('integration')]
 class UserTest extends IntegrationTestCase
 {
+    /**
+     * Who is signed in. An administrator by default, since only one may act on another
+     * administrator and the generated fixtures are administrators at random; the test for that
+     * refusal signs in somebody else.
+     */
+    private bool $signedInAsAdministrator = true;
+
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(['id' => 1, 'isAdminApp' => $this->signedInAsAdministrator]);
+    }
+
+    /**
+     * A user manager who is not an administrator is shown no administrators in the grid, and used
+     * to be able to delete one anyway by posting its id.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aManagerWhoIsNotAnAdministratorCannotDeleteAnAdministrator()
+    {
+        $this->signedInAsAdministrator = false;
+
+        $this->addDatabaseMapperResolver(
+            User::class,
+            new QueryResult([$this->buildUser()->mutate(['id' => 100, 'isAdminApp' => true])])
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'user/delete/100'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"User not found","data":null}');
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
