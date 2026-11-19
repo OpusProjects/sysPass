@@ -1919,7 +1919,29 @@ class AccountTest extends UnitaryTestCase
         $this->givenEachAccountIsPushedIntoHistory(count($ids));
 
         $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
-            ->with($ids)->willReturn(new QueryResult(null, 1));
+            ->with($ids)->willReturn(new QueryResult(null, count($ids)));
+
+        $this->account->deleteByIdBatch($ids);
+    }
+
+    /**
+     * A selection of five where only four were still there to delete is not five deleted. It used
+     * to refuse only when nothing at all was affected, unlike every other batch delete.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testDeleteByIdBatchRefusesWhenFewerAccountsWereDeleted()
+    {
+        $ids = array_map(fn() => self::$faker->randomNumber(), range(0, 4));
+
+        $this->givenEachAccountIsPushedIntoHistory(count($ids));
+
+        $this->accountRepository->expects(self::once())->method('deleteByIdBatch')
+            ->with($ids)->willReturn(new QueryResult(null, count($ids) - 1));
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Error while deleting the accounts');
 
         $this->account->deleteByIdBatch($ids);
     }

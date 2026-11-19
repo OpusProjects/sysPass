@@ -810,7 +810,11 @@ final class Account extends Service implements AccountService
 
             $affectedNumRows = $this->accountRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
-            if ($affectedNumRows === 0) {
+            // Compared against the selection, as every other batch delete does: an account removed
+            // by somebody else between the reads above and this statement would otherwise be
+            // reported as deleted here, with a history entry already written for it. Throwing
+            // inside the transaction rolls those entries back with the delete.
+            if ($affectedNumRows !== count($ids)) {
                 throw ServiceException::error(__u('Error while deleting the accounts'));
             }
         }, $this);

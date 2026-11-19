@@ -295,7 +295,11 @@ final class AuthToken extends Service implements AuthTokenService
 
                 $secureData = $this->injectSecureData($authToken, $token);
 
-                $this->authTokenRepository->update($secureData);
+                // As update() below does: a token deleted by another session since the form was
+                // opened matches nothing, and must not be answered with "Authorization updated".
+                if (!$this->authTokenRepository->update($secureData)) {
+                    throw new NoSuchItemException(__u('Token not found'));
+                }
             },
             $this
         );
