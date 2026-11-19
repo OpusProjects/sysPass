@@ -67,6 +67,30 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertSame('Duplicated category', $r->body->error->message);
     }
 
+    /**
+     * Names that differ only in case and punctuation are the same category: the unique key is on the
+     * normalised name's hash. The check before the write compared the model's own hash, which
+     * nothing sets, so only an identical name got this answer and the rest reached the unique
+     * key as a generic "Duplicate entry".
+     */
+    public function testCreateActionRefusesANameThatDiffersOnlyInPunctuation(): void
+    {
+        $r = $this->createCategory(['name' => 'W.e-b']);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated category', $r->body->error->message);
+    }
+
+    public function testEditActionRefusesANameThatDiffersOnlyInPunctuation(): void
+    {
+        $id = $this->createCategory(self::PARAMS)->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::CATEGORY_EDIT, ['id' => $id, 'name' => 'W.e-b']);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated category name', $r->body->error->message);
+    }
+
     public function testCreateActionRequiredParameter(): void
     {
         $params = self::PARAMS;

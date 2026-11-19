@@ -94,7 +94,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->orWhere('name = :name')
             ->bindValues(
                 [
-                    'hash' => $tag->getHash(),
+                    'hash' => $this->makeItemHash($tag->getName() ?? ''),
                     'name' => $tag->getName()
                 ]
             );
@@ -157,7 +157,7 @@ final class Tag extends BaseRepository implements TagRepository
             ->bindValues(
                 [
                     'id' => $tag->getId(),
-                    'hash' => $tag->getHash(),
+                    'hash' => $this->makeItemHash($tag->getName() ?? ''),
                     'name' => $tag->getName(),
                 ]
             );

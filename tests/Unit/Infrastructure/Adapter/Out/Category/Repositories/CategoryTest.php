@@ -65,16 +65,20 @@ class CategoryTest extends UnitaryTestCase
      */
     public function testCreate()
     {
-        $category = CategoryGenerator::factory()->buildCategory();
+        $category = CategoryGenerator::factory()->buildCategory()->mutate(['name' => 'Acme Corp']);
+
+        // The duplicate check compares the normalised name's hash, which is what the insert
+        // stores; it used to bind the model's own hash, which nothing sets, so it never matched.
+        $expectedHash = md5('acmecorp');
 
         $callbackDuplicate = new Callback(
-            static function (QueryData $arg) use ($category) {
+            static function (QueryData $arg) use ($category, $expectedHash) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
                 return count($params) === 2
                        && $params['name'] === $category->getName()
-                       && $params['hash'] === $category->getHash()
+                       && $params['hash'] === $expectedHash
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }

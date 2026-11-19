@@ -34,15 +34,21 @@ trait RepositoryItemTrait
      * Create a hash from the item's name.
      *
      * This function creates a hash to detect duplicate item names by
-     * stripping special characters and normalizing capitalization
+     * stripping special characters and normalizing capitalization.
+     *
+     * MD5, as sysPass 3.2 computed it: every installation upgrading from 3.2 holds these hashes in
+     * the unique `hash` column of Category, Client and Tag. This rewrite had switched to SHA-1
+     * without converting them, so a pre-existing item's hash matched nothing a new name produced —
+     * "AcmeCorp" was created beside an existing "Acme Corp", past both the check and the unique
+     * key. It is a de-duplication key, not a security hash.
      */
     protected function makeItemHash(string $name): string
     {
         $charsSrc = ['.', ' ', '_', ', ', '-', ';', '\'', '"', ':', '(', ')', '|', '/'];
 
-        return sha1(
+        return md5(
             strtolower(
-                str_replace($charsSrc, '', $name)
+                str_replace($charsSrc, '', trim($name))
             )
         );
     }

@@ -251,16 +251,20 @@ class TagTest extends UnitaryTestCase
      */
     public function testCreate()
     {
-        $tag = TagGenerator::factory()->buildTag();
+        $tag = TagGenerator::factory()->buildTag()->mutate(['name' => 'Acme Corp']);
+
+        // The duplicate check compares the normalised name's hash, which is what the insert
+        // stores; it used to bind the model's own hash, which nothing sets, so it never matched.
+        $expectedHash = md5('acmecorp');
 
         $callbackDuplicate = new Callback(
-            static function (QueryData $arg) use ($tag) {
+            static function (QueryData $arg) use ($tag, $expectedHash) {
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
                 return count($params) === 2
                        && $params['name'] === $tag->getName()
-                       && $params['hash'] === $tag->getHash()
+                       && $params['hash'] === $expectedHash
                        && is_a($query, SelectInterface::class)
                        && !empty($query->getStatement());
             }

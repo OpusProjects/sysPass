@@ -531,7 +531,9 @@ costs nothing there and survives somebody dropping that index later.
 `PagedSearchesAreTotallyOrderedTest` holds every paged repository to it, so a new search cannot be
 added without one. Worth knowing while reading the schema: `Category.name`, `Client.name` and
 `Tag.name` are **not** unique — only their `hash` is — so those three needed it despite looking
-like natural keys.
+like natural keys. That hash is `RepositoryItemTrait::makeItemHash()`, and it is **MD5 because
+sysPass 3.2 wrote MD5**: every upgraded installation holds those values, and changing the algorithm
+without recomputing them makes every existing item invisible to duplicate detection.
 
 **A file we write, at whatever umask happens to be set.** The backup archives are deliberately
 `0600`, with a comment saying why: they hold the DB dump and `config.xml`, and the process umask is
