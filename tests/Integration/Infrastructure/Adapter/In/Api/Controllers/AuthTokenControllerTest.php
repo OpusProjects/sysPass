@@ -100,6 +100,18 @@ class AuthTokenControllerTest extends ApiTestCase
      * read with getParamRaw('password') and no required flag, so a token can legitimately be
      * created with a null hash.
      */
+    /**
+     * A token is looked up by its action, so one for an action the application does not have can
+     * never authenticate anything; the API stored one for `actionId` 0 or any other number.
+     */
+    public function testCreateActionRefusesAnActionTheApplicationDoesNotHave(): void
+    {
+        $r = $this->callApi(AclActionsInterface::AUTHTOKEN_CREATE, ['userId' => 1, 'actionId' => 999999]);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Action not set', $r->body->error->message);
+    }
+
     public function testCreateActionRequiredParameters(): void
     {
         $r = $this->callApi(AclActionsInterface::AUTHTOKEN_CREATE, []);

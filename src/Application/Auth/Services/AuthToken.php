@@ -25,6 +25,10 @@ declare(strict_types=1);
 
 namespace SP\Application\Auth\Services;
 
+use SP\Domain\Http\Code;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
@@ -100,7 +104,8 @@ final class AuthToken extends Service implements AuthTokenService
         Application                          $application,
         private readonly AuthTokenRepository $authTokenRepository,
         private readonly CryptInterface      $crypt,
-        private readonly UserService         $userService
+        private readonly UserService         $userService,
+        private readonly ActionsInterface    $actions
     ) {
         parent::__construct($application);
     }
@@ -182,6 +187,7 @@ final class AuthToken extends Service implements AuthTokenService
         // post — and act as one. The same rule as managing users: only an administrator may act
         // on an administrator.
         $this->userService->assertManageable((int)$authToken->getUserId());
+        $this->assertKnownAction((int)$authToken->getActionId());
 
         $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
 
@@ -288,6 +294,7 @@ final class AuthToken extends Service implements AuthTokenService
     public function refreshAndUpdate(AuthTokenModel $authToken): void
     {
         $this->userService->assertManageable((int)$authToken->getUserId());
+        $this->assertKnownAction((int)$authToken->getActionId());
 
         $this->authTokenRepository->transactionAware(
             function () use ($authToken) {
@@ -328,6 +335,7 @@ final class AuthToken extends Service implements AuthTokenService
     public function update(AuthTokenModel $authToken): void
     {
         $this->userService->assertManageable((int)$authToken->getUserId());
+        $this->assertKnownAction((int)$authToken->getActionId());
 
         $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
 
@@ -375,5 +383,23 @@ final class AuthToken extends Service implements AuthTokenService
     public function getAll(): array
     {
         return $this->authTokenRepository->getAll()->getDataAsArray(AuthTokenModel::class);
+    }
+
+    /**
+     * Refuses a token for an action the application does not have
+     *
+     * The web form refused a token with no action; the API required `actionId` but took 0, and
+     * any other number, and stored the token — a row no request can ever authenticate with, since
+     * a token is looked up by its action. The action registry is the list of what exists.
+     *
+     * @throws ValidationException
+     */
+    private function assertKnownAction(int $actionId): void
+    {
+        try {
+            $this->actions->getActionById($actionId);
+        } catch (ActionNotFoundException) {
+            throw ValidationException::error(__u('Action not set'), null, Code::BAD_REQUEST->value);
+        }
     }
 }
