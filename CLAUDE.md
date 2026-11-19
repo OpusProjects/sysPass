@@ -357,6 +357,11 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 - **`Init::PARTIAL_INIT`** lists controllers that skip the not-installed / DB / session checks
   (Install, Css, Js, Upgrade…). When not installed, `Init` redirects everything else to the install
   route.
+- **The login form learns which field to show next from `data.loginStatus`.** `ActionResponse`'s
+  status is only OK/ERROR/WARNING, so `LoginController` passes a refusal's `LoginStatus` through
+  there — for the prompting statuses only (master password, previous password), since the form
+  reads 0 as success. Without it those prompts never appeared at all; a new prompting status (e.g.
+  a second factor) is added in `LoginController::promptFor()` and as a case in the login JS.
 - **Every signed-in request needs the CSRF token**, whatever its method — the front end's
   `getActionCall` sends it as `X-CSRF`. A plain GET without it is let through only to a route in
   `Csrf::PLAIN_NAVIGATIONS` (the page, login/logout, the reset and public links, the downloads).

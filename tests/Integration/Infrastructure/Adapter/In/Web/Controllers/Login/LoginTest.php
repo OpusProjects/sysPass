@@ -331,6 +331,55 @@ class LoginTest extends IntegrationTestCase
 
         self::assertEquals('ERROR', $json->status);
         self::assertSame('Wrong login', $json->description);
+        // A plain refusal names no field to show: the form reads a status of 0 as success.
+        self::assertNull($json->data);
+    }
+
+    /**
+     * @return array<string, array{LoginStatus, string}>
+     */
+    public static function promptingStatusProvider(): array
+    {
+        return [
+            'the master password' => [LoginStatus::INVALID_MASTER_PASS, 'Wrong master password'],
+            'the previous password, after a reset' => [LoginStatus::OLD_PASS_REQUIRED, 'Previous password needed'],
+        ];
+    }
+
+    /**
+     * A refusal that asks for another field says which, so the form can show it. Every refusal
+     * used to arrive as a plain ERROR, and the form's master-password and previous-password
+     * branches — which switch on that status — never ran: the user was told the password was
+     * wrong and never shown where to type it.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[DataProvider('promptingStatusProvider')]
+    public function aRefusalThatNeedsAnotherFieldSaysWhichOne(LoginStatus $status, string $message)
+    {
+        $loginService = $this->createStub(LoginService::class);
+        $loginService->method('doLogin')->willThrowException(AuthException::info($message, null, $status->value));
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'login/login'],
+                ['user' => self::$faker->userName(), 'pass' => self::$faker->password()]
+            ),
+            [LoginService::class => $loginService]
+        );
+
+        $this->expectOutputString(json_encode([
+            'status' => 'ERROR',
+            'description' => $message,
+            'data' => ['loginStatus' => $status->value],
+        ]));
+
+        IntegrationTestCase::runApp($container);
     }
 
     /**
