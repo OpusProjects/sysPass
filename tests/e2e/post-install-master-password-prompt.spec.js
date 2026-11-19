@@ -101,7 +101,10 @@ test.describe('Master password prompt at sign-in', () => {
     await fillPassword(page, '#pass', USER_PASS, '#user');
     await fillPassword(page, '#mpass', MASTER_PASS, '#user');
 
-    await submit(page);
+    const second = await submit(page);
+
+    // The whole answer in the message, so a refusal here says what the server refused.
+    expect(second && second.status, JSON.stringify(second)).toBe('OK');
 
     await expect(page.locator('#box-login')).toBeHidden({ timeout: 15_000 });
     await expect(page.locator('#user-name')).toBeVisible({ timeout: 15_000 });
