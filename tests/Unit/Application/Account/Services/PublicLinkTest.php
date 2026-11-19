@@ -556,6 +556,26 @@ class PublicLinkTest extends UnitaryTestCase
     }
 
     /**
+     * Refreshing mints a working link to the account's current password, as creating one does, so
+     * a profile that may not view passwords cannot refresh one either — it could otherwise revive
+     * an expired link somebody else had made and read the password through it.
+     *
+     * @throws SPException
+     */
+    public function testRefreshRequiresViewPassPermission()
+    {
+        $this->mayViewPasswords = false;
+
+        $this->publicLinkRepository->expects(self::never())->method('getById');
+        $this->publicLinkRepository->expects(self::never())->method('refresh');
+        $this->accountService->expects(self::never())->method('getDataForLink');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->publicLink->refresh(self::$faker->randomNumber());
+    }
+
+    /**
      * @return void
      * @throws EnvironmentIsBrokenException
      */
