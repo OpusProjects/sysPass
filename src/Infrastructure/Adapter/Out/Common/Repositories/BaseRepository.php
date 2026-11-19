@@ -98,7 +98,7 @@ abstract class BaseRepository implements Repository
                 throw new ServiceException(
                     $e->getMessage(),
                     SPException::ERROR,
-                    $e instanceof SPException ? $e->getHint() : null,
+                    null,
                     $e->getCode(),
                     $e
                 );
