@@ -50,7 +50,6 @@ use SP\Domain\Core\File\MimeTypesService;
 use SP\Application\Crypt\Services\TemporaryMasterPass;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
 use SP\Domain\Export\Dtos\BackupFiles;
-use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\Log\Providers\LogInterface;
 use SP\Application\Notification\Services\MailEvent;
 use SP\Application\User\Ports\UserGroupService;
@@ -70,6 +69,7 @@ use SP\Infrastructure\Util\Util;
 use RuntimeException;
 
 use function SP\__;
+use function SP\__u;
 
 /**
  * Class ConfigManagerController
@@ -491,12 +491,8 @@ final class IndexController extends ControllerBase
 
         try {
             $exportFile = new FileHandler(
-                (string)new BackupFileDto(
-                    BackupType::export,
-                    $this->configData->getExportHash() ?: '',
-                    $this->pathsContext[Path::BACKUP],
-                    'gz'
-                )
+                BackupFileDto::existingExport($this->configData->getExportHash(), $this->pathsContext[Path::BACKUP])
+                ?? throw new FileException(__u('No export file found'))
             );
             $exportFile->checkFileExists();
 

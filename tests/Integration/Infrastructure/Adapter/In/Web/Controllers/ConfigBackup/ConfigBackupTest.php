@@ -28,9 +28,11 @@ namespace SP\Tests\Integration\Infrastructure\Adapter\In\Web\Controllers\ConfigB
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\MockObject\Exception;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
+use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Tests\Support\IntegrationTestCase;
 
 /**
@@ -227,6 +229,65 @@ class ConfigBackupTest extends IntegrationTestCase
         IntegrationTestCase::runApp($container);
 
         unlink($filename);
+    }
+
+    /**
+     * The API export writes the XML and records the same hash, and never archives it. The download
+     * looked only for the archive, so after an API export the web said there was no export and
+     * refused to hand over the one sitting there.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function downloadExportServesTheXmlAnApiExportLeaves()
+    {
+        $filename = $this->backupFile('sysPass_export-' . $this->passwordSalt . '.xml');
+
+        file_put_contents($filename, 'test_data_export_xml');
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configBackup/downloadExport'])
+        );
+
+        $this->expectOutputString('test_data_export_xml');
+
+        IntegrationTestCase::runApp($container);
+
+        unlink($filename);
+    }
+
+    /**
+     * A recorded hash with no file behind it — the export removed, or one that failed — reached
+     * FileHandler and came back as a 500 whose message named the server's backup directory. Each
+     * download now refuses before opening anything.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    #[TestWith(['configBackup/downloadExport'])]
+    #[TestWith(['configBackup/downloadBackupDb'])]
+    #[TestWith(['configBackup/downloadBackupApp'])]
+    public function aDownloadWithNoFileIsNotAServerError(string $route)
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => $route])
+        );
+
+        // Empty, as every refusal of these CALLBACK actions renders (see the demo tests above).
+        $this->expectOutputString('');
+
+        IntegrationTestCase::runApp($container);
+
+        self::assertSame(200, $container->get(ResponseService::class)->getResponse()->getStatusCode());
+    }
+
+    private function backupFile(string $name): string
+    {
+        return REAL_APP_ROOT . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR . $name;
     }
 
     protected function getConfigData(): array
