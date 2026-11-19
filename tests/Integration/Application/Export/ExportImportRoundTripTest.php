@@ -228,6 +228,41 @@ final class ExportImportRoundTripTest extends TestCase
     }
 
     /**
+     * The importer takes only the fields an export writes. It used to copy any element under
+     * <Account> into the new account, so an edited export could link it to an arbitrary existing
+     * account (`parentId` has no foreign key), mark it private or set its counters. Ownership was
+     * already taken from the import parameters; these were not.
+     */
+    public function testAnImportIgnoresFieldsAnExportNeverWrites(): void
+    {
+        $dataset = $this->createDataset('crafted');
+
+        $file = $this->export();
+
+        $xml = (string)file_get_contents($file);
+        $crafted = preg_replace(
+            '#(<Account id="\d+">)#',
+            '$1<parentId>' . $dataset['accountId'] . '</parentId><isPrivate>1</isPrivate><countView>99</countView>',
+            $xml
+        );
+        self::assertNotSame($xml, $crafted, 'the crafted fields were not injected');
+        file_put_contents($file, $crafted);
+
+        $this->import($file);
+
+        $statement = $this->pdo->prepare(
+            'SELECT `parentId`, `isPrivate`, `countView` FROM `Account` WHERE `name` = :name AND `id` != :id'
+        );
+        $statement->execute(['name' => $dataset['accountName'], 'id' => $dataset['accountId']]);
+        $imported = $statement->fetch(PDO::FETCH_ASSOC);
+
+        self::assertNotFalse($imported, 'the account was not imported');
+        self::assertSame(0, (int)$imported['parentId'], 'an imported account was linked to an existing one');
+        self::assertSame(0, (int)$imported['isPrivate'], 'an imported account was made private by the file');
+        self::assertSame(0, (int)$imported['countView'], 'an imported account took its counters from the file');
+    }
+
+    /**
      * Creates one category, one client, two tags and one account referencing all of them —
      * through the real services, so the export sees exactly what a real installation would.
      *
