@@ -26,6 +26,10 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Auth\Services;
 
+use PHPUnit\Framework\MockObject\Stub;
+use SP\Domain\Core\Exceptions\ValidationException;
+use SP\Domain\Core\Acl\ActionNotFoundException;
+use SP\Domain\Core\Acl\ActionsInterface;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use Exception;
@@ -675,6 +679,42 @@ class AuthTokenTest extends UnitaryTestCase
     }
 
     private UserService|MockObject $userService;
+    private ActionsInterface|Stub  $actions;
+
+    /**
+     * A token is looked up by its action, so one for an action the application does not have can
+     * never authenticate anything. The API stored one for `actionId` 0, or any other number.
+     */
+    public function testATokenForAnActionTheApplicationDoesNotHaveIsRefused(): void
+    {
+        $authToken = AuthTokenGenerator::factory()->buildAuthToken()->mutate(['actionId' => 0]);
+
+        $this->actions = $this->createStub(ActionsInterface::class);
+        $this->actions->method('getActionById')->willThrowException(new ActionNotFoundException('no such action'));
+
+        $this->authToken = new AuthToken(
+            $this->application,
+            $this->authTokenRepository,
+            $this->crypt,
+            $this->userService,
+            $this->actions
+        );
+
+        $this->authTokenRepository->expects(self::never())->method('create');
+        $this->authTokenRepository->expects(self::never())->method('update');
+
+        $this->authTokenRepository->expects(self::never())->method('transactionAware');
+
+        foreach (['create', 'update', 'refreshAndUpdate'] as $method) {
+            try {
+                $this->authToken->{$method}($authToken);
+                self::fail($method . ' stored a token for an action that does not exist');
+            } catch (ValidationException $e) {
+                self::assertSame('Action not set', $e->getMessage());
+                self::assertSame(400, $e->getCode());
+            }
+        }
+    }
 
     protected function setUp(): void
     {
@@ -685,11 +725,15 @@ class AuthTokenTest extends UnitaryTestCase
 
         $this->userService = $this->createMock(UserService::class);
 
+        // Every action exists unless a test says otherwise.
+        $this->actions = $this->createStub(ActionsInterface::class);
+
         $this->authToken = new AuthToken(
             $this->application,
             $this->authTokenRepository,
             $this->crypt,
-            $this->userService
+            $this->userService,
+            $this->actions
         );
     }
 

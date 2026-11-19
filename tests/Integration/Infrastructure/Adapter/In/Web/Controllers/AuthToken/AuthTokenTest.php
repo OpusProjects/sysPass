@@ -221,7 +221,7 @@ class AuthTokenTest extends IntegrationTestCase
         // Not randomNumber(): it includes zero, which the form reads as "not given".
         $data = [
             'users' => self::$faker->numberBetween(1, 999),
-            'actions' => self::$faker->numberBetween(1, 999),
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -247,7 +247,7 @@ class AuthTokenTest extends IntegrationTestCase
     public function saveCreateWithoutUserIsRejectedNotFatal()
     {
         $data = [
-            'actions' => self::$faker->numberBetween(1, 999),
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -276,7 +276,7 @@ class AuthTokenTest extends IntegrationTestCase
     {
         $data = [
             'users' => self::$faker->numberBetween(1, 999),
-            'actions' => self::$faker->numberBetween(1, 999),
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -316,7 +316,7 @@ class AuthTokenTest extends IntegrationTestCase
 
         $data = [
             'users' => self::$faker->numberBetween(1, 999),
-            'actions' => self::$faker->numberBetween(1, 999),
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -374,7 +374,7 @@ class AuthTokenTest extends IntegrationTestCase
 
         $data = [
             'users' => self::$faker->numberBetween(1, 999),
-            'actions' => self::$faker->numberBetween(1, 999),
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1()
         ];
 
@@ -426,10 +426,10 @@ class AuthTokenTest extends IntegrationTestCase
 
         $data = [
             'users' => self::$faker->numberBetween(1, 999),
-            // Not a real ACL action id, so neither secured nor "can use secure token" — keeps
-            // the injected data on the plain (non-vault) path so only the refresh queries below
-            // are the ones tied to userId.
-            'actions' => 999999,
+            // An action that is neither secured nor "can use secure token" — keeps the injected
+            // data on the plain (non-vault) path so only the refresh queries below are the ones
+            // tied to userId. A real one: an action the application does not have is refused.
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
             'pass' => self::$faker->sha1(),
             'refreshtoken' => 1,
         ];
