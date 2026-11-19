@@ -56,7 +56,7 @@ final class UserHelp implements HelpInterface
             self::getItem('pass', __('User password'), true),
             self::getItem('userGroupId', __('User group Id'), true),
             self::getItem('userProfileId', __('User profile Id'), true),
-            self::getItem('email', __('User email')),
+            self::getItem('email', __('User email'), true),
             self::getItem('notes', __('User notes')),
             self::getItem('isAdminApp', __('Application admin')),
             self::getItem('isAdminAcc', __('Accounts admin')),

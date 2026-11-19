@@ -2,6 +2,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Api\Controllers\User;
 
+use SP\Domain\Http\Code;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Api\Dtos\ApiResponse;
@@ -58,11 +60,19 @@ final class EditController extends UserBase
 
         $flag = static fn(?int $value, ?bool $current): bool => $value === null ? (bool)$current : (bool)$value;
 
+        // Omitted, the stored email stays (a null column is not written). Sent empty, it would be
+        // cleared — which the web form refuses for any user not taken from LDAP.
+        $email = $this->apiService->getParamString('email');
+
+        if ($email === '' && !$stored->isLdap()) {
+            throw ValidationException::error(__u('An email is needed'), null, Code::BAD_REQUEST->value);
+        }
+
         return new User([
             'id'            => $id,
             'name'          => $this->apiService->getParamString('name', true),
             'login'         => $this->apiService->getParamString('login', true),
-            'email'         => $this->apiService->getParamString('email'),
+            'email'         => $email,
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
             'userProfileId' => $userProfileId,

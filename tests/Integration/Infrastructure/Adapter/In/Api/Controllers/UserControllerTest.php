@@ -279,6 +279,45 @@ class UserControllerTest extends ApiTestCase
         $this->assertSame(1, (int)$row->isAdminApp);
     }
 
+    /**
+     * An email is required, as the web form requires it of any user not taken from LDAP — and the
+     * API creates no LDAP users. It was optional here, so the API created users nobody could mail a
+     * password reset or a notification to.
+     */
+    public function testCreateActionRequiresAnEmail(): void
+    {
+        $params = self::PARAMS;
+        unset($params['email']);
+
+        $r = $this->callApi(AclActionsInterface::USER_CREATE, $params);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Wrong parameters', $r->body->error->message);
+    }
+
+    /**
+     * An edit may leave the email out — it keeps the stored one — but may not clear it.
+     */
+    public function testEditActionCannotClearTheEmail(): void
+    {
+        $id = $this->createUser()->body->itemId;
+        $params = ['id' => $id, 'name' => 'API User', 'login' => 'api_user', 'userGroupId' => 1, 'userProfileId' => 1];
+
+        $cleared = $this->callApi(AclActionsInterface::USER_EDIT, $params + ['email' => '']);
+
+        $this->assertSame(400, $cleared->status);
+        $this->assertSame('An email is needed', $cleared->body->error->message);
+
+        $omitted = $this->callApi(AclActionsInterface::USER_EDIT, $params);
+
+        $this->assertSame(200, $omitted->status);
+        $this->assertSame(
+            self::PARAMS['email'],
+            $this->callApi(AclActionsInterface::USER_VIEW, ['id' => $id])->body->data->email,
+            'an edit that leaves the email out keeps it'
+        );
+    }
+
     public function testEditActionRequiredParameters(): void
     {
         $id = $this->createUser()->body->itemId;
