@@ -66,7 +66,7 @@ abstract class BaseRepository implements Repository
      * @param object $newThis
      *
      * @return mixed
-     * @throws ServiceException
+     * @throws SPException The closure's own, unchanged; anything else as a ServiceException
      */
     final public function transactionAware(Closure $closure, object $newThis): mixed
     {
@@ -85,8 +85,16 @@ abstract class BaseRepository implements Repository
                 $this->eventDispatcher->notify(new Event('database.rollback', $this, EventMessage::build()->addDescription(__u('Rollback'))));
                 $this->eventDispatcher->notify(new Event('exception', $e));
 
-                // Surface the underlying error (integrity constraint, missing row, ...)
-                // instead of masking every rollback with a generic "Rollback" message.
+                // An application exception already says what went wrong, in a type its callers
+                // and the API's status mapping act on: "User not found" is a NoSuchItemException,
+                // a refused import an ImportException. Rewrapping every one as a plain
+                // ServiceException threw that away — services had to unwrap getPrevious() to get
+                // it back. It goes through as it is.
+                if ($e instanceof SPException) {
+                    throw $e;
+                }
+
+                // Anything else still arrives as a ServiceException carrying its message.
                 throw new ServiceException(
                     $e->getMessage(),
                     SPException::ERROR,

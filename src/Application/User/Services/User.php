@@ -26,7 +26,6 @@ declare(strict_types=1);
 
 namespace SP\Application\User\Services;
 
-use Closure;
 use JsonException;
 use SP\Application\Application;
 use SP\Domain\Crypt\Hash;
@@ -135,14 +134,15 @@ final class User extends Service implements UserService
     {
         $this->assertManageable($id);
 
-        $this->inTransaction(
+        $this->userRepository->transactionAware(
             function () use ($id) {
                 $this->assertAnAdministratorRemains([$id]);
 
                 if ($this->userRepository->delete($id)->getAffectedNumRows() === 0) {
                     throw NoSuchItemException::info(__u('User not found'));
                 }
-            }
+            },
+            $this
         );
     }
 
@@ -159,7 +159,7 @@ final class User extends Service implements UserService
             $this->assertManageable((int)$id);
         }
 
-        return $this->inTransaction(
+        return $this->userRepository->transactionAware(
             function () use ($ids): int {
                 $this->assertAnAdministratorRemains(array_map('intval', $ids));
 
@@ -170,7 +170,8 @@ final class User extends Service implements UserService
                 }
 
                 return $count;
-            }
+            },
+            $this
         );
     }
 
@@ -274,7 +275,7 @@ final class User extends Service implements UserService
     {
         $this->assertManageable((int)$user->getId());
 
-        $this->inTransaction(
+        $this->userRepository->transactionAware(
             function () use ($user) {
                 // Only a save that takes the user out of the active administrators can leave none.
                 if ($user->isAdminApp() === false || $user->isDisabled() === true) {
@@ -284,27 +285,9 @@ final class User extends Service implements UserService
                 if ($this->userRepository->update($user) === 0) {
                     throw ServiceException::error(__u('Error while updating the user'));
                 }
-            }
+            },
+            $this
         );
-    }
-
-    /**
-     * Runs the closure in a transaction, letting the exception it threw through unchanged
-     *
-     * `transactionAware()` rewraps whatever escapes as a plain ServiceException, which would turn
-     * "User not found" into a different type than callers — and the API's status mapping — expect.
-     *
-     * @throws SPException
-     */
-    private function inTransaction(Closure $closure): mixed
-    {
-        try {
-            return $this->userRepository->transactionAware($closure, $this);
-        } catch (ServiceException $e) {
-            $previous = $e->getPrevious();
-
-            throw $previous instanceof SPException ? $previous : $e;
-        }
     }
 
     /**
