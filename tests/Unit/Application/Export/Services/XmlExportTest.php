@@ -860,6 +860,13 @@ class XmlExportTest extends UnitaryTestCase
 
         try {
             $this->xmlExport->export($exportPath);
+        } catch (ServiceException $e) {
+            // And nothing was recorded for it. The hash used to be saved before the file was
+            // written, so a failed export pointed the configuration at a file that never existed
+            // and the previous export, still on disk, could no longer be downloaded.
+            self::assertNull($this->config->getConfigData()->getExportHash());
+
+            throw $e;
         } finally {
             restore_error_handler();
         }

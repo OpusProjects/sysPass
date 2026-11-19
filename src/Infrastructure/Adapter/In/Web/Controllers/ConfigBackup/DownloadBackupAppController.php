@@ -77,14 +77,20 @@ final class DownloadBackupAppController extends SimpleControllerBase
             return ActionResponse::error(__u('No backup available'));
         }
 
-        Session::close();
-
         $filePath = new BackupFile(
             BackupType::app,
             $backupHash,
             $this->pathsContext[Path::BACKUP],
             'gz'
         );
+
+        // A hash with no file behind it — the backup was removed, or failed after recording it —
+        // used to reach FileHandler and come back as a 500 naming the server's backup path.
+        if (!is_file((string)$filePath)) {
+            return ActionResponse::error(__u('No backup available'));
+        }
+
+        Session::close();
 
         $file = new FileHandler((string)$filePath);
 

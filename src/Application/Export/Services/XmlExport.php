@@ -124,14 +124,17 @@ final class XmlExport extends Service implements XmlExportService
 
         $exportPath->checkOrCreate();
 
-        $file = new BackupFileDto(
-            BackupType::export,
-            $this->buildAndSaveHashForFile(),
-            $exportPath->getPath(),
-            'xml'
-        );
+        $hash = bin2hex(random_bytes(20));
+
+        $file = new BackupFileDto(BackupType::export, $hash, $exportPath->getPath(), 'xml');
 
         $this->buildAndSaveXml((string)$file, $password);
+
+        // Recorded only once the file exists. It used to be saved first, so an export that failed
+        // left the configuration pointing at a file that was never written, and the previous
+        // export — still on disk, since old files are removed only on success — could no longer be
+        // downloaded.
+        $this->saveHash($hash);
 
         // Only once there is a new export to keep. Deleting first meant a run that failed
         // part-way — an unreadable account, a failure writing the file — took the last good
@@ -157,13 +160,10 @@ final class XmlExport extends Service implements XmlExportService
     /**
      * @throws FileException
      */
-    private function buildAndSaveHashForFile(): string
+    private function saveHash(string $hash): void
     {
-        $hash = bin2hex(random_bytes(20));
         $this->configData->setExportHash($hash);
         $this->config->save($this->configData);
-
-        return $hash;
     }
 
     /**

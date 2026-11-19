@@ -54,6 +54,30 @@ final class BackupFile extends Dto
         );
     }
 
+    /**
+     * The export currently on disk for the given hash, or null when there is none
+     *
+     * The web archives its export to `.gz` once it has verified it; the API leaves the `.xml` it
+     * wrote. Both record the same hash, so a download that looked only for the archive answered
+     * "no export" after an API export — and a missing file was a 500 naming the server's path.
+     */
+    public static function existingExport(?string $hash, string $path): ?string
+    {
+        if ($hash === null || $hash === '') {
+            return null;
+        }
+
+        foreach (['gz', 'xml'] as $extension) {
+            $file = (string)new self(BackupType::export, $hash, $path, $extension);
+
+            if (is_file($file)) {
+                return $file;
+            }
+        }
+
+        return null;
+    }
+
     public function withPath(string $path): BackupFile
     {
         return new self($this->backupType, $this->hash, $path, $this->extension);

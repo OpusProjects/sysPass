@@ -39,7 +39,6 @@ use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Exceptions\SessionTimeout;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Export\Dtos\BackupFile as BackupFileDto;
-use SP\Domain\Export\Dtos\BackupType;
 use SP\Infrastructure\File\FileHandler;
 use SP\Infrastructure\Adapter\In\Web\Controllers\SimpleControllerBase;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\SimpleControllerHelper;
@@ -68,14 +67,13 @@ final class DownloadExportController extends SimpleControllerBase
             return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
         }
 
-        Session::close();
+        $filePath = BackupFileDto::existingExport($this->configData->getExportHash(), $this->pathsContext[Path::BACKUP]);
 
-        $filePath = (string)new BackupFileDto(
-            BackupType::export,
-            $this->configData->getExportHash() ?: '',
-            $this->pathsContext[Path::BACKUP],
-            'gz'
-        );
+        if ($filePath === null) {
+            return ActionResponse::error(__u('No export file found'));
+        }
+
+        Session::close();
 
         $file = new FileHandler($filePath);
 
