@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * SaveEditController
@@ -55,29 +57,39 @@ final class SaveEditController extends CategorySaveBase
     #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_EDIT)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_EDIT)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->form->validateFor(AclActionsInterface::CATEGORY_EDIT, $id);
+
+            $itemData = $this->form->getItemData();
+
+            $this->categoryService->update($itemData);
+
+            $this->eventDispatcher->notify(new Event(
+                'edit.category',
+                $this,
+                EventMessage::build(__u('Category updated'))->addDetail(__u('Category'), $itemData->getName())
+            ));
+
+            $this->updateCustomFieldsForItem(
+                AclActionsInterface::CATEGORY,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
+
+            return ActionResponse::ok(__u('Category updated'));
+        } catch (ValidationException $e) {
+            return ActionResponse::error($e->getMessage());
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->form->validateFor(AclActionsInterface::CATEGORY_EDIT, $id);
-
-        $itemData = $this->form->getItemData();
-
-        $this->categoryService->update($itemData);
-
-        $this->eventDispatcher->notify(new Event(
-            'edit.category',
-            $this,
-            EventMessage::build(__u('Category updated'))->addDetail(__u('Category'), $itemData->getName())
-        ));
-
-        $this->updateCustomFieldsForItem(
-            AclActionsInterface::CATEGORY,
-            $id,
-            $this->request,
-            $this->customFieldService
-        );
-
-        return ActionResponse::ok(__u('Category updated'));
     }
 }

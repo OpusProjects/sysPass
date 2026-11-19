@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Adapters\ItemTrait;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class DeleteController
@@ -58,38 +60,46 @@ final class DeleteController extends ClientSaveBase
      */    #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_DELETE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
-        }
-
-        if ($id === null) {
-            $ids = $this->getItemsIdFromRequest($this->request);
-
-            if (empty($ids)) {
-                return ActionResponse::error(__u('No items selected'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_DELETE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
-            $this->clientService->deleteByIdBatch($ids);
-            $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $ids, $this->customFieldService);
+            if ($id === null) {
+                $ids = $this->getItemsIdFromRequest($this->request);
+
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->clientService->deleteByIdBatch($ids);
+                $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $ids, $this->customFieldService);
+
+                $this->eventDispatcher->notify(new Event(
+                    'delete.client.selection',
+                    $this,
+                    EventMessage::build()->addDescription(__u('Clients deleted'))
+                ));
+
+                return ActionResponse::ok(__u('Clients deleted'));
+            }
+            $this->clientService->delete($id);
+
+            $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(new Event(
-                'delete.client.selection',
+                'delete.client',
                 $this,
-                EventMessage::build()->addDescription(__u('Clients deleted'))
+                EventMessage::build(__u('Client deleted'))->addDetail(__u('Client'), $id)
             ));
 
-            return ActionResponse::ok(__u('Clients deleted'));
+            return ActionResponse::ok(__u('Client deleted'));
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-        $this->clientService->delete($id);
-
-        $this->deleteCustomFieldsForItem(AclActionsInterface::CLIENT, $id, $this->customFieldService);
-
-        $this->eventDispatcher->notify(new Event(
-            'delete.client',
-            $this,
-            EventMessage::build(__u('Client deleted'))->addDetail(__u('Client'), $id)
-        ));
-
-        return ActionResponse::ok(__u('Client deleted'));
     }
 }

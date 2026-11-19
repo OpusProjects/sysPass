@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -38,6 +39,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Common\Adapters\ItemTrait;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveEditController
@@ -60,27 +62,37 @@ final class SaveEditController extends ClientSaveBase
      */    #[Action(ResponseType::JSON)]
     public function saveEditAction(int $id): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_EDIT)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_EDIT)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->form->validateFor(AclActionsInterface::CLIENT_EDIT, $id);
+
+            $this->clientService->update($this->form->getItemData());
+
+            $this->eventDispatcher->notify(new Event(
+                'edit.client',
+                $this,
+                EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
+            ));
+
+            $this->updateCustomFieldsForItem(
+                AclActionsInterface::CLIENT,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
+
+            return ActionResponse::ok(__u('Client updated'));
+        } catch (ValidationException $e) {
+            return ActionResponse::error($e->getMessage());
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->form->validateFor(AclActionsInterface::CLIENT_EDIT, $id);
-
-        $this->clientService->update($this->form->getItemData());
-
-        $this->eventDispatcher->notify(new Event(
-            'edit.client',
-            $this,
-            EventMessage::build()->addDescription(__u('Client updated'))->addDetail(__u('Client'), $id)
-        ));
-
-        $this->updateCustomFieldsForItem(
-            AclActionsInterface::CLIENT,
-            $id,
-            $this->request,
-            $this->customFieldService
-        );
-
-        return ActionResponse::ok(__u('Client updated'));
     }
 }

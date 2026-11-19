@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
+use Exception;
 use Defuse\Crypto\Exception\CryptoException;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use SP\Domain\Core\Events\Event;
@@ -38,6 +39,7 @@ use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\ValidationException;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveCreateController
@@ -59,23 +61,33 @@ final class SaveCreateController extends AuthTokenSaveBase
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_CREATE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->form->validateFor(AclActionsInterface::AUTHTOKEN_CREATE);
+
+            $id = $this->authTokenService->create($this->form->getItemData());
+
+            $this->addCustomFieldsForItem(
+                AclActionsInterface::AUTHTOKEN,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
+
+            $this->eventDispatcher->notify(new Event('create.authToken', $this));
+
+            return ActionResponse::ok(__u('Authorization added'));
+        } catch (ValidationException $e) {
+            return ActionResponse::error($e->getMessage());
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->form->validateFor(AclActionsInterface::AUTHTOKEN_CREATE);
-
-        $id = $this->authTokenService->create($this->form->getItemData());
-
-        $this->addCustomFieldsForItem(
-            AclActionsInterface::AUTHTOKEN,
-            $id,
-            $this->request,
-            $this->customFieldService
-        );
-
-        $this->eventDispatcher->notify(new Event('create.authToken', $this));
-
-        return ActionResponse::ok(__u('Authorization added'));
     }
 }

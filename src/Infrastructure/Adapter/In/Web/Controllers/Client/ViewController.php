@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
@@ -60,17 +62,25 @@ final class ViewController extends ClientViewBase
      */    #[Action(ResponseType::JSON)]
     public function viewAction(int $id): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_VIEW)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_VIEW)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->view->assign('header', __('View Client'));
+            $this->view->assign('isView', true);
+
+            $this->setViewData($id);
+
+            $this->eventDispatcher->notify(new Event('show.client', $this));
+
+            return ActionResponse::ok('', ['html' => $this->render()]);
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->view->assign('header', __('View Client'));
-        $this->view->assign('isView', true);
-
-        $this->setViewData($id);
-
-        $this->eventDispatcher->notify(new Event('show.client', $this));
-
-        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }
