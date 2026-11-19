@@ -26,6 +26,9 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Definitions;
 
+use SP\Infrastructure\Adapter\Out\Upgrade\Repositories\LegacySerializedData as LegacySerializedDataRepositoryAdapter;
+use SP\Domain\Upgrade\Ports\LegacySerializedDataRepository;
+use SP\Domain\Upgrade\Services\UpgradeLegacySerializedData;
 use Aura\SqlQuery\QueryFactory;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -452,7 +455,10 @@ final class CoreDefinitions
             // "Application successfully updated" over a database it had not touched.
             UpgradeService::class => autowire(Upgrade::class)
                 ->method('registerUpgradeHandler', UpgradeDatabase::class)
-                ->method('registerUpgradeHandler', UpgradeConfigText::class),
+                ->method('registerUpgradeHandler', UpgradeConfigText::class)
+                ->method('registerUpgradeHandler', UpgradeLegacySerializedData::class),
+            // Bound here rather than by the context wildcard, which does not list Upgrade.
+            LegacySerializedDataRepository::class => autowire(LegacySerializedDataRepositoryAdapter::class),
             UpgradeDatabase::class => autowire(UpgradeDatabase::class)
                 ->constructorParameter(
                     'sqlPath',

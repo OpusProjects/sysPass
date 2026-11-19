@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Cli;
 
+use SP\Infrastructure\Adapter\In\Cli\Commands\ConvertLegacyDataCommand;
 use SP\Infrastructure\Adapter\In\Cli\Commands\BackupCommand;
 use SP\Infrastructure\Adapter\In\Cli\Commands\CommandBase;
 use SP\Infrastructure\Adapter\In\Cli\Commands\Crypt\UpdateMasterPasswordCommand;
@@ -42,12 +43,14 @@ final class CliCommandHelper
     public function __construct(
         InstallCommand $installCommand,
         BackupCommand $backupCommand,
-        UpdateMasterPasswordCommand $updateMasterPasswordCommand
+        UpdateMasterPasswordCommand $updateMasterPasswordCommand,
+        ConvertLegacyDataCommand $convertLegacyDataCommand
     ) {
         $this->commands = [
             $installCommand,
             $backupCommand,
             $updateMasterPasswordCommand,
+            $convertLegacyDataCommand,
         ];
     }
 
