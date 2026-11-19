@@ -44,16 +44,20 @@ final class UserDataGenerator extends DataGenerator
     private function getUserProperties(): array
     {
         return [
-            'id' => $this->faker->randomNumber(3),
+            // Never zero: forms and services read a zero id as "not given".
+            'id' => $this->faker->numberBetween(1, 999),
             'name' => $this->faker->name(),
             'email' => $this->faker->email(),
             'login' => $this->faker->name(),
             'ssoLogin' => $this->faker->userName(),
             'notes' => $this->faker->text(),
-            'userGroupId' => $this->faker->randomNumber(3),
-            'userProfileId' => $this->faker->randomNumber(3),
-            'isAdminApp' => $this->faker->boolean(),
-            'isAdminAcc' => $this->faker->boolean(),
+            'userGroupId' => $this->faker->numberBetween(1, 999),
+            'userProfileId' => $this->faker->numberBetween(1, 999),
+            // Not at random: administrators bypass the ACL and, since the guards on managing
+            // administrators, a random flag made whether a test even reached its subject a coin
+            // toss. A test about an administrator says so with mutate().
+            'isAdminApp' => false,
+            'isAdminAcc' => false,
             'isDisabled' => $this->faker->boolean(),
             'isChangePass' => $this->faker->boolean(),
             'isChangedPass' => $this->faker->boolean(),
