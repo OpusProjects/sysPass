@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Application\User\Services;
 
 use SP\Application\User\Ports\UserPassRecoverService;
+use Closure;
 use JsonException;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
@@ -749,6 +750,10 @@ class UserTest extends UnitaryTestCase
         parent::setUp();
 
         $this->userRepository = $this->createMock(UserRepository::class);
+        // Runs the closure, as the real one does around its transaction.
+        $this->userRepository
+            ->method('transactionAware')
+            ->willReturnCallback(static fn(Closure $closure, object $newThis): mixed => $closure->call($newThis));
         $this->userMasterPassService = $this->createMock(UserMasterPassService::class);
 
         $this->userPassRecoverService = $this->createMock(UserPassRecoverService::class);
@@ -830,6 +835,71 @@ class UserTest extends UnitaryTestCase
         $this->userRepository->expects(self::once())->method('delete')->willReturn(new QueryResult(null, 1));
 
         $this->user->delete(100);
+    }
+
+    /**
+     * Nothing stopped the last administrator being disabled, demoted or deleted, which leaves an
+     * installation whose users nobody can manage without editing the database by hand.
+     */
+    public function testTheLastActiveAdministratorCannotBeDisabled(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([100]);
+        $this->userRepository->expects(self::never())->method('update');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('At least one active application administrator is needed');
+
+        $this->user->update(new UserModel(['id' => 100, 'isAdminApp' => true, 'isDisabled' => true]));
+    }
+
+    public function testTheLastActiveAdministratorCannotBeDemoted(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([100]);
+        $this->userRepository->expects(self::never())->method('update');
+
+        $this->expectException(ServiceException::class);
+
+        $this->user->update(new UserModel(['id' => 100, 'isAdminApp' => false, 'isDisabled' => false]));
+    }
+
+    public function testTheLastActiveAdministratorCannotBeDeleted(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([100]);
+        $this->userRepository->expects(self::never())->method('delete');
+
+        $this->expectException(ServiceException::class);
+
+        $this->user->delete(100);
+    }
+
+    public function testTheLastActiveAdministratorsCannotBeDeletedTogether(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([100, 200]);
+        $this->userRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(ServiceException::class);
+
+        $this->user->deleteByIdBatch([100, 200, 300]);
+    }
+
+    public function testAnAdministratorCanBeDemotedWhileAnotherRemains(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([100, 200]);
+        $this->userRepository->expects(self::once())->method('update')->willReturn(1);
+
+        $this->user->update(new UserModel(['id' => 100, 'isAdminApp' => false, 'isDisabled' => false]));
+    }
+
+    /**
+     * A change that removes no administrator is never refused, even where there is none left —
+     * otherwise an installation already without one could not manage anybody.
+     */
+    public function testAChangeThatRemovesNoAdministratorIsNeverRefused(): void
+    {
+        $this->userRepository->method('getActiveAdminIdsForUpdate')->willReturn([]);
+        $this->userRepository->expects(self::once())->method('delete')->willReturn(new QueryResult(null, 1));
+
+        $this->user->delete(300);
     }
 
     public function testAnyoneMayManageThemselvesWithoutTheTargetBeingRead(): void

@@ -169,6 +169,18 @@ interface UserRepository extends Repository
     public function getUserEmailById(array $ids): QueryResult;
 
     /**
+     * The ids of the active application administrators, locked until the transaction ends
+     *
+     * Read with `FOR UPDATE` so that two changes each leaving "another administrator" behind
+     * cannot both pass: the second waits for the first, and then counts what the first left.
+     *
+     * @return int[]
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function getActiveAdminIdsForUpdate(): array;
+
+    /**
      * Which of the given ids still exist
      *
      * @param int[] $ids

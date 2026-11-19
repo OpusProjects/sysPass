@@ -40,18 +40,37 @@ final class EditController extends UserBase
 
         $this->assertProfileIsAssignable($userProfileId);
 
+        $id = $this->apiService->getParamInt('id', true);
+
+        // A flag the caller does not send keeps its stored value. It used to be written as false,
+        // so an administrator renaming another administrator demoted them, and re-enabled them if
+        // they had been disabled, without either flag appearing in the request.
+        $stored = $this->userService->getById((int)$id);
+        $isAdmin = (bool)$this->context->getUserData()->isAdminApp;
+
+        // Each read by name, which is also how HelpMatchesParametersTest finds what this reads.
+        $sent = [
+            'isAdminApp' => $this->apiService->getParamInt('isAdminApp'),
+            'isAdminAcc' => $this->apiService->getParamInt('isAdminAcc'),
+            'isDisabled' => $this->apiService->getParamInt('isDisabled'),
+            'isChangePass' => $this->apiService->getParamInt('isChangePass'),
+        ];
+
+        $flag = static fn(?int $value, ?bool $current): bool => $value === null ? (bool)$current : (bool)$value;
+
         return new User([
-            'id'            => $this->apiService->getParamInt('id', true),
+            'id'            => $id,
             'name'          => $this->apiService->getParamString('name', true),
             'login'         => $this->apiService->getParamString('login', true),
             'email'         => $this->apiService->getParamString('email'),
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
             'userProfileId' => $userProfileId,
-            'isAdminApp'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminApp'),
-            'isAdminAcc'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminAcc'),
-            'isDisabled'    => (bool) $this->apiService->getParamInt('isDisabled'),
-            'isChangePass'  => (bool) $this->apiService->getParamInt('isChangePass'),
+            // Only an administrator may set either administrator flag.
+            'isAdminApp'    => $isAdmin && $flag($sent['isAdminApp'], $stored->isAdminApp()),
+            'isAdminAcc'    => $isAdmin && $flag($sent['isAdminAcc'], $stored->isAdminAcc()),
+            'isDisabled'    => $flag($sent['isDisabled'], $stored->isDisabled()),
+            'isChangePass'  => $flag($sent['isChangePass'], $stored->isChangePass()),
         ]);
     }
 }

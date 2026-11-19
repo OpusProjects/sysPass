@@ -133,6 +133,47 @@ class EditControllerTest extends UnitaryTestCase
         $this->assertEquals(0, $result['resultCode']);
     }
 
+    /**
+     * A flag the caller does not send keeps its stored value. It used to be written as false, so
+     * an administrator renaming another administrator demoted them, and re-enabled them if they
+     * had been disabled, without either flag appearing in the request.
+     */
+    public function testEditActionKeepsTheFlagsItIsNotSent(): void
+    {
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+
+        $this->apiService->method('getParamString')->willReturnMap([
+            ['name', true, null, 'Renamed'],
+            ['login', true, null, 'renamed'],
+        ]);
+        // Only what a rename sends: no isAdminApp, isAdminAcc, isDisabled or isChangePass.
+        $this->apiService->method('getParamInt')->willReturnCallback(
+            static fn(string $param): ?int => ['id' => 3, 'userGroupId' => 1, 'userProfileId' => 2][$param] ?? null
+        );
+
+        $this->userService
+            ->expects($this->once())
+            ->method('getById')
+            ->with(3)
+            ->willReturn(new User([
+                'id' => 3,
+                'isAdminApp' => true,
+                'isAdminAcc' => true,
+                'isDisabled' => true,
+                'isChangePass' => true,
+            ]));
+
+        $this->userService
+            ->expects($this->once())
+            ->method('update')
+            ->with($this->callback(static fn(User $user): bool => $user->isAdminApp() === true
+                && $user->isAdminAcc() === true
+                && $user->isDisabled() === true
+                && $user->isChangePass() === true));
+
+        $this->controller->editAction();
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
