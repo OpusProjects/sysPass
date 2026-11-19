@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SP\Tests\Unit\Domain\ItemPreset\Models;
 
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\ItemPreset\Models\SessionTimeout;
@@ -44,6 +45,32 @@ class SessionTimeoutTest extends TestCase
         self::expectException(InvalidArgumentException::class);
 
         new SessionTimeout('not-an-ip', 3600);
+    }
+
+    /**
+     * The address pattern checks only the shape — any three digits as an octet, any two as a
+     * prefix — so these used to get through: a prefix past 32 died in cidrToDec() with an
+     * ArithmeticError (a 500), and an octet past 255 was stored and then refused on every request.
+     */
+    #[TestWith(['10.0.0.0/33'])]
+    #[TestWith(['10.0.0.0/99'])]
+    #[TestWith(['999.1.1.1'])]
+    #[TestWith(['10.0.0.256/24'])]
+    #[TestWith(['10.0.0.0/255.255.256.0'])]
+    public function testOutOfRangeAddressThrows(string $address): void
+    {
+        self::expectException(InvalidArgumentException::class);
+        self::expectExceptionMessage('Invalid IP');
+
+        new SessionTimeout($address, 3600);
+    }
+
+    #[TestWith(['0.0.0.0/0', '0.0.0.0'])]
+    #[TestWith(['10.0.0.1/32', '255.255.255.255'])]
+    #[TestWith(['10.0.0.0/255.255.255.0', '255.255.255.0'])]
+    public function testPrefixBoundsAndDottedMask(string $address, string $expectedMask): void
+    {
+        self::assertSame($expectedMask, (new SessionTimeout($address, 60))->getMask());
     }
 
     public function testIsReadonly(): void

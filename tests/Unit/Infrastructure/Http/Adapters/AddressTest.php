@@ -28,6 +28,7 @@ namespace SP\Tests\Unit\Infrastructure\Http\Adapters;
 
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\Attributes\Group;
 use SP\Domain\Core\Exceptions\InvalidArgumentException;
 use SP\Domain\Http\Adapters\Address;
@@ -218,6 +219,19 @@ class AddressTest extends UnitaryTestCase
     /**
      * @return array<string, array{string, string, string, bool}>
      */
+    /**
+     * A prefix outside 0–32 is a negative shift, which PHP raises as an ArithmeticError — an Error,
+     * so nothing catching exceptions saw it. It is refused as an invalid address instead.
+     */
+    #[TestWith([33])]
+    #[TestWith([-1])]
+    public function testCidrToDecRefusesOutOfRangePrefix(int $bits): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        Address::cidrToDec($bits);
+    }
+
     public static function ipv6Provider(): array
     {
         // address, network, mask, expected
