@@ -249,6 +249,7 @@ abstract class ApiTestCase extends TestCase
         return (object)[
             'status' => $response->getStatusCode(),
             'body' => json_decode($response->getContent(), false, 512, JSON_THROW_ON_ERROR),
+            'headers' => $response->headers,
         ];
     }
 

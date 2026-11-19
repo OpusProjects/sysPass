@@ -103,6 +103,35 @@ class BootstrapTest extends IntegrationTestCase
     }
 
     /**
+     * Every routed page carries the hardening headers. None was sent: a stored file could be
+     * sniffed into HTML, the vault could be framed, and a public link's address — its hash is in
+     * the query string — went out as the referrer when an account's URL was followed.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aRoutedPageCarriesTheSecurityHeaders(): void
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'items/categories'])
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $headers = $container->get(ResponseService::class)->getResponse()->headers;
+
+        self::assertSame('nosniff', $headers->get('X-Content-Type-Options'));
+        self::assertSame('same-origin', $headers->get('Referrer-Policy'));
+        self::assertSame('DENY', $headers->get('X-Frame-Options'));
+        self::assertSame(
+            "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'",
+            $headers->get('Content-Security-Policy')
+        );
+    }
+
+    /**
      * A route whose action segment names no real controller class is refused before any guard or
      * controller runs at all — method_exists() is checked ahead of everything else in
      * manageWebRequest(), so this is a plain 404, not a 500 from trying to instantiate a class that

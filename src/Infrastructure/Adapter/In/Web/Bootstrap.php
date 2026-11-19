@@ -100,6 +100,7 @@ final class Bootstrap extends BootstrapBase
 
             try {
                 $this->setCors($response);
+                $this->setSecurityHeaders($response);
 
                 $this->initializeCommon();
 

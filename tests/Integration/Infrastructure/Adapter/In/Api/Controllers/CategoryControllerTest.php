@@ -91,6 +91,18 @@ class CategoryControllerTest extends ApiTestCase
         $this->assertSame('Duplicated category name', $r->body->error->message);
     }
 
+    /**
+     * Every API answer carries the hardening headers, as every page does.
+     */
+    public function testAnAnswerCarriesTheSecurityHeaders(): void
+    {
+        $r = $this->callApi(AclActionsInterface::CATEGORY_SEARCH, []);
+
+        $this->assertSame('nosniff', $r->headers->get('X-Content-Type-Options'));
+        $this->assertSame('same-origin', $r->headers->get('Referrer-Policy'));
+        $this->assertStringContainsString("frame-ancestors 'none'", (string)$r->headers->get('Content-Security-Policy'));
+    }
+
     public function testCreateActionRequiredParameter(): void
     {
         $params = self::PARAMS;

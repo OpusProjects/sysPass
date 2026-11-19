@@ -133,6 +133,31 @@ abstract class BootstrapBase implements BootstrapInterface
         $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     }
 
+    /**
+     * Response headers that harden every page and API answer
+     *
+     * None was sent. The policy here deliberately stops short of restricting scripts: the theme
+     * has inline scripts, and a script-src that broke them would break the application. What is
+     * set costs nothing to keep working:
+     *
+     * - nosniff: a stored file is served as the type it was stored with, never sniffed into HTML;
+     * - same-origin referrer: a public link carries its hash in the query string, and following
+     *   an account's URL from a page used to send that address to the other site;
+     * - no framing (both the old header and frame-ancestors): the vault cannot be clickjacked;
+     * - base-uri, form-action and object-src: an injected <base>, form or plugin cannot redirect
+     *   what the page loads or submits.
+     */
+    final protected function setSecurityHeaders(ResponseService $response): void
+    {
+        $response->header('X-Content-Type-Options', 'nosniff');
+        $response->header('Referrer-Policy', 'same-origin');
+        $response->header('X-Frame-Options', 'DENY');
+        $response->header(
+            'Content-Security-Policy',
+            "frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'"
+        );
+    }
+
     abstract protected function configureRouter(): void;
 
     abstract public static function run(BootstrapInterface $bootstrap, ModuleInterface $initModule): void;
