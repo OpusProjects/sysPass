@@ -37,6 +37,15 @@ use stdClass;
 #[Group('integration')]
 class AccountControllerTest extends ApiTestCase
 {
+    /** The profile permissions behind every per-account API action. */
+    private const EVERY_ACCOUNT_ACTION = [
+        'accView' => true,
+        'accViewPass' => true,
+        'accEdit' => true,
+        'accEditPass' => true,
+        'accDelete' => true,
+    ];
+
     private const OTHER_USER_ID = 3;
 
     private const PARAMS = [
@@ -429,6 +438,10 @@ class AccountControllerTest extends ApiTestCase
     public function testAccountActionIsRefusedForAUserWithoutAccessToIt(int $actionId, array $extraParams): void
     {
         $id = $this->createAccountOwnedByAdmin()->body->itemId;
+
+        // The profile allows every one of these actions, so what refuses is the per-account check
+        // — the thing this test is about — and not the profile, which the API also asks.
+        $this->grantProfile(1, self::EVERY_ACCOUNT_ACTION);
 
         $r = $this->callApi($actionId, ['id' => $id] + $extraParams, self::OTHER_USER_ID);
 

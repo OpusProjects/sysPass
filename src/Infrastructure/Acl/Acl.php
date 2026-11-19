@@ -123,7 +123,17 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::ACCOUNT_DELETE:
                 return $userDto->isAdminAcc || $userProfile->isAccDelete();
             case self::ACCOUNT_FILE:
+            // The API's file actions, which the API now asks about on every call. They are the
+            // Files permission, as on the web. ACCOUNT_FILE_SEARCH is not one of them: it is the
+            // management grid of every file, under file management (mgmFiles) below.
+            case self::ACCOUNT_FILE_LIST:
+            case self::ACCOUNT_FILE_DOWNLOAD:
+            case self::ACCOUNT_FILE_UPLOAD:
+            case self::ACCOUNT_FILE_DELETE:
                 return $userDto->isAdminAcc || $userProfile->isAccFiles();
+            case self::ACCOUNT_SEARCH:
+                // Anybody signed in may search; what comes back is filtered per user.
+                return true;
             case self::ITEMS_MANAGE:
                 return $userDto->isAdminAcc
                        || $userProfile->isMgmCategories()
@@ -219,6 +229,9 @@ final readonly class Acl implements AclActionsInterface, AclInterface
             case self::CONFIG_CRYPT:
                 return $userProfile->isConfigEncryption();
             case self::CONFIG_BACKUP:
+            // The API's backup and export runs: the web's backup permission, which covers both.
+            case self::CONFIG_BACKUP_RUN:
+            case self::CONFIG_EXPORT_RUN:
                 return $userProfile->isConfigBackup();
             case self::ACCESS_MANAGE:
                 return $userProfile->isMgmUsers()

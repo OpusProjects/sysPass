@@ -251,6 +251,12 @@ A few harness details bite when writing an integration test against a real branc
   drawing a group or profile id that way fails about one run in a hundred, on CI, in whichever pull
   request happened to be open. Use `numberBetween(1, …)`.
 
+- **An API test acting as a non-administrator must grant the profile first.** `Api::setup()` asks
+  `Acl::checkUserAccess()` for the token's action on every call, and the fixture's profiles grant
+  nothing — so such a test is refused with 401 "Unauthorized access" before reaching what it is
+  about. `ApiTestCase::grantProfile($profileId, [...flags])` writes the flags through the
+  application's own profile service; fixtures reload per test, so the grant does not leak.
+
 The rest is mostly, but not entirely, a long tail: of the 642 uncovered statements across **262**
 files, **303 sit in 200 files missing three statements or fewer** — individual error branches,
 rarely-hit conditionals and unused accessors, worth picking off when touching the surrounding code
@@ -831,6 +837,16 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   controller for each would be inventing a feature. `RoutesAreDispatchableTest` lists them and
   asserts each is *still* unrouted and *still* never handed out — so the list cannot silently
   excuse a new one. Everything not on it must resolve **and** satisfy the dispatch contract.
+
+## A token is used with its user's permissions as they are now
+
+`Api::setup()` loads the token's user and profile from the database and then asks
+`Acl::checkUserAccess()` for the token's action — the same question the web asks on every request.
+A token is therefore not a standing grant: demoting an administrator, or taking a permission out of
+a profile, stops that user's tokens for it at once. `Acl` is the one definition for both doors, so
+every action the API offers has an arm there; an action without one is refused for everybody but an
+application administrator. That is deliberate for `NOTIFICATION_CREATE/EDIT/DELETE`, which the web
+has never allowed a non-administrator either.
 
 ## A token that carries a vault, and what that costs
 

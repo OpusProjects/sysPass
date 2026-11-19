@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Api\Services;
 
+use SP\Domain\Core\Acl\AclInterface;
 use Exception;
 use Faker\Factory;
 use JsonException;
@@ -68,6 +69,9 @@ use stdClass;
 #[AllowMockObjectsWithoutExpectations]
 class ApiTest extends UnitaryTestCase
 {
+    private AclInterface|MockObject $acl;
+    private bool                    $profileAllows = true;
+
 
     private TrackService|MockObject         $trackService;
     private ApiRequestService|MockObject    $apiRequest;
@@ -274,7 +278,8 @@ class ApiTest extends UnitaryTestCase
             $apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            $this->acl
         );
 
         $apiService->setHelpClass(AccountHelp::class);
@@ -360,6 +365,39 @@ class ApiTest extends UnitaryTestCase
     }
 
     /**
+     * A token is used with its user's permissions as they are now. It used to keep working after
+     * the user's profile stopped allowing its action — or the user stopped being an administrator
+     * — because only the token was checked, where the web asks the profile on every request.
+     *
+     * @throws ServiceException
+     * @throws SPException
+     */
+    public function testSetupRefusesWhenTheUsersProfileNoLongerAllowsTheAction()
+    {
+        $actionId = self::$faker->randomNumber(5);
+        $userId = self::$faker->randomNumber();
+
+        $this->profileAllows = false;
+
+        $this->trackService->method('checkTracking')->willReturn(false);
+        $this->apiRequest->method('get')->with('authToken')->willReturn(self::$faker->password());
+        $this->authTokenService
+            ->method('getTokenByToken')
+            ->willReturn(new AuthToken(['actionId' => $actionId, 'userId' => $userId]));
+        $this->userService
+            ->method('getById')
+            ->willReturn(UserDataGenerator::factory()->buildUserData()->mutate(['isDisabled' => false]));
+        $this->userProfileService
+            ->method('getById')
+            ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Unauthorized access');
+
+        $this->apiService->setup($actionId);
+    }
+
+    /**
      * @throws InvalidArgumentException
      * @throws ContextException
      * @throws \PHPUnit\Framework\MockObject\Exception
@@ -374,6 +412,10 @@ class ApiTest extends UnitaryTestCase
         $this->userService = $this->createMock(UserService::class);
         $this->userProfileService = $this->createMock(UserProfileService::class);
 
+        // Grants by default; the test for a refused profile replaces it.
+        $this->acl = $this->createMock(AclInterface::class);
+        $this->acl->method('checkUserAccess')->willReturnCallback(fn() => $this->profileAllows);
+
         $this->trackRequest = new TrackRequest(time(), __CLASS__, self::$faker->ipv4());
         $this->trackService->method('buildTrackRequest')->willReturn($this->trackRequest);
         $this->apiRequest->method('getMethod')->willReturn(self::$faker->colorName());
@@ -384,7 +426,8 @@ class ApiTest extends UnitaryTestCase
             $this->apiRequest,
             $this->authTokenService,
             $this->userService,
-            $this->userProfileService
+            $this->userProfileService,
+            $this->acl
         );
     }
 
