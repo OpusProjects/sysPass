@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Api\Services;
 
+use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\Api\Services\ApiStatuses;
 use SP\Domain\Http\Code;
 
@@ -81,7 +82,8 @@ final class Api extends Service implements ApiService
         private readonly ApiRequestService $apiRequest,
         private readonly AuthTokenService  $authTokenService,
         private readonly UserService       $userService,
-        private readonly UserProfileService $userProfileService
+        private readonly UserProfileService $userProfileService,
+        private readonly AclInterface      $acl
     ) {
         parent::__construct($application);
 
@@ -160,6 +162,15 @@ final class Api extends Service implements ApiService
         }
 
         $this->setupUser();
+
+        // A token is not a standing grant: it is used by its user, with that user's permissions
+        // as they are now. The web asks the profile on every request, and the API only checked
+        // the token — so a token kept working after its user's profile stopped allowing the
+        // action, or after an administrator was demoted, until somebody thought to delete it.
+        // Asked after setupUser(), which has just loaded the user and profile from the database.
+        if (!$this->acl->checkUserAccess($actionId)) {
+            $this->accessDenied();
+        }
 
         if (AuthToken::isSecuredAction($actionId)) {
             $this->requireMasterPass();

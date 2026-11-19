@@ -74,6 +74,14 @@ class AclTest extends UnitaryTestCase
             'create an account' => [AclActionsInterface::ACCOUNT_CREATE, 'accAdd'],
             'delete an account' => [AclActionsInterface::ACCOUNT_DELETE, 'accDelete'],
             'account files' => [AclActionsInterface::ACCOUNT_FILE, 'accFiles'],
+            // The API's file, backup and export actions, asked about on every API call: each is
+            // the permission its web equivalent asks for.
+            'list an account\'s files' => [AclActionsInterface::ACCOUNT_FILE_LIST, 'accFiles'],
+            'download an account file' => [AclActionsInterface::ACCOUNT_FILE_DOWNLOAD, 'accFiles'],
+            'upload an account file' => [AclActionsInterface::ACCOUNT_FILE_UPLOAD, 'accFiles'],
+            'delete an account file' => [AclActionsInterface::ACCOUNT_FILE_DELETE, 'accFiles'],
+            'run a backup' => [AclActionsInterface::CONFIG_BACKUP_RUN, 'configBackup'],
+            'run an export' => [AclActionsInterface::CONFIG_EXPORT_RUN, 'configBackup'],
             'account history' => [AclActionsInterface::ACCOUNT_HISTORY_VIEW, 'accViewHistory'],
             'manage users' => [AclActionsInterface::USER, 'mgmUsers'],
             'manage groups' => [AclActionsInterface::GROUP, 'mgmGroups'],
@@ -303,6 +311,7 @@ class AclTest extends UnitaryTestCase
     {
         return [
             'request an account' => [AclActionsInterface::ACCOUNT_REQUEST],
+            'search accounts' => [AclActionsInterface::ACCOUNT_SEARCH],
             'notifications' => [AclActionsInterface::NOTIFICATION],
             'view a notification' => [AclActionsInterface::NOTIFICATION_VIEW],
             'check notifications' => [AclActionsInterface::NOTIFICATION_CHECK],

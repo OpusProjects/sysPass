@@ -31,6 +31,7 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use SP\Application\Auth\Ports\AuthTokenService;
 use SP\Application\Config\Ports\ConfigFileService;
+use SP\Application\User\Ports\UserProfileService;
 use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Infrastructure\Definitions\CoreDefinitions;
@@ -286,6 +287,26 @@ abstract class ApiTestCase extends TestCase
             'status' => $response->getStatusCode(),
             'body' => json_decode($response->getContent(), false),
         ];
+    }
+
+    /**
+     * Grants profile permissions, through the application's own profile service.
+     *
+     * The API asks the token user's profile on every call, as the web does, and the fixture's
+     * profiles grant nothing: a test acting as a non-administrator has to give that user the
+     * permission for the action first, or it is refused before reaching what it is about. The
+     * fixtures are reloaded for every test, so a grant does not outlive the test that made it.
+     *
+     * @param array<string, bool> $flags
+     * @throws Exception
+     */
+    final protected function grantProfile(int $profileId, array $flags): void
+    {
+        $profileService = $this->buildContainer()->get(UserProfileService::class);
+        $profile = $profileService->getById($profileId);
+        $data = $profile->hydrate(ProfileData::class) ?? new ProfileData();
+
+        $profileService->update($profile->dehydrate($data->mutate($flags)));
     }
 
     /**

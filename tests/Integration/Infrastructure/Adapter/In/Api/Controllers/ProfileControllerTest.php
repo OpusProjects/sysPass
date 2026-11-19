@@ -140,6 +140,9 @@ class ProfileControllerTest extends ApiTestCase
      */
     public function testANonAdminCannotGrantPermissionsItDoesNotHold(): void
     {
+        // A delegate: profile management, and nothing else to hand out.
+        $this->grantProfile(2, ['mgmProfiles' => true]);
+
         $asked = ['accView' => true, 'mgmUsers' => true, 'mgmAccounts' => true, 'mgmProfiles' => true];
 
         $r = $this->callApi(
@@ -155,7 +158,8 @@ class ProfileControllerTest extends ApiTestCase
 
         $this->assertFalse($flags['mgmUsers'], 'a non-admin granted itself user management');
         $this->assertFalse($flags['mgmAccounts'], 'a non-admin granted itself account management');
-        $this->assertFalse($flags['mgmProfiles'], 'a non-admin granted itself profile management');
+        $this->assertFalse($flags['accView'], 'a non-admin handed out a permission it does not hold');
+        $this->assertTrue($flags['mgmProfiles'], 'what the delegate does hold, it may hand on');
     }
 
     /**

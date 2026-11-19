@@ -99,12 +99,11 @@ class NotificationControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::NOTIFICATION_CREATE, $params, self::NON_ADMIN_USER_ID);
 
-        $this->assertSame(201, $r->status);
-
-        $item = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $r->body->itemId])->body->data;
-
-        $this->assertFalse($item->sticky, 'a non-admin pinned a notification for every user');
-        $this->assertFalse($item->onlyAdmin, 'a non-admin put a notification in the admin queue');
+        // Refused outright now: creating a notification is an administrator's action on the web,
+        // and the API asks the same question on every call. The form still drops both flags for
+        // a non-administrator, which NotificationFormTest pins on the web.
+        $this->assertSame(401, $r->status);
+        $this->assertSame('Unauthorized access', $r->body->error->message);
     }
 
     /**
@@ -281,8 +280,10 @@ class NotificationControllerTest extends ApiTestCase
 
         $r = $this->callApi(AclActionsInterface::NOTIFICATION_EDIT, $params, 3);
 
+        // Editing a notification is an administrator's action, so user 3 is refused before the
+        // ownership check is reached; that check still guards the service for everybody else.
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Notification not found', $r->body->error->message);
+        $this->assertSame('Unauthorized access', $r->body->error->message);
 
         $item = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $id])->body->data;
         $this->assertNotSame('taken over', $item->type, 'the refusal must not have written anyway');
@@ -290,15 +291,27 @@ class NotificationControllerTest extends ApiTestCase
     }
 
     /**
-     * Addressed to user 2 ("demo"); demo (not an app admin) deletes their own
-     * notification. This only succeeds if delete scopes access the same way
-     * view and check do.
+     * Deleting a notification is an administrator's action on the web — NOTIFICATION_DELETE has no
+     * arm in Acl — and the API now asks the profile on every call, so a non-administrator is
+     * refused even for one addressed to them, and the notification stays.
      */
-    public function testDeleteAction(): void
+    public function testANonAdministratorCannotDeleteANotification(): void
     {
         $id = $this->createNotification()->body->itemId;
 
         $r = $this->callApi(AclActionsInterface::NOTIFICATION_DELETE, ['id' => $id], 2);
+
+        $this->assertSame(401, $r->status);
+
+        $view = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $id]);
+        $this->assertSame(200, $view->status, 'the refusal must not have deleted it anyway');
+    }
+
+    public function testDeleteAction(): void
+    {
+        $id = $this->createNotification()->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::NOTIFICATION_DELETE, ['id' => $id]);
 
         $this->assertSame(200, $r->status);
         $this->assertSame('Notification removed', $r->body->message);
@@ -327,7 +340,7 @@ class NotificationControllerTest extends ApiTestCase
         $r = $this->callApi(AclActionsInterface::NOTIFICATION_DELETE, ['id' => $id], 3);
 
         $this->assertInstanceOf(stdClass::class, $r->body->error);
-        $this->assertSame('Notification not found', $r->body->error->message);
+        $this->assertSame('Unauthorized access', $r->body->error->message);
 
         $view = $this->callApi(AclActionsInterface::NOTIFICATION_VIEW, ['id' => $id]);
         $this->assertSame(200, $view->status, 'the denial must not have deleted it anyway');
