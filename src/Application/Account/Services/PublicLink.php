@@ -118,6 +118,13 @@ final class PublicLink extends Service implements PublicLinkService
      */
     public function refresh(int $id): bool
     {
+        // Refreshing re-seals the account's current password into the link under a new hash and
+        // resets its views and expiry — it mints a working link exactly as create() does, so it
+        // needs what create() needs. Without this, a profile allowed to manage links and not to
+        // view passwords could revive an expired link another user had made, and read the
+        // password through it.
+        $this->requirePasswordPermission();
+
         $result = $this->publicLinkRepository->getById($id);
 
         if ($result->getNumRows() === 0) {
