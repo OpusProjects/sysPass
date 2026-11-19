@@ -227,43 +227,27 @@ class UpgradePathCannotRegressTest extends TestCase
      * @return string[]
      */
     /**
-     * Versions declared above the application's own.
+     * Versions declared above the application's own: none.
      *
-     * `ModuleBase::checkUpgradeNeeded()` asks whether the *stored* version is behind the version
-     * the code reports, and `Version::getVersionStringNormalized()` builds that from
-     * `AppInfoInterface::APP_VERSION` and `APP_BUILD` alone. Those two have not moved since the
-     * rewrite was imported, so they still say `400.21031301`, below both migrations.
+     * Until APP_BUILD was raised to 24240101 the application reported `400.21031301`, below both
+     * of its migrations, and this listed them as unreachable rather than resolving it. Raising the
+     * build was the danger then: the upgrade resumed from the stored application version alone,
+     * and it stamped the application version at the end of every run — so an upgraded
+     * installation sat at `400.21031301`, and the next upgrade would have re-run both migrations,
+     * `40024210101.sql` failing for good on a column already dropped and `40024240101.sql`
+     * decoding text a second time. An installation this rewrite performed itself, stamped
+     * `400.21031301`, would have had both run against a schema that already was their result.
      *
-     * That reads like the upgrade path is dead. It is not, and the difference matters before
-     * anybody "fixes" it by bumping the constant.
+     * Both are now closed in `Upgrade` itself: it resumes from the later of the stored application
+     * and database versions (the database version records the last migration applied), reads an
+     * installer-stamped `400.21031301` as the schema it actually installed, and never stamps a
+     * version older than the last migration it applied. With that in place the build can — and
+     * must — reach its migrations, or a new one could never run. Kept as a list so that the
+     * exception, if one is ever needed again, remains a decision rather than an accident.
      *
-     * An installation arriving from 3.2 stores something like `320.19012701`. That is behind
-     * `400.21031301`, so the upgrade is triggered, and `getTargetUpgradeHandlers()` selects every
-     * handler declared above the *stored* version — which is both of these. The population these
-     * migrations were written for reaches them. Measured against the real class rather than
-     * reasoned about: `checkVersion('320.19012701', '400.24210101')` is true, and so is the same
-     * question for `400.24240101`.
-     *
-     * What cannot reach them is an installation this rewrite performed itself, which `Installer`
-     * stamps with the version the code reports. Neither migration applies to one:
-     * `dbstructure.sql` already ships `CustomFieldData` with the composite primary key and no `id`
-     * column, and text written after the escaping change is stored as typed rather than
-     * double-encoded.
-     *
-     * Bumping APP_BUILD would make things worse rather than better. `40024210101.sql` would then
-     * run against schemas that already have it applied — it drops a column that is not there —
-     * and, more seriously, `40024240101.sql` decodes stored text and says in its own header that
-     * it is not idempotent and that no decode of stored text could be. Running it on an
-     * installation whose text is already correct turns a name somebody typed as `Q&amp;A` into
-     * `Q&A`. The narrow population that would benefit — installed by this rewrite before the
-     * escaping change — is smaller than the population that would be damaged.
-     *
-     * So the two are listed rather than resolved, and the list is what stops a third joining them
-     * unnoticed: the test asserts these two are still above the application's version, and that
-     * nothing else is. A migration written for a version this codebase never stamps has to be a
-     * decision, not an accident.
+     * @var string[]
      */
-    private const VERSIONS_THE_APPLICATION_CANNOT_REACH = ['400.24210101', '400.24240101'];
+    private const VERSIONS_THE_APPLICATION_CANNOT_REACH = [];
 
     /**
      * A declared version above the application's own can never be the reason an upgrade runs.
