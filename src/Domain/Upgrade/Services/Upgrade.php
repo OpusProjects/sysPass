@@ -53,6 +53,17 @@ use function SP\logger;
 final class Upgrade extends Service implements UpgradeService
 {
     /**
+     * The version this rewrite's installer stamped before APP_BUILD followed its migrations
+     *
+     * Only that installer ever recorded it as the database version — an upgrade from 3.2 records
+     * the newest migration it applied there, and 3.2 itself recorded 320.x — and it installed
+     * `dbstructure.sql`, which already is the schema both migrations up to 400.24240101 produce.
+     * Reading it literally would re-run them against that schema: one drops a column that is not
+     * there and fails for good, the other decodes text that was never encoded.
+     */
+    private const INSTALLED_BEFORE_THE_BUILD_FOLLOWED = ['400.21031301' => '400.24240101'];
+
+    /**
      * @var array<string> $upgradeHandlers
      */
     private array $upgradeHandlers = [];
@@ -76,6 +87,16 @@ final class Upgrade extends Service implements UpgradeService
     public function upgrade(string $version, ConfigDataInterface $configData): void
     {
         $class = $this::class;
+
+        // Where to resume from: the later of what the caller passed (the stored application
+        // version) and the stored database version, which UpgradeDatabase stamps as each migration
+        // applies. The application version alone was not enough — it used to be reset below the
+        // last migration at the end of every run (see the end of this method), so raising
+        // APP_BUILD would have started the next upgrade from a version older than migrations
+        // already applied, and re-run them.
+        $version = self::later($version, $configData->getDatabaseVersion());
+        $version = self::INSTALLED_BEFORE_THE_BUILD_FOLLOWED[$version] ?? $version;
+        $lastApplied = $version;
 
         $this->eventDispatcher->notify(
             new Event(
@@ -121,6 +142,7 @@ final class Upgrade extends Service implements UpgradeService
             // Writing it inside the loop is safe because the generator was built from the original
             // version and is not re-evaluated; only a later run sees the advanced value.
             $configData->setAppVersion($targetVersion);
+            $lastApplied = $targetVersion;
 
             $this->config->save($configData);
         }
@@ -129,7 +151,11 @@ final class Upgrade extends Service implements UpgradeService
         // the database to. Nothing recorded that the *application* had been upgraded, and
         // ModuleBase::checkUpgradeNeeded() reads both: an install that upgraded successfully was
         // still sent to the upgrade page on the next request, with its one-time key already spent.
-        $configData->setAppVersion(Version::getVersionStringNormalized());
+        //
+        // Never older than the last version applied: a resume point that goes backwards is worse
+        // than one that never moves. It was the application version unconditionally, and that was
+        // older than the migrations it shipped with.
+        $configData->setAppVersion(self::later(Version::getVersionStringNormalized(), $lastApplied));
 
         $this->config->save($configData);
 
@@ -140,6 +166,18 @@ final class Upgrade extends Service implements UpgradeService
                 EventMessage::build()->addDescription(__u('Update'))->addDetail('type', $class)
             )
         );
+    }
+
+    /**
+     * The later of two stored versions, an empty one counting as the earliest
+     */
+    private static function later(string $version, ?string $other): string
+    {
+        if ($other === null || $other === '') {
+            return $version;
+        }
+
+        return Version::checkVersion($version, $other) ? $other : $version;
     }
 
     /**

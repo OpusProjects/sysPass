@@ -596,6 +596,14 @@ applied in ascending order — a resume point that goes backwards is worse than 
 — and that in turn closed a latent fragility: the order used to be whichever way the handlers were
 registered and their attributes declared.
 
+It still went backwards once, at the very end: the run stamped `appVersion` with the *application*
+version, and `APP_BUILD` (21031301) was older than both migrations it shipped (24210101, 24240101).
+Harmless only while the build never moved — raising it would have re-run both. `Upgrade` now
+resumes from the later of `appVersion` and `databaseVersion`, reads an installer-stamped
+`400.21031301` as the full schema, and never stamps below the last version applied; and
+**`APP_BUILD` must be at least every `#[UpgradeVersion]`** — `UpgradePathCannotRegressTest` holds
+it there, since a migration above the build is never run at all.
+
 **A guard on the read but not on the write.** `Notification` has the rule written down and named —
 `checkUserAccess()`, admins may reach any notification and regular users only their own, answering
 "not found" so ids cannot be enumerated by the difference. It was called from `getById()` and

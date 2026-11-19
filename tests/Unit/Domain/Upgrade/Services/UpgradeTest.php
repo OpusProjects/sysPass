@@ -43,6 +43,8 @@ use SP\Domain\Upgrade\Services\Upgrade;
 use SP\Domain\Upgrade\Services\UpgradeException;
 use SP\Domain\Core\Exceptions\FileException;
 use SP\Tests\Support\Generators\ConfigDataGenerator;
+use SP\Tests\Support\Stubs\FutureMigrationStub;
+use SP\Tests\Support\Stubs\ShippedMigrationsStub;
 use SP\Tests\Support\Stubs\UpgradeHandlerStub;
 use SP\Tests\Support\UnitaryTestCase;
 use stdClass;
@@ -300,6 +302,101 @@ class UpgradeTest extends UnitaryTestCase
         $this->expectExceptionMessage('test');
 
         $this->upgrade->upgrade('400.00000000', $configData);
+    }
+
+    /**
+     * The upgrade resumes from the later of the stored application and database versions. After a
+     * completed upgrade the application version used to be reset below the last migration, so
+     * the next run, given only that, started earlier than migrations already applied.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws UpgradeException
+     * @throws InvalidClassException
+     */
+    public function testAMigrationTheDatabaseVersionRecordsIsNotRunAgain()
+    {
+        $configData = $this->createStub(ConfigDataInterface::class);
+        $configData->method('getDatabaseVersion')->willReturn('400.24210101');
+
+        $applied = $this->collectApplied();
+
+        $this->upgrade->registerUpgradeHandler(ShippedMigrationsStub::class);
+        $this->upgrade->upgrade('400.00000000', $configData);
+
+        self::assertSame(['400.24240101'], $applied->versions);
+    }
+
+    /**
+     * An installation this rewrite's installer set up stamped 400.21031301 as both versions, with
+     * the schema both migrations produce already in place. Neither runs on it.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws UpgradeException
+     * @throws InvalidClassException
+     */
+    public function testAFreshInstallOfThisRewriteRunsNoMigrationAgain()
+    {
+        $configData = $this->createStub(ConfigDataInterface::class);
+        $configData->method('getDatabaseVersion')->willReturn('400.21031301');
+
+        $applied = $this->collectApplied();
+
+        $this->upgrade->registerUpgradeHandler(ShippedMigrationsStub::class);
+        $this->upgrade->upgrade('400.21031301', $configData);
+
+        self::assertSame([], $applied->versions);
+    }
+
+    /**
+     * And the version stamped at the end is never older than the last migration applied.
+     *
+     * @throws Exception
+     * @throws ServiceException
+     * @throws FileException
+     * @throws UpgradeException
+     * @throws InvalidClassException
+     */
+    public function testTheFinalStampIsNeverOlderThanTheLastMigration()
+    {
+        $configData = $this->createMock(ConfigDataInterface::class);
+        $this->container->method('get')->willReturn(new FutureMigrationStub());
+
+        $stamped = [];
+        $configData->method('setAppVersion')->willReturnCallback(
+            function (?string $version) use (&$stamped, $configData) {
+                $stamped[] = $version;
+
+                return $configData;
+            }
+        );
+
+        $this->upgrade->registerUpgradeHandler(FutureMigrationStub::class);
+        $this->upgrade->upgrade('400.24240101', $configData);
+
+        self::assertSame(['500.00000001', '500.00000001'], $stamped);
+    }
+
+    private function collectApplied(): stdClass
+    {
+        $applied = new stdClass();
+        $applied->versions = [];
+
+        $handler = $this->createStub(UpgradeHandlerService::class);
+        $handler->method('apply')->willReturnCallback(
+            static function (string $version) use ($applied): bool {
+                $applied->versions[] = $version;
+
+                return true;
+            }
+        );
+
+        $this->container->method('get')->willReturn($handler);
+
+        return $applied;
     }
 
     protected function setUp(): void
