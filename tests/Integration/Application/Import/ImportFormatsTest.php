@@ -46,6 +46,8 @@ use SP\Infrastructure\Definitions\DomainDefinitions;
 use SP\Infrastructure\File\FileHandler;
 use SP\Tests\Support\DatabaseTrait;
 
+use SP\Domain\Core\Exceptions\SPException;
+
 use function SP\Tests\getDbHandler;
 use function SP\Tests\getResource;
 
@@ -316,6 +318,41 @@ final class ImportFormatsTest extends TestCase
                 sprintf('category "%s" should exist exactly once', $categoryName)
             );
         }
+    }
+
+    /**
+     * Each account is written in its own transaction, which joins the import's, so one that fails
+     * rolls back everything imported before it. The importer used to swallow that failure and
+     * carry on: the rows before it were gone, the rows after it were committed on their own, and
+     * the import reported success. Row 2's login is longer than the column (`varchar(50)`, and the
+     * connection runs in strict mode), so it is refused by the database.
+     */
+    public function testAnAccountThatCannotBeWrittenAbortsTheWholeImport(): void
+    {
+        $file = FileSystem::buildPath($this->root, 'partial.csv');
+
+        file_put_contents(
+            $file,
+            implode("\n", [
+                '"Partial 1";"Partial Client";"Partial Category";"";"login1";"pass1";""',
+                '"Partial 2";"Partial Client";"Partial Category";"";"' . str_repeat('x', 60) . '";"pass2";""',
+                '"Partial 3";"Partial Client 3";"Partial Category 3";"";"login3";"pass3";""',
+            ]) . "\n"
+        );
+
+        try {
+            $this->import($file);
+            self::fail('an import with an account the database refuses reported success');
+        } catch (SPException $e) {
+            // Refused, as expected. The import's own transaction wraps whatever escapes it.
+            self::assertStringContainsString('login', $e->getMessage());
+        }
+
+        foreach (['Partial 1', 'Partial 2', 'Partial 3'] as $name) {
+            self::assertSame([], $this->accountIdsByName($name), $name . ' must not survive a failed import');
+        }
+
+        self::assertSame(0, $this->categoryCountByName('Partial Category 3'), 'nothing after the failure is written');
     }
 
     private function fixturePath(string $file): string

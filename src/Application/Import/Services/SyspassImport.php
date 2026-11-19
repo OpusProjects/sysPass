@@ -367,13 +367,19 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
             } catch (ImportException $e) {
                 throw $e;
             } catch (Exception $e) {
+                // An account that cannot be written aborts the import. Account::create() runs in its
+                // own transaction, which joins the import's: when it fails it rolls back *the whole
+                // import so far*. Carrying on from there committed every later row on its own,
+                // against client and category ids the cache still held from the rolled-back part,
+                // and reported success with a count that included the rows that were gone. The
+                // import is all or nothing, and this is what makes it so.
                 $this->eventDispatcher->notify(new Event(
                     'exception',
                     $e,
                     EventMessage::build()->addDescription(__('Unable to import account'))
                 ));
 
-                $this->eventDispatcher->notify(new Event('exception', $e));
+                throw ImportException::from($e);
             }
         }
     }

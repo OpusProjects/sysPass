@@ -36,6 +36,7 @@ use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
 use SP\Domain\Common\Providers\Filter;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Application\Import\Ports\ItemsImportService;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
@@ -229,9 +230,17 @@ final class KeepassImport extends XmlImportBase implements ItemsImportService
                                     ->addDetail(__u('Category'), $groupName)
                 ));
             } catch (SPException $e) {
+                // An account that cannot be written aborts the import. Account::create() runs in its
+                // own transaction, which joins the import's: when it fails it rolls back *the whole
+                // import so far*. Carrying on from there committed every later row on its own,
+                // against client and category ids the cache still held from the rolled-back part,
+                // and reported success with a count that included the rows that were gone. The
+                // import is all or nothing, and this is what makes it so.
                 processException($e);
 
                 $this->eventDispatcher->notify(new Event('exception', $e));
+
+                throw ImportException::from($e);
             }
         }
     }

@@ -746,8 +746,13 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   history that outlives its account, audit rows that must survive a user's deletion
   (`EventLog.userId`, `Track.userId` — an FK there would make a user undeletable), and `parentId`'s
   `0` sentinel, which no FK can represent.
-- **Import.** The whole import runs inside `transactionAware`, so a failure rolls all of it back.
-  Accounts are created through `AccountService::create()`, so presets, permissions and history
+- **Import.** The whole import runs inside `transactionAware`, so a failure rolls all of it back —
+  which only holds because each importer **rethrows** a failed account. `Account::create()`'s own
+  transaction joins the import's, and a failure there rolls back *everything imported so far*; the
+  importers used to catch that per row and carry on, committing the later rows on their own and
+  reporting success. A catch around a write that joins an outer transaction cannot "skip the row":
+  the rollback has already happened. Only the CSV importer's own pre-write validation (no client or
+  category) may skip a row. Accounts are created through `AccountService::create()`, so presets, permissions and history
   apply; ownership comes from the import parameters. CSV refuses a row whose field count is wrong
   rather than building a partial account.
 - **Deployment layout.** `DocumentRoot` is `public/`, so `config/config.xml` and `var/backup` are
