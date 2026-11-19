@@ -348,8 +348,20 @@ final class SyspassImport extends XmlImportBase implements ItemsImportService
                     case 'tags':
                         $data['tags'] = $this->processAccountTags($node->childNodes);
                         break;
-                    default:
+                    case 'name':
+                    case 'login':
+                    case 'url':
+                    case 'notes':
+                    case 'pass':
+                    case 'key':
                         $data[$node->tagName] = $node->nodeValue;
+                        break;
+                    default:
+                        // Only what an export writes. Any other element was copied into the
+                        // account as given — `parentId` (no foreign key: linked to an arbitrary
+                        // existing account), `userEditId`, `isPrivate`, `countView`, `otherUserEdit`
+                        // — from a file nothing but an edit of an export can have produced.
+                        break;
                 }
             }
 
