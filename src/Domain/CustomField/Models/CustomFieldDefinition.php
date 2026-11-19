@@ -26,6 +26,7 @@ declare(strict_types=1);
 namespace SP\Domain\CustomField\Models;
 
 use SP\Domain\Common\Models\Model;
+use SP\Domain\Core\Acl\AclActionsInterface;
 
 /**
  * Class CustomFieldDefinition
@@ -33,6 +34,20 @@ use SP\Domain\Common\Models\Model;
 class CustomFieldDefinition extends Model
 {
     public const TABLE = 'CustomFieldDefinition';
+
+    /**
+     * The modules a custom field can belong to
+     *
+     * The one list both doors check against: the web form refused a definition with no module and
+     * the API stored one with `moduleId` 0 — a field attached to nothing, which no screen shows.
+     */
+    public const MODULES = [
+        AclActionsInterface::ACCOUNT,
+        AclActionsInterface::CATEGORY,
+        AclActionsInterface::CLIENT,
+        AclActionsInterface::USER,
+        AclActionsInterface::GROUP,
+    ];
 
     protected ?int    $id          = null;
     protected ?string $name        = null;

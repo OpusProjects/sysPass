@@ -43,7 +43,8 @@ final class CustomFieldDefinitionGenerator extends DataGenerator
         return [
             'id' => $this->faker->randomNumber(3),
             'name' => $this->faker->colorName(),
-            'moduleId' => $this->faker->randomNumber(3),
+            // A module custom fields belong to: any other is refused by the service.
+            'moduleId' => $this->faker->randomElement(CustomFieldDefinition::MODULES),
             'required' => (int)$this->faker->boolean(),
             'help' => $this->faker->text(),
             'showInList' => (int)$this->faker->boolean(),

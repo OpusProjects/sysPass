@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Helpers;
 
+use SP\Domain\CustomField\Models\CustomFieldDefinition;
 use SP\Domain\Core\Acl\AclActionsInterface;
 
 use function SP\__;
@@ -43,12 +44,15 @@ final class CustomFields
      */
     public static function getFieldModules(): array
     {
-        return [
+        $labels = [
             AclActionsInterface::ACCOUNT => __('Accounts'),
             AclActionsInterface::CATEGORY => __('Categories'),
             AclActionsInterface::CLIENT => __('Clients'),
             AclActionsInterface::USER => __('Users'),
             AclActionsInterface::GROUP => __('Groups'),
         ];
+
+        // Offered in the order, and only for the modules, the definition accepts.
+        return array_intersect_key($labels, array_flip(CustomFieldDefinition::MODULES));
     }
 }

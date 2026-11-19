@@ -43,7 +43,7 @@ class CustomFieldControllerTest extends ApiTestCase
     private const PARAMS = [
         'name' => 'API custom field',
         'typeId' => 1,
-        'moduleId' => 10,
+        'moduleId' => 1, // Accounts
         'help' => 'Some help',
     ];
 
@@ -54,6 +54,18 @@ class CustomFieldControllerTest extends ApiTestCase
         $this->assertSame(201, $r->status);
         $this->assertSame('Custom field added', $r->body->message);
         $this->assertGreaterThan(0, $r->body->itemId);
+    }
+
+    /**
+     * A module the field could belong to: `moduleId` 0 passed the required check and was stored as
+     * a definition attached to nothing, which the web form has always refused.
+     */
+    public function testCreateActionRefusesAModuleCustomFieldsDoNotBelongTo(): void
+    {
+        $r = $this->callApi(AclActionsInterface::CUSTOMFIELD_CREATE, ['moduleId' => 0] + self::PARAMS);
+
+        $this->assertSame(400, $r->status);
+        $this->assertSame('Field module not set', $r->body->error->message);
     }
 
     /**
@@ -94,7 +106,7 @@ class CustomFieldControllerTest extends ApiTestCase
 
         $r = $this->callApi(
             AclActionsInterface::CUSTOMFIELD_EDIT,
-            ['id' => $id, 'name' => 'API custom field edited', 'typeId' => 1, 'moduleId' => 10]
+            ['id' => $id, 'name' => 'API custom field edited', 'typeId' => 1, 'moduleId' => 1]
         );
 
         $this->assertSame(200, $r->status);

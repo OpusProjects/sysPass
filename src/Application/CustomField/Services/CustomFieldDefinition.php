@@ -25,6 +25,8 @@ declare(strict_types=1);
 
 namespace SP\Application\CustomField\Services;
 
+use SP\Domain\Http\Code;
+use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Application\Application;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
@@ -98,6 +100,8 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
      */
     public function update(CustomFieldDefinitionModel $customFieldDefinition): void
     {
+        self::assertKnownModule($customFieldDefinition);
+
         // An update whose WHERE matched nothing has not updated anything, and answering the caller
         // with success for it reports an edit of something since deleted as saved. The repository
         // already counts the rows, and the connection sets FOUND_ROWS, so a save that changes no
@@ -157,6 +161,8 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
      */
     public function create(CustomFieldDefinitionModel $customFieldDefinition): int
     {
+        self::assertKnownModule($customFieldDefinition);
+
         return $this->customFieldDefinitionRepository->create($customFieldDefinition)->getLastId();
     }
 
@@ -168,5 +174,21 @@ final class CustomFieldDefinition extends Service implements CustomFieldDefiniti
     public function getAll(): array
     {
         return $this->customFieldDefinitionRepository->getAll()->getDataAsArray(CustomFieldDefinitionModel::class);
+    }
+
+    /**
+     * Refuses a definition for a module custom fields do not belong to
+     *
+     * The web form asked for a module and the API did not: `moduleId` is required there, but 0
+     * passed the check, and the column has no foreign key, so a definition attached to nothing was
+     * stored and appeared on no screen. Here, where both arrive.
+     *
+     * @throws ValidationException
+     */
+    private static function assertKnownModule(CustomFieldDefinitionModel $customFieldDefinition): void
+    {
+        if (!in_array((int)$customFieldDefinition->getModuleId(), CustomFieldDefinitionModel::MODULES, true)) {
+            throw ValidationException::error(__u('Field module not set'), null, Code::BAD_REQUEST->value);
+        }
     }
 }
