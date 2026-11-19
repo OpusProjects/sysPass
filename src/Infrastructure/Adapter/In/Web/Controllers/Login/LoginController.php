@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Login;
 
+use SP\Domain\Auth\Services\LoginStatus;
+use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
 use SP\Domain\Common\Enums\ResponseType;
@@ -84,6 +86,12 @@ final class LoginController extends ControllerBase
                                                          'redirect'
                                                      ) ?: $loginResponse->getRedirect(),
                                                  ]);
+        } catch (AuthException $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage(), self::promptFor($e));
         } catch (Exception $e) {
             processException($e);
 
@@ -91,6 +99,27 @@ final class LoginController extends ControllerBase
 
             return ActionResponse::error($e->getMessage());
         }
+    }
+
+    /**
+     * The field the form has to show next, for a refusal that asks for one
+     *
+     * The login form shows the master password field for one status and the previous password
+     * field for another — but every refusal used to be answered as a plain ERROR, which carries
+     * neither, so those branches of the form never ran. A user who had to supply their master
+     * password, or their previous password after a reset, was told it was wrong and never shown
+     * where to type it. Only those statuses are passed on: the form reads 0 as success.
+     *
+     * @return array{loginStatus: int}|null
+     */
+    private static function promptFor(AuthException $e): ?array
+    {
+        $status = LoginStatus::tryFrom((int)$e->getCode());
+
+        return match ($status) {
+            LoginStatus::INVALID_MASTER_PASS, LoginStatus::OLD_PASS_REQUIRED => ['loginStatus' => $status->value],
+            default => null,
+        };
     }
 
     /**
