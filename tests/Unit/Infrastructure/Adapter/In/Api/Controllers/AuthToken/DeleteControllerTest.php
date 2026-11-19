@@ -43,6 +43,27 @@ class DeleteControllerTest extends UnitaryTestCase
         $this->assertEquals('Authorization removed', $result['resultMessage']);
     }
 
+    /**
+     * The deleted row comes back without its token, hash or vault. A user's tokens share one
+     * token string, so the one on a deleted row still opens the others.
+     */
+    public function testDeleteActionReturnsNoSecrets(): void
+    {
+        $token = new AuthToken(
+            ['id' => 1, 'userId' => 1, 'actionId' => 100, 'token' => 'live-token', 'hash' => 'h', 'vault' => 'v']
+        );
+
+        $this->apiService->method('getParamInt')->willReturn(1);
+        $this->authTokenService->method('getById')->willReturn($token);
+
+        $result = $this->controller->deleteAction()->getResponse()['result'];
+
+        $this->assertSame(1, $result['id']);
+        $this->assertArrayNotHasKey('token', $result);
+        $this->assertArrayNotHasKey('hash', $result);
+        $this->assertArrayNotHasKey('vault', $result);
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

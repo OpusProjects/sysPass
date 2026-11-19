@@ -28,6 +28,10 @@ final class DeleteController extends AuthTokenBase
                 ->addDetail('ID', $id)
         ));
 
-        return ApiResponse::makeSuccess($tokenData, __('Authorization removed'), $id);
+        // Without the secrets, as a listing returns it. The row was handed back whole — the
+        // token, its hash and its vault — to a caller who needs only AUTHTOKEN_DELETE, not
+        // AUTHTOKEN_VIEW. And a user's tokens share one token string across their actions, so the
+        // one in a deleted row is still a working credential for every other token that user has.
+        return ApiResponse::makeSuccess(self::withoutSecrets($tokenData), __('Authorization removed'), $id);
     }
 }
