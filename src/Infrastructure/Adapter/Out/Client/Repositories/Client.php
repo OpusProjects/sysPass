@@ -96,7 +96,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->orWhere('name = :name')
             ->bindValues(
                 [
-                    'hash' => $client->getHash(),
+                    'hash' => $this->makeItemHash($client->getName() ?? ''),
                     'name' => $client->getName()
                 ]
             );
@@ -158,7 +158,7 @@ final class Client extends BaseRepository implements ClientRepository
             ->bindValues(
                 [
                     'id' => $client->getId(),
-                    'hash' => $client->getHash(),
+                    'hash' => $this->makeItemHash($client->getName() ?? ''),
                     'name' => $client->getName(),
                 ]
             );

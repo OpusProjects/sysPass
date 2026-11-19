@@ -63,6 +63,30 @@ class TagControllerTest extends ApiTestCase
         $this->assertSame('Duplicated tag', $r->body->error->message);
     }
 
+    /**
+     * Names that differ only in case and punctuation are the same tag: the unique key is on the
+     * normalised name's hash. The check before the write compared the model's own hash, which
+     * nothing sets, so only an identical name got this answer and the rest reached the unique
+     * key as a generic "Duplicate entry".
+     */
+    public function testCreateActionRefusesANameThatDiffersOnlyInPunctuation(): void
+    {
+        $r = $this->createTag(['name' => 'Li_Nux']);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated tag', $r->body->error->message);
+    }
+
+    public function testEditActionRefusesANameThatDiffersOnlyInPunctuation(): void
+    {
+        $id = $this->createTag(self::PARAMS)->body->itemId;
+
+        $r = $this->callApi(AclActionsInterface::TAG_EDIT, ['id' => $id, 'name' => 'Li_Nux']);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('Duplicated tag', $r->body->error->message);
+    }
+
     public function testCreateActionRequiredParameters(): void
     {
         $r = $this->createTag([]);

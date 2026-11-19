@@ -96,7 +96,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->orWhere('name = :name')
             ->bindValues(
                 [
-                    'hash' => $category->getHash(),
+                    'hash' => $this->makeItemHash($category->getName() ?? ''),
                     'name' => $category->getName()
                 ]
             );
@@ -158,7 +158,7 @@ final class Category extends BaseRepository implements CategoryRepository
             ->bindValues(
                 [
                     'id' => $category->getId(),
-                    'hash' => $category->getHash(),
+                    'hash' => $this->makeItemHash($category->getName() ?? ''),
                     'name' => $category->getName(),
                 ]
             );
