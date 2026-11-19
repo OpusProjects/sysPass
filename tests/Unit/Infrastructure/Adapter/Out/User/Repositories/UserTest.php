@@ -763,6 +763,31 @@ class UserTest extends UnitaryTestCase
         $this->user->updatePassById($user);
     }
 
+    /**
+     * A re-hash at sign-in writes the hash and nothing else: the same password must not be marked
+     * as changed, which would ask for the previous one to re-key the master password.
+     */
+    public function testUpdatePassHashByIdWritesOnlyTheHash()
+    {
+        $callbackUpdate = new Callback(
+            static function (QueryData $arg) {
+                $query = $arg->getQuery();
+
+                return $query->getBindValues() === ['pass' => 'a-new-hash', 'id' => 7]
+                       && is_a($query, UpdateInterface::class)
+                       && !str_contains($query->getStatement(), 'isChangedPass');
+            }
+        );
+
+        $this->database
+            ->expects(self::once())
+            ->method('runQuery')
+            ->with($callbackUpdate)
+            ->willReturn(new QueryResult(null, 1));
+
+        self::assertSame(1, $this->user->updatePassHashById(7, 'a-new-hash'));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();

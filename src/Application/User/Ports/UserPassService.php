@@ -40,4 +40,16 @@ interface UserPassService
      * @throws NoSuchItemException
      */
     public function migrateUserPassById(int $id, string $userPass): void;
+
+    /**
+     * Replaces a login password's stored hash with a current one, changing nothing else
+     *
+     * For a password that has just been verified at sign-in. It is the same password, so unlike
+     * a change it must not mark the password as changed — that would ask the user for their
+     * previous password to re-key their master password at the next sign-in.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function rehashUserPassById(int $id, string $userPass): void;
 }

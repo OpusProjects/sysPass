@@ -127,6 +127,23 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
+     * @inheritDoc
+     */
+    public function updatePassHashById(int $id, string $hash): int
+    {
+        $query = $this->queryFactory
+            ->newUpdate()
+            ->table(UserModel::TABLE)
+            ->col('pass', $hash)
+            ->where('id = :id')
+            ->bindValues(['id' => $id]);
+
+        return $this->db->runQuery(
+            QueryData::build($query)->setOnErrorMessage(__u('Error while updating the password'))
+        )->getAffectedNumRows();
+    }
+
+    /**
      * Updates a user's pass
      *
      * @param UserModel $user

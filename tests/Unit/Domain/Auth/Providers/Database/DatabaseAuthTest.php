@@ -71,6 +71,70 @@ class DatabaseAuthTest extends UnitaryTestCase
         self::assertTrue($this->databaseAuth->authenticate($userLoginData)->isOk());
     }
 
+    /**
+     * A password still stored as bcrypt is re-hashed with Argon2id at its owner's next sign-in —
+     * the one moment it is known — and only the hash is written: the same password must not be
+     * marked as changed.
+     */
+    public function testASuccessfulSignInReplacesABcryptHash()
+    {
+        $pass = self::$faker->password();
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => 'u', 'pass' => Hash::hashKey($pass)]);
+
+        $this->userService->method('getByLogin')->willReturn($userData);
+        $this->userPassService->expects(self::once())->method('rehashUserPassById')->with($userData->getId(), $pass);
+        $this->userPassService->expects(self::never())->method('migrateUserPassById');
+
+        self::assertTrue($this->databaseAuth->authenticate($this->login('u', $pass))->isOk());
+    }
+
+    public function testAnArgon2idHashIsLeftAlone()
+    {
+        $pass = self::$faker->password();
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => 'u', 'pass' => Hash::hashPassword($pass)]);
+
+        $this->userService->method('getByLogin')->willReturn($userData);
+        $this->userPassService->expects(self::never())->method('rehashUserPassById');
+
+        self::assertTrue($this->databaseAuth->authenticate($this->login('u', $pass))->isOk());
+    }
+
+    /**
+     * A failed re-hash does not fail the sign-in: the old hash still verifies next time.
+     */
+    public function testAFailedRehashStillSignsIn()
+    {
+        $pass = self::$faker->password();
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => 'u', 'pass' => Hash::hashKey($pass)]);
+
+        $this->userService->method('getByLogin')->willReturn($userData);
+        $this->userPassService->method('rehashUserPassById')->willThrowException(new \RuntimeException('read-only'));
+
+        self::assertTrue($this->databaseAuth->authenticate($this->login('u', $pass))->isOk());
+    }
+
+    /**
+     * A wrong password writes nothing.
+     */
+    public function testAWrongPasswordRehashesNothing()
+    {
+        $userData = UserDataGenerator::factory()->buildUserData()->mutate(['login' => 'u', 'pass' => Hash::hashKey('right')]);
+
+        $this->userService->method('getByLogin')->willReturn($userData);
+        $this->userPassService->expects(self::never())->method('rehashUserPassById');
+
+        self::assertFalse($this->databaseAuth->authenticate($this->login('u', 'wrong'))->isOk());
+    }
+
+    private function login(string $user, string $pass): UserLoginDto
+    {
+        $userLoginData = new UserLoginDto();
+        $userLoginData->setLoginUser($user);
+        $userLoginData->setLoginPass($pass);
+
+        return $userLoginData;
+    }
+
     public function testAuthenticateWithWrongLogin()
     {
         $user = self::$faker->userName();
@@ -132,7 +196,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         $password = self::$faker->password();
 
         $existing = UserDataGenerator::factory()->buildUserData()->mutate(
-            ['login' => 'a-real-login', 'pass' => Hash::hashKey('the-actual-password')]
+            ['login' => 'a-real-login', 'pass' => Hash::hashPassword('the-actual-password')]
         );
 
         $this->userService
@@ -186,7 +250,7 @@ class DatabaseAuthTest extends UnitaryTestCase
         $salt = 'a-legacy-salt';
 
         $migrated = UserDataGenerator::factory()->buildUserData()->mutate(
-            ['login' => 'migrated', 'isMigrate' => false, 'pass' => Hash::hashKey('the-actual-password')]
+            ['login' => 'migrated', 'isMigrate' => false, 'pass' => Hash::hashPassword('the-actual-password')]
         );
 
         // The three digests checkMigrateUser() tries, one of which this row actually holds.

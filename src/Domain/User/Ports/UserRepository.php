@@ -69,6 +69,14 @@ interface UserRepository extends Repository
     public function updatePassById(UserModel $user): int;
 
     /**
+     * Replaces the stored hash of a user's login password, and nothing else
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     */
+    public function updatePassHashById(int $id, string $hash): int;
+
+    /**
      * @param $login string
      *
      * @return QueryResult<T>
