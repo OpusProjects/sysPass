@@ -197,6 +197,7 @@ final class Bootstrap extends BootstrapBase
 
                 $response->headers()->set('Content-type', 'application/json; charset=utf-8');
                 $this->setCors($response);
+                $this->setSecurityHeaders($response);
 
                 $request->attributes->set('_rest_method', $controllerName . '/' . $actionName);
 
