@@ -47,6 +47,7 @@ use SP\Tests\Support\IntegrationTestCase;
 #[InjectVault]
 class ConfigEncryptionTest extends IntegrationTestCase
 {
+    private bool $demoEnabled = false;
 
     /**
      * @throws ContainerExceptionInterface
@@ -149,6 +150,39 @@ class ConfigEncryptionTest extends IntegrationTestCase
         $this->expectOutputString('{"status":"OK","description":"Temporary password generated","data":null}');
 
         IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * A demo publishes its administrator's credentials, so the ACL in front of this stops nobody
+     * and the demo check is the whole boundary. The other encryption actions refused on a demo and
+     * this one did not: any visitor could overwrite the temporary master password and, with mail
+     * enabled, have one emailed to every user.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Exception
+     */
+    #[Test]
+    public function saveTempIsRefusedOnADemo()
+    {
+        $this->demoEnabled = true;
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'configEncryption/saveTemp']),
+            ['temporary_masterpass_maxtime' => 3600]
+        );
+
+        $this->expectOutputString('{"status":"WARNING","description":"Ey, this is a DEMO!!","data":null}');
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    protected function getConfigData(): array
+    {
+        $configData = parent::getConfigData();
+        $configData['isDemoEnabled'] = $this->demoEnabled;
+
+        return $configData;
     }
 
     protected function getUserDataDto(): UserDto
