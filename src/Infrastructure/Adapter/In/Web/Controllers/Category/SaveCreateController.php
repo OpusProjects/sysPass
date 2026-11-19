@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -36,6 +37,7 @@ use SP\Domain\Core\Exceptions\ValidationException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * SaveCreateAction
@@ -51,29 +53,39 @@ final class SaveCreateController extends CategorySaveBase
     #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_CREATE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_CREATE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->form->validateFor(AclActionsInterface::CATEGORY_CREATE);
+
+            $itemData = $this->form->getItemData();
+
+            $id = $this->categoryService->create($itemData);
+
+            $this->eventDispatcher->notify(new Event(
+                'create.category',
+                $this,
+                EventMessage::build(__u('Category added'))->addDetail(__u('Category'), $itemData->getName())
+            ));
+
+            $this->addCustomFieldsForItem(
+                AclActionsInterface::CATEGORY,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
+
+            return ActionResponse::ok(__u('Category added'));
+        } catch (ValidationException $e) {
+            return ActionResponse::error($e->getMessage());
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->form->validateFor(AclActionsInterface::CATEGORY_CREATE);
-
-        $itemData = $this->form->getItemData();
-
-        $id = $this->categoryService->create($itemData);
-
-        $this->eventDispatcher->notify(new Event(
-            'create.category',
-            $this,
-            EventMessage::build(__u('Category added'))->addDetail(__u('Category'), $itemData->getName())
-        ));
-
-        $this->addCustomFieldsForItem(
-            AclActionsInterface::CATEGORY,
-            $id,
-            $this->request,
-            $this->customFieldService
-        );
-
-        return ActionResponse::ok(__u('Category added'));
     }
 }

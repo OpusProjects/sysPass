@@ -34,6 +34,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Infrastructure\Database\QueryData;
+use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\CategoryGenerator;
 use SP\Tests\Support\IntegrationTestCase;
@@ -106,6 +107,10 @@ class CategoryTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+
+        // A refusal is an answer, not a server error: a 500 sends the browser down its transport
+        // failure path, which shows "An error occurred" and the raw JSON in the notice.
+        self::assertSame(200, $container->get(ResponseService::class)->getResponse()->getStatusCode());
 
         $this->expectOutputString('{"status":"ERROR","description":"Error while deleting categories","data":null}');
     }

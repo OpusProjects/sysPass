@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\DuplicatedItemException;
 use SP\Domain\Common\Adapters\ItemTrait;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class SaveCreateController
@@ -54,29 +56,39 @@ final class SaveCreateController extends ClientSaveBase
      */    #[Action(ResponseType::JSON)]
     public function saveCreateAction(): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->form->validateFor(AclActionsInterface::CLIENT_CREATE);
+
+            $itemData = $this->form->getItemData();
+
+            $id = $this->clientService->create($itemData);
+
+            $this->eventDispatcher->notify(new Event(
+                'create.client',
+                $this,
+                EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
+            ));
+
+            $this->addCustomFieldsForItem(
+                AclActionsInterface::CLIENT,
+                $id,
+                $this->request,
+                $this->customFieldService
+            );
+
+            return ActionResponse::ok(__u('Client added'));
+        } catch (ValidationException $e) {
+            return ActionResponse::error($e->getMessage());
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->form->validateFor(AclActionsInterface::CLIENT_CREATE);
-
-        $itemData = $this->form->getItemData();
-
-        $id = $this->clientService->create($itemData);
-
-        $this->eventDispatcher->notify(new Event(
-            'create.client',
-            $this,
-            EventMessage::build(__u('Client added'))->addDetail(__u('Client'), $itemData->getName())
-        ));
-
-        $this->addCustomFieldsForItem(
-            AclActionsInterface::CLIENT,
-            $id,
-            $this->request,
-            $this->customFieldService
-        );
-
-        return ActionResponse::ok(__u('Client added'));
     }
 }

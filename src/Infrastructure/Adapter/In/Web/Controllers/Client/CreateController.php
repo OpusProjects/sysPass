@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Client;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Common\Attributes\Action;
 use SP\Domain\Common\Dtos\ActionResponse;
@@ -37,6 +38,7 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__;
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class CreateController
@@ -54,18 +56,26 @@ final class CreateController extends ClientViewBase
     #[Action(ResponseType::JSON)]
     public function createAction(): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CLIENT_CREATE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->view->assign('header', __('New Client'));
+            $this->view->assign('isView', false);
+            $this->view->assign('route', 'client/saveCreate');
+
+            $this->setViewData();
+
+            $this->eventDispatcher->notify(new Event('show.client.create', $this));
+
+            return ActionResponse::ok('', ['html' => $this->render()]);
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->view->assign('header', __('New Client'));
-        $this->view->assign('isView', false);
-        $this->view->assign('route', 'client/saveCreate');
-
-        $this->setViewData();
-
-        $this->eventDispatcher->notify(new Event('show.client.create', $this));
-
-        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }

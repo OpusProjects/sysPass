@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\Category;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -36,6 +37,7 @@ use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 
 use function SP\__u;
+use function SP\processException;
 
 /**
  * DeleteController
@@ -56,40 +58,48 @@ final class DeleteController extends CategorySaveBase
     #[Action(ResponseType::JSON)]
     public function deleteAction(?int $id = null): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
-        }
-
-        if ($id === null) {
-            $ids = $this->getItemsIdFromRequest($this->request);
-
-            if (empty($ids)) {
-                return ActionResponse::error(__u('No items selected'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::CATEGORY_DELETE)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
-            $this->categoryService->deleteByIdBatch($ids);
+            if ($id === null) {
+                $ids = $this->getItemsIdFromRequest($this->request);
 
-            $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $ids, $this->customFieldService);
+                if (empty($ids)) {
+                    return ActionResponse::error(__u('No items selected'));
+                }
+
+                $this->categoryService->deleteByIdBatch($ids);
+
+                $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $ids, $this->customFieldService);
+
+                $this->eventDispatcher->notify(new Event(
+                    'delete.category',
+                    $this,
+                    EventMessage::build()->addDescription(__u('Categories deleted'))
+                ));
+
+                return ActionResponse::ok(__u('Categories deleted'));
+            }
+
+            $this->categoryService->delete($id);
+
+            $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
 
             $this->eventDispatcher->notify(new Event(
                 'delete.category',
                 $this,
-                EventMessage::build()->addDescription(__u('Categories deleted'))
+                EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
             ));
 
-            return ActionResponse::ok(__u('Categories deleted'));
+            return ActionResponse::ok(__u('Category deleted'));
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->categoryService->delete($id);
-
-        $this->deleteCustomFieldsForItem(AclActionsInterface::CATEGORY, $id, $this->customFieldService);
-
-        $this->eventDispatcher->notify(new Event(
-            'delete.category',
-            $this,
-            EventMessage::build(__u('Category deleted'))->addDetail(__u('Category'), $id)
-        ));
-
-        return ActionResponse::ok(__u('Category deleted'));
     }
 }

@@ -40,6 +40,7 @@ use SP\Domain\Core\Acl\AclInterface;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\User\Models\User;
 use SP\Infrastructure\Database\QueryData;
+use SP\Infrastructure\Http\Ports\ResponseService;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
 use SP\Tests\Support\Generators\UserDataGenerator;
@@ -164,6 +165,10 @@ class AuthTokenTest extends IntegrationTestCase
 
         IntegrationTestCase::runApp($container);
 
+        // A refusal is an answer, not a server error: a 500 sends the browser down its transport
+        // failure path, which shows "An error occurred" and the raw JSON in the notice.
+        self::assertSame(200, $container->get(ResponseService::class)->getResponse()->getStatusCode());
+
         $this->expectOutputString('{"status":"ERROR","description":"Error while removing the tokens","data":null}');
     }
 
@@ -251,6 +256,10 @@ class AuthTokenTest extends IntegrationTestCase
         );
 
         IntegrationTestCase::runApp($container);
+
+        // A refusal is an answer, not a server error: a 500 sends the browser down its transport
+        // failure path, which shows "An error occurred" and the raw JSON in the notice.
+        self::assertSame(200, $container->get(ResponseService::class)->getResponse()->getStatusCode());
 
         // Clean validation error, not a TypeError. (data carries a debug trace
         // when DEBUG is on, so match status + description rather than the whole body.)

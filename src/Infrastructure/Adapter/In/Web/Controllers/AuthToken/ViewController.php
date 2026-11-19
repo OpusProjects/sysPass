@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\AuthToken;
 
+use Exception;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Common\Attributes\Action;
@@ -34,6 +35,7 @@ use SP\Domain\Core\Exceptions\SPException;
 
 use function SP\__;
 use function SP\__u;
+use function SP\processException;
 
 /**
  * Class ViewController
@@ -53,20 +55,28 @@ final class ViewController extends AuthTokenViewBase
     #[Action(ResponseType::JSON)]
     public function viewAction(int $id): ActionResponse
     {
-        if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_VIEW)) {
-            return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+        try {
+            if (!$this->acl->checkUserAccess(AclActionsInterface::AUTHTOKEN_VIEW)) {
+                return ActionResponse::error(__u('You don\'t have permission to do this operation'));
+            }
+
+            $this->view->assign('header', __('View Authorization'));
+
+            $this->setViewData($id);
+
+            $this->eventDispatcher->notify(new Event(
+                'show.authToken',
+                $this,
+                EventMessage::build(__u('Authorization viewed'))->addDetail(__u('Authorization'), $id)
+            ));
+
+            return ActionResponse::ok('', ['html' => $this->render()]);
+        } catch (Exception $e) {
+            processException($e);
+
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return ActionResponse::error($e->getMessage());
         }
-
-        $this->view->assign('header', __('View Authorization'));
-
-        $this->setViewData($id);
-
-        $this->eventDispatcher->notify(new Event(
-            'show.authToken',
-            $this,
-            EventMessage::build(__u('Authorization viewed'))->addDetail(__u('Authorization'), $id)
-        ));
-
-        return ActionResponse::ok('', ['html' => $this->render()]);
     }
 }
