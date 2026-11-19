@@ -58,6 +58,9 @@ final class SaveEditPassController extends UserSaveBase
                 return ActionResponse::error(__u('You don\'t have permission to do this operation'));
             }
 
+            // Not in updatePass(), which the password reset reaches with nobody signed in.
+            $this->userService->assertManageable($id);
+
             $this->form->validateFor(AclActionsInterface::USER_EDIT_PASS, $id);
 
             $itemData = $this->form->getItemData();

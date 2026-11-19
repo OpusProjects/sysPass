@@ -753,11 +753,91 @@ class UserTest extends UnitaryTestCase
 
         $this->userPassRecoverService = $this->createMock(UserPassRecoverService::class);
 
+        // The administrator's path, unless a test says otherwise: only an administrator may act
+        // on another administrator, so a caller who is not one reads the target first.
+        $this->context->setUserData($this->context->getUserData()->mutate(['isAdminApp' => true]));
+
         $this->user = new User(
             $this->application,
             $this->userRepository,
             $this->userMasterPassService,
             $this->userPassRecoverService
         );
+    }
+
+    /**
+     * A user manager who is not an administrator is shown no administrators, and could still
+     * delete one, edit one — clearing the administrator flags, which the form keeps only for a
+     * caller who is an administrator — or reset one's password, by posting the id.
+     */
+    private function signInAsAUserManagerWhoIsNotAnAdministrator(): void
+    {
+        $this->context->setUserData(
+            $this->context->getUserData()->mutate(['id' => 10, 'isAdminApp' => false])
+        );
+    }
+
+    private function givenTheTargetIs(int $id, bool $isAdminApp): void
+    {
+        $this->userRepository
+            ->method('getById')
+            ->with($id)
+            ->willReturn(new QueryResult([new UserModel(['id' => $id, 'isAdminApp' => $isAdminApp])]));
+    }
+
+    public function testAManagerWhoIsNotAnAdministratorCannotDeleteAnAdministrator(): void
+    {
+        $this->signInAsAUserManagerWhoIsNotAnAdministrator();
+        $this->givenTheTargetIs(100, true);
+
+        $this->userRepository->expects(self::never())->method('delete');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('User not found');
+
+        $this->user->delete(100);
+    }
+
+    public function testAManagerWhoIsNotAnAdministratorCannotBatchDeleteAnAdministrator(): void
+    {
+        $this->signInAsAUserManagerWhoIsNotAnAdministrator();
+        $this->givenTheTargetIs(100, true);
+
+        $this->userRepository->expects(self::never())->method('deleteByIdBatch');
+
+        $this->expectException(NoSuchItemException::class);
+
+        $this->user->deleteByIdBatch([100]);
+    }
+
+    public function testAManagerWhoIsNotAnAdministratorCannotEditAnAdministrator(): void
+    {
+        $this->signInAsAUserManagerWhoIsNotAnAdministrator();
+        $this->givenTheTargetIs(100, true);
+
+        $this->userRepository->expects(self::never())->method('update');
+
+        $this->expectException(NoSuchItemException::class);
+
+        $this->user->update(new UserModel(['id' => 100, 'isAdminApp' => false]));
+    }
+
+    public function testAManagerWhoIsNotAnAdministratorCanStillManageOtherUsers(): void
+    {
+        $this->signInAsAUserManagerWhoIsNotAnAdministrator();
+        $this->givenTheTargetIs(100, false);
+
+        $this->userRepository->expects(self::once())->method('delete')->willReturn(new QueryResult(null, 1));
+
+        $this->user->delete(100);
+    }
+
+    public function testAnyoneMayManageThemselvesWithoutTheTargetBeingRead(): void
+    {
+        $this->signInAsAUserManagerWhoIsNotAnAdministrator();
+
+        $this->userRepository->expects(self::never())->method('getById');
+
+        $this->user->assertManageable(10);
     }
 }
