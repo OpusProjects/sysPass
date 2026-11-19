@@ -29,6 +29,8 @@ interface DatabaseUtilService
         'ItemPreset',
         'PublicLink',
         'UserPassRecover',
+        'UserTotp',
+        'UserTotpRecovery',
         'UserToUserGroup',
         'Plugin',
         'PluginData',

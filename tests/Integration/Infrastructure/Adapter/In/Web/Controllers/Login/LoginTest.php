@@ -343,6 +343,7 @@ class LoginTest extends IntegrationTestCase
         return [
             'the master password' => [LoginStatus::INVALID_MASTER_PASS, 'Wrong master password'],
             'the previous password, after a reset' => [LoginStatus::OLD_PASS_REQUIRED, 'Previous password needed'],
+            'the second factor' => [LoginStatus::TOTP_REQUIRED, 'Two-factor code needed'],
         ];
     }
 

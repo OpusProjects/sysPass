@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Auth\Services;
 
+use SP\Application\Auth\Ports\LoginTotpService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
@@ -92,6 +93,7 @@ class LoginTest extends UnitaryTestCase
     private MockObject|LoginMasterPassService                $loginMasterPassService;
     private MockObject|UserProfileService                    $userProfileService;
     private MockObject|LoginAuthHandlerService               $loginAuthHandlerService;
+    private MockObject|LoginTotpService                      $loginTotpService;
     private Login                                            $login;
 
     public static function authResultProviderAuthoritative(): array
@@ -551,6 +553,135 @@ class LoginTest extends UnitaryTestCase
     }
 
     /**
+     * The second factor is checked before the master password is touched, and spent only after
+     * it has been accepted: spent earlier, a master password prompt would burn the code and the
+     * user could not answer the prompt with it.
+     *
+     * @throws AuthException
+     * @throws Exception
+     */
+    public function testDoLoginSpendsTheCodeOnlyOnceTheMasterPasswordIsAccepted()
+    {
+        $userDto = $this->passwordAccepted();
+        $calls = [];
+
+        $this->loginTotpService
+            ->expects($this->once())
+            ->method('check')
+            ->with($userDto->id)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'check';
+
+                return 42;
+            });
+
+        $this->loginMasterPassService
+            ->expects($this->once())
+            ->method('loadMasterPass')
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'masterPass';
+            });
+
+        $this->loginTotpService
+            ->expects($this->once())
+            ->method('consume')
+            ->with($userDto->id, 42)
+            ->willReturnCallback(function () use (&$calls) {
+                $calls[] = 'consume';
+            });
+
+        $this->userProfileService->method('getById')
+                                 ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        session_start();
+
+        $this->assertEquals(LoginStatus::OK, $this->login->doLogin()->getStatus());
+        $this->assertSame(['check', 'masterPass', 'consume'], $calls);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function testDoLoginLeavesTheCodeUnspentWhenTheMasterPasswordIsAsked()
+    {
+        $this->passwordAccepted();
+
+        $this->loginTotpService->method('check')->willReturn(42);
+        $this->loginMasterPassService
+            ->method('loadMasterPass')
+            ->willThrowException(
+                AuthException::info('Wrong master password', null, LoginStatus::INVALID_MASTER_PASS->value)
+            );
+
+        $this->loginTotpService->expects($this->never())->method('consume');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionCode(LoginStatus::INVALID_MASTER_PASS->value);
+
+        $this->login->doLogin();
+    }
+
+    /**
+     * The master password is re-keyed on the strength of the sign-in, so a refused second factor
+     * must stop the flow before it.
+     *
+     * @throws Exception
+     */
+    public function testDoLoginRefusedByTheSecondFactorDoesNotReachTheMasterPassword()
+    {
+        $this->passwordAccepted();
+
+        $this->loginTotpService
+            ->method('check')
+            ->willThrowException(AuthException::info('Wrong two-factor code', null, LoginStatus::TOTP_REQUIRED->value));
+
+        $this->loginMasterPassService->expects($this->never())->method('loadMasterPass');
+        $this->loginTotpService->expects($this->never())->method('consume');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionCode(LoginStatus::TOTP_REQUIRED->value);
+
+        $this->login->doLogin();
+    }
+
+    /**
+     * A user without a second factor is not asked to spend anything.
+     *
+     * @throws AuthException
+     * @throws Exception
+     */
+    public function testDoLoginSpendsNothingForAUserWithoutASecondFactor()
+    {
+        $this->passwordAccepted();
+
+        $this->loginTotpService->method('check')->willReturn(null);
+        $this->loginTotpService->expects($this->never())->method('consume');
+        $this->userProfileService->method('getById')
+                                 ->willReturn(UserProfileDataGenerator::factory()->buildUserProfileData());
+
+        session_start();
+
+        $this->assertEquals(LoginStatus::OK, $this->login->doLogin()->getStatus());
+    }
+
+    /**
+     * Everything up to the second factor accepted: credentials sent, not throttled, the provider
+     * answering with a user, and that user allowed in.
+     */
+    private function passwordAccepted(): UserDto
+    {
+        $userDto = UserDto::fromModel(UserDataGenerator::factory()->buildUserData());
+
+        $this->request->expects($this->atLeastOnce())->method('analyzeString')->with('user')->willReturn('a_user');
+        $this->request->expects($this->atLeastOnce())->method('analyzeEncrypted')->with('pass')->willReturn('a_password');
+        $this->trackService->method('checkTracking')->willReturn(false);
+        $this->authProviderService->method('doAuth')->willReturn($userDto);
+        $this->loginUserService->method('checkUser')->willReturn(new LoginResponseDto(LoginStatus::PASS));
+
+        return $userDto;
+    }
+
+    /**
      * When a SessionKeyService IS wired (the production DI path, once the optional
      * constructor param is explicitly bound), a successful login must re-key the session
      * through that service instead of a bare id regeneration — reKey() rotates the id
@@ -779,7 +910,8 @@ class LoginTest extends UnitaryTestCase
             $this->loginUserService,
             $this->loginMasterPassService,
             $this->userProfileService,
-            $this->loginAuthHandlerService
+            $this->loginAuthHandlerService,
+            $this->loginTotpService
         );
     }
 
@@ -828,6 +960,7 @@ class LoginTest extends UnitaryTestCase
         $this->loginMasterPassService = $this->createMock(LoginMasterPassService::class);
         $this->userProfileService = $this->createMock(UserProfileService::class);
         $this->loginAuthHandlerService = $this->createMock(LoginAuthHandlerService::class);
+        $this->loginTotpService = $this->createMock(LoginTotpService::class);
 
         $this->login = new Login(
             $this->application,
@@ -839,7 +972,8 @@ class LoginTest extends UnitaryTestCase
             $this->loginUserService,
             $this->loginMasterPassService,
             $this->userProfileService,
-            $this->loginAuthHandlerService
+            $this->loginAuthHandlerService,
+            $this->loginTotpService
         );
     }
 

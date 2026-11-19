@@ -362,6 +362,11 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   there — for the prompting statuses only (master password, previous password), since the form
   reads 0 as success. Without it those prompts never appeared at all; a new prompting status (e.g.
   a second factor) is added in `LoginController::promptFor()` and as a case in the login JS.
+- **The second factor is checked before the master password and spent after it.**
+  `LoginTotp::check()` runs once the password is accepted; `consume()` runs only when nothing else
+  can refuse, so a master-password prompt does not burn the code. Spending is one `UPDATE … WHERE
+  lastStep < :step` — guard and change in one statement. The secret is encrypted with the
+  password salt (config.xml), so a database dump alone does not yield it.
 - **Every signed-in request needs the CSRF token**, whatever its method — the front end's
   `getActionCall` sends it as `X-CSRF`. A plain GET without it is let through only to a route in
   `Csrf::PLAIN_NAVIGATIONS` (the page, login/logout, the reset and public links, the downloads).

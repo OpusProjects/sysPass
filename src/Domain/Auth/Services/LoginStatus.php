@@ -37,5 +37,6 @@ enum LoginStatus: int
     case OLD_PASS_REQUIRED     = 5;
     case MAX_ATTEMPTS_EXCEEDED = 6;
     case PASS_RESET_REQUIRED   = 7;
+    case TOTP_REQUIRED         = 8;
     case PASS                  = 100;
 }

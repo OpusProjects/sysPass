@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Auth\Services;
 
+use SP\Application\Auth\Ports\LoginTotpService;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Application\Application;
@@ -79,7 +80,8 @@ final class Login extends LoginBase implements LoginService
         private readonly LoginUserService $loginUserService,
         private readonly LoginMasterPassService $loginMasterPassService,
         private readonly UserProfileService $userProfileService,
-        private readonly LoginAuthHandlerService $loginAuthHandlerService
+        private readonly LoginAuthHandlerService $loginAuthHandlerService,
+        private readonly LoginTotpService $loginTotpService
     ) {
         parent::__construct($application, $trackService, $request);
 
@@ -124,7 +126,17 @@ final class Login extends LoginBase implements LoginService
                 return $checkUser;
             }
 
+            // The second factor before anything that acts on the password: the master password is
+            // re-keyed below on the strength of it.
+            $totpStep = $this->loginTotpService->check($userDataDto->id);
+
             $this->loginMasterPassService->loadMasterPass($this->userLoginDto, $userDataDto);
+
+            // Spent last, once nothing else can refuse: see LoginTotp.
+            if ($totpStep !== null) {
+                $this->loginTotpService->consume($userDataDto->id, $totpStep);
+            }
+
             $this->setUserSession($userDataDto);
             $this->loadUserPreferences();
 
