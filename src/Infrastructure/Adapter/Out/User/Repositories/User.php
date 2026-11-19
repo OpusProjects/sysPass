@@ -567,6 +567,24 @@ final class User extends BaseRepository implements UserRepository
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getActiveAdminIdsForUpdate(): array
+    {
+        $query = $this->queryFactory
+            ->newSelect()
+            ->cols(['id'])
+            ->from(UserModel::TABLE)
+            ->where('isAdminApp = 1')
+            ->where('isDisabled = 0')
+            ->forUpdate();
+
+        $result = $this->db->runQuery(QueryData::build($query)->setMapClassName(Simple::class));
+
+        return array_map(static fn(Simple $row): int => (int)$row['id'], $result->getDataAsArray());
+    }
+
+    /**
      * Which of the given ids still exist
      *
      * @param int[] $ids

@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Application\User\Services;
 
+use Closure;
 use JsonException;
 use SP\Application\Application;
 use SP\Domain\Crypt\Hash;
@@ -134,9 +135,15 @@ final class User extends Service implements UserService
     {
         $this->assertManageable($id);
 
-        if ($this->userRepository->delete($id)->getAffectedNumRows() === 0) {
-            throw NoSuchItemException::info(__u('User not found'));
-        }
+        $this->inTransaction(
+            function () use ($id) {
+                $this->assertAnAdministratorRemains([$id]);
+
+                if ($this->userRepository->delete($id)->getAffectedNumRows() === 0) {
+                    throw NoSuchItemException::info(__u('User not found'));
+                }
+            }
+        );
     }
 
     /**
@@ -152,13 +159,19 @@ final class User extends Service implements UserService
             $this->assertManageable((int)$id);
         }
 
-        $count = $this->userRepository->deleteByIdBatch($ids)->getAffectedNumRows();
+        return $this->inTransaction(
+            function () use ($ids): int {
+                $this->assertAnAdministratorRemains(array_map('intval', $ids));
 
-        if ($count !== count($ids)) {
-            throw ServiceException::warning(__u('Error while deleting the users'));
-        }
+                $count = $this->userRepository->deleteByIdBatch($ids)->getAffectedNumRows();
 
-        return $count;
+                if ($count !== count($ids)) {
+                    throw ServiceException::warning(__u('Error while deleting the users'));
+                }
+
+                return $count;
+            }
+        );
     }
 
     /**
@@ -261,8 +274,60 @@ final class User extends Service implements UserService
     {
         $this->assertManageable((int)$user->getId());
 
-        if ($this->userRepository->update($user) === 0) {
-            throw ServiceException::error(__u('Error while updating the user'));
+        $this->inTransaction(
+            function () use ($user) {
+                // Only a save that takes the user out of the active administrators can leave none.
+                if ($user->isAdminApp() === false || $user->isDisabled() === true) {
+                    $this->assertAnAdministratorRemains([(int)$user->getId()]);
+                }
+
+                if ($this->userRepository->update($user) === 0) {
+                    throw ServiceException::error(__u('Error while updating the user'));
+                }
+            }
+        );
+    }
+
+    /**
+     * Runs the closure in a transaction, letting the exception it threw through unchanged
+     *
+     * `transactionAware()` rewraps whatever escapes as a plain ServiceException, which would turn
+     * "User not found" into a different type than callers — and the API's status mapping — expect.
+     *
+     * @throws SPException
+     */
+    private function inTransaction(Closure $closure): mixed
+    {
+        try {
+            return $this->userRepository->transactionAware($closure, $this);
+        } catch (ServiceException $e) {
+            $previous = $e->getPrevious();
+
+            throw $previous instanceof SPException ? $previous : $e;
+        }
+    }
+
+    /**
+     * Refuses a change that would leave no active application administrator
+     *
+     * Nothing stopped the last administrator disabling or demoting themselves, or another
+     * administrator doing it to the only other one — and an installation with no active
+     * administrator cannot manage its users again without editing the database by hand. Called
+     * inside the change's transaction: the administrators are read with a lock, so two changes
+     * each relying on the other administrator remaining cannot both pass.
+     *
+     * @param int[] $leaving The users the change takes out of the active administrators
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws ServiceException
+     */
+    private function assertAnAdministratorRemains(array $leaving): void
+    {
+        $active = $this->userRepository->getActiveAdminIdsForUpdate();
+
+        // Only a change that removes an active administrator can be the one that leaves none.
+        if (array_intersect($active, $leaving) !== [] && array_diff($active, $leaving) === []) {
+            throw ServiceException::warning(__u('At least one active application administrator is needed'));
         }
     }
 

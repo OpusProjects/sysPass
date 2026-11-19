@@ -251,6 +251,34 @@ class UserControllerTest extends ApiTestCase
         $this->assertSame($params['userGroupId'], $view->body->data->userGroupId);
     }
 
+    /**
+     * The fixture's admin (user 1) is the only active application administrator. Disabling them
+     * would leave an installation whose users nobody can manage again without editing the
+     * database by hand, so it is refused and nothing is written.
+     */
+    public function testTheOnlyActiveAdministratorCannotBeDisabled(): void
+    {
+        $r = $this->callApi(AclActionsInterface::USER_EDIT, [
+            'id' => 1,
+            'name' => 'sysPass Admin',
+            'login' => 'admin',
+            'userGroupId' => 1,
+            'userProfileId' => 1,
+            'isAdminApp' => 1,
+            'isDisabled' => 1,
+        ]);
+
+        $this->assertInstanceOf(stdClass::class, $r->body->error);
+        $this->assertSame('At least one active application administrator is needed', $r->body->error->message);
+
+        $statement = getDbHandler()->getConnection()->prepare('SELECT isDisabled, isAdminApp FROM `User` WHERE id = 1');
+        $statement->execute();
+        $row = $statement->fetch();
+
+        $this->assertSame(0, (int)$row->isDisabled, 'the refusal must not have written anyway');
+        $this->assertSame(1, (int)$row->isAdminApp);
+    }
+
     public function testEditActionRequiredParameters(): void
     {
         $id = $this->createUser()->body->itemId;
