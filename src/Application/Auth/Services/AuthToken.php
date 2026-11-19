@@ -48,6 +48,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
 
@@ -98,7 +99,8 @@ final class AuthToken extends Service implements AuthTokenService
     public function __construct(
         Application                          $application,
         private readonly AuthTokenRepository $authTokenRepository,
-        private readonly CryptInterface      $crypt
+        private readonly CryptInterface      $crypt,
+        private readonly UserService         $userService
     ) {
         parent::__construct($application);
     }
@@ -174,6 +176,13 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function create(AuthTokenModel $authToken): int
     {
+        // A token acts as the user it is issued for, so issuing one is acting on that user.
+        // Managing API tokens is a profile permission of its own, and a token manager who is not
+        // an administrator could issue a token for an administrator — by API or a crafted form
+        // post — and act as one. The same rule as managing users: only an administrator may act
+        // on an administrator.
+        $this->userService->assertManageable((int)$authToken->getUserId());
+
         $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
 
         return $this->authTokenRepository->create($secureAuthToken)->getLastId();
@@ -278,6 +287,8 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function refreshAndUpdate(AuthTokenModel $authToken): void
     {
+        $this->userService->assertManageable((int)$authToken->getUserId());
+
         $this->authTokenRepository->transactionAware(
             function () use ($authToken) {
                 $token = $this->generateToken();
@@ -316,6 +327,8 @@ final class AuthToken extends Service implements AuthTokenService
      */
     public function update(AuthTokenModel $authToken): void
     {
+        $this->userService->assertManageable((int)$authToken->getUserId());
+
         $secureAuthToken = $this->injectSecureData($authToken, $this->getOrBuildToken($authToken));
 
         // An update whose WHERE matched nothing has not updated anything, and answering the

@@ -46,6 +46,7 @@ use SP\Domain\Core\Exceptions\CryptException;
 use SP\Domain\Core\Exceptions\QueryException;
 use SP\Domain\Core\Exceptions\SPException;
 use SP\Domain\Core\Exceptions\DuplicatedItemException;
+use SP\Application\User\Ports\UserService;
 use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Common\Dtos\QueryResult;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
@@ -673,6 +674,8 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->refreshAndUpdate(AuthTokenGenerator::factory()->buildAuthToken());
     }
 
+    private UserService|MockObject $userService;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -680,6 +683,42 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authTokenRepository = $this->createMock(AuthTokenRepository::class);
         $this->crypt = $this->createMock(CryptInterface::class);
 
-        $this->authToken = new AuthToken($this->application, $this->authTokenRepository, $this->crypt);
+        $this->userService = $this->createMock(UserService::class);
+
+        $this->authToken = new AuthToken(
+            $this->application,
+            $this->authTokenRepository,
+            $this->crypt,
+            $this->userService
+        );
+    }
+
+    /**
+     * A token acts as the user it is issued for. A token manager who is not an administrator
+     * could issue one for an administrator and act as one; issuing, editing and refreshing a token
+     * are refused wherever acting on its user would be.
+     */
+    public function testATokenIsNotWrittenForAUserTheCallerCannotManage(): void
+    {
+        $authToken = AuthTokenGenerator::factory()->buildAuthToken();
+
+        $this->userService
+            ->expects(self::exactly(3))
+            ->method('assertManageable')
+            ->with($authToken->getUserId())
+            ->willThrowException(new NoSuchItemException('User not found'));
+
+        $this->authTokenRepository->expects(self::never())->method('create');
+        $this->authTokenRepository->expects(self::never())->method('update');
+        $this->authTokenRepository->expects(self::never())->method('transactionAware');
+
+        foreach (['create', 'update', 'refreshAndUpdate'] as $method) {
+            try {
+                $this->authToken->{$method}($authToken);
+                self::fail($method . ' wrote a token for a user the caller cannot manage');
+            } catch (NoSuchItemException) {
+                // refused, as expected
+            }
+        }
     }
 }
