@@ -214,7 +214,7 @@ final class User extends Service implements UserService
     public function create(UserModel $user): int
     {
         if (!empty($user->getPass())) {
-            $user = $user->mutate(['pass' => Hash::hashKey($user->getPass())]);
+            $user = $user->mutate(['pass' => Hash::hashPassword($user->getPass())]);
         }
 
         return $this->userRepository
@@ -349,7 +349,7 @@ final class User extends Service implements UserService
         $user = new UserModel(
             [
                 'id' => $userId,
-                'pass' => Hash::hashKey($pass),
+                'pass' => Hash::hashPassword($pass),
                 'isChangePass' => false,
                 'isChangedPass' => true
             ]
@@ -405,7 +405,7 @@ final class User extends Service implements UserService
             'name' => $userLoginRequest->getName(),
             'email' => $userLoginRequest->getEmail(),
             'isLdap' => $userLoginRequest->getisLdap(),
-            'pass' => Hash::hashKey($userLoginRequest->getPassword() ?? '')
+            'pass' => Hash::hashPassword($userLoginRequest->getPassword() ?? '')
 
         ];
 

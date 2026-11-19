@@ -63,7 +63,7 @@ final class UserPass extends Service implements UserPassService
         $user = new User(
             [
                 'id' => $id,
-                'pass' => Hash::hashKey($userPass),
+                'pass' => Hash::hashPassword($userPass),
                 'isChangePass' => false,
                 'isChangedPass' => true,
                 'isMigrate' => false
@@ -73,5 +73,13 @@ final class UserPass extends Service implements UserPassService
         if ($this->userRepository->updatePassById($user) === 0) {
             throw NoSuchItemException::info(__u('User does not exist'));
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function rehashUserPassById(int $id, string $userPass): void
+    {
+        $this->userRepository->updatePassHashById($id, Hash::hashPassword($userPass));
     }
 }

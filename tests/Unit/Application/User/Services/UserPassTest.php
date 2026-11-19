@@ -89,4 +89,29 @@ class UserPassTest extends UnitaryTestCase
 
         $usePass->migrateUserPassById(100, 'a_password');
     }
+
+    /**
+     * A re-hash writes an Argon2id hash of the same password through the hash-only update.
+     *
+     * @throws ConstraintException
+     * @throws QueryException
+     * @throws Exception
+     */
+    public function testRehashUserPassById()
+    {
+        $userRepository = $this->createMock(UserRepository::class);
+        $userRepository->expects($this->once())
+                       ->method('updatePassHashById')
+                       ->with(
+                           7,
+                           self::callback(
+                               static fn(string $hash): bool => str_starts_with($hash, '$argon2id$')
+                                                                && Hash::checkHashKey('the password', $hash)
+                           )
+                       )
+                       ->willReturn(1);
+        $userRepository->expects($this->never())->method('updatePassById');
+
+        (new UserPass($this->application, $userRepository))->rehashUserPassById(7, 'the password');
+    }
 }

@@ -690,7 +690,10 @@ threw, while the second ran a bcrypt verify. Measured on this installation, whic
 logins were real, without their ever guessing a password. The fix is to spend the same time on the
 way to the same answer — verify against a fixed hash nothing can match — and the test asserts the
 two paths against *each other* rather than against a number of milliseconds, so it calibrates
-itself to whatever machine it runs on.
+itself to whatever machine it runs on. **That fixed hash must use whatever algorithm login passwords
+use** — `DatabaseAuth::ABSENT_USER_HASH` is Argon2id because `Hash::hashPassword()` is; change one
+without the other and the gap reopens. Everything else `Hash::hashKey()` writes stays bcrypt, since
+those hashes travel (an export carries one).
 
 Watch for the same shape wherever a lookup precedes a check: the public link's "never issued"
 answered differently from "expired" until it was made to answer the same, and the password reset's

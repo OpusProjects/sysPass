@@ -143,4 +143,36 @@ class HashTest extends UnitaryTestCase
             $this->assertTrue(Hash::checkMessage($text, $key, $hash));
         }
     }
+
+    /**
+     * Login passwords are Argon2id; everything else hashed by hashKey() stays bcrypt, since those
+     * hashes can travel to an installation whose PHP may lack Argon2.
+     */
+    public function testALoginPasswordIsHashedWithArgon2id(): void
+    {
+        $hash = Hash::hashPassword('a login password');
+
+        self::assertStringStartsWith('$argon2id$', $hash);
+        self::assertTrue(Hash::checkHashKey('a login password', $hash));
+        self::assertFalse(Hash::checkHashKey('another password', $hash));
+        self::assertStringStartsWith('$2y$', Hash::hashKey('a master password'));
+    }
+
+    /**
+     * The same key derivation as checkHashKey(), so a password past bcrypt's 72 bytes verifies too.
+     */
+    public function testALongLoginPasswordVerifies(): void
+    {
+        $long = str_repeat('雪', 40);
+
+        self::assertTrue(Hash::checkHashKey($long, Hash::hashPassword($long)));
+        self::assertFalse(Hash::checkHashKey(str_repeat('雪', 39) . '雨', Hash::hashPassword($long)));
+    }
+
+    public function testOnlyABcryptHashNeedsRehashing(): void
+    {
+        self::assertTrue(Hash::passwordNeedsRehash(Hash::hashKey('p')));
+        self::assertFalse(Hash::passwordNeedsRehash(Hash::hashPassword('p')));
+    }
+
 }

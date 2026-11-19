@@ -119,6 +119,29 @@ final class Hash
     }
 
     /**
+     * Hash a user's login password
+     *
+     * Argon2id, the current recommendation for passwords, where everything else hashed here stays
+     * bcrypt: those hashes can travel — an export carries one, and may be read by an installation
+     * on a PHP built without Argon2. checkHashKey() verifies either, so a login password stored as
+     * bcrypt keeps working and is replaced at its owner's next sign-in (passwordNeedsRehash()).
+     *
+     * The same key derivation as checkHashKey() applies, so a long password verifies the same way.
+     */
+    public static function hashPassword(string $password): string
+    {
+        return password_hash(self::getKey($password, false), PASSWORD_ARGON2ID);
+    }
+
+    /**
+     * Whether a stored login password hash predates hashPassword()'s algorithm or parameters
+     */
+    public static function passwordNeedsRehash(string $hash): bool
+    {
+        return password_needs_rehash($hash, PASSWORD_ARGON2ID);
+    }
+
+    /**
      * Checks a message with a given key against a hash
      */
     public static function checkMessage(
