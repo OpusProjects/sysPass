@@ -357,6 +357,11 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 - **`Init::PARTIAL_INIT`** lists controllers that skip the not-installed / DB / session checks
   (Install, Css, Js, Upgrade…). When not installed, `Init` redirects everything else to the install
   route.
+- **Every signed-in request needs the CSRF token**, whatever its method — the front end's
+  `getActionCall` sends it as `X-CSRF`. A plain GET without it is let through only to a route in
+  `Csrf::PLAIN_NAVIGATIONS` (the page, login/logout, the reset and public links, the downloads).
+  A new route the browser opens directly — a link in an email, a download via `window.open` or
+  `fetch` — has to be added there, and must not change state.
 
 ## Persistence (models + repositories)
 
