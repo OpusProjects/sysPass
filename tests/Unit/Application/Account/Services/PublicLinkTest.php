@@ -239,6 +239,11 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
 
+        $this->storedLinkIs($publicLinkList);
+
+        // The account did not change, so nothing is re-sealed: the vault is written as it was.
+        $this->accountService->expects(self::never())->method('getDataForLink');
+
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('update')
@@ -246,6 +251,8 @@ class PublicLinkTest extends UnitaryTestCase
             ->willReturn(true);
 
         $this->publicLink->update($publicLinkList);
+
+        $this->assertSame([], $this->aclAskedFor);
     }
 
     /**
@@ -259,6 +266,8 @@ class PublicLinkTest extends UnitaryTestCase
     {
         $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
 
+        $this->storedLinkIs($publicLinkList);
+
         $this->publicLinkRepository
             ->expects(self::once())
             ->method('update')
@@ -269,6 +278,104 @@ class PublicLinkTest extends UnitaryTestCase
         $this->expectExceptionMessage('Link not found');
 
         $this->publicLink->update($publicLinkList);
+    }
+
+    /**
+     * A link whose row is already gone is refused before anything is sealed or written.
+     *
+     * @throws SPException
+     */
+    public function testUpdateThrowsWhenTheLinkIsNotStored(): void
+    {
+        $publicLinkList = PublicLinkDataGenerator::factory()->buildPublicLinkList();
+
+        $this->publicLinkRepository
+            ->method('getById')
+            ->willReturn(new QueryResult([]));
+        $this->publicLinkRepository->expects(self::never())->method('update');
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Link not found');
+
+        $this->publicLink->update($publicLinkList);
+    }
+
+    /**
+     * Pointing a link at another account seals that account's data in the vault, under the same
+     * hash so the URL already handed out keeps working. Writing the new `itemId` beside the old
+     * vault listed and counted the link as the new account while it served the old one's password.
+     *
+     * @throws SPException
+     */
+    public function testUpdateReSealsTheVaultWhenTheAccountChanges(): void
+    {
+        $stored = PublicLinkDataGenerator::factory()->buildPublicLink();
+        $edited = $stored->mutate(['itemId' => $stored->getItemId() + 1]);
+
+        $this->storedLinkIs($stored);
+
+        $passData = ['pass' => self::$faker->password(), 'key' => self::$faker->sha1()];
+
+        $this->accountService
+            ->expects(self::once())
+            ->method('getDataForLink')
+            ->with($edited->getItemId())
+            ->willReturn(new Simple($passData));
+
+        $this->crypt
+            ->expects(self::once())
+            ->method('decrypt')
+            ->willReturn(self::$faker->password());
+
+        $this->publicLinkRepository
+            ->expects(self::once())
+            ->method('update')
+            ->with(
+                new Callback(static function (PublicLinkModel $actual) use ($stored, $edited) {
+                    return $actual->getItemId() === $edited->getItemId()
+                           && $actual->getHash() === $stored->getHash()
+                           && !empty($actual->getData())
+                           && $actual->getData() !== $stored->getData();
+                })
+            )
+            ->willReturn(true);
+
+        $this->publicLink->update($edited);
+
+        $this->assertSame([AclActionsInterface::ACCOUNT_VIEW_PASS], $this->aclAskedFor);
+    }
+
+    /**
+     * Re-sealing reads the new account's password, so it needs what creating a link needs.
+     *
+     * @throws SPException
+     */
+    public function testUpdateToAnotherAccountRequiresViewPassPermission(): void
+    {
+        $this->mayViewPasswords = false;
+
+        $stored = PublicLinkDataGenerator::factory()->buildPublicLink();
+        $edited = $stored->mutate(['itemId' => $stored->getItemId() + 1]);
+
+        $this->storedLinkIs($stored);
+
+        $this->accountService->expects(self::never())->method('getDataForLink');
+        $this->publicLinkRepository->expects(self::never())->method('update');
+
+        $this->expectException(AccountPermissionException::class);
+
+        $this->publicLink->update($edited);
+    }
+
+    /**
+     * Answers the repository's read of the link being updated with the given row.
+     */
+    private function storedLinkIs(PublicLinkModel $stored): void
+    {
+        $this->publicLinkRepository
+            ->method('getById')
+            ->with($stored->getId())
+            ->willReturn(new QueryResult([new Simple($stored->toArray())]));
     }
 
     /**

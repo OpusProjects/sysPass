@@ -80,10 +80,12 @@ class PublicLinkSaveEditTest extends IntegrationTestCase
     #[Test]
     public function saveEdit()
     {
-        // The edit loads the link it is updating, so it has to resolve.
+        // The edit loads the link it is updating, so it has to resolve. It already points at the
+        // account the form posts: changing the account re-seals the vault, which the service's
+        // unit tests cover, and this test is the ordinary edit.
         $this->addDatabaseMapperResolver(
             PublicLink::class,
-            new QueryResult([PublicLinkDataGenerator::factory()->buildPublicLink()])
+            new QueryResult([PublicLinkDataGenerator::factory()->buildPublicLink()->mutate(['itemId' => 100])])
         );
 
         $container = $this->buildContainer(

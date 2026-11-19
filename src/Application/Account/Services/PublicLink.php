@@ -397,12 +397,44 @@ final class PublicLink extends Service implements PublicLinkService
     /**
      * Updates an item
      *
+     * A link's vault holds the account it was sealed for, so pointing the link at another account
+     * means sealing that account's data in its place. The edit form offers the account select, and
+     * the update used to write the new `itemId` beside the old vault: the link was then listed, and
+     * counted, as sharing the new account while serving the old one's password to whoever followed
+     * it. When the account changes, the vault is re-sealed under the link's existing hash, so the
+     * URL already handed out keeps working, and with the checks creating a link makes: the
+     * profile's view-password permission, and `getDataForLink()`'s visibility filter.
+     *
      * @throws SPException
      * @throws ConstraintException
      * @throws QueryException
      */
     public function update(PublicLinkModel $publicLink): void
     {
+        // Step 1: read what is stored, to know whether the account is changing.
+        $current = $this->publicLinkRepository->getById((int)$publicLink->getId());
+
+        if ($current->getNumRows() === 0) {
+            throw new NoSuchItemException(__u('Link not found'));
+        }
+
+        $stored = PublicLinkModel::buildFromSimpleModel($current->getData());
+
+        // Step 2: a different account needs its own data sealed in the vault.
+        if ($stored->getItemId() !== $publicLink->getItemId()) {
+            $this->requirePasswordPermission();
+
+            $publicLink = $publicLink->mutate(
+                [
+                    'data' => $this->getSecuredLinkData(
+                        $publicLink->getItemId(),
+                        $this->getPublicLinkKey($publicLink->getHash())
+                    ),
+                ]
+            );
+        }
+
+        // Step 3: write it.
         // An update whose WHERE matched nothing has not updated anything, and answering the caller
         // with success for it reports an edit of something since deleted as saved. The repository
         // already counts the rows, and the connection sets FOUND_ROWS, so a save that changes no
