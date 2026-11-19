@@ -236,13 +236,14 @@ class TrackTest extends UnitaryTestCase
             ->method('getTracksForClientFromTime')
             ->willReturn(new QueryResult(range(0, 10000)));
 
-        $started = microtime(true);
+        // A monotonic clock, so an adjustment of the wall clock cannot pass or fail this.
+        $started = hrtime(true);
 
         $this->assertTrue($this->track->checkTracking($trackRequest));
 
         $this->assertLessThan(
             1,
-            microtime(true) - $started,
+            (hrtime(true) - $started) / 1e9,
             'the check held the request instead of answering'
         );
     }

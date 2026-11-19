@@ -231,9 +231,11 @@ class DatabaseAuthTest extends UnitaryTestCase
         $userLoginData->setLoginUser($login);
         $userLoginData->setLoginPass($password);
 
-        $started = microtime(true);
+        // hrtime(), not microtime(): the wall clock can be adjusted mid-measurement (NTP, a VM
+        // resyncing its clock), and one such step made a run measure -1350ms and fail.
+        $started = hrtime(true);
         $result = $this->databaseAuth->authenticate($userLoginData);
-        $elapsed = microtime(true) - $started;
+        $elapsed = (hrtime(true) - $started) / 1e9;
 
         self::assertFalse($result->isOk(), $login . ': the attempt has to fail');
 
