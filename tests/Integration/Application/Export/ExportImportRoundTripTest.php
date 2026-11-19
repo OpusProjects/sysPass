@@ -41,13 +41,13 @@ use SP\Application\Tag\Ports\TagService;
 use SP\Domain\Account\Dtos\AccountCreateDto;
 use SP\Domain\Category\Models\Category;
 use SP\Domain\Client\Models\Client;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Bootstrap\Path;
 use SP\Domain\Core\Context\Context;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use SP\Domain\Import\Dtos\ImportParamsDto;
+use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Tag\Models\Tag;
 use SP\Domain\User\Dtos\UserDto;
 use SP\Infrastructure\Definitions\CoreDefinitions;
@@ -210,10 +210,9 @@ final class ExportImportRoundTripTest extends TestCase
         try {
             $this->import($file, 'definitely-the-wrong-password');
             self::fail('Import with the wrong password should have thrown');
-        } catch (ServiceException $e) {
-            // Import::doImport() wraps everything in Repository::transactionAware(), which
-            // rethrows as ServiceException — see BaseRepository::transactionAware() — but
-            // preserves the original message.
+        } catch (ImportException $e) {
+            // As itself: Repository::transactionAware() lets an application exception through
+            // unchanged rather than rewrapping it.
             self::assertStringContainsString('Wrong encryption password', $e->getMessage());
         }
 

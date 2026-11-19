@@ -56,7 +56,6 @@ use SP\Domain\Core\Exceptions\NoSuchItemException;
 use SP\Domain\Database\Ports\DbStorageHandler;
 use SP\Domain\File\FileSystem;
 use SP\Domain\User\Dtos\UserDto;
-use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AccountPermissionException;
 use SP\Domain\User\Models\ProfileData;
 use SP\Domain\User\Models\User as UserModel;
@@ -892,11 +891,11 @@ final class AccountAccessTest extends TestCase
 
         $this->setContextUser($strangerId, $strangerGroupId, 'mgm-del-stranger');
 
-        // transactionAware() rethrows the refusal as a ServiceException carrying its message.
+        // The refusal arrives as itself: "not found", the answer a truly missing id gets.
         try {
             $this->dic->get(AccountService::class)->deleteByIdBatch([$privateId]);
             self::fail('a private account was deleted by somebody it is withheld from');
-        } catch (ServiceException $e) {
+        } catch (NoSuchItemException $e) {
             self::assertSame('The account doesn\'t exist', $e->getMessage());
         }
 
