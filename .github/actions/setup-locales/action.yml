@@ -7,8 +7,21 @@ runs:
     - name: Install iproute2 and locales
       shell: bash
       run: |
-        sudo apt-get update -qq
-        sudo apt-get install -y --no-install-recommends iproute2 locales
+        # The Ubuntu mirror intermittently refuses connections ("Could not wait for server fd"),
+        # failing a job before any test runs. apt retries each download itself, and the whole
+        # update + install is retried after a pause in case the mirror stays down a little longer.
+        for attempt in 1 2 3; do
+          if sudo apt-get -o Acquire::Retries=5 update -qq \
+            && sudo apt-get -o Acquire::Retries=5 install -y --no-install-recommends iproute2 locales; then
+            break
+          fi
+          if [ "$attempt" -eq 3 ]; then
+            echo "apt failed three times; giving up" >&2
+            exit 1
+          fi
+          echo "apt failed (attempt $attempt); retrying in $((attempt * 15))s" >&2
+          sleep $((attempt * 15))
+        done
         for l in en_US es_ES ca_ES de_DE hu_HU fr_FR pl_PL ru_RU nl_NL pt_BR it_IT ja_JP; do
           sudo localedef -i "$l" -f UTF-8 "$l.UTF-8" || true
         done
