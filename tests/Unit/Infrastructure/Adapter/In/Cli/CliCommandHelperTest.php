@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Cli;
 
+use SP\Infrastructure\Adapter\In\Cli\Commands\ConvertLegacyDataCommand;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -58,10 +59,18 @@ class CliCommandHelperTest extends TestCase
         $updateMasterPasswordCommand = (new ReflectionClass(UpdateMasterPasswordCommand::class))
             ->newInstanceWithoutConstructor();
 
-        $helper = new CliCommandHelper($installCommand, $backupCommand, $updateMasterPasswordCommand);
+        $convertLegacyDataCommand = (new ReflectionClass(ConvertLegacyDataCommand::class))
+            ->newInstanceWithoutConstructor();
+
+        $helper = new CliCommandHelper(
+            $installCommand,
+            $backupCommand,
+            $updateMasterPasswordCommand,
+            $convertLegacyDataCommand
+        );
 
         self::assertSame(
-            [$installCommand, $backupCommand, $updateMasterPasswordCommand],
+            [$installCommand, $backupCommand, $updateMasterPasswordCommand, $convertLegacyDataCommand],
             $helper->getCommands()
         );
     }

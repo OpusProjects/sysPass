@@ -39,7 +39,7 @@ interface AppInfoInterface
     // At least the newest #[UpgradeVersion]: the application version is what the upgrade stamps
     // as its resume point, and a build older than its own migrations sent the next upgrade back
     // to re-run them. UpgradePathCannotRegressTest holds it there.
-    public const APP_BUILD = 24240101;
+    public const APP_BUILD = 26111901;
     public const APP_WEBSITE_URL = 'https://www.syspass.org';
     public const APP_UPDATES_URL = 'https://api.github.com/repos/OpusProjects/sysPass/releases/latest';
     public const APP_NOTICES_URL = 'https://api.github.com/repos/OpusProjects/sysPass/issues?milestone=none&state=open&labels=Notices';

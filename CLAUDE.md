@@ -764,7 +764,11 @@ against the code as it stood, not reasoned about: where a claim needed a fact, t
   describes, so `AccountHistoryHelper::checkAccess()` enforces the ACL instead.
 - **Deserialization.** Every `unserialize()` in `src` passes `allowed_classes`, and every
   `Serde::deserialize()` names the class it expects — bar `ConfigBackup::configToJson()`, recorded
-  below with the reason.
+  below with the reason. The flip side: **a blob sysPass 3.2 wrote cannot be hydrated** — it names
+  `SP\DataModel\*` classes this rewrite does not have, and `deserialize()` answers "Invalid target
+  class". `UpgradeLegacySerializedData` (the upgrade) and `sp:convertLegacyData` (a 3.2 database
+  restored later) convert profiles, preferences and presets to JSON; the fixture `syspass.sql` is
+  real 3.2 data, which is why `ApiTestCase` overwrites those rows before every test.
 - **Foreign keys.** Nine tables have `*Id` columns without one, and each is explained: polymorphic
   targets (`moduleId`/`itemId`), ids from `actions.yaml` rather than a table (`AuthToken.actionId`),
   history that outlives its account, audit rows that must survive a user's deletion

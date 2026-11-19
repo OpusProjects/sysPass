@@ -154,11 +154,12 @@ abstract class ApiTestCase extends TestCase
         self::loadFixtures();
         self::truncateTable('AuthToken');
 
-        // The fixture's serialized User.preferences / UserProfile.profile use the
-        // pre-rewrite SP\DataModel namespace, which the current hydrators reject.
-        // These API tests authenticate as the admin user (id 1, ACL bypassed) and
-        // never assert this data, so replace it with values the hydrators accept:
-        // NULL preferences, and a serialized empty (current) ProfileData.
+        // The fixture's User.preferences / UserProfile.profile are sysPass 3.2's own serialization,
+        // under the SP\DataModel class names, which the hydrators cannot read. An installation is
+        // brought out of that format by the upgrade (UpgradeLegacySerializedData) or by
+        // sp:convertLegacyData — see ConvertLegacyDataCommandTest, which converts these very rows.
+        // These API tests authenticate as the admin user (id 1, ACL bypassed) and never assert this
+        // data, so it is simply replaced: NULL preferences, and an empty current ProfileData.
         $conn = getDbHandler()->getConnection();
         $conn->exec('UPDATE `User` SET `preferences` = NULL');
         $profile = $conn->prepare('UPDATE `UserProfile` SET `profile` = ?');
