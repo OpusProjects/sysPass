@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Infrastructure\Crypt;
 
+use phpseclib4\Crypt\RSA\PrivateKey;
+use Closure;
 use phpseclib4\Crypt\RSA;
 use SP\Domain\Core\Crypt\CryptPKIHandler;
 use SP\Domain\Core\Exceptions\SPException;
@@ -45,12 +47,33 @@ final class CryptPKI implements CryptPKIHandler
     public const PRIVATE_KEY_FILE = 'key.pem';
 
     /**
+     * How many times a key pair is generated before giving up
+     *
+     * phpseclib 4 has the platform's OpenSSL generate the key and then parses what OpenSSL
+     * exported, and that parse failed once on CI ("Unable to read key", PHP 8.4) for a key it had
+     * just made. It did not reproduce in 400 local generations, so the cause sits in the pairing
+     * of a particular OpenSSL build with the parser, for particular keys. Each attempt is a new
+     * random key, so trying again is the mitigation; a failure that persists is still reported.
+     */
+    private const GENERATION_ATTEMPTS = 3;
+
+    /** @var Closure(int): PrivateKey */
+    private readonly Closure $keyGenerator;
+
+    /**
      * @throws SPException
+     */
+    /**
+     * @param Closure(int): PrivateKey|null $keyGenerator Generates a key pair of the given size;
+     *                                                     phpseclib's unless a test supplies one
      */
     public function __construct(
         private readonly FileHandlerInterface $publicKeyFile,
-        private readonly FileHandlerInterface $privateKeyFile
+        private readonly FileHandlerInterface $privateKeyFile,
+        ?Closure $keyGenerator = null
     ) {
+        $this->keyGenerator = $keyGenerator ?? static fn(int $bits): PrivateKey => RSA::createKey($bits);
+
         $this->setUp();
     }
 
@@ -72,13 +95,35 @@ final class CryptPKI implements CryptPKIHandler
     }
 
     /**
+     * Generates a key pair, trying again when the library fails on the one it just made
+     *
+     * @throws Throwable The last attempt's failure, when every attempt fails
+     */
+    private function generateKey(): PrivateKey
+    {
+        $attempt = 0;
+
+        while (true) {
+            try {
+                return ($this->keyGenerator)(self::KEY_SIZE);
+            } catch (Throwable $e) {
+                if (++$attempt >= self::GENERATION_ATTEMPTS) {
+                    throw $e;
+                }
+
+                processException($e);
+            }
+        }
+    }
+
+    /**
      * Creates the public and private key pair
      *
      * @throws FileException
      */
     public function createKeys(): void
     {
-        $privateKey = RSA::createKey(self::KEY_SIZE);
+        $privateKey = $this->generateKey();
 
         $this->publicKeyFile->save((string)$privateKey->getPublicKey());
         $this->privateKeyFile->save((string)$privateKey)->chmod(0600);

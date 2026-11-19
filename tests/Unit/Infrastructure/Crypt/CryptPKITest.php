@@ -26,6 +26,8 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Crypt;
 
+use phpseclib4\Exception\NoKeyLoadedException;
+use phpseclib4\Crypt\RSA\PrivateKey;
 use phpseclib4\Crypt\RSA;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
@@ -108,6 +110,68 @@ class CryptPKITest extends UnitaryTestCase
         $privateKey->expects(once())->method('chmod')->with(0600);
 
         new CryptPKI($publicKey, $privateKey);
+    }
+
+    /**
+     * phpseclib once failed to parse a key it had just generated (CI, PHP 8.4). Each attempt is a
+     * new random key, so a failure is retried and the pair from the attempt that worked is stored.
+     *
+     * @throws Exception
+     */
+    public function testAKeyThatFailsToGenerateIsTriedAgain()
+    {
+        [$publicKey, $privateKey] = $this->handlersThatHaveNoKeys();
+
+        $publicKey->expects(once())->method('save')->with($this->stringContains('PUBLIC KEY'));
+        $privateKey->expects(once())->method('save')->with($this->stringContains('PRIVATE KEY'))->willReturnSelf();
+
+        $calls = 0;
+        $generator = static function (int $bits) use (&$calls): PrivateKey {
+            if (++$calls < 3) {
+                throw new NoKeyLoadedException('Unable to read key');
+            }
+
+            return RSA::createKey($bits);
+        };
+
+        new CryptPKI($publicKey, $privateKey, $generator);
+
+        self::assertSame(3, $calls);
+    }
+
+    /**
+     * And a failure that persists is still reported, rather than leaving no key and saying nothing.
+     *
+     * @throws Exception
+     */
+    public function testAKeyThatKeepsFailingIsReported()
+    {
+        [$publicKey, $privateKey] = $this->handlersThatHaveNoKeys();
+
+        $publicKey->expects(self::never())->method('save');
+
+        $this->expectException(NoKeyLoadedException::class);
+
+        new CryptPKI(
+            $publicKey,
+            $privateKey,
+            static fn(int $bits): PrivateKey => throw new NoKeyLoadedException('Unable to read key')
+        );
+    }
+
+    /**
+     * @return array{FileHandlerInterface&MockObject, FileHandlerInterface&MockObject}
+     */
+    private function handlersThatHaveNoKeys(): array
+    {
+        $publicKey = $this->createMock(FileHandlerInterface::class);
+        $privateKey = $this->createMock(FileHandlerInterface::class);
+
+        $publicKey->method('getFileSize')->willThrowException(new FileException('no key yet'));
+        $privateKey->method('getFileSize')->willThrowException(new FileException('no key yet'));
+        $privateKey->method('chmod')->willReturnSelf();
+
+        return [$publicKey, $privateKey];
     }
 
     public function testGetMaxDataSize()
