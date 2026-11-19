@@ -357,13 +357,14 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
 - Repos build SQL with **Aura.SqlQuery** via `$this->queryFactory`. `->set($col, $rawExpr)` injects a
   **RAW, unquoted** expression (`'NOW()'`, `0`, `"''"` for an empty string — *not* `''`, which yields
   invalid SQL).
-- **"Raw" still goes past Aura's identifier quoter, which quotes whatever follows `AS`.**
-  `CAST(COALESCE(\`value\`, '0') AS UNSIGNED) + 1` is emitted as
-  ``CAST(COALESCE(`value`, '0') AS `UNSIGNED) + 1` `` — the rest of the expression is swallowed into
-  a quoted identifier and the statement will not parse. The SQL is valid when run by hand, so it
-  reads as a database problem rather than a builder one; dump `$query->getStatement()` before
-  believing either. Write the expression without `AS`: `COALESCE(\`value\`, '0') + 1` casts just as
-  well for arithmetic.
+- **Aura.SqlQuery 7 enforces what 3.x let slide**, and each one fails at runtime, not at load:
+  `set()` takes `?string` — under `strict_types` an int literal is a `TypeError`, so write
+  `->set('used', '0')`; a `where()` that binds inline (`where('name = :name', [...])`) a placeholder
+  `cols()` already binds throws `LogicException`, so give the condition its own name
+  (`:pluginName`); values bound by hand with `bindValues()` are unaffected. 3.x's quoter also
+  swallowed everything after an `AS` inside a raw expression into a quoted identifier
+  (``AS `UNSIGNED) + 1` ``); 7.x leaves `CAST(... AS UNSIGNED)` intact. Dump
+  `$query->getStatement()` before blaming the database for a builder problem.
 - **A numeric comparison against a varchar column needs the column side forced numeric.** `Config`
   stores everything as text, so `value < :limit` compares as text when both sides are strings, and
   `'10' < '3'` is true — a counter would pass a limit of 3 forever once it reached 10. `Database`
@@ -425,7 +426,8 @@ Key constraints:
 - **PHP 8.5** — `config.platform`, Docker image, and CI. Constraint `~8.4 || ~8.5`; `Environment`
   allows `>= 8.4 < 8.6`.
 - **Symfony 8.1** — HTTP foundation, routing, console, DomCrawler.
-- **Key libraries:** `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
+- **Key libraries:** `aura/sqlquery` 7 (3.x → 7.x directly: Aura shares one major version across
+  its packages, so there is no 4–6), `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
   (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
   abandoned `klein/klein` router — the HTTP layer goes through
   `SP\Infrastructure\Http\Ports\ResponseService` + `SP\Infrastructure\Bootstrap\Router`).

@@ -398,8 +398,8 @@ final class User extends BaseRepository implements UserRepository
             ->table(UserModel::TABLE)
             ->cols(['mPass' => $pass, 'mKey' => $key])
             ->set('lastUpdateMPass', 'UNIX_TIMESTAMP()')
-            ->set('isMigrate', 0)
-            ->set('isChangedPass', 0)
+            ->set('isMigrate', '0')
+            ->set('isChangedPass', '0')
             ->where('id = :id', ['id' => $id])
             ->limit(1);
 

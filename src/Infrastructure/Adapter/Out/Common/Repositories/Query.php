@@ -63,7 +63,7 @@ final class Query implements QueryInterface
      * @return string
      *
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->query;
     }
@@ -98,10 +98,10 @@ final class Query implements QueryInterface
      *
      * @param array<int|string, mixed> $bind_values Values to bind to the query.
      *
-     * @return $this
+     * @return static
      *
      */
-    public function bindValues(array $bind_values): self
+    public function bindValues(array $bind_values): static
     {
         // array_merge() renumbers integer keys, which is bad for
         // question-mark placeholders
@@ -116,13 +116,13 @@ final class Query implements QueryInterface
      *
      * Binds a single value to the query.
      *
-     * @param string $name The placeholder name or number.
+     * @param int|string $name The placeholder name or number.
      * @param mixed $value The value to bind to the placeholder.
      *
-     * @return $this
+     * @return static
      *
      */
-    public function bindValue($name, $value): self
+    public function bindValue(int|string $name, mixed $value): static
     {
         $this->values[$name] = $value;
 
@@ -142,7 +142,25 @@ final class Query implements QueryInterface
         return $this->query;
     }
 
-    public function resetFlags()
+    /**
+     * Removes every value bound to the query.
+     *
+     * @return static
+     */
+    public function resetBindValues(): static
     {
+        $this->values = [];
+
+        return $this;
+    }
+
+    /**
+     * A raw query has no flags, so there is nothing to reset.
+     *
+     * @return static
+     */
+    public function resetFlags(): static
+    {
+        return $this;
     }
 }
