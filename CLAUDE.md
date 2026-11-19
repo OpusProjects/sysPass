@@ -438,7 +438,7 @@ Key constraints:
   allows `>= 8.4 < 8.6`.
 - **Symfony 8.1** — HTTP foundation, routing, console, DomCrawler.
 - **Key libraries:** `aura/sqlquery` 7 (3.x → 7.x directly: Aura shares one major version across
-  its packages, so there is no 4–6), `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 3
+  its packages, so there is no 4–6), `guzzlehttp/guzzle` 7, `monolog/monolog` 3, `phpseclib/phpseclib` 4
   (RSA factory API — see `CryptPKI`), `symfony/http-foundation` + `symfony/routing` (replaced the
   abandoned `klein/klein` router — the HTTP layer goes through
   `SP\Infrastructure\Http\Ports\ResponseService` + `SP\Infrastructure\Bootstrap\Router`).

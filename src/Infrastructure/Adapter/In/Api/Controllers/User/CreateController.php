@@ -46,7 +46,9 @@ final class CreateController extends UserBase
             // be inserted at all — and an account with an empty password is not something this
             // endpoint should be able to create quietly either.
             'pass'          => $this->apiService->getParamString('pass', true),
-            'email'         => $this->apiService->getParamString('email'),
+            // Required, as the web form requires it of every user it does not take from LDAP —
+            // and the API creates no LDAP users. Password resets and notifications are mailed.
+            'email'         => $this->apiService->getParamString('email', true),
             'notes'         => $this->apiService->getParamString('notes'),
             'userGroupId'   => $this->apiService->getParamInt('userGroupId', true),
             'userProfileId' => $userProfileId,
