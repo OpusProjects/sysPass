@@ -79,11 +79,20 @@ final class Address
      */
     public static function parse4(string $address): array
     {
-        if (preg_match(self::PATTERN_IP_ADDRESS, $address, $matches)) {
-            return $matches;
+        // The pattern checks the shape only: it takes any three digits as an octet and any two as a
+        // prefix. So `999.1.1.1` was stored and then refused by check() on every request it should
+        // have matched, and `10.0.0.0/33` reached cidrToDec() and died with an ArithmeticError (a
+        // negative shift) — a 500, where every other bad address is answered as "Invalid IP".
+        if (!preg_match(self::PATTERN_IP_ADDRESS, $address, $matches)
+            || !filter_var($matches['address'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
+            || (($matches['mask'] ?? '') !== ''
+                && !filter_var($matches['mask'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+            || (isset($matches['cidr']) && (int)$matches['cidr'] > 32)
+        ) {
+            throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
         }
 
-        throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, $address);
+        return $matches;
     }
 
     /**
@@ -125,9 +134,17 @@ final class Address
 
     /**
      * Converts a CIDR mask into decimal
+     *
+     * @throws InvalidArgumentException
      */
     public static function cidrToDec(int $bits): string
     {
+        // Outside 0–32 the shift below is negative or meaningless, and a negative shift is an
+        // ArithmeticError, not an exception any caller expects.
+        if ($bits < 0 || $bits > 32) {
+            throw new InvalidArgumentException(__u('Invalid IP'), SPException::ERROR, (string)$bits);
+        }
+
         return long2ip(-1 << (32 - $bits));
     }
 }

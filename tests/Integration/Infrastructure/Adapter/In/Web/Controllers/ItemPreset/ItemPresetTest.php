@@ -266,6 +266,31 @@ class ItemPresetTest extends IntegrationTestCase
     }
 
     /**
+     * A prefix past 32 used to reach cidrToDec() and die with an ArithmeticError, answering the
+     * administrator with a 500. It is an invalid address like any other.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function saveCreateWithAnOutOfRangePrefixIsRefused()
+    {
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'itemPreset/saveCreate'],
+                ['ip_address' => '10.0.0.0/33'] + self::sessionTimeoutFields(900)
+            )
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"Invalid IP","data":null}');
+    }
+
+    /**
      * @throws ContainerExceptionInterface
      * @throws Exception
      * @throws NotFoundExceptionInterface
@@ -419,7 +444,8 @@ class ItemPresetTest extends IntegrationTestCase
             'ip_address' => '192.168.0.0/24',
             'timeout' => $timeout,
             'priority' => 10,
-            'user_id' => self::$faker->randomNumber(3),
+            // Not randomNumber(): it includes zero, which the form reads as "no user given".
+            'user_id' => self::$faker->numberBetween(1, 999),
         ];
     }
 
