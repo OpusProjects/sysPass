@@ -131,9 +131,13 @@ class PluginTest extends UnitaryTestCase
                 $query = $arg->getQuery();
                 $params = $query->getBindValues();
 
-                return count($params) === 6
+                // `:name` is the SET value and `:pluginName` the condition's: the query builder
+                // refuses one placeholder bound by both.
+                return count($params) === 7
                        && $params['id'] === $plugin->getId()
                        && $params['name'] === $plugin->getName()
+                       && $params['pluginName'] === $plugin->getName()
+                       && str_contains($query->getStatement(), 'name = :pluginName OR id = :id')
                        && $params['data'] === $plugin->getData()
                        && $params['enabled'] === $plugin->getEnabled()
                        && $params['available'] === $plugin->getAvailable()

@@ -86,7 +86,7 @@ final class UserPassRecover extends BaseRepository implements UserPassRecoverRep
             ->into(UserPassRecoverModel::TABLE)
             ->cols(['userId' => $userId, 'hash' => $hash])
             ->set('date', 'UNIX_TIMESTAMP()')
-            ->set('used', 0);
+            ->set('used', '0');
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while generating the recovering hash'));
 

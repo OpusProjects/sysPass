@@ -87,7 +87,9 @@ final class Plugin extends BaseRepository implements PluginRepository
             ->newUpdate()
             ->table(self::TABLE)
             ->cols($plugin->toArray(null, ['id']))
-            ->where('name = :name OR id = :id', ['name' => $plugin->getName(), 'id' => $plugin->getId()])
+            // `cols()` already binds `:name` for the SET clause, and the query builder refuses a
+            // condition binding the same placeholder, so the condition names its own.
+            ->where('name = :pluginName OR id = :id', ['pluginName' => $plugin->getName(), 'id' => $plugin->getId()])
             ->limit(1);
 
         $queryData = QueryData::build($query)->setOnErrorMessage(__u('Error while updating the plugin'));
