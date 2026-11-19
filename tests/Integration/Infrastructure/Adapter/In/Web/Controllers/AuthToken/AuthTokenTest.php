@@ -37,9 +37,12 @@ use SP\Domain\Common\Dtos\QueryResult;
 use SP\Domain\Common\Models\Simple;
 use SP\Domain\Core\Acl\AclActionsInterface;
 use SP\Domain\Core\Acl\AclInterface;
+use SP\Domain\User\Dtos\UserDto;
+use SP\Domain\User\Models\User;
 use SP\Infrastructure\Database\QueryData;
 use SP\Tests\Support\BodyChecker;
 use SP\Tests\Support\Generators\AuthTokenGenerator;
+use SP\Tests\Support\Generators\UserDataGenerator;
 use SP\Tests\Support\InjectVault;
 use SP\Tests\Support\IntegrationTestCase;
 use Symfony\Component\DomCrawler\Crawler;
@@ -51,6 +54,51 @@ use Symfony\Component\DomCrawler\Crawler;
 #[InjectVault]
 class AuthTokenTest extends IntegrationTestCase
 {
+    /**
+     * Who is signed in. An administrator by default, since a token acts as its user and only an
+     * administrator may act on an administrator — and the generated users are administrators at
+     * random. The test for that refusal signs in somebody else.
+     */
+    private bool $signedInAsAdministrator = true;
+
+    protected function getUserDataDto(): UserDto
+    {
+        return parent::getUserDataDto()->mutate(['id' => 1, 'isAdminApp' => $this->signedInAsAdministrator]);
+    }
+
+    /**
+     * A token manager who is not an administrator could issue a token for an administrator and
+     * then act as one through the API.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aTokenManagerWhoIsNotAnAdministratorCannotIssueOneForAnAdministrator()
+    {
+        $this->signedInAsAdministrator = false;
+
+        $this->addDatabaseMapperResolver(
+            User::class,
+            new QueryResult([UserDataGenerator::factory()->buildUserData()->mutate(['id' => 100, 'isAdminApp' => true])])
+        );
+
+        $data = [
+            'users' => 100,
+            'actions' => AclActionsInterface::ACCOUNT_SEARCH,
+            'pass' => self::$faker->sha1()
+        ];
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest('post', 'index.php', ['r' => 'authToken/saveCreate'], $data)
+        );
+
+        IntegrationTestCase::runApp($container);
+
+        $this->expectOutputString('{"status":"ERROR","description":"User not found","data":null}');
+    }
+
     /**
      * @throws ContainerExceptionInterface
      * @throws Exception
@@ -165,9 +213,10 @@ class AuthTokenTest extends IntegrationTestCase
     #[Test]
     public function saveCreate()
     {
+        // Not randomNumber(): it includes zero, which the form reads as "not given".
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
+            'actions' => self::$faker->numberBetween(1, 999),
             'pass' => self::$faker->sha1()
         ];
 
@@ -193,7 +242,7 @@ class AuthTokenTest extends IntegrationTestCase
     public function saveCreateWithoutUserIsRejectedNotFatal()
     {
         $data = [
-            'actions' => self::$faker->randomNumber(3),
+            'actions' => self::$faker->numberBetween(1, 999),
             'pass' => self::$faker->sha1()
         ];
 
@@ -217,8 +266,8 @@ class AuthTokenTest extends IntegrationTestCase
     public function saveEdit()
     {
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
+            'actions' => self::$faker->numberBetween(1, 999),
             'pass' => self::$faker->sha1()
         ];
 
@@ -257,8 +306,8 @@ class AuthTokenTest extends IntegrationTestCase
         };
 
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
+            'actions' => self::$faker->numberBetween(1, 999),
             'pass' => self::$faker->sha1()
         ];
 
@@ -287,7 +336,7 @@ class AuthTokenTest extends IntegrationTestCase
     public function saveEditMissingPasswordForSecuredActionIsRejectedNotFatal()
     {
         $data = [
-            'users' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
             'actions' => AclActionsInterface::ACCOUNT_VIEW_PASS,
         ];
 
@@ -315,8 +364,8 @@ class AuthTokenTest extends IntegrationTestCase
         $acl->method('getRouteFor')->willReturnCallback(static fn(int $actionId) => (string)$actionId);
 
         $data = [
-            'users' => self::$faker->randomNumber(3),
-            'actions' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
+            'actions' => self::$faker->numberBetween(1, 999),
             'pass' => self::$faker->sha1()
         ];
 
@@ -367,7 +416,7 @@ class AuthTokenTest extends IntegrationTestCase
         };
 
         $data = [
-            'users' => self::$faker->randomNumber(3),
+            'users' => self::$faker->numberBetween(1, 999),
             // Not a real ACL action id, so neither secured nor "can use secure token" — keeps
             // the injected data on the plain (non-vault) path so only the refresh queries below
             // are the ones tied to userId.
