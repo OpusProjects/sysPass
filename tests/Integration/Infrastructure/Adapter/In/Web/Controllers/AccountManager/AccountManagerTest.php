@@ -169,8 +169,10 @@ class AccountManagerTest extends IntegrationTestCase
     {
         $this->databaseQueryResolver = function (QueryData $queryData): QueryResult {
             /** @noinspection SqlWithoutWhere */
-            if (str_starts_with($queryData->getQuery()->getStatement(), 'DELETE `Account`')) {
-                return new QueryResult([], 1);
+            // One row per selected id, as the database answers: the service compares the count
+            // against the selection, so answering 1 for three would be a partial delete.
+            if (str_starts_with($queryData->getQuery()->getStatement(), 'DELETE FROM `Account`')) {
+                return new QueryResult([], 3);
             }
 
             if ($queryData->getMapClassName() === AccountView::class) {

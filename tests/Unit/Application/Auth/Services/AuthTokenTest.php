@@ -644,6 +644,35 @@ class AuthTokenTest extends UnitaryTestCase
         $this->authToken->refreshAndUpdate($authToken);
     }
 
+    /**
+     * Refreshing a token another session has since deleted matches no row, and used to be answered
+     * with "Authorization updated" anyway — update() made this check, refreshAndUpdate() did not.
+     *
+     * @throws Exception
+     */
+    public function testRefreshAndUpdateThrowsWhenTheTokenIsGone()
+    {
+        $this->context->setTrasientKey('_masterpass', 'test_pass');
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('transactionAware')
+            ->willReturnCallback(static fn(callable $callable) => $callable());
+
+        $this->crypt->method('makeSecuredKey')->willReturn('key');
+        $this->crypt->method('encrypt')->willReturn('secure_data');
+
+        $this->authTokenRepository
+            ->expects(self::once())
+            ->method('update')
+            ->willReturn(false);
+
+        $this->expectException(NoSuchItemException::class);
+        $this->expectExceptionMessage('Token not found');
+
+        $this->authToken->refreshAndUpdate(AuthTokenGenerator::factory()->buildAuthToken());
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
