@@ -1215,20 +1215,26 @@ class SyspassImportTest extends UnitaryTestCase
             ->with('masterPwd')
             ->willReturn(password_hash('a_password', PASSWORD_BCRYPT));
 
+        // Once: each account's password is read just before it is written, and the import stops
+        // at the first account that cannot be.
         $this->crypt
-            ->expects(self::exactly(5))
+            ->expects(self::once())
             ->method('decrypt')
             ->with(self::anything(), self::anything(), 'a_password')
             ->willReturn('super_secret');
 
+        // The first account that cannot be written aborts the import: its transaction joined
+        // the import's and rolled back everything before it, so carrying on would commit the rest
+        // on their own and report a partial import as done.
         $this->accountService
-            ->expects(self::exactly(5))
+            ->expects(self::once())
             ->method('create')
             ->willThrowException(new RuntimeException('test'));
 
-        $out = $this->sysPassImport->doImport($importParamsDto);
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('test');
 
-        $this->assertEquals(0, $out->getCounter());
+        $this->sysPassImport->doImport($importParamsDto);
     }
 
     protected function setUp(): void

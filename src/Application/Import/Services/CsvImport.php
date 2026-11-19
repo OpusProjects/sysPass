@@ -149,7 +149,9 @@ final class CsvImport extends ImportBase implements ItemsImportService
                                     ->addDetail(__u('Account imported'), $accountName)
                                     ->addDetail(__u('Client'), $clientName)
                 ));
-            } catch (Exception $e) {
+            } catch (ImportException $e) {
+                // A row this importer refuses before writing anything (no client or category) is
+                // skipped and recorded; nothing has touched the database for it.
                 processException($e);
 
                 $this->eventDispatcher->notify(new Event(
@@ -159,6 +161,19 @@ final class CsvImport extends ImportBase implements ItemsImportService
                                     ->addDetail(__u('Error while importing the account'), $accountName)
                                     ->addDetail(__u('Error while processing line'), $line)
                 ));
+            } catch (Exception $e) {
+                // An account that cannot be written aborts the import. Account::create() runs in its
+                // own transaction, which joins the import's: when it fails it rolls back *the whole
+                // import so far*. Carrying on from there committed every later row on its own,
+                // against client and category ids the cache still held from the rolled-back part,
+                // and reported success with a count that included the rows that were gone. The
+                // import is all or nothing, and this is what makes it so.
+                throw ImportException::error(
+                    $e->getMessage(),
+                    sprintf(__('Error while processing line'). ' %d', $line),
+                    $e->getCode(),
+                    $e
+                );
             }
         }
 

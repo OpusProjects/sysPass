@@ -38,6 +38,7 @@ use SP\Application\Client\Ports\ClientService;
 use SP\Application\Config\Ports\ConfigService;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\Core\Exceptions\SPException;
+use SP\Domain\Import\Services\ImportException;
 use SP\Domain\Import\Dtos\ImportParamsDto;
 use SP\Application\Import\Services\ImportHelper;
 use SP\Application\Import\Services\KeepassImport;
@@ -142,10 +143,16 @@ class KeepassImportTest extends UnitaryTestCase
             )
             ->willReturn(200);
 
+        // The first account that cannot be written aborts the import: its transaction joined
+        // the import's and rolled back everything before it, so carrying on would commit the rest
+        // on their own and report a partial import as done.
         $this->accountService
-            ->expects(self::exactly(5))
+            ->expects(self::once())
             ->method('create')
             ->willThrowException(SPException::error('test'));
+
+        $this->expectException(ImportException::class);
+        $this->expectExceptionMessage('test');
 
         $this->keepassImport->doImport($importParamsDto);
     }
