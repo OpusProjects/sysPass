@@ -93,6 +93,15 @@ final class TemporaryMasterPass extends Service implements TemporaryMasterPassSe
      */
     public function create(int $maxTime = 14400): string
     {
+        // A demo publishes its administrator's credentials, so the ACL stops nobody and this guard
+        // is the whole boundary. Without it any visitor could overwrite the stored temporary
+        // password and, with mail enabled, have one emailed to every user. The web's other
+        // encryption actions already refused on a demo; this one did not. The refusal sits here,
+        // where every door reaches it, as it does in MasterPass::changeMasterPassword().
+        if ($this->config->getConfigData()->isDemoEnabled()) {
+            throw ServiceException::error(__u('Ey, this is a DEMO!!'));
+        }
+
         try {
             $this->maxTime = time() + $maxTime;
 

@@ -456,6 +456,23 @@ class TemporaryMasterPassTest extends UnitaryTestCase
         $this->temporaryMasterPass->create(3600);
     }
 
+    /**
+     * Refused on a demo before anything is generated or stored, whichever door asks.
+     *
+     * @throws ServiceException
+     */
+    public function testCreateIsRefusedOnADemo()
+    {
+        $this->config->getConfigData()->setDemoEnabled(true);
+
+        $this->crypt->expects(self::never())->method('encrypt');
+        $this->configService->expects(self::never())->method('saveBatch');
+
+        $this->expectException(ServiceException::class);
+        $this->expectExceptionMessage('Ey, this is a DEMO!!');
+
+        $this->temporaryMasterPass->create(3600);
+    }
 
     protected function setUp(): void
     {

@@ -68,6 +68,11 @@ final class SaveTempController extends SimpleControllerBase
     #[Action(ResponseType::JSON)]
     public function saveTempAction(): ActionResponse
     {
+        // Answered as a warning, like the other encryption actions; the service refuses too.
+        if ($this->configData->isDemoEnabled()) {
+            return ActionResponse::warning(__u('Ey, this is a DEMO!!'));
+        }
+
         $key =
             $this->temporaryMasterPassService->create(
                 $this->request->analyzeInt('temporary_masterpass_maxtime', 3600)
