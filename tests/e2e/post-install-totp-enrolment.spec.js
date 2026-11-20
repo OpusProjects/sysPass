@@ -153,7 +153,11 @@ test.describe('Two-factor sign-in', () => {
     );
 
     // ── Open the user's settings, Security tab ────────────────────────────
-    await page.locator('[data-onclick="user/showSettings"]:visible').first().click();
+    // Through the user menu in the header: the drawer's link to the same page
+    // reads as visible but sits under the closed drawer and never takes a click.
+    await page.locator('#users-menu-lower-right').click();
+    await expect(page.locator('#btnPrefs')).toBeVisible({ timeout: 5_000 });
+    await page.locator('#btnPrefs').click();
     await page.locator('#tabsHeader a', { hasText: 'Security' }).click();
     await expect(page.locator('#totp-off')).toBeVisible({ timeout: 15_000 });
 
