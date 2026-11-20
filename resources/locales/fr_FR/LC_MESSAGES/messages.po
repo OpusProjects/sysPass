@@ -8331,3 +8331,136 @@ msgstr ""
 
 msgid "sysPass is not installed"
 msgstr "sysPass n'est pas installé"
+
+msgid "Authentication Code"
+msgstr "Code d'authentification"
+
+msgid "Authenticator app"
+msgstr "Application d'authentification"
+
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+msgid "Code from the app"
+msgstr "Code de l'application"
+
+msgid "Confirm"
+msgstr "Confirmer"
+
+msgid "Continue"
+msgstr "Continuer"
+
+msgid "Current code or recovery code"
+msgstr "Code actuel ou code de récupération"
+
+msgid "Done"
+msgstr "Terminé"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Chacun connecte une fois sans l'application. Gardez-les : ils ne sont montrés qu'ici."
+
+msgid "Error while checking the code"
+msgstr "Erreur lors de la vérification du code"
+
+msgid "Error while removing the recovery codes"
+msgstr "Erreur lors de la suppression des codes de récupération"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Erreur lors de la suppression du secret à deux facteurs"
+
+msgid "Error while saving the recovery codes"
+msgstr "Erreur lors de l'enregistrement des codes de récupération"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Erreur lors de l'enregistrement du secret à deux facteurs"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Tous se connectent avec une app d'authentification ; jetons API exemptés."
+
+msgid "New recovery codes"
+msgstr "Nouveaux codes de récupération"
+
+msgid "New recovery codes issued"
+msgstr "Nouveaux codes de récupération émis"
+
+msgid "No password salt is set"
+msgstr "Aucun sel de mot de passe défini"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Non : la connexion ne demande que le mot de passe."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Oui : la connexion demande un code de votre app d'authentification."
+
+msgid "Recovery codes"
+msgstr "Codes de récupération"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Retirer son application d'authentification et ses codes"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Exiger une app d'authentification"
+
+msgid "Require two-factor sign-in"
+msgstr "Exiger la connexion à deux facteurs"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Scannez le code avec votre application d'authentification"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Scannez le code avec votre app d'authentification ou saisissez la clé dessous."
+
+msgid "Signed in with a recovery code"
+msgstr "Connecté avec un code de récupération"
+
+msgid "Turn off"
+msgstr "Désactiver"
+
+msgid "Turn on"
+msgstr "Activer"
+
+msgid "Two-factor"
+msgstr "Deux facteurs"
+
+msgid "Two-factor authentication"
+msgstr "Authentification à deux facteurs"
+
+msgid "Two-factor authentication is already on"
+msgstr "L'authentification à deux facteurs est déjà active"
+
+msgid "Two-factor authentication is off"
+msgstr "L'authentification à deux facteurs est désactivée"
+
+msgid "Two-factor authentication is on"
+msgstr "L'authentification à deux facteurs est active"
+
+msgid "Two-factor authentication reset"
+msgstr "Authentification à deux facteurs réinitialisée"
+
+msgid "Two-factor authentication turned off"
+msgstr "Authentification à deux facteurs désactivée"
+
+msgid "Two-factor authentication turned on"
+msgstr "Authentification à deux facteurs activée"
+
+msgid "Two-factor code needed"
+msgstr "Code à deux facteurs requis"
+
+msgid "Two-factor for everyone"
+msgstr "Deux facteurs pour tous"
+
+msgid "Two-factor reset"
+msgstr "Réinitialiser deux facteurs"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Deux facteurs requis : scannez le code avec votre application d'authentification"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Codes de récupération inutilisés : %d"
+
+msgid "Wrong two-factor code"
+msgstr "Code à deux facteurs incorrect"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Votre administrateur exige la connexion à deux facteurs"

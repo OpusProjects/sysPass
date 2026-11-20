@@ -8193,3 +8193,136 @@ msgstr "sysPassは既にインストールされています。再インスト�
 
 msgid "sysPass is not installed"
 msgstr "sysPassはインストールされていません"
+
+msgid "Authentication Code"
+msgstr "認証コード"
+
+msgid "Authenticator app"
+msgstr "認証アプリ"
+
+msgid "Change password"
+msgstr "パスワードを変更"
+
+msgid "Code from the app"
+msgstr "アプリのコード"
+
+msgid "Confirm"
+msgstr "確認"
+
+msgid "Continue"
+msgstr "続行"
+
+msgid "Current code or recovery code"
+msgstr "現在のコードまたはリカバリーコード"
+
+msgid "Done"
+msgstr "完了"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "各コードでアプリなしで1回ログインできます。安全に保管してください。表示は今回のみです。"
+
+msgid "Error while checking the code"
+msgstr "コードの確認中にエラーが発生しました"
+
+msgid "Error while removing the recovery codes"
+msgstr "リカバリーコードの削除中にエラーが発生しました"
+
+msgid "Error while removing the two-factor secret"
+msgstr "二要素シークレットの削除中にエラーが発生しました"
+
+msgid "Error while saving the recovery codes"
+msgstr "リカバリーコードの保存中にエラーが発生しました"
+
+msgid "Error while saving the two-factor secret"
+msgstr "二要素シークレットの保存中にエラーが発生しました"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "全ユーザーが認証アプリでログインします。APIトークンは対象外です。"
+
+msgid "New recovery codes"
+msgstr "新しいリカバリーコード"
+
+msgid "New recovery codes issued"
+msgstr "新しいリカバリーコードを発行しました"
+
+msgid "No password salt is set"
+msgstr "パスワードソルトが設定されていません"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "オフ: ログイン時はパスワードのみを求めます。"
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "オン: ログイン時に認証アプリのコードを求めます。"
+
+msgid "Recovery codes"
+msgstr "リカバリーコード"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "認証アプリとリカバリーコードを削除"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "ログイン時に認証アプリを必須にする"
+
+msgid "Require two-factor sign-in"
+msgstr "二要素ログインを必須にする"
+
+msgid "Scan the code with your authenticator app"
+msgstr "認証アプリでコードをスキャンしてください"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "認証アプリでコードをスキャンするか、下のキーを入力してください。"
+
+msgid "Signed in with a recovery code"
+msgstr "リカバリーコードでログインしました"
+
+msgid "Turn off"
+msgstr "オフにする"
+
+msgid "Turn on"
+msgstr "オンにする"
+
+msgid "Two-factor"
+msgstr "二要素"
+
+msgid "Two-factor authentication"
+msgstr "二要素認証"
+
+msgid "Two-factor authentication is already on"
+msgstr "二要素認証はすでにオンです"
+
+msgid "Two-factor authentication is off"
+msgstr "二要素認証はオフです"
+
+msgid "Two-factor authentication is on"
+msgstr "二要素認証はオンです"
+
+msgid "Two-factor authentication reset"
+msgstr "二要素認証をリセットしました"
+
+msgid "Two-factor authentication turned off"
+msgstr "二要素認証をオフにしました"
+
+msgid "Two-factor authentication turned on"
+msgstr "二要素認証をオンにしました"
+
+msgid "Two-factor code needed"
+msgstr "二要素コードが必要です"
+
+msgid "Two-factor for everyone"
+msgstr "全員に二要素"
+
+msgid "Two-factor reset"
+msgstr "二要素をリセット"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "二要素ログインが必須です: 認証アプリでコードをスキャンしてください"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "未使用のリカバリーコード: %d"
+
+msgid "Wrong two-factor code"
+msgstr "二要素コードが正しくありません"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "管理者が二要素ログインを必須にしています"

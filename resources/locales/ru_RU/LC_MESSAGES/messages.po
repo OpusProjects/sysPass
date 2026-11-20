@@ -8261,6 +8261,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass не установлен"
 
+msgid "Authentication Code"
+msgstr "Код аутентификации"
+
+msgid "Authenticator app"
+msgstr "Приложение-аутентификатор"
+
+msgid "Change password"
+msgstr "Сменить пароль"
+
+msgid "Code from the app"
+msgstr "Код из приложения"
+
+msgid "Confirm"
+msgstr "Подтвердить"
+
+msgid "Continue"
+msgstr "Продолжить"
+
+msgid "Current code or recovery code"
+msgstr "Текущий код или код восстановления"
+
+msgid "Done"
+msgstr "Готово"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Каждый даёт один вход без приложения. Сохраните их: они показываются только сейчас."
+
+msgid "Error while checking the code"
+msgstr "Ошибка при проверке кода"
+
+msgid "Error while removing the recovery codes"
+msgstr "Ошибка при удалении кодов восстановления"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Ошибка при удалении секрета двухфакторной защиты"
+
+msgid "Error while saving the recovery codes"
+msgstr "Ошибка при сохранении кодов восстановления"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Ошибка при сохранении секрета двухфакторной защиты"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Все входят через приложение-аутентификатор; API-токены освобождены."
+
+msgid "New recovery codes"
+msgstr "Новые коды восстановления"
+
+msgid "New recovery codes issued"
+msgstr "Выданы новые коды восстановления"
+
+msgid "No password salt is set"
+msgstr "Соль пароля не задана"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Выкл.: при входе запрашивается только пароль."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Вкл.: при входе запрашивается код из приложения-аутентификатора."
+
+msgid "Recovery codes"
+msgstr "Коды восстановления"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Удаляет его аутентификатор и коды восстановления"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Требовать приложение-аутентификатор при входе"
+
+msgid "Require two-factor sign-in"
+msgstr "Требовать двухфакторный вход"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Отсканируйте код приложением-аутентификатором"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Отсканируйте код приложением-аутентификатором или введите ключ под ним."
+
+msgid "Signed in with a recovery code"
+msgstr "Вход выполнен с кодом восстановления"
+
+msgid "Turn off"
+msgstr "Выключить"
+
+msgid "Turn on"
+msgstr "Включить"
+
+msgid "Two-factor"
+msgstr "Двухфакторная"
+
+msgid "Two-factor authentication"
+msgstr "Двухфакторная аутентификация"
+
+msgid "Two-factor authentication is already on"
+msgstr "Двухфакторная аутентификация уже включена"
+
+msgid "Two-factor authentication is off"
+msgstr "Двухфакторная аутентификация выключена"
+
+msgid "Two-factor authentication is on"
+msgstr "Двухфакторная аутентификация включена"
+
+msgid "Two-factor authentication reset"
+msgstr "Двухфакторная аутентификация сброшена"
+
+msgid "Two-factor authentication turned off"
+msgstr "Двухфакторная аутентификация выключена"
+
+msgid "Two-factor authentication turned on"
+msgstr "Двухфакторная аутентификация включена"
+
+msgid "Two-factor code needed"
+msgstr "Нужен двухфакторный код"
+
+msgid "Two-factor for everyone"
+msgstr "Двухфакторная для всех"
+
+msgid "Two-factor reset"
+msgstr "Сброс двухфакторной"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Нужен двухфакторный вход: отсканируйте код приложением-аутентификатором"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Неиспользованные коды восстановления: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Неверный двухфакторный код"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Администратор требует двухфакторный вход"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "Папка \"/config\" не существует."
 

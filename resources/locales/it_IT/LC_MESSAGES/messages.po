@@ -8292,3 +8292,136 @@ msgstr ""
 
 msgid "sysPass is not installed"
 msgstr "sysPass non è installato"
+
+msgid "Authentication Code"
+msgstr "Codice di autenticazione"
+
+msgid "Authenticator app"
+msgstr "App di autenticazione"
+
+msgid "Change password"
+msgstr "Cambia password"
+
+msgid "Code from the app"
+msgstr "Codice dall'app"
+
+msgid "Confirm"
+msgstr "Conferma"
+
+msgid "Continue"
+msgstr "Continua"
+
+msgid "Current code or recovery code"
+msgstr "Codice attuale o codice di recupero"
+
+msgid "Done"
+msgstr "Fatto"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Ognuno consente un accesso senza l'app. Conservali: sono mostrati solo ora."
+
+msgid "Error while checking the code"
+msgstr "Errore durante la verifica del codice"
+
+msgid "Error while removing the recovery codes"
+msgstr "Errore durante la rimozione dei codici di recupero"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Errore durante la rimozione del segreto a due fattori"
+
+msgid "Error while saving the recovery codes"
+msgstr "Errore durante il salvataggio dei codici di recupero"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Errore durante il salvataggio del segreto a due fattori"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Tutti accedono con un'app di autenticazione; i token API sono esenti."
+
+msgid "New recovery codes"
+msgstr "Nuovi codici di recupero"
+
+msgid "New recovery codes issued"
+msgstr "Nuovi codici di recupero emessi"
+
+msgid "No password salt is set"
+msgstr "Nessun salt della password impostato"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "No: l'accesso chiede solo la tua password."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Sì: l'accesso chiede un codice dalla tua app di autenticazione."
+
+msgid "Recovery codes"
+msgstr "Codici di recupero"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Rimuove la sua app di autenticazione e i codici"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Richiedi un'app di autenticazione all'accesso"
+
+msgid "Require two-factor sign-in"
+msgstr "Richiedi l'accesso a due fattori"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Scansiona il codice con la tua app di autenticazione"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Scansiona il codice con la tua app di autenticazione o digita la chiave sotto."
+
+msgid "Signed in with a recovery code"
+msgstr "Accesso effettuato con un codice di recupero"
+
+msgid "Turn off"
+msgstr "Disattiva"
+
+msgid "Turn on"
+msgstr "Attiva"
+
+msgid "Two-factor"
+msgstr "Due fattori"
+
+msgid "Two-factor authentication"
+msgstr "Autenticazione a due fattori"
+
+msgid "Two-factor authentication is already on"
+msgstr "L'autenticazione a due fattori è già attiva"
+
+msgid "Two-factor authentication is off"
+msgstr "L'autenticazione a due fattori è disattivata"
+
+msgid "Two-factor authentication is on"
+msgstr "L'autenticazione a due fattori è attiva"
+
+msgid "Two-factor authentication reset"
+msgstr "Autenticazione a due fattori reimpostata"
+
+msgid "Two-factor authentication turned off"
+msgstr "Autenticazione a due fattori disattivata"
+
+msgid "Two-factor authentication turned on"
+msgstr "Autenticazione a due fattori attivata"
+
+msgid "Two-factor code needed"
+msgstr "Serve il codice a due fattori"
+
+msgid "Two-factor for everyone"
+msgstr "Due fattori per tutti"
+
+msgid "Two-factor reset"
+msgstr "Reimposta due fattori"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Due fattori obbligatori: scansiona il codice con la tua app di autenticazione"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Codici di recupero inutilizzati: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Codice a due fattori errato"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "L'amministratore richiede l'accesso a due fattori"

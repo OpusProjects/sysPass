@@ -8254,6 +8254,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass nincs telepítve"
 
+msgid "Authentication Code"
+msgstr "Hitelesítő kód"
+
+msgid "Authenticator app"
+msgstr "Hitelesítő alkalmazás"
+
+msgid "Change password"
+msgstr "Jelszó módosítása"
+
+msgid "Code from the app"
+msgstr "Kód az alkalmazásból"
+
+msgid "Confirm"
+msgstr "Megerősítés"
+
+msgid "Continue"
+msgstr "Tovább"
+
+msgid "Current code or recovery code"
+msgstr "Aktuális kód vagy helyreállító kód"
+
+msgid "Done"
+msgstr "Kész"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Mindegyik egyszer beléptet az alkalmazás nélkül. Őrizze meg: csak most látható."
+
+msgid "Error while checking the code"
+msgstr "Hiba a kód ellenőrzésekor"
+
+msgid "Error while removing the recovery codes"
+msgstr "Hiba a helyreállító kódok törlésekor"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Hiba a kétlépcsős titok törlésekor"
+
+msgid "Error while saving the recovery codes"
+msgstr "Hiba a helyreállító kódok mentésekor"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Hiba a kétlépcsős titok mentésekor"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Mindenki hitelesítő alkalmazással lép be; az API tokenek kivételek."
+
+msgid "New recovery codes"
+msgstr "Új helyreállító kódok"
+
+msgid "New recovery codes issued"
+msgstr "Új helyreállító kódok kiadva"
+
+msgid "No password salt is set"
+msgstr "Nincs beállítva jelszó-só"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Ki: a belépés csak a jelszót kéri."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Be: a belépés kódot kér a hitelesítő alkalmazásból."
+
+msgid "Recovery codes"
+msgstr "Helyreállító kódok"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Hitelesítő alkalmazás és helyreállító kódok törlése"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Hitelesítő alkalmazás kötelező"
+
+msgid "Require two-factor sign-in"
+msgstr "Kétlépcsős belépés megkövetelése"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Olvassa be a kódot a hitelesítő alkalmazással"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Olvassa be a kódot a hitelesítő alkalmazással, vagy írja be a kulcsot."
+
+msgid "Signed in with a recovery code"
+msgstr "Belépés helyreállító kóddal"
+
+msgid "Turn off"
+msgstr "Kikapcsolás"
+
+msgid "Turn on"
+msgstr "Bekapcsolás"
+
+msgid "Two-factor"
+msgstr "Kétlépcsős"
+
+msgid "Two-factor authentication"
+msgstr "Kétlépcsős hitelesítés"
+
+msgid "Two-factor authentication is already on"
+msgstr "A kétlépcsős hitelesítés már be van kapcsolva"
+
+msgid "Two-factor authentication is off"
+msgstr "A kétlépcsős hitelesítés ki van kapcsolva"
+
+msgid "Two-factor authentication is on"
+msgstr "A kétlépcsős hitelesítés be van kapcsolva"
+
+msgid "Two-factor authentication reset"
+msgstr "Kétlépcsős hitelesítés visszaállítva"
+
+msgid "Two-factor authentication turned off"
+msgstr "Kétlépcsős hitelesítés kikapcsolva"
+
+msgid "Two-factor authentication turned on"
+msgstr "Kétlépcsős hitelesítés bekapcsolva"
+
+msgid "Two-factor code needed"
+msgstr "Kétlépcsős kód szükséges"
+
+msgid "Two-factor for everyone"
+msgstr "Kétlépcsős mindenkinek"
+
+msgid "Two-factor reset"
+msgstr "Kétlépcsős visszaállítása"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Kétlépcsős belépés kötelező: olvassa be a kódot a hitelesítő alkalmazással"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Fel nem használt helyreállító kódok: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Hibás kétlépcsős kód"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "A rendszergazda kétlépcsős belépést követel meg"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" mappa nem létezik"
 

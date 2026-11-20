@@ -7702,6 +7702,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass no està instal·lat"
 
+msgid "Authentication Code"
+msgstr "Codi d'autenticació"
+
+msgid "Authenticator app"
+msgstr "App d'autenticació"
+
+msgid "Change password"
+msgstr "Canviar clau"
+
+msgid "Code from the app"
+msgstr "Codi de l'app"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Continue"
+msgstr "Continuar"
+
+msgid "Current code or recovery code"
+msgstr "Codi actual o codi de recuperació"
+
+msgid "Done"
+msgstr "Fet"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Cadascun inicia la sessió un cop sense l'app. Guardeu-los: només es mostren ara."
+
+msgid "Error while checking the code"
+msgstr "Error en comprovar el codi"
+
+msgid "Error while removing the recovery codes"
+msgstr "Error en eliminar els codis de recuperació"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Error en eliminar el secret de doble factor"
+
+msgid "Error while saving the recovery codes"
+msgstr "Error en desar els codis de recuperació"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Error en desar el secret de doble factor"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Tothom entra amb una app d'autenticació; els tokens API n'estan exempts."
+
+msgid "New recovery codes"
+msgstr "Nous codis de recuperació"
+
+msgid "New recovery codes issued"
+msgstr "Nous codis de recuperació emesos"
+
+msgid "No password salt is set"
+msgstr "No hi ha salt de clau definida"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "No: l'inici de sessió només demana la clau."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Sí: l'inici de sessió demana un codi de l'app d'autenticació."
+
+msgid "Recovery codes"
+msgstr "Codis de recuperació"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Treure la seva app d'autenticació i els seus codis"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Exigir app d'autenticació en entrar"
+
+msgid "Require two-factor sign-in"
+msgstr "Exigir doble factor"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Escanegeu el codi amb l'app d'autenticació"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Escanegeu el codi amb l'app d'autenticació o escriviu la clau de sota."
+
+msgid "Signed in with a recovery code"
+msgstr "Sessió iniciada amb un codi de recuperació"
+
+msgid "Turn off"
+msgstr "Desactivar"
+
+msgid "Turn on"
+msgstr "Activar"
+
+msgid "Two-factor"
+msgstr "Doble factor"
+
+msgid "Two-factor authentication"
+msgstr "Autenticació de doble factor"
+
+msgid "Two-factor authentication is already on"
+msgstr "L'autenticació de doble factor ja està activada"
+
+msgid "Two-factor authentication is off"
+msgstr "L'autenticació de doble factor està desactivada"
+
+msgid "Two-factor authentication is on"
+msgstr "L'autenticació de doble factor està activada"
+
+msgid "Two-factor authentication reset"
+msgstr "Autenticació de doble factor restablerta"
+
+msgid "Two-factor authentication turned off"
+msgstr "Autenticació de doble factor desactivada"
+
+msgid "Two-factor authentication turned on"
+msgstr "Autenticació de doble factor activada"
+
+msgid "Two-factor code needed"
+msgstr "Cal el codi de doble factor"
+
+msgid "Two-factor for everyone"
+msgstr "Doble factor per a tothom"
+
+msgid "Two-factor reset"
+msgstr "Restablir doble factor"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Cal doble factor: escanegeu el codi amb l'app d'autenticació"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Codis de recuperació sense usar: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Codi de doble factor incorrecte"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "El vostre administrador exigeix el doble factor"
+
 #~ msgid "There aren't any allowed extensions"
 #~ msgstr "No hi ha extensions permeses"
 
