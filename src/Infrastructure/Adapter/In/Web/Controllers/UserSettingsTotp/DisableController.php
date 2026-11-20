@@ -43,6 +43,12 @@ final class DisableController extends UserSettingsTotpBase
     public function disableAction(): ActionResponse
     {
         try {
+            // Required by an administrator, turning it off would only send the user through
+            // enrolment again at the next sign-in; say why instead.
+            if ($this->session->getUserData()->isTotpRequired === true || $this->configData->isTotpRequired()) {
+                return ActionResponse::error(__u('Your administrator requires two-factor sign-in'));
+            }
+
             $this->requireCode();
 
             $this->userTotpService->disable($this->getUserId());

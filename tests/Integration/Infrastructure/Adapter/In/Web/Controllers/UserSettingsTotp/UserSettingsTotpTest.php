@@ -52,6 +52,7 @@ class UserSettingsTotpTest extends IntegrationTestCase
     private const VIEWER_LOGIN = 'ana';
 
     private UserTotpService|MockObject $userTotpService;
+    private bool $required = false;
 
     protected function setUp(): void
     {
@@ -65,7 +66,9 @@ class UserSettingsTotpTest extends IntegrationTestCase
      */
     protected function getUserDataDto(): UserDto
     {
-        return parent::getUserDataDto()->mutate(['id' => self::VIEWER_ID, 'login' => self::VIEWER_LOGIN]);
+        return parent::getUserDataDto()->mutate(
+            ['id' => self::VIEWER_ID, 'login' => self::VIEWER_LOGIN, 'isTotpRequired' => $this->required]
+        );
     }
 
     /**
@@ -202,6 +205,28 @@ class UserSettingsTotpTest extends IntegrationTestCase
         $this->userTotpService->expects($this->once())->method('disable')->with(self::VIEWER_ID);
 
         self::assertSame('OK', $this->dispatch('disable', ['code' => '123456'])->status);
+    }
+
+    /**
+     * Required by an administrator: turning it off would only send the user through enrolment
+     * at the next sign-in, so it is refused with the reason, before any code is spent.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aRequiredSecondFactorCannotBeTurnedOff(): void
+    {
+        $this->required = true;
+
+        $this->userTotpService->expects($this->never())->method('check');
+        $this->userTotpService->expects($this->never())->method('disable');
+
+        $json = $this->dispatch('disable', ['code' => '123456']);
+
+        self::assertSame('ERROR', $json->status);
+        self::assertSame('Your administrator requires two-factor sign-in', $json->description);
     }
 
     /**

@@ -64,6 +64,7 @@ final class UserDto extends Dto
         public readonly ?bool            $isChangedPass = null,
         public readonly ?bool            $isLdap = null,
         public readonly ?bool            $isMigrate = null,
+        public readonly ?bool            $isTotpRequired = null,
         public readonly ?UserPreferences $preferences = null
     ) {
     }

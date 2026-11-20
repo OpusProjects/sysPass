@@ -56,6 +56,7 @@ final class CreateController extends UserBase
             'isAdminAcc'    => $this->context->getUserData()->isAdminApp && (bool) $this->apiService->getParamInt('isAdminAcc'),
             'isDisabled'    => (bool) $this->apiService->getParamInt('isDisabled'),
             'isChangePass'  => (bool) $this->apiService->getParamInt('isChangePass'),
+            'isTotpRequired' => (bool) $this->apiService->getParamInt('isTotpRequired'),
         ]);
     }
 }

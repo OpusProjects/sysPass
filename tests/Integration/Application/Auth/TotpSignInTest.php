@@ -386,6 +386,86 @@ final class TotpSignInTest extends TestCase
         }
     }
 
+    /**
+     * Required by an administrator and not enrolled: the password alone does not open a session.
+     * The first attempt is answered with the secret to enrol, and trying again shows the same one
+     * rather than replacing what the user may already have scanned.
+     */
+    #[Test]
+    public function aRequiredUserEnrolsAtSignInBeforeASessionOpens(): void
+    {
+        [$login, $pass, $userId] = $this->newUser();
+        $this->pdo->exec('UPDATE User SET isTotpRequired = 1 WHERE id = ' . $userId);
+
+        [$status, $data] = $this->attemptLoginWithAnswer($login, $pass);
+        self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $status);
+        self::assertMatchesRegularExpression('/^[A-Z2-7]{32}$/', $data['secret']);
+        self::assertStringStartsWith('otpauth://totp/sysPass:' . $login . '?secret=' . $data['secret'], $data['uri']);
+
+        [$status, $again] = $this->attemptLoginWithAnswer($login, $pass);
+        self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $status);
+        self::assertSame($data['secret'], $again['secret']);
+        self::assertFalse($this->totp()->isEnabled($userId));
+
+        $secret = $data['secret'];
+        $step = Totp::stepAt(time());
+
+        [$status] = $this->attemptLoginWithAnswer($login, $pass, $this->wrongCode($secret, $step));
+        self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $status);
+        self::assertFalse($this->totp()->isEnabled($userId));
+
+        [$status, , $recoveryCodes] = $this->attemptLoginWithAnswer($login, $pass, Totp::codeAt($secret, $step));
+        self::assertSame(LoginStatus::OK->value, $status);
+        self::assertTrue($this->totp()->isEnabled($userId));
+        self::assertCount(10, $recoveryCodes);
+        self::assertSame(10, $this->totp()->countRecoveryCodes($userId));
+
+        // Enrolled now: the next sign-in asks for a code, and the one that enrolled is spent.
+        self::assertSame(LoginStatus::TOTP_REQUIRED->value, $this->attemptLogin($login, $pass));
+        self::assertSame(LoginStatus::TOTP_REQUIRED->value, $this->attemptLogin($login, $pass, Totp::codeAt($secret, $step)));
+        self::assertSame(LoginStatus::OK->value, $this->attemptLogin($login, $pass, $recoveryCodes[0]));
+    }
+
+    /**
+     * The same, for everybody, from one switch in the security settings.
+     */
+    #[Test]
+    public function requiringItForEveryoneAsksEveryoneToEnrol(): void
+    {
+        // Before anything builds a container: the config cache is invalidated by the file's
+        // mtime, which has a resolution of a second, so a rewrite in the same second as the
+        // first load is not seen. It passed alone and failed in the full run.
+        $this->requireForEveryone();
+
+        [$login, $pass] = $this->newUser();
+
+        [$status, $data] = $this->attemptLoginWithAnswer($login, $pass);
+
+        self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $status);
+        self::assertArrayHasKey('secret', $data);
+    }
+
+    /**
+     * The code is the second factor, not a replacement for the first, at enrolment too.
+     */
+    #[Test]
+    public function enrolmentAtSignInStillNeedsThePassword(): void
+    {
+        [$login, $pass, $userId] = $this->newUser();
+        $this->pdo->exec('UPDATE User SET isTotpRequired = 1 WHERE id = ' . $userId);
+
+        [, $data] = $this->attemptLoginWithAnswer($login, $pass);
+
+        [$status] = $this->attemptLoginWithAnswer(
+            $login,
+            'not-the-password',
+            Totp::codeAt($data['secret'], Totp::stepAt(time()))
+        );
+
+        self::assertSame(LoginStatus::INVALID_LOGIN->value, $status);
+        self::assertFalse($this->totp()->isEnabled($userId));
+    }
+
     #[Test]
     public function turningItOffStopsTheQuestion(): void
     {
@@ -458,6 +538,45 @@ final class TotpSignInTest extends TestCase
         return (int)$this->pdo
             ->query("SELECT COUNT(*) FROM Track WHERE ipv4 = INET6_ATON('" . self::REMOTE_ADDR . "')")
             ->fetchColumn();
+    }
+
+    /**
+     * As attemptLogin(), with what the answer carried: the enrolment prompt's secret, and the
+     * recovery codes a completed enrolment issues.
+     *
+     * @return array{int, array<string, mixed>, string[]}
+     */
+    private function attemptLoginWithAnswer(string $user, string $pass, ?string $totp = null): array
+    {
+        $_SERVER['REMOTE_ADDR'] = self::REMOTE_ADDR;
+        $_SERVER['REQUEST_METHOD'] = 'POST';
+        $_POST = ['user' => $user, 'pass' => $pass] + ($totp === null ? [] : ['totp' => $totp]);
+
+        $dic = $this->buildContainer();
+        $dic->get(Context::class)->initialize();
+
+        try {
+            $response = $dic->get(LoginService::class)->doLogin();
+
+            return [$response->getStatus()->value, [], $response->getRecoveryCodes()];
+        } catch (AuthException $e) {
+            return [(int)$e->getCode(), $e->getData(), []];
+        } finally {
+            $_POST = [];
+        }
+    }
+
+    private function requireForEveryone(): void
+    {
+        $file = FileSystem::buildPath($this->configPath, 'config.xml');
+        $xml = (string)file_get_contents($file);
+
+        self::assertStringContainsString('</encryptSession>', $xml);
+
+        file_put_contents(
+            $file,
+            str_replace('</encryptSession>', '</encryptSession><totpRequired>1</totpRequired>', $xml)
+        );
     }
 
     private function createUser(string $login, string $pass): int

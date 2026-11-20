@@ -136,13 +136,12 @@ async function login(page, codeFor) {
 }
 
 test.describe('Two-factor sign-in', () => {
-  test.beforeAll(() => {
-    dbExec('DELETE FROM UserTotpRecovery; DELETE FROM UserTotp');
-  });
+  const reset = () => dbExec(
+    `DELETE FROM UserTotpRecovery; DELETE FROM UserTotp; UPDATE User SET isTotpRequired = 0 WHERE login = '${ADMIN_USER}'`
+  );
 
-  test.afterAll(() => {
-    dbExec('DELETE FROM UserTotpRecovery; DELETE FROM UserTotp');
-  });
+  test.beforeAll(reset);
+  test.afterAll(reset);
 
   test('turns it on from the Security tab and asks for a code at the next sign-in', async ({ page }) => {
     await login(page, null);
@@ -189,5 +188,67 @@ test.describe('Two-factor sign-in', () => {
     const fields = await login(page, () => totpCode(secret, Math.max(confirmedAt, currentStep()) + 1));
 
     expect(fields.totp, 'sign-in did not ask for the code').toBe(true);
+  });
+
+  /**
+   * Required by an administrator and not enrolled: the sign-in itself draws the
+   * QR code, takes a code from it, and shows the recovery codes before going on.
+   */
+  test('a required user enrols at sign-in and is shown the recovery codes', async ({ page }) => {
+    reset();
+    dbExec(`UPDATE User SET isTotpRequired = 1 WHERE login = '${ADMIN_USER}'`);
+
+    await page.goto('/index.php?r=login');
+    await expect(page.locator('#box-login')).toBeVisible();
+
+    let body = null;
+    let mpass = false;
+
+    // The master password may be asked for first on a fresh session; the
+    // enrolment prompt comes after the password in either case.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      await page.locator('#user').fill(ADMIN_USER);
+      await fillPassword(page, '#pass', ADMIN_PASS, '#user');
+
+      if (mpass) {
+        await fillPassword(page, '#mpass', MASTER_PASS, '#user');
+      }
+
+      body = await submit(page);
+
+      if (body && body.data && body.data.loginStatus === 2) {
+        mpass = true;
+        continue;
+      }
+
+      break;
+    }
+
+    expect(body && body.data && body.data.loginStatus, JSON.stringify(body)).toBe(9);
+    await expect(page.locator('#stotpenrol')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('#totp-enrol-qr svg')).toBeVisible();
+    await expect(page.locator('#stotp')).toBeVisible();
+
+    const secret = (await page.locator('#totp-enrol-secret').textContent() || '').trim();
+    expect(secret).toBe(body.data.secret);
+
+    await page.locator('#user').fill(ADMIN_USER);
+    await fillPassword(page, '#pass', ADMIN_PASS, '#user');
+
+    if (mpass) {
+      await fillPassword(page, '#mpass', MASTER_PASS, '#user');
+    }
+
+    await page.locator('#totp').fill(totpCode(secret, currentStep()));
+
+    const done = await submit(page);
+    expect(done && done.status, JSON.stringify(done)).toBe('OK');
+
+    // The recovery codes are shown once, before the redirect.
+    await expect(page.locator('#box-recovery')).toBeVisible({ timeout: 5_000 });
+    await expect(page.locator('#login-recovery-codes li')).toHaveCount(10);
+
+    await page.locator('#btnRecoveryContinue').click();
+    await expect(page.locator('#user-name')).toBeVisible({ timeout: 15_000 });
   });
 });

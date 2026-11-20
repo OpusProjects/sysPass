@@ -80,6 +80,13 @@ use function SP\__;
                     </div>
                 </div>
 
+                <div id="stotpenrol" class="extra-hidden">
+                    <p><?php
+                        echo __('Scan the code with your authenticator app, or type in the key below it.'); ?></p>
+                    <div id="totp-enrol-qr"></div>
+                    <p><code id="totp-enrol-secret"></code></p>
+                </div>
+
                 <div id="stotp" class="extra-hidden form-control">
                     <i class="material-icons">phonelink_lock</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -127,6 +134,15 @@ use function SP\__;
                 </button>
             </div>
         </form>
+
+        <div id="box-recovery" style="display: none">
+            <p><?php
+                echo __('Each one signs you in once without the app. Keep them safe: they are shown only now.'); ?></p>
+            <ul id="login-recovery-codes"></ul>
+            <button id="btnRecoveryContinue" type="button"
+                    class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored"><?php
+                echo __('Continue'); ?></button>
+        </div>
 
         <!-- Close boxData -->
         <?php

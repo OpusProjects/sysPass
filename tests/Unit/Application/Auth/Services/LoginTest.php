@@ -570,7 +570,7 @@ class LoginTest extends UnitaryTestCase
         $this->loginTotpService
             ->expects($this->once())
             ->method('check')
-            ->with($userDto->id)
+            ->with($userDto)
             ->willReturnCallback(function () use (&$calls, $proof) {
                 $calls[] = 'check';
 
@@ -590,6 +590,8 @@ class LoginTest extends UnitaryTestCase
             ->with($userDto->id, $proof)
             ->willReturnCallback(function () use (&$calls) {
                 $calls[] = 'consume';
+
+                return [];
             });
 
         $this->userProfileService->method('getById')

@@ -32,8 +32,23 @@ use SP\Domain\Auth\Services\LoginStatus;
  */
 final readonly class LoginResponseDto
 {
-    public function __construct(private LoginStatus $status, private ?string $redirect = null)
+    /**
+     * @param string[] $recoveryCodes Issued by this sign-in, when it completed an enrolment: shown
+     *                                once, before the user is sent on
+     */
+    public function __construct(
+        private LoginStatus $status,
+        private ?string $redirect = null,
+        private array $recoveryCodes = []
+    ) {
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getRecoveryCodes(): array
     {
+        return $this->recoveryCodes;
     }
 
     public function getStatus(): LoginStatus

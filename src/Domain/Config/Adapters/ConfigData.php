@@ -979,6 +979,18 @@ final class ConfigData extends DataCollection implements ConfigDataInterface
         return $this;
     }
 
+    public function isTotpRequired(): bool
+    {
+        return (bool)$this->get(ConfigDataInterface::TOTP_REQUIRED, false);
+    }
+
+    public function setTotpRequired(?bool $totpRequired): ConfigDataInterface
+    {
+        $this->set(ConfigDataInterface::TOTP_REQUIRED, (bool)$totpRequired);
+
+        return $this;
+    }
+
     public function isAccountFullGroupAccess(): bool
     {
         return (bool)$this->get(ConfigDataInterface::ACCOUNT_FULL_GROUP_ACCESS, false);

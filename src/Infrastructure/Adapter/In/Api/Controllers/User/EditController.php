@@ -56,6 +56,7 @@ final class EditController extends UserBase
             'isAdminAcc' => $this->apiService->getParamInt('isAdminAcc'),
             'isDisabled' => $this->apiService->getParamInt('isDisabled'),
             'isChangePass' => $this->apiService->getParamInt('isChangePass'),
+            'isTotpRequired' => $this->apiService->getParamInt('isTotpRequired'),
         ];
 
         $flag = static fn(?int $value, ?bool $current): bool => $value === null ? (bool)$current : (bool)$value;
@@ -81,6 +82,7 @@ final class EditController extends UserBase
             'isAdminAcc'    => $isAdmin && $flag($sent['isAdminAcc'], $stored->isAdminAcc()),
             'isDisabled'    => $flag($sent['isDisabled'], $stored->isDisabled()),
             'isChangePass'  => $flag($sent['isChangePass'], $stored->isChangePass()),
+            'isTotpRequired' => $flag($sent['isTotpRequired'], $stored->isTotpRequired()),
         ]);
     }
 }

@@ -118,6 +118,7 @@ interface ConfigDataInterface extends JsonSerializable, IteratorAggregate
     public const CONFIG_SAVER                  = 'configSaver';
     public const DB_SOCKET                     = 'dbSocket';
     public const ENCRYPT_SESSION               = 'encryptSession';
+    public const TOTP_REQUIRED                 = 'totpRequired';
     public const ACCOUNT_FULL_GROUP_ACCESS     = 'accountFullGroupAccess';
     public const AUTH_BASIC_ENABLED            = 'authBasicEnabled';
     public const AUTH_BASIC_DOMAIN             = 'authBasicDomain';
@@ -458,6 +459,13 @@ interface ConfigDataInterface extends JsonSerializable, IteratorAggregate
     public function isEncryptSession(): bool;
 
     public function setEncryptSession(?bool $encryptSession): ConfigDataInterface;
+
+    /**
+     * Whether every user has to sign in with a second factor
+     */
+    public function isTotpRequired(): bool;
+
+    public function setTotpRequired(?bool $totpRequired): ConfigDataInterface;
 
     public function isAccountFullGroupAccess(): bool;
 

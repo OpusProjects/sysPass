@@ -99,6 +99,23 @@ use function SP\__;
                             echo __('Encrypts PHP session data stored on the server.'); ?></span>
                     </span>
                 </li>
+
+                <li class="mdl-list__item mdl-list__item--two-line">
+                    <div class="mdl-switch__box">
+                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                               for="totp_required_enabled">
+                            <input type="checkbox" id="totp_required_enabled"
+                                   class="mdl-switch__input"
+                                   name="totp_required_enabled" <?php
+                            echo $configData->isTotpRequired() ? 'checked' : ''; ?>/>
+                        </label>
+                    </div>
+                    <span class="mdl-list__item-primary-content">
+                        <span><?php echo __('Two-factor for everyone'); ?></span>
+                        <span class="mdl-list__item-sub-title"><?php
+                            echo __('Every user signs in with an authenticator app; API tokens are exempt.'); ?></span>
+                    </span>
+                </li>
             </ul>
         </td>
     </tr>

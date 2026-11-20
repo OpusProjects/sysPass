@@ -128,19 +128,19 @@ final class Login extends LoginBase implements LoginService
 
             // The second factor before anything that acts on the password: the master password is
             // re-keyed below on the strength of it.
-            $totpProof = $this->loginTotpService->check($userDataDto->id);
+            $totpProof = $this->loginTotpService->check($userDataDto);
 
             $this->loginMasterPassService->loadMasterPass($this->userLoginDto, $userDataDto);
 
             // Spent last, once nothing else can refuse: see LoginTotp.
-            if ($totpProof !== null) {
-                $this->loginTotpService->consume($userDataDto->id, $totpProof);
-            }
+            $recoveryCodes = $totpProof === null
+                ? []
+                : $this->loginTotpService->consume($userDataDto->id, $totpProof);
 
             $this->setUserSession($userDataDto);
             $this->loadUserPreferences();
 
-            return new LoginResponseDto(LoginStatus::OK, $this->getUriForRoute($from ?? 'index'));
+            return new LoginResponseDto(LoginStatus::OK, $this->getUriForRoute($from ?? 'index'), $recoveryCodes);
         } catch (ServiceException $e) {
             throw AuthException::from($e);
         } finally {

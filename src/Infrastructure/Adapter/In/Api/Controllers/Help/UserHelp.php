@@ -61,7 +61,8 @@ final class UserHelp implements HelpInterface
             self::getItem('isAdminApp', __('Application admin')),
             self::getItem('isAdminAcc', __('Accounts admin')),
             self::getItem('isDisabled', __('Disabled')),
-            self::getItem('isChangePass', __('Change password'))
+            self::getItem('isChangePass', __('Change password')),
+            self::getItem('isTotpRequired', __('Require two-factor sign-in'))
         ];
     }
 
@@ -81,7 +82,8 @@ final class UserHelp implements HelpInterface
             self::getItem('isAdminApp', __('Application admin')),
             self::getItem('isAdminAcc', __('Accounts admin')),
             self::getItem('isDisabled', __('Disabled')),
-            self::getItem('isChangePass', __('Change password'))
+            self::getItem('isChangePass', __('Change password')),
+            self::getItem('isTotpRequired', __('Require two-factor sign-in'))
         ];
     }
 

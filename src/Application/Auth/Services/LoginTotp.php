@@ -33,6 +33,8 @@ use SP\Application\User\Ports\UserTotpService;
 use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginStatus;
+use SP\Domain\Auth\Services\Totp;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\Core\Events\Event;
 use SP\Domain\Core\Events\EventMessage;
 use SP\Domain\Http\Ports\RequestService;
@@ -62,11 +64,13 @@ final class LoginTotp extends LoginBase implements LoginTotpService
     /**
      * @inheritDoc
      */
-    public function check(int $userId): ?TotpProof
+    public function check(UserDto $user): ?TotpProof
     {
+        $userId = (int)$user->id;
+
         try {
             if (!$this->userTotpService->isEnabled($userId)) {
-                return null;
+                return $this->isRequired($user) ? $this->checkEnrolment($user) : null;
             }
 
             $code = $this->request->analyzeString('totp');
@@ -97,7 +101,7 @@ final class LoginTotp extends LoginBase implements LoginTotpService
     /**
      * @inheritDoc
      */
-    public function consume(int $userId, TotpProof $proof): void
+    public function consume(int $userId, TotpProof $proof): array
     {
         try {
             $spent = $this->userTotpService->spend($userId, $proof);
@@ -120,6 +124,84 @@ final class LoginTotp extends LoginBase implements LoginTotpService
                 )
             );
         }
+
+        if (!$proof->isEnrolment()) {
+            return [];
+        }
+
+        $this->eventDispatcher->notify(
+            new Event(
+                'login.totp.enrol',
+                $this,
+                EventMessage::build()->addDescription(__u('Two-factor authentication turned on'))
+            )
+        );
+
+        try {
+            return $this->userTotpService->generateRecoveryCodes($userId);
+        } catch (Exception $e) {
+            // The second factor is on and the sign-in proved it; recovery codes can be issued
+            // again from the Security tab, with a code, so this is not a reason to refuse.
+            $this->eventDispatcher->notify(new Event('exception', $e));
+
+            return [];
+        }
+    }
+
+    /**
+     * Whether an administrator requires this user to sign in with a second factor
+     */
+    private function isRequired(UserDto $user): bool
+    {
+        return $user->isTotpRequired === true || $this->config->getConfigData()->isTotpRequired();
+    }
+
+    /**
+     * A user required to have a second factor who has none enrols it here, before the sign-in
+     * completes: there is never a session that was opened with the password alone.
+     *
+     * The secret shown is the pending one when there is one, so trying again does not replace
+     * what the user already scanned. Whoever holds the password can enrol — but whoever holds the
+     * password could sign in outright before this requirement existed, and once a secret is
+     * confirmed the account needs it.
+     *
+     * @throws AuthException
+     * @throws Exception
+     */
+    private function checkEnrolment(UserDto $user): TotpProof
+    {
+        $userId = (int)$user->id;
+        $secret = $this->userTotpService->pendingSecret($userId)
+                  ?? $this->userTotpService->startEnrolment($userId);
+
+        $data = [
+            'secret' => $secret,
+            'uri' => Totp::provisioningUri($secret, Totp::ISSUER, (string)$user->login),
+        ];
+
+        $code = $this->request->analyzeString('totp');
+
+        if (empty($code)) {
+            throw AuthException::info(
+                __u('Two-factor sign-in is required: scan the code with your authenticator app'),
+                null,
+                LoginStatus::TOTP_ENROL_REQUIRED->value
+            )->withData($data);
+        }
+
+        $proof = $this->userTotpService->checkPending($userId, $code);
+
+        if ($proof === null) {
+            $this->addTracking();
+
+            throw AuthException::info(
+                __u('Wrong two-factor code'),
+                null,
+                LoginStatus::TOTP_ENROL_REQUIRED->value
+            )->withData($data);
+        }
+
+        return $proof;
     }
 
     /**
