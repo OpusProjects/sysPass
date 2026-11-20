@@ -117,7 +117,9 @@ final class LoginController extends ControllerBase
         $status = LoginStatus::tryFrom((int)$e->getCode());
 
         return match ($status) {
-            LoginStatus::INVALID_MASTER_PASS, LoginStatus::OLD_PASS_REQUIRED => ['loginStatus' => $status->value],
+            LoginStatus::INVALID_MASTER_PASS,
+            LoginStatus::OLD_PASS_REQUIRED,
+            LoginStatus::TOTP_REQUIRED => ['loginStatus' => $status->value],
             default => null,
         };
     }

@@ -80,6 +80,18 @@ use function SP\__;
                     </div>
                 </div>
 
+                <div id="stotp" class="extra-hidden form-control">
+                    <i class="material-icons">phonelink_lock</i>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input id="totp" name="totp" type="text"
+                               class="mdl-textfield__input mdl-color-text--indigo-400"
+                               maxlength="12" inputmode="numeric" autocomplete="one-time-code">
+                        <label class="mdl-textfield__label"
+                               for="totp"><?php
+                            echo __('Authentication Code'); ?></label>
+                    </div>
+                </div>
+
                 <div id="smpass" class="extra-hidden form-control">
                     <i class="material-icons">vpn_key</i>
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">

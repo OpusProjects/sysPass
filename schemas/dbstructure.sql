@@ -678,6 +678,32 @@ CREATE TABLE `UserPassRecover`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE `UserTotp`
+(
+    `userId`    smallint(5) unsigned NOT NULL,
+    `secret`    varbinary(2000)      NOT NULL,
+    `secretKey` varbinary(2000)      NOT NULL,
+    `lastStep`  bigint(20) unsigned           DEFAULT NULL,
+    `enabledAt` int(10) unsigned              DEFAULT NULL,
+    PRIMARY KEY (`userId`),
+    CONSTRAINT `fk_UserTotp_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
+
+CREATE TABLE `UserTotpRecovery`
+(
+    `id`     int(10) unsigned     NOT NULL AUTO_INCREMENT,
+    `userId` smallint(5) unsigned NOT NULL,
+    `hash`   varbinary(255)       NOT NULL,
+    `used`   tinyint(1)           NOT NULL DEFAULT 0,
+    PRIMARY KEY (`id`),
+    KEY `idx_UserTotpRecovery_01` (`userId`, `used`),
+    CONSTRAINT `fk_UserTotpRecovery_userId` FOREIGN KEY (`userId`) REFERENCES `User` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB
+  DEFAULT CHARSET = utf8mb4
+  COLLATE = utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
