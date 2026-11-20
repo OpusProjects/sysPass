@@ -112,7 +112,8 @@ class ManagerViewsTest extends IntegrationTestCase
     #[BodyChecker('outputCheckerTabs')]
     public function userSettingsManagerIndex()
     {
-        $this->expectedTabs = 1;
+        // Preferences and Security (the user's own second factor): every user has both.
+        $this->expectedTabs = 2;
 
         $container = $this->buildContainer(
             IntegrationTestCase::buildRequest('get', 'index.php', ['r' => 'userSettingsManager/index'])

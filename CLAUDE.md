@@ -367,6 +367,10 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   can refuse, so a master-password prompt does not burn the code. Spending is one `UPDATE … WHERE
   lastStep < :step` — guard and change in one statement. The secret is encrypted with the
   password salt (config.xml), so a database dump alone does not yield it.
+  Recovery codes are stored as an HMAC keyed with the same salt — fast on purpose, since 60 random
+  bits leave nothing to search, and keyed so a sign-in can find and spend one in a single `UPDATE`.
+  Every change to a user's second factor is refused on a demo, in `UserTotp`, where every door
+  reaches.
 - **Every signed-in request needs the CSRF token**, whatever its method — the front end's
   `getActionCall` sends it as `X-CSRF`. A plain GET without it is let through only to a route in
   `Csrf::PLAIN_NAVIGATIONS` (the page, login/logout, the reset and public links, the downloads).

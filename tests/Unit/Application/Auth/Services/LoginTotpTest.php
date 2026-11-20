@@ -32,6 +32,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use SP\Application\Auth\Services\LoginTotp;
 use SP\Application\Security\Ports\TrackService;
 use SP\Application\User\Ports\UserTotpService;
+use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Common\Services\ServiceException;
@@ -82,7 +83,7 @@ class LoginTotpTest extends UnitaryTestCase
     {
         $this->userTotpService->method('isEnabled')->willReturn(true);
         $this->request->expects($this->atLeastOnce())->method('analyzeString')->with('totp')->willReturn('123456');
-        $this->userTotpService->expects($this->atLeastOnce())->method('verify')->with(self::USER_ID, '123456')->willReturn(null);
+        $this->userTotpService->expects($this->atLeastOnce())->method('check')->with(self::USER_ID, '123456')->willReturn(null);
         $this->trackService->expects($this->once())->method('add');
 
         $this->expectException(AuthException::class);
@@ -92,15 +93,17 @@ class LoginTotpTest extends UnitaryTestCase
         $this->loginTotp->check(self::USER_ID);
     }
 
-    public function testTheRightCodeAnswersWithItsStepAndSpendsNothing(): void
+    public function testTheRightCodeAnswersWithWhatToSpendAndSpendsNothing(): void
     {
+        $proof = TotpProof::step(42);
+
         $this->userTotpService->method('isEnabled')->willReturn(true);
         $this->request->expects($this->atLeastOnce())->method('analyzeString')->with('totp')->willReturn('123456');
-        $this->userTotpService->method('verify')->willReturn(42);
-        $this->userTotpService->expects($this->never())->method('consume');
+        $this->userTotpService->method('check')->willReturn($proof);
+        $this->userTotpService->expects($this->never())->method('spend');
         $this->trackService->expects($this->never())->method('add');
 
-        self::assertSame(42, $this->loginTotp->check(self::USER_ID));
+        self::assertSame($proof, $this->loginTotp->check(self::USER_ID));
     }
 
     /**
@@ -109,21 +112,45 @@ class LoginTotpTest extends UnitaryTestCase
      */
     public function testACodeAnotherSignInSpentFirstIsRefusedAndCounted(): void
     {
-        $this->userTotpService->expects($this->atLeastOnce())->method('consume')->with(self::USER_ID, 42)->willReturn(false);
+        $proof = TotpProof::step(42);
+
+        $this->userTotpService->expects($this->atLeastOnce())->method('spend')->with(self::USER_ID, $proof)->willReturn(false);
         $this->trackService->expects($this->once())->method('add');
 
         $this->expectException(AuthException::class);
         $this->expectExceptionCode(LoginStatus::TOTP_REQUIRED->value);
 
-        $this->loginTotp->consume(self::USER_ID, 42);
+        $this->loginTotp->consume(self::USER_ID, $proof);
     }
 
     public function testSpendingAFreshStepPasses(): void
     {
-        $this->userTotpService->expects($this->once())->method('consume')->with(self::USER_ID, 42)->willReturn(true);
+        $proof = TotpProof::step(42);
+
+        $this->userTotpService->expects($this->once())->method('spend')->with(self::USER_ID, $proof)->willReturn(true);
         $this->trackService->expects($this->never())->method('add');
 
-        $this->loginTotp->consume(self::USER_ID, 42);
+        $this->loginTotp->consume(self::USER_ID, $proof);
+    }
+
+    /**
+     * A recovery code spent at sign-in is recorded on its own: it is how a lost phone, or a
+     * stolen code sheet, shows up in the event log.
+     */
+    public function testSigningInWithARecoveryCodeIsRecorded(): void
+    {
+        $events = [];
+
+        $this->userTotpService->method('spend')->willReturn(true);
+        $this->application->getEventDispatcher()
+                          ->method('notify')
+                          ->willReturnCallback(function ($event) use (&$events) {
+                              $events[] = $event->getName();
+                          });
+
+        $this->loginTotp->consume(self::USER_ID, TotpProof::recoveryCode('a-hash'));
+
+        self::assertContains('login.totp.recovery', $events);
     }
 
     /**

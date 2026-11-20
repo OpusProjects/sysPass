@@ -294,6 +294,98 @@ final class TotpSignInTest extends TestCase
         self::assertStringNotContainsString(Base32::decode($secret), $stored);
     }
 
+    /**
+     * Ten codes, each good for one sign-in in place of the app, typed however the user copied it.
+     */
+    #[Test]
+    public function aRecoveryCodeSignsInOnceInPlaceOfTheApp(): void
+    {
+        [$login, $pass, $userId] = $this->newUser();
+        $this->enrol($userId);
+
+        $codes = $this->totp()->generateRecoveryCodes($userId);
+
+        self::assertCount(10, array_unique($codes));
+        self::assertSame(10, $this->totp()->countRecoveryCodes($userId));
+
+        self::assertSame(LoginStatus::OK->value, $this->attemptLogin($login, $pass, strtoupper($codes[0])));
+        self::assertSame(9, $this->totp()->countRecoveryCodes($userId));
+        self::assertSame(LoginStatus::TOTP_REQUIRED->value, $this->attemptLogin($login, $pass, $codes[0]));
+
+        self::assertSame(
+            LoginStatus::OK->value,
+            $this->attemptLogin($login, $pass, str_replace('-', ' ', $codes[1]))
+        );
+    }
+
+    /**
+     * Issuing a new set retires the old one: that is what somebody who has lost the sheet needs.
+     */
+    #[Test]
+    public function newRecoveryCodesRetireTheOldOnes(): void
+    {
+        [$login, $pass, $userId] = $this->newUser();
+        $this->enrol($userId);
+
+        $old = $this->totp()->generateRecoveryCodes($userId);
+        $new = $this->totp()->generateRecoveryCodes($userId);
+
+        self::assertSame(LoginStatus::TOTP_REQUIRED->value, $this->attemptLogin($login, $pass, $old[0]));
+        self::assertSame(LoginStatus::OK->value, $this->attemptLogin($login, $pass, $new[0]));
+    }
+
+    /**
+     * Another user's recovery code is not one of yours.
+     */
+    #[Test]
+    public function aRecoveryCodeBelongsToItsUser(): void
+    {
+        [$login, $pass, $userId] = $this->newUser();
+        [, , $otherId] = $this->newUser();
+        $this->enrol($userId);
+        $this->enrol($otherId);
+
+        $theirs = $this->totp()->generateRecoveryCodes($otherId);
+        $this->totp()->generateRecoveryCodes($userId);
+
+        self::assertSame(LoginStatus::TOTP_REQUIRED->value, $this->attemptLogin($login, $pass, $theirs[0]));
+    }
+
+    #[Test]
+    public function turningItOffRemovesTheRecoveryCodes(): void
+    {
+        [, , $userId] = $this->newUser();
+        $this->enrol($userId);
+        $this->totp()->generateRecoveryCodes($userId);
+
+        $this->totp()->disable($userId);
+
+        self::assertSame(
+            0,
+            (int)$this->pdo->query('SELECT COUNT(*) FROM UserTotpRecovery WHERE userId = ' . $userId)->fetchColumn()
+        );
+    }
+
+    /**
+     * Neither the code nor anything that reads as it is stored.
+     */
+    #[Test]
+    public function recoveryCodesAreNotStoredInTheClear(): void
+    {
+        [, , $userId] = $this->newUser();
+        $this->enrol($userId);
+        $codes = $this->totp()->generateRecoveryCodes($userId);
+
+        $stored = implode(
+            "\n",
+            $this->pdo->query('SELECT hash FROM UserTotpRecovery WHERE userId = ' . $userId)->fetchAll(PDO::FETCH_COLUMN)
+        );
+
+        foreach ($codes as $code) {
+            self::assertStringNotContainsStringIgnoringCase(str_replace('-', '', $code), $stored);
+        }
+    }
+
     #[Test]
     public function turningItOffStopsTheQuestion(): void
     {

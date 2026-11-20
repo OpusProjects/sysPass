@@ -30,6 +30,7 @@ use SP\Application\Application;
 use SP\Application\Auth\Ports\LoginTotpService;
 use SP\Application\Security\Ports\TrackService;
 use SP\Application\User\Ports\UserTotpService;
+use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Core\Events\Event;
@@ -61,7 +62,7 @@ final class LoginTotp extends LoginBase implements LoginTotpService
     /**
      * @inheritDoc
      */
-    public function check(int $userId): ?int
+    public function check(int $userId): ?TotpProof
     {
         try {
             if (!$this->userTotpService->isEnabled($userId)) {
@@ -79,33 +80,45 @@ final class LoginTotp extends LoginBase implements LoginTotpService
                 );
             }
 
-            $step = $this->userTotpService->verify($userId, $code);
+            $proof = $this->userTotpService->check($userId, $code);
         } catch (AuthException $e) {
             throw $e;
         } catch (Exception $e) {
             throw AuthException::error(__u('Internal error'), null, self::STATUS_INTERNAL_ERROR, $e);
         }
 
-        if ($step === null) {
+        if ($proof === null) {
             $this->refuse();
         }
 
-        return $step;
+        return $proof;
     }
 
     /**
      * @inheritDoc
      */
-    public function consume(int $userId, int $step): void
+    public function consume(int $userId, TotpProof $proof): void
     {
         try {
-            $spent = $this->userTotpService->consume($userId, $step);
+            $spent = $this->userTotpService->spend($userId, $proof);
         } catch (Exception $e) {
             throw AuthException::error(__u('Internal error'), null, self::STATUS_INTERNAL_ERROR, $e);
         }
 
         if (!$spent) {
             $this->refuse();
+        }
+
+        if ($proof->isRecoveryCode()) {
+            // Worth a line in the event log of its own: it is how a lost phone, or a stolen code
+            // sheet, shows up.
+            $this->eventDispatcher->notify(
+                new Event(
+                    'login.totp.recovery',
+                    $this,
+                    EventMessage::build()->addDescription(__u('Signed in with a recovery code'))
+                )
+            );
         }
     }
 

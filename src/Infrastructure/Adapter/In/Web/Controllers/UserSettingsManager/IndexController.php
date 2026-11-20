@@ -24,6 +24,8 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\UserSettingsManager;
 
+use SP\Domain\Common\Services\ServiceException;
+use SP\Application\User\Ports\UserTotpService;
 use SP\Application\Application;
 use SP\Domain\Core\Events\Event;
 use SP\Infrastructure\Language;
@@ -55,7 +57,8 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     public function __construct(
         Application $application,
         WebControllerHelper $webControllerHelper,
-        TabsHelper $tabsHelper
+        TabsHelper $tabsHelper,
+        private readonly UserTotpService $userTotpService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -78,6 +81,7 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
     protected function getTabs(): void
     {
         $this->tabsHelper->addTab($this->getUserPreferences());
+        $this->tabsHelper->addTab($this->getSecurity());
 
         $this->eventDispatcher->notify(new Event('show.userSettings', $this));
 
@@ -124,6 +128,30 @@ final class IndexController extends ControllerBase implements ExtensibleTabContr
         $template->assign('route', 'userSettingsGeneral/save');
 
         return new DataTab(__('Preferences'), $template);
+    }
+
+    /**
+     * The user's own second factor
+     *
+     * @throws ServiceException
+     */
+    private function getSecurity(): DataTab
+    {
+        $template = clone $this->view;
+        $template->addTemplate('security');
+
+        $userId = (int)$this->session->getUserData()->id;
+        $enabled = $this->userTotpService->isEnabled($userId);
+
+        $template->assign('totpEnabled', $enabled);
+        $template->assign('recoveryCount', $enabled ? $this->userTotpService->countRecoveryCodes($userId) : 0);
+        $template->assign('routeStart', 'userSettingsTotp/start');
+        $template->assign('routeConfirm', 'userSettingsTotp/confirm');
+        $template->assign('routeRecoveryCodes', 'userSettingsTotp/recoveryCodes');
+        $template->assign('routeDisable', 'userSettingsTotp/disable');
+        $template->assign('routeSettings', $this->acl->getRouteFor(AclActionsInterface::USERSETTINGS));
+
+        return new DataTab(__('Security'), $template);
     }
 
     /**

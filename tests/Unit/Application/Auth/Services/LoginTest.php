@@ -26,6 +26,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Application\Auth\Services;
 
+use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Application\Auth\Ports\LoginTotpService;
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -563,16 +564,17 @@ class LoginTest extends UnitaryTestCase
     public function testDoLoginSpendsTheCodeOnlyOnceTheMasterPasswordIsAccepted()
     {
         $userDto = $this->passwordAccepted();
+        $proof = TotpProof::step(42);
         $calls = [];
 
         $this->loginTotpService
             ->expects($this->once())
             ->method('check')
             ->with($userDto->id)
-            ->willReturnCallback(function () use (&$calls) {
+            ->willReturnCallback(function () use (&$calls, $proof) {
                 $calls[] = 'check';
 
-                return 42;
+                return $proof;
             });
 
         $this->loginMasterPassService
@@ -585,7 +587,7 @@ class LoginTest extends UnitaryTestCase
         $this->loginTotpService
             ->expects($this->once())
             ->method('consume')
-            ->with($userDto->id, 42)
+            ->with($userDto->id, $proof)
             ->willReturnCallback(function () use (&$calls) {
                 $calls[] = 'consume';
             });
@@ -606,7 +608,7 @@ class LoginTest extends UnitaryTestCase
     {
         $this->passwordAccepted();
 
-        $this->loginTotpService->method('check')->willReturn(42);
+        $this->loginTotpService->method('check')->willReturn(TotpProof::step(42));
         $this->loginMasterPassService
             ->method('loadMasterPass')
             ->willThrowException(
