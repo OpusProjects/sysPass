@@ -8230,6 +8230,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass er ikke installeret"
 
+msgid "Authentication Code"
+msgstr "Godkendelseskode"
+
+msgid "Authenticator app"
+msgstr "Godkendelsesapp"
+
+msgid "Change password"
+msgstr "Skift adgangskode"
+
+msgid "Code from the app"
+msgstr "Kode fra appen"
+
+msgid "Confirm"
+msgstr "Bekræft"
+
+msgid "Continue"
+msgstr "Fortsæt"
+
+msgid "Current code or recovery code"
+msgstr "Nuværende kode eller gendannelseskode"
+
+msgid "Done"
+msgstr "Færdig"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Hver logger dig ind én gang uden appen. Gem dem: de vises kun nu."
+
+msgid "Error while checking the code"
+msgstr "Fejl under kontrol af koden"
+
+msgid "Error while removing the recovery codes"
+msgstr "Fejl under fjernelse af gendannelseskoderne"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Fejl under fjernelse af totrinshemmeligheden"
+
+msgid "Error while saving the recovery codes"
+msgstr "Fejl under lagring af gendannelseskoderne"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Fejl under lagring af totrinshemmeligheden"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Alle logger ind med en godkendelsesapp; API-tokens er undtaget."
+
+msgid "New recovery codes"
+msgstr "Nye gendannelseskoder"
+
+msgid "New recovery codes issued"
+msgstr "Nye gendannelseskoder udstedt"
+
+msgid "No password salt is set"
+msgstr "Der er ikke angivet et adgangskode-salt"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Fra: login beder kun om din adgangskode."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Til: login beder om en kode fra din godkendelsesapp."
+
+msgid "Recovery codes"
+msgstr "Gendannelseskoder"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Fjern deres godkendelsesapp og gendannelseskoder"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Kræv en godkendelsesapp ved login"
+
+msgid "Require two-factor sign-in"
+msgstr "Kræv totrinslogin"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Scan koden med din godkendelsesapp"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Scan koden med din godkendelsesapp, eller indtast nøglen under den."
+
+msgid "Signed in with a recovery code"
+msgstr "Logget ind med en gendannelseskode"
+
+msgid "Turn off"
+msgstr "Slå fra"
+
+msgid "Turn on"
+msgstr "Slå til"
+
+msgid "Two-factor"
+msgstr "Totrins"
+
+msgid "Two-factor authentication"
+msgstr "Totrinsbekræftelse"
+
+msgid "Two-factor authentication is already on"
+msgstr "Totrinsbekræftelse er allerede slået til"
+
+msgid "Two-factor authentication is off"
+msgstr "Totrinsbekræftelse er slået fra"
+
+msgid "Two-factor authentication is on"
+msgstr "Totrinsbekræftelse er slået til"
+
+msgid "Two-factor authentication reset"
+msgstr "Totrinsbekræftelse nulstillet"
+
+msgid "Two-factor authentication turned off"
+msgstr "Totrinsbekræftelse slået fra"
+
+msgid "Two-factor authentication turned on"
+msgstr "Totrinsbekræftelse slået til"
+
+msgid "Two-factor code needed"
+msgstr "Totrinskode påkrævet"
+
+msgid "Two-factor for everyone"
+msgstr "Totrins for alle"
+
+msgid "Two-factor reset"
+msgstr "Nulstil totrins"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Totrins er påkrævet: scan koden med din godkendelsesapp"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Ubrugte gendannelseskoder: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Forkert totrinskode"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Din administrator kræver totrinslogin"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" -mappen findes ikke"
 

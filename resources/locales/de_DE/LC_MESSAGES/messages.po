@@ -8316,3 +8316,136 @@ msgstr ""
 
 msgid "sysPass is not installed"
 msgstr "sysPass ist nicht installiert"
+
+msgid "Authentication Code"
+msgstr "Authentifizierungscode"
+
+msgid "Authenticator app"
+msgstr "Authenticator-App"
+
+msgid "Change password"
+msgstr "Passwort ändern"
+
+msgid "Code from the app"
+msgstr "Code aus der App"
+
+msgid "Confirm"
+msgstr "Bestätigen"
+
+msgid "Continue"
+msgstr "Weiter"
+
+msgid "Current code or recovery code"
+msgstr "Aktueller Code oder Wiederherstellungscode"
+
+msgid "Done"
+msgstr "Fertig"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Jeder meldet Sie einmal ohne App an. Gut aufbewahren: Sie sehen sie nur jetzt."
+
+msgid "Error while checking the code"
+msgstr "Fehler beim Prüfen des Codes"
+
+msgid "Error while removing the recovery codes"
+msgstr "Fehler beim Entfernen der Wiederherstellungscodes"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Fehler beim Entfernen des Zwei-Faktor-Geheimnisses"
+
+msgid "Error while saving the recovery codes"
+msgstr "Fehler beim Speichern der Wiederherstellungscodes"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Fehler beim Speichern des Zwei-Faktor-Geheimnisses"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Alle melden sich mit einer Authenticator-App an; API-Tokens sind ausgenommen."
+
+msgid "New recovery codes"
+msgstr "Neue Wiederherstellungscodes"
+
+msgid "New recovery codes issued"
+msgstr "Neue Wiederherstellungscodes ausgestellt"
+
+msgid "No password salt is set"
+msgstr "Kein Passwort-Salt festgelegt"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Aus: Die Anmeldung fragt nur nach Ihrem Passwort."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "An: Die Anmeldung fragt nach einem Code Ihrer Authenticator-App."
+
+msgid "Recovery codes"
+msgstr "Wiederherstellungscodes"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Authenticator-App und Wiederherstellungscodes entfernen"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Authenticator-App bei der Anmeldung verlangen"
+
+msgid "Require two-factor sign-in"
+msgstr "Zwei-Faktor-Anmeldung verlangen"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Scannen Sie den Code mit Ihrer Authenticator-App"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Code mit der Authenticator-App scannen oder den Schlüssel darunter eingeben."
+
+msgid "Signed in with a recovery code"
+msgstr "Mit einem Wiederherstellungscode angemeldet"
+
+msgid "Turn off"
+msgstr "Ausschalten"
+
+msgid "Turn on"
+msgstr "Einschalten"
+
+msgid "Two-factor"
+msgstr "Zwei-Faktor"
+
+msgid "Two-factor authentication"
+msgstr "Zwei-Faktor-Authentifizierung"
+
+msgid "Two-factor authentication is already on"
+msgstr "Zwei-Faktor-Authentifizierung ist bereits an"
+
+msgid "Two-factor authentication is off"
+msgstr "Zwei-Faktor-Authentifizierung ist aus"
+
+msgid "Two-factor authentication is on"
+msgstr "Zwei-Faktor-Authentifizierung ist an"
+
+msgid "Two-factor authentication reset"
+msgstr "Zwei-Faktor-Authentifizierung zurückgesetzt"
+
+msgid "Two-factor authentication turned off"
+msgstr "Zwei-Faktor-Authentifizierung ausgeschaltet"
+
+msgid "Two-factor authentication turned on"
+msgstr "Zwei-Faktor-Authentifizierung eingeschaltet"
+
+msgid "Two-factor code needed"
+msgstr "Zwei-Faktor-Code erforderlich"
+
+msgid "Two-factor for everyone"
+msgstr "Zwei-Faktor für alle"
+
+msgid "Two-factor reset"
+msgstr "Zwei-Faktor zurücksetzen"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Zwei-Faktor ist Pflicht: Scannen Sie den Code mit Ihrer Authenticator-App"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Unbenutzte Wiederherstellungscodes: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Falscher Zwei-Faktor-Code"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Ihr Administrator verlangt die Zwei-Faktor-Anmeldung"

@@ -8236,6 +8236,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass nie jest zainstalowany"
 
+msgid "Authentication Code"
+msgstr "Kod uwierzytelniający"
+
+msgid "Authenticator app"
+msgstr "Aplikacja uwierzytelniająca"
+
+msgid "Change password"
+msgstr "Zmień hasło"
+
+msgid "Code from the app"
+msgstr "Kod z aplikacji"
+
+msgid "Confirm"
+msgstr "Potwierdź"
+
+msgid "Continue"
+msgstr "Dalej"
+
+msgid "Current code or recovery code"
+msgstr "Bieżący kod lub kod odzyskiwania"
+
+msgid "Done"
+msgstr "Gotowe"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Każdy loguje raz bez aplikacji. Przechowuj je bezpiecznie: widać je tylko teraz."
+
+msgid "Error while checking the code"
+msgstr "Błąd podczas sprawdzania kodu"
+
+msgid "Error while removing the recovery codes"
+msgstr "Błąd podczas usuwania kodów odzyskiwania"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Błąd podczas usuwania sekretu dwuskładnikowego"
+
+msgid "Error while saving the recovery codes"
+msgstr "Błąd podczas zapisywania kodów odzyskiwania"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Błąd podczas zapisywania sekretu dwuskładnikowego"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Każdy loguje się aplikacją uwierzytelniającą; tokeny API są wyłączone."
+
+msgid "New recovery codes"
+msgstr "Nowe kody odzyskiwania"
+
+msgid "New recovery codes issued"
+msgstr "Wydano nowe kody odzyskiwania"
+
+msgid "No password salt is set"
+msgstr "Nie ustawiono soli hasła"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Wył.: logowanie prosi tylko o hasło."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Wł.: logowanie prosi o kod z aplikacji uwierzytelniającej."
+
+msgid "Recovery codes"
+msgstr "Kody odzyskiwania"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Usuwa jego aplikację uwierzytelniającą i kody"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Wymagaj aplikacji uwierzytelniającej"
+
+msgid "Require two-factor sign-in"
+msgstr "Wymagaj logowania dwuskładnikowego"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Zeskanuj kod aplikacją uwierzytelniającą"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Zeskanuj kod aplikacją uwierzytelniającą lub wpisz klucz pod nim."
+
+msgid "Signed in with a recovery code"
+msgstr "Zalogowano kodem odzyskiwania"
+
+msgid "Turn off"
+msgstr "Wyłącz"
+
+msgid "Turn on"
+msgstr "Włącz"
+
+msgid "Two-factor"
+msgstr "Dwuskładnikowe"
+
+msgid "Two-factor authentication"
+msgstr "Uwierzytelnianie dwuskładnikowe"
+
+msgid "Two-factor authentication is already on"
+msgstr "Uwierzytelnianie dwuskładnikowe jest już włączone"
+
+msgid "Two-factor authentication is off"
+msgstr "Uwierzytelnianie dwuskładnikowe jest wyłączone"
+
+msgid "Two-factor authentication is on"
+msgstr "Uwierzytelnianie dwuskładnikowe jest włączone"
+
+msgid "Two-factor authentication reset"
+msgstr "Zresetowano uwierzytelnianie dwuskładnikowe"
+
+msgid "Two-factor authentication turned off"
+msgstr "Wyłączono uwierzytelnianie dwuskładnikowe"
+
+msgid "Two-factor authentication turned on"
+msgstr "Włączono uwierzytelnianie dwuskładnikowe"
+
+msgid "Two-factor code needed"
+msgstr "Wymagany kod dwuskładnikowy"
+
+msgid "Two-factor for everyone"
+msgstr "Dwuskładnikowe dla wszystkich"
+
+msgid "Two-factor reset"
+msgstr "Reset dwuskładnikowego"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Wymagane logowanie dwuskładnikowe: zeskanuj kod aplikacją uwierzytelniającą"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Niewykorzystane kody odzyskiwania: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Błędny kod dwuskładnikowy"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Administrator wymaga logowania dwuskładnikowego"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "Katalog \"config\" nie istnieje"
 
