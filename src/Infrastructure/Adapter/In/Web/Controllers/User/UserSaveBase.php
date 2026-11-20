@@ -24,6 +24,9 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
+use SP\Domain\Core\Events\EventMessage;
+use SP\Domain\Core\Events\Event;
+use SP\Application\User\Ports\UserTotpService;
 use Defuse\Crypto\Exception\EnvironmentIsBrokenException;
 use PHPMailer\PHPMailer\Exception;
 use SP\Application\Application;
@@ -44,6 +47,7 @@ use SP\Infrastructure\Adapter\In\Web\Forms\UserForm;
 use SP\Infrastructure\Adapter\In\Web\Controllers\Helpers\WebControllerHelper;
 
 use function SP\__;
+use function SP\__u;
 
 /**
  * Class UserSaveBase
@@ -69,7 +73,8 @@ abstract class UserSaveBase extends ControllerBase
         CustomFieldDataService $customFieldService,
         MailService            $mailService,
         UserPassRecoverService $userPassRecoverService,
-        private readonly UserProfileService $userProfileService
+        private readonly UserProfileService $userProfileService,
+        private readonly UserTotpService $userTotpService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -102,6 +107,36 @@ abstract class UserSaveBase extends ControllerBase
     final protected function assertProfileIsAssignable(User $userData): void
     {
         $this->userProfileService->assertAssignableBy($userData->getUserProfileId() ?? 0);
+    }
+
+    /**
+     * Remove the user's second factor when the administrator asked for it
+     *
+     * For somebody who has lost both their phone and their recovery codes. Their secret and codes
+     * go; if they are required to have a second factor, their next sign-in enrols a new one.
+     * Called before the user is saved, so a refusal — on a demo, where UserTotp refuses every
+     * change — leaves the whole edit unsaved rather than half of it.
+     *
+     * @throws ServiceException
+     */
+    final protected function resetTotpIfAsked(int $userId, User $userData): void
+    {
+        if (!$this->request->analyzeBool('totp_reset', false)) {
+            return;
+        }
+
+        $this->userTotpService->disable($userId);
+
+        $this->eventDispatcher->notify(
+            new Event(
+                'edit.user.totp.reset',
+                $this,
+                EventMessage::build()
+                            ->addDescription(__u('Two-factor authentication reset'))
+                            ->addDetail(__u('User'), (string)$userData->getLogin())
+                            ->addDetail('ID', (string)$userId)
+            )
+        );
     }
 
     /**

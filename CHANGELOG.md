@@ -67,6 +67,7 @@ project adheres to [Semantic Versioning](https://semver.org/).
 
 - Two-factor sign-in with an authenticator app: turn it on from Settings → Security, with ten single-use recovery codes
 - Administrators can require two-factor sign-in per user or for everyone; users without it enrol at their next sign-in
+- Administrators can reset a user's two-factor sign-in, for a lost phone and lost recovery codes
 - Playwright end-to-end browser test suite covering the install wizard and login flow (#391)
 - Full REST API with OpenAPI spec and Swagger UI at `/api/docs/` — replaces the JSON-RPC 2.0 API (#217)
 - REST API endpoints for Users, Profiles, Auth Tokens, Custom Fields, Event Log, Notifications, Public Links, and Account Files (#219–#226)
