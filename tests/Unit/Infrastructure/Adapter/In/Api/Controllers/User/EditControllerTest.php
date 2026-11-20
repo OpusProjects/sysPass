@@ -146,7 +146,8 @@ class EditControllerTest extends UnitaryTestCase
             ['name', true, null, 'Renamed'],
             ['login', true, null, 'renamed'],
         ]);
-        // Only what a rename sends: no isAdminApp, isAdminAcc, isDisabled or isChangePass.
+        // Only what a rename sends: no isAdminApp, isAdminAcc, isDisabled, isChangePass or
+        // isTotpRequired — the last of which an administrator set to make the user enrol.
         $this->apiService->method('getParamInt')->willReturnCallback(
             static fn(string $param): ?int => ['id' => 3, 'userGroupId' => 1, 'userProfileId' => 2][$param] ?? null
         );
@@ -161,6 +162,7 @@ class EditControllerTest extends UnitaryTestCase
                 'isAdminAcc' => true,
                 'isDisabled' => true,
                 'isChangePass' => true,
+                'isTotpRequired' => true,
             ]));
 
         $this->userService
@@ -169,7 +171,8 @@ class EditControllerTest extends UnitaryTestCase
             ->with($this->callback(static fn(User $user): bool => $user->isAdminApp() === true
                 && $user->isAdminAcc() === true
                 && $user->isDisabled() === true
-                && $user->isChangePass() === true));
+                && $user->isChangePass() === true
+                && $user->isTotpRequired() === true));
 
         $this->controller->editAction();
     }

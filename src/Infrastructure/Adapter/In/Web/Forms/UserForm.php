@@ -101,6 +101,7 @@ final class UserForm extends FormBase implements FormInterface
             'isAdminAcc' => $this->context->getUserData()->isAdminApp && $this->request->analyzeBool('adminacc_enabled', false),
             'isDisabled' => $this->request->analyzeBool('disabled', false),
             'isChangePass' => $this->request->analyzeBool('changepass_enabled', false),
+            'isTotpRequired' => $this->request->analyzeBool('totprequired_enabled', false),
             'pass' => $this->request->analyzeEncrypted('password'),
             'isLdap' => (bool)$this->isLdap,
         ]);

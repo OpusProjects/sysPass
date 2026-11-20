@@ -673,7 +673,8 @@
                   "isAdminApp": {"type": "integer", "description": "Application admin (0/1)"},
                   "isAdminAcc": {"type": "integer", "description": "Account admin (0/1)"},
                   "isDisabled": {"type": "integer", "description": "Disabled (0/1)"},
-                  "isChangePass": {"type": "integer", "description": "Force password change (0/1)"}
+                  "isChangePass": {"type": "integer", "description": "Force password change (0/1)"},
+                  "isTotpRequired": {"type": "integer", "description": "Require two-factor sign-in (0/1)"}
                 }
               }
             }
@@ -720,7 +721,8 @@
                   "isAdminApp": {"type": "integer"},
                   "isAdminAcc": {"type": "integer"},
                   "isDisabled": {"type": "integer"},
-                  "isChangePass": {"type": "integer"}
+                  "isChangePass": {"type": "integer"},
+                  "isTotpRequired": {"type": "integer", "description": "Require two-factor sign-in (0/1); omitted keeps the stored value"}
                 }
               }
             }

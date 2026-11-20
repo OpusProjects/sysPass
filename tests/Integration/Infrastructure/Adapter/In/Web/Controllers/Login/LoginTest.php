@@ -325,6 +325,76 @@ class LoginTest extends IntegrationTestCase
         self::assertSame(self::REDIRECT, $json->data->url);
     }
 
+    /**
+     * The enrolment prompt carries what the form needs to draw the QR code, beside its status.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function theEnrolmentPromptCarriesTheSecretToDraw()
+    {
+        $loginService = $this->createStub(LoginService::class);
+        $loginService->method('doLogin')->willThrowException(
+            AuthException::info('Enrol', null, LoginStatus::TOTP_ENROL_REQUIRED->value)
+                         ->withData(['secret' => 'ABC', 'uri' => 'otpauth://totp/x'])
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'login/login'],
+                ['user' => self::$faker->userName(), 'pass' => self::$faker->password()]
+            ),
+            [LoginService::class => $loginService]
+        );
+
+        $this->expectOutputString(json_encode([
+            'status' => 'ERROR',
+            'description' => 'Enrol',
+            'data' => ['loginStatus' => LoginStatus::TOTP_ENROL_REQUIRED->value, 'secret' => 'ABC', 'uri' => 'otpauth://totp/x'],
+        ]));
+
+        IntegrationTestCase::runApp($container);
+    }
+
+    /**
+     * A sign-in that completed an enrolment hands over its recovery codes with the redirect, so
+     * the form can show them once before going on.
+     *
+     * @throws ContainerExceptionInterface
+     * @throws Exception
+     * @throws NotFoundExceptionInterface
+     */
+    #[Test]
+    public function aSignInThatEnrolledHandsOverTheRecoveryCodes()
+    {
+        $loginService = $this->createStub(LoginService::class);
+        $loginService->method('doLogin')->willReturn(
+            new LoginResponseDto(LoginStatus::OK, self::REDIRECT, ['aaaaaa-bbbbbb'])
+        );
+
+        $container = $this->buildContainer(
+            IntegrationTestCase::buildRequest(
+                'post',
+                'index.php',
+                ['r' => 'login/login'],
+                ['user' => self::$faker->userName(), 'pass' => self::$faker->password()]
+            ),
+            [LoginService::class => $loginService]
+        );
+
+        $this->expectOutputString(json_encode([
+            'status' => 'OK',
+            'description' => '',
+            'data' => ['url' => self::REDIRECT, 'recoveryCodes' => ['aaaaaa-bbbbbb']],
+        ]));
+
+        IntegrationTestCase::runApp($container);
+    }
+
     private function outputCheckerRejected(string $output): void
     {
         $json = json_decode($output);

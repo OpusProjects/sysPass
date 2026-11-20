@@ -40,11 +40,6 @@ use function SP\processException;
  */
 final class StartController extends UserSettingsTotpBase
 {
-    /**
-     * The name the authenticator app files the entry under
-     */
-    private const ISSUER = 'sysPass';
-
     #[Action(ResponseType::JSON)]
     public function startAction(): ActionResponse
     {
@@ -55,7 +50,7 @@ final class StartController extends UserSettingsTotpBase
                 'secret' => $secret,
                 'uri' => Totp::provisioningUri(
                     $secret,
-                    self::ISSUER,
+                    Totp::ISSUER,
                     (string)$this->session->getUserData()->login
                 ),
             ]);

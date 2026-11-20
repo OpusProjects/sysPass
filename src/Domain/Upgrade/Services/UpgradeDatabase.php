@@ -53,6 +53,7 @@ use function SP\processException;
 #[UpgradeVersion('400.24210101')]
 #[UpgradeVersion('400.24240101')]
 #[UpgradeVersion('400.26112001')]
+#[UpgradeVersion('400.26112101')]
 final class UpgradeDatabase extends Service implements UpgradeHandlerService
 {
     public function __construct(

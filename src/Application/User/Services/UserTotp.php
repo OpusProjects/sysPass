@@ -213,6 +213,17 @@ final class UserTotp extends Service implements UserTotpService
      */
     public function spend(int $userId, TotpProof $proof): bool
     {
+        if ($proof->isEnrolment()) {
+            try {
+                // Only a pending row is matched, so confirming twice changes nothing.
+                return $this->userTotpRepository->enable($userId, (int)$proof->step) === 1;
+            } catch (Exception $e) {
+                processException($e);
+
+                throw ServiceException::error(__u('Error while saving the two-factor secret'), null, 0, $e);
+            }
+        }
+
         if (!$proof->isRecoveryCode()) {
             return $this->consume($userId, (int)$proof->step);
         }
@@ -224,6 +235,32 @@ final class UserTotp extends Service implements UserTotpService
 
             throw ServiceException::error(__u('Error while checking the code'), null, 0, $e);
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function pendingSecret(int $userId): ?string
+    {
+        $row = $this->getRow($userId);
+
+        return $row === null || $row->isEnabled() ? null : $this->decryptSecret($row);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function checkPending(int $userId, string $code, ?int $time = null): ?TotpProof
+    {
+        $secret = $this->pendingSecret($userId);
+
+        if ($secret === null) {
+            return null;
+        }
+
+        $step = Totp::verify($secret, $code, $time ?? time());
+
+        return $step === null ? null : TotpProof::enrolment($step);
     }
 
     /**

@@ -343,6 +343,29 @@ $user = $_getvar('user');
                                 <?php
                                 endif; ?>
 
+                                <li class="mdl-list__item mdl-list__item--two-line">
+                                    <div class="mdl-switch__box">
+                                        <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                               for="totprequired_enabled">
+                                            <input type="checkbox"
+                                                   id="totprequired_enabled"
+                                                   class="mdl-switch__input"
+                                                   name="totprequired_enabled" <?php
+                                            echo $user->isTotpRequired() ? 'checked' : ' '; ?> <?php
+                                            echo $_e($_getvar('disabled')); ?>/>
+                                        </label>
+                                    </div>
+
+                                    <span class="mdl-list__item-primary-content">
+                                        <span><?php
+                                            echo __('Two-factor'); ?></span>
+                                        <span class="mdl-list__item-sub-title">
+                                            <?php
+                                            echo __('Require an authenticator app at sign-in'); ?>
+                                        </span>
+                                    </span>
+                                </li>
+
                                 <?php
                                 if ($_getvar('mailEnabled')): ?>
                                     <li class="mdl-list__item mdl-list__item--two-line">

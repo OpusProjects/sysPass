@@ -32,5 +32,31 @@ use SP\Domain\Core\Exceptions\SPException;
  */
 final class AuthException extends SPException
 {
+    /**
+     * @var array<string, mixed>
+     */
+    private array $data = [];
 
+    /**
+     * What the sign-in form needs to answer this refusal, beyond its status
+     *
+     * The enrolment prompt is the case: the form has to draw the QR code of the secret the user
+     * is being asked to enrol.
+     *
+     * @param array<string, mixed> $data
+     */
+    public function withData(array $data): self
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getData(): array
+    {
+        return $this->data;
+    }
 }

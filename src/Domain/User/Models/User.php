@@ -74,6 +74,7 @@ class User extends Model implements ItemWithIdAndNameModel
     protected ?bool   $isAdminAcc      = null;
     protected ?bool   $isDisabled      = null;
     protected ?bool   $isChangePass    = null;
+    protected ?bool   $isTotpRequired  = null;
     protected ?bool   $isChangedPass   = null;
     protected ?bool   $isLdap          = null;
     protected ?int    $loginCount      = null;
@@ -145,6 +146,14 @@ class User extends Model implements ItemWithIdAndNameModel
     public function isChangePass(): ?bool
     {
         return $this->isChangePass;
+    }
+
+    /**
+     * Whether an administrator requires this user to sign in with a second factor
+     */
+    public function isTotpRequired(): ?bool
+    {
+        return $this->isTotpRequired;
     }
 
     public function isLdap(): ?bool

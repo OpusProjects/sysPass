@@ -28,6 +28,7 @@ namespace SP\Tests\Unit\Application\Auth\Services;
 
 use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use SP\Application\Auth\Services\LoginTotp;
 use SP\Application\Security\Ports\TrackService;
@@ -37,6 +38,7 @@ use SP\Domain\Auth\Services\AuthException;
 use SP\Domain\Auth\Services\LoginStatus;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Http\Ports\RequestService;
+use SP\Domain\User\Dtos\UserDto;
 use SP\Domain\Security\Dtos\TrackRequest;
 use SP\Tests\Support\UnitaryTestCase;
 
@@ -48,6 +50,7 @@ use SP\Tests\Support\UnitaryTestCase;
 class LoginTotpTest extends UnitaryTestCase
 {
     private const USER_ID = 7;
+    private const SECRET = 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ';
 
     private TrackService|MockObject    $trackService;
     private RequestService|MockObject  $request;
@@ -59,7 +62,7 @@ class LoginTotpTest extends UnitaryTestCase
         $this->userTotpService->expects($this->atLeastOnce())->method('isEnabled')->with(self::USER_ID)->willReturn(false);
         $this->request->expects($this->never())->method('analyzeString');
 
-        self::assertNull($this->loginTotp->check(self::USER_ID));
+        self::assertNull($this->loginTotp->check($this->user()));
     }
 
     /**
@@ -76,7 +79,7 @@ class LoginTotpTest extends UnitaryTestCase
         $this->expectExceptionCode(LoginStatus::TOTP_REQUIRED->value);
         $this->expectExceptionMessage('Two-factor code needed');
 
-        $this->loginTotp->check(self::USER_ID);
+        $this->loginTotp->check($this->user());
     }
 
     public function testAWrongCodeIsRefusedAndCounted(): void
@@ -90,7 +93,7 @@ class LoginTotpTest extends UnitaryTestCase
         $this->expectExceptionCode(LoginStatus::TOTP_REQUIRED->value);
         $this->expectExceptionMessage('Wrong two-factor code');
 
-        $this->loginTotp->check(self::USER_ID);
+        $this->loginTotp->check($this->user());
     }
 
     public function testTheRightCodeAnswersWithWhatToSpendAndSpendsNothing(): void
@@ -103,7 +106,7 @@ class LoginTotpTest extends UnitaryTestCase
         $this->userTotpService->expects($this->never())->method('spend');
         $this->trackService->expects($this->never())->method('add');
 
-        self::assertSame($proof, $this->loginTotp->check(self::USER_ID));
+        self::assertSame($proof, $this->loginTotp->check($this->user()));
     }
 
     /**
@@ -128,9 +131,10 @@ class LoginTotpTest extends UnitaryTestCase
         $proof = TotpProof::step(42);
 
         $this->userTotpService->expects($this->once())->method('spend')->with(self::USER_ID, $proof)->willReturn(true);
+        $this->userTotpService->expects($this->never())->method('generateRecoveryCodes');
         $this->trackService->expects($this->never())->method('add');
 
-        $this->loginTotp->consume(self::USER_ID, $proof);
+        self::assertSame([], $this->loginTotp->consume(self::USER_ID, $proof));
     }
 
     /**
@@ -163,7 +167,144 @@ class LoginTotpTest extends UnitaryTestCase
         $this->expectException(AuthException::class);
         $this->expectExceptionMessage('Internal error');
 
-        $this->loginTotp->check(self::USER_ID);
+        $this->loginTotp->check($this->user());
+    }
+
+    /**
+     * Required per user, or for everybody: either way a user with no second factor enrols one.
+     *
+     * @return array<string, array{bool, bool}>
+     */
+    public static function requiredProvider(): array
+    {
+        return [
+            'by the user\'s own flag' => [true, false],
+            'for the whole installation' => [false, true],
+        ];
+    }
+
+    /**
+     * Nobody required and nothing enrolled: the password is enough, as before.
+     */
+    public function testAUserNobodyRequiresIsNotAskedToEnrol(): void
+    {
+        $this->userTotpService->method('isEnabled')->willReturn(false);
+        $this->userTotpService->expects($this->never())->method('startEnrolment');
+
+        self::assertNull($this->loginTotp->check($this->user()));
+    }
+
+    /**
+     * The first attempt is a question, with what the form needs to draw the QR code.
+     */
+    #[DataProvider('requiredProvider')]
+    public function testARequiredUserWithoutOneIsAskedToEnrol(bool $byUser, bool $byInstallation): void
+    {
+        $this->config->getConfigData()->setTotpRequired($byInstallation);
+
+        $this->userTotpService->method('isEnabled')->willReturn(false);
+        $this->userTotpService->method('pendingSecret')->willReturn(null);
+        $this->userTotpService
+            ->expects($this->once())
+            ->method('startEnrolment')
+            ->with(self::USER_ID)
+            ->willReturn(self::SECRET);
+        $this->trackService->expects($this->never())->method('add');
+
+        try {
+            $this->loginTotp->check($this->user($byUser));
+            self::fail('enrolment was not asked for');
+        } catch (AuthException $e) {
+            self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $e->getCode());
+            self::assertSame(self::SECRET, $e->getData()['secret']);
+            self::assertStringStartsWith('otpauth://totp/sysPass:ana?secret=' . self::SECRET, $e->getData()['uri']);
+        }
+    }
+
+    /**
+     * Trying again shows the secret already shown, rather than replacing what was scanned.
+     */
+    public function testTryingAgainShowsTheSameSecret(): void
+    {
+        $this->userTotpService->method('isEnabled')->willReturn(false);
+        $this->userTotpService->method('pendingSecret')->willReturn(self::SECRET);
+        $this->userTotpService->expects($this->never())->method('startEnrolment');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionCode(LoginStatus::TOTP_ENROL_REQUIRED->value);
+
+        $this->loginTotp->check($this->user(true));
+    }
+
+    public function testAWrongEnrolmentCodeIsCountedAndAsksAgain(): void
+    {
+        $this->userTotpService->method('isEnabled')->willReturn(false);
+        $this->userTotpService->method('pendingSecret')->willReturn(self::SECRET);
+        $this->request->expects($this->atLeastOnce())->method('analyzeString')->with('totp')->willReturn('123456');
+        $this->userTotpService->method('checkPending')->willReturn(null);
+        $this->trackService->expects($this->once())->method('add');
+
+        try {
+            $this->loginTotp->check($this->user(true));
+            self::fail('a wrong code was accepted');
+        } catch (AuthException $e) {
+            self::assertSame(LoginStatus::TOTP_ENROL_REQUIRED->value, $e->getCode());
+            self::assertSame('Wrong two-factor code', $e->getMessage());
+            // The QR code has to stay on screen for the next attempt.
+            self::assertSame(self::SECRET, $e->getData()['secret']);
+        }
+    }
+
+    /**
+     * The right code is checked, not spent: the enrolment is confirmed only when sign-in completes.
+     */
+    public function testTheRightEnrolmentCodeConfirmsNothingYet(): void
+    {
+        $proof = TotpProof::enrolment(42);
+
+        $this->userTotpService->method('isEnabled')->willReturn(false);
+        $this->userTotpService->method('pendingSecret')->willReturn(self::SECRET);
+        $this->request->expects($this->atLeastOnce())->method('analyzeString')->with('totp')->willReturn('123456');
+        $this->userTotpService->expects($this->once())->method('checkPending')->with(self::USER_ID, '123456')->willReturn($proof);
+        $this->userTotpService->expects($this->never())->method('spend');
+
+        self::assertSame($proof, $this->loginTotp->check($this->user(true)));
+    }
+
+    /**
+     * Completing the sign-in confirms the enrolment and issues the recovery codes it shows.
+     */
+    public function testCompletingAnEnrolmentIssuesTheRecoveryCodes(): void
+    {
+        $proof = TotpProof::enrolment(42);
+
+        $this->userTotpService->expects($this->once())->method('spend')->with(self::USER_ID, $proof)->willReturn(true);
+        $this->userTotpService
+            ->expects($this->once())
+            ->method('generateRecoveryCodes')
+            ->with(self::USER_ID)
+            ->willReturn(['aaaaaa-bbbbbb']);
+
+        self::assertSame(['aaaaaa-bbbbbb'], $this->loginTotp->consume(self::USER_ID, $proof));
+    }
+
+    /**
+     * A user who already has a second factor is asked for a code, required or not.
+     */
+    public function testARequiredUserWhoHasOneIsAskedForACode(): void
+    {
+        $this->userTotpService->method('isEnabled')->willReturn(true);
+        $this->userTotpService->expects($this->never())->method('startEnrolment');
+
+        $this->expectException(AuthException::class);
+        $this->expectExceptionCode(LoginStatus::TOTP_REQUIRED->value);
+
+        $this->loginTotp->check($this->user(true));
+    }
+
+    private function user(bool $totpRequired = false): UserDto
+    {
+        return new UserDto(id: self::USER_ID, login: 'ana', isTotpRequired: $totpRequired);
     }
 
     protected function setUp(): void

@@ -90,12 +90,30 @@ interface UserTotpService
     public function check(int $userId, string $typed, ?int $time = null): ?TotpProof;
 
     /**
-     * Spend what check() accepted
+     * Spend what check() or checkPending() accepted; spending an enrolment's code confirms it
      *
      * @return bool False when another request spent it first
      * @throws ServiceException
      */
     public function spend(int $userId, TotpProof $proof): bool;
+
+    /**
+     * The secret of the user's unconfirmed enrolment, if there is one
+     *
+     * Sign-in shows it again rather than starting another, so a user who is asked to enrol and
+     * tries twice does not find the code they already scanned has been replaced.
+     *
+     * @throws ServiceException
+     */
+    public function pendingSecret(int $userId): ?string;
+
+    /**
+     * Check a code against the user's unconfirmed enrolment, without confirming it
+     *
+     * @return TotpProof|null What to spend — which confirms the enrolment — or null
+     * @throws ServiceException
+     */
+    public function checkPending(int $userId, string $code, ?int $time = null): ?TotpProof;
 
     /**
      * Replace the user's recovery codes with a new set

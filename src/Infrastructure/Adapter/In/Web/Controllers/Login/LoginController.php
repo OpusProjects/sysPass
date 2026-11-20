@@ -81,11 +81,14 @@ final class LoginController extends ControllerBase
                 EventMessage::build()->addExtra('from', $from)
             ));
 
-            return ActionResponse::ok('', [
-                                                     'url' => $this->session->getTrasientKey(
-                                                         'redirect'
-                                                     ) ?: $loginResponse->getRedirect(),
-                                                 ]);
+            $data = ['url' => $this->session->getTrasientKey('redirect') ?: $loginResponse->getRedirect()];
+
+            // An enrolment completed by this sign-in: the form shows the codes before going on.
+            if ($loginResponse->getRecoveryCodes() !== []) {
+                $data['recoveryCodes'] = $loginResponse->getRecoveryCodes();
+            }
+
+            return ActionResponse::ok('', $data);
         } catch (AuthException $e) {
             processException($e);
 
@@ -110,7 +113,7 @@ final class LoginController extends ControllerBase
      * password, or their previous password after a reset, was told it was wrong and never shown
      * where to type it. Only those statuses are passed on: the form reads 0 as success.
      *
-     * @return array{loginStatus: int}|null
+     * @return array<string, mixed>|null
      */
     private static function promptFor(AuthException $e): ?array
     {
@@ -120,6 +123,8 @@ final class LoginController extends ControllerBase
             LoginStatus::INVALID_MASTER_PASS,
             LoginStatus::OLD_PASS_REQUIRED,
             LoginStatus::TOTP_REQUIRED => ['loginStatus' => $status->value],
+            // The enrolment prompt also carries the secret, for the form to draw its QR code.
+            LoginStatus::TOTP_ENROL_REQUIRED => ['loginStatus' => $status->value] + $e->getData(),
             default => null,
         };
     }

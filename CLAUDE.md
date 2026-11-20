@@ -370,7 +370,11 @@ Every action `Bootstrap` invokes **must** return `SP\Domain\Common\Dtos\ActionRe
   Recovery codes are stored as an HMAC keyed with the same salt — fast on purpose, since 60 random
   bits leave nothing to search, and keyed so a sign-in can find and spend one in a single `UPDATE`.
   Every change to a user's second factor is refused on a demo, in `UserTotp`, where every door
-  reaches.
+  reaches. A user an administrator requires to have one (`User.isTotpRequired`, or `totpRequired`
+  in config.xml) and who has none enrols **inside the sign-in** (`LoginStatus::TOTP_ENROL_REQUIRED`)
+  — no session is ever opened on the password alone — and the pending secret is shown again on
+  each attempt rather than replaced. `User.isTotpRequired` is the table's last column because the
+  fixture `syspass.sql` inserts users positionally.
 - **Every signed-in request needs the CSRF token**, whatever its method — the front end's
   `getActionCall` sends it as `X-CSRF`. A plain GET without it is let through only to a route in
   `Csrf::PLAIN_NAVIGATIONS` (the page, login/logout, the reset and public links, the downloads).

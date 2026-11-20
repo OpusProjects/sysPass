@@ -627,6 +627,7 @@ CREATE TABLE `User`
     `isChangePass`    tinyint(1)                    DEFAULT 0,
     `isChangedPass`   tinyint(1)                    DEFAULT 0,
     `preferences`     blob                          DEFAULT NULL,
+    `isTotpRequired`  tinyint(1)           NOT NULL DEFAULT 0,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_User_01` (`login`),
     KEY `idx_User_01` (`pass`),

@@ -39,6 +39,11 @@ namespace SP\Domain\Auth\Services;
  */
 final class Totp
 {
+    /**
+     * The name authenticator apps file sysPass's entries under
+     */
+    public const ISSUER = 'sysPass';
+
     public const DIGITS = 6;
     public const PERIOD = 30;
 

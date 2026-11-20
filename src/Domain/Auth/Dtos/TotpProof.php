@@ -28,11 +28,12 @@ namespace SP\Domain\Auth\Dtos;
 /**
  * What a sign-in presented as its second factor, checked and not yet spent
  *
- * Either the time step of a one-time code or the keyed hash of a recovery code.
+ * The time step of a one-time code, the keyed hash of a recovery code, or the time step of a code
+ * from a secret being enrolled — which spending confirms.
  */
 final readonly class TotpProof
 {
-    private function __construct(public ?int $step, public ?string $recoveryHash)
+    private function __construct(public ?int $step, public ?string $recoveryHash, public bool $enrolment = false)
     {
     }
 
@@ -44,6 +45,16 @@ final readonly class TotpProof
     public static function recoveryCode(string $hash): self
     {
         return new self(null, $hash);
+    }
+
+    public static function enrolment(int $step): self
+    {
+        return new self($step, null, true);
+    }
+
+    public function isEnrolment(): bool
+    {
+        return $this->enrolment;
     }
 
     public function isRecoveryCode(): bool

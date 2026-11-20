@@ -59,6 +59,7 @@ final class SaveController extends SimpleControllerBase
 
         $configData->setHttpsEnabled($this->request->analyzeBool('https_enabled', false));
         $configData->setEncryptSession($this->request->analyzeBool('encrypt_session_enabled', false));
+        $configData->setTotpRequired($this->request->analyzeBool('totp_required_enabled', false));
 
         return $this->saveConfig(
             $configData,
