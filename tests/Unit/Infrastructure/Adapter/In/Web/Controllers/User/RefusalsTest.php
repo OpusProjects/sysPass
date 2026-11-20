@@ -27,6 +27,7 @@ declare(strict_types=1);
 
 namespace SP\Tests\Unit\Infrastructure\Adapter\In\Web\Controllers\User;
 
+use SP\Application\User\Ports\UserTotpService;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
@@ -72,7 +73,8 @@ class RefusalsTest extends WebControllerTestCase
             $this->createStub(CustomFieldDataService::class),
             $this->createStub(MailService::class),
             $this->createStub(UserPassRecoverService::class),
-            $this->createStub(UserProfileService::class)
+            $this->createStub(UserProfileService::class),
+            $this->createStub(UserTotpService::class)
         ))->saveCreateAction();
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
@@ -97,7 +99,8 @@ class RefusalsTest extends WebControllerTestCase
             $userService,
             $this->createStub(UserGroupService::class),
             $this->createStub(UserProfileService::class),
-            $this->createStub(CustomFieldDataService::class)
+            $this->createStub(CustomFieldDataService::class),
+            $this->createStub(UserTotpService::class)
         ))->viewAction(1);
 
         self::assertSame(ResponseStatus::ERROR, $response->status);
@@ -128,7 +131,8 @@ class RefusalsTest extends WebControllerTestCase
             $userService,
             $this->createStub(UserGroupService::class),
             $this->createStub(UserProfileService::class),
-            $this->createStub(CustomFieldDataService::class)
+            $this->createStub(CustomFieldDataService::class),
+            $this->createStub(UserTotpService::class)
         ))->viewAction(1);
 
         self::assertSame(ResponseStatus::ERROR, $response->status);

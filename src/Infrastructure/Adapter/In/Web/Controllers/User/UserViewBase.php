@@ -24,6 +24,7 @@
 
 namespace SP\Infrastructure\Adapter\In\Web\Controllers\User;
 
+use SP\Application\User\Ports\UserTotpService;
 use SP\Application\Application;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Acl\AclActionsInterface;
@@ -70,7 +71,8 @@ abstract class UserViewBase extends ControllerBase
         UserService        $userService,
         UserGroupService       $userGroupService,
         UserProfileService $userProfileService,
-        CustomFieldDataService $customFieldService
+        CustomFieldDataService $customFieldService,
+        private readonly UserTotpService $userTotpService
     ) {
         parent::__construct($application, $webControllerHelper);
 
@@ -120,6 +122,8 @@ abstract class UserViewBase extends ControllerBase
         );
 
         $this->view->assign('isView', $isView);
+        // The reset is offered only where there is something to reset.
+        $this->view->assign('totpEnabled', $userId !== null && $this->userTotpService->isEnabled($userId));
 
         if ($isView === true
             || ($this->configData->isDemoEnabled()

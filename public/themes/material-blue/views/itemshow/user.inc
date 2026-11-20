@@ -367,6 +367,32 @@ $user = $_getvar('user');
                                 </li>
 
                                 <?php
+                                if ($_getvar('totpEnabled') && !$_getvar('isView')): ?>
+                                    <li class="mdl-list__item mdl-list__item--two-line">
+                                        <div class="mdl-switch__box">
+                                            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect"
+                                                   for="totp_reset">
+                                                <input type="checkbox"
+                                                       id="totp_reset"
+                                                       class="mdl-switch__input"
+                                                       name="totp_reset" <?php
+                                                echo $_e($_getvar('disabled')); ?>/>
+                                            </label>
+                                        </div>
+
+                                        <span class="mdl-list__item-primary-content">
+                                            <span><?php
+                                                echo __('Two-factor reset'); ?></span>
+                                            <span class="mdl-list__item-sub-title">
+                                                <?php
+                                                echo __('Remove their authenticator app and recovery codes'); ?>
+                                            </span>
+                                        </span>
+                                    </li>
+                                <?php
+                                endif; ?>
+
+                                <?php
                                 if ($_getvar('mailEnabled')): ?>
                                     <li class="mdl-list__item mdl-list__item--two-line">
                                         <div class="mdl-switch__box">
