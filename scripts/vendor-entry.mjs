@@ -20,3 +20,7 @@ window.moment = moment;
 import 'magnific-popup';
 import Selectize from '@selectize/selectize';
 window.Selectize = Selectize;
+
+// Draws the QR code a user scans to enrol an authenticator app (user settings, Security tab).
+import qrcode from 'qrcode-generator';
+window.qrcode = qrcode;

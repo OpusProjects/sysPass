@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\Auth\Ports;
 
+use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Domain\Auth\Services\AuthException;
 
 /**
@@ -35,15 +36,17 @@ interface LoginTotpService
     /**
      * Check the code sent with the sign-in, for a user who has a second factor
      *
-     * @return int|null The step to spend once sign-in succeeds, or null when the user has none
+     * A one-time code or one of the user's recovery codes.
+     *
+     * @return TotpProof|null What to spend once sign-in succeeds, or null when the user has none
      * @throws AuthException When the code is missing or wrong
      */
-    public function check(int $userId): ?int;
+    public function check(int $userId): ?TotpProof;
 
     /**
-     * Spend the step check() accepted, at the point sign-in is about to succeed
+     * Spend what check() accepted, at the point sign-in is about to succeed
      *
      * @throws AuthException When another sign-in spent it first
      */
-    public function consume(int $userId, int $step): void;
+    public function consume(int $userId, TotpProof $proof): void;
 }

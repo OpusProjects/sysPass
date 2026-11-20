@@ -28,11 +28,14 @@ namespace SP\Application\User\Services;
 use Exception;
 use SP\Application\Application;
 use SP\Application\User\Ports\UserTotpService;
+use SP\Domain\Auth\Dtos\TotpProof;
+use SP\Domain\Auth\Services\RecoveryCode;
 use SP\Domain\Auth\Services\Totp;
 use SP\Domain\Common\Services\Service;
 use SP\Domain\Common\Services\ServiceException;
 use SP\Domain\Core\Crypt\CryptInterface;
 use SP\Domain\User\Models\UserTotp as UserTotpModel;
+use SP\Domain\User\Ports\UserTotpRecoveryRepository;
 use SP\Domain\User\Ports\UserTotpRepository;
 
 use function SP\__u;
@@ -55,6 +58,7 @@ final class UserTotp extends Service implements UserTotpService
     public function __construct(
         Application                         $application,
         private readonly UserTotpRepository $userTotpRepository,
+        private readonly UserTotpRecoveryRepository $userTotpRecoveryRepository,
         private readonly CryptInterface     $crypt
     ) {
         parent::__construct($application);
@@ -101,6 +105,8 @@ final class UserTotp extends Service implements UserTotpService
      */
     public function startEnrolment(int $userId): string
     {
+        $this->refuseOnDemo();
+
         if ($this->isEnabled($userId)) {
             throw ServiceException::error(__u('Two-factor authentication is already on'));
         }
@@ -160,12 +166,128 @@ final class UserTotp extends Service implements UserTotpService
      */
     public function disable(int $userId): void
     {
+        $this->refuseOnDemo();
+
         try {
             $this->userTotpRepository->deleteByUserId($userId);
+            $this->userTotpRecoveryRepository->deleteByUserId($userId);
         } catch (Exception $e) {
             processException($e);
 
             throw ServiceException::error(__u('Error while removing the two-factor secret'), null, 0, $e);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function check(int $userId, string $typed, ?int $time = null): ?TotpProof
+    {
+        if (!$this->isEnabled($userId)) {
+            return null;
+        }
+
+        $recoveryCode = RecoveryCode::normalize($typed);
+
+        if ($recoveryCode === null) {
+            $step = $this->verify($userId, $typed, $time);
+
+            return $step === null ? null : TotpProof::step($step);
+        }
+
+        $hash = RecoveryCode::hash($recoveryCode, $this->getSalt());
+
+        try {
+            $unused = $this->userTotpRecoveryRepository->countUnused($userId, $hash);
+        } catch (Exception $e) {
+            processException($e);
+
+            throw ServiceException::error(__u('Error while checking the code'), null, 0, $e);
+        }
+
+        return $unused === 1 ? TotpProof::recoveryCode($hash) : null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function spend(int $userId, TotpProof $proof): bool
+    {
+        if (!$proof->isRecoveryCode()) {
+            return $this->consume($userId, (int)$proof->step);
+        }
+
+        try {
+            return $this->userTotpRecoveryRepository->consume($userId, (string)$proof->recoveryHash) === 1;
+        } catch (Exception $e) {
+            processException($e);
+
+            throw ServiceException::error(__u('Error while checking the code'), null, 0, $e);
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generateRecoveryCodes(int $userId): array
+    {
+        $this->refuseOnDemo();
+
+        if (!$this->isEnabled($userId)) {
+            throw ServiceException::error(__u('Two-factor authentication is off'));
+        }
+
+        $salt = $this->getSalt();
+        $codes = [];
+
+        while (count($codes) < RecoveryCode::COUNT) {
+            $codes[RecoveryCode::generate()] = true;
+        }
+
+        $codes = array_keys($codes);
+
+        try {
+            $this->userTotpRecoveryRepository->replace(
+                $userId,
+                array_map(
+                    static fn(string $code) => RecoveryCode::hash((string)RecoveryCode::normalize($code), $salt),
+                    $codes
+                )
+            );
+        } catch (Exception $e) {
+            processException($e);
+
+            throw ServiceException::error(__u('Error while saving the recovery codes'), null, 0, $e);
+        }
+
+        return $codes;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function countRecoveryCodes(int $userId): int
+    {
+        try {
+            return $this->userTotpRecoveryRepository->countUnused($userId);
+        } catch (Exception $e) {
+            processException($e);
+
+            throw ServiceException::error(__u('Error while checking the code'), null, 0, $e);
+        }
+    }
+
+    /**
+     * A demo publishes its administrator's credentials, so anybody signed in to it could turn a
+     * second factor on for that account and lock every other visitor out. Refused here, where
+     * every door reaches, as TemporaryMasterPass::create() refuses.
+     *
+     * @throws ServiceException
+     */
+    private function refuseOnDemo(): void
+    {
+        if ($this->config->getConfigData()->isDemoEnabled()) {
+            throw ServiceException::error(__u('Ey, this is a DEMO!!'));
         }
     }
 

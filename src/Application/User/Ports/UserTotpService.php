@@ -25,6 +25,7 @@ declare(strict_types=1);
 
 namespace SP\Application\User\Ports;
 
+use SP\Domain\Auth\Dtos\TotpProof;
 use SP\Domain\Common\Services\ServiceException;
 
 /**
@@ -72,9 +73,42 @@ interface UserTotpService
     public function confirmEnrolment(int $userId, string $code, ?int $time = null): bool;
 
     /**
-     * Remove the user's secret, confirmed or pending
+     * Remove the user's secret, confirmed or pending, and their recovery codes
      *
      * @throws ServiceException
      */
     public function disable(int $userId): void;
+
+    /**
+     * Check what the user typed as their second factor — a one-time code or a recovery code —
+     * without spending it
+     *
+     * @return TotpProof|null What to spend once the operation it guards succeeds, or null when it
+     *                        is not valid now
+     * @throws ServiceException
+     */
+    public function check(int $userId, string $typed, ?int $time = null): ?TotpProof;
+
+    /**
+     * Spend what check() accepted
+     *
+     * @return bool False when another request spent it first
+     * @throws ServiceException
+     */
+    public function spend(int $userId, TotpProof $proof): bool;
+
+    /**
+     * Replace the user's recovery codes with a new set
+     *
+     * @return string[] The codes, to be shown once: only their hashes are kept
+     * @throws ServiceException When the user has no confirmed second factor
+     */
+    public function generateRecoveryCodes(int $userId): array;
+
+    /**
+     * How many of the user's recovery codes are unused
+     *
+     * @throws ServiceException
+     */
+    public function countRecoveryCodes(int $userId): int;
 }
