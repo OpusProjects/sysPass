@@ -379,12 +379,6 @@ parameters:
 			path: src/Domain/Common/Providers/Version.php
 
 		-
-			message: '#^Method SP\\Domain\\Common\\Providers\\Version\:\:versionToInteger\(\) never returns float so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Domain/Common/Providers/Version.php
-
-		-
 			message: '#^Parameter \#1 \$array \(array\{4, 0, 0\}\) of array_values is already a list, call has no effect\.$#'
 			identifier: arrayValues.list
 			count: 1
