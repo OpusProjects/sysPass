@@ -8230,6 +8230,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass is niet geïnstalleerd"
 
+msgid "Authentication Code"
+msgstr "Authenticatiecode"
+
+msgid "Authenticator app"
+msgstr "Authenticator-app"
+
+msgid "Change password"
+msgstr "Wachtwoord wijzigen"
+
+msgid "Code from the app"
+msgstr "Code uit de app"
+
+msgid "Confirm"
+msgstr "Bevestigen"
+
+msgid "Continue"
+msgstr "Doorgaan"
+
+msgid "Current code or recovery code"
+msgstr "Huidige code of herstelcode"
+
+msgid "Done"
+msgstr "Klaar"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Elke code meldt u één keer aan zonder app. Bewaar ze goed: u ziet ze alleen nu."
+
+msgid "Error while checking the code"
+msgstr "Fout bij het controleren van de code"
+
+msgid "Error while removing the recovery codes"
+msgstr "Fout bij het verwijderen van de herstelcodes"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Fout bij het verwijderen van het tweestapsgeheim"
+
+msgid "Error while saving the recovery codes"
+msgstr "Fout bij het opslaan van de herstelcodes"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Fout bij het opslaan van het tweestapsgeheim"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Iedereen meldt zich aan met een authenticator-app; API-tokens niet."
+
+msgid "New recovery codes"
+msgstr "Nieuwe herstelcodes"
+
+msgid "New recovery codes issued"
+msgstr "Nieuwe herstelcodes uitgegeven"
+
+msgid "No password salt is set"
+msgstr "Er is geen wachtwoord-salt ingesteld"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Uit: aanmelden vraagt alleen om uw wachtwoord."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Aan: aanmelden vraagt om een code uit uw authenticator-app."
+
+msgid "Recovery codes"
+msgstr "Herstelcodes"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Hun authenticator-app en herstelcodes verwijderen"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Authenticator-app verplichten bij aanmelden"
+
+msgid "Require two-factor sign-in"
+msgstr "Tweestapsaanmelding verplichten"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Scan de code met uw authenticator-app"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Scan de code met uw authenticator-app of typ de sleutel eronder over."
+
+msgid "Signed in with a recovery code"
+msgstr "Aangemeld met een herstelcode"
+
+msgid "Turn off"
+msgstr "Uitschakelen"
+
+msgid "Turn on"
+msgstr "Inschakelen"
+
+msgid "Two-factor"
+msgstr "Tweestaps"
+
+msgid "Two-factor authentication"
+msgstr "Tweestapsverificatie"
+
+msgid "Two-factor authentication is already on"
+msgstr "Tweestapsverificatie staat al aan"
+
+msgid "Two-factor authentication is off"
+msgstr "Tweestapsverificatie staat uit"
+
+msgid "Two-factor authentication is on"
+msgstr "Tweestapsverificatie staat aan"
+
+msgid "Two-factor authentication reset"
+msgstr "Tweestapsverificatie hersteld"
+
+msgid "Two-factor authentication turned off"
+msgstr "Tweestapsverificatie uitgeschakeld"
+
+msgid "Two-factor authentication turned on"
+msgstr "Tweestapsverificatie ingeschakeld"
+
+msgid "Two-factor code needed"
+msgstr "Tweestapscode nodig"
+
+msgid "Two-factor for everyone"
+msgstr "Tweestaps voor iedereen"
+
+msgid "Two-factor reset"
+msgstr "Tweestaps herstellen"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Tweestaps is verplicht: scan de code met uw authenticator-app"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Ongebruikte herstelcodes: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Onjuiste tweestapscode"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Uw beheerder verplicht tweestapsaanmelding"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "De \"/config\" map bestaat niet"
 

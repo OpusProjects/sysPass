@@ -8188,6 +8188,139 @@ msgstr ""
 msgid "sysPass is not installed"
 msgstr "sysPass er ikki innlagt"
 
+msgid "Authentication Code"
+msgstr "Váttanarkota"
+
+msgid "Authenticator app"
+msgstr "Váttanarapp"
+
+msgid "Change password"
+msgstr "Broyt loyniorð"
+
+msgid "Code from the app"
+msgstr "Kota úr appini"
+
+msgid "Confirm"
+msgstr "Vátta"
+
+msgid "Continue"
+msgstr "Halt fram"
+
+msgid "Current code or recovery code"
+msgstr "Núverandi kota ella endurstovningarkota"
+
+msgid "Done"
+msgstr "Liðugt"
+
+msgid "Each one signs you in once without the app. Keep them safe: they are shown only now."
+msgstr "Hvør ritar teg inn eina ferð uttan appina. Goym tær: tær verða bara vístar nú."
+
+msgid "Error while checking the code"
+msgstr "Villa við at kanna kotuna"
+
+msgid "Error while removing the recovery codes"
+msgstr "Villa við at strika endurstovningarkoturnar"
+
+msgid "Error while removing the two-factor secret"
+msgstr "Villa við at strika tvítrinsloyndarmálið"
+
+msgid "Error while saving the recovery codes"
+msgstr "Villa við at goyma endurstovningarkoturnar"
+
+msgid "Error while saving the two-factor secret"
+msgstr "Villa við at goyma tvítrinsloyndarmálið"
+
+msgid "Every user signs in with an authenticator app; API tokens are exempt."
+msgstr "Øll rita inn við váttanarapp; API-tekin eru undantikin."
+
+msgid "New recovery codes"
+msgstr "Nýggjar endurstovningarkotur"
+
+msgid "New recovery codes issued"
+msgstr "Nýggjar endurstovningarkotur útgivnar"
+
+msgid "No password salt is set"
+msgstr "Einki loyniorðssalt er sett"
+
+msgid "Off: sign-in asks only for your password."
+msgstr "Av: innritan spyr bara um títt loyniorð."
+
+msgid "On: sign-in asks for a code from your authenticator app."
+msgstr "Á: innritan spyr um eina kotu úr tínari váttanarapp."
+
+msgid "Recovery codes"
+msgstr "Endurstovningarkotur"
+
+msgid "Remove their authenticator app and recovery codes"
+msgstr "Strika teirra váttanarapp og endurstovningarkotur"
+
+msgid "Require an authenticator app at sign-in"
+msgstr "Krev váttanarapp við innritan"
+
+msgid "Require two-factor sign-in"
+msgstr "Krev tvítrinsinnritan"
+
+msgid "Scan the code with your authenticator app"
+msgstr "Skanna kotuna við tínari váttanarapp"
+
+msgid "Scan the code with your authenticator app, or type in the key below it."
+msgstr "Skanna kotuna við tínari váttanarapp, ella skriva lykilin undir henni."
+
+msgid "Signed in with a recovery code"
+msgstr "Innritað við endurstovningarkotu"
+
+msgid "Turn off"
+msgstr "Sláa av"
+
+msgid "Turn on"
+msgstr "Sláa á"
+
+msgid "Two-factor"
+msgstr "Tvítrins"
+
+msgid "Two-factor authentication"
+msgstr "Tvítrinsváttan"
+
+msgid "Two-factor authentication is already on"
+msgstr "Tvítrinsváttan er longu á"
+
+msgid "Two-factor authentication is off"
+msgstr "Tvítrinsváttan er av"
+
+msgid "Two-factor authentication is on"
+msgstr "Tvítrinsváttan er á"
+
+msgid "Two-factor authentication reset"
+msgstr "Tvítrinsváttan nullstillað"
+
+msgid "Two-factor authentication turned off"
+msgstr "Tvítrinsváttan slignin av"
+
+msgid "Two-factor authentication turned on"
+msgstr "Tvítrinsváttan slignin á"
+
+msgid "Two-factor code needed"
+msgstr "Tvítrinskota krevst"
+
+msgid "Two-factor for everyone"
+msgstr "Tvítrins fyri øll"
+
+msgid "Two-factor reset"
+msgstr "Nullstilla tvítrins"
+
+msgid "Two-factor sign-in is required: scan the code with your authenticator app"
+msgstr "Tvítrins er kravt: skanna kotuna við tínari váttanarapp"
+
+#, php-format
+msgid "Unused recovery codes: %d"
+msgstr "Ónýttar endurstovningarkotur: %d"
+
+msgid "Wrong two-factor code"
+msgstr "Skeiv tvítrinskota"
+
+msgid "Your administrator requires two-factor sign-in"
+msgstr "Umsitarin krevur tvítrinsinnritan"
+
 #~ msgid "\"/config\" directory does not exist."
 #~ msgstr "\"/config\" mappan er ikki til."
 
